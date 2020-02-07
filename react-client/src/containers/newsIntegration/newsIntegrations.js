@@ -5,7 +5,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import RssFeed from './RssFeed'
+import NewsSection from './NewsSection'
 import AlertContainer from 'react-alert'
 import YouTube from 'react-youtube'
 import { Link } from 'react-router-dom'
@@ -13,7 +13,7 @@ import { fetchNewsFeed, deleteNewsFeed, saveCurrentFeed, updateNewsFeed, checkSu
 import ReactPaginate from 'react-paginate'
 import { RingLoader } from 'halogenium'
 
-class RssIntegrations extends React.Component {
+class NewsIntegrations extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
@@ -35,14 +35,14 @@ class RssIntegrations extends React.Component {
       search_value: '',
       status_value: '',
       type_value: '',
-      integrationType: 'rss'
+      integrationType: 'manual'
     })
     props.saveCurrentFeed(null)
     this.gotoSettings = this.gotoSettings.bind(this)
     this.gotoMessages = this.gotoMessages.bind(this)
     this.setDeleteId = this.setDeleteId.bind(this)
     this.viewGuide = this.viewGuide.bind(this)
-    this.searchFeeds = this.searchFeeds.bind(this)
+    this.searchSections = this.searchSections.bind(this)
     this.onStatusFilter = this.onStatusFilter.bind(this)
     this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
@@ -55,8 +55,16 @@ class RssIntegrations extends React.Component {
     this.handlePermissions = this.handlePermissions.bind(this)
     this.getStatusValue = this.getStatusValue.bind(this)
     this.isAnyFilter = this.isAnyFilter.bind(this)
+    this.updateStories = this.updateStories.bind(this)
     this.props.checkSubscriptionPermissions(this.handlePermissions)
   }
+  updateStories (feed) {
+    this.props.saveCurrentFeed(feed)
+    this.props.history.push({
+      pathname: `/updateStories`,
+    })
+  }
+
   getStatusValue(status) {
     var value = 'Not Found'
     if (status === 'notApplied') {
@@ -123,13 +131,11 @@ class RssIntegrations extends React.Component {
   }
   setStatus (feed) {
     var updated = {
-      feedUrl: feed.feedUrl,
       title: feed.title,
-      storiesCount: feed.storiesCount,
       defaultFeed: feed.defaultFeed,
       isActive: !feed.isActive,
       pageIds: [feed.pageIds[0]],
-      integrationType: 'rss'
+      integrationType: 'manual'
     }
     var data = {
       feedId: feed._id,
@@ -142,9 +148,9 @@ class RssIntegrations extends React.Component {
     this.isAnyFilter(this.state.searchValue, this.state.page_value, this.state.status, e.target.value)
     if (e.target.value !== '' && e.target.value !== 'all') {
       this.setState({pageNumber: 0})
-      this.props.fetchNewsFeed({last_id: this.props.rssFeeds.length > 0 ? this.props.rssFeeds[this.props.rssFeeds.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: this.state.searchValue, status_value: this.state.status, page_value: this.state.page_value, type_value: e.target.value, integrationType: 'rss'})
+      this.props.fetchNewsFeed({ integrationType: 'manual', last_id: this.props.rssFeeds.length > 0 ? this.props.rssFeeds[this.props.rssFeeds.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: this.state.searchValue, status_value: this.state.status, page_value: this.state.page_value, type_value: e.target.value})
     } else {
-      this.props.fetchNewsFeed({last_id: this.props.rssFeeds.length > 0 ? this.props.rssFeeds[this.props.rssFeeds.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: this.state.searchValue, status_value: this.state.status, page_value: this.state.page_value, type_value: '', integrationType: 'rss'})
+      this.props.fetchNewsFeed({ integrationType: 'manual', last_id: this.props.rssFeeds.length > 0 ? this.props.rssFeeds[this.props.rssFeeds.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: this.state.searchValue, status_value: this.state.status, page_value: this.state.page_value, type_value: ''})
     }
   }
   onPageFilter (e) {
@@ -152,9 +158,9 @@ class RssIntegrations extends React.Component {
     this.isAnyFilter(this.state.searchValue, e.target.value, this.state.status, this.state.type_value)
     if (e.target.value !== '' && e.target.value !== 'all') {
       this.setState({pageNumber: 0})
-      this.props.fetchNewsFeed({last_id: this.props.rssFeeds.length > 0 ? this.props.rssFeeds[this.props.rssFeeds.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: this.state.searchValue, status_value: this.state.status, page_value: e.target.value, type_value: this.state.type_value, integrationType: 'rss'})
+      this.props.fetchNewsFeed({ integrationType: 'manual', last_id: this.props.rssFeeds.length > 0 ? this.props.rssFeeds[this.props.rssFeeds.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: this.state.searchValue, status_value: this.state.status, page_value: e.target.value, type_value: this.state.type_value})
     } else {
-      this.props.fetchNewsFeed({last_id: this.props.rssFeeds.length > 0 ? this.props.rssFeeds[this.props.rssFeeds.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: this.state.searchValue, status_value: this.state.status, page_value: '', type_value: this.state.type_value, integrationType: 'rss'})
+      this.props.fetchNewsFeed({ integrationType: 'manual', last_id: this.props.rssFeeds.length > 0 ? this.props.rssFeeds[this.props.rssFeeds.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: this.state.searchValue, status_value: this.state.status, page_value: '', type_value: this.state.type_value})
     }
   }
   onStatusFilter (e) {
@@ -162,21 +168,21 @@ class RssIntegrations extends React.Component {
     this.isAnyFilter(this.state.searchValue, this.state.page_value, e.target.value, this.state.type_value)
     if (e.target.value !== '' && e.target.value !== 'all') {
       this.setState({pageNumber: 0})
-      this.props.fetchNewsFeed({last_id: this.props.rssFeeds.length > 0 ? this.props.rssFeeds[this.props.rssFeeds.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: this.state.searchValue, status_value: e.target.value, page_value: this.state.page_value, type_value: this.state.type_value, integrationType: 'rss'})
+      this.props.fetchNewsFeed({ integrationType: 'manual', last_id: this.props.rssFeeds.length > 0 ? this.props.rssFeeds[this.props.rssFeeds.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: this.state.searchValue, status_value: e.target.value, page_value: this.state.page_value, type_value: this.state.type_value})
     } else {
-      this.props.fetchNewsFeed({last_id: this.props.rssFeeds.length > 0 ? this.props.rssFeeds[this.props.rssFeeds.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: this.state.searchValue, status_value: '', page_value: this.state.page_value, type_value: this.state.type_value, integrationType: 'rss'})
+      this.props.fetchNewsFeed({  integrationType: 'manual', last_id: this.props.rssFeeds.length > 0 ? this.props.rssFeeds[this.props.rssFeeds.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: this.state.searchValue, status_value: '', page_value: this.state.page_value, type_value: this.state.type_value})
     }
   }
 
-  searchFeeds (event) {
+  searchSections (event) {
     this.setState({
       searchValue: event.target.value, pageNumber:0
     })
     this.isAnyFilter(event.target.value, this.state.page_value, this.state.status, this.state.type_value)
     if (event.target.value !== '') {
-      this.props.fetchNewsFeed({last_id: this.props.rssFeeds.length > 0 ? this.props.rssFeeds[this.props.rssFeeds.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: event.target.value.toLowerCase(), status_value: this.state.status, page_value: this.state.page_value, type_value: this.state.type_value, integrationType: 'rss'})
+      this.props.fetchNewsFeed({  integrationType: 'manual', last_id: this.props.rssFeeds.length > 0 ? this.props.rssFeeds[this.props.rssFeeds.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: event.target.value.toLowerCase(), status_value: this.state.status, page_value: this.state.page_value, type_value: this.state.type_value})
     } else {
-      this.props.fetchNewsFeed({last_id: this.props.rssFeeds.length > 0 ? this.props.rssFeeds[this.props.rssFeeds.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: '', status_value: this.state.status, page_value: this.state.page_value, type_value: this.state.type_value, integrationType: 'rss'})
+      this.props.fetchNewsFeed({  integrationType: 'manual', last_id: this.props.rssFeeds.length > 0 ? this.props.rssFeeds[this.props.rssFeeds.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: '', status_value: this.state.status, page_value: this.state.page_value, type_value: this.state.type_value})
     }
   }
 
@@ -223,7 +229,7 @@ class RssIntegrations extends React.Component {
       title = 'KiboChat';
     }
 
-    document.title = `${title} | Rss Integration for News Publishers`;
+    document.title = `${title} | News Integration`;
     //this.props.checkSubscriptionPermissions(this.handlePermissions)
   }
   viewGuide () {
@@ -248,7 +254,7 @@ class RssIntegrations extends React.Component {
         status_value: this.state.status,
         page_value: this.state.page_value,
         type_value: this.state.type_value,
-        integrationType: 'rss'
+        integrationType: 'manual'
       })
     } else if (this.state.pageNumber < data.selected) {
       this.props.fetchNewsFeed({
@@ -261,7 +267,7 @@ class RssIntegrations extends React.Component {
         status_value: this.state.status,
         page_value: this.state.page_value,
         type_value: this.state.type_value,
-        integrationType: 'rss'
+        integrationType: 'manual'
       })
     } else {
       this.props.fetchNewsFeed({
@@ -274,7 +280,7 @@ class RssIntegrations extends React.Component {
         status_value: this.state.status,
         page_value: this.state.page_value,
         type_value: this.state.type_value,
-        integrationType: 'rss'
+        integrationType: 'manual'
       })
     }
     this.setState({pageNumber: data.selected})
@@ -287,14 +293,14 @@ class RssIntegrations extends React.Component {
   gotoSettings (feed) {
     this.props.saveCurrentFeed(feed)
     this.props.history.push({
-      pathname: `/editFeed`,
+      pathname: `/editSection`,
     })
   }
 
   gotoMessages (feed) {
     this.props.saveCurrentFeed(feed)
     this.props.history.push({
-      pathname: `/feedPosts`
+      pathname: `/newsPosts`
     })
   }
 
@@ -325,7 +331,7 @@ class RssIntegrations extends React.Component {
               <div className="modal-content" style={{width: '687px', top: '100'}}>
                 <div style={{ display: 'block'}} className="modal-header">
                   <h5 className="modal-title" id="exampleModalLabel">
-                    RssFeeds Integrations Video Tutorial
+                    News Integrations Video Tutorial
                   </h5>
                   <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">
@@ -366,7 +372,7 @@ class RssIntegrations extends React.Component {
                   <button style={{ float: 'right' }}
                     className='btn btn-primary btn-sm'
                     onClick={() => {
-                      this.props.deleteNewsFeed(this.state.deleteId, this.msg, this.resetFilters, 'rss')
+                      this.props.deleteNewsFeed(this.state.deleteId, this.msg, this.resetFilters, 'manual')
                     }}
                     data-dismiss='modal'>Delete
                   </button>
@@ -377,7 +383,7 @@ class RssIntegrations extends React.Component {
           <div className='m-subheader '>
             <div className='d-flex align-items-center'>
               <div className='mr-auto'>
-                <h3 className='m-subheader__title'>Rss Integration</h3>
+                <h3 className='m-subheader__title'>News Integration</h3>
               </div>
             </div>
           </div>
@@ -388,7 +394,7 @@ class RssIntegrations extends React.Component {
                 <i className='flaticon-technology m--font-accent' />
               </div>
               <div className='m-alert__text'>
-                Need help in understanding Rss Integration? Here is the <a href='https://kibopush.com/rss-integration/' target='_blank' rel='noopener noreferrer'>documentation</a>.
+                Need help in understanding News Integration? Here is the <a href='https://kibopush.com/rss-integration/' target='_blank' rel='noopener noreferrer'>documentation</a>.
                 Or check out this <a href='#/' data-toggle="modal" data-target="#video">video tutorial</a>
               </div>
             </div>
@@ -401,7 +407,7 @@ class RssIntegrations extends React.Component {
                   <i className='flaticon-exclamation m--font-brand' />
                 </div>
                 <div className='m-alert__text'>
-                  RssFeeds Integration is available for pages registered with Facebook's News Page Index (NPI) only. To register for NPI follow the link: <a href='https://www.facebook.com/help/publisher/377680816096171' target='_blank' rel='noopener noreferrer'>Register to News Page Index</a>.
+                  News Integration is available for pages registered with Facebook's News Page Index (NPI) only. To register for NPI follow the link: <a href='https://www.facebook.com/help/publisher/377680816096171' target='_blank' rel='noopener noreferrer'>Register to News Page Index</a>.
                   Click here to review <a href='https://developers.facebook.com/docs/messenger-platform/policy/page-subscription-messaging' target='_blank' rel='noopener noreferrer'>Facebook's Subcription Messaging Policy</a>
                 </div>
               </div>
@@ -442,17 +448,17 @@ class RssIntegrations extends React.Component {
                       <i className='fa fa-feed' style={{color: '#365899'}} />
                     </span>
                     <h3 className='m-portlet__head-text'>
-                      Connected Rss Feeds
+                      Connected News Feeds
                     </h3>
                   </div>
                 </div>
                 <div className='m-portlet__head-tools'>
-                  <Link to='/editFeed'
+                  <Link to='/editSection'
                     className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
                     <span>
                       <i className='la la-plus' />
                       <span>
-                        Add Feed
+                        Add News Section
                       </span>
                     </span>
                   </Link>
@@ -460,7 +466,7 @@ class RssIntegrations extends React.Component {
               </div>
               <div className='m-portlet__body'>
                 <div className='col-12'>
-                  <p>A daily update will be sent to your subscribers from default news feed. Your subscribers can choose to subscribe from the Rss feeds you have enabled.</p>
+                  <p>A daily update will be sent to your subscribers from default news section. Your subscribers can choose to subscribe from the news sections you have enabled.</p>
                 </div>
                 <div className='col-12'>
                   <p> <b>Note:</b> Subscribers who are engaged in live chat with an agent, will receive autoposts after 30 mins of ending the conversation.</p>
@@ -505,7 +511,7 @@ class RssIntegrations extends React.Component {
                     </div>
                     <br /><br />
                     <div className='col-md-8' style={{marginTop: '5px'}}>
-                      <input type='text' placeholder='Search Feeds..' className='form-control' value={this.state.searchValue} onChange={this.searchFeeds} />
+                      <input type='text' placeholder='Search News Section..' className='form-control' value={this.state.searchValue} onChange={this.searchSections} />
                     </div>
                   </div>
                 : <div />
@@ -514,7 +520,8 @@ class RssIntegrations extends React.Component {
                   { this.state.feeds && this.state.feeds.length > 0
                   ? <div className='col-12 m-widget5'>
                     { this.state.feeds.map((feed, i) => (
-                      <RssFeed feed={feed}
+                      <NewsSection feed={feed}
+                        updateStories={this.updateStories}
                         page={this.props.pages.filter((page) => page._id === feed.pageIds[0])[0]}
                         openSettings={this.gotoSettings}
                         gotoMessages={this.gotoMessages}
@@ -542,7 +549,7 @@ class RssIntegrations extends React.Component {
                   : <div>
                     { this.state.filter
                       ? <div className='col-12'>No records found</div>
-                      : <div className='col-12'>You have no connected Rss Feeds</div>
+                      : <div className='col-12'>You do not have any news sections</div>
                     }
                     </div>
                   }
@@ -577,4 +584,4 @@ function mapDispatchToProps (dispatch) {
     checkSubscriptionPermissions: checkSubscriptionPermissions
   }, dispatch)
 }
-export default connect(mapStateToProps, mapDispatchToProps)(RssIntegrations)
+export default connect(mapStateToProps, mapDispatchToProps)(NewsIntegrations)

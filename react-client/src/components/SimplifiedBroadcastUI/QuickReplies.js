@@ -25,6 +25,7 @@ class QuickReplies extends React.Component {
     if (this.props.tags && this.props.tags.length > 0) {
         actions.push('assign_tag', 'unassign_tag')
     }
+    this.quickReplyLimit = 13
     this.state = {
         actions,
         quickReplies: this.props.quickReplies ? this.props.quickReplies : [],
@@ -76,6 +77,12 @@ class QuickReplies extends React.Component {
     this.createQuickReplyActions = this.createQuickReplyActions.bind(this)
 
     this.GSModalContent = null
+    if (this.props.setToggleQuickReply) {
+        this.props.setToggleQuickReply(this.toggleAddQuickReply)
+    }
+    if (this.props.setRemoveQuickReply) {
+        this.props.setRemoveQuickReply(this.removeQuickReply)
+    }
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
@@ -303,7 +310,7 @@ class QuickReplies extends React.Component {
   }
 
   checkIfEdited () {
-    if (!this.state.currentTitle !== '' || this.state.image_url || this.state.currentActions.length > 0) {
+    if (this.state.currentTitle !== '' || this.state.image_url || this.state.currentActions.length > 0) {
         this.setState({editing: true})
     } else {
         this.setState({editing: false})
@@ -699,13 +706,13 @@ class QuickReplies extends React.Component {
             }
 
             {
-                this.state.quickReplies.length < 10 &&
+                this.state.quickReplies.length < this.quickReplyLimit &&
                 <button id={'addQuickReply'+this.props.currentId} onClick={this.addQuickReply} style={{marginLeft: '15%', marginTop: '10px', border: 'dashed', borderWidth: '1.5px', 'color': 'black'}} className="btn m-btn--pill btn-sm m-btn hoverbordercomponent">
                     + Add Quick Reply
                 </button>
             }
 
-            <Popover placement='auto' isOpen={this.state.addingQuickReply} target={'addQuickReply'+this.props.currentId}>
+            <Popover container={document.getElementById('quickReplyPopover')} placement='auto' isOpen={this.state.addingQuickReply} target={'addQuickReply'+this.props.currentId}>
                 <PopoverBody>
                     <div style={{paddingRight: '10px', maxHeight: '500px', overflowY: 'scroll', overflowX: 'hidden'}}>
                     <div data-toggle="modal" data-target={this.state.editing ? "#closeQuickReply" : ""} onClick={this.closeQuickReply} style={{marginLeft: '98%', cursor: 'pointer'}}><span role='img' aria-label='times'>❌</span></div>

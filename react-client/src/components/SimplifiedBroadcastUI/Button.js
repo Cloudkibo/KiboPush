@@ -129,7 +129,7 @@ class Button extends React.Component {
       if (buttonAction === 'hubspot' && this.state.hubspotIntegration) {
         if (!this.doesActionExist('hubspot')) {
           buttonActions.push({title: 'Hubspot', action: this.showHubspot})
-        } 
+        }
       }
     }
     return buttonActions
@@ -355,7 +355,7 @@ class Button extends React.Component {
   }
   showWebView() {
     this.setState({ openWebView: true }, () => {
-      this.scrollToElement(`open_website${this.buttonId}`)
+      this.scrollToElement(`open_webview${this.buttonId}`)
     })
     if (this.props.updateButtonStatus) {
       this.props.updateButtonStatus({ buttonDisabled: !this.checkValid() })
@@ -913,7 +913,7 @@ class Button extends React.Component {
       } else if (postbackPayload[i].action === 'send_message_block') {
         postbackActions.push((
           <div id={`send_message_block${this.buttonId}`} style={{ marginTop: '30px' }} className='card'>
-            <h7 className='card-header'>Reply with a Message 
+            <h7 className='card-header'>Reply with a Message
               <i style={{ float: 'right', cursor: 'pointer' }} className='la la-close' onClick={() => this.removeReplyWithMessage(i)} />
             </h7>
             <div style={{ margin: '5px', textAlign: 'left' }}>New message will be created when you click on next button</div>
