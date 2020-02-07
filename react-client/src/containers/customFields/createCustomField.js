@@ -59,7 +59,7 @@ class CreateCustomField extends React.Component {
         let data = {
             customFieldId: this.props.customField._id,
             updated: {
-                name: this.props.customField.name !== this.state.name ? this.state.name : undefined,
+                name: this.props.customField.name,
                 description: this.state.description,
             }
         }
