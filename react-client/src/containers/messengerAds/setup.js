@@ -18,7 +18,7 @@ class SetUp extends React.Component {
     }
   }
   componentDidMount () {
-    this.props.createJsonPayload(JSON.stringify(this.state.jsonAdMessages))
+     this.props.createJsonPayload(JSON.stringify(this.props.messengerAd.jsonAdMessages))
   }
   render () {
     return (

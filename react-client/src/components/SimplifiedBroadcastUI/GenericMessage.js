@@ -5,7 +5,6 @@ import { bindActionCreators } from 'redux'
 
 import { loadTags } from '../../redux/actions/tags.actions'
 import { fetchAllSequence } from '../../redux/actions/sequence.action'
-import { loadBroadcastsList } from '../../redux/actions/templates.actions'
 import { loadCustomFields } from '../../redux/actions/customFields.actions'
 
 
@@ -80,7 +79,6 @@ class GenericMessage extends React.Component {
       props.setReset(this.reset)
     }
     this.props.loadCustomFields()
-    this.props.loadBroadcastsList()
     this.props.loadTags()
     this.props.fetchAllSequence()
     console.log('genericMessage props in constructor', this.props)
@@ -134,9 +132,6 @@ class GenericMessage extends React.Component {
       this.initializeList(nextProps.broadcast)
     }
     if (!this.props.sequences && nextProps.sequences) {
-      this.setState({quickRepliesComponent: null})
-    }
-    if (!this.props.broadcasts && nextProps.broadcasts) {
       this.setState({quickRepliesComponent: null})
     }
     if (!this.props.tags && nextProps.tags) {
@@ -851,7 +846,6 @@ class GenericMessage extends React.Component {
               closeGSModal={this.closeGSModal}
               customFields={this.props.customFields}
               sequences={this.props.sequences}
-              broadcasts={this.props.broadcasts}
               tags={this.props.tags}
               quickReplies={this.state.quickReplies}
               updateQuickReplies={this.updateQuickReplies}
@@ -1046,7 +1040,6 @@ function mapStateToProps (state) {
   return {
     customFields: (state.customFieldInfo.customFields),
     sequences: state.sequenceInfo.sequences,
-    broadcasts: state.templatesInfo.broadcasts,
     tags: state.tagsInfo.tags
   }
 }
@@ -1055,7 +1048,6 @@ function mapDispatchToProps (dispatch) {
   return bindActionCreators({
       loadCustomFields: loadCustomFields,
       fetchAllSequence: fetchAllSequence,
-      loadBroadcastsList: loadBroadcastsList,
       loadTags: loadTags
   }, dispatch)
 }
