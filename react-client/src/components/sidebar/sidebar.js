@@ -382,6 +382,7 @@ class Sidebar extends Component {
               {this.showInviteUsingPhoneNumber()}
               {this.showInviteSubscribers()}
               {this.showMessengerCode()}
+              {this.showOverlayWidgets()}
               {this.showDiscoverTabs()}
               {this.showLandingPages()}
               {this.showMessengerAds()}
@@ -389,7 +390,6 @@ class Sidebar extends Component {
               {this.showMessageUs()}
               {this.showChatWidget()}
               {this.showCheckbox()}
-              {this.showOverlayWidgets()}
             </ul>
           </div>
         </li>
