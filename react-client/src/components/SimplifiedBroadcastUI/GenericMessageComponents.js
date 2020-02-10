@@ -4,12 +4,14 @@ import ReactTooltip from 'react-tooltip'
 
 const activeStyle = {
   pointerEvents: 'auto',
-  padding: 0
+  padding: 0,
+  minHeight: '85px'
 }
 
 const disabledStyle = {
   pointerEvents: 'none',
-  padding: 0
+  padding: 0,
+  minHeight: '85px'
 }
 
 const activeCursor = {
@@ -21,7 +23,7 @@ const disabledCursor = {
 }
 
 const descriptionStyle = {
-  fontSize: '0.8em',
+  fontSize: '0.85em',
   marginBottom: '5px'
 }
 
@@ -58,10 +60,10 @@ class GenericMessageComponents extends React.Component {
           <div style={componentStyle} className='ui-block hoverbordercomponent' id='text' onClick={() => { this.props.addComponent('text') }}>
             <div className='row'>
               <div className='col-12' style={innerColumnStyle}>
-                <h6 style={headerStyle}>
+                <h5 style={headerStyle}>
                   <img src='https://cdn.cloudkibo.com/public/icons/text.png' alt='Text' style={{maxHeight: '20px', margin: '10px', marginLeft: '20px'}} />
                   Text
-                </h6>
+                </h5>
                 <p style={descriptionStyle}>
                   Enter Text Message (up to 2000 characters)
                 </p>
@@ -73,10 +75,10 @@ class GenericMessageComponents extends React.Component {
           <div style={componentStyle} className='ui-block hoverbordercomponent' onClick={() => { this.props.addComponent('media') }}>
             <div className='row'>
               <div className='col-12' style={innerColumnStyle}>
-                <h6 style={headerStyle}>
+                <h5 style={headerStyle}>
                   <img src='https://cdn.cloudkibo.com/public/icons/media.png' alt='Media' style={{maxHeight: '20px', margin: '10px', marginLeft: '20px'}} />
                   Media
-                </h6>
+                </h5>
                 {this.props.module && this.props.module === 'whatsapp' ?
                 <p style={descriptionStyle}>Upload an image or video (up to 5 MB)</p>
                 :
@@ -90,10 +92,10 @@ class GenericMessageComponents extends React.Component {
           <div style={componentStyle} className='ui-block hoverbordercomponent' onClick={() => { this.props.addComponent('card') }}>
             <div className='row'>
               <div className='col-12' style={innerColumnStyle}>
-                <h6 style={headerStyle}>
+                <h5 style={headerStyle}>
                   <img src='https://cdn.cloudkibo.com/public/icons/card.png' alt='Card' style={{maxHeight: '20px', margin: '10px', marginLeft: '20px'}} />
                   Gallery
-                </h6>
+                </h5>
                 <p style={descriptionStyle}>Create a photo carousel by uploading up to 10 images</p>
               </div>
             </div>
@@ -103,10 +105,10 @@ class GenericMessageComponents extends React.Component {
           <div style={componentStyle} className='ui-block hoverbordercomponent' onClick={() => { this.props.addComponent('audio') }}>
             <div className='row'>
               <div className='col-12' style={innerColumnStyle}>
-                <h6 style={headerStyle}>
+                <h5 style={headerStyle}>
                   <img src='https://cdn.cloudkibo.com/public/icons/speaker.png' alt='Audio' style={{maxHeight: '20px', margin: '10px', marginLeft: '20px'}} />
                   Audio
-                </h6>
+                </h5>
                 {this.props.module && this.props.module === 'whatsapp' ?
                 <p style={descriptionStyle}>Upload any audio/music file (up to 5 MB)</p>
                 :
@@ -120,10 +122,10 @@ class GenericMessageComponents extends React.Component {
           <div style={componentStyle} className='ui-block hoverbordercomponent' onClick={() => { this.props.addComponent('file') }}>
             <div className='row'>
               <div className='col-12' style={innerColumnStyle}>
-                <h6 style={headerStyle}>
+                <h5 style={headerStyle}>
                   <img src='https://cdn.cloudkibo.com/public/icons/file.png' alt='File' style={{maxHeight: '20px', margin: '10px', marginLeft: '20px'}} />
                   File
-                </h6>
+                </h5>
                 {this.props.module && this.props.module === 'whatsapp' ?
                   <p style={descriptionStyle}>Upload any file/document (up to 5 MB)</p>
                   :
@@ -137,10 +139,10 @@ class GenericMessageComponents extends React.Component {
           <div style={componentStyle} className='ui-block hoverbordercomponent' onClick={() => { this.props.addComponent('video') }}>
             <div className='row'>
               <div className='col-12' style={innerColumnStyle}>
-                <h6 style={headerStyle}>
+                <h5 style={headerStyle}>
                   <img src='https://cdn.cloudkibo.com/public/icons/video.png' alt='Video' style={{maxHeight: '20px', margin: '10px', marginLeft: '20px'}} />
                   YouTube Video
-                </h6>
+                </h5>
                 <p style={descriptionStyle}>Enter a YouTube video link to send it as a card</p>
               </div>
             </div>
@@ -150,10 +152,10 @@ class GenericMessageComponents extends React.Component {
           <div style={componentStyle} className='ui-block hoverbordercomponent' onClick={() => { this.props.addComponent('link') }}>
             <div className='row'>
               <div className='col-12' style={innerColumnStyle}>
-                <h6 style={headerStyle}>
+                <h5 style={headerStyle}>
                   <img src='https://cdn.cloudkibo.com/public/icons/layout.png' alt='Link' style={{maxHeight: '20px', margin: '10px', marginLeft: '20px'}} />
                   Link Carousel
-                </h6>
+                </h5>
                 <p style={descriptionStyle}>Enter up to 10 links to create a photo carousel</p>
               </div>
             </div>
@@ -166,10 +168,10 @@ class GenericMessageComponents extends React.Component {
           <div style={componentStyle} className='ui-block hoverbordercomponent' id='text' onClick={() => { this.props.addComponent('userInput') }}>
             <div className='row'>
               <div className='col-12' style={innerColumnStyle}>
-                <h6 style={headerStyle}>
+                <h5 style={headerStyle}>
                   <img src='https://cdn.cloudkibo.com/public/icons/text.png' alt='Text' style={{maxHeight: '20px', margin: '10px', marginLeft: '20px'}} />
                   User Input
-                </h6>
+                </h5>
                 <p style={descriptionStyle}>
                   Take input from users and save the response
                 </p>
