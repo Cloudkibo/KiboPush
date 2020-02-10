@@ -45,6 +45,8 @@ class ComponentBlock extends React.Component {
             items={this.props.getItems(this.props.currentId)}
             handleSidePanel={this.props.handleSidePanel}
             sidePanelStyle={{background: '#ccc', color: 'black'}}
+            updateBroadcastData={this.props.updateBroadcastData}
+            page={this.props.page}
           />
         </div>
       </div>
@@ -61,7 +63,9 @@ ComponentBlock.propTypes = {
   'currentId': PropTypes.string.isRequired,
   'changeMessage': PropTypes.func.isRequired,
   'removeMessage': PropTypes.func.isRequired,
-  'handleSidePanel': PropTypes.func.isRequired
+  'handleSidePanel': PropTypes.func.isRequired,
+  'updateBroadcastData': PropTypes.func.isRequired,
+  'page': PropTypes.object.isRequired
 }
 
 export default ComponentBlock

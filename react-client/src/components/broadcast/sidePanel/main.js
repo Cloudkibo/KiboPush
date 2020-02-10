@@ -1,7 +1,27 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import TEXT from './text'
 
 class SidePanel extends React.Component {
+  constructor (props) {
+    super(props)
+    this.state = {}
+    this.getComponent = this.getComponent.bind(this)
+  }
+
+  getComponent (component) {
+    switch (component) {
+      case 'text':
+        return <TEXT
+          updateBroadcastData={this.props.updateBroadcastData}
+          blockId={this.props.panelProps.blockId}
+          componentId={this.props.panelProps.componentId}
+        />
+      default:
+        return null
+    }
+  }
+
   render () {
     return (
       <div className="m-quick-sidebar__content">
@@ -15,14 +35,13 @@ class SidePanel extends React.Component {
             </h5>
           </div>
         </div>
-        <div id='broadcast_side_panel_body' style={{padding: '20px'}}></div>
+        <div id='broadcast_side_panel_body' style={{padding: '20px'}}>
+          { this.props.panelProps.visible && this.getComponent(this.props.panelProps.component) }
+        </div>
         <div id='broadcast_side_panel_footer' style={{bottom: 0, right: 0, position: 'fixed', padding: '20px'}}>
           <div className='pull-right'>
-            <button style={{marginRight: '20px'}} className='btn btn-secondary' onClick={() => {this.props.handleSidePanel(false)}}>
-              Cancel
-            </button>
-            <button className='btn btn-primary'>
-              Add
+            <button onClick={() => {this.props.handleSidePanel(false)}} className='btn btn-primary'>
+              Done
             </button>
           </div>
         </div>
@@ -33,7 +52,8 @@ class SidePanel extends React.Component {
 
 SidePanel.propTypes = {
   'panelProps': PropTypes.object.isRequired,
-  'handleSidePanel': PropTypes.func.isRequired
+  'handleSidePanel': PropTypes.func.isRequired,
+  'updateBroadcastData': PropTypes.func.isRequired
 }
 
 export default SidePanel
