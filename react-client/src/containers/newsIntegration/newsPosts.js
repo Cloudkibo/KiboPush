@@ -48,17 +48,17 @@ class FeedPosts extends React.Component {
       })
     } else if (startDate === '' && endDate !== '') {
       this.setState({
-        dateRangeWarning: 'Select start date to apply filter'
+        dateRangeWarning: {type: 'start', warning: 'Select start date to apply filter'}
       })
       valid = false
     } else if (startDate !== '' && endDate === '') {
       this.setState({
-        dateRangeWarning: 'Select end date to apply filter'
+        dateRangeWarning: {type: 'end', warning:'Select end date to apply filter'}
       })
       valid = false
     } else if (moment(startDate).isAfter(endDate)) {
       this.setState({
-        dateRangeWarning: 'Incorrect Range'
+        dateRangeWarning:  {type: 'start', warning:'Incorrect Range'}
       })
       valid = false
     } else {
@@ -215,18 +215,23 @@ class FeedPosts extends React.Component {
                       placeholder='Value'
                       max= {moment().format('YYYY-MM-DD')}
                       type='date'/>
-                    { this.state.dateRangeWarning !== '' &&<span style={{color: '#ffb822'}}className='m-form__help'>
-                      {this.state.dateRangeWarning}
+                    { this.state.dateRangeWarning !== '' && this.state.dateRangeWarning.type === 'start' && <span style={{color: 'red'}}className='m-form__help'>
+                      {this.state.dateRangeWarning.warning}
                     </span> }
                   </div>
                   <span style={{marginTop: '7px', marginLeft: '10px',marginRight: '10px'}}>To:</span>
-                  <input className='form-control col-md-3 m-input'
-                    onChange={(e) => this.changeDateTo(e)}
-                    value={this.state.endDate}
-                    id='text'
-                    placeholder='Value'
-                    max= {moment().format('YYYY-MM-DD')}
-                    type='date'/>
+                  <div className='col-md-3'>
+                    <input className='form-control m-input'
+                      onChange={(e) => this.changeDateTo(e)}
+                      value={this.state.endDate}
+                      id='text'
+                      placeholder='Value'
+                      max= {moment().format('YYYY-MM-DD')}
+                      type='date'/>
+                    { this.state.dateRangeWarning !== '' && this.state.dateRangeWarning.type === 'end' && <span style={{color: 'red'}}className='m-form__help'>
+                      {this.state.dateRangeWarning.warning}
+                    </span> }
+                  </div>
                 </div>
               </div>
               <div className='row' >
