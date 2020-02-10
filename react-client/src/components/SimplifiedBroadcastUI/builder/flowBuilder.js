@@ -55,25 +55,101 @@ class FlowBuilder extends React.Component {
     this.validateDeletedNodes = this.validateDeletedNodes.bind(this)
     this.disableReset = this.disableReset.bind(this)
     this.handleSidePanel = this.handleSidePanel.bind(this)
+    this.updateBroadcastData = this.updateBroadcastData.bind(this)
+    this.getItems = this.getItems.bind(this)
 
     this.updateZIndex = true
 
   }
 
+  getItems () {
+    const messages = this.props.linkedMessages.concat(this.props.unlinkedMessages)
+    const currentMessage = messages.filter(m => m.id === this.props.currentId)[0]
+    return currentMessage.messageContent
+  }
+
+  updateBroadcastData (blockId, componentId, action, data) {
+    let linkedMessages = this.props.linkedMessages
+    let unlinkedMessages = this.props.unlinkedMessages
+    const linkedIndex = linkedMessages.findIndex((lm) => lm.id === blockId)
+    const unlinkedIndex = unlinkedMessages.findIndex((um) => um.id === blockId)
+    if (action === 'add') {
+      if (linkedIndex > -1) {
+        const quickReplyIndex = linkedMessages[linkedIndex].messageContent.length - 1
+        if (quickReplyIndex > -1) {
+          data.quickReplies = linkedMessages[linkedIndex].messageContent[quickReplyIndex].quickReplies
+          linkedMessages[linkedIndex].messageContent.push(data)
+        } else {
+          data.quickReplies = []
+          linkedMessages[linkedIndex].messageContent.push(data)
+        }
+      } else if (unlinkedIndex > -1) {
+        const quickReplyIndex = unlinkedMessages[unlinkedIndex].messageContent.length - 1
+        if (quickReplyIndex > -1) {
+          data.quickReplies = unlinkedMessages[unlinkedIndex].messageContent[quickReplyIndex].quickReplies
+          unlinkedMessages[unlinkedIndex].messageContent.push(data)
+        } else {
+          data.quickReplies = []
+          unlinkedMessages[unlinkedIndex].messageContent.push(data)
+        }
+      }
+    } else if (action === 'update') {
+      if (linkedIndex > -1) {
+        const componentIndex = linkedMessages[linkedIndex].messageContent.findIndex((mc) => mc.id === componentId)
+        linkedMessages[linkedIndex].messageContent[componentIndex][data.updateField] = data.updateValue
+      } else if (unlinkedIndex > -1) {
+        const componentIndex = unlinkedMessages[unlinkedIndex].messageContent.findIndex((mc) => mc.id === componentId)
+        unlinkedMessages[unlinkedIndex].messageContent[componentIndex][data.updateField] = data.updateValue
+      }
+      this.forceUpdate()
+    } else if (action === 'delete') {
+      if (linkedIndex > -1) {
+        const componentIndex = linkedMessages[linkedIndex].messageContent.findIndex((mc) => mc.id === componentId)
+        linkedMessages[linkedIndex].messageContent.splice(componentIndex, 1)
+      } else if (unlinkedIndex > -1) {
+        const componentIndex = unlinkedMessages[unlinkedIndex].messageContent.findIndex((mc) => mc.id === componentId)
+        unlinkedMessages[unlinkedIndex].messageContent.splice(componentIndex, 1)
+      }
+    }
+    // this.forceUpdate()
+    console.log('linkedMessages in updateBroadcastData', linkedMessages)
+    console.log('unlinkedMessages in updateBroadcastData', unlinkedMessages)
+  }
+
+  getAddComponentData (component) {
+    switch (component) {
+      case 'text':
+        return {
+          id: new Date().getTime(),
+          buttons: [],
+          text: '',
+          componentType: 'text',
+          componentName: 'text'
+        }
+      default:
+        return {}
+    }
+  }
+
   handleSidePanel (show, headerStyle, currentId, component, action) {
     if (show) {
       document.getElementById('broadcast_side_panel').classList.add('m-quick-sidebar--on')
-      const flowBuilderChart = document.getElementById(`flowBuilderCard-${currentId}`)
-      const domRect = flowBuilderChart.getBoundingClientRect()
-      console.log('transform value', domRect)
+      let data = this.getAddComponentData (component)
+      this.updateBroadcastData(currentId, '', 'add', data)
       const panelProps = {
         headerStyle,
         component,
-        action
+        action,
+        visible: show,
+        blockId: currentId,
+        componentId: data.id
       }
       this.setState({sidePanel: panelProps})
     } else {
       document.getElementById('broadcast_side_panel').classList.remove('m-quick-sidebar--on')
+      let panelProps = this.state.sidePanel
+      panelProps.visible = show
+      this.setState({sidePanel: panelProps})
     }
   }
 
@@ -499,10 +575,12 @@ class FlowBuilder extends React.Component {
             getComponent={this.props.getComponent}
             linkedMessages={this.props.linkedMessages}
             unlinkedMessages={this.props.unlinkedMessages}
-            getItems={this.props.getItems}
+            getItems={this.getItems}
             currentId={node.properties.id}
             changeMessage={this.props.changeMessage}
             handleSidePanel={this.handleSidePanel}
+            updateBroadcastData={this.updateBroadcastData}
+            page={this.props.pageId}
           />
         )
       } else if (node.type === 'component_block') {
@@ -515,9 +593,11 @@ class FlowBuilder extends React.Component {
             unlinkedMessages={this.props.unlinkedMessages}
             currentId={node.properties.id}
             changeMessage={this.props.changeMessage}
-            getItems={this.props.getItems}
+            getItems={this.getItems}
             removeMessage={this.props.removeMessage}
             handleSidePanel={this.handleSidePanel}
+            updateBroadcastData={this.updateBroadcastData}
+            page={this.props.pageId}
           />
         )
       } else if (node.type === 'action_block') {
@@ -1101,6 +1181,7 @@ class FlowBuilder extends React.Component {
               <SIDEPANEL
                 handleSidePanel={this.handleSidePanel}
                 panelProps={this.state.sidePanel}
+                updateBroadcastData={this.updateBroadcastData}
               />
             </div>
           </div>
@@ -1133,7 +1214,7 @@ FlowBuilder.propTypes = {
   'totalSubscribersCount': PropTypes.number.isRequired,
   'resetTarget': PropTypes.bool,
   'pageId': PropTypes.object.isRequired,
-  'getItems': PropTypes.func.isRequired,
+  // 'getItems': PropTypes.func.isRequired,
   'changeMessage': PropTypes.func.isRequired,
   'removeMessage': PropTypes.func.isRequired,
   'currentId': PropTypes.number.isRequired,

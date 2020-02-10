@@ -1,7 +1,7 @@
 import React from "react"
 import PropTypes from 'prop-types'
-import DragSortableList from 'react-drag-sortable'
 import COMPONENTSPOPOVER from './componentsPopover'
+import PREVIEW from '../broadcast/preview/main'
 import ReactTooltip from 'react-tooltip'
 
 const tooltipText = 'You can only add upto 3 components per message.'
@@ -29,7 +29,7 @@ class ComponentsArea extends React.Component {
   }
 
   render () {
-    console.log('items length', this.props.items.length)
+    console.log('props in componentsArea', this.props)
     return (
       <div>
 
@@ -48,13 +48,12 @@ class ComponentsArea extends React.Component {
           handleSidePanel={this.props.handleSidePanel}
           sidePanelStyle={this.props.sidePanelStyle}
           currentId={this.props.currentId}
+          updateBroadcastData={this.props.updateBroadcastData}
         />
 
-        <DragSortableList
-          style={{overflowY: 'scroll', height: '75vh'}}
+        <PREVIEW
+          profilePic={this.props.page.pagePic}
           items={this.props.items}
-          dropBackTransitionDuration={0.3}
-          type='vertical'
         />
 
         <button
@@ -78,7 +77,9 @@ ComponentsArea.propTypes = {
   'changeMessage': PropTypes.func.isRequired,
   'sidePanelStyle': PropTypes.object.isRequired,
   'handleSidePanel': PropTypes.func.isRequired,
-  'currentId': PropTypes.string.isRequired
+  'currentId': PropTypes.string.isRequired,
+  'updateBroadcastData': PropTypes.func.isRequired,
+  'page': PropTypes.object.isRequired
 }
 
 export default ComponentsArea
