@@ -48,13 +48,22 @@ class RssFeed extends React.Component {
             </div>
           </div>
           <div className='m-widget5__stats1' style={{textAlign: 'center', width: '200px'}}>
-              <span className='m-widget5__title'>
-                <label>Page</label>  
-              </span>
-              <br />
-              <span className='widget5__info'>
-                {this.props.page ? this.props.page.pageName: ''}
-              </span>
+            <span className='m-widget5__title'>
+              <label>Page</label>  
+            </span>
+            <br />
+            <span className='widget5__info'>
+              {this.props.page ? this.props.page.pageName: ''}
+            </span>
+          </div>
+          <div className='m-widget5__stats1' style={{textAlign: 'center', width: '200px'}}>
+            <span className='m-widget5__title'>
+              <label>Subscriptions</label>  
+            </span>
+            <br />
+            <span className='widget5__info'>
+              {this.props.feed.subscriptions}
+            </span>
           </div>
           <div className='m-widget5__stats2'>
           {this.props.feed.isActive
