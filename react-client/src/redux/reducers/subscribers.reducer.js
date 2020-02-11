@@ -4,11 +4,14 @@ export function subscribersInfo (state = {}, action) {
   console.log('subscribers reducer', action)
   switch (action.type) {
     case ActionTypes.UPDATE_CUSTOM_FIELD_FOR_SUBSCRIBER:
+      let subscribers = state.subscribers
+      let subscriberIndex = subscribers.findIndex(s => s._id === action.data.subscriberId)
+      let customFieldIndex = subscribers[subscriberIndex].customFields.findIndex(cf => cf._id === action.data.customFieldId)
+      subscribers[subscriberIndex].customFields[customFieldIndex].value = action.data.value
       console.log('UPDATE_CUSTOM_FIELD_FOR_SUBSCRIBER', state)
-      let subscriberIndex = state.subscribers.findIndex(s => s._id === action.data.subscriberId)
-      let customFieldIndex = state.subscribers[subscriberIndex].customFields.findIndex(cf => cf._id === action.data.customFieldId)
-      state.subscribers[subscriberIndex].customFields[customFieldIndex].value = action.data.value
-      return state
+      return Object.assign({}, state, {
+        subscribers,
+      })
     case ActionTypes.LOAD_SUBSCRIBERS_LIST:
       return Object.assign({}, state, {
         subscribers: action.data,

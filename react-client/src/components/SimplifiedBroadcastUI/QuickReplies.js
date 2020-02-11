@@ -126,6 +126,12 @@ class QuickReplies extends React.Component {
       if (action === 'hubspot') {
         quickReplyActions.push({title: 'Hubspot', action: () => this.selectAction(action)})
       }
+      if (action === 'assign_tag') {
+        quickReplyActions.push({title: 'Assign Tag', action: () => this.selectAction(action)})
+      }
+      if (action === 'unassign_tag') {
+        quickReplyActions.push({title: 'Unassign Tag', action: () => this.selectAction(action)})
+      }
     }
     return quickReplyActions
   }
