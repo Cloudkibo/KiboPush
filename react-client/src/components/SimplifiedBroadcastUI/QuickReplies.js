@@ -712,7 +712,7 @@ class QuickReplies extends React.Component {
                 </button>
             }
 
-            <Popover container={document.getElementById('quickReplyPopover')} placement='auto' isOpen={this.state.addingQuickReply} target={'addQuickReply'+this.props.currentId}>
+            <Popover placement='auto' isOpen={this.state.addingQuickReply} target={'addQuickReply'+this.props.currentId}>
                 <PopoverBody>
                     <div style={{paddingRight: '10px', maxHeight: '500px', overflowY: 'scroll', overflowX: 'hidden'}}>
                     <div data-toggle="modal" data-target={this.state.editing ? "#closeQuickReply" : ""} onClick={this.closeQuickReply} style={{marginLeft: '98%', cursor: 'pointer'}}><span role='img' aria-label='times'>❌</span></div>
@@ -791,7 +791,8 @@ class QuickReplies extends React.Component {
                             actions={this.createQuickReplyActions()}
                         />
                         <div style={{marginBottom: '10px', marginTop: '20px'}}>
-                            <button disabled={this.state.addingAction ? true : null} id="addActionButton" onClick={this.addAction} style={{ border: 'dashed', marginLeft: '30%', borderWidth: '1.5px', 'color': 'black'}} className="btn m-btn--pill btn-sm m-btn hoverbordercomponent">
+                            <button disable
+                            d={this.state.addingAction ? true : null} id="addActionButton" onClick={this.addAction} style={{ border: 'dashed', marginLeft: '30%', borderWidth: '1.5px', 'color': 'black'}} className="btn m-btn--pill btn-sm m-btn hoverbordercomponent">
                                 + Add Action
                             </button>
                         </div>
