@@ -395,7 +395,6 @@ class Sequence extends React.Component {
                 className='btn btn-primary btn-sm'
                 onClick={() => {
                   this.props.deleteSequence(this.state.deleteid, this.msg)
-                  this.closeDialogDelete()
                 }} data-dismiss='modal'>Delete
               </button>
                 </div>
@@ -490,9 +489,9 @@ class Sequence extends React.Component {
                      When subscriber unsubscribes from specific sequence
                     {
                       this.state.isShowSequenceDropDownUnsub && this.state.sequenceList.length > 0 &&
-                      <select 
-                        className='form-control m-input' 
-                        onChange={this.handleSequenceDropdown2} 
+                      <select
+                        className='form-control m-input'
+                        onChange={this.handleSequenceDropdown2}
                         value={this.state.unsubscribeToSequence}
                       >
                         {
