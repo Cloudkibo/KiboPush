@@ -192,7 +192,7 @@ class FilterComment extends React.Component {
                   max= {moment().format('YYYY-MM-DD')}
                   type='date'/>
             </div>
-            { this.state.dateRangeWarning !== '' && <span style={{color: '#ffb822', marginLeft: '15px', marginTop: '10px'}} className='m-form__help'>
+            { this.state.dateRangeWarning !== '' && <span style={{color: 'red', marginLeft: '15px', marginTop: '10px'}} className='m-form__help'>
                 { this.state.dateRangeWarning}
               </span> }
             <div className='col-12 m-form m-form--label-align-left m--margin-bottom-10 m--margin-top-10'>

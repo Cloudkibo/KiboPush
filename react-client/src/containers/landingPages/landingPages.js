@@ -255,6 +255,7 @@ class LandingPage extends React.Component {
               </div>
             </div>
           </div>
+        {this.state.isShowingCreate &&
           <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="create" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
               <div className="modal-content">
@@ -292,6 +293,7 @@ class LandingPage extends React.Component {
               </div>
             </div>
           </div>
+        }
         <div className='m-subheader '>
           <div className='d-flex align-items-center'>
             <div className='mr-auto'>

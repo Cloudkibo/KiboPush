@@ -3,77 +3,32 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import AlertContainer from 'react-alert'
 import { Link } from 'react-router-dom'
-import { isWebURL, isRssUrl } from './../../utility/utils'
-import { createNewsFeed, updateNewsFeed, previewNewsFeed } from '../../redux/actions/rssIntegration.actions'
-import { getuserdetails, getFbAppId, getAdminSubscriptions } from '../../redux/actions/basicinfo.actions'
-import { registerAction } from '../../utility/socketio'
+import { createNewsFeed, updateNewsFeed } from '../../redux/actions/rssIntegration.actions'
 import { RingLoader } from 'halogenium'
-var MessengerPlugin = require('react-messenger-plugin').default
 
 class CreateFeed extends React.Component {
   constructor (props, context) {
     super(props, context)
 
     this.state = {
-      feedUrl: '',
       isActive: true,
-      feedTitle: '',
-      storiesCount: '5',
+      sectionTitle: '',
       isDefault: false,
       selectedPage: '',
       saveEnabled: false,
       inValidUrlMsg: '',
-      defaultMessage: '',
+      defaultMessage: '', 
       fbPageId: '',
       loading: false
     }
-    props.getFbAppId()
-    props.getuserdetails()
-    props.getAdminSubscriptions()
     this.handleStatusChange = this.handleStatusChange.bind(this)
-    this.feedUrlChange = this.feedUrlChange.bind(this)
-    this.feedTitleChange = this.feedTitleChange.bind(this)
-    this.handleStoryChange = this.handleStoryChange.bind(this)
+    this.sectionTitleChange = this.sectionTitleChange.bind(this)
     this.defaultFeedChange = this.defaultFeedChange.bind(this)
     this.isValidIntegration = this.isValidIntegration.bind(this)
-    this.isValidRssUrl = this.isValidRssUrl.bind(this)
     this.handleSave = this.handleSave.bind(this)
     this.resetFields = this.resetFields.bind(this)
     this.pageChange = this.pageChange.bind(this)
     this.pageHasDefaultFeed = this.pageHasDefaultFeed.bind(this)
-    this.previewRssFeed = this.previewRssFeed.bind(this)
-  }
-
-  previewRssFeed () {
-    let pageSelected = this.state.selectedPage
-    if (this.props.adminPageSubscription && this.props.adminPageSubscription.length > 0) {
-      var check = this.props.adminPageSubscription.filter((obj) => { return obj.pageId === pageSelected })
-      if (check.length <= 0) {
-        if(this.props.fbAppId && this.props.fbAppId !== '') {
-          this.refs.messengerModal.click()
-        }
-        return
-      }
-    } else {
-      if(this.props.fbAppId && this.props.fbAppId !== '') {
-        this.refs.messengerModal.click()
-      }
-      return
-    }
-    var rssPayload = {
-      feedUrl: this.state.feedUrl,
-	    title: this.state.feedTitle,
-	    storiesCount: parseInt(this.state.storiesCount),
-	    pageIds: [this.state.selectedPage],
-      integrationType: 'rss'
-    }
-    if (this.props.currentFeed && this.props.currentFeed._id) {
-      rssPayload.feedId = this.props.currentFeed._id
-    }
-    this.setState({
-      loading: true
-    })
-    this.props.previewNewsFeed(rssPayload, this.msg, () => {this.setState({loading: false})})
   }
 
   pageHasDefaultFeed (pageId) {
@@ -92,7 +47,7 @@ class CreateFeed extends React.Component {
           var defaultFeed = this.pageHasDefaultFeed(event.target.value)
           this.setState({
             isDefault: defaultFeed,
-            defaultMessage: defaultFeed ? `Currently you have no default feeds for the selected page: ${event.target.selectedOptions[0].label}`: `You already have a default feed for the selected page: ${event.target.selectedOptions[0].label}. Click on the checkbox if you want to make this feed as default`,
+            defaultMessage: defaultFeed ? `Currently you have no default news sections for the selected page: ${event.target.selectedOptions[0].label}`: `You already have a default news section for the selected page: ${event.target.selectedOptions[0].label}. Click on the checkbox if you want to make this news section as default`,
           })
         }
         this.setState({
@@ -108,15 +63,13 @@ class CreateFeed extends React.Component {
 
   resetFields () {
     this.setState({
-      feedUrl: '',
       isActive: true,
-      feedTitle: '',
-      storiesCount: '5',
+      sectionTitle: '',
       isDefault: false,
       saveEnabled: false,
       inValidUrlMsg: '',
       selectedPage: '',
-      defaultMessage: '',
+      defaultMessage: '', 
       loading: false
     })
 
@@ -134,13 +87,11 @@ class CreateFeed extends React.Component {
       loading: true
     })
     var rssPayload = {
-      feedUrl: this.state.feedUrl,
-	    title: this.state.feedTitle,
-	    storiesCount: parseInt(this.state.storiesCount),
+	    title: this.state.sectionTitle,
 	    defaultFeed: this.state.isDefault,
 	    isActive: this.state.isActive,
-	    pageIds: [this.state.selectedPage],
-      integrationType: 'rss'
+      pageIds: [this.state.selectedPage],
+      integrationType: 'manual'
     }
     if (!this.props.currentFeed) {
       this.props.createNewsFeed(rssPayload, this.msg, this.resetFields, () => {this.setState({ loading: false})})
@@ -153,16 +104,9 @@ class CreateFeed extends React.Component {
     }
   }
 
-  isValidRssUrl(feedUrl) {
-    if (feedUrl !== '' && (!isWebURL(feedUrl) || !isRssUrl(feedUrl))) {
-      this.setState({inValidUrlMsg: 'Please enter a valid Rss feed url'})
-    } else {
-      this.setState({inValidUrlMsg: ''})
-    }
-  }
-  isValidIntegration (feedUrl, title, selectedPage) {
+  isValidIntegration (title, selectedPage) {
     var isValid = false
-    if (feedUrl !== '' && title !== '' && isWebURL(feedUrl) && isRssUrl(feedUrl) && selectedPage !== '') {
+    if (title !== '' && selectedPage !== '') {
       isValid = true
     } else {
       isValid = false
@@ -172,40 +116,28 @@ class CreateFeed extends React.Component {
     })
   }
   defaultFeedChange (e) {
-    this.isValidIntegration(this.state.feedUrl, this.state.feedTitle, this.state.selectedPage)
+    this.isValidIntegration(this.state.sectionTitle, this.state.selectedPage)
     this.setState({
       isDefault: e.target.checked
     })
   }
   handleStatusChange (e) {
-    this.isValidIntegration(this.state.feedUrl, this.state.feedTitle, this.state.selectedPage)
+    this.isValidIntegration(this.state.sectionTitle, this.state.selectedPage)
     this.setState({
       isActive: e.target.value === 'true' ? true : false
     })
   }
-  handleStoryChange (e) {
-    this.isValidIntegration(this.state.feedUrl, this.state.feedTitle, this.state.selectedPage)
+
+  sectionTitleChange (e) {
+    this.isValidIntegration(this.state.sectionUrl, e.target.value, this.state.selectedPage)
     this.setState({
-      storiesCount: e.target.value
-    })
-  }
-  feedTitleChange (e) {
-    this.isValidIntegration(this.state.feedUrl, e.target.value, this.state.selectedPage)
-    this.setState({
-      feedTitle: e.target.value
-    })
-  }
-  feedUrlChange (e) {
-    this.isValidIntegration(e.target.value, this.state.feedTitle, this.state.selectedPage)
-    this.setState({
-      feedUrl: e.target.value,
-      inValidUrlMsg: ''
+      sectionTitle: e.target.value
     })
   }
 
   componentDidMount () {
     let title = ''
-    document.title = `${title} | Rss Feeds`
+    document.title = `${title} | News Section`
     if (this.props.currentFeed) {
       this.setCurrentFeed(this.props.currentFeed)
     } else {
@@ -218,28 +150,16 @@ class CreateFeed extends React.Component {
       this.setState({
         isDefault: defaultFeed,
         fbPageId: pageSelected.pageId,
-        defaultMessage: defaultFeed ? `Currently you have no default feeds for the selected page: ${pageSelected.pageName}`: `You already have a default feed for the selected page: ${pageSelected.pageName}. Click on the checkbox if you want to make this feed as default`,
+        defaultMessage: defaultFeed ? `Currently you have no default news section for the selected page: ${pageSelected.pageName}`: `You already have a default news section for the selected page: ${pageSelected.pageName}. Click on the checkbox if you want to make this news section as default`,
         selectedPage: pageSelected._id
       })
     }
-    var compProp = this.props
-    var comp = this
-    registerAction({
-      event: 'admin_subscriber',
-      action: function (data) {
-        compProp.getAdminSubscriptions()
-        comp.msg.success('Subscribed successfully. Click on the `Preview in Messenger` button again to test')
-        comp.refs.messengerModal.click()
-      }
-    })
   }
 
   setCurrentFeed (feed) {
     this.setState({
-      feedUrl: feed.feedUrl,
       isActive: feed.isActive,
-      feedTitle: feed.title,
-      storiesCount: feed.storiesCount.toString(),
+      sectionTitle: feed.title,
       isDefault: feed.defaultFeed,
       selectedPage: feed.pageIds[0],
       saveEnabled: true,
@@ -271,7 +191,7 @@ class CreateFeed extends React.Component {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        { this.state.loading &&
+        { this.state.loading && 
         <div style={{ width: '100vw', height: '100vh', background: 'rgba(33, 37, 41, 0.6)', position: 'fixed', zIndex: '99999', top: '0px' }}>
             <div style={{ position: 'fixed', top: '50%', left: '50%', width: '30em', height: '18em', marginLeft: '-10em' }}
               className='align-center'>
@@ -280,38 +200,13 @@ class CreateFeed extends React.Component {
           </div>
 
         }
-        <a href='#/' style={{ display: 'none' }} ref='messengerModal' data-toggle="modal" data-target="#messengerModal">messengerModal</a>
-        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="messengerModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-          <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
-            <div className="modal-content">
-              <div style={{ display: 'block' }} className="modal-header">
-                <h5 className="modal-title" id="exampleModalLabel">
-                  Connect to Messenger:
-									</h5>
-                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">
-                    &times;
-											</span>
-                </button>
-              </div>
-              <div style={{ color: 'black' }} className="modal-body">
-                <MessengerPlugin
-                  appId={this.props.fbAppId}
-                  pageId={this.state.fbPageId}
-                  size='large'
-                  passthroughParams={`${this.props.user._id}__kibopush_test_broadcast_`}
-                />
-              </div>
-            </div>
-          </div>
-        </div>
         <div className='m-content'>
           <div className='m-portlet m-portlet--mobile'>
             <div className='m-portlet__head'>
               <div className='m-portlet__head-caption'>
                 <div className='m-portlet__head-title'>
                   <h3 className='m-portlet__head-text'>
-                    Rss Feed
+                    News Section
                   </h3>
                 </div>
               </div>
@@ -326,30 +221,13 @@ class CreateFeed extends React.Component {
                   </div>
                   <div className='form-group m-form__group row'>
                     <label className='col-lg-2 col-form-label'>
-                      Rss Feed Url
-                    </label>
-                    <div className='col-lg-6'>
-                      <input className='form-control m-input' placeholder='Input Url'
-                        onChange={this.feedUrlChange}
-                        onBlur={(e) => this.isValidRssUrl(e.target.value)}
-                        defaultValue=''
-                        value={this.state.feedUrl} />
-                    </div>
-                    { this.state.inValidUrlMsg !== '' &&
-                      <span className='m-form__help'>
-                        <span style={{color: 'red'}}>{this.state.inValidUrlMsg}</span>
-                      </span>
-                    }
-                  </div>
-                  <div className='form-group m-form__group row'>
-                    <label className='col-lg-2 col-form-label'>
-                      Rss Feed Title
+                      Section Title
                     </label>
                     <div className='col-lg-6'>
                       <input className='form-control m-input' placeholder='title'
-                        onChange={this.feedTitleChange}
+                        onChange={this.sectionTitleChange}
                         defaultValue=''
-                        value={this.state.feedTitle} />
+                        value={this.state.sectionTitle} />
                     </div>
                   </div>
                   <div className='form-group m-form__group row'>
@@ -385,45 +263,23 @@ class CreateFeed extends React.Component {
                     </div>
                   </div>
                   <div className='form-group m-form__group row'>
-                    <label className='col-lg-2 col-form-label'>
-                      Show no more than
-                    </label>
-                    <div className='col-lg-6'>
-                      <select className='form-control m-input' onChange={this.handleStoryChange} value={this.state.storiesCount}>
-                        <option value='1'>1 story</option>
-                        <option value='2'>2 stories</option>
-                        <option value='3'>3 stories</option>
-                        <option value='4'>4 stories</option>
-                        <option value='5'>5 stories</option>
-                        <option value='6'>6 stories</option>
-                        <option value='7'>7 stories</option>
-                        <option value='8'>8 stories</option>
-                        <option value='9'>9 stories</option>
-                        <option value='10'>10 stories</option>
-                      </select>
-                    </div>
-                  </div>
-                  <div className='form-group m-form__group row'>
-                    <label className='col-lg-2'>
+                    <label className='col-8' style={{marginLeft: '50px', textAlign:'left'}}>
                       <input name='defaultFeed' value={this.state.isDefault} type='checkbox' checked={this.state.isDefault} onChange={this.defaultFeedChange} />
-                      <span>&nbsp;&nbsp;Set Default Feed</span>
-                    </label>
-                    <p className='col-12' style={{fontSize:'0.85rem', marginLeft: '10px'}}>Subscribers will receive daily news updates from the default feed. There can be only one default feed for a single news page. {this.state.defaultMessage}</p>
+                      <span>&nbsp;&nbsp;Set Default News Section</span>
+                    </label>                  
+                    <p className='col-8' style={{fontSize:'0.85rem', marginLeft: '50px'}}>Subscribers will receive daily news updates from the default news section. There can be only one default news section for a single news page. {this.state.defaultMessage}</p>
                   </div>
                 </div>
               </div>
             </form>
             <div className='m-portlet__foot m-portlet__foot--fit'>
-              <div className='col-12' style={{textAlign: 'right', paddingTop: '30px', paddingBottom: '30px'}}>
-                <Link to='/rssIntegration'>
+              <div className='col-11' style={{textAlign: 'right', paddingTop: '30px', paddingBottom: '30px'}}>
+                <Link to='/newsIntegration'>
                   <button className='btn btn-secondary'>
                     Back
                   </button>
                 </Link>
                 <span>&nbsp;&nbsp;</span>
-                <button className='btn btn-primary' type='button' disabled={!this.state.saveEnabled} onClick={this.previewRssFeed} >
-                  Preview in Messenger
-                </button>
                 <span>&nbsp;&nbsp;</span>
                 <button className='btn btn-primary' type='button' disabled={!this.state.saveEnabled} onClick={this.handleSave} >
                   Save
@@ -438,15 +294,12 @@ class CreateFeed extends React.Component {
 }
 
 function mapStateToProps (state) {
-  console.log('state from rss feed', state)
+  console.log('state from news section', state)
   return {
-    adminPageSubscription: (state.basicInfo.adminPageSubscription),
     pages: (state.pagesInfo.pages),
     rssFeeds: (state.feedsInfo.rssFeeds),
     count: (state.feedsInfo.count),
     currentFeed: (state.feedsInfo.currentFeed),
-    user: (state.basicInfo.user),
-    fbAppId: (state.basicInfo.fbAppId),
     newsPages: (state.feedsInfo.newsPages)
   }
 }
@@ -455,11 +308,7 @@ function mapDispatchToProps (dispatch) {
   return bindActionCreators(
     {
       createNewsFeed: createNewsFeed,
-      previewNewsFeed: previewNewsFeed,
-      updateNewsFeed: updateNewsFeed,
-      getuserdetails: getuserdetails,
-      getFbAppId: getFbAppId,
-      getAdminSubscriptions: getAdminSubscriptions
+      updateNewsFeed: updateNewsFeed
     },
     dispatch)
 }
