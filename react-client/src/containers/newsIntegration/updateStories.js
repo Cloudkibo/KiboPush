@@ -8,14 +8,14 @@ import { getuserdetails, getFbAppId, getAdminSubscriptions } from '../../redux/a
 import { isWebURL } from './../../utility/utils'
 import { RingLoader } from 'halogenium'
 import { registerAction } from '../../utility/socketio'
+import { urlMetaData } from '../../redux/actions/convos.actions'
 var MessengerPlugin = require('react-messenger-plugin').default
 
 class UpdateStories extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      stories: this.props.currentFeed && this.props.currentFeed.stories.length > 0 ? this.props.currentFeed.stories : [''],
-      inValidUrls: [],
+      stories:  [{url: '', valid: false, loadingUrl: false, linkMsg: 'Please enter a valid website link'}],
       loading: false,
       saveEnabled: this.props.currentFeed ? true: false,
       fbPageId: this.props.newsPages.filter((page) => page._id === this.props.currentFeed.pageIds[0])[0].pageId
@@ -29,7 +29,8 @@ class UpdateStories extends React.Component {
     this.changeUrl = this.changeUrl.bind(this)
     this.validateStories = this.validateStories.bind(this)
     this.handleSave = this.handleSave.bind(this)
-    this.validUrls = this.validUrls.bind(this)
+    this.handleUrlMetaData = this.handleUrlMetaData.bind(this)
+    this.defaultErrorMsg = props.defaultErrorMsg ? props.defaultErrorMsg : 'Please enter a valid website link'
   }
   componentDidMount () {
     var compProp = this.props
@@ -42,80 +43,99 @@ class UpdateStories extends React.Component {
         comp.refs.messengerModal.click()
       }
     })
-  }
-  validUrls () {
-    var inValidUrls = []
-    var stories = this.state.stories
-    if (stories.length > 1) {
-      for (var i = 0 ; i < stories.length; i++) {
-        if (!isWebURL(stories[i])) {
-          inValidUrls.push(i)
-        }
+    if (this.props.currentFeed && this.props.currentFeed.stories && this.props.currentFeed.stories.length > 0) {
+      var stories = []
+      for (var i = 0; i < this.props.currentFeed.stories.length; i++) {
+        var story = {url: this.props.currentFeed.stories[i], valid: true, loadingUrl: false, linkMsg: 'Link is valid' }
+        stories.push(story)
       }
       this.setState({
-        inValidUrls: inValidUrls
+        stories: stories
       })
     }
-    if (inValidUrls.length > 0 ) {
-      return false
-    }
-    return true 
   }
+  handleUrlMetaData (data, index) {
+    console.log('url meta data retrieved', data)
+    var stories = this.state.stories
+    if (!data || !data.ogTitle || !data.ogDescription) {
+      let linkMsg = ''
+      if (!data) {
+        linkMsg = 'Invalid website link'
+      } else if (!data.ogTitle && !data.ogDescription) {
+        linkMsg = 'Not enough metadata present in link'
+      }
+      if (stories[index]) {
+        stories[index] = {url: stories[index].url, loadingUrl: false, valid: false, linkMsg }
+        this.setState({ stories })
+      }
+    } else {
+      if (stories[index]) {
+        stories[index] = {url: stories[index].url, loadingUrl: false, valid: true, linkMsg: 'Link is valid' }
+        this.setState({ stories })
+      }
+    }
+    this.validateStories(stories)
+  }
+
   preview () {
-    if (this.validUrls()) {
-      let pageSelected = this.props.currentFeed.pageIds[0]
-      if (this.props.adminPageSubscription && this.props.adminPageSubscription.length > 0) {
-        var check = this.props.adminPageSubscription.filter((obj) => { return obj.pageId === pageSelected })
-        if (check.length <= 0) {
-          if(this.props.fbAppId && this.props.fbAppId !== '') {
-            this.refs.messengerModal.click()
-          }
-          return
-        }
-      } else {
+    let pageSelected = this.props.currentFeed.pageIds[0]
+    if (this.props.adminPageSubscription && this.props.adminPageSubscription.length > 0) {
+      var check = this.props.adminPageSubscription.filter((obj) => { return obj.pageId === pageSelected })
+      if (check.length <= 0) {
         if(this.props.fbAppId && this.props.fbAppId !== '') {
           this.refs.messengerModal.click()
         }
         return
       }
-      var payload = {
-        title: this.props.currentFeed.title,
-        defaultFeed: this.props.currentFeed.defaultFeed,
-        isActive: this.props.currentFeed.isActive,
-        pageIds: this.props.currentFeed.pageIds,
-        integrationType: 'manual',
-        stories: this.state.stories
+    } else {
+      if(this.props.fbAppId && this.props.fbAppId !== '') {
+        this.refs.messengerModal.click()
       }
-      if (this.props.currentFeed && this.props.currentFeed._id) {
-        payload.feedId = this.props.currentFeed._id
-      }
-      this.setState({
-        loading: true
-      })
-      this.props.previewNewsFeed(payload, this.msg, () => {this.setState({loading: false})})
+      return
     }
-  }
-  handleSave () {
-    if (this.validUrls()) {
+    var stories = []
+    for (var i = 0; i < this.state.stories.length; i++) {
+      stories.push(this.state.stories[i].url)
+    }
     var payload = {
       title: this.props.currentFeed.title,
       defaultFeed: this.props.currentFeed.defaultFeed,
       isActive: this.props.currentFeed.isActive,
       pageIds: this.props.currentFeed.pageIds,
       integrationType: 'manual',
-      stories: this.state.stories
+      stories: stories
+    }
+    if (this.props.currentFeed && this.props.currentFeed._id) {
+      payload.feedId = this.props.currentFeed._id
+    }
+    this.setState({
+      loading: true
+    })
+    this.props.previewNewsFeed(payload, this.msg, () => {this.setState({loading: false})})
+  }
+  handleSave () {
+    var stories = []
+    for (var i = 0; i < this.state.stories.length; i++) {
+      stories.push(this.state.stories[i].url)
+    }
+    var payload = {
+      title: this.props.currentFeed.title,
+      defaultFeed: this.props.currentFeed.defaultFeed,
+      isActive: this.props.currentFeed.isActive,
+      pageIds: this.props.currentFeed.pageIds,
+      integrationType: 'manual',
+      stories: stories
     }
     var data = {
       feedId: this.props.currentFeed._id,
       updatedObject: payload
     }
     this.props.updateNewsFeed(data, this.msg, false, () => {this.setState({ loading: false})})
-    }
   }
 
   addMoreStories (e) {
     var stories = this.state.stories
-    stories.push('')
+    stories.push({url: '', valid: false, loadingUrl: false, linkMsg: 'Please enter a valid website link'})
     this.validateStories(stories)
     this.setState({
       stories: stories
@@ -123,24 +143,17 @@ class UpdateStories extends React.Component {
   }
   removeStory (index) {
     var stories = this.state.stories
-    var inValidUrls = []
     stories.splice(index, 1)
-    for (var j = 0; j < this.state.inValidUrls.length; j++) {
-      if (this.state.inValidUrls[j] !== index) {
-        inValidUrls.push(this.state.inValidUrls[j])
-      }
-    }
     this.validateStories(stories)
     this.setState({
-      stories: stories,
-      inValidUrls: inValidUrls
+      stories: stories
     }) 
   }
   validateStories (stories) {
     var isValid = true
     if (stories.length > 1) {
       for (var i = 0 ; i < stories.length; i++) {
-        if (stories[i] === '') {
+        if (!stories[i].valid || stories[i].loadingUrl) {
           isValid = false
           break
         }
@@ -152,17 +165,15 @@ class UpdateStories extends React.Component {
   }
   changeUrl (index, e) {
     var stories = this.state.stories
-    var inValidUrls = []
-    stories[index] = e.target.value
-    for (var j = 0; j < this.state.inValidUrls.length; j++) {
-      if (this.state.inValidUrls[j] !== index) {
-        inValidUrls.push(this.state.inValidUrls[j])
-      }
+    if (isWebURL(e.target.value)) {
+      stories[index] = {url: e.target.value, valid: true, loadingUrl: true, linkMsg: 'Retrieving webpage meta data'}
+      this.props.urlMetaData(e.target.value, (data) => this.handleUrlMetaData(data, index))
+    } else {
+      stories[index] = {url: e.target.value, valid: false, loading: false, linkMsg: 'Please enter a valid website link'}
     }
     this.validateStories(stories)
     this.setState({
-      stories: stories,
-      inValidUrls: inValidUrls
+      stories: stories
     })
   }
   render () {
@@ -230,14 +241,9 @@ class UpdateStories extends React.Component {
                         {`Story ${index + 1} URL`}
                       </label>
                       <div className='col-lg-6'>
-                        <input className='form-control m-input' placeholder='url' defaultValue='' onChange={(e) => {this.changeUrl(index, e)}} value={story} />
+                        <input className='form-control m-input' style={{borderColor: story.valid && !story.loadingUrl ? 'green' : 'red'}} placeholder='Enter a story url' defaultValue='' onChange={(e) => {this.changeUrl(index, e)}} value={story.url} />
                         <span className='m-form__help'>
-                        {
-                          this.state.inValidUrls.map((id) => (
-                            id ===  index &&
-                            <span style={{ color: 'red'}}>Url is invalid</span>
-                          ))
-                        }
+                        <span style={{ color: story.valid && !story.loadingUrl ? 'green' : 'red', fontSize: 'small'}}>{`*${story.linkMsg}`}</span>
                       </span>
                       </div>
                       { this.state.stories.length > 1 && 
@@ -308,7 +314,8 @@ function mapDispatchToProps (dispatch) {
       previewNewsFeed: previewNewsFeed,
       getuserdetails: getuserdetails,
       getFbAppId: getFbAppId,
-      getAdminSubscriptions: getAdminSubscriptions
+      getAdminSubscriptions: getAdminSubscriptions,
+      urlMetaData: urlMetaData
     },
     dispatch)
 }
