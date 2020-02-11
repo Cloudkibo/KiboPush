@@ -187,7 +187,7 @@ class Subscriber extends React.Component {
       let temp = this.state.subscribersData
       selectedSubscribers.forEach((subscriberId, i) => {
         this.state.subscribersData.forEach((subscriber, j) => {
-          subscribersData[i].selected = false
+          subscribersData[j].selected = false
           if (subscriberId === subscriber._id) {
             subscriber.customFields.forEach((field, k) => {
               if (field._id === this.state.selectedBulkField._id) {
@@ -420,6 +420,7 @@ class Subscriber extends React.Component {
     })
     this.props.getSubscriberSequences(s._id)
   }
+
   loadsubscriberData(data) {
     if (data.tag_value === false) {
       this.setState({ filterByTag: '' }, () => {
@@ -993,6 +994,13 @@ class Subscriber extends React.Component {
       })
     }
     if (nextProps.subscribers && nextProps.count) {
+      for (let i = 0; i < nextProps.subscribers.length; i++) {
+        for (let j = 0; j < this.state.subscribersData.length; j++) {
+          if (nextProps.subscribers[i]._id === this.state.subscribersData[j]._id) {
+            nextProps.subscribers[i].selected = this.state.subscribersData[j].selected
+          }
+        } 
+      }
       this.displayData(0, nextProps.subscribers)
       this.setState({ totalLength: nextProps.count, subscribersLoaded: true })
       if (this.state.subscriber && this.state.subscriber._id) {
