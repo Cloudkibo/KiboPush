@@ -17,7 +17,7 @@ class FeedPosts extends React.Component {
     this.state = {
       newsPages: [],
       deleteId: '',
-      startDate: '', 
+      startDate: '',
       endDate: '',
       status: '',
       pageNumber: 0,
@@ -130,7 +130,7 @@ class FeedPosts extends React.Component {
       this.setState({newsPages: newsPages})
     }
   }
-  
+
   UNSAFE_componentWillReceiveProps (nextProps) {
     if(nextProps.pages) {
       this.setState({newsPages: nextProps.pages.filter((component) => { return (component.gotPageSubscriptionPermission) })})
@@ -235,7 +235,7 @@ class FeedPosts extends React.Component {
                 </div>
               </div>
               <div className='row' >
-              {this.props.feedPosts && this.props.feedPosts.length > 0 
+              {this.props.feedPosts && this.props.feedPosts.length > 0
               ? <div className='col-12 m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data' style={{width: '100%'}}>
                 <table className='m-datatable__table' style={{display: 'block', height: 'auto', overflowX: 'auto'}}>
                   <thead className='m-datatable__head'>
@@ -261,10 +261,10 @@ class FeedPosts extends React.Component {
                   </thead>
                   <tbody className='m-datatable__body'>
                     { this.state.feedPosts.map((post, i) => (
-                    <tr 
+                    <tr
                       className='m-datatable__row m-datatable__row--even'
                       style={{height: '55px'}}>
-                      <td data-field='datetime' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{handleDate(post.datetime)}</span></td>
+                      <td data-field='datetime' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{new Date(post.datetime).toUTCString()}</span></td>
                       <td data-field='sent' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{post.sent ? post.sent : 0}</span></td>
                       <td data-field='seen' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{post.seen ? post.seen : 0}</span></td>
                     <td data-field='clicked' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{post.clicked ? post.clicked: 0}</span></td>
@@ -305,8 +305,8 @@ class FeedPosts extends React.Component {
             </div>
           </div>
         </div>
-      </div>  
-    </div>    
+      </div>
+    </div>
     )
   }
 }
