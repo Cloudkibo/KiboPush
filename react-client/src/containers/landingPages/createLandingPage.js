@@ -18,7 +18,8 @@ class CreateLandingPage extends React.Component {
     this.state = {
       isActive: props.location.state && props.location.state.landingPage ? props.location.state.landingPage.isActive : true,
       isEdit: false,
-      landingPageId: ''
+      landingPageId: '',
+      pageId: props.location.state && props.location.state._id
     }
 
     if (props.location.state && props.location.state.pageId) {
@@ -64,7 +65,7 @@ class CreateLandingPage extends React.Component {
   onSave () {
     this.props.createLandingPage({initialState: this.props.landingPage.initialState,
       submittedState: this.props.landingPage.submittedState,
-      pageId: this.props.location.state._id,
+      pageId: this.props.location.state ? this.props.location.state._id : this.state.pageId,
       optInMessage: this.props.landingPage.optInMessage,
       isActive: this.state.isActive}, this.msg)
     this.props.history.push({
