@@ -79,7 +79,8 @@ class Subscriber extends React.Component {
       saveBulkFieldDisable: true,
       createCustomField: false,
       selectedTagValue: '',
-      subscribersLoaded: false
+      subscribersLoaded: false,
+      openVideo: false
     }
     props.allLocales()
     props.fetchAllSequence()
@@ -162,8 +163,14 @@ class Subscriber extends React.Component {
     this.setSelectedField = this.setSelectedField.bind(this)
     this.handleSelectedFieldValue = this.handleSelectedFieldValue.bind(this)
     this.unselectAllSubscribers = this.unselectAllSubscribers.bind(this)
+    this.openVideoTutorial = this.openVideoTutorial.bind(this)
   }
-
+  openVideoTutorial () {
+    this.setState({
+      openVideo: true
+    })
+    this.refs.videosubscriber.click()
+  }
   saveSetCustomField() {
     var payload = this.createSetCustomFieldPayload()
     if (payload.subscriberIds.length > 0) {
@@ -1297,22 +1304,27 @@ class Subscriber extends React.Component {
         <EditTags currentTags={this.props.tags} msg={this.msg} loadsubscriberData={this.loadsubscriberData} />
         <div>
           <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-
-          <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="video" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <a href='#/' style={{ display: 'none' }} ref='videosubscriber' data-toggle='modal' data-backdrop='static' data-keyboard='false' data-target="#videosubscriber">videoSubscriber</a>
+          <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="videosubscriber" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog modal-lg" role="document">
               <div className="modal-content" style={{ width: '687px', top: '100' }}>
               <div style={{ display: 'block'}} className="modal-header">
                   <h5 className="modal-title" id="exampleModalLabel">
                     Subscriber Video Tutorial
 									</h5>
-                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" 
+                  aria-label="Close"
+                  onClick={() => {
+                    this.setState({
+                      openVideo: false
+                    })}}>
                     <span aria-hidden="true">
                       &times;
 											</span>
                   </button>
                 </div>
                 <div style={{ color: 'black' }} className="modal-body">
-                  <YouTube
+                {this.state.openVideo && <YouTube
                     videoId='lFosatdcCCE'
                     opts={{
                       height: '390',
@@ -1322,6 +1334,7 @@ class Subscriber extends React.Component {
                       }
                     }}
                   />
+                  }
                 </div>
               </div>
             </div>
@@ -1344,7 +1357,7 @@ class Subscriber extends React.Component {
               </div>
               <div className='m-alert__text'>
                 Need help in understanding subscribers? Here is the <a href='https://kibopush.com/subscribers/' target='_blank' rel='noopener noreferrer'>documentation</a>.
-                Or check out this <a href='#/' data-toggle="modal" data-target="#video">video tutorial</a>
+                Or check out this <a href='#/' onClick={this.openVideoTutorial}>video tutorial</a>
               </div>
             </div>
             <div className='row'>

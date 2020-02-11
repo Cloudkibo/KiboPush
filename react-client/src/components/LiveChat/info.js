@@ -5,27 +5,43 @@ class Info extends React.Component {
   constructor(props, context) {
     super(props, context)
     this.state = {
+      openVideo: false
+
     }
+    this.openVideoTutorial = this.openVideoTutorial.bind(this)
+
+  }
+  openVideoTutorial () {
+    this.setState({
+      openVideo: true
+    })
+    this.refs.videoLiveChat.click()
   }
 
   render() {
     return (
       <div className='row'>
-        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="video" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <a href='#/' style={{ display: 'none' }} ref='videoLiveChat' data-toggle='modal' data-backdrop='static' data-keyboard='false' data-target="#videoLiveChat">videoLiveChat</a>
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="videoLiveChat" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog modal-lg" role="document">
             <div className="modal-content" style={{ width: '687px', top: '100' }}>
               <div style={{ display: 'block' }} className="modal-header">
                 <h5 className="modal-title" id="exampleModalLabel">
                   Livechat Video Tutorial
 									</h5>
-                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" 
+                aria-label="Close"
+                onClick={() => {
+                  this.setState({
+                    openVideo: false
+                  })}}>
                   <span aria-hidden="true">
                     &times;
 											</span>
                 </button>
               </div>
               <div style={{ color: 'black' }} className="modal-body">
-                <YouTube
+              {this.state.openVideo && <YouTube
                   videoId='XUXc2ZD_lQY'
                   opts={{
                     height: '390',
@@ -35,6 +51,7 @@ class Info extends React.Component {
                     }
                   }}
                 />
+                }
               </div>
             </div>
           </div>
@@ -105,12 +122,12 @@ class Info extends React.Component {
             </div>
             {this.props.module === 'WHATSAPP' && <div className='m-alert__text'>
               Need help in understanding this page? <a href='https://kibopush.com/whatsapp-twilio/' target='_blank' rel='noopener noreferrer'>Click Here. </a>
-              Or check out this <a href='#/' data-toggle="modal" data-target="#video">video tutorial.</a>
+              Or check out this <a href='#/' onClick={this.openVideoTutorial}>video tutorial.</a>
             </div>
             }
             {this.props.module === 'KIBOCHAT' && <div className='m-alert__text'>
               Need help in understanding this page? <a href='http://kibopush.com/livechat/' target='_blank' rel='noopener noreferrer'>Click Here. </a>
-              Or check out this <a href='#/' data-toggle="modal" data-target="#video">video tutorial.</a>
+              Or check out this <a href='#/' onClick={this.openVideoTutorial}>video tutorial.</a>
             </div>
             }
           </div>
