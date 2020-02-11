@@ -2143,6 +2143,7 @@ class Subscriber extends React.Component {
 }
 
 function mapStateToProps(state) {
+  console.log('mapStateToProps', state)
   return {
     subscribers: (state.subscribersInfo.subscribers),
     count: (state.subscribersInfo.count),
