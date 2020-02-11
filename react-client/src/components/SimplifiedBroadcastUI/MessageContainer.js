@@ -32,7 +32,7 @@ class GenericMessage extends React.Component {
                           marginTop: '-30px', 
                           paddingRight: '10%', 
                           paddingLeft: '10%', 
-                          paddingTop: 100, 
+                          paddingTop: '100px', 
                           transform: 'scale(0.9) translate(20px)'
                         }}>
                         <DragSortableList
