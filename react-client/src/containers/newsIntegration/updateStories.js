@@ -151,7 +151,7 @@ class UpdateStories extends React.Component {
   }
   validateStories (stories) {
     var isValid = true
-    if (stories.length > 1) {
+    if (stories.length > 0) {
       for (var i = 0 ; i < stories.length; i++) {
         if (!stories[i].valid || stories[i].loadingUrl) {
           isValid = false
