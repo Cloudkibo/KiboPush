@@ -161,6 +161,7 @@ class Subscriber extends React.Component {
     this.loadSubscribers = this.loadSubscribers.bind(this)
     this.setSelectedField = this.setSelectedField.bind(this)
     this.handleSelectedFieldValue = this.handleSelectedFieldValue.bind(this)
+    this.unselectAllSubscribers = this.unselectAllSubscribers.bind(this)
   }
 
   saveSetCustomField() {
@@ -177,6 +178,7 @@ class Subscriber extends React.Component {
     //debugger;
     if (res.status === 'success') {
       this.msg.success('Value set successfully')
+      this.unselectAllSubscribers()
       let subscribersData = this.state.subscribersData
       this.setState({
         selectAllChecked: false,
@@ -187,7 +189,6 @@ class Subscriber extends React.Component {
       let temp = this.state.subscribersData
       selectedSubscribers.forEach((subscriberId, i) => {
         this.state.subscribersData.forEach((subscriber, j) => {
-          subscribersData[i].selected = false
           if (subscriberId === subscriber._id) {
             subscriber.customFields.forEach((field, k) => {
               if (field._id === this.state.selectedBulkField._id) {
@@ -420,6 +421,7 @@ class Subscriber extends React.Component {
     })
     this.props.getSubscriberSequences(s._id)
   }
+
   loadsubscriberData(data) {
     if (data.tag_value === false) {
       this.setState({ filterByTag: '' }, () => {
@@ -612,6 +614,7 @@ class Subscriber extends React.Component {
         subscribers.push(this.state.subscribersDataAll[i]._id)
       }
     }
+    this.unselectAllSubscribers()
     let data = {
       sequenceId,
       subscriberIds: subscribers,
@@ -638,6 +641,7 @@ class Subscriber extends React.Component {
         subscribers.push(this.state.subscribersDataAll[i]._id)
       }
     }
+    this.unselectAllSubscribers()
     let data = {
       sequenceId,
       subscriberIds: subscribers
@@ -646,7 +650,20 @@ class Subscriber extends React.Component {
     this.setState({ selectAllChecked: false, showBulkActions: false, sequenceValue: '' })
   }
 
+  unselectAllSubscribers () {
+    let subscribersData = this.state.subscribersData
+    let subscribersDataAll = this.state.subscribersDataAll
+    for (let i = 0; i < subscribersData.length; i++) {
+      subscribersData[i].selected = false
+    }
+    for (let i = 0; i < this.state.subscribersDataAll.length; i++) {
+      subscribersDataAll[i].selected = false
+    }
+    this.setState({subscribersData, subscribersDataAll})
+  }
+
   handleSaveTags() {
+    this.unselectAllSubscribers()
     this.setState({
       selectAllChecked: false,
       showBulkActions: false
@@ -993,6 +1010,13 @@ class Subscriber extends React.Component {
       })
     }
     if (nextProps.subscribers && nextProps.count) {
+      for (let i = 0; i < nextProps.subscribers.length; i++) {
+        for (let j = 0; j < this.state.subscribersData.length; j++) {
+          if (nextProps.subscribers[i]._id === this.state.subscribersData[j]._id) {
+            nextProps.subscribers[i].selected = this.state.subscribersData[j].selected
+          }
+        } 
+      }
       this.displayData(0, nextProps.subscribers)
       this.setState({ totalLength: nextProps.count, subscribersLoaded: true })
       if (this.state.subscriber && this.state.subscriber._id) {
@@ -2119,6 +2143,7 @@ class Subscriber extends React.Component {
 }
 
 function mapStateToProps(state) {
+  console.log('mapStateToProps', state)
   return {
     subscribers: (state.subscribersInfo.subscribers),
     count: (state.subscribersInfo.count),
