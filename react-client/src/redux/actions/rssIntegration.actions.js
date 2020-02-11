@@ -38,6 +38,7 @@ export function deleteNewsFeed (id, msg, resetFilters, type) {
       first_page: 'first',
       search_value: '',
       status_value: '',
+      type_value: '',
       integrationType: type
      }
     callApi(`newsSections/${id}`, 'delete')
