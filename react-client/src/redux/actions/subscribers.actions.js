@@ -2,6 +2,13 @@ import * as ActionTypes from '../constants/constants'
 import callApi from '../../utility/api.caller.service'
 import {localeCodeToEnglish} from '../../utility/utils'
 
+export function updateCustomFieldForSubscriber (data) {
+  return {
+    type: ActionTypes.UPDATE_CUSTOM_FIELD_FOR_SUBSCRIBER,
+    data
+  }
+}
+
 export function updateSubscribersList (data) {
   console.log('Data Fetched From Subscribers', data)
   if (!data[0]) {

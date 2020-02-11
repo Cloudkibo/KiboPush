@@ -53,7 +53,8 @@ class Sidebar extends Component {
       checkbox: true,
       abandonedCarts: false,
       rssIntegration: true,
-      overlayWidgets: true
+      overlayWidgets: true,
+      newsIntegration: true
     }
     this.openUserGuide = this.openUserGuide.bind(this)
     this.closeUserGuide = this.closeUserGuide.bind(this)
@@ -314,6 +315,7 @@ class Sidebar extends Component {
               {this.showSmartRespliesItem()}
               {this.showAutoPostingItem()}
               {this.showRssIntegrationItem()}
+              {this.showNewsIntegrationItem()}
               {this.showSequenceMessaging()}
             </ul>
           </div>
@@ -647,7 +649,26 @@ class Sidebar extends Component {
       }
     }
   }
-
+  showNewsIntegrationItem () {
+    if (this.props.user.isSuperUser) {
+      if (this.state.newsIntegration) {
+        return (
+          <li className='m-menu__item' aria-haspopup='true' >
+            <Link to='/newsIntegration' className='m-menu__link'>
+              <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
+                <span />
+              </i>
+              <span className='m-menu__link-text'>
+                News Integration
+              </span>
+            </Link>
+          </li>
+        )
+      } else {
+        return (null)
+      }
+    }
+  }
   showSequenceMessaging () {
     if (this.props.user && this.state.sequenceMessaging) {
       if (this.props.user.isSuperUser || this.props.user.companyId === "5d56acdabb04900ef9839dde") {
