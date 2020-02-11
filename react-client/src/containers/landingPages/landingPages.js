@@ -25,7 +25,8 @@ class LandingPage extends React.Component {
       pageSelected: {},
       pages: [],
       isSetupShow: false,
-      landing_Page_Url: ''
+      landing_Page_Url: '',
+      openVideo: false
     }
     props.loadMyPagesList()
     props.fetchLandingPages()
@@ -43,6 +44,14 @@ class LandingPage extends React.Component {
     this.perviewLink = this.perviewLink.bind(this)
     this.setupLandingPage = this.setupLandingPage.bind(this)
     this.closeDialogSetup = this.closeDialogSetup.bind(this)
+    this.openVideoTutorial = this.openVideoTutorial.bind(this)
+
+  }
+  openVideoTutorial () {
+    this.setState({
+      openVideo: true
+    })
+    this.refs.videoDashboard.click()
   }
 
   activateLandingPage (landingPage) {
@@ -297,7 +306,7 @@ class LandingPage extends React.Component {
             </div>
             <div className='m-alert__text'>
               Need help in understanding Landing Pages? Here is the <a href='http://kibopush.com/comment-capture' target='_blank' rel='noopener noreferrer'>documentation</a>.
-              Or check out this <a href='#/' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>
+              Or check out this <a href='#/' onClick={this.openVideoTutorial}>>video tutorial</a>
             </div>
           </div>
           <div className='row'>
