@@ -27,7 +27,14 @@ class GenericMessage extends React.Component {
                       />
                     </div>
                     <div className='col-lg-6 col-md-6 col-sm-12 col-xs-12'>
-                      <div className='iphone-x' style={{height: !this.props.noDefaultHeight ? 90 + 'vh' : null, marginTop: '-30px', paddingRight: '10%', paddingLeft: '10%', paddingTop: 100, transform: 'scale(0.9)'}}>
+                      <div className='iphone-x' style={{
+                          height: !this.props.noDefaultHeight ? 90 + 'vh' : null, 
+                          marginTop: '-30px', 
+                          paddingRight: '10%', 
+                          paddingLeft: '10%', 
+                          paddingTop: 100, 
+                          transform: 'scale(0.9) translate(20px)'
+                        }}>
                         <DragSortableList
                           style={{overflowY: 'scroll', height: '75vh'}}
                           items={this.props.getItems()}
