@@ -9,7 +9,7 @@ import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
 import {deleteSponsoredMessage, createSponsoredMessage, fetchSponsoredMessages} from '../../redux/actions/sponsoredMessaging.actions'
 import AlertContainer from 'react-alert'
-import { loadMyPagesList } from '../../redux/actions/pages.actions'
+// import { loadMyPagesList } from '../../redux/actions/pages.actions'
 
 class sponsoredMessaging extends React.Component {
   constructor (props, context) {
@@ -24,14 +24,12 @@ class sponsoredMessaging extends React.Component {
       pages: [],
       isSetupShow: false,
     }
-   props.loadMyPagesList()
-   props.fetchSponsoredMessages()
-   this.displayData = this.displayData.bind(this)
-   this.showDialogDelete = this.showDialogDelete.bind(this)
-   this.onEdit = this.onEdit.bind(this)
-   this.gotoCreate = this.gotoCreate.bind(this)
-   this.onInsights = this.onInsights.bind(this)
-   this.changePage = this.changePage.bind(this)
+     props.fetchSponsoredMessages()
+     this.displayData = this.displayData.bind(this)
+      this.showDialogDelete = this.showDialogDelete.bind(this)
+      this.onEdit = this.onEdit.bind(this)
+      this.gotoCreate = this.gotoCreate.bind(this)
+      this.onInsights = this.onInsights.bind(this)
   }
 
   componentDidMount () {
@@ -47,7 +45,7 @@ class sponsoredMessaging extends React.Component {
   }
 
   changePage (e) {
-    this.setState({ pageSelected: e.target.value })
+    this.setState({pageSelected: e.target.value})
   }
 
   showDialogDelete (id) {
@@ -118,43 +116,6 @@ class sponsoredMessaging extends React.Component {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-          <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="create" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
-              <div className="modal-content">
-                <div style={{ display: 'block' }} className="modal-header">
-                  <h5 className="modal-title" id="exampleModalLabel">
-                    Create Sponsored Message
-                  </h5>
-                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">
-                      &times;
-                      </span>
-                  </button>
-                </div>
-                <div style={{color: 'black'}} className="modal-body">
-                  <div className='m-form'>
-                  <div className='form-group m-form__group'>
-                    <label className='control-label'>Select Page:&nbsp;&nbsp;&nbsp;</label>
-                    <select className='custom-select' id='m_form_type' style={{ width: '250px' }} tabIndex='-98' value={this.state.pageSelected} onChange={this.changePage}>
-                      {
-                        this.props.pages.length > 0 && this.props.pages.map((page, i) => (
-                          <option key={i} value={page._id}>{page.pageName}</option>
-                        ))
-                      }
-                    </select>
-                  </div>
-              </div>
-            <div style={{ width: '100%', textAlign: 'center' }}>
-                <div style={{ display: 'inline-block', padding: '5px', float: 'right' }}>
-                  <button className='btn btn-primary' disabled={this.state.pageSelected === ''} onClick={ () => {this.props.createSponsoredMessage(this.gotoCreate)}} data-dismiss='modal'>
-                    Create
-                  </button>
-                </div>
-              </div>
-                </div>
-              </div>
-            </div>
-          </div>
         <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="delete" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
             <div className="modal-content">
@@ -209,24 +170,6 @@ class sponsoredMessaging extends React.Component {
                     </div>
                   </div>
                   <div className='m-portlet__head-tools'>
-                    {this.props.pages && this.props.pages.length > 0
-                      ? <a href='#/' data-toggle="modal" data-target="#create" onClick={this.showCreateDialog} className='addLink btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
-                        <span>
-                          <i className='la la-plus' />
-                          <span>
-                            Create New
-                      </span>
-                        </span>
-                      </a>
-                      : <a href='#/' disabled className='addLink btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
-                        <span>
-                          <i className='la la-plus' />
-                          <span>
-                            Create New
-                    </span>
-                        </span>
-                      </a>
-                    }
                     <a href='#/' onClick={ () => {this.props.createSponsoredMessage(this.gotoCreate)}} className='addLink btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
                       <span>
                         <i className='la la-plus' />
@@ -274,7 +217,7 @@ class sponsoredMessaging extends React.Component {
                               <span style={{width: '290px'}}>
                                 <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2, marginLeft: '40px'}} onClick={() => this.onInsights(sponsoredMessage)}>
                                     Insights
-                                </button>
+                                </ button>
                                 <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}} onClick={() => this.onEdit(sponsoredMessage)}>
                                     Edit
                                 </button>
@@ -323,7 +266,7 @@ function mapStateToProps (state) {
     console.log(state)
   return {
     sponsoredMessages: (state.sponsoredMessagingInfo.sponsoredMessages),
-    pages: (state.pagesInfo.pages)
+    //pages: (state.pagesInfo.pages)
   }
 }
 
@@ -331,8 +274,7 @@ function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     fetchSponsoredMessages: fetchSponsoredMessages,
     createSponsoredMessage: createSponsoredMessage,
-    deleteSponsoredMessage: deleteSponsoredMessage,
-    loadMyPagesList: loadMyPagesList
+    deleteSponsoredMessage: deleteSponsoredMessage
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(sponsoredMessaging)
