@@ -13,7 +13,7 @@ import { loadDashboardData, sentVsSeen } from './../redux/actions/dashboard.acti
 import { loadPollsListNew } from './../redux/actions/poll.actions'
 import { loadSurveysListNew } from './../redux/actions/surveys.actions'
 import { loadTags } from './../redux/actions/tags.actions'
-import { loadAllSubscribersListNew } from './../redux/actions/subscribers.actions'
+import { loadAllSubscribersListNew, updateCustomFieldForSubscriber } from './../redux/actions/subscribers.actions'
 import { fetchNotifications } from './../redux/actions/notifications.actions'
 const whatsAppActions = require('./../redux/actions/whatsAppChat.actions')
 
@@ -124,6 +124,9 @@ socket.on('message', (data) => {
     store.dispatch(fetchNotifications())
   } else if (['sequence_create', 'sequence_update', 'sequence_delete'].indexOf(data.action) > -1) {
     store.dispatch(fetchAllSequence())
+  } else if (data.action === 'set_custom_field_value') {
+    console.log('socket.io custom field set', data)
+    store.dispatch(updateCustomFieldForSubscriber(data.payload.setCustomField))
   }
 
   if (callbacks[data.action]) {
