@@ -188,8 +188,10 @@
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
     <script>
-      $(document).on('hide.bs.modal','#singleModal', function () {
-        document.body.style.overflow = 'auto'
+      $(document).ready(function () {
+        $(document).on('hide.bs.modal','#singleModal', function () {
+          document.body.style.overflow = 'auto'
+        })
       })
     </script>
     <script>
