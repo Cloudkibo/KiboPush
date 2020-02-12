@@ -11,6 +11,7 @@ class Integrations extends React.Component {
     super(props, context)
     this.state = {
       deleteIngerationId: '',
+      openVideo: false,
       integrations: [
         {
           name: 'Google Sheets',
@@ -35,6 +36,14 @@ class Integrations extends React.Component {
     this.disconnect = this.disconnect.bind(this)
     this.saveIntegerationId = this.saveIntegerationId.bind(this)
     this.connect = this.connect.bind(this)
+    this.openVideoTutorial = this.openVideoTutorial.bind(this)
+
+  }
+  openVideoTutorial () {
+    this.setState({
+      openVideo: true
+    })
+    this.refs.videoIntegeration.click()
   }
 
   saveIntegerationId (id) {
@@ -129,7 +138,7 @@ class Integrations extends React.Component {
                 <div className='form-group m-form__group'>
                   <div style={{textAlign: 'center'}} className='alert m-alert m-alert--default' role='alert'>
                   Need help in understanding Integrations? Here is the <a href='http://kibopush.com/webhook/' target='_blank' rel='noopener noreferrer'>documentation</a>.
-                  Or check out this <a href='#/' data-toggle='modal' data-target='#video'>video tutorial</a> to understand this feature.
+                  Or check out this  <a href='#/' onClick={this.openVideoTutorial}>video tutorial</a> to understand this feature.
                   </div>
                 </div>
                 <div className='tab-content'>

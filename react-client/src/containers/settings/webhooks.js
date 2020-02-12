@@ -27,6 +27,7 @@ class Webhook extends React.Component {
       errorToken: false,
       pageEdit: '',
       id: '',
+      openVideo: false
     }
     props.loadWebhook()
     props.loadMyPagesList()
@@ -45,6 +46,13 @@ class Webhook extends React.Component {
     this.cancel = this.cancel.bind(this)
     this.edit = this.edit.bind(this)
     this.saveEdited = this.saveEdited.bind(this)
+    this.openVideoTutorial = this.openVideoTutorial.bind(this)
+  }
+  openVideoTutorial () {
+    this.setState({
+      openVideo: true
+    })
+    this.refs.videoWebhook.click()
   }
   UNSAFE_componentWillReceiveProps (nextProps) {
     console.log('nextProps in webhooks', nextProps)
@@ -308,21 +316,27 @@ class Webhook extends React.Component {
     return (
       <div id='target' className='col-lg-8 col-md-8 col-sm-8 col-xs-12'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="video" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <a href='#/' style={{ display: 'none' }} ref='videoWebhook' data-toggle='modal' data-backdrop='static' data-keyboard='false' data-target="#videoWebhook">videoWebhook</a>
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="videoWebhook" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog modal-lg" role="document">
               <div className="modal-content" style={{width: '687px', top: '100'}}>
               <div style={{ display: 'block'}} className="modal-header">
                   <h5 className="modal-title" id="exampleModalLabel">
                     Webhook Video Tutorial
 									</h5>
-                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" 
+                  aria-label="Close"
+                  onClick={() => {
+                    this.setState({
+                      openVideo: false
+                    })}}>
                     <span aria-hidden="true">
                       &times;
 											</span>
                   </button>
                 </div>
                 <div style={{color: 'black'}} className="modal-body">
-                <YouTube
+                {this.state.openVideo && <YouTube
                   videoId='LxlrENo0vW8'
                   opts={{
                     height: '390',
@@ -332,6 +346,7 @@ class Webhook extends React.Component {
                     }
                   }}
                 />
+                }
                 </div>
               </div>
             </div>
@@ -366,7 +381,7 @@ class Webhook extends React.Component {
                       <div className='form-group m-form__group'>
                         <div style={{textAlign: 'center'}} className='alert m-alert m-alert--default' role='alert'>
                         Need help in understanding Webhooks? Here is the <a href='http://kibopush.com/webhook/' target='_blank' rel='noopener noreferrer'>documentation</a>.
-                        Or check out this <a href='#/' data-toggle="modal" data-target="#video">video tutorial</a> to understand this feature.
+                        Or check out this <a href='#/' onClick={this.openVideoTutorial}>video tutorial</a> to understand this feature.
                         </div>
                       </div>
                       <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="endpoint" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
