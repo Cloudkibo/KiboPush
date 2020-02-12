@@ -9,7 +9,6 @@ import { Link } from 'react-router-dom'
 import { fetchFeedPosts } from '../../redux/actions/rssIntegration.actions'
 import ReactPaginate from 'react-paginate'
 import moment from 'moment'
-import { handleDate } from '../../utility/utils'
 
 class FeedPosts extends React.Component {
   constructor (props) {
