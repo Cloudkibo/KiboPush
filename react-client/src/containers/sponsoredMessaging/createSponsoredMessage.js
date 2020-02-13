@@ -8,7 +8,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import AlertContainer from 'react-alert'
 import Header from './header'
-import Tabs from './tabs'
+import StepsBar from './stepsBar'
 import {updateSponsoredMessage, saveDraft, send } from '../../redux/actions/sponsoredMessaging.actions'
 
 
@@ -76,17 +76,13 @@ class CreateSponsoredMessage extends React.Component {
                   sendDisabled = {this.state.sendDisabled}
                 />
                 <div className='m-portlet__body'>
-                  <div className='row'>
-                    <div className='col-md-12 col-lg-12 col-sm-12'>
-                    <Tabs editSponsoredMessage={this.state.editSponsoredMessage} onEdit={this.onEdit}/>
+                      <StepsBar />
                     </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      </div>
     )
   }
 }

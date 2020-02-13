@@ -32,6 +32,7 @@ class sponsoredMessaging extends React.Component {
    this.gotoCreate = this.gotoCreate.bind(this)
    this.onInsights = this.onInsights.bind(this)
    this.changePage = this.changePage.bind(this)
+   this.createAd = this.createAd.bind(this)
   }
 
   componentDidMount () {
@@ -54,11 +55,21 @@ class sponsoredMessaging extends React.Component {
     this.setState({deleteid: id})
   }
 
+  createAd () {
+    let data = {
+      status: 'draft',
+      adName: 'New Ad',
+      pageId: this.state.pageSelected
+    }
+    this.props.createSponsoredMessage(data, this.gotoCreate)
+  }
+
   gotoCreate () {
     this.props.history.push({
-      pathname: `/createsponsoredMessage`,
+      pathname: `/createSponsoredMessage`,
     })
   }
+
   onEdit (sponsoredMessage) {
     this.props.history.push({
       pathname: '/editSponsoredMessage',
@@ -99,6 +110,9 @@ class sponsoredMessaging extends React.Component {
     if (nextProps.sponsoredMessages) {
       this.displayData(0, nextProps.sponsoredMessages)
       this.setState({totalLength: nextProps.sponsoredMessages.length})
+    }
+    if (nextProps.pages) {
+      this.setState({pageSelected: nextProps.pages[0]._id})
     }
   }
 
@@ -146,7 +160,7 @@ class sponsoredMessaging extends React.Component {
               </div>
             <div style={{ width: '100%', textAlign: 'center' }}>
                 <div style={{ display: 'inline-block', padding: '5px', float: 'right' }}>
-                  <button className='btn btn-primary' disabled={this.state.pageSelected === ''} onClick={ () => {this.props.createSponsoredMessage(this.gotoCreate)}} data-dismiss='modal'>
+                  <button className='btn btn-primary' disabled={this.state.pageSelected === ''} onClick={this.createAd} data-dismiss='modal'>
                     Create
                   </button>
                 </div>
@@ -227,14 +241,6 @@ class sponsoredMessaging extends React.Component {
                         </span>
                       </a>
                     }
-                    <a href='#/' onClick={ () => {this.props.createSponsoredMessage(this.gotoCreate)}} className='addLink btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
-                      <span>
-                        <i className='la la-plus' />
-                        <span>
-                          Create New
-                        </span>
-                      </span>
-                    </a>
                   </div>
                 </div>
                 <div className='m-portlet__body'>
