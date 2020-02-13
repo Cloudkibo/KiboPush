@@ -23,7 +23,7 @@ class Teams extends React.Component {
       searchValue: '',
       isShowingModalDelete: false,
       deleteid: '',
-      showVideo: false
+      openVideo: false
     }
     props.loadTeamsList()
     this.displayData = this.displayData.bind(this)
@@ -35,6 +35,13 @@ class Teams extends React.Component {
     this.goToView = this.goToView.bind(this)
     this.showDialogDelete = this.showDialogDelete.bind(this)
     this.closeDialogDelete = this.closeDialogDelete.bind(this)
+    this.openVideoTutorial = this.openVideoTutorial.bind(this)
+  }
+  openVideoTutorial () {
+    this.setState({
+      openVideo: true
+    })
+    this.refs.videoTeam.click()
   }
 
   scrollToTop () {
@@ -185,21 +192,27 @@ class Teams extends React.Component {
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div style={{float: 'left', clear: 'both'}}
           ref={(el) => { this.top = el }} />
-                  <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="video" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <a href='#/' style={{ display: 'none' }} ref='videoTeam' data-toggle='modal' data-backdrop='static' data-keyboard='false' data-target="#videoTeam">videoTeam</a>
+            <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="videoTeam" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog modal-lg" role="document">
               <div className="modal-content" style={{width: '687px', top: '100'}}>
               <div style={{ display: 'block'}} className="modal-header">
                   <h5 className="modal-title" id="exampleModalLabel">
-                    Dashboard Video Tutorial
+                    Team Video Tutorial
 									</h5>
-                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" 
+                  aria-label="Close"
+                  onClick={() => {
+                    this.setState({
+                      openVideo: false
+                    })}}>
                     <span aria-hidden="true">
                       &times;
 											</span>
                   </button>
                 </div>
                 <div style={{color: 'black'}} className="modal-body">
-                <YouTube
+                {this.state.openVideo && <YouTube
                   videoId='U4x9QA8zNhQ'
                   opts={{
                     height: '390',
@@ -209,6 +222,7 @@ class Teams extends React.Component {
                     }
                   }}
               />
+                }
                 </div>
               </div>
             </div>
@@ -252,7 +266,7 @@ class Teams extends React.Component {
               <i className='flaticon-technology m--font-accent' />
             </div>
             <div className='m-alert__text'>
-              Need help in understanding broadcasts? Here is the <a href='https://kibopush.com/teams/' target='_blank' rel='noopener noreferrer'>documentation</a>. Or check out this <a href='#/' data-toggle="modal" data-target="#video">video tutorial</a>
+              Need help in understanding team? Here is the <a href='https://kibopush.com/teams/' target='_blank' rel='noopener noreferrer'>documentation</a>. Or check out this  <a href='#/' onClick={this.openVideoTutorial}>video tutorial</a>
             </div>
           </div>
           <div className='row'>

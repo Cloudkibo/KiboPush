@@ -132,6 +132,12 @@ class QuickReplies extends React.Component {
       if (action === 'unassign_tag') {
         quickReplyActions.push({title: 'Unassign Tag', action: () => this.selectAction(action)})
       }
+      if (action === 'assign_tag') {
+        quickReplyActions.push({title: 'Assign Tag', action: () => this.selectAction(action)})
+      }
+      if (action === 'unassign_tag') {
+        quickReplyActions.push({title: 'Unassign Tag', action: () => this.selectAction(action)})
+      }
     }
     return quickReplyActions
   }
@@ -713,12 +719,12 @@ class QuickReplies extends React.Component {
 
             {
                 this.state.quickReplies.length < this.quickReplyLimit &&
-                <button id={'addQuickReply'+this.props.currentId} onClick={this.addQuickReply} style={{marginLeft: '15%', marginTop: '10px', border: 'dashed', borderWidth: '1.5px', 'color': 'black'}} className="btn m-btn--pill btn-sm m-btn hoverbordercomponent">
+                <button id={`addQuickReply-${this.props.currentId}`} onClick={this.addQuickReply} style={{marginLeft: '15%', marginTop: '10px', border: 'dashed', borderWidth: '1.5px', 'color': 'black'}} className="btn m-btn--pill btn-sm m-btn hoverbordercomponent">
                     + Add Quick Reply
                 </button>
             }
 
-            <Popover placement='auto' isOpen={this.state.addingQuickReply} target={'addQuickReply'+this.props.currentId}>
+            <Popover trigger='click' placement='auto' isOpen={this.state.addingQuickReply} target={`addQuickReply-${this.props.currentId}`}>
                 <PopoverBody>
                     <div style={{paddingRight: '10px', maxHeight: '500px', overflowY: 'scroll', overflowX: 'hidden'}}>
                     <div data-toggle="modal" data-target={this.state.editing ? "#closeQuickReply" : ""} onClick={this.closeQuickReply} style={{marginLeft: '98%', cursor: 'pointer'}}><span role='img' aria-label='times'>❌</span></div>

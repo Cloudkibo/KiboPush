@@ -31,7 +31,8 @@ class FacebookPosts extends React.Component {
       pageNumber: 0,
       startDate: '',
       endDate: '',
-      dateRangeWarning: ''
+      dateRangeWarning: '',
+      openVideo: false
     }
     props.fetchAllPosts({last_id: 'none',
       number_of_records: 10,
@@ -53,6 +54,13 @@ class FacebookPosts extends React.Component {
     this.changeDateFrom = this.changeDateFrom.bind(this)
     this.changeDateTo = this.changeDateTo.bind(this)
     this.validDateRange = this.validDateRange.bind(this)
+    this.openVideoTutorial = this.openVideoTutorial.bind(this)
+  }
+  openVideoTutorial () {
+    this.setState({
+      openVideo: true
+    })
+    this.refs.videoCommentCapture.click()
   }
   validDateRange (startDate, endDate) {
     var valid = false
@@ -264,21 +272,27 @@ class FacebookPosts extends React.Component {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="video" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <a href='#/' style={{ display: 'none' }} ref='videoCommentCapture' data-toggle='modal' data-backdrop='static' data-keyboard='false' data-target="#videoCommentCapture">videoMessengerRefModal</a>
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="videoCommentCapture" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog modal-lg" role="document">
             <div className="modal-content" style={{ width: '687px', top: '100' }}>
               <div style={{ display: 'block' }} className="modal-header">
                 <h5 className="modal-title" id="exampleModalLabel">
                   Comment Capture Video Tutorial
 									</h5>
-                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" 
+                aria-label="Close"
+                onClick={() => {
+                  this.setState({
+                    openVideo: false
+                  })}}>
                   <span aria-hidden="true">
                     &times;
 											</span>
                 </button>
               </div>
               <div style={{ color: 'black' }} className="modal-body">
-                <YouTube
+              {this.state.openVideo && <YouTube
                   videoId='p1LekqTN-3Y'
                   opts={{
                     height: '390',
@@ -288,6 +302,7 @@ class FacebookPosts extends React.Component {
                     }
                   }}
                 />
+                }
               </div>
             </div>
           </div>
@@ -333,7 +348,7 @@ class FacebookPosts extends React.Component {
             </div>
             <div className='m-alert__text'>
               Need help in understanding Comment Capture? Here is the <a href='http://kibopush.com/comment-capture' target='_blank' rel='noopener noreferrer'>documentation</a>.
-              Or check out this <a href='#/' data-toggle="modal" data-target="#video">video tutorial</a>
+              Or check out this <a href='#/' onClick={this.openVideoTutorial}>video tutorial</a>
             </div>
           </div>
           <div className='row'>
