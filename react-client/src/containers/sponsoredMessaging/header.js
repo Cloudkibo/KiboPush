@@ -14,8 +14,8 @@ class Header extends React.Component {
             <h3 className='m-portlet__head-text'>
               {
               this.props.isEdit
-              ? 'Edit Sponsored Meessage'
-              : 'Create Sponsored Meessage'
+              ? 'Edit Sponsored Message'
+              : 'Create Sponsored Message'
             }
             </h3>
           </div>

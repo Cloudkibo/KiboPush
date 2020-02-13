@@ -8,11 +8,25 @@ export function showAllSponsoredMessages (data) {
     }
   }
 
-  export function insights (data) {
-    return {
-      data
-    }
+export function showAdAccounts (data) {
+  return {
+    type: ActionTypes.SHOW_AD_ACCOUNTS,
+    data
   }
+}
+
+export function showCampaigns (data) {
+  return {
+    type: ActionTypes.SHOW_CAMPAIGNS,
+    data
+  }
+}
+
+export function insights (data) {
+  return {
+    data
+  }
+}
 
 export function showUpdatedData (data) {
     return {
@@ -127,5 +141,37 @@ export function getInsights (adId) {
           console.log(res)
         }
       })
+   }
+}
+export function fetchAdAccounts () {
+  return (dispatch) => {
+    let data = [
+      {id: 1, name: 'acAccount1'},
+      {id: 2, name: 'adAccount2'},
+      {id: 3, name: 'adAccount3'}
+    ]
+    dispatch(showAdAccounts(data))
+    // callApi(`sponsoredmessaging/adAccounts`, 'get')
+    //   .then(res => {
+    //     if(res.status === 'success') {
+    //       dispatch(showAdAccounts(res.payload))
+    //     }
+    //   })
+   }
+}
+export function fetchCampaigns () {
+  return (dispatch) => {
+    let data = [
+      {id: 1, name: 'campaign1'},
+      {id: 2, name: 'campaign2'},
+      {id: 3, name: 'campaign3'}
+    ]
+    dispatch(showCampaigns(data))
+    // callApi(`sponsoredmessaging/campaigns`, 'get')
+    //   .then(res => {
+    //     if(res.status === 'success') {
+    //       dispatch(showCampaigns(res.payload))
+    //     }
+    //   })
    }
 }

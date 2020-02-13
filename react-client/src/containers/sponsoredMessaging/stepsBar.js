@@ -4,11 +4,23 @@
  */
 
 import React from 'react'
+import StepItem from '../../components/wizard/horizontal/stepItem'
 
 class StepsBar extends React.Component {
   render () {
     return (
-      <div>
+      <div className='row'>
+        <div className='col-md-2' />
+        <div className='col-md-8'>
+          <div id='step_container' style={{margin: 'auto', width: '90%'}}>
+            <StepItem number='1' title='Ad Account' active={true} showLine={false} />
+            <StepItem number='2' title='Campaign' active={false} showLine={true} />
+            <StepItem number='3' title='Ad Set' active={false} showLine={true} />
+            <StepItem number='4' title='Ad' active={false} showLine={true} />
+          </div>
+        </div>
+        <div className='col-md-2' />
+        {/*
       <div className='row'>
         <div className='col-md-3'>
               <a href='#/' style={{display: 'tableCell', verticalAlign: 'middle', textDecoration: 'none', padding: '0.0715rem 0px', cursor: 'pointer'}}>
@@ -18,23 +30,9 @@ class StepsBar extends React.Component {
               </a>
             </div>
       </div>
-      <div className="stepwizard">
-  <div className="stepwizard-row">
-    <div className="stepwizard-step"> <a class="btn btn-default btn-circle active-step" href="#step-1" data-toggle="tab" >1</a>
-      <p>Title</p>
-    </div>
-    <div className="stepwizard-step"> <a class="btn btn-default btn-circle" disabled="disabled" href="#step-2" data-toggle="tab">2</a>
-      <p>tag</p>
-    </div>
-    <div className="stepwizard-step"> <a class="btn btn-default btn-circle" disabled="disabled" href="#step-3" data-toggle="tab">3</a>
-      <p>Description</p>
-    </div>
-    <div className="stepwizard-step"> <a class="btn btn-default btn-circle" disabled="disabled" href="#step-4" data-toggle="tab">4</a>
-      <p>Preview</p>
-    </div>
-  </div>
-</div>
-</div>
+      */}
+
+      </div>
     )
   }
 }
