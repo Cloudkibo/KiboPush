@@ -30,7 +30,7 @@ class CreateConvo extends React.Component {
       broadcast: this.props.location.state && this.props.location.state.payload ? this.props.location.state.payload : [],
       stayOpen: false,
       disabled: false,
-      linkedMessages: null,
+      linkedMessages: this.props.location.state && this.props.location.state.linkedMessages ? this.props.location.state.linkedMessages : null,
       unlinkedMessages: null,
       pageValue: [],
       genderValue: [],
