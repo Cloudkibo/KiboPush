@@ -105,6 +105,7 @@ class Builders extends React.Component {
     this.deconstructUserInput = this.deconstructUserInput.bind(this)
     this.onLoadCustomFields = this.onLoadCustomFields.bind(this)
     this.createLinkedMessagesFromQuickReplies = this.createLinkedMessagesFromQuickReplies.bind(this)
+    this.updateBroadcastData = this.updateBroadcastData.bind(this)
 
     this.GSModalContent = null
 
@@ -115,6 +116,61 @@ class Builders extends React.Component {
     this.props.loadTags()
     this.props.fetchAllSequence()
     console.log('builders props in constructor', this.props)
+  }
+
+  updateBroadcastData (blockId, componentId, action, data) {
+    let linkedMessages = this.state.linkedMessages
+    let unlinkedMessages = this.state.unlinkedMessages
+    const linkedIndex = linkedMessages.findIndex((lm) => lm.id === blockId)
+    const unlinkedIndex = unlinkedMessages.findIndex((um) => um.id === blockId)
+    if (action === 'add') {
+      if (linkedIndex > -1) {
+        const quickReplyIndex = linkedMessages[linkedIndex].messageContent.length - 1
+        if (quickReplyIndex > -1) {
+          data.quickReplies = linkedMessages[linkedIndex].messageContent[quickReplyIndex].quickReplies
+          linkedMessages[linkedIndex].messageContent.push(data)
+          this.setState({linkedMessages})
+        } else {
+          data.quickReplies = []
+          linkedMessages[linkedIndex].messageContent.push(data)
+          this.setState({linkedMessages})
+        }
+      } else if (unlinkedIndex > -1) {
+        const quickReplyIndex = unlinkedMessages[unlinkedIndex].messageContent.length - 1
+        if (quickReplyIndex > -1) {
+          data.quickReplies = unlinkedMessages[unlinkedIndex].messageContent[quickReplyIndex].quickReplies
+          unlinkedMessages[unlinkedIndex].messageContent.push(data)
+          this.setState({unlinkedMessages})
+        } else {
+          data.quickReplies = []
+          unlinkedMessages[unlinkedIndex].messageContent.push(data)
+          this.setState({unlinkedMessages})
+        }
+      }
+    } else if (action === 'update') {
+      if (linkedIndex > -1) {
+        const componentIndex = linkedMessages[linkedIndex].messageContent.findIndex((mc) => mc.id === componentId)
+        linkedMessages[linkedIndex].messageContent[componentIndex] = data
+        this.setState({linkedMessages})
+      } else if (unlinkedIndex > -1) {
+        const componentIndex = unlinkedMessages[unlinkedIndex].messageContent.findIndex((mc) => mc.id === componentId)
+        unlinkedMessages[unlinkedIndex].messageContent[componentIndex] = data
+        this.setState({unlinkedMessages})
+      }
+      // this.forceUpdate()
+    } else if (action === 'delete') {
+      if (linkedIndex > -1) {
+        const componentIndex = linkedMessages[linkedIndex].messageContent.findIndex((mc) => mc.id === componentId)
+        linkedMessages[linkedIndex].messageContent.splice(componentIndex, 1)
+        this.setState({linkedMessages})
+      } else if (unlinkedIndex > -1) {
+        const componentIndex = unlinkedMessages[unlinkedIndex].messageContent.findIndex((mc) => mc.id === componentId)
+        unlinkedMessages[unlinkedIndex].messageContent.splice(componentIndex, 1)
+        this.setState({unlinkedMessages})
+      }
+    }
+    console.log('linkedMessages in updateBroadcastData', linkedMessages)
+    console.log('unlinkedMessages in updateBroadcastData', unlinkedMessages)
   }
 
   onLoadCustomFields (customFields) {
@@ -1513,7 +1569,7 @@ class Builders extends React.Component {
 
       <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
       <div style={{float: 'left', clear: 'both'}}
-        ref={(el) => { this.top = el }} /> 
+        ref={(el) => { this.top = el }} />
 
       <a href='#/' style={{ display: 'none' }} ref='rename' data-toggle="modal" data-target="#rename">lossData</a>
       <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="rename" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -1663,6 +1719,8 @@ class Builders extends React.Component {
           reset={this.props.reset}
           onNext={this.props.onNext}
           isBroadcastInvalid={this.props.isBroadcastInvalid}
+          updateBroadcastData={this.updateBroadcastData}
+          alertMsg={this.msg}
         />
       }
 

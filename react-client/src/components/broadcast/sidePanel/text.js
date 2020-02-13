@@ -5,17 +5,27 @@ class Text extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      text: ''
+      text: props.componentData.text
     }
     this.onValueChange = this.onValueChange.bind(this)
   }
 
   onValueChange (e) {
     this.setState({text: e.target.value})
-    this.props.updateBroadcastData(this.props.blockId, this.props.componentId, 'update', {updateField: 'text', updateValue: e.target.value})
+    let data = this.props.componentData
+    data.text = e.target.value
+    this.props.updateBroadcastData(this.props.blockId, this.props.componentData.id, 'update', data)
+  }
+
+  UNSAFE_componentWillReceiveProps (nextProps) {
+    console.log('componentWillRecieveProps of text side panel called ', nextProps)
+    if (nextProps.componentData) {
+      this.setState({text: nextProps.componentData.text})
+    }
   }
 
   render () {
+    console.log('props in text side panel', this.props)
     return (
       <div id='side_panel_text_component'>
         <span className='m--font-boldest'>Text:</span>
@@ -33,8 +43,7 @@ class Text extends React.Component {
 
 Text.propTypes = {
   'updateBroadcastData': PropTypes.func.isRequired,
-  'blockId': PropTypes.string.isRequired,
-  'componentId': PropTypes.string.isRequired
+  'blockId': PropTypes.string.isRequired
 }
 
 export default Text

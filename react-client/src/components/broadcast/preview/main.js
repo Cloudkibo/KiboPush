@@ -1,12 +1,17 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import TEXT from './text'
+import ATTACHMENTS from './attachments'
 
 class Preview extends React.Component {
   constructor (props) {
     super(props)
-    this.state = {}
+    this.state = {
+      activeComponent: ''
+    }
     this.getComponent = this.getComponent.bind(this)
+    this.removeComponent = this.removeComponent.bind(this)
+    this.editComponent = this.editComponent.bind(this)
   }
 
   getComponent (item, lastItem) {
@@ -17,9 +22,64 @@ class Preview extends React.Component {
           lastItem={lastItem}
           itemPayload={item}
           profilePic={this.props.profilePic}
+          removeComponent={this.removeComponent}
+          editComponent={this.editComponent}
+          isActive={(item.id === this.state.activeComponent)}
+        />
+      case 'attachments':
+        return <ATTACHMENTS
+          lastItem={lastItem}
+          itemPayload={item}
+          profilePic={this.props.profilePic}
+          removeComponent={this.removeComponent}
+          editComponent={this.editComponent}
+          isActive={(item.id === this.state.activeComponent)}
+        />
+      case 'file':
+        return <ATTACHMENTS
+          lastItem={lastItem}
+          itemPayload={item}
+          profilePic={this.props.profilePic}
+          removeComponent={this.removeComponent}
+          editComponent={this.editComponent}
+          isActive={(item.id === this.state.activeComponent)}
+        />
+      case 'audio':
+        return <ATTACHMENTS
+          lastItem={lastItem}
+          itemPayload={item}
+          profilePic={this.props.profilePic}
+          removeComponent={this.removeComponent}
+          editComponent={this.editComponent}
+          isActive={(item.id === this.state.activeComponent)}
+        />
+      case 'media':
+        return <ATTACHMENTS
+          lastItem={lastItem}
+          itemPayload={item}
+          profilePic={this.props.profilePic}
+          removeComponent={this.removeComponent}
+          editComponent={this.editComponent}
+          isActive={(item.id === this.state.activeComponent)}
         />
       default:
         return null
+    }
+  }
+
+  removeComponent (componentId) {
+    this.props.updateBroadcastData(this.props.blockId, componentId, 'delete')
+  }
+
+  editComponent (data) {
+    this.props.handleSidePanel(true, this.props.sidePanelStyle, this.props.blockId, data.componentName, 'Edit', data)
+    this.setState({activeComponent: data.id})
+  }
+
+  UNSAFE_componentWillReceiveProps (nextProps) {
+    console.log('componentWillRecieveProps in preview main', nextProps)
+    if (nextProps.activeComponent !== this.state.activeComponent) {
+      this.setState({activeComponent: nextProps.activeComponent})
     }
   }
 
@@ -40,7 +100,11 @@ class Preview extends React.Component {
 
 Preview.propTypes = {
   'items': PropTypes.array.isRequired,
-  'profilePic': PropTypes.string.isRequired
+  'profilePic': PropTypes.string.isRequired,
+  'blockId': PropTypes.string.isRequired,
+  'updateBroadcastData': PropTypes.func.isRequired,
+  'handleSidePanel': PropTypes.func.isRequired,
+  'sidePanelStyle': PropTypes.object.isRequired
 }
 
 export default Preview

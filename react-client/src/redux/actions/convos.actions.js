@@ -29,6 +29,22 @@ export function uploadFile (filedata, fileInfo, handleFunction, setLoading) {
   }
 }
 
+export function uploadAttachment (filedata, fileInfo, handleFunction) {
+  return (dispatch) => {
+    // eslint-disable-next-line no-undef
+    fetch(`${getAccountsUrl()}/uploadFile`, {
+      method: 'post',
+      body: filedata,
+      // eslint-disable-next-line no-undef
+      headers: new Headers({
+        'Authorization': `Bearer ${auth.getToken()}`
+      })
+    }).then((res) => res.json()).then((res) => res).then(res => {
+      handleFunction(res, fileInfo)
+    })
+  }
+}
+
 export function downloadYouTubeVideo (url, id, handleFunction) {
   return (dispatch) => {
     let data = {
