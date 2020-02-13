@@ -54,6 +54,11 @@ class ComponentsArea extends React.Component {
         <PREVIEW
           profilePic={this.props.page.pagePic}
           items={this.props.items}
+          updateBroadcastData={this.props.updateBroadcastData}
+          blockId={this.props.currentId}
+          handleSidePanel={this.props.handleSidePanel}
+          sidePanelStyle={this.props.sidePanelStyle}
+          activeComponent={this.props.activeComponent}
         />
 
         <button

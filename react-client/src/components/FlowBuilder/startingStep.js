@@ -27,6 +27,7 @@ class StartingStep extends React.Component {
             currentId={this.props.currentId}
             updateBroadcastData={this.props.updateBroadcastData}
             page={this.props.page}
+            activeComponent={this.props.activeComponent}
           />
         </div>
       </div>
@@ -44,7 +45,8 @@ StartingStep.propTypes = {
   'changeMessage': PropTypes.func.isRequired,
   'handleSidePanel': PropTypes.func.isRequired,
   'updateBroadcastData': PropTypes.func.isRequired,
-  'page': PropTypes.object.isRequired
+  'page': PropTypes.object.isRequired,
+  'activeComponent': PropTypes.string.isRequired
 }
 
 export default StartingStep
