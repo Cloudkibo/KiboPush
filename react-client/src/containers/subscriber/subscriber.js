@@ -941,6 +941,10 @@ class Subscriber extends React.Component {
         'tags': subscriber.tags,
         'SubscriberId': subscriber._id
       }
+      for (var c = 0 ; c < subscriber.customFields.length; c++) {
+        subscriberObj[subscriber.customFields[c].name] = subscriber.customFields[c].value
+      }
+
       data.push(subscriberObj)
     }
     return data
