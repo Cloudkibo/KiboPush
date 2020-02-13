@@ -15,7 +15,10 @@ import ActionsPopover from './ActionsPopover'
 class QuickReplies extends React.Component {
   constructor (props) {
     super(props)
-    let actions = ['send_message_block']
+    let actions = []
+    if (this.props.module === 'broadcast') {
+        actions.push('send_message_block')
+    }
     if (this.props.customFields && this.props.customFields.length > 0) {
         actions.push('set_custom_field')
     }
