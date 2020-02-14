@@ -37,10 +37,18 @@ export function sponsoredMessagingInfo (state = initialState, action) {
           return Object.assign({}, state, {
             sponsoredMessage: action.data
           })
-      case ActionTypes.UPDATE_SPONSORED_MESSAGE:
-      return Object.assign({}, state, {
-        sponsoredMessage: action.data
-      })
+        case ActionTypes.UPDATE_SPONSORED_MESSAGE:
+        return Object.assign({}, state, {
+          sponsoredMessage: action.data
+        })
+        case ActionTypes.SHOW_AD_ACCOUNTS:
+          return Object.assign({}, state, {
+            adAccounts: action.data
+        })
+        case ActionTypes.SHOW_CAMPAIGNS:
+          return Object.assign({}, state, {
+            campaigns: action.data
+        })
       default:
         return state
     }

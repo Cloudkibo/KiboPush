@@ -8,9 +8,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import AlertContainer from 'react-alert'
 import Header from './header'
-import AdAccount from './adAccount'
-import Campaign from './campaign'
-import StepsBar from './stepsBar'
+import Tabs from './tabs'
 import {updateSponsoredMessage, saveDraft, send } from '../../redux/actions/sponsoredMessaging.actions'
 
 
@@ -20,42 +18,13 @@ class CreateSponsoredMessage extends React.Component {
     this.state = {
       isEdit: false,
       editSponsoredMessage: this.props.location.state ? this.props.location.state.sponsoredMessage : {},
-      sendDisabled: false,
-      currentStep: 'adAccount'
+      sendDisabled: false
     }
     if(this.props.location.state && this.props.location.state.module === 'edit'  && this.props.location.state.sponsoredMessage) {
       this.props.updateSponsoredMessage(this.props.location.state.sponsoredMessage)
     }
     this.onEdit = this.onEdit.bind(this)
     this.onSend = this.onSend.bind(this)
-    this.changeCurrentStep = this.changeCurrentStep.bind(this)
-    this.handleNext = this.handleNext.bind(this)
-    this.handleBack = this.handleBack.bind(this)
-  }
-
-  changeCurrentStep (value) {
-    this.setState({currentStep: value})
-  }
-
-  handleNext () {
-    console.log('in handleNext')
-    if (this.state.currentStep === 'adAccount') {
-      this.setState({currentStep: 'campaign'})
-    } else if (this.state.currentStep === 'campaign') {
-      this.setState({currentStep: 'adSet'})
-    } else if (this.state.currentStep === 'adSet') {
-      this.setState({currentStep: 'ad'})
-    }
-  }
-
-  handleBack () {
-    if (this.state.currentStep === 'campaign') {
-      this.setState({currentStep: 'adAccount'})
-    } else if (this.state.currentStep === 'adSet') {
-      this.setState({currentStep: 'campaign'})
-    } else if (this.state.currentStep === 'ad') {
-      this.setState({currentStep: 'adSet'})
-    }
   }
 
   componentDidMount () {
@@ -107,14 +76,11 @@ class CreateSponsoredMessage extends React.Component {
                   sendDisabled = {this.state.sendDisabled}
                 />
                 <div className='m-portlet__body'>
-                  <StepsBar currentStep={this.state.currentStep} />
-                  <br /><br /><br />
-                  {this.state.currentStep === 'adAccount' &&
-                    <AdAccount changeCurrentStep={this.changeCurrentStep} msg={this.msg} />
-                  }
-                  {this.state.currentStep === 'campaign' &&
-                    <Campaign changeCurrentStep={this.changeCurrentStep} msg={this.msg} />
-                  }
+                  <div className='row'>
+                    <div className='col-md-12 col-lg-12 col-sm-12'>
+                    <Tabs editSponsoredMessage={this.state.editSponsoredMessage} onEdit={this.onEdit}/>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
