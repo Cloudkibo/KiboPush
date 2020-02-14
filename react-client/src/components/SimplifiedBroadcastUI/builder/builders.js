@@ -171,7 +171,7 @@ class Builders extends React.Component {
         let messageIndex = messages.findIndex(m => m.id === id)
         if (messageIndex > -1) {
           console.log('changing message', this.state.linkedMessages[messageIndex])
-          this.setState({currentId: id, tempConvoTitle: this.state.linkedMessages[messageIndex].title}, () => {
+          this.setState({currentId: id, tempConvoTitle: messages[messageIndex].title}, () => {
             // let filteredData = this.state.linkedMessages.concat(this.state.unlinkedMessages).filter((lm) => lm.id === id)
             // let list = filteredData.length > 0 ? filteredData[0].messageContent : []
             // this.initializeList(list)
