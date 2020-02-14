@@ -4,7 +4,8 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import AlertContainer from 'react-alert'
 import PropTypes from 'prop-types'
-
+import { uploadTemplate } from '../../../redux/actions/convos.actions'
+import { RingLoader } from 'halogenium'
 import {validateYoutubeURL} from '../../../utility/utils'
 
 import { loadTags } from '../../../redux/actions/tags.actions'
@@ -60,7 +61,8 @@ class Builders extends React.Component {
       currentId,
       quickRepliesIndex: -1,
       editingFlowBuilder: false,
-      showGSModal: false
+      showGSModal: false,
+      loading: this.props.linkedMessages && this.props.linkedMessages.length > 0
     }
     this.defaultTitle = this.props.convoTitle
     this.reset = this.reset.bind(this)
@@ -107,6 +109,8 @@ class Builders extends React.Component {
     this.onLoadCustomFields = this.onLoadCustomFields.bind(this)
     this.createLinkedMessagesFromQuickReplies = this.createLinkedMessagesFromQuickReplies.bind(this)
     this.titleChange = this.titleChange.bind(this)
+    this.checkMediaComponents = this.checkMediaComponents.bind(this)
+    this.updateFileUrl = this.updateFileUrl.bind(this)
 
     this.GSModalContent = null
 
@@ -550,6 +554,65 @@ class Builders extends React.Component {
     console.log('appendQuickRepliesToEnd', broadcast)
     return broadcast
   }
+  checkMediaComponents (linkedMessages) {
+    var isMediaValid = true
+    for (var i = 0; i < linkedMessages.length; i++) {
+      for (var j = 0; j < linkedMessages[i].messageContent.length; j++) {
+        var component = linkedMessages[i].messageContent[j]
+        if (component.componentType === 'media' && component.fileurl && !component.fileurl.attachment_id) {
+          isMediaValid = false
+          this.props.uploadTemplate({pages: this.props.pages,
+            url: component.fileurl.url,
+            componentType: component.mediaType,
+            id: component.fileurl.id,
+            name: component.fileurl.name
+          }, { id: component.id,
+            componentType: component.mediaType,
+            fileName: component.fileurl.name,
+            type: component.fileurl.type,
+            size: component.fileurl.size
+          }, (data) => this.updateFileUrl(data))
+        } else {
+          if (isMediaValid && i === linkedMessages.length -1) {
+            this.setState({
+              loading: false
+            })
+          }
+        }
+      }
+    }
+
+  }
+  updateFileUrl (data) {
+    var linkedMessages = this.state.linkedMessages
+    for (var i = 0; i < linkedMessages.length; i++) {
+      for (var j = 0; j < linkedMessages[i].messageContent.length; j++) {
+        var component = linkedMessages[i].messageContent[j]
+        if (component.id === data.id) {
+          component.fileurl = data.fileurl
+          break
+        }
+      }
+    }
+    this.setState({
+      linkedMessages : linkedMessages
+    })
+    var isMediaValid = true
+    for (var i = 0; i < linkedMessages.length; i++) {
+      for (var j = 0; j < linkedMessages[i].messageContent.length; j++) {
+        var component = linkedMessages[i].messageContent[j]
+        if (component.componentType === 'media' && component.fileurl && !component.fileurl.attachment_id) {
+          isMediaValid = false
+          break
+        }
+      }
+    }
+    if (isMediaValid) {
+      this.setState({
+        loading: false
+      })
+    }
+  }
 
   componentDidMount () {
     console.log('componentDidMount for Builder', this.state)
@@ -557,6 +620,7 @@ class Builders extends React.Component {
     if (this.state.broadcast && this.state.broadcast.length > 0) {
       this.initializeList(this.state.linkedMessages.concat(this.state.unlinkedMessages).filter((lm) => lm.id === this.state.currentId)[0].messageContent)
     }
+    this.checkMediaComponents(this.state.linkedMessages)
     console.log('genericMessage props in end of componentDidMount', this.props)
   }
 
@@ -1525,7 +1589,15 @@ class Builders extends React.Component {
       <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
       <div style={{float: 'left', clear: 'both'}}
         ref={(el) => { this.top = el }} /> 
-
+         { this.state.loading &&
+        <div style={{ width: '100vw', height: '100vh', background: 'rgba(33, 37, 41, 0.6)', position: 'fixed', zIndex: '99999', top: '0px' }}>
+            <div style={{ position: 'fixed', top: '50%', left: '50%', width: '30em', height: '18em', marginLeft: '-10em' }}
+              className='align-center'>
+              <center><RingLoader color='#716aca' /></center>
+              <center><span style={{color: '#5867dd', fontSize: 'large', fontWeight: '900'}}>Uploading Media...</span></center>
+            </div>
+          </div>
+        }
       <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="closeQuickReply" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div style={{ transform: 'translate(0px, 100px)' }} className="modal-dialog" role="document">
               <div className="modal-content">
@@ -1784,8 +1856,10 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-      fetchAllSequence: fetchAllSequence,
-      loadTags: loadTags
+      fetchAllSequence,
+      loadTags,
+      loadCustomFields,
+      uploadTemplate
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps, null, { withRef: true })(Builders)
