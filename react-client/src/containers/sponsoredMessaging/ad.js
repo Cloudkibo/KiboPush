@@ -9,7 +9,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import Footer from './footer'
 
-class adAccount extends React.Component {
+class ad extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
@@ -19,7 +19,7 @@ class adAccount extends React.Component {
     props.fetchAdAccounts()
 
     this.onAdAccountChange = this.onAdAccountChange.bind(this)
-    this.handleNext = this.handleNext.bind(this)
+    this.handleBack = this.handleBack.bind(this)
     this.handleResponse = this.handleResponse.bind(this)
   }
 
@@ -38,12 +38,8 @@ class adAccount extends React.Component {
     }
   }
 
-  handleNext () {
-    if (this.state.selectedAdAccount === '') {
-      this.props.msg.error('Please select an Ad Account')
-    } else {
-      this.props.saveAdAccount(this.props.sponsoredMessage._id, {adAccountId: this.state.selectedAdAccount}, this.handleResponse)
-    }
+  handleBack () {
+    this.props.changeCurrentStep('adSet')
   }
 
   handleResponse (res) {
@@ -58,20 +54,9 @@ class adAccount extends React.Component {
   render () {
     return (
       <div>
-        <h5>Step 01:</h5>
-        <br />
-        <span>Select the Ad Account from which you want to create Sponsored Message</span>
-        <br /><br />
-        <select className='form-control' value={this.state.selectedAdAccount} onChange={this.onAdAccountChange} style={{width: '50%'}}>
-          {
-            this.props.adAccounts && this.props.adAccounts.length > 0 && this.props.adAccounts.map((adAccount, i) => (
-              <option key={adAccount.id} value={adAccount.id} selected={adAccount.id === this.state.selectedAdAccount}>{adAccount.name}</option>
-            ))
-          }
-        </select>
         <Footer
-          currentStep='adAccount'
-          handleNext={this.handleNext}
+          currentStep='ad'
+          handleBack={this.handleBack}
           />
       </div>
     )
@@ -93,4 +78,4 @@ function mapDispatchToProps (dispatch) {
     updateSponsoredMessage
   }, dispatch)
 }
-export default connect(mapStateToProps, mapDispatchToProps)(adAccount)
+export default connect(mapStateToProps, mapDispatchToProps)(ad)

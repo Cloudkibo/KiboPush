@@ -11,6 +11,8 @@ import Header from './header'
 import AdAccount from './adAccount'
 import Campaign from './campaign'
 import StepsBar from './stepsBar'
+import AdSet from './adSet'
+import Ad from './ad'
 import {updateSponsoredMessage, saveDraft, send } from '../../redux/actions/sponsoredMessaging.actions'
 
 
@@ -29,33 +31,10 @@ class CreateSponsoredMessage extends React.Component {
     this.onEdit = this.onEdit.bind(this)
     this.onSend = this.onSend.bind(this)
     this.changeCurrentStep = this.changeCurrentStep.bind(this)
-    this.handleNext = this.handleNext.bind(this)
-    this.handleBack = this.handleBack.bind(this)
   }
 
   changeCurrentStep (value) {
     this.setState({currentStep: value})
-  }
-
-  handleNext () {
-    console.log('in handleNext')
-    if (this.state.currentStep === 'adAccount') {
-      this.setState({currentStep: 'campaign'})
-    } else if (this.state.currentStep === 'campaign') {
-      this.setState({currentStep: 'adSet'})
-    } else if (this.state.currentStep === 'adSet') {
-      this.setState({currentStep: 'ad'})
-    }
-  }
-
-  handleBack () {
-    if (this.state.currentStep === 'campaign') {
-      this.setState({currentStep: 'adAccount'})
-    } else if (this.state.currentStep === 'adSet') {
-      this.setState({currentStep: 'campaign'})
-    } else if (this.state.currentStep === 'ad') {
-      this.setState({currentStep: 'adSet'})
-    }
   }
 
   componentDidMount () {
@@ -114,6 +93,12 @@ class CreateSponsoredMessage extends React.Component {
                   }
                   {this.state.currentStep === 'campaign' &&
                     <Campaign changeCurrentStep={this.changeCurrentStep} msg={this.msg} />
+                  }
+                  {this.state.currentStep === 'adSet' &&
+                    <AdSet changeCurrentStep={this.changeCurrentStep} msg={this.msg} />
+                  }
+                  {this.state.currentStep === 'ad' &&
+                    <Ad changeCurrentStep={this.changeCurrentStep} msg={this.msg} />
                   }
                 </div>
               </div>
