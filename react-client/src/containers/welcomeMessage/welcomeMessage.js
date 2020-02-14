@@ -19,7 +19,8 @@ class WelcomeMessage extends React.Component {
       totalLength: 0,
       filterValue: '',
       isShowingModal: false,
-      isShowingZeroPageModal: props.pages && props.pages.length === 0
+      isShowingZeroPageModal: props.pages && props.pages.length === 0,
+      openVideo: false
     }
     props.loadMyPagesList()
     this.gotoCreate = this.gotoCreate.bind(this)
@@ -27,6 +28,13 @@ class WelcomeMessage extends React.Component {
     this.gotoView = this.gotoView.bind(this)
     this.closeZeroSubDialog = this.closeZeroSubDialog.bind(this)
     this.handleEnableWelMessage = this.handleEnableWelMessage.bind(this)
+    this.openVideoTutorial = this.openVideoTutorial.bind(this)
+  }
+  openVideoTutorial () {
+    this.setState({
+      openVideo: true
+    })
+    this.refs.videoWelcomeMessage.click()
   }
   handleEnableWelMessage (pageId, enable) {
     if (enable === true) {
@@ -96,21 +104,27 @@ class WelcomeMessage extends React.Component {
             </div>
           </div>
         </div>
-        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="video" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <a href='#/' style={{ display: 'none' }} ref='videoWelcomeMessage' data-toggle='modal' data-backdrop='static' data-keyboard='false' data-target="#videoWelcomeMessage">videoWelcomeMessage</a>
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="videoWelcomeMessage" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog modal-lg" role="document">
               <div className="modal-content" style={{width: '687px', top: '100'}}>
               <div style={{ display: 'block'}} className="modal-header">
                   <h5 className="modal-title" id="exampleModalLabel">
                     Welcome Messages Video Tutorial
 									</h5>
-                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" 
+                  aria-label="Close"
+                  onClick={() => {
+                    this.setState({
+                      openVideo: false
+                    })}}>
                     <span aria-hidden="true">
                       &times;
 											</span>
                   </button>
                 </div>
                 <div style={{color: 'black'}} className="modal-body">
-                <YouTube
+                {this.state.openVideo && <YouTube
                   videoId='7AEdAMXW6gE'
                   opts={{
                     height: '390',
@@ -120,6 +134,7 @@ class WelcomeMessage extends React.Component {
                     }
                   }}
                 />
+                }
                 </div>
               </div>
             </div>
@@ -167,7 +182,7 @@ class WelcomeMessage extends React.Component {
             </div>
             <div className='m-alert__text'>
               Need help in understanding Welcome Message? <a href='https://kibopush.com/welcome-message/' target='_blank' rel='noopener noreferrer'>Click Here </a>
-              Or Check out this <a href='#/' data-toggle="modal" data-target="#video" onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a> to understand this feature.
+              Or Check out this <a href='#/' onClick={this.openVideoTutorial}>video tutorial</a> to understand this feature.
             </div>
           </div>
           <div className='row'>

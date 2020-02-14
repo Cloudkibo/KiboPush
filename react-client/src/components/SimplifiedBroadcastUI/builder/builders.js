@@ -10,6 +10,7 @@ import {validateYoutubeURL} from '../../../utility/utils'
 
 import { loadTags } from '../../../redux/actions/tags.actions'
 import { fetchAllSequence } from '../../../redux/actions/sequence.action'
+import { loadCustomFields } from '../../../redux/actions/customFields.actions'
 
 import BASICBUILDER from './basicBuilder'
 import FLOWBUILDER from './flowBuilder'
@@ -38,18 +39,18 @@ class Builders extends React.Component {
   constructor (props, context) {
     super(props, context)
     let hiddenComponents = this.props.hiddenComponents.map(component => component.toLowerCase())
-    let currentId = new Date().getTime()
+    let currentId = this.props.linkedMessages ? this.props.linkedMessages[0].id : new Date().getTime()
     let lists = {
     }
     lists[currentId] = []
     let quickReplies = {}
     quickReplies[currentId] = []
+    let quickRepliesComponents = {}
     this.state = {
       tempConvoTitle: this.props.convoTitle,
-      customFields: [],
       lists,
       quickReplies,
-      quickRepliesComponents: {},
+      quickRepliesComponents,
       broadcast: this.props.broadcast.slice(),
       isShowingModal: false,
       convoTitle: this.props.convoTitle,
@@ -118,8 +119,23 @@ class Builders extends React.Component {
       props.setReset(this.reset)
     }
 
+
+    if (this.props.linkedMessages && this.props.linkedMessages.length > 0) {
+      this.updateLinkedMessagesPayload(this.props.linkedMessages[0].messageContent)
+    }
+    if (this.props.linkedMessages && this.props.linkedMessages.length > 0) {
+      let messageContent = this.props.linkedMessages[0].messageContent
+      if (messageContent[messageContent.length - 1].quickReplies) {
+        quickReplies[currentId] = messageContent[messageContent.length - 1].quickReplies
+        quickRepliesComponents[currentId] = this.getQuickReplies(quickReplies[currentId]) 
+        this.state.quickReplies = quickReplies
+        this.state.quickRepliesComponents = quickRepliesComponents
+      }
+    }
+
     this.props.loadTags()
     this.props.fetchAllSequence()
+    this.props.loadCustomFields()
     console.log('builders props in constructor', this.props)
   }
 
@@ -159,7 +175,7 @@ class Builders extends React.Component {
         let messageIndex = messages.findIndex(m => m.id === id)
         if (messageIndex > -1) {
           console.log('changing message', this.state.linkedMessages[messageIndex])
-          this.setState({currentId: id, tempConvoTitle: this.state.linkedMessages[messageIndex].title}, () => {
+          this.setState({currentId: id, tempConvoTitle: messages[messageIndex].title}, () => {
             // let filteredData = this.state.linkedMessages.concat(this.state.unlinkedMessages).filter((lm) => lm.id === id)
             // let list = filteredData.length > 0 ? filteredData[0].messageContent : []
             // this.initializeList(list)
@@ -1213,7 +1229,7 @@ class Builders extends React.Component {
         addComponent={this.addComponent} />),
         'userInput': (<UserInputModal
           buttons={[]}
-          customFields={this.state.customFields}
+          customFields={this.props.customFields}
           module = {this.props.module}
           edit={this.state.editData ? true : false}
           {...this.state.editData}
@@ -1523,11 +1539,12 @@ class Builders extends React.Component {
     return {
       content:
         <QuickReplies
+          module = {this.props.module}
           setToggleQuickReply={toggleAddQuickReply => { this.toggleAddQuickReply = toggleAddQuickReply }}
           setRemoveQuickReply={removeQuickReply => {this.removeQuickReply = removeQuickReply}}
           toggleGSModal={this.toggleGSModal}
           closeGSModal={this.closeGSModal}
-          customFields={this.state.customFields}
+          customFields={this.props.customFields}
           sequences={this.props.sequences}
           tags={this.props.tags}
           quickReplies={quickReplies}
@@ -1550,11 +1567,12 @@ class Builders extends React.Component {
           quickRepliesComponents[id] = {
             content:
               <QuickReplies
+                module = {this.props.module}
                 setToggleQuickReply={toggleAddQuickReply => { this.toggleAddQuickReply = toggleAddQuickReply }}
                 setRemoveQuickReply={removeQuickReply => {this.removeQuickReply = removeQuickReply}}
                 toggleGSModal={this.toggleGSModal}
                 closeGSModal={this.closeGSModal}
-                customFields={this.state.customFields}
+                customFields={this.props.customFields}
                 sequences={this.props.sequences}
                 tags={this.props.tags}
                 quickReplies={this.state.quickReplies[id]}
@@ -1850,7 +1868,8 @@ function mapStateToProps (state) {
   console.log(state)
   return {
     sequences: state.sequenceInfo.sequences,
-    tags: state.tagsInfo.tags
+    tags: state.tagsInfo.tags,
+    customFields: (state.customFieldInfo.customFields)
   }
 }
 
