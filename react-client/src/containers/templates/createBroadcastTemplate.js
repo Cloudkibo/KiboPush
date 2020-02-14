@@ -169,9 +169,9 @@ class CreateBroadcastTemplate extends React.Component {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="create" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="addCategory" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
-            <div className="modal-content">
+            {this.state.showAddCategoryDialog && <div className="modal-content">
               <div style={{ display: 'block' }} className="modal-header">
                 <h5 className="modal-title" id="exampleModalLabel">
                   Add Category
@@ -195,6 +195,7 @@ class CreateBroadcastTemplate extends React.Component {
                 </button>
               </div>
             </div>
+            }
           </div>
         </div>
         <div className='m-content'>
@@ -230,9 +231,12 @@ class CreateBroadcastTemplate extends React.Component {
                       <select id='selectCategory' />
                     </div>
                     <div className='col-1'>
-                      <button data-toggle="modal" data-target="#modal" onClick={this.showAddCategoryDialog} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary' style={{marginLeft: '-90px'}}>
-                        Add category
-                      </button>
+                      <a href='#/' onClick={() => {
+                        this.setState({
+                          showAddCategoryDialog: true
+                        }) }} data-toggle="modal" data-target="#addCategory" className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary' style={{marginLeft: '-90px'}}>
+                        Add Category
+                      </a>
                     </div>
                     <div className='col-5'>
                       <button onClick={this.reset} style={{marginRight: '20px', marginLeft: '95px'}} className='btn btn-primary'>Reset</button>
