@@ -44,9 +44,9 @@ class BasicBuilder extends React.Component {
                         <li key={message.id}>
                           <a href='#/' className={'broadcastTabs' + (this.props.currentId === message.id ? ' active' : '')} onClick={() => this.props.changeMessage(message.id)} id={'tab-' + message.id} data-toggle='tab' role='tab' style={{cursor: 'pointer', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '200px', color: 'red'}}>
                           {
-                            !this.props.titleEditable
+                            !this.props.titleEditable || this.props.currentId !== message.id
                             ? <h7> {message.title} </h7>
-                            : <h7>{message.title} <i onClick={this.props.showDialog} id='convoTitle' style={{cursor: 'pointer'}} className='fa fa-pencil-square-o' aria-hidden='true' /></h7>
+                            : <h7>{message.title} <i onClick={this.props.showDialog} id='convoTitle' style={{cursor: 'pointer', color: 'black', marginLeft: '10px'}} className='fa fa-pencil-square-o' aria-hidden='true' /></h7>
                           }
                           </a>
                         </li>

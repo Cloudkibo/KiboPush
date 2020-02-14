@@ -596,7 +596,7 @@ class Button extends React.Component {
   }
 
   removeReplyWithMessage(index) {
-    debugger;
+    // debugger;
     let postbackPayload = this.state.postbackPayload
     postbackPayload.splice(index, 1)
     this.setState({
@@ -807,7 +807,7 @@ class Button extends React.Component {
       if (postbackPayload[i].action === 'set_custom_field') {
         postbackActions.push((
           <div id={`set_custom_field${this.buttonId}`} style={{ marginTop: '30px' }}className='card'>
-            <h7 className='card-header'>Set custom field <i style={{ float: 'right', cursor: 'pointer' }} className='la la-close' onClick={this.closeCustomField} /></h7>
+            <h7 className='card-header'>Set custom field <i style={{ float: 'right', cursor: 'pointer' }} className='la la-close' onClick={() => this.closeCustomField(i)} /></h7>
             <div style={{ padding: '10px' }} className='card-block'>
               <select value={postbackPayload[i].customFieldId ? postbackPayload[i].customFieldId : ''} style={{ borderColor: !postbackPayload[i].customFieldId ? 'red' : '' }} className='form-control m-input' onChange={(event) => this.updateCustomFieldId(event, i)}>
                 <option value={''} disabled>Select a custom field</option>
