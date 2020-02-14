@@ -47,10 +47,7 @@ class MediaModal extends React.Component {
           let oldButtonPayload = this.state.buttonPayloads[i].substr(1, this.state.buttonPayloads[i].length-2)
           let newButtonPayload = buttons[j].payload.substr(1, buttons[j].payload.length - 2)
           if (newButtonPayload.includes('send_message_block')) {
-            if (newButtonPayload.includes(oldButtonPayload)) {
-              foundPayload = true
-            }
-            if (oldButtonPayload.includes(newButtonPayload)) {
+            if (newButtonPayload.includes(oldButtonPayload) || oldButtonPayload.includes(newButtonPayload)) {
               foundPayload = true
             }
           }
