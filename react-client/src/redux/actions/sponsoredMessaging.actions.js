@@ -22,6 +22,13 @@ export function showCampaigns (data) {
   }
 }
 
+export function showAdSets (data) {
+  return {
+    type: ActionTypes.SHOW_AD_SETS,
+    data
+  }
+}
+
 export function insights (data) {
   return {
     data
@@ -69,9 +76,30 @@ export function saveDraft(id, data, msg) {
   }
 }
 
-export function updateSponsoredMessage(sponsoredMessage, key, value){
+export function updateSponsoredMessage(sponsoredMessage, key, value, edit) {
   console.log('value in updateSponoredmessage',value)
-  if(key) {
+  if (edit) {
+    let temp = sponsoredMessage
+    temp.campaignType = edit.campaignType ? edit.campaignType : temp.campaignType
+    temp.campaignName = edit.campaignName ? edit.campaignName : temp.campaignName
+    temp.campaignId = edit.campaignId ? edit.campaignId : temp.campaignId
+    temp.adSetType = edit.adSetType ? edit.adSetType : temp.adSetType
+    temp.adSetName = edit.adSetName ? edit.adSetName : temp.adSetName
+    temp.budgetType = edit.budgetType ? edit.budgetType : temp.budgetType
+    temp.budgetAmout = edit.budgetAmout ? edit.budgetAmout : temp.budgetAmout
+    temp.bidAmount = edit.bidAmount ? edit.bidAmount : temp.bidAmount
+    temp.adSetId = edit.adSetId ? edit.adSetId : temp.adSetId
+    if (edit.targeting) {
+      temp.targeting = {
+        gender: edit.targeting.gender,
+        minAge: edit.targeting.minAge,
+        maxAge: edit.targeting.maxAge
+      }
+    }
+    return (dispatch) => {
+      dispatch(showUpdatedData(temp))
+    }
+  } else if (key) {
     let temp = sponsoredMessage
     if(key === 'payload') {
       value = value.broadcast
@@ -85,16 +113,22 @@ export function updateSponsoredMessage(sponsoredMessage, key, value){
       dispatch(showUpdatedData(sponsoredMessage))
     }
   }
-
 }
+
 export function createSponsoredMessage(data, cb) {
   console.log('data for createSponsoredMessage', data)
     return (dispatch) => {
         callApi('sponsoredmessaging', 'post', data)
         .then(res => {
           if(res.status === 'success'){
-                cb()
-                dispatch(createdSponsoredData(res.payload))
+              cb()
+              // dispatch(createdSponsoredData(res.payload))
+              let payload = {
+                _id: '1',
+    	           pageId: 'pageId',
+                 adName: 'New Ad'
+              }
+              dispatch(createdSponsoredData(payload))
             }
         })
         .catch(err => {
@@ -174,4 +208,49 @@ export function fetchCampaigns () {
     //     }
     //   })
    }
+}
+export function fetchAdSets () {
+  return (dispatch) => {
+    let data = [
+      {id: 1, name: 'adSet1'},
+      {id: 2, name: 'adSet2'},
+      {id: 3, name: 'adSet3'}
+    ]
+    dispatch(showAdSets(data))
+    // callApi(`sponsoredmessaging/adSets`, 'get')
+    //   .then(res => {
+    //     if(res.status === 'success') {
+    //       dispatch(showAdSets(res.payload))
+    //     }
+    //   })
+   }
+}
+export function saveCampaign (data, cb) {
+  console.log('data for saveCampaign', data)
+  return (dispatch) => {
+    // callApi(`sponsoredmessaging/campaigns`, 'post', data)
+    //   .then(res => {
+    //     cb(res)
+    //   })
+    cb({status: 'success', payload: '2'})
+   }
+}
+export function saveAdAccount(id, data, cb) {
+  return (dispatch) => {
+    callApi(`sponsoredmessaging/update/${id}`, 'post', data)
+      .then(res => {
+        // cb (res)
+        cb ({status: 'success'})
+    })
+  }
+}
+export function saveAdSet(data, cb) {
+  console.log('data for saveAdSet', data)
+  return (dispatch) => {
+    // callApi(`sponsoredmessaging/adSets`, 'post', data)
+    //   .then(res => {
+    //    cb (res)
+    // })
+    cb ({status: 'success', payload: '3'})
+  }
 }

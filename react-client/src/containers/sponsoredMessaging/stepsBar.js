@@ -10,16 +10,16 @@ class StepsBar extends React.Component {
   render () {
     return (
       <div className='row'>
-        <div className='col-md-2' />
-        <div className='col-md-8'>
-          <div id='step_container' style={{margin: 'auto', width: '90%'}}>
-            <StepItem number='1' title='Ad Account' active={true} showLine={false} />
-            <StepItem number='2' title='Campaign' active={false} showLine={true} />
-            <StepItem number='3' title='Ad Set' active={false} showLine={true} />
-            <StepItem number='4' title='Ad' active={false} showLine={true} />
+        <div className='col-md-12'>
+          <div id='step_container' style={{width: '97%'}}>
+            <center>
+              <StepItem number='1' title='Ad Account' active={true} showLine={false} currentStep={this.props.currentStep} />
+              <StepItem number='2' title='Campaign' active={this.props.currentStep !== 'adAccount'} showLine={true} currentStep={this.props.currentStep} />
+              <StepItem number='3' title='Ad Set' active={(this.props.currentStep !== 'adAccount' && this.props.currentStep !== 'campaign')} showLine={true} currentStep={this.props.currentStep} />
+              <StepItem number='4' title='Ad' active={(this.props.currentStep !== 'adAccount' && this.props.currentStep !== 'campaign' && this.props.currentStep !== 'adSet')} showLine={true} currentStep={this.props.currentStep} />
+            </center>
           </div>
         </div>
-        <div className='col-md-2' />
         {/*
       <div className='row'>
         <div className='col-md-3'>

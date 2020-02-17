@@ -7,7 +7,7 @@ class StepItem extends React.Component {
         {
           this.props.showLine &&
           <div style={{display: 'inline-block', verticalAlign: 'middle', width: '100px'}}>
-            <hr style={{border: '3px solid rgb(244, 245, 248)' }}/>
+            <hr style={{border: this.props.active ? '3px solid #34bfa3': '3px solid rgb(244, 245, 248)' }}/>
           </div>
         }
         <div style={{display: 'inline-block'}}>
