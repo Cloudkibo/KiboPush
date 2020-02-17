@@ -5,6 +5,7 @@ import { bindActionCreators } from 'redux'
 import { uploadAttachment } from '../../../redux/actions/convos.actions'
 import TEXT from './text'
 import ATTACHMENTS from './attachments'
+import GALLERY from './gallery'
 
 class SidePanel extends React.Component {
   constructor (props) {
@@ -64,6 +65,15 @@ class SidePanel extends React.Component {
         />
       case 'media':
         return <ATTACHMENTS
+          updateBroadcastData={this.props.updateBroadcastData}
+          blockId={this.props.panelProps.blockId}
+          componentData={this.props.panelProps.componentData}
+          showErrorMessage={this.showErrorMessage}
+          uploadAttachment={this.props.uploadAttachment}
+          page={this.props.page}
+        />
+      case 'gallery':
+        return <GALLERY
           updateBroadcastData={this.props.updateBroadcastData}
           blockId={this.props.panelProps.blockId}
           componentData={this.props.panelProps.componentData}
