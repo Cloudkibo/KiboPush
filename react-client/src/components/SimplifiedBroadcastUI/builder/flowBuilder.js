@@ -85,6 +85,20 @@ class FlowBuilder extends React.Component {
           fileName: '',
           fileurl: {url: ''}
         }
+      case 'gallery':
+        return {
+          id: new Date().getTime(),
+          componentName: 'gallery',
+          componentType: 'gallery',
+          cards: [{
+            buttons: [],
+            fileName: '',
+            image_url: '',
+            title: '',
+            subtitle: ''
+          }],
+          activeCard: 0
+        }
       default:
         return {}
     }

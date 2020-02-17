@@ -7,7 +7,7 @@ class Attachments extends React.Component {
     super(props)
     this.state = {
       name: props.componentData.fileName,
-      type: props.componentData.componentName,
+      type: props.componentData.componentName === 'media' ? props.componentData.mediaType : props.componentData.componentName,
       fileurl: props.componentData.fileurl.url,
       fileSelected: props.componentData.fileurl.url ? true : false,
       loading: false
@@ -29,6 +29,7 @@ class Attachments extends React.Component {
       })
       this.props.updateBroadcastData(this.props.blockId, this.props.componentData.id, 'update', data)
     } else {
+      this.setState({loading: false})
       this.props.showErrorMessage('An unexpected error occured. Please try again later')
     }
   }
@@ -79,7 +80,7 @@ class Attachments extends React.Component {
       this.setState({
         fileSelected: true,
         name: nextProps.componentData.fileName,
-        type: nextProps.componentData.componentName,
+        type: nextProps.componentData.componentName === 'media' ? nextProps.componentData.mediaType : nextProps.componentData.componentName,
         fileurl: nextProps.componentData.fileurl.url
       })
     }

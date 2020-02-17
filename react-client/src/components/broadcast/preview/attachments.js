@@ -66,7 +66,7 @@ class Attachments extends React.Component {
         </div>
         <div className="m-messenger__message-body">
           {
-            this.props.lastItem && this.props.itemPayload.text &&
+            this.props.lastItem && this.props.itemPayload.componentType === 'file' &&
             <div style={{bottom: 0}} class="m-messenger__message-arrow"></div>
           }
           {

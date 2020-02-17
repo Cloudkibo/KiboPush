@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import TEXT from './text'
 import ATTACHMENTS from './attachments'
+import GALLERY from './gallery'
 
 class Preview extends React.Component {
   constructor (props) {
@@ -61,6 +62,17 @@ class Preview extends React.Component {
           removeComponent={this.removeComponent}
           editComponent={this.editComponent}
           isActive={(item.id === this.state.activeComponent)}
+        />
+      case 'gallery':
+        return <GALLERY
+          lastItem={lastItem}
+          itemPayload={item}
+          profilePic={this.props.profilePic}
+          removeComponent={this.removeComponent}
+          editComponent={this.editComponent}
+          isActive={(item.id === this.state.activeComponent)}
+          updateBroadcastData={this.props.updateBroadcastData}
+          blockId={this.props.blockId}
         />
       default:
         return null
