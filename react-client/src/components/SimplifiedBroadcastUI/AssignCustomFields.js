@@ -119,8 +119,11 @@ class AssignCustomFields extends React.Component {
                   } 
                 }
                 rightColumns = {{
-                  groups: false,
-                  data: this.props.customFields.map(customField => { return {value: customField._id, title: customField.name} })
+                  groups: true,
+                  data: {
+                    'Default Custom Fields': this.props.customFields.filter(cf => !!cf.default).map(customField => { return {value: customField._id, title: customField.name} }),
+                    'User Defined Custom Fields': this.props.customFields.filter(cf => !cf.default).map(customField => { return {value: customField._id, title: customField.name} })
+                  }
                 }}
                 defaultLeftOption = {'Select a Field...'}
                 defaultRightOption = {'Select a Custom Field...'}

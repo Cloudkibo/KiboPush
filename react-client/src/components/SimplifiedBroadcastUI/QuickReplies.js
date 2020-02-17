@@ -480,18 +480,25 @@ class QuickReplies extends React.Component {
     } else if (action.includes('custom')) {
         return (
             <div>
-                <select value={this.state.currentActions[index].customFieldId ? this.state.currentActions[index].customFieldId : ''} style={{borderColor: !this.state.currentActions[index].customFieldId  ? 'red' : ''}} className='form-control m-input' onChange={(event) => this.updateCustomField(event, index)}>
-                    <option value={''} disabled>Select a custom field</option>
+            <select value={this.state.currentActions[index].customFieldId ? this.state.currentActions[index].customFieldId : ''} style={{borderColor: !this.state.currentActions[index].customFieldId  ? 'red' : ''}} className='form-control m-input' onChange={(event) => this.updateCustomField(event, index)}>
+              <option value={''} disabled>Select a custom field</option>
+                <optgroup label='Default Custom Fields'>
                     {
-                        this.props.customFields.map((customField, index) => {
-                            return (
-                                <option key={index} value={customField._id}>{customField.name}</option>
-                            )
-                        })
+                    this.props.customFields.filter(cf => !!cf.default).map((cf, i) => (
+                        <option key={i} value={cf._id}>{cf.name}</option>
+                    ))
                     }
-                    {/* <option value={'Custom Field 1'}>{'Custom Field 1'}</option>
-                    <option value={'Custom Field 2'}>{'Custom Field 2'}</option>
-                    <option value={'Custom Field 3'}>{'Custom Field 3'}</option>                                     */}
+                </optgroup>
+                    {
+                    this.props.customFields.filter(cf => !cf.default).length > 0 &&
+                    <optgroup label='User Defined Custom Fields'>
+                        {
+                        this.props.customFields.filter(cf => !cf.default).map((cf, i) => (
+                            <option key={i} value={cf._id}>{cf.name}</option>
+                        ))
+                        }
+                    </optgroup>
+                    }
                 </select>
                 {
                     this.state.currentActions[index].customFieldId &&
