@@ -17,7 +17,7 @@ class UpdateStories extends React.Component {
     this.state = {
       stories:  [{url: '', valid: false, loadingUrl: false, linkMsg: 'Please enter a valid website link'}],
       loading: false,
-      saveEnabled: this.props.currentFeed ? true: false,
+      saveEnabled: this.props.currentFeed && this.props.currentFeed.stories && this.props.currentFeed.stories.length > 0 ? true: false,
       fbPageId: this.props.newsPages.filter((page) => page._id === this.props.currentFeed.pageIds[0])[0].pageId
     }
     props.getFbAppId()
