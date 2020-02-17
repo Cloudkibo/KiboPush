@@ -94,7 +94,7 @@ class QuickReplies extends React.Component {
         let googleIntegration = nextProps.integrations.filter(integration => integration.integrationName === 'Google Sheets')
         let hubspotIntegration = nextProps.integrations.filter(integration => integration.integrationName === 'Hubspot')
         if (!actions.includes('google sheets') && googleIntegration && googleIntegration.length > 0) {
-            actions.push('google sheets')
+            actions.push('google_sheets')
             this.setState({actions})
         }
         if (!actions.includes('hubspot') && hubspotIntegration && hubspotIntegration.length > 0) {
@@ -238,7 +238,7 @@ class QuickReplies extends React.Component {
           return true
       }
       for (let i = 0; i < this.state.currentActions.length; i++) {
-          if (!this.state.currentActions[i].action &&
+          if (this.state.currentActions[i].action &&
             !this.state.currentActions[i].sequenceId &&
             !this.state.currentActions[i].templateId &&
             !this.state.currentActions[i].tagId &&
@@ -253,12 +253,8 @@ class QuickReplies extends React.Component {
           if (this.state.currentActions[i].googleSheetAction && !this.state.currentActions[i].worksheet && !this.state.currentActions[i].worksheetName) {
               return true
           }
-          if(this.state.currentActions[i].hubspotAction) {
-
-          }
       }
-      console.log('null')
-      return null
+      return false
   }
 
   saveQuickReply () {
@@ -716,12 +712,12 @@ class QuickReplies extends React.Component {
 
             {
                 this.state.quickReplies.length < this.quickReplyLimit &&
-                <button id={'addQuickReply'+this.props.currentId} onClick={this.addQuickReply} style={{marginLeft: '15%', marginTop: '10px', border: 'dashed', borderWidth: '1.5px', 'color': 'black'}} className="btn m-btn--pill btn-sm m-btn hoverbordercomponent">
+                <button id={`addQuickReply-${this.props.currentId}`} onClick={this.addQuickReply} style={{marginLeft: '15%', marginTop: '10px', border: 'dashed', borderWidth: '1.5px', 'color': 'black'}} className="btn m-btn--pill btn-sm m-btn hoverbordercomponent">
                     + Add Quick Reply
                 </button>
             }
 
-            <Popover placement='auto' isOpen={this.state.addingQuickReply} target={'addQuickReply'+this.props.currentId}>
+            <Popover trigger='click' placement='auto' isOpen={this.state.addingQuickReply} target={`addQuickReply-${this.props.currentId}`}>
                 <PopoverBody>
                     <div style={{paddingRight: '10px', maxHeight: '500px', overflowY: 'scroll', overflowX: 'hidden'}}>
                     <div data-toggle="modal" data-target={this.state.editing ? "#closeQuickReply" : ""} onClick={this.closeQuickReply} style={{marginLeft: '98%', cursor: 'pointer'}}><span role='img' aria-label='times'>❌</span></div>
