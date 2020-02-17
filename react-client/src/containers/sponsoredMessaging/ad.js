@@ -1,59 +1,55 @@
-/* eslint-disable no-undef */
-/**
- * Created by sojharo on 20/07/2017.
- */
-
 import React from 'react'
-import { fetchAdAccounts, saveAdAccount, updateSponsoredMessage } from '../../redux/actions/sponsoredMessaging.actions'
+import { saveDraft, updateSponsoredMessage } from '../../redux/actions/sponsoredMessaging.actions'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import Footer from './footer'
+import GenericMessage from '../../components/SimplifiedBroadcastUI/GenericMessage'
 
 class ad extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      selectedAdAccount: props.sponsoredMessage.adAccountId && props.sponsoredMessage.adAccountId !== '' ? props.sponsoredMessage.adAccountId : ''
+      buttonActions: ['open website'],
+      broadcast: this.props.sponsoredMessage.payload ? this.props.sponsoredMessage.payload : [],
+      adName: this.props.sponsoredMessage.adName ? this.props.sponsoredMessage.adName : ''
     }
-
-    props.fetchAdAccounts()
-
-    this.onAdAccountChange = this.onAdAccountChange.bind(this)
+    this.handleChange = this.handleChange.bind(this)
     this.handleBack = this.handleBack.bind(this)
-    this.handleResponse = this.handleResponse.bind(this)
+    this.changeAdName = this.changeAdName.bind(this)
   }
 
-  onAdAccountChange (e) {
-    this.setState({selectedAdAccount: e.target.value})
+  changeAdName (e) {
+    this.setState({adName: e.target.value})
+    this.props.updateSponsoredMessage(this.props.sponsoredMessage, 'adName', e.target.value)
+  }
+
+  handleChange (broadcast) {
+      this.setState(broadcast)
+      this.props.updateSponsoredMessage(this.props.sponsoredMessage, 'payload', broadcast)
   }
 
   UNSAFE_componentWillReceiveProps (nextProps) {
-    console.log('nextProps in adAccount', nextProps)
-    if (nextProps.adAccounts && nextProps.adAccounts.length > 0 ) {
-      if (nextProps.sponsoredMessage.adAccountId && nextProps.sponsoredMessage.adAccountId !== '') {
-        this.setState({selectedAdAccount: nextProps.sponsoredMessage.adAccountId})
-      } else {
-        this.setState({selectedAdAccount: nextProps.adAccounts[0].id})
-      }
-    }
+    this.props.updateSponsoredMessage(nextProps.sponsoredMessage, 'ad_name', this.state.convoTitle)
   }
 
   handleBack () {
     this.props.changeCurrentStep('adSet')
   }
 
-  handleResponse (res) {
-    if (res.status === 'success') {
-      this.props.updateSponsoredMessage(this.props.sponsoredMessage, 'adAccountId', this.state.selectedAdAccount)
-      this.props.changeCurrentStep('campaign')
-    } else {
-      this.props.msg.error(res.payload)
-    }
-  }
-
   render () {
     return (
       <div>
+        <h5>Step 04:</h5>
+        <br />
+          <span style={{fontWeight: 'normal', marginLeft: '20px'}}>Ad Name:</span>
+          <input type='text' className='form-control m-input' placeholder='Enter Ad Name...' onChange={this.changeAdName} value={this.state.adName} style={{borderRadius: '20px', width: '30%', display: 'inline-block', marginLeft: '15px'}} />
+          <GenericMessage
+            module = 'sponsorMessaging'
+            hiddenComponents={['media','audio','file','video']}
+            broadcast={this.state.broadcast}
+            handleChange={this.handleChange}
+            pageId={this.props.sponsoredMessage.pageId}
+            buttonActions={this.state.buttonActions} />
         <Footer
           currentStep='ad'
           handleBack={this.handleBack}
@@ -64,18 +60,15 @@ class ad extends React.Component {
 }
 
 function mapStateToProps (state) {
-  console.log('state in initialState.js', state)
   return {
     sponsoredMessage: state.sponsoredMessagingInfo.sponsoredMessage,
-    adAccounts: state.sponsoredMessagingInfo.adAccounts
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-    fetchAdAccounts,
-    saveAdAccount,
-    updateSponsoredMessage
+    updateSponsoredMessage,
+    saveDraft
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(ad)

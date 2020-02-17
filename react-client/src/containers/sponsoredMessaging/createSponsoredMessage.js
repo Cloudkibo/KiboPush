@@ -14,6 +14,7 @@ import StepsBar from './stepsBar'
 import AdSet from './adSet'
 import Ad from './ad'
 import {updateSponsoredMessage, saveDraft, send } from '../../redux/actions/sponsoredMessaging.actions'
+import {checkValidations } from './utility'
 
 
 class CreateSponsoredMessage extends React.Component {
@@ -22,7 +23,7 @@ class CreateSponsoredMessage extends React.Component {
     this.state = {
       isEdit: false,
       editSponsoredMessage: this.props.location.state ? this.props.location.state.sponsoredMessage : {},
-      sendDisabled: false,
+      sendDisabled: true,
       currentStep: 'adAccount'
     }
     if(this.props.location.state && this.props.location.state.module === 'edit'  && this.props.location.state.sponsoredMessage) {
@@ -31,6 +32,12 @@ class CreateSponsoredMessage extends React.Component {
     this.onEdit = this.onEdit.bind(this)
     this.onSend = this.onSend.bind(this)
     this.changeCurrentStep = this.changeCurrentStep.bind(this)
+    this.onSave = this.onSave.bind(this)
+    this.handleResponseOnSave = this.handleResponseOnSave.bind(this)
+  }
+
+  handleResponseOnSave () {
+    this.setState({sendDisabled: false})
   }
 
   changeCurrentStep (value) {
@@ -63,7 +70,18 @@ class CreateSponsoredMessage extends React.Component {
     }
   }
   onSend () {
-    this.props.send(this.props.sponsoredMessage, this.msg)
+    if (checkValidations(this.props.sponsoredMessage)) {
+      this.props.send(this.props.sponsoredMessage, this.msg)
+    } else {
+      this.msg.error('Please complete all the steps')
+    }
+  }
+  onSave () {
+    if (checkValidations(this.props.sponsoredMessage)) {
+      this.props.saveDraft(this.props.sponsoredMessage._id, this.props.sponsoredMessage, this.msg, this.handleResponseOnSave)
+    } else {
+      this.msg.error('Please complete all the steps')
+    }
   }
   render () {
     var alertOptions = {
@@ -84,6 +102,7 @@ class CreateSponsoredMessage extends React.Component {
                   onEdit={this.onEdit}
                   isEdit={this.state.isEdit}
                   sendDisabled = {this.state.sendDisabled}
+                  onSave = {this.onSave}
                 />
                 <div className='m-portlet__body'>
                   <StepsBar currentStep={this.state.currentStep} />

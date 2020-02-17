@@ -18,8 +18,7 @@ class campaign extends React.Component {
       campaignName: props.sponsoredMessage.campaignName && props.sponsoredMessage.campaignName !== '' ? props.sponsoredMessage.campaignName : '',
     }
 
-    props.fetchCampaigns()
-    console.log('in constructor of campaign')
+    props.fetchCampaigns(props.sponsoredMessage.adAccountId)
     this.handleCampaignType = this.handleCampaignType.bind(this)
     this.changeCampaignName = this.changeCampaignName.bind(this)
     this.selectCampaign = this.selectCampaign.bind(this)
@@ -119,7 +118,9 @@ class campaign extends React.Component {
                   ))
                 }
               </select>
-              : <span style={{color: 'red'}}>You do not have any existing campaigns. Please create a new one.</span>
+              : <div><span style={{color: 'red'}}>You do not have any existing campaigns. Please create a new one.</span>
+                <br />
+              </div>
               }
               <br />
             </div>
