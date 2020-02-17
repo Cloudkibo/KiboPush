@@ -1041,6 +1041,7 @@ class Builders extends React.Component {
 
   removeMessage () {
     console.log('removing message', this.state.currentId)
+    let currentId = this.state.currentId
     let linkedMessages = this.state.linkedMessages
     let unlinkedMessages = this.state.unlinkedMessages
     let lists = this.state.lists
@@ -1049,23 +1050,23 @@ class Builders extends React.Component {
 
     let messageFound = false
     for (let i = 0; i < linkedMessages.length; i++) {
-      if (linkedMessages[i].id === this.state.currentId) {
+      if (linkedMessages[i].id === currentId) {
         messageFound = true
         linkedMessages.splice(i,1)
-        delete lists[this.state.currentId]
-        delete quickReplies[this.state.currentId]
-        delete quickRepliesComponents[this.state.currentId]
+        delete lists[currentId]
+        delete quickReplies[currentId]
+        delete quickRepliesComponents[currentId]
         break
       }
     }
     if (!messageFound) {
       for (let i = 0; i < unlinkedMessages.length; i++) {
-        if (unlinkedMessages[i].id === this.state.currentId) {
+        if (unlinkedMessages[i].id === currentId) {
           messageFound = true
           unlinkedMessages.splice(i,1)
-          delete lists[this.state.currentId]
-          delete quickReplies[this.state.currentId]
-          delete quickRepliesComponents[this.state.currentId]
+          delete lists[currentId]
+          delete quickReplies[currentId]
+          delete quickRepliesComponents[currentId]
           break
         }
       }
@@ -1078,8 +1079,136 @@ class Builders extends React.Component {
       lists,
       quickReplies,
       quickRepliesComponents
+    }, () => {
+      this.deleteButtonPayload(currentId)
     })
   }
+
+  deleteButtonPayload (blockUniqueId) {
+    console.log('deleteButtonPayload', this.state)
+    let linkedMessages = this.state.linkedMessages
+    for (let i = 0; i < linkedMessages.length; i++) {
+      let message = linkedMessages[i]
+      for (let j = 0; j < message.messageContent.length; j++) {
+        let component = message.messageContent[j]
+        if (component.quickReplies) {
+          for (let k = 0; k < component.quickReplies.length; k++) {
+            let quickReply = component.quickReplies[k]
+            let payload = JSON.parse(quickReply.payload)
+            for (let l = 0; l < payload.length; l++) {
+              if (payload[l].blockUniqueId && payload[l].blockUniqueId.toString() === blockUniqueId.toString()) {
+                payload[l] = {
+                  action: 'send_message_block'
+                }
+                linkedMessages[i].messageContent[j].quickReplies[k].payload = JSON.stringify(payload)
+                return
+              }
+            } 
+          }
+        }
+        if (component.buttons) {
+          for (let k = 0; k < component.buttons.length; k++) {
+            let button = component.buttons[k]
+            if (button.type === 'postback') {
+              let payload = JSON.parse(button.payload)
+              for (let l = 0; l < payload.length; l++) {
+                if (payload[l].blockUniqueId && payload[l].blockUniqueId.toString() === blockUniqueId.toString()) {
+                  document.getElementById('button-' + linkedMessages[i].messageContent[j].buttons[k].id).style['border-color'] = 'red'
+                  payload[l] = {
+                    action: 'send_message_block'
+                  }
+                  linkedMessages[i].messageContent[j].buttons[k].payload = JSON.stringify(payload)
+                  return
+                }
+              }
+            }
+          }
+        } else if (component.cards) {
+          for (let m = 0; m < component.cards.length; m++) {
+            for (let k = 0; k < component.cards[m].buttons.length; k++) {
+              let button = component.cards[m].buttons[k]
+              if (button.type === 'postback') {
+                let payload = JSON.parse(button.payload)
+                for (let l = 0; l < payload.length; l++) {
+                  if (payload[l].blockUniqueId && payload[l].blockUniqueId.toString() === blockUniqueId.toString()) {
+                    document.getElementById('button-' + linkedMessages[i].messageContent[j].cards[m].buttons[k].id).style['border-color'] = 'red'
+                    payload[l] = {
+                      action: 'send_message_block'
+                    }
+                    linkedMessages[i].messageContent[j].cards[m].buttons[k].payload = JSON.stringify(payload)
+                    return
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    let unlinkedMessages = this.state.unlinkedMessages
+    for (let i = 0; i < unlinkedMessages.length; i++) {
+      let message = unlinkedMessages[i]
+      for (let j = 0; j < message.messageContent.length; j++) {
+        let component = message.messageContent[j]
+        if (component.quickReplies) {
+          for (let k = 0; k < component.quickReplies.length; k++) {
+            let quickReply = component.quickReplies[k]
+            let payload = JSON.parse(quickReply.payload)
+            for (let l = 0; l < payload.length; l++) {
+              if (payload[l].blockUniqueId && payload[l].blockUniqueId.toString() === blockUniqueId.toString()) {
+                payload[l] = {
+                  action: 'send_message_block'
+                }
+                unlinkedMessages[i].messageContent[j].quickReplies[k].payload = JSON.stringify(payload)
+                return
+              }
+            } 
+          }
+        }
+        if (component.buttons) {
+          for (let k = 0; k < component.buttons.length; k++) {
+            let button = component.buttons[k]
+            if (button.type === 'postback') {
+              let payload = JSON.parse(button.payload)
+              for (let l = 0; l < payload.length; l++) {
+                if (payload[l].blockUniqueId && payload[l].blockUniqueId.toString() === blockUniqueId.toString()) {
+                  document.getElementById('button-' + linkedMessages[i].messageContent[j].buttons[k].id).style['border-color'] = 'red'
+                  payload[l] = {
+                    action: 'send_message_block'
+                  }
+                  unlinkedMessages[i].messageContent[j].buttons[k].payload = JSON.stringify(payload)
+                  return
+                }
+              }
+            }
+          }
+        } else if (component.cards) {
+          for (let m = 0; m < component.cards.length; m++) {
+            for (let k = 0; k < component.cards[m].buttons.length; k++) {
+              let button = component.cards[m].buttons[k]
+              if (button.type === 'postback') {
+                let payload = JSON.parse(button.payload)
+                for (let l = 0; l < payload.length; l++) {
+                  if (payload[l].blockUniqueId && payload[l].blockUniqueId.toString() === blockUniqueId.toString()) {
+                    document.getElementById('button-' + linkedMessages[i].messageContent[j].cards[m].buttons[k].id).style['border-color'] = 'red'
+                    payload[l] = {
+                      action: 'send_message_block'
+                    }
+                    unlinkedMessages[i].messageContent[j].cards[m].buttons[k].payload = JSON.stringify(payload)
+                    return
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    this.setState({linkedMessages, unlinkedMessages})
+  }
+
+  
 
   addComponent (componentDetails, edit) {
     console.log('componentDetails', componentDetails)
