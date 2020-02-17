@@ -243,29 +243,29 @@ export function fetchAdSets (id) {
 export function saveCampaign (data, cb) {
   console.log('data for saveCampaign', data)
   return (dispatch) => {
-    // callApi(`sponsoredmessaging/campaigns`, 'post', data)
-    //   .then(res => {
-    //     cb(res)
-    //   })
-    cb({status: 'success', payload: '6166516933356'})
+    callApi(`sponsoredmessaging/campaigns`, 'post', data)
+      .then(res => {
+        cb(res)
+      })
+    // cb({status: 'success', payload: '6166516933356'})
    }
 }
 export function saveAdAccount(id, data, cb) {
   return (dispatch) => {
-    cb({status: 'success'})
-    // callApi(`sponsoredmessaging/update/${id}`, 'post', data)
-    //   .then(res => {
-    //     // cb (res)
-    // })
+    // cb({status: 'success'})
+    callApi(`sponsoredmessaging/update/${id}`, 'post', data)
+      .then(res => {
+        cb (res)
+    })
   }
 }
 export function saveAdSet(data, cb) {
   console.log('data for saveAdSet', data)
   return (dispatch) => {
-    // callApi(`sponsoredmessaging/adSets`, 'post', data)
-    //   .then(res => {
-    //    cb (res)
-    // })
-    cb ({status: 'success', payload: '3'})
+    callApi(`sponsoredmessaging/adSets`, 'post', data)
+      .then(res => {
+       cb (res)
+    })
+    // cb ({status: 'success', payload: '3'})
   }
 }
