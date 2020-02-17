@@ -125,6 +125,12 @@ class QuickReplies extends React.Component {
       }
       if (action === 'hubspot') {
         quickReplyActions.push({title: 'Hubspot', action: () => this.selectAction(action)})
+      }      
+      if (action === 'assign_tag') {
+        quickReplyActions.push({title: 'Assign Tag', action: () => this.selectAction(action)})
+      }
+      if (action === 'unassign_tag') {
+        quickReplyActions.push({title: 'Unassign Tag', action: () => this.selectAction(action)})
       }
       if (action === 'assign_tag') {
         quickReplyActions.push({title: 'Assign Tag', action: () => this.selectAction(action)})
@@ -717,7 +723,6 @@ class QuickReplies extends React.Component {
                     + Add Quick Reply
                 </button>
             }
-
             <Popover trigger='click' placement='auto' isOpen={this.state.addingQuickReply} target={`addQuickReply-${this.props.currentId}`}>
                 <PopoverBody>
                     <div style={{paddingRight: '10px', maxHeight: '500px', overflowY: 'scroll', overflowX: 'hidden'}}>

@@ -1016,9 +1016,14 @@ class Subscriber extends React.Component {
         this.loadSubscribers()
       })
     }
+    let subscriberSet = false
     if (nextProps.subscribers && nextProps.count) {
       for (let i = 0; i < nextProps.subscribers.length; i++) {
         for (let j = 0; j < this.state.subscribersData.length; j++) {
+          if (!subscriberSet && nextProps.subscribers[i]._id === this.state.subscriber._id) {
+            this.setState({subscriber: nextProps.subscribers[i]})
+            subscriberSet = true
+          }
           if (nextProps.subscribers[i]._id === this.state.subscribersData[j]._id) {
             nextProps.subscribers[i].selected = this.state.subscribersData[j].selected
           }
@@ -2159,6 +2164,7 @@ function mapStateToProps(state) {
   console.log('mapStateToProps', state)
   return {
     subscribers: (state.subscribersInfo.subscribers),
+    timestamp: (state.subscribersInfo.timestamp),
     count: (state.subscribersInfo.count),
     locales: (state.subscribersInfo.locales),
     pages: (state.pagesInfo.pages),

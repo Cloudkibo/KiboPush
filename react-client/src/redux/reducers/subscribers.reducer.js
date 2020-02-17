@@ -11,6 +11,7 @@ export function subscribersInfo (state = {}, action) {
       console.log('UPDATE_CUSTOM_FIELD_FOR_SUBSCRIBER', state)
       return Object.assign({}, state, {
         subscribers,
+        timestamp: new Date().getTime()
       })
     case ActionTypes.LOAD_SUBSCRIBERS_LIST:
       return Object.assign({}, state, {
