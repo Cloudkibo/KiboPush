@@ -938,8 +938,8 @@ class Subscriber extends React.Component {
         'Source': subscriber.source === 'customer_matching' ? 'PhoneNumber' : subscriber.source === 'direct_message' ? 'Direct Message' : 'Chat Plugin',
         'Locale': subscriber.locale,
         'Gender': subscriber.gender,
-        'tags': subscriber.tags,
-        'SubscriberId': subscriber._id
+        'tags': subscriber.tags.join(),
+        'SubscriberId': subscriber.senderId
       }
       for (var c = 0 ; c < subscriber.customFields.length; c++) {
         subscriberObj[subscriber.customFields[c].name] = subscriber.customFields[c].value
