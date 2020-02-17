@@ -1879,7 +1879,6 @@ function mapDispatchToProps (dispatch) {
       loadTags,
       loadCustomFields,
       uploadTemplate
-
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps, null, { withRef: true })(Builders)
