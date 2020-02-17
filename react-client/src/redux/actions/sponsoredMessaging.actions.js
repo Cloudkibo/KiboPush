@@ -53,32 +53,12 @@ export function createdSponsoredData (data) {
 export function fetchSponsoredMessages (){
     console.log('in fetch sponsored messages')
     return (dispatch) => {
-      let payload = {
-        count: 20,
-        sponsoredMessages: [
-          {_id : '5e4a431c45c40d0b2bb23d06',
-            'companyId' : '5aa10cdf46b4591f60e6b50c',
-            'userId' : '5aa10cdf46b4591f60e6b50b',
-            'status' : 'draft',
-            adName : 'New Ad',
-            pageId : '5b2899b3c0e3227a031bcc5b'
-          },
-          {_id : '5e4a431c45c40d0b2bb23d07',
-            'companyId' : '5aa10cdf46b4591f60e6b50c',
-            'userId' : '5aa10cdf46b4591f60e6b50b',
-            'status' : 'draft',
-            adName : 'New Ad',
-            pageId : '5b2899b3c0e3227a031bcc5b'
-          }
-        ]
-      }
-      dispatch(showAllSponsoredMessages(payload))
-        // callApi('sponsoredmessaging').then(res => {
-        //     console.log('response from sponsoredmessaging', res)
-        //     if(res.status === 'success' && res.payload){
-        //         dispatch(showAllSponsoredMessages(res.payload))
-        //     }
-        // })
+        callApi('sponsoredmessaging').then(res => {
+            console.log('response from sponsoredmessaging', res)
+            if(res.status === 'success' && res.payload){
+                dispatch(showAllSponsoredMessages(res.payload))
+            }
+        })
     }
 }
 
