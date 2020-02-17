@@ -183,12 +183,12 @@ class SurveysInfo extends React.Component {
                   <li className='nav-item m-tabs__item' />
                   <li className='nav-item m-tabs__item' />
                   <li className='m-portlet__nav-item'>
-                    <a href='#/' data-portlet-tool='toggle' className='m-portlet__nav-link m-portlet__nav-link--icon' title='' data-original-title='Collapse' onClick={this.toggle}>
+                    <div data-portlet-tool='toggle' className='m-portlet__nav-link m-portlet__nav-link--icon' title='' data-original-title='Collapse' onClick={this.toggle}>
                       {this.state.showSurveys
                       ? <i className='la la-angle-up' style={{cursor: 'pointer'}} />
                     : <i className='la la-angle-down' style={{cursor: 'pointer'}} />
                   }
-                    </a>
+                    </div>
                   </li>
                 </ul>
               </div>
