@@ -28,7 +28,6 @@ class adAccount extends React.Component {
   }
 
   UNSAFE_componentWillReceiveProps (nextProps) {
-    console.log('nextProps in adAccount', nextProps)
     if (nextProps.adAccounts && nextProps.adAccounts.length > 0 ) {
       if (nextProps.sponsoredMessage.adAccountId && nextProps.sponsoredMessage.adAccountId !== '') {
         this.setState({selectedAdAccount: nextProps.sponsoredMessage.adAccountId})

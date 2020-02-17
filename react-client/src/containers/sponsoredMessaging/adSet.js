@@ -23,7 +23,7 @@ class adSet extends React.Component {
       budgetAmount: props.sponsoredMessage.budgetAmount && props.sponsoredMessage.budgetAmount !== '' ? props.sponsoredMessage.budgetAmount : 0,
       bidAmount: props.sponsoredMessage.bidAmount && props.sponsoredMessage.bidAmount !== '' ? props.sponsoredMessage.bidAmount : 0
     }
-    props.fetchAdSets()
+    props.fetchAdSets(props.sponsoredMessage.campaignId)
 
     this.handleAdSetType = this.handleAdSetType.bind(this)
     this.changeAdSetName = this.changeAdSetName.bind(this)
@@ -88,7 +88,11 @@ class adSet extends React.Component {
       } else if (this.state.adSetName === this.props.sponsoredMessage.adSetName &&
         this.state.budgetType === this.props.sponsoredMessage.budgetType &&
         this.state.budgetAmount === this.props.sponsoredMessage.budgetAmount &&
-        this.state.bidAmount === this.props.sponsoredMessage.bidAmount
+        this.state.bidAmount === this.props.sponsoredMessage.bidAmount &&
+        this.props.sponsoredMessaging.targeting &&
+        this.state.gender === this.props.sponsoredMessaging.targeting.gender &&
+        this.state.minAge === this.props.sponsoredMessaging.targeting.maxAge &&
+        this.state.minAge === this.props.sponsoredMessaging.targeting.maxAge
       ) {
         this.props.changeCurrentStep('ad')
       } else {
@@ -194,8 +198,10 @@ class adSet extends React.Component {
                   ))
                 }
               </select>
-              : <span style={{color: 'red'}}>You do not have any existing Ad Sets. Please create a new one.</span>
-              }
+              : <div><span style={{color: 'red'}}>You do not have any existing Ad Sets. Please create a new one.</span>
+                  <br />
+                </div>
+                }
               <br />
             </div>
             }
