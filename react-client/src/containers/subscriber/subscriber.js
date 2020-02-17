@@ -931,8 +931,8 @@ class Subscriber extends React.Component {
         'Source': subscriber.source === 'customer_matching' ? 'PhoneNumber' : subscriber.source === 'direct_message' ? 'Direct Message' : 'Chat Plugin',
         'Locale': subscriber.locale,
         'Gender': subscriber.gender,
-        'tags': subscriber.tags,
-        'SubscriberId': subscriber._id
+        'tags': subscriber.tags.join(),
+        'SubscriberId': subscriber.senderId
       }
       data.push(subscriberObj)
     }
