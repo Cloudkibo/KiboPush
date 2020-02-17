@@ -39,7 +39,7 @@ class Builders extends React.Component {
   constructor (props, context) {
     super(props, context)
     let hiddenComponents = this.props.hiddenComponents.map(component => component.toLowerCase())
-    let currentId = this.props.linkedMessages ? this.props.linkedMessages[0].id : new Date().getTime()
+    let currentId = this.props.linkedMessages.length > 0 ? this.props.linkedMessages[0].id : new Date().getTime()
     let lists = {
     }
     lists[currentId] = []
