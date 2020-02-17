@@ -180,13 +180,14 @@ export function deleteSponsoredMessage(id, msg){
     }
 }
 
-export function send(data, msg) {
+export function send(data, msg, handleResponse) {
   return (dispatch) => {
-    callApi(`sponsoredmessaging/send/${data._id}`, 'post', {ad_account_id: data.ad_account_id})
+    callApi(`sponsoredmessaging/send/${data._id}`, 'post', data)
       .then(res => {
         if(res.status === 'success') {
           dispatch(fetchSponsoredMessages())
           msg.success('Ad has been sent to Ads Manager')
+          handleResponse()
         } else {
           msg.error(res.payload.message)
         }

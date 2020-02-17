@@ -23,7 +23,7 @@ class CreateSponsoredMessage extends React.Component {
     this.state = {
       isEdit: false,
       editSponsoredMessage: this.props.location.state ? this.props.location.state.sponsoredMessage : {},
-      sendDisabled: true,
+      sendDisabled: false,
       currentStep: 'adAccount'
     }
     if(this.props.location.state && this.props.location.state.module === 'edit'  && this.props.location.state.sponsoredMessage) {
@@ -33,11 +33,13 @@ class CreateSponsoredMessage extends React.Component {
     this.onSend = this.onSend.bind(this)
     this.changeCurrentStep = this.changeCurrentStep.bind(this)
     this.onSave = this.onSave.bind(this)
-    this.handleResponseOnSave = this.handleResponseOnSave.bind(this)
+    this.handleResponse = this.handleResponse.bind(this)
   }
 
-  handleResponseOnSave () {
-    this.setState({sendDisabled: false})
+  handleResponse () {
+    this.props.history.push({
+      pathname: '/sponsoredMessaging'
+    })
   }
 
   changeCurrentStep (value) {
@@ -71,14 +73,14 @@ class CreateSponsoredMessage extends React.Component {
   }
   onSend () {
     if (checkValidations(this.props.sponsoredMessage)) {
-      this.props.send(this.props.sponsoredMessage, this.msg)
+      this.props.send(this.props.sponsoredMessage, this.msg, this.handleResponse)
     } else {
       this.msg.error('Please complete all the steps')
     }
   }
   onSave () {
     if (checkValidations(this.props.sponsoredMessage)) {
-      this.props.saveDraft(this.props.sponsoredMessage._id, this.props.sponsoredMessage, this.msg, this.handleResponseOnSave)
+      this.props.saveDraft(this.props.sponsoredMessage._id, this.props.sponsoredMessage, this.msg, this.handleResponse)
     } else {
       this.msg.error('Please complete all the steps')
     }
