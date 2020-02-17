@@ -17,15 +17,23 @@ class sponsoredMessaging extends React.Component {
     this.state = {
       sponsoredMessages: [],
       totalLength: 0,
-      isShowingCreate: false,
       deleteid: '',
       showVideo: false,
       pageSelected: {},
-      pages: [],
-      isSetupShow: false,
+      searchValue: '',
+      status: '',
+      pageNumber: 0,
+      page_value: '',
+      filter: false
     }
    props.loadMyPagesList()
-   props.fetchSponsoredMessages()
+   props.fetchSponsoredMessages({last_id: 'none',
+     number_of_records: 10,
+     first_page: 'first',
+     search_value: '',
+     status_value: '',
+     page_value: ''})
+
    this.displayData = this.displayData.bind(this)
    this.showDialogDelete = this.showDialogDelete.bind(this)
    this.onEdit = this.onEdit.bind(this)
@@ -33,6 +41,92 @@ class sponsoredMessaging extends React.Component {
    this.onInsights = this.onInsights.bind(this)
    this.changePage = this.changePage.bind(this)
    this.createAd = this.createAd.bind(this)
+   this.onStatusFilter = this.onStatusFilter.bind(this)
+   this.onPageFilter = this.onPageFilter.bind(this)
+   this.isAnyFilter = this.isAnyFilter.bind(this)
+   this.searchAds = this.searchAds.bind(this)
+  }
+
+  isAnyFilter(search, page, status) {
+    if (search !== '' || page !== '' || status !== '') {
+      this.setState({
+        filter: true
+      })
+    } else {
+      this.setState({
+        filter: false
+      })
+    }
+  }
+
+  onPageFilter (e) {
+    this.setState({page_value: e.target.value, pageNumber: 0})
+    this.isAnyFilter(this.state.searchValue, e.target.value, this.state.status, this.state.type_value)
+    if (e.target.value !== '' && e.target.value !== 'all') {
+      this.setState({pageNumber: 0})
+      this.props.fetchSponsoredMessages({last_id: this.props.sponsoredMessages.length > 0 ? this.props.sponsoredMessages[this.props.sponsoredMessages.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: this.state.searchValue, status_value: this.state.status, page_value: e.target.value})
+    } else {
+      this.props.fetchSponsoredMessages({last_id: this.props.sponsoredMessages.length > 0 ? this.props.sponsoredMessages[this.props.sponsoredMessages.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: this.state.searchValue, status_value: this.state.status, page_value: ''})
+    }
+  }
+  onStatusFilter (e) {
+    this.setState({status: e.target.value, pageNumber: 0})
+    this.isAnyFilter(this.state.searchValue, this.state.page_value, e.target.value)
+    if (e.target.value !== '' && e.target.value !== 'all') {
+      this.setState({pageNumber: 0})
+      this.props.fetchSponsoredMessages({last_id: this.props.sponsoredMessages.length > 0 ? this.props.sponsoredMessages[this.props.sponsoredMessages.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: this.state.searchValue, status_value: e.target.value, page_value: this.state.page_value})
+    } else {
+      this.props.fetchSponsoredMessages({last_id: this.props.sponsoredMessages.length > 0 ? this.props.sponsoredMessages[this.props.sponsoredMessages.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: this.state.searchValue, status_value: '', page_value: this.state.page_value})
+    }
+  }
+  searchAds (event) {
+    this.setState({
+      searchValue: event.target.value, pageNumber:0
+    })
+    this.isAnyFilter(event.target.value, this.state.page_value, this.state.status)
+    if (event.target.value !== '') {
+      this.props.fetchSponsoredMessages({last_id: this.props.sponsoredMessages.length > 0 ? this.props.sponsoredMessages[this.props.sponsoredMessages.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: event.target.value.toLowerCase(), status_value: this.state.status, page_value: this.state.page_value})
+    } else {
+      this.props.fetchSponsoredMessages({last_id: this.props.sponsoredMessages.length > 0 ? this.props.sponsoredMessages[this.props.sponsoredMessages.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: '', status_value: this.state.status, page_value: this.state.page_value})
+    }
+  }
+
+  handlePageClick(data) {
+    console.log('data.selected', data.selected)
+    if (data.selected === 0) {
+      this.props.fetchSponsoredMessages({
+        last_id: 'none',
+        number_of_records: 10,
+        first_page: 'first',
+        search_value: this.state.searchValue,
+        status_value: this.state.status,
+        page_value: this.state.page_value
+      })
+    } else if (this.state.pageNumber < data.selected) {
+      this.props.fetchSponsoredMessages({
+        current_page: this.state.pageNumber,
+        requested_page: data.selected,
+        last_id: this.props.sponsoredMessages.length > 0 ? this.props.sponsoredMessages[this.props.sponsoredMessages.length - 1]._id : 'none',
+        number_of_records: 10,
+        first_page: 'next',
+        search_value: this.state.searchValue,
+        status_value: this.state.status,
+        page_value: this.state.page_value
+      })
+    } else {
+      this.props.fetchSponsoredMessages({
+        current_page: this.state.pageNumber,
+        requested_page: data.selected,
+        last_id: this.props.sponsoredMessages.length > 0 ? this.props.sponsoredMessages[this.props.sponsoredMessages.length - 1]._id : 'none',
+        number_of_records: 10,
+        first_page: 'previous',
+        search_value: this.state.searchValue,
+        status_value: this.state.status,
+        page_value: this.state.page_value
+      })
+    }
+    this.setState({pageNumber: data.selected})
+    this.displayData(data.selected, this.props.sponsoredMessages)
   }
 
   componentDidMount () {
@@ -102,25 +196,18 @@ class sponsoredMessaging extends React.Component {
     this.setState({sponsoredMessages: data})
   }
 
-  handlePageClick (data) {
-    this.displayData(data.selected, this.props.sponsoredMessages)
-  }
-
   UNSAFE_componentWillReceiveProps (nextProps) {
     if (nextProps.sponsoredMessages) {
       this.displayData(0, nextProps.sponsoredMessages)
-      this.setState({totalLength: nextProps.sponsoredMessages.length})
+    }
+    if (nextProps.count) {
+      this.setState({ totalLength: nextProps.count })
     }
     if (nextProps.pages) {
       this.setState({pageSelected: nextProps.pages[0]._id})
     }
   }
 
-
-
-  closeDialogSetup () {
-    this.setState({isSetupShow: false})
-  }
   render () {
     var alertOptions = {
       offset: 14,
@@ -129,6 +216,7 @@ class sponsoredMessaging extends React.Component {
       time: 5000,
       transition: 'scale'
     }
+    console.log('this.state.sponsoredMessages', this.state.sponsoredMessages)
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
@@ -244,6 +332,30 @@ class sponsoredMessaging extends React.Component {
                   </div>
                 </div>
                 <div className='m-portlet__body'>
+                  <div className='row' style={{marginBottom: '28px'}}>
+                      <div className='col-md-4'>
+                        <input type='text' placeholder='Search By Ad Name..' className='form-control' value={this.state.searchValue} onChange={this.searchAds} />
+                      </div>
+                      <div className='col-md-4'>
+                        <select className='custom-select' style={{width: '100%'}} value= {this.state.page_value} onChange={this.onPageFilter}>
+                          <option value='' disabled>Filter by Page...</option>
+                          <option value=''>All</option>
+                          {
+                            this.props.pages && this.props.pages.length > 0 && this.props.pages.map((page, i) => (
+                              <option key={page._id} value={page._id} selected={page._id === this.state.page_value}>{page.pageName}</option>
+                            ))
+                          }
+                        </select>
+                      </div>
+                      <div className='col-md-4'>
+                        <select className='custom-select' style={{width: '100%'}} value= {this.state.status_value} onChange={this.onStatusFilter}>
+                          <option value='' disabled>Filter by Status...</option>
+                          <option value=''>All</option>
+                          <option value='draft'>Draft</option>
+                          <option value='in_review'>In review</option>
+                        </select>
+                      </div>
+                    </div>
                   <div className='form-row'>
                     { this.state.sponsoredMessages && this.state.sponsoredMessages.length > 0
                   ? <div className='col-md-12 m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
@@ -251,9 +363,13 @@ class sponsoredMessaging extends React.Component {
                       <thead className='m-datatable__head'>
                         <tr className='m-datatable__row'
                           style={{height: '53px'}}>
-                          <th data-field='id'
+                          <th data-field='adName'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '150px'}}>Id</span>
+                            <span style={{width: '150px'}}>Ad Name</span>
+                          </th>
+                          <th data-field='pageName'
+                            className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                            <span style={{width: '100px'}}>Page Name</span>
                           </th>
                           <th data-field='status'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
@@ -261,7 +377,7 @@ class sponsoredMessaging extends React.Component {
                           </th>
                           <th data-field='actions'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '290px'}}>Actions</span>
+                            <span style={{width: '230px'}}>Actions</span>
                           </th>
                         </tr>
                       </thead>
@@ -270,20 +386,25 @@ class sponsoredMessaging extends React.Component {
                         this.state.sponsoredMessages.map((sponsoredMessage, i) => (
                           <tr data-row={i}
                             className="m-datatable__row m-datatable__row--even" key={i}>
-                            <td data-field='id' className='m-datatable__cell--center m-datatable__cell'>
-                              <span style={{width: '150px'}}>{sponsoredMessage._id}</span>
+                            <td data-field='adName' className='m-datatable__cell--center m-datatable__cell'>
+                              <span style={{width: '150px'}}>{sponsoredMessage.adName}</span>
+                            </td>
+                            <td data-field='pageName' className='m-datatable__cell--center m-datatable__cell'>
+                              <span style={{width: '100px'}}>{this.props.pages.filter((page) => page._id === sponsoredMessage.pageId)[0].pageName}</span>
                             </td>
                             <td data-field='status' className='m-datatable__cell--center m-datatable__cell'>
                               <span style={{width: '100px'}}>{sponsoredMessage.status}</span>
                             </td>
                             <td data-field='actions' className='m-datatable__cell--center m-datatable__cell'>
-                              <span style={{width: '290px'}}>
+                              <span style={{width: '230px'}}>
                                 <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2, marginLeft: '40px'}} onClick={() => this.onInsights(sponsoredMessage)}>
                                     Insights
                                 </button>
-                                <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}} onClick={() => this.onEdit(sponsoredMessage)}>
+                                {sponsoredMessage.status === 'draft' &&
+                                  <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}} onClick={() => this.onEdit(sponsoredMessage)}>
                                     Edit
-                                </button>
+                                  </button>
+                                }
                                 <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}} data-toggle="modal" data-target="#delete" onClick={() => this.showDialogDelete(sponsoredMessage._id)}>
                                     Delete
                                 </button>
@@ -325,11 +446,11 @@ class sponsoredMessaging extends React.Component {
 }
 
 function mapStateToProps (state) {
-    console.log('hhastate')
     console.log(state)
   return {
     sponsoredMessages: (state.sponsoredMessagingInfo.sponsoredMessages),
-    pages: (state.pagesInfo.pages)
+    pages: (state.pagesInfo.pages),
+    count: (state.sponsoredMessagingInfo.count)
   }
 }
 

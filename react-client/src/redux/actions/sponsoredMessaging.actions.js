@@ -4,7 +4,8 @@ import callApi from '../../utility/api.caller.service'
 export function showAllSponsoredMessages (data) {
     return {
       type: ActionTypes.SHOW_SPONSORED_MESSAGES,
-      data
+      sponsoredMessages: data.sponsoredMessages,
+      count: data.count
     }
   }
 
@@ -52,12 +53,32 @@ export function createdSponsoredData (data) {
 export function fetchSponsoredMessages (){
     console.log('in fetch sponsored messages')
     return (dispatch) => {
-        callApi('sponsoredmessaging').then(res => {
-            console.log('response from sponsoredmessaging', res)
-            if(res.status === 'success' && res.payload){
-                dispatch(showAllSponsoredMessages(res.payload))
-            }
-        })
+      let payload = {
+        count: 20,
+        sponsoredMessages: [
+          {_id : '5e4a431c45c40d0b2bb23d06',
+            'companyId' : '5aa10cdf46b4591f60e6b50c',
+            'userId' : '5aa10cdf46b4591f60e6b50b',
+            'status' : 'draft',
+            adName : 'New Ad',
+            pageId : '5b2899b3c0e3227a031bcc5b'
+          },
+          {_id : '5e4a431c45c40d0b2bb23d07',
+            'companyId' : '5aa10cdf46b4591f60e6b50c',
+            'userId' : '5aa10cdf46b4591f60e6b50b',
+            'status' : 'draft',
+            adName : 'New Ad',
+            pageId : '5b2899b3c0e3227a031bcc5b'
+          }
+        ]
+      }
+      dispatch(showAllSponsoredMessages(payload))
+        // callApi('sponsoredmessaging').then(res => {
+        //     console.log('response from sponsoredmessaging', res)
+        //     if(res.status === 'success' && res.payload){
+        //         dispatch(showAllSponsoredMessages(res.payload))
+        //     }
+        // })
     }
 }
 
@@ -84,15 +105,19 @@ export function updateSponsoredMessage(sponsoredMessage, key, value, edit) {
   console.log('value in updateSponoredmessage',value)
   if (edit) {
     let temp = sponsoredMessage
-    temp.campaignType = edit.campaignType ? edit.campaignType : temp.campaignType
-    temp.campaignName = edit.campaignName ? edit.campaignName : temp.campaignName
-    temp.campaignId = edit.campaignId ? edit.campaignId : temp.campaignId
-    temp.adSetType = edit.adSetType ? edit.adSetType : temp.adSetType
-    temp.adSetName = edit.adSetName ? edit.adSetName : temp.adSetName
-    temp.budgetType = edit.budgetType ? edit.budgetType : temp.budgetType
-    temp.budgetAmount = edit.budgetAmount ? edit.budgetAmount : temp.budgetAmount
-    temp.bidAmount = edit.bidAmount ? edit.bidAmount : temp.bidAmount
-    temp.adSetId = edit.adSetId ? edit.adSetId : temp.adSetId
+    let fields = Object.keys(edit)
+    for (let i = 0; i < fields.length; i++ ) {
+      temp[fields[i]] = edit[fields[i]]
+    }
+    // temp.campaignType = edit.campaignType ? edit.campaignType : temp.campaignType
+    // temp.campaignName = edit.campaignName ? edit.campaignName : temp.campaignName
+    // temp.campaignId = edit.campaignId ? edit.campaignId : temp.campaignId
+    // temp.adSetType = edit.adSetType ? edit.adSetType : temp.adSetType
+    // temp.adSetName = edit.adSetName ? edit.adSetName : temp.adSetName
+    // temp.budgetType = edit.budgetType ? edit.budgetType : temp.budgetType
+    // temp.budgetAmount = edit.budgetAmount ? edit.budgetAmount : temp.budgetAmount
+    // temp.bidAmount = edit.bidAmount ? edit.bidAmount : temp.bidAmount
+    // temp.adSetId = edit.adSetId ? edit.adSetId : temp.adSetId
     if (edit.targeting) {
       temp.targeting = {
         gender: edit.targeting.gender,

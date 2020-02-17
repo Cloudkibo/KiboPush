@@ -29,7 +29,6 @@ class ad extends React.Component {
   }
 
   UNSAFE_componentWillReceiveProps (nextProps) {
-    this.props.updateSponsoredMessage(nextProps.sponsoredMessage, 'ad_name', this.state.convoTitle)
   }
 
   handleBack () {
