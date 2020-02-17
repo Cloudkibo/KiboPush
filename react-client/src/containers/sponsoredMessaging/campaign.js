@@ -66,7 +66,6 @@ class campaign extends React.Component {
   }
 
   handleCampaignType (e) {
-    console.log('handleCampaignType', e.target.value)
     this.setState({campaignType: e.target.value})
   }
 
@@ -79,7 +78,6 @@ class campaign extends React.Component {
   }
 
   UNSAFE_componentWillReceiveProps (nextProps) {
-    console.log('nextProps in campaign', nextProps)
     if (nextProps.campaigns && nextProps.campaigns.length > 0) {
       if (nextProps.sponsoredMessage.campaignId && nextProps.sponsoredMessage.campaignId !== '') {
         this.setState({selectedCampaign: nextProps.sponsoredMessage.campaignId, campaignType: nextProps.sponsoredMessage.campaignType})
@@ -93,7 +91,6 @@ class campaign extends React.Component {
   }
 
   render () {
-    console.log('this.state.campaignName', this.state.campaignName)
     return (
       <div>
         <h5>Step 02:</h5>
