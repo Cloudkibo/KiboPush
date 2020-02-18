@@ -1,7 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import CARD from './card'
 
-class Text extends React.Component {
+class YouTubeVideo extends React.Component {
   constructor (props) {
     super(props)
     this.state = {}
@@ -18,23 +19,23 @@ class Text extends React.Component {
   }
 
   render () {
-    console.log('props in text preview', this.props)
+    console.log('props in YouTube video preview', this.props)
     return (
       <div key={this.props.itemPayload.id} style={{float: 'none'}} className="m-messenger__message m-messenger__message--in">
         <div style={{verticalAlign: 'bottom', width: '50px'}} className="m-messenger__message-pic">
           {
             this.props.lastItem &&
-            <img src={this.props.profilePic} alt="" class="mCS_img_loaded" />
+            <img src={this.props.profilePic} alt="" className="mCS_img_loaded" />
           }
         </div>
         <div className="m-messenger__message-body">
-          {
-            this.props.lastItem && this.props.itemPayload.text !== '' &&
-            <div style={{bottom: 0}} class="m-messenger__message-arrow"></div>
-          }
-          <div style={{minHeight: '55px'}} className="m-messenger__message-content">
-            <div className="m-messenger__message-text">
-              {this.props.itemPayload.text}
+          <div data-interval="false" className="carousel slide ui-block" data-ride="carousel">
+            <div className="carousel-inner carousel-inner-preview" style={{top: 0, right: 0}}>
+              <CARD
+                card={this.props.itemPayload}
+                selectedIndex={0}
+                currentIndex={0}
+              />
             </div>
           </div>
         </div>
@@ -55,13 +56,15 @@ class Text extends React.Component {
   }
 }
 
-Text.propTypes = {
+YouTubeVideo.propTypes = {
   'lastItem': PropTypes.bool.isRequired,
   'itemPayload': PropTypes.object.isRequired,
   'profilePic': PropTypes.string.isRequired,
   'removeComponent': PropTypes.func.isRequired,
   'editComponent': PropTypes.func.isRequired,
-  'isActive': PropTypes.bool.isRequired
+  'isActive': PropTypes.bool.isRequired,
+  'updateBroadcastData': PropTypes.func.isRequired,
+  'blockId': PropTypes.number.isRequired
 }
 
-export default Text
+export default YouTubeVideo

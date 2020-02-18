@@ -6,7 +6,7 @@ class Card extends React.Component {
     super(props)
     this.state = {
       title: props.card.title,
-      subtitle: props.card.subtitle,
+      subtitle: props.card.subtitle ? props.card.subtitle : props.card.description,
       image: props.card.image_url
     }
   }
@@ -16,7 +16,7 @@ class Card extends React.Component {
     if (nextProps.card) {
       this.setState({
         title: nextProps.card.title,
-        subtitle: nextProps.card.subtitle,
+        subtitle: nextProps.card.subtitle ? nextProps.card.subtitle : nextProps.card.description,
         image: nextProps.card.image_url
       })
     }
@@ -26,6 +26,7 @@ class Card extends React.Component {
     console.log('props in card preview', this.state)
     return (
       <div
+        id={this.props.currentIndex}
         style={{
           border: '1px solid rgba(0,0,0,.1)',
           borderRadius: '10px',

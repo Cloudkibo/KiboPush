@@ -16,7 +16,7 @@ class Link extends React.Component {
   }
 
   onValueChange (e) {
-    this.setState({url: e.target.value, loading: true, errorMsg: 'Retrieving url meta data'})
+    this.setState({url: e.target.value, loading: true, errorMsg: this.props.retrieveMsg})
   }
 
   getHelpMessageClass () {
@@ -44,14 +44,10 @@ class Link extends React.Component {
     let input = document.getElementById(`side_panel_link_component_${this.props.index}`)
     input.addEventListener('keyup', () => {
       clearTimeout(typingTimer)
-      if (self.state.url) {
-        typingTimer = setTimeout(() => {
-          self.setState({loading: true, errorMsg: 'Retrieving url meta data'})
-          self.props.handleUrlChange(self.state.url, self.props.index, self.updateStateData)
-        }, doneTypingInterval)
-      } else {
-        self.setState({errorMsg: ''})
-      }
+      typingTimer = setTimeout(() => {
+        self.setState({loading: true, errorMsg: this.props.retrieveMsg})
+        self.props.handleUrlChange(self.state.url, self.props.index, self.updateStateData)
+      }, doneTypingInterval)
     })
     input.addEventListener('keydown', () => {clearTimeout(typingTimer)})
   }
@@ -71,16 +67,16 @@ class Link extends React.Component {
   render () {
     console.log('props in link side panel', this.props)
     return (
-      <div style={{marginRight: '0px'}} className="form-group m-form__group row">
+      <div key={this.props.index} style={{marginRight: '0px'}} className="form-group m-form__group row">
         <div className={this.props.showRemove ? 'col-11' : 'col-12'}>
           <input
             id={`side_panel_link_component_${this.props.index}`}
             className="form-control m-input"
             type="text"
-            placeholder='Enter website link...'
+            placeholder={this.props.placeholder}
             value={this.state.url}
             onChange={this.onValueChange}
-            onFocus={() => this.props.updateActiveLink(this.props.index)}
+            onFocus={this.props.updateActiveLink ? () => this.props.updateActiveLink(this.props.index) : () => {}}
           />
         </div>
         {
@@ -104,9 +100,11 @@ class Link extends React.Component {
 Link.propTypes = {
   'link': PropTypes.object.isRequired,
   'index': PropTypes.number.isRequired,
-  'removeLink': PropTypes.func.isRequired,
+  'removeLink': PropTypes.func,
   'showRemove': PropTypes.bool.isRequired,
-  'handleUrlChange': PropTypes.func.isRequired
+  'handleUrlChange': PropTypes.func.isRequired,
+  'updateActiveLink': PropTypes.func,
+  'placeholder': PropTypes.string.isRequired
 }
 
 export default Link

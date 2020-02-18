@@ -82,7 +82,7 @@ ComponentsArea.propTypes = {
   'changeMessage': PropTypes.func.isRequired,
   'sidePanelStyle': PropTypes.object.isRequired,
   'handleSidePanel': PropTypes.func.isRequired,
-  'currentId': PropTypes.string.isRequired,
+  'currentId': PropTypes.number.isRequired,
   'updateBroadcastData': PropTypes.func.isRequired,
   'page': PropTypes.object.isRequired
 }

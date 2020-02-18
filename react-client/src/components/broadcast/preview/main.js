@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import TEXT from './text'
 import ATTACHMENTS from './attachments'
 import GALLERY from './gallery'
+import YOUTUBEVIDEO from './youtubeVideo'
 
 class Preview extends React.Component {
   constructor (props) {
@@ -85,6 +86,17 @@ class Preview extends React.Component {
           updateBroadcastData={this.props.updateBroadcastData}
           blockId={this.props.blockId}
         />
+      case 'YouTube video':
+        return <YOUTUBEVIDEO
+          lastItem={lastItem}
+          itemPayload={item}
+          profilePic={this.props.profilePic}
+          removeComponent={this.removeComponent}
+          editComponent={this.editComponent}
+          isActive={(item.id === this.state.activeComponent)}
+          updateBroadcastData={this.props.updateBroadcastData}
+          blockId={this.props.blockId}
+        />
       default:
         return null
     }
@@ -124,7 +136,7 @@ class Preview extends React.Component {
 Preview.propTypes = {
   'items': PropTypes.array.isRequired,
   'profilePic': PropTypes.string.isRequired,
-  'blockId': PropTypes.string.isRequired,
+  'blockId': PropTypes.number.isRequired,
   'updateBroadcastData': PropTypes.func.isRequired,
   'handleSidePanel': PropTypes.func.isRequired,
   'sidePanelStyle': PropTypes.object.isRequired

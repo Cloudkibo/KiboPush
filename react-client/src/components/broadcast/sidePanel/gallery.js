@@ -138,7 +138,7 @@ class Gallery extends React.Component {
 
 Gallery.propTypes = {
   'updateBroadcastData': PropTypes.func.isRequired,
-  'blockId': PropTypes.string.isRequired,
+  'blockId': PropTypes.number.isRequired,
   'componentData': PropTypes.object.isRequired,
   'uploadAttachment': PropTypes.func.isRequired,
   'showErrorMessage': PropTypes.func.isRequired

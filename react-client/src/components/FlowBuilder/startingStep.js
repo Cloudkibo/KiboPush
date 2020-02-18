@@ -46,7 +46,7 @@ StartingStep.propTypes = {
   'handleSidePanel': PropTypes.func.isRequired,
   'updateBroadcastData': PropTypes.func.isRequired,
   'page': PropTypes.object.isRequired,
-  'activeComponent': PropTypes.string.isRequired
+  'activeComponent': PropTypes.number
 }
 
 export default StartingStep

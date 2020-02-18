@@ -43,7 +43,7 @@ class Text extends React.Component {
 
 Text.propTypes = {
   'updateBroadcastData': PropTypes.func.isRequired,
-  'blockId': PropTypes.string.isRequired
+  'blockId': PropTypes.number.isRequired
 }
 
 export default Text

@@ -57,7 +57,7 @@ class Attachments extends React.Component {
   render () {
     console.log('props in attachments preview', this.props)
     return (
-      <div style={{float: 'none'}} className="m-messenger__message m-messenger__message--in">
+      <div key={this.props.itemPayload.id} style={{float: 'none'}} className="m-messenger__message m-messenger__message--in">
         <div style={{verticalAlign: 'bottom', width: '50px'}} className="m-messenger__message-pic">
           {
             this.props.lastItem &&
