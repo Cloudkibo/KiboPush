@@ -36,6 +36,7 @@ class Card extends React.Component {
       isshowGuideLinesImageDialog: false
     }
     this.validatedButton = false
+    this.getDeletePayload = this.getDeletePayload.bind(this)
   }
 
   showGuideLinesImageDialog () {
@@ -178,11 +179,23 @@ class Card extends React.Component {
     return true
   }
 
+  getDeletePayload () {
+    let buttons = this.state.buttons
+    let deletePayload = []
+    for (let i = 0; i < buttons.length; i++) {
+      if (buttons[i] && buttons[i].type === 'postback') {
+        let buttonPayload = JSON.parse(buttons[i].payload)
+        deletePayload = deletePayload.concat(buttonPayload)
+      }
+    }
+    return deletePayload
+  }
+
   render () {
     return (
       <div className='broadcast-component' style={{marginBottom: '50px'}}>
         {
-          <div onClick={() => { this.props.onRemove({id: this.props.id, deletePayload: this.state.buttons.map((button) => button.payload)}) }} style={{float: 'right', height: 20 + 'px', marginTop: '-20px'}}>
+          <div onClick={() => { this.props.onRemove({id: this.props.id, deletePayload: this.getDeletePayload()}) }} style={{float: 'right', height: 20 + 'px', marginTop: '-20px'}}>
             <span style={{cursor: 'pointer'}} className='fa-stack'>
               <i className='fa fa-times fa-stack-2x' />
             </span>

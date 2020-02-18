@@ -114,6 +114,7 @@ class Builders extends React.Component {
     this.updateFileUrl = this.updateFileUrl.bind(this)
     this.confirmDeleteModal = this.confirmDeleteModal.bind(this)
 
+
     this.GSModalContent = null
 
     if (props.setReset) {
