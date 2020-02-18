@@ -127,17 +127,17 @@ export function updateSponsoredMessage(sponsoredMessage, key, value, edit) {
 export function createSponsoredMessage(data, cb) {
   console.log('data for createSponsoredMessage', data)
     return (dispatch) => {
+      // let payload = {
+      //   _id: '5e4a431c45c40d0b2bb23d06',
+      //    pageId: '5b2899b3c0e3227a031bcc5b',
+      //    adName: 'New Ad'
+      // }
+      // dispatch(createdSponsoredData(payload))
         callApi('sponsoredmessaging', 'post', data)
         .then(res => {
           if(res.status === 'success'){
               cb()
-              // dispatch(createdSponsoredData(res.payload))
-              let payload = {
-                _id: '5e4a431c45c40d0b2bb23d06',
-    	           pageId: '5b2899b3c0e3227a031bcc5b',
-                 adName: 'New Ad'
-              }
-              dispatch(createdSponsoredData(payload))
+              dispatch(createdSponsoredData(res.payload))
             }
         })
         .catch(err => {
