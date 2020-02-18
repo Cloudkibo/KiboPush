@@ -115,7 +115,7 @@ ComponentsPopover.propTypes = {
   'showAddComponentModal': PropTypes.func.isRequired,
   'sidePanelStyle': PropTypes.object.isRequired,
   'handleSidePanel': PropTypes.func.isRequired,
-  'currentId': PropTypes.string.isRequired
+  'currentId': PropTypes.number.isRequired
 }
 
 export default ComponentsPopover

@@ -13,7 +13,6 @@ class LinksCarousel extends React.Component {
     }
     this.addLink = this.addLink.bind(this)
     this.removeLink = this.removeLink.bind(this)
-    this.updateLink = this.updateLink.bind(this)
     this.updateActiveLink = this.updateActiveLink.bind(this)
     this.handleUrlChange = this.handleUrlChange.bind(this)
     this.handleUrlMetaData = this.handleUrlMetaData.bind(this)
@@ -22,12 +21,6 @@ class LinksCarousel extends React.Component {
   updateActiveLink (index) {
     let data = this.props.componentData
     data.activeCard = index
-    this.props.updateBroadcastData(this.props.blockId, data.id, 'update', data)
-  }
-
-  updateLink (index, value) {
-    let data = this.props.componentData
-    data.links[index].url = value
     this.props.updateBroadcastData(this.props.blockId, data.id, 'update', data)
   }
 
@@ -121,7 +114,7 @@ class LinksCarousel extends React.Component {
         url,
         valid: false,
         loading: false,
-        errorMsg: 'Please enter a valid website link'
+        errorMsg: url ? 'Please enter a valid website link' : ''
       }
       data.cards[index] = {
         buttons: [],
@@ -152,6 +145,8 @@ class LinksCarousel extends React.Component {
               <LINK
                 link={link}
                 index={index}
+                retrieveMsg='Retrieving url meta data'
+                placeholder='Enter website link...'
                 removeLink={this.removeLink}
                 showRemove={this.props.componentData.links.length > 1 ? true : false}
                 handleUrlChange={this.handleUrlChange}
@@ -176,7 +171,7 @@ class LinksCarousel extends React.Component {
 
 LinksCarousel.propTypes = {
   'updateBroadcastData': PropTypes.func.isRequired,
-  'blockId': PropTypes.string.isRequired,
+  'blockId': PropTypes.number.isRequired,
   'componentData': PropTypes.object.isRequired,
   'urlMetaData': PropTypes.func.isRequired
 }

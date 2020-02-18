@@ -92,9 +92,9 @@ class Sidebar extends React.Component {
           <span>{this.props.fullScreen ? 'Compress' : 'Expand'}</span>
         </UncontrolledTooltip>
 
-        <div style={{marginBottom: '0px', border: '1px solid #ccc'}} class="m-portlet m-portlet--tabs col-md-12">
-          <div style={{padding: '0px', height: '4rem'}} class="m-portlet__head">
-            <div class="m-portlet__head-caption m--font-boldest">
+        <div style={{marginBottom: '0px', border: '1px solid #ccc'}} className="m-portlet m-portlet--tabs col-md-12">
+          <div style={{padding: '0px', height: '4rem'}} className="m-portlet__head">
+            <div className="m-portlet__head-caption m--font-boldest">
               <SIDEBARITEM
                 name='Add New Message Block'
                 onDrag={this.onDragMessageBlock}

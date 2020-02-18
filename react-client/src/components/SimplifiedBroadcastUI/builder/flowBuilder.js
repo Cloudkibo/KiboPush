@@ -120,6 +120,22 @@ class FlowBuilder extends React.Component {
           }],
           activeCard: 0
         }
+      case 'YouTube video':
+        return {
+          id: new Date().getTime(),
+          componentName: 'YouTube video',
+          componentType: 'card',
+          links: [{
+            errorMsg: '',
+            loading: false,
+            url: '',
+            valid: false
+          }],
+          title: '',
+          description: '',
+          image_url: '',
+          buttons: []
+        }
       default:
         return {}
     }
@@ -1186,7 +1202,7 @@ class FlowBuilder extends React.Component {
                 </div>
               </div>
             </ReactFullScreenElement>
-            <div style={{padding: '0px', border: '1px solid ' + this.state.sidePanel.headerStyle.background}} id="broadcast_side_panel" class="m-quick-sidebar m-quick-sidebar--tabbed m-quick-sidebar--skin-light">
+            <div style={{padding: '0px', border: '1px solid ' + this.state.sidePanel.headerStyle.background}} id="broadcast_side_panel" className="m-quick-sidebar m-quick-sidebar--tabbed m-quick-sidebar--skin-light">
               <SIDEPANEL
                 handleSidePanel={this.handleSidePanel}
                 panelProps={this.state.sidePanel}

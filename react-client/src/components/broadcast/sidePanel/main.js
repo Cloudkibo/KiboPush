@@ -8,6 +8,7 @@ import TEXT from './text'
 import ATTACHMENTS from './attachments'
 import GALLERY from './gallery'
 import LINKSCAROUSEL from './linksCarousel'
+import YOUTUBEVIDEO from './youtubeVideo'
 
 class SidePanel extends React.Component {
   constructor (props) {
@@ -85,6 +86,16 @@ class SidePanel extends React.Component {
         />
       case 'links carousel':
         return <LINKSCAROUSEL
+          updateBroadcastData={this.props.updateBroadcastData}
+          blockId={this.props.panelProps.blockId}
+          componentData={this.props.panelProps.componentData}
+          showErrorMessage={this.showErrorMessage}
+          uploadAttachment={this.props.uploadAttachment}
+          page={this.props.page}
+          urlMetaData={this.props.urlMetaData}
+        />
+      case 'YouTube video':
+        return <YOUTUBEVIDEO
           updateBroadcastData={this.props.updateBroadcastData}
           blockId={this.props.panelProps.blockId}
           componentData={this.props.panelProps.componentData}

@@ -169,7 +169,7 @@ class Attachments extends React.Component {
 
 Attachments.propTypes = {
   'updateBroadcastData': PropTypes.func.isRequired,
-  'blockId': PropTypes.string.isRequired,
+  'blockId': PropTypes.number.isRequired,
   'showErrorMessage': PropTypes.func.isRequired,
   'uploadAttachment': PropTypes.func.isRequired
 }

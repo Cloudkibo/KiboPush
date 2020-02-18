@@ -60,7 +60,7 @@ ComponentBlock.propTypes = {
   'getItems': PropTypes.func.isRequired,
   'linkedMessages': PropTypes.array.isRequired,
   'unlinkedMessages': PropTypes.array.isRequired,
-  'currentId': PropTypes.string.isRequired,
+  'currentId': PropTypes.number.isRequired,
   'changeMessage': PropTypes.func.isRequired,
   'removeMessage': PropTypes.func.isRequired,
   'handleSidePanel': PropTypes.func.isRequired,

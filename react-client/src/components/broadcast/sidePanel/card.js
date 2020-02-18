@@ -67,7 +67,7 @@ class Card extends React.Component {
   render () {
     console.log('props in card side panel', this.props)
     return (
-      <div style={{marginTop: this.props.id > 1 && '15px'}} className='card'>
+      <div key={this.props.id} style={{marginTop: this.props.id > 1 && '15px'}} className='card'>
         <div style={{cursor: 'pointer'}} className='card-header'>
           <span data-toggle='collapse' data-target={`#side_panel_card_${this.props.id}`} className='m--font-boldest'>{`Card# ${this.props.id}`}</span>
           {
