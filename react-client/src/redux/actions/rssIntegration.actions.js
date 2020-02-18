@@ -31,22 +31,22 @@ export function saveCurrentFeed (data) {
   }
 }
 
-export function deleteNewsFeed (id, msg, resetFilters, type) {
+export function deleteNewsFeed (id, msg, filters) {
   return (dispatch) => {
     var fetchData = {last_id: 'none',
       number_of_records: 10,
       first_page: 'first',
-      search_value: '',
-      status_value: '',
-      type_value: '',
-      integrationType: type
+      search_value: filters.search_value ? filters.search_value : '',
+      status_value: filters.status_value ? filters.status_value: '',
+      type_value: filters.type_value ? filters.type_value: '',
+      page_value: filters.page_value ? filters.page_value: '',
+      integrationType: filters.integrationType ? filters.integrationType: ''
      }
     callApi(`newsSections/${id}`, 'delete')
       .then(res => {
         if (res.status === 'success') {
           msg.success('Feed has been deleted successfully')
           dispatch(fetchNewsFeed(fetchData))
-          resetFilters()
         } else {
           msg.error('Unable to delete Feed')
         }
@@ -141,15 +141,17 @@ export function previewNewsFeed (data, msg, toggleLoader) {
       })
   }
 }
-export function updateNewsFeed (data, msg, fetchFeeds, toggleLoader) {
+export function updateNewsFeed (data, msg, fetchData, toggleLoader, filters) {
   console.log('function for updating news feeds', data)
+
   var fetchData = {last_id: 'none',
     number_of_records: 10,
     first_page: 'first',
-    search_value: '',
-    status_value: '',
-    type_value: '',
-    integrationType: data.updatedObject.integrationType
+    search_value: filters && filters.search_value ? filters.search_value : '',
+    status_value: filters && filters.status_value ? filters.status_value: '',
+    type_value: filters && filters.type_value ? filters.type_value: '',
+    page_value: filters && filters.page_value ? filters.page_value: '',
+    integrationType: filters && filters.integrationType ? filters.integrationType : ''
   }
   return (dispatch) => {
     callApi(`newsSections/edit`, 'post', data)
@@ -159,7 +161,7 @@ export function updateNewsFeed (data, msg, fetchFeeds, toggleLoader) {
         }
         console.log('response from editing news feeds', res)
         if (res.status === 'success') {
-          if (fetchFeeds) {
+          if (filters) {
             dispatch(fetchNewsFeed(fetchData))
           }
           msg.success('Feed has been updated successfully')

@@ -35,6 +35,7 @@ class RssIntegrations extends React.Component {
       search_value: '',
       status_value: '',
       type_value: '',
+      page_value: '',
       integrationType: 'rss'
     })
     props.saveCurrentFeed(null)
@@ -149,8 +150,14 @@ class RssIntegrations extends React.Component {
       feedId: feed._id,
       updatedObject: updated
     }
-    this.props.updateNewsFeed(data, this.msg, true)
-    this.resetFilters()
+    var filters = {
+      search_value: this.state.searchValue,
+      status_value: this.state.status,
+      page_value: this.state.page_value,
+      type_value: this.state.type_value,
+      integrationType: 'rss'
+    }
+    this.props.updateNewsFeed(data, this.msg, true, null, filters)
   }
   onTypeFilter (e) {
     this.setState({type_value: e.target.value, pageNumber: 0})
@@ -381,7 +388,14 @@ class RssIntegrations extends React.Component {
                   <button style={{ float: 'right' }}
                     className='btn btn-primary btn-sm'
                     onClick={() => {
-                      this.props.deleteNewsFeed(this.state.deleteId, this.msg, this.resetFilters, 'rss')
+                      var filters = {
+                        search_value: this.state.searchValue,
+                        status_value: this.state.status,
+                        page_value: this.state.page_value,
+                        type_value: this.state.type_value,
+                        integrationType: 'rss'
+                      }
+                      this.props.deleteNewsFeed(this.state.deleteId, this.msg, filters)
                     }}
                     data-dismiss='modal'>Delete
                   </button>
