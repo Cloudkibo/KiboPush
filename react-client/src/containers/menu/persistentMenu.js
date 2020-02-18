@@ -35,7 +35,8 @@ class Menu extends React.Component {
       openWebsite: false,
       webviewsize: 'FULL',
       webviewsizes: ['COMPACT', 'TALL', 'FULL'],
-      subMenuEnable: false
+      subMenuEnable: false,
+      openVideo: false
     }
 
     this.pageChange = this.pageChange.bind(this)
@@ -70,11 +71,18 @@ class Menu extends React.Component {
     this.onChangeWebviewSize = this.onChangeWebviewSize.bind(this)
     this.handleWebView = this.handleWebView.bind(this)
     this.saveMenuData = this.saveMenuData.bind(this)
+    this.openVideoTutorial = this.openVideoTutorial.bind(this)
     if (!this.props.currentMenuItem) {
       if (this.props.pages && this.props.pages.length > 0) {
         this.props.getIndexBypage(this.props.pages[0].pageId, this.handleIndexByPage)
       }
     }
+  }
+  openVideoTutorial () {
+    this.setState({
+      openVideo: true
+    })
+    this.refs.videoMenu.click()
   }
 
   componentDidMount () {
@@ -779,21 +787,27 @@ class Menu extends React.Component {
           </div>
 
         }
-        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="video" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <a href='#/' style={{ display: 'none' }} ref='videoMenu' data-toggle='modal' data-backdrop='static' data-keyboard='false' data-target="#videoMenu">videoMenu</a>
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="videoMenu" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog modal-lg" role="document">
               <div className="modal-content" style={{width: '687px', top: '100'}}>
               <div style={{ display: 'block'}} className="modal-header">
                   <h5 className="modal-title" id="exampleModalLabel">
                     Menu Video Tutorial
 									</h5>
-                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" 
+                  aria-label="Close"
+                  onClick={() => {
+                    this.setState({
+                      openVideo: false
+                    })}}>
                     <span aria-hidden="true">
                       &times;
 											</span>
                   </button>
                 </div>
                 <div style={{color: 'black'}} className="modal-body">
-                <YouTube
+                {this.state.openVideo && <YouTube
                   videoId='2I7qnG03zVs'
                   opts={{
                     height: '390',
@@ -803,6 +817,7 @@ class Menu extends React.Component {
                     }
                   }}
                 />
+                }
                 </div>
               </div>
             </div>
@@ -951,7 +966,7 @@ class Menu extends React.Component {
             </div>
             <div className='m-alert__text'>
               Need help in understanding Persistent Menu? Here is the <a href='http://kibopush.com/persistent-menu/' target='_blank' rel='noopener noreferrer'>documentation</a>.
-              Or check out this <a href='#/' data-toggle="modal" data-target="#video" onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>
+              Or check out this <a href='#/' onClick={this.openVideoTutorial}>video tutorial</a>
             </div>
           </div>
           <div
