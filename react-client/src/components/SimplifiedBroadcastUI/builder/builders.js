@@ -1054,38 +1054,28 @@ class Builders extends React.Component {
     let quickRepliesComponents = this.state.quickRepliesComponents
 
     let deletePayload = [this.state.currentId]
-    for (let i = 0; i < deletePayload.length; i++) {
-      let messageIndex = this.props.linkedMessages.findIndex(m => m.id === deletePayload[i])
-      let message = this.props.linkedMessages[messageIndex]
-      for (let j = 0; j < message.messageContent.length; j++) {
-        let messageContent = message.messageContent[j]
-        if (messageContent.quickReplies) {
-          for (let k = 0; k < messageContent.quickReplies.length; k++) {
-            let quickReply = messageContent.quickReplies[k]
-            let payload = JSON.parse(quickReply.payload)
-            for (let l = 0; l < payload.length; l++) {
-              if (payload[l].blockUniqueId) {
-                deletePayload.push(payload[l].blockUniqueId)
-              }
-            } 
-          }
-        }
-        if (messageContent.buttons) {
-          for (let k = 0; k < messageContent.buttons.length; k++) {
-            let button = messageContent.buttons[k]
-            if (button.type === 'postback') {
-              let payload = JSON.parse(button.payload)
+    let linkedMessageIndex = this.props.linkedMessages.findIndex(m => m.id === this.state.currentId)
+
+    if (linkedMessageIndex > -1) {
+      for (let i = 0; i < deletePayload.length; i++) {
+        let messageIndex = this.props.linkedMessages.findIndex(m => m.id === deletePayload[i])
+        let message = this.props.linkedMessages[messageIndex]
+        for (let j = 0; j < message.messageContent.length; j++) {
+          let messageContent = message.messageContent[j]
+          if (messageContent.quickReplies) {
+            for (let k = 0; k < messageContent.quickReplies.length; k++) {
+              let quickReply = messageContent.quickReplies[k]
+              let payload = JSON.parse(quickReply.payload)
               for (let l = 0; l < payload.length; l++) {
                 if (payload[l].blockUniqueId) {
                   deletePayload.push(payload[l].blockUniqueId)
                 }
-              }
+              } 
             }
           }
-        } else if (messageContent.cards) {
-          for (let m = 0; m < messageContent.cards.length; m++) {
-            for (let k = 0; k < messageContent.cards[m].buttons.length; k++) {
-              let button = messageContent.cards[m].buttons[k]
+          if (messageContent.buttons) {
+            for (let k = 0; k < messageContent.buttons.length; k++) {
+              let button = messageContent.buttons[k]
               if (button.type === 'postback') {
                 let payload = JSON.parse(button.payload)
                 for (let l = 0; l < payload.length; l++) {
@@ -1095,12 +1085,26 @@ class Builders extends React.Component {
                 }
               }
             }
+          } else if (messageContent.cards) {
+            for (let m = 0; m < messageContent.cards.length; m++) {
+              for (let k = 0; k < messageContent.cards[m].buttons.length; k++) {
+                let button = messageContent.cards[m].buttons[k]
+                if (button.type === 'postback') {
+                  let payload = JSON.parse(button.payload)
+                  for (let l = 0; l < payload.length; l++) {
+                    if (payload[l].blockUniqueId) {
+                      deletePayload.push(payload[l].blockUniqueId)
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       }
+      deletePayload.splice(0, 1)
+      this.removeLinkedMessages(null, deletePayload)
     }
-    deletePayload.splice(0, 1)
-    this.removeLinkedMessages(null, deletePayload)
 
     let messageFound = false
     for (let i = 0; i < linkedMessages.length; i++) {
