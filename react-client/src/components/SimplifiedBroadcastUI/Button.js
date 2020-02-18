@@ -809,14 +809,26 @@ class Button extends React.Component {
           <div id={`set_custom_field${this.buttonId}`} style={{ marginTop: '30px' }}className='card'>
             <h7 className='card-header'>Set custom field <i style={{ float: 'right', cursor: 'pointer' }} className='la la-close' onClick={() => this.closeCustomField(i)} /></h7>
             <div style={{ padding: '10px' }} className='card-block'>
-              <select value={postbackPayload[i].customFieldId ? postbackPayload[i].customFieldId : ''} style={{ borderColor: !postbackPayload[i].customFieldId ? 'red' : '' }} className='form-control m-input' onChange={(event) => this.updateCustomFieldId(event, i)}>
-                <option value={''} disabled>Select a custom field</option>
+
+
+            <select value={postbackPayload[i].customFieldId ? postbackPayload[i].customFieldId : ''} style={{ borderColor: !postbackPayload[i].customFieldId ? 'red' : '' }} className='form-control m-input' onChange={(event) => this.updateCustomFieldId(event, i)}>
+              <option value={''} disabled>Select a custom field</option>
+              <optgroup label='Default Custom Fields'>
                 {
-                  this.props.customFields.map((customField, index) => {
-                    return (
-                      <option key={index} value={customField._id}>{customField.name}</option>
-                    )
-                  })
+                  this.props.customFields.filter(cf => !!cf.default).map((cf, i) => (
+                    <option key={i} value={cf._id}>{cf.name}</option>
+                  ))
+                }
+              </optgroup>
+                {
+                  this.props.customFields.filter(cf => !cf.default).length > 0 &&
+                  <optgroup label='User Defined Custom Fields'>
+                    {
+                      this.props.customFields.filter(cf => !cf.default).map((cf, i) => (
+                        <option key={i} value={cf._id}>{cf.name}</option>
+                      ))
+                    }
+                  </optgroup>
                 }
               </select>
               {

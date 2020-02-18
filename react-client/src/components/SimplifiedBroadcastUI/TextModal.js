@@ -55,7 +55,6 @@ class TextModal extends React.Component {
     console.log('buttons in addComponent', buttons)
     console.log('buttonPayloads in addComponent', this.state.buttonPayloads)
     let deletePayload = []
-    debugger;
     if (this.state.buttonPayloads.length > 0) {
       for (let i = 0; i < this.state.buttonPayloads.length; i++) {
         let foundPayload = false
