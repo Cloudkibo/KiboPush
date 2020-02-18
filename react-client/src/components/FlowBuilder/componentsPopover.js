@@ -70,11 +70,11 @@ class ComponentsPopover extends React.Component {
               whiteSpace: 'normal',
               width: '235px'
             }}
-            onClick={() => this.onItemClick('YouTube/Facebook video')}
+            onClick={() => this.onItemClick('YouTube video')}
             type="button"
             className="btn btn-outline-brand"
           >
-              + Add YouTube/Facebook Video Component
+              + Add YouTube Video Component
           </button>
           <button
             style={{
@@ -83,7 +83,7 @@ class ComponentsPopover extends React.Component {
               whiteSpace: 'normal',
               width: '235px'
             }}
-            onClick={() => this.onItemClick('link carousel')}
+            onClick={() => this.onItemClick('links carousel')}
             type="button"
             className="btn btn-outline-brand"
           >

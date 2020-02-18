@@ -82,6 +82,7 @@ class FlowBuilder extends React.Component {
           id: new Date().getTime(),
           buttons: [],
           componentName: 'attachments',
+          componentType: 'attachments',
           fileName: '',
           fileurl: {url: ''}
         }
@@ -96,6 +97,26 @@ class FlowBuilder extends React.Component {
             image_url: '',
             title: '',
             subtitle: ''
+          }],
+          activeCard: 0
+        }
+      case 'links carousel':
+        return {
+          id: new Date().getTime(),
+          componentName: 'links carousel',
+          componentType: 'gallery',
+          cards: [{
+            buttons: [],
+            fileName: '',
+            image_url: '',
+            title: '',
+            subtitle: ''
+          }],
+          links: [{
+            errorMsg: '',
+            loading: false,
+            url: '',
+            valid: false
           }],
           activeCard: 0
         }

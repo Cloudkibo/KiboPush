@@ -66,7 +66,7 @@ class Card extends React.Component {
         </div>
         <div style={{textAlign: 'left', margin: '0px 10px', minHeight: '20px'}}>
           <span>
-            {this.state.subtitle > 25 ? `${this.state.subtitle.substring(0, 25)}...` : this.state.subtitle}
+            {this.state.subtitle.length > 25 ? `${this.state.subtitle.substring(0, 25)}...` : this.state.subtitle}
           </span>
         </div>
       </div>

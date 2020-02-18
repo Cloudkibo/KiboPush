@@ -74,6 +74,17 @@ class Preview extends React.Component {
           updateBroadcastData={this.props.updateBroadcastData}
           blockId={this.props.blockId}
         />
+      case 'links carousel':
+        return <GALLERY
+          lastItem={lastItem}
+          itemPayload={item}
+          profilePic={this.props.profilePic}
+          removeComponent={this.removeComponent}
+          editComponent={this.editComponent}
+          isActive={(item.id === this.state.activeComponent)}
+          updateBroadcastData={this.props.updateBroadcastData}
+          blockId={this.props.blockId}
+        />
       default:
         return null
     }
