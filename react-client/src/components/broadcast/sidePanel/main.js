@@ -3,9 +3,11 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { uploadAttachment } from '../../../redux/actions/convos.actions'
+import { urlMetaData } from '../../../redux/actions/convos.actions'
 import TEXT from './text'
 import ATTACHMENTS from './attachments'
 import GALLERY from './gallery'
+import LINKSCAROUSEL from './linksCarousel'
 
 class SidePanel extends React.Component {
   constructor (props) {
@@ -81,6 +83,16 @@ class SidePanel extends React.Component {
           uploadAttachment={this.props.uploadAttachment}
           page={this.props.page}
         />
+      case 'links carousel':
+        return <LINKSCAROUSEL
+          updateBroadcastData={this.props.updateBroadcastData}
+          blockId={this.props.panelProps.blockId}
+          componentData={this.props.panelProps.componentData}
+          showErrorMessage={this.showErrorMessage}
+          uploadAttachment={this.props.uploadAttachment}
+          page={this.props.page}
+          urlMetaData={this.props.urlMetaData}
+        />
       default:
         return null
     }
@@ -131,7 +143,8 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-      uploadAttachment
+      uploadAttachment,
+      urlMetaData
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(SidePanel)
