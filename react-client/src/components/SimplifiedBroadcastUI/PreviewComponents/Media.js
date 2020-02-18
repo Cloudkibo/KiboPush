@@ -15,6 +15,7 @@ class Media extends React.Component {
       media: props.media ? props.media : null
     }
     this.edit = this.edit.bind(this)
+    this.getDeletePayload = this.getDeletePayload.bind(this)
   }
 
   edit () {
@@ -100,6 +101,18 @@ class Media extends React.Component {
     return true
   }
 
+  getDeletePayload () {
+    let buttons = this.state.buttons
+    let deletePayload = []
+    for (let i = 0; i < buttons.length; i++) {
+      if (buttons[i] && buttons[i].type === 'postback') {
+        let buttonPayload = JSON.parse(buttons[i].payload)
+        deletePayload = deletePayload.concat(buttonPayload)
+      }
+    }
+    return deletePayload
+  }
+
   render () {
     return (
       <div className='broadcast-component' style={{marginBottom: '50px'}}>
@@ -107,7 +120,7 @@ class Media extends React.Component {
           (this.state.editing) && (this.props.youtubeLink ? this.openYouTubeModal() : this.openMediaModal())
         }
         <i onClick={this.edit} style={{cursor: 'pointer', marginLeft: '-15px', float: 'left', height: '20px'}} className='fa fa-pencil-square-o' aria-hidden='true' />
-        <div onClick={() => { this.props.onRemove({id: this.props.id, deletePayload: this.state.buttons.map((button) => button.payload)}) }} style={{float: 'right', height: '20px', margin: '-15px', marginRight: '-5px'}}>
+        <div onClick={() => { this.props.onRemove({id: this.props.id, deletePayload: this.getDeletePayload()}) }} style={{float: 'right', height: '20px', margin: '-15px', marginRight: '-5px'}}>
           <span style={{cursor: 'pointer'}} className='fa-stack'>
             <i className='fa fa-times fa-stack-2x' />
           </span>
