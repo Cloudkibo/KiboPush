@@ -24,7 +24,8 @@ const initialState = {
       },
       budgetType: '',
       budgetAmount: '',
-      bidAmount: ''
+      bidAmount: '',
+      currency: ''
     }
 }
 

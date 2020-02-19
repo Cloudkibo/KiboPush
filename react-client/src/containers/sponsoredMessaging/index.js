@@ -7,7 +7,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
-import {deleteSponsoredMessage, createSponsoredMessage, fetchSponsoredMessages} from '../../redux/actions/sponsoredMessaging.actions'
+import {deleteSponsoredMessage, createSponsoredMessage, fetchSponsoredMessages, showUpdatedData} from '../../redux/actions/sponsoredMessaging.actions'
 import AlertContainer from 'react-alert'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
 
@@ -165,6 +165,9 @@ class sponsoredMessaging extends React.Component {
   }
 
   onEdit (sponsoredMessage) {
+    sponsoredMessage.campaignType = 'existing'
+    sponsoredMessage.adSetType = 'existing'
+    this.props.showUpdatedData(sponsoredMessage)
     this.props.history.push({
       pathname: '/editSponsoredMessage',
       state: {module: 'edit', sponsoredMessage: sponsoredMessage}
@@ -332,6 +335,7 @@ class sponsoredMessaging extends React.Component {
                   </div>
                 </div>
                 <div className='m-portlet__body'>
+                  { this.state.sponsoredMessages && this.state.sponsoredMessages.length > 0 &&
                   <div className='row' style={{marginBottom: '28px'}}>
                       <div className='col-md-4'>
                         <input type='text' placeholder='Search By Ad Name..' className='form-control' value={this.state.searchValue} onChange={this.searchAds} />
@@ -348,7 +352,7 @@ class sponsoredMessaging extends React.Component {
                         </select>
                       </div>
                       <div className='col-md-4'>
-                        <select className='custom-select' style={{width: '100%'}} value= {this.state.status_value} onChange={this.onStatusFilter}>
+                        <select className='custom-select' style={{width: '100%'}} value= {this.state.status} onChange={this.onStatusFilter}>
                           <option value='' disabled>Filter by Status...</option>
                           <option value=''>All</option>
                           <option value='draft'>Draft</option>
@@ -356,6 +360,7 @@ class sponsoredMessaging extends React.Component {
                         </select>
                       </div>
                     </div>
+                  }
                   <div className='form-row'>
                     { this.state.sponsoredMessages && this.state.sponsoredMessages.length > 0
                   ? <div className='col-md-12 m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
@@ -459,7 +464,8 @@ function mapDispatchToProps (dispatch) {
     fetchSponsoredMessages: fetchSponsoredMessages,
     createSponsoredMessage: createSponsoredMessage,
     deleteSponsoredMessage: deleteSponsoredMessage,
-    loadMyPagesList: loadMyPagesList
+    loadMyPagesList: loadMyPagesList,
+    showUpdatedData: showUpdatedData
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(sponsoredMessaging)

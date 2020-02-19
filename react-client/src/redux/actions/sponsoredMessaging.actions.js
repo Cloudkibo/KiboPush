@@ -135,6 +135,7 @@ export function createSponsoredMessage(data, cb) {
       // dispatch(createdSponsoredData(payload))
         callApi('sponsoredmessaging', 'post', data)
         .then(res => {
+          console.log('response from createSponsoredMessage', res)
           if(res.status === 'success'){
               cb()
               dispatch(createdSponsoredData(res.payload))
@@ -252,10 +253,12 @@ export function saveCampaign (data, cb) {
    }
 }
 export function saveAdAccount(id, data, cb) {
+  console.log('data for saveAdAccount', data)
   return (dispatch) => {
     // cb({status: 'success'})
     callApi(`sponsoredmessaging/update/${id}`, 'post', data)
       .then(res => {
+        console.log('response from saveAdAccount', res)
         cb (res)
     })
   }

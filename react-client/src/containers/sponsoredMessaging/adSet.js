@@ -21,7 +21,8 @@ class adSet extends React.Component {
       maxAge: props.sponsoredMessage.targeting ? props.sponsoredMessage.targeting.maxAge : '65',
       budgetType: props.sponsoredMessage.budgetType && props.sponsoredMessage.budgetType !== '' ? props.sponsoredMessage.budgetType : 'daily_budget',
       budgetAmount: props.sponsoredMessage.budgetAmount && props.sponsoredMessage.budgetAmount !== '' ? props.sponsoredMessage.budgetAmount : 0,
-      bidAmount: props.sponsoredMessage.bidAmount && props.sponsoredMessage.bidAmount !== '' ? props.sponsoredMessage.bidAmount : 0
+      bidAmount: props.sponsoredMessage.bidAmount && props.sponsoredMessage.bidAmount !== '' ? props.sponsoredMessage.bidAmount : 0,
+      currency: props.sponsoredMessage.currency && props.sponsoredMessage.currency !== '' ? props.sponsoredMessage.currency : 'PKR'
     }
     props.fetchAdSets(props.sponsoredMessage.campaignId)
 
@@ -85,6 +86,10 @@ class adSet extends React.Component {
         this.props.msg.error('Budget Amount cannot be 0')
       } else if (this.state.bidAmount === 0 || this.state.bidAmount === '0') {
         this.props.msg.error('Bid Amount cannot be 0')
+      } else if (parseInt(this.state.minAge) > parseInt(this.state.maxAge)) {
+        this.props.msg.error('Minimum Age cannot be greater than maximum age')
+      } else if (parseInt(this.state.maxAge) < parseInt(this.state.minAge)) {
+        this.props.msg.error('Maximum Age cannot be greater than Minimum age')
       } else if (this.state.adSetName === this.props.sponsoredMessage.adSetName &&
         this.state.budgetType === this.props.sponsoredMessage.budgetType &&
         this.state.budgetAmount === this.props.sponsoredMessage.budgetAmount &&
@@ -272,11 +277,11 @@ class adSet extends React.Component {
                       <br /><br />
                       <label>Budget Amount:</label>
                       <input id='example-text-input' type='number' min='0' step='1' className='form-control' onChange={this.handleBudgetAmount} value={this.state.budgetAmount} style={{display:'inline-block', width: '10%', marginLeft: '20px'}} />
-                      <span style={{display:'inline-block', marginLeft: '5px'}}>USD</span>
+                      <span style={{display:'inline-block', marginLeft: '5px'}}>{this.state.currency}</span>
                       <br /><br />
                       <label>Bid Amount:</label>
                       <input id='example-text-input' type='number' min='0' step='1' onKeyDown={this.onKeyDown} className='form-control' onChange={this.handleBidAmount} value={this.state.bidAmount} style={{display:'inline-block', width: '10%', marginLeft: '48px'}} />
-                      <span style={{display:'inline-block', marginLeft: '5px'}}>USD</span>
+                      <span style={{display:'inline-block', marginLeft: '5px'}}>{this.state.currency}</span>
                   </div>
                 </div>
               }
