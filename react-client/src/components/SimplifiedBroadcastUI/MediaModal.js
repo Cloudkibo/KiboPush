@@ -30,7 +30,7 @@ class MediaModal extends React.Component {
   }
 
   handleDone() {
-    if (this.props.noButtons || !this.props.pages) {
+    if (this.props.noButtons) {
       this.addComponent([])
     } else {
       this.AddButton.handleDone()
@@ -158,7 +158,7 @@ class MediaModal extends React.Component {
                 size={this.state.file ? this.state.file.size : ''}
                 type={this.state.file ? this.state.file.type : ''} />
               {
-                (this.props.pages && !this.props.noButtons && this.state.file) &&
+                (!this.props.noButtons && this.state.file) &&
                 <AddButton
                   replyWithMessage={this.props.replyWithMessage}
                   buttons={this.state.buttons}
