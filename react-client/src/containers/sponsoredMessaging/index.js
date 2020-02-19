@@ -45,6 +45,8 @@ class sponsoredMessaging extends React.Component {
    this.onPageFilter = this.onPageFilter.bind(this)
    this.isAnyFilter = this.isAnyFilter.bind(this)
    this.searchAds = this.searchAds.bind(this)
+   this.handlePageClick = this.handlePageClick.bind(this)
+   
   }
 
   isAnyFilter(search, page, status) {
@@ -335,7 +337,6 @@ class sponsoredMessaging extends React.Component {
                   </div>
                 </div>
                 <div className='m-portlet__body'>
-                  { this.state.sponsoredMessages && this.state.sponsoredMessages.length > 0 &&
                   <div className='row' style={{marginBottom: '28px'}}>
                       <div className='col-md-4'>
                         <input type='text' placeholder='Search By Ad Name..' className='form-control' value={this.state.searchValue} onChange={this.searchAds} />
@@ -360,7 +361,6 @@ class sponsoredMessaging extends React.Component {
                         </select>
                       </div>
                     </div>
-                  }
                   <div className='form-row'>
                     { this.state.sponsoredMessages && this.state.sponsoredMessages.length > 0
                   ? <div className='col-md-12 m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
