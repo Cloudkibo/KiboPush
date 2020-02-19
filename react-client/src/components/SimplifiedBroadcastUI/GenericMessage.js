@@ -6,7 +6,7 @@ import { bindActionCreators } from 'redux'
 import { loadTags } from '../../redux/actions/tags.actions'
 import { fetchAllSequence } from '../../redux/actions/sequence.action'
 import { loadCustomFields } from '../../redux/actions/customFields.actions'
-
+import {validateYoutubeURL} from '../../utility/utils'
 
 // import Image from './PreviewComponents/Image'
 import Audio from './PreviewComponents/Audio'
@@ -554,7 +554,16 @@ class GenericMessage extends React.Component {
         toggleGSModal={this.toggleGSModal}
         closeGSModal={this.closeGSModal}
         addComponent={this.addComponent} />),
-      'video': (<YoutubeVideoModal
+      'video': (<LinkCarousel
+        elementLimit={1}
+        componentName={'YouTube video'}
+        header={'YouTube video'}
+        defaultErrorMsg={'Please enter a valid YouTube link'}
+        invalidMsg={'Invalid YouTube link'}
+        validMsg={'YouTube link is valid'}
+        retrievingMsg={'Retrieving YouTube video metadata'}
+        buttonTitle={'Watch on YouTube'}
+        validateUrl={(url) => validateYoutubeURL(url)}
         buttons={[]}
         noButtons={this.props.noButtons}
         module = {this.props.module}
@@ -563,7 +572,6 @@ class GenericMessage extends React.Component {
         buttonActions={this.props.buttonActions}
         pages={this.props.pages}
         replyWithMessage={this.props.replyWithMessage}
-        pageId={this.props.pageId}
         showCloseModalAlertDialog={this.showCloseModalAlertDialog}
         closeModal={this.closeAddComponentModal}
         toggleGSModal={this.toggleGSModal}
@@ -644,6 +652,15 @@ class GenericMessage extends React.Component {
       'card': {
         component: (<Card
           id={componentId}
+          elementLimit={broadcast.elementLimit}
+          componentName={broadcast.componentName}
+          header={broadcast.header}
+          defaultErrorMsg={broadcast.defaultErrorMsg}
+          invalidMsg={broadcast.invalidMsg}
+          validMsg={broadcast.validMsg}
+          retrievingMsg={broadcast.retrievingMsg}
+          buttonTitle={broadcast.buttonTitle}
+          validateUrl={broadcast.validateUrl}
           links={broadcast.links}
           fileurl={broadcast.fileurl}
           image_url={broadcast.image_url}
@@ -670,6 +687,16 @@ class GenericMessage extends React.Component {
         handler: () => {
           this.handleCard({
             id: componentId,
+            componentName: broadcast.componentName,
+            youtubeVideo: broadcast.youtubeVideo,
+            elementLimit: broadcast.elementLimit,
+            header: broadcast.header,
+            defaultErrorMsg: broadcast.defaultErrorMsg,
+            invalidMsg: broadcast.invalidMsg,
+            validMsg: broadcast.validMsg, 
+            retrievingMsg: broadcast.retrievingMsg,
+            buttonTitle: broadcast.buttonTitle,
+            validateUrl: broadcast.validateUrl,
             links: broadcast.links,
             componentType: 'card',
             title: broadcast.title ? broadcast.title : '',
