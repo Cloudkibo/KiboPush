@@ -33,10 +33,12 @@ class CreateFeed extends React.Component {
 
   pageHasDefaultFeed (pageId) {
     var defaultFeed = true
-    for (var i = 0; i < this.props.rssFeeds.length; i++) {
-      if (this.props.rssFeeds[i].pageIds[0] === pageId && this.props.rssFeeds[i].defaultFeed) {
-        defaultFeed = false
-        break
+    if (this.props.defaultFeeds) {
+      for (var i = 0; i < this.props.defaultFeeds.length; i++) {
+        if (this.props.defaultFeeds[i].pageIds[0] === pageId && this.props.defaultFeeds[i].defaultFeed) {
+          defaultFeed = false
+          break
+        }
       }
     }
     return defaultFeed
@@ -100,7 +102,7 @@ class CreateFeed extends React.Component {
         feedId: this.props.currentFeed._id,
         updatedObject: rssPayload
       }
-      this.props.updateNewsFeed(data, this.msg, false, () => {this.setState({ loading: false})})
+      this.props.updateNewsFeed(data, this.msg, true, () => {this.setState({ loading: false})})
     }
   }
 
@@ -300,7 +302,8 @@ function mapStateToProps (state) {
     rssFeeds: (state.feedsInfo.rssFeeds),
     count: (state.feedsInfo.count),
     currentFeed: (state.feedsInfo.currentFeed),
-    newsPages: (state.feedsInfo.newsPages)
+    newsPages: (state.feedsInfo.newsPages),
+    defaultFeeds: (state.feedsInfo.defaultFeeds)
   }
 }
 

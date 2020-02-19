@@ -7,7 +7,8 @@ export function showNewsFeeds (data) {
   return {
     type: ActionTypes.SHOW_RSS_FEEDS,
     rssFeeds: data.rssFeeds,
-    count: data.count
+    count: data.count,
+    defaultFeeds: data.defaultFeeds
   }
 }
 export function saveNewsPages (data) {
@@ -144,14 +145,14 @@ export function previewNewsFeed (data, msg, toggleLoader) {
 export function updateNewsFeed (data, msg, fetchData, toggleLoader, filters) {
   console.log('function for updating news feeds', data)
 
-  var fetchData = {last_id: 'none',
+  var fetchDataObj = {last_id: 'none',
     number_of_records: 10,
     first_page: 'first',
     search_value: filters && filters.search_value ? filters.search_value : '',
     status_value: filters && filters.status_value ? filters.status_value: '',
     type_value: filters && filters.type_value ? filters.type_value: '',
     page_value: filters && filters.page_value ? filters.page_value: '',
-    integrationType: filters && filters.integrationType ? filters.integrationType : ''
+    integrationType: filters && filters.integrationType ? filters.integrationType : data.updatedObject.integrationType
   }
   return (dispatch) => {
     callApi(`newsSections/edit`, 'post', data)
@@ -161,8 +162,8 @@ export function updateNewsFeed (data, msg, fetchData, toggleLoader, filters) {
         }
         console.log('response from editing news feeds', res)
         if (res.status === 'success') {
-          if (filters) {
-            dispatch(fetchNewsFeed(fetchData))
+          if (fetchData) {
+            dispatch(fetchNewsFeed(fetchDataObj))
           }
           msg.success('Feed has been updated successfully')
         } else {

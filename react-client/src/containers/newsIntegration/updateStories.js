@@ -61,7 +61,7 @@ class UpdateStories extends React.Component {
       let linkMsg = ''
       if (!data) {
         linkMsg = 'Invalid website link'
-      } else if (!data.ogTitle && !data.ogDescription) {
+      } else if (!data.ogTitle) {
         linkMsg = 'Not enough metadata present in link'
       }
       if (stories[index]) {
