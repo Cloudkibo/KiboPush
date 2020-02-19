@@ -51,7 +51,7 @@ class UpdateRow extends React.Component {
 
   componentDidMount () {
     console.log('in componentDidMount of UpdateRow', this.props)
-    if (!this.props.mapping && !this.props.questions) {
+    if (this.props.mapping && !this.props.questions) {
       let mappingDataValues = [].concat(this.props.mapping)
       for (let i = 0; i < this.props.mapping.length; i++) {
         if (this.props.mapping[i].kiboPushColumn) {
@@ -364,7 +364,7 @@ class UpdateRow extends React.Component {
               <select className='form-control m-input m-input--square' value={this.state.lookUpColumn} onChange={this.onLookUpColumnChange}>
                 <option key='' value='' disabled>Select a Column...</option>
                 {
-                  this.props.columns.googleSheetColumns.map((column, i) => (
+                  this.props.columns.googleSheetColumns.filter(column => { return column }).map((column, i) => (
                     <option key={i} value={column}>{column}</option>
                   ))
                 }
@@ -415,7 +415,7 @@ class UpdateRow extends React.Component {
               }
               rightColumns = {{
                 groups: false,
-                data: this.props.columns.googleSheetColumns.map(column => { return {value: column, title: column} })
+                data: this.props.columns.googleSheetColumns.filter(column => { return column }).map(column => {return {value: column, title: column}})
               }}
               defaultLeftOption = {'Select a Field...'}
               defaultRightOption = {'Select a Google Sheet Column...'}

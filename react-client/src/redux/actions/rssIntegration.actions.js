@@ -3,7 +3,7 @@ import callApi from '../../utility/api.caller.service'
 export const API_URL = '/api'
 
 
-export function showRssFeeds (data) {
+export function showNewsFeeds (data) {
   return {
     type: ActionTypes.SHOW_RSS_FEEDS,
     rssFeeds: data.rssFeeds,
@@ -31,30 +31,32 @@ export function saveCurrentFeed (data) {
   }
 }
 
-export function deleteRssFeed (id, msg, resetFilters) {
+export function deleteNewsFeed (id, msg, filters) {
   return (dispatch) => {
     var fetchData = {last_id: 'none',
       number_of_records: 10,
       first_page: 'first',
-      search_value: '',
-      status_value: '',
+      search_value: filters.search_value ? filters.search_value : '',
+      status_value: filters.status_value ? filters.status_value: '',
+      type_value: filters.type_value ? filters.type_value: '',
+      page_value: filters.page_value ? filters.page_value: '',
+      integrationType: filters.integrationType ? filters.integrationType: ''
      }
-    callApi(`rssFeeds/${id}`, 'delete')
+    callApi(`newsSections/${id}`, 'delete')
       .then(res => {
         if (res.status === 'success') {
-          msg.success('Rss feed has been deleted successfully')
-          dispatch(fetchRssFeed(fetchData))
-          resetFilters()
+          msg.success('Feed has been deleted successfully')
+          dispatch(fetchNewsFeed(fetchData))
         } else {
-          msg.error('Unable to delete Rss feed')
-        }      
+          msg.error('Unable to delete Feed')
+        }
       })
 
   }
 }
 export function checkSubscriptionPermissions (handle) {
   return (dispatch) => {
-    callApi(`rssFeeds/checkSMP`, 'get')
+    callApi(`newsSections/checkSMP`, 'get')
       .then(res => {
         if (res.status === 'success') {
           handle(res.payload)
@@ -65,16 +67,16 @@ export function checkSubscriptionPermissions (handle) {
       })
   }
 }
-export function fetchRssFeed (data) {
-  console.log('function for fetching rss feeds', data)
+export function fetchNewsFeed (data) {
+  console.log('function for fetching news feeds', data)
   return (dispatch) => {
-    callApi(`rssFeeds/fetchFeeds`, 'post', data)
+    callApi(`newsSections/fetchFeeds`, 'post', data)
       .then(res => {
-        console.log('response from fetching rss feeds', res)
+        console.log('response from fetching news feeds', res)
         if (res.status === 'success') {
-          dispatch(showRssFeeds(res.payload))
+          dispatch(showNewsFeeds(res.payload))
         } else {
-          dispatch(showRssFeeds({rssFeeds: [], count: 0}))
+          dispatch(showNewsFeeds({rssFeeds: [], count: 0}))
         }
       })
   }
@@ -83,9 +85,9 @@ export function fetchRssFeed (data) {
 export function fetchFeedPosts (data) {
   console.log('function for fetching feed posts', data)
   return (dispatch) => {
-    callApi(`rssFeeds/rssFeedPosts`, 'post', data)
+    callApi(`newsSections/rssFeedPosts`, 'post', data)
       .then(res => {
-        console.log('response from fetching rss feeds', res)
+        console.log('response from fetching news feeds', res)
         if (res.status === 'success') {
           dispatch(showRssFeedPosts(res.payload))
         } else {
@@ -95,21 +97,23 @@ export function fetchFeedPosts (data) {
   }
 }
 
-export function createRssFeed (data, msg, handle, toggleLoader) {
-  console.log('function for creating rss feeds', data)
+export function createNewsFeed (data, msg, handle, toggleLoader) {
+  console.log('function for creating news feeds', data)
   return (dispatch) => {
       var fetchData = {last_id: 'none',
       number_of_records: 10,
       first_page: 'first',
       search_value: '',
       status_value: '',
+      type_value: '',
+      integrationType: data.integrationType
     }
-    callApi(`rssFeeds/create`, 'post', data)
+    callApi(`newsSections/create`, 'post', data)
       .then(res => {
-        console.log('response from creating rss feeds', res)
+        console.log('response from creating news feeds', res)
         if (res.status === 'success') {
-          msg.success('Rss feed saved successfully')
-          dispatch(fetchRssFeed(fetchData))
+          msg.success('Feed saved successfully')
+          dispatch(fetchNewsFeed(fetchData))
           handle(res.payload)
         } else {
           if (toggleLoader) {
@@ -120,15 +124,15 @@ export function createRssFeed (data, msg, handle, toggleLoader) {
       })
   }
 }
-export function previewRssFeed (data, msg, toggleLoader) {
-  console.log('function for previewing rss feeds', data)
+export function previewNewsFeed (data, msg, toggleLoader) {
+  console.log('function for previewing news feeds', data)
   return (dispatch) => {
-    callApi(`rssFeeds/preview`, 'post', data)
+    callApi(`newsSections/preview`, 'post', data)
       .then(res => {
         if (toggleLoader) {
           toggleLoader()
         }
-        console.log('response from previewing rss feeds', res)
+        console.log('response from previewing news feeds', res)
         if (res.status === 'success') {
           msg.success('Preview message sent successfully to your messenger')
         } else {
@@ -137,24 +141,28 @@ export function previewRssFeed (data, msg, toggleLoader) {
       })
   }
 }
-export function updateFeed (data, msg, fetchFeeds, toggleLoader) {
-  console.log('function for updating rss feeds', data)
+export function updateNewsFeed (data, msg, fetchData, toggleLoader, filters) {
+  console.log('function for updating news feeds', data)
+
   var fetchData = {last_id: 'none',
     number_of_records: 10,
     first_page: 'first',
-    search_value: '',
-    status_value: '',
+    search_value: filters && filters.search_value ? filters.search_value : '',
+    status_value: filters && filters.status_value ? filters.status_value: '',
+    type_value: filters && filters.type_value ? filters.type_value: '',
+    page_value: filters && filters.page_value ? filters.page_value: '',
+    integrationType: filters && filters.integrationType ? filters.integrationType : ''
   }
   return (dispatch) => {
-    callApi(`rssFeeds/edit`, 'post', data)
+    callApi(`newsSections/edit`, 'post', data)
       .then(res => {
         if (toggleLoader) {
           toggleLoader()
         }
-        console.log('response from editing rss feeds', res)
+        console.log('response from editing news feeds', res)
         if (res.status === 'success') {
-          if (fetchFeeds) {
-            dispatch(fetchRssFeed(fetchData))
+          if (filters) {
+            dispatch(fetchNewsFeed(fetchData))
           }
           msg.success('Feed has been updated successfully')
         } else {
@@ -162,7 +170,7 @@ export function updateFeed (data, msg, fetchFeeds, toggleLoader) {
             msg.error(res.payload)
           } else {
             msg.error('Failed to update feed ')
-          }     
+          }
         }
       })
   }

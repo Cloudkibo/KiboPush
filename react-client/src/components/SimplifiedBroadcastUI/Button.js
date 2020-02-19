@@ -150,8 +150,10 @@ class Button extends React.Component {
       hubspotAction: hubSpotFormPayload.hubspotAction,
       hubSpotForm: hubSpotFormPayload.hubSpotForm,
       portalId: hubSpotFormPayload.portalId,
+      formId: hubSpotFormPayload.hubSpotForm,
       mapping: hubSpotFormPayload.mapping,
-      identityFieldValue: hubSpotFormPayload.identityFieldValue
+      identityFieldValue: hubSpotFormPayload.identityFieldValue,
+      identityCustomFieldValue:hubSpotFormPayload.identityFieldValue, 
     })
     this.setState({postbackPayload})
     if (this.state.title !== '') {

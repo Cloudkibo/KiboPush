@@ -468,9 +468,9 @@ class OperationalDashboard extends React.Component {
                       </li>
                       <li className=' nav-item m-tabs__item m-portlet__nav-item m-dropdown m-dropdown--inline m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push' data-dropdown-toggle='click' aria-expanded='true'>
                         <div id='target' ref={(b) => { this.target = b }} style={{marginTop: '18px', marginLeft: '10px', zIndex: 6}} className='align-center'>
-                          <a href='#/' onClick={this.handleClick} style={{padding: 10 + 'px', cursor:'pointer'}}> <i className='flaticon flaticon-more' /> </a>
+                          <div onClick={this.handleClick} style={{padding: 0 + 'px', cursor:'pointer'}}> <i className='flaticon flaticon-more' /> </div>
                           <Popover
-                            style={{boxShadow: '0 8px 16px 0 rgba(0,0,0,0.2)', borderRadius: '5px', zIndex: 25}}
+                            style={{boxShadow: '0 8px 16px 0 rgba(0,0,0,0.2)', borderRadius: '5px', zIndex: 25, width:'auto', marginLeft:'-50px'}}
                             placement='bottom'
                             target={this.target}
                             show={this.state.openPopover}
@@ -478,6 +478,7 @@ class OperationalDashboard extends React.Component {
                             <div>
                               <div>
                                 <label style={{color: '#716aca'}}>Filters:</label>
+                                <br/>
                                 <select className='custom-select' id='m_form_status' tabIndex='-98' value={this.state.genderValue} onChange={this.onFilterByGender}>
                                   <option key='Gender' value='' disabled>Filter by gender...</option>
                                   <option key='GenderALL' value='all'>All</option>

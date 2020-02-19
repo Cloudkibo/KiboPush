@@ -52,12 +52,12 @@ class FeedPosts extends React.Component {
       valid = false
     } else if (startDate !== '' && endDate === '') {
       this.setState({
-        dateRangeWarning: {type: 'end', warning: 'Select end date to apply filter'}
+        dateRangeWarning: {type: 'end', warning:'Select end date to apply filter'}
       })
       valid = false
     } else if (moment(startDate).isAfter(endDate)) {
       this.setState({
-        dateRangeWarning: {type: 'start', warning: 'Incorrect Range'}
+        dateRangeWarning:  {type: 'start', warning:'Incorrect Range'}
       })
       valid = false
     } else {
@@ -228,8 +228,8 @@ class FeedPosts extends React.Component {
                       max= {moment().format('YYYY-MM-DD')}
                       type='date'/>
                     { this.state.dateRangeWarning !== '' && this.state.dateRangeWarning.type === 'end' && <span style={{color: 'red'}}className='m-form__help'>
-                        {this.state.dateRangeWarning.warning}
-                      </span> }
+                      {this.state.dateRangeWarning.warning}
+                    </span> }
                   </div>
                 </div>
               </div>
@@ -295,7 +295,7 @@ class FeedPosts extends React.Component {
             </div>
             <div className='m-portlet__foot m-portlet__foot--fit'>
               <div className='col-12' style={{textAlign: 'right', paddingTop: '30px', paddingBottom: '30px'}}>
-                <Link to='/rssIntegration'>
+                <Link to='/newsIntegration'>
                   <button className='btn btn-secondary'>
                     Back
                   </button>

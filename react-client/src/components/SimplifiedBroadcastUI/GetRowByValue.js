@@ -178,6 +178,7 @@ class UpdateRow extends React.Component {
       </div>
     )
     for (let i = 0; i < googleSheetColumns.length; i++) {
+      if (googleSheetColumns[i]) {
       content.push(
         <div>
         <div className='row'>
@@ -213,6 +214,7 @@ class UpdateRow extends React.Component {
         </div>
       )
     }
+  }
     return content
   }
 
@@ -278,7 +280,7 @@ class UpdateRow extends React.Component {
               <select className='form-control m-input m-input--square' value={this.state.lookUpColumn} onChange={this.onLookUpColumnChange}>
                 <option key='' value='' disabled>Select a Column...</option>
                 {
-                  this.props.columns.googleSheetColumns.map((column, i) => (
+                  this.props.columns.googleSheetColumns.filter(column => { return column }).map((column, i) => (
                     <option key={i} value={column}>{column}</option>
                   ))
                 }
