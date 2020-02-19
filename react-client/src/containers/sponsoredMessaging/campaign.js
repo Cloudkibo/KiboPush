@@ -36,7 +36,7 @@ class campaign extends React.Component {
         if (this.state.campaignName === this.props.sponsoredMessage.campaignName) {
           this.props.changeCurrentStep('adSet')
         } else {
-          this.props.saveCampaign({_id: this.props.sponsoredMessage._id, type: this.state.campaignType, name: this.state.campaignName, adAccountId: this.props.campaignId}, this.handleResponse)
+          this.props.saveCampaign({_id: this.props.sponsoredMessage._id, type: this.state.campaignType, name: this.state.campaignName, adAccountId: this.props.sponsoredMessage.adAccountId}, this.handleResponse)
         }
       }
     } else if (this.state.campaignType === 'existing') {
