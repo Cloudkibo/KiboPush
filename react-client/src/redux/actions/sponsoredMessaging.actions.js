@@ -53,7 +53,7 @@ export function createdSponsoredData (data) {
 export function fetchSponsoredMessages (data) {
     console.log('data for fetchSponsoredMessages', data)
     return (dispatch) => {
-        callApi('sponsoredmessaging', 'post', data).then(res => {
+        callApi('sponsoredmessaging/fetchSponsoredMessages', 'post', data).then(res => {
             console.log('response from sponsoredmessaging', res)
             if(res.status === 'success' && res.payload){
                 dispatch(showAllSponsoredMessages(res.payload))
@@ -265,7 +265,8 @@ export function saveAdSet(data, cb) {
   return (dispatch) => {
     callApi(`sponsoredmessaging/adSets`, 'post', data)
       .then(res => {
-       cb (res)
+        console.log('response from saveAdSet', res)
+        cb (res)
     })
     // cb ({status: 'success', payload: '3'})
   }
