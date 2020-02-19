@@ -101,6 +101,7 @@ class adSet extends React.Component {
       ) {
         this.props.changeCurrentStep('ad')
       } else {
+        let pageId = this.props.pages && this.props.pages.filter(p => p._id === this.props.sponsoredMessage.pageId)[0].pageId
         this.props.saveAdSet({
           _id: this.props.sponsoredMessage._id,
           type: this.state.adSetType,
@@ -113,7 +114,9 @@ class adSet extends React.Component {
             minAge: this.state.minAge,
             maxAge: this.state.maxAge
           },
-          campaignId: this.props.sponsoredMessage.campaignId
+          campaignId: this.props.sponsoredMessage.campaignId,
+          pageId: pageId,
+          currency: this.props.sponsoredMessage.currency
         }, this.handleResponse)
       }
     }
@@ -301,7 +304,8 @@ function mapStateToProps (state) {
   console.log('state in initialState.js', state)
   return {
     sponsoredMessage: state.sponsoredMessagingInfo.sponsoredMessage,
-    adSets: state.sponsoredMessagingInfo.adSets
+    adSets: state.sponsoredMessagingInfo.adSets,
+    pages: state.pagesInfo.pages
   }
 }
 
