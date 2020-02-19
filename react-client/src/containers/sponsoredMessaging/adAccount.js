@@ -41,13 +41,15 @@ class adAccount extends React.Component {
     if (this.state.selectedAdAccount === '') {
       this.props.msg.error('Please select an Ad Account')
     } else {
-      this.props.saveAdAccount(this.props.sponsoredMessage._id, {adAccountId: this.state.selectedAdAccount}, this.handleResponse)
+      let currency = this.props.adAccounts.filter(a => a.id === this.state.selectedAdAccount)[0].currency
+      this.props.saveAdAccount(this.props.sponsoredMessage._id, {adAccountId: this.state.selectedAdAccount, currency: currency}, this.handleResponse)
     }
   }
 
   handleResponse (res) {
     if (res.status === 'success') {
-      this.props.updateSponsoredMessage(this.props.sponsoredMessage, 'adAccountId', this.state.selectedAdAccount)
+      let currency = this.props.adAccounts.filter(a => a.id === this.state.selectedAdAccount)[0].currency
+      this.props.updateSponsoredMessage(this.props.sponsoredMessage, '', '', {adAccountId: this.state.selectedAdAccount, currency: currency})
       this.props.changeCurrentStep('campaign')
     } else {
       this.props.msg.error(res.payload)
