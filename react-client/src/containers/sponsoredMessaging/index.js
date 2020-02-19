@@ -46,7 +46,7 @@ class sponsoredMessaging extends React.Component {
    this.isAnyFilter = this.isAnyFilter.bind(this)
    this.searchAds = this.searchAds.bind(this)
    this.handlePageClick = this.handlePageClick.bind(this)
-   
+
   }
 
   isAnyFilter(search, page, status) {
@@ -300,7 +300,7 @@ class sponsoredMessaging extends React.Component {
               <i className='flaticon-technology m--font-accent' />
             </div>
             <div className='m-alert__text'>
-              Need help in understanding Sponsored Messages? Here is the <a href='#/' target='_blank' rel='noopener noreferrer'>documentation</a>.
+              Need help in understanding Sponsored Messages? Here is the <a href='https://kibopush.com/sponsored-broadcast/' target='_blank' rel='noopener noreferrer'>documentation</a>.
               Or check out this <a href='#/' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>
             </div>
           </div>
@@ -429,6 +429,7 @@ class sponsoredMessaging extends React.Component {
                         pageCount={Math.ceil(this.state.totalLength / 10)}
                         marginPagesDisplayed={2}
                         pageRangeDisplayed={3}
+                        forcePage={this.state.pageNumber}
                         onPageChange={this.handlePageClick}
                         containerClassName={'pagination'}
                         subContainerClassName={'pages pagination'}
