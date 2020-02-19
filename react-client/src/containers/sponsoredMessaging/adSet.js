@@ -94,10 +94,10 @@ class adSet extends React.Component {
         this.state.budgetType === this.props.sponsoredMessage.budgetType &&
         this.state.budgetAmount === this.props.sponsoredMessage.budgetAmount &&
         this.state.bidAmount === this.props.sponsoredMessage.bidAmount &&
-        this.props.sponsoredMessaging.targeting &&
-        this.state.gender === this.props.sponsoredMessaging.targeting.gender &&
-        this.state.minAge === this.props.sponsoredMessaging.targeting.maxAge &&
-        this.state.minAge === this.props.sponsoredMessaging.targeting.maxAge
+        this.props.sponsoredMessage.targeting &&
+        this.state.gender === this.props.sponsoredMessage.targeting.gender &&
+        this.state.minAge === this.props.sponsoredMessage.targeting.maxAge &&
+        this.state.minAge === this.props.sponsoredMessage.targeting.maxAge
       ) {
         this.props.changeCurrentStep('ad')
       } else {
