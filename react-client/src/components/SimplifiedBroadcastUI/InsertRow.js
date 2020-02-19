@@ -152,8 +152,10 @@ class InsertRow extends React.Component {
         let mappingData = []
         let mappingDataValues = []
         for (let i = 0; i < nextProps.columns.googleSheetColumns.length; i++) {
-          mappingData.push({googleSheetColumn: nextProps.columns.googleSheetColumns[i]})
-          mappingDataValues.push('')
+          if(nextProps.columns.googleSheetColumns[i]) {
+            mappingData.push({googleSheetColumn: nextProps.columns.googleSheetColumns[i]})
+            mappingDataValues.push('')
+          }
         }
         console.log('mappingData in UNSAFE_componentWillReceiveProps', mappingData)
         if (this.state.mappingData === '') {
@@ -347,7 +349,7 @@ class InsertRow extends React.Component {
               }
               rightColumns = {{
                 groups: false,
-                data: this.props.columns.googleSheetColumns.map(column => { return {value: column, title: column} })
+                data: this.props.columns.googleSheetColumns.filter(column => { return column }).map(column => {return {value: column, title: column}})
               }}
               defaultLeftOption = {'Select a Field...'}
               defaultRightOption = {'Select a Google Sheet Column...'}
