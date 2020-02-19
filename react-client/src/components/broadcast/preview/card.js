@@ -6,7 +6,7 @@ class Card extends React.Component {
     super(props)
     this.state = {
       title: props.card.title,
-      subtitle: props.card.subtitle ? props.card.subtitle : props.card.description,
+      subtitle: (props.card.subtitle || props.card.subtitle === '') ? props.card.subtitle : props.card.description,
       image: props.card.image_url
     }
   }
@@ -16,7 +16,7 @@ class Card extends React.Component {
     if (nextProps.card) {
       this.setState({
         title: nextProps.card.title,
-        subtitle: nextProps.card.subtitle ? nextProps.card.subtitle : nextProps.card.description,
+        subtitle: (nextProps.card.subtitle || nextProps.card.subtitle === '')? nextProps.card.subtitle : nextProps.card.description,
         image: nextProps.card.image_url
       })
     }
@@ -29,7 +29,7 @@ class Card extends React.Component {
         id={this.props.currentIndex}
         style={{
           border: '1px solid rgba(0,0,0,.1)',
-          borderRadius: '10px',
+          borderRadius: this.props.card.buttons.length > 0 ? '10px 10px 0px 0px' : '10px',
           width: '150px',
           maxWidth: '150px',
           margin: 'auto 15px',

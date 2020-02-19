@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import BUTTONITEM from './buttonItem'
 
 class Attachments extends React.Component {
   constructor (props) {
@@ -36,16 +37,47 @@ class Attachments extends React.Component {
           </audio>
         )
       case 'image':
-        return (<img
-          style={{maxWidth: '175px', borderRadius: '10px'}}
-          src={this.props.itemPayload.fileurl.url}
-          alt={this.props.itemPayload.fileName}
-        />)
+        return (
+          <div>
+            <img
+              style={{maxWidth: '175px', borderRadius: this.props.itemPayload.buttons.length > 0 ? '10px 10px 0px 0px' : '10px'}}
+              src={this.props.itemPayload.fileurl.url}
+              alt={this.props.itemPayload.fileName}
+            />
+            {
+              this.props.itemPayload.buttons.map(button => (
+                <div style={{border: 'none'}} className='card'>
+                  <BUTTONITEM
+                    title={button.title}
+                  />
+                </div>
+              ))
+            }
+          </div>
+        )
       case 'video':
         return (
-          <video style={{maxWidth: '175px', borderRadius: '10px'}} controls>
-            <source src={this.props.itemPayload.fileurl.url} />
-          </video>
+          <div>
+            <video
+              style={{
+                maxWidth: '175px',
+                marginBottom: '-6px',
+                borderRadius: this.props.itemPayload.buttons.length > 0 ? '10px 10px 0px 0px' : '10px'
+              }}
+              controls
+            >
+              <source src={this.props.itemPayload.fileurl.url} />
+            </video>
+            {
+              this.props.itemPayload.buttons.map(button => (
+                <div style={{border: 'none'}} className='card'>
+                  <BUTTONITEM
+                    title={button.title}
+                  />
+                </div>
+              ))
+            }
+          </div>
         )
       default:
         return (

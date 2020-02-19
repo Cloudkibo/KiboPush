@@ -1,11 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { RingLoader } from 'halogenium'
+import BUTTONSCONTAINER from './buttonsContainer'
 
 class Attachments extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
+      buttons: props.componentData.buttons,
       name: props.componentData.fileName,
       type: props.componentData.componentName === 'media' ? props.componentData.mediaType : props.componentData.componentName,
       fileurl: props.componentData.fileurl.url,
@@ -15,6 +17,10 @@ class Attachments extends React.Component {
     this.onFileChange = this.onFileChange.bind(this)
     this.handleFile = this.handleFile.bind(this)
     this.uploadFile = this.uploadFile.bind(this)
+    this.addButton = this.addButton.bind(this)
+    this.updateButton = this.updateButton.bind(this)
+    this.removeButton = this.removeButton.bind(this)
+    this.scrollToBottom = this.scrollToBottom.bind(this)
   }
 
   handleFile (res, data) {
@@ -42,15 +48,13 @@ class Attachments extends React.Component {
     fileData.append('filesize', file.size)
     fileData.append('pages', JSON.stringify([this.props.page._id]))
     fileData.append('componentType', type)
-    var fileInfo = {
-      id: this.props.componentData.id,
-      componentType: component,
-      componentName: component,
-      mediaType: component === 'media' && type,
-      fileName: file.name,
-      type: file.type,
-      size: file.size
-    }
+    var fileInfo = this.props.componentData
+    fileInfo.componentType = component
+    fileInfo.componentName = component
+    fileInfo.mediaType = component === 'media' && type
+    fileInfo.fileName = file.name
+    fileInfo.type = file.type
+    fileInfo.size = file.size
     this.props.uploadAttachment(fileData, fileInfo, this.handleFile)
   }
 
@@ -74,6 +78,34 @@ class Attachments extends React.Component {
     }
   }
 
+  addButton (button) {
+    let data = this.props.componentData
+    data.buttons.push(button)
+    this.setState({buttons: data.buttons}, () => {
+      setTimeout(this.scrollToBottom, 1)
+    })
+    this.props.updateBroadcastData(this.props.blockId, data.id, 'update', data)
+  }
+
+  updateButton (button, index) {
+    let data = this.props.componentData
+    data.buttons[index] = button
+    this.props.updateBroadcastData(this.props.blockId, data.id, 'update', data)
+  }
+
+  removeButton (index) {
+    let data = this.props.componentData
+    data.buttons.splice(index, 1)
+    this.setState({buttons: data.buttons})
+    this.props.updateBroadcastData(this.props.blockId, data.id, 'update', data)
+  }
+
+  scrollToBottom () {
+    if (this.bottom) {
+      this.bottom.scrollIntoView({behavior: 'smooth', block: 'end'})
+    }
+  }
+
   UNSAFE_componentWillReceiveProps (nextProps) {
     console.log('componentWillRecieveProps of attachments side panel called ', nextProps)
     if (nextProps.componentData) {
@@ -81,7 +113,8 @@ class Attachments extends React.Component {
         fileSelected: true,
         name: nextProps.componentData.fileName,
         type: nextProps.componentData.componentName === 'media' ? nextProps.componentData.mediaType : nextProps.componentData.componentName,
-        fileurl: nextProps.componentData.fileurl.url
+        fileurl: nextProps.componentData.fileurl.url,
+        buttons: nextProps.componentData.buttons
       })
     }
   }
@@ -98,70 +131,84 @@ class Attachments extends React.Component {
           accept='image/*, audio/*, video/*, application/*, text/*'
           onChange={this.onFileChange}
         />
-        <span className='m--font-boldest'>Attachment:</span>
-        {
-          this.state.loading
-          ? <div className="m-dropzone dropzone m-dropzone--primary dz-clickable" id="side_panel_attachments_component_dropzone">
-            <div style={{marginTop: '15px'}} className='align-center'>
-              <center><RingLoader color='#5867dd' /></center>
+        <div id='dynamic_height_sidepanel' style={{maxHeight: '550px', overflow: 'scroll'}}>
+          <span className='m--font-boldest'>Attachment:</span>
+          {
+            this.state.loading
+            ? <div className="m-dropzone dropzone m-dropzone--primary dz-clickable" id="side_panel_attachments_component_dropzone">
+              <div style={{marginTop: '15px'}} className='align-center'>
+                <center><RingLoader color='#5867dd' /></center>
+              </div>
             </div>
-          </div>
-          : this.state.fileSelected && this.state.type === 'file'
-          ? <div onClick={() => {this.refs.select_attachment.click()}} className="m-dropzone dropzone m-dropzone--primary dz-clickable" id="side_panel_attachments_component_dropzone">
-            <div className="m-dropzone__msg dz-message needsclick">
-              <h2 style={{color: '#5867dd'}} className="m-dropzone__msg-title">
-                <i className="fa fa-file-text" /> {this.state.name}
-              </h2>
-              <span className="m-dropzone__msg-desc">
-                Click to upload new attachment of size upto 25MB
-              </span>
+            : this.state.fileSelected && this.state.type === 'file'
+            ? <div onClick={() => {this.refs.select_attachment.click()}} className="m-dropzone dropzone m-dropzone--primary dz-clickable" id="side_panel_attachments_component_dropzone">
+              <div className="m-dropzone__msg dz-message needsclick">
+                <h2 style={{color: '#5867dd'}} className="m-dropzone__msg-title">
+                  <i className="fa fa-file-text" /> {this.state.name}
+                </h2>
+                <span className="m-dropzone__msg-desc">
+                  Click to upload new attachment of size upto 25MB
+                </span>
+              </div>
             </div>
-          </div>
-          : this.state.fileSelected && this.state.type === 'audio'
-          ? <div onClick={() => {this.refs.select_attachment.click()}} className="m-dropzone dropzone m-dropzone--primary dz-clickable" id="side_panel_attachments_component_dropzone">
-            <div className="m-dropzone__msg dz-message needsclick">
-              <audio controls>
-                <source src={this.state.fileurl} />
-              </audio>
-              <br />
-              <span className="m-dropzone__msg-desc">
-                Click to upload new attachment of size upto 25MB
-              </span>
+            : this.state.fileSelected && this.state.type === 'audio'
+            ? <div onClick={() => {this.refs.select_attachment.click()}} className="m-dropzone dropzone m-dropzone--primary dz-clickable" id="side_panel_attachments_component_dropzone">
+              <div className="m-dropzone__msg dz-message needsclick">
+                <audio controls>
+                  <source src={this.state.fileurl} />
+                </audio>
+                <br />
+                <span className="m-dropzone__msg-desc">
+                  Click to upload new attachment of size upto 25MB
+                </span>
+              </div>
             </div>
-          </div>
-          : this.state.fileSelected && this.state.type === 'image'
-          ? <div onClick={() => {this.refs.select_attachment.click()}} className="m-dropzone dropzone m-dropzone--primary dz-clickable" id="side_panel_attachments_component_dropzone">
-            <div className="m-dropzone__msg dz-message needsclick">
-              <img style={{maxWidth: '300px'}} src={this.state.fileurl} alt={this.state.name} />
-              <br />
-              <span className="m-dropzone__msg-desc">
-                Click to upload new attachment of size upto 25MB
-              </span>
+            : this.state.fileSelected && this.state.type === 'image'
+            ? <div onClick={() => {this.refs.select_attachment.click()}} className="m-dropzone dropzone m-dropzone--primary dz-clickable" id="side_panel_attachments_component_dropzone">
+              <div className="m-dropzone__msg dz-message needsclick">
+                <img style={{maxWidth: '300px'}} src={this.state.fileurl} alt={this.state.name} />
+                <br />
+                <span className="m-dropzone__msg-desc">
+                  Click to upload new attachment of size upto 25MB
+                </span>
+              </div>
             </div>
-          </div>
-          : this.state.fileSelected && this.state.type === 'video'
-          ? <div onClick={() => {this.refs.select_attachment.click()}} className="m-dropzone dropzone m-dropzone--primary dz-clickable" id="side_panel_attachments_component_dropzone">
-            <div className="m-dropzone__msg dz-message needsclick">
-              <video style={{maxWidth: '300px'}} controls>
-                <source src={this.state.fileurl} />
-              </video>
-              <br />
-              <span className="m-dropzone__msg-desc">
-                Click to upload new attachment of size upto 25MB
-              </span>
+            : this.state.fileSelected && this.state.type === 'video'
+            ? <div onClick={() => {this.refs.select_attachment.click()}} className="m-dropzone dropzone m-dropzone--primary dz-clickable" id="side_panel_attachments_component_dropzone">
+              <div className="m-dropzone__msg dz-message needsclick">
+                <video style={{maxWidth: '300px'}} controls>
+                  <source src={this.state.fileurl} />
+                </video>
+                <br />
+                <span className="m-dropzone__msg-desc">
+                  Click to upload new attachment of size upto 25MB
+                </span>
+              </div>
             </div>
-          </div>
-          : <div onClick={() => {this.refs.select_attachment.click()}} className="m-dropzone dropzone m-dropzone--primary dz-clickable" id="side_panel_attachments_component_dropzone">
-            <div className="m-dropzone__msg dz-message needsclick">
-              <h3 className="m-dropzone__msg-title">
-                Click to upload attachment
-              </h3>
-              <span className="m-dropzone__msg-desc">
-                Upload image or video or file of size upto 25MB
-              </span>
+            : <div onClick={() => {this.refs.select_attachment.click()}} className="m-dropzone dropzone m-dropzone--primary dz-clickable" id="side_panel_attachments_component_dropzone">
+              <div className="m-dropzone__msg dz-message needsclick">
+                <h3 className="m-dropzone__msg-title">
+                  Click to upload attachment
+                </h3>
+                <span className="m-dropzone__msg-desc">
+                  Upload image or video or file of size upto 25MB
+                </span>
+              </div>
             </div>
-          </div>
-        }
+          }
+          {
+            ['image', 'video'].includes(this.state.type) &&
+            <BUTTONSCONTAINER
+              buttons={this.state.buttons}
+              addButton={this.addButton}
+              updateButton={this.updateButton}
+              removeButton={this.removeButton}
+              limit={3}
+            />
+          }
+          <div style={{float: 'left', clear: 'both'}}
+            ref={(el) => { this.bottom = el }} />
+        </div>
       </div>
     )
   }

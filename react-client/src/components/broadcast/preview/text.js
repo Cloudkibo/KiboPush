@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import BUTTONITEM from './buttonItem'
 
 class Text extends React.Component {
   constructor (props) {
@@ -29,14 +30,25 @@ class Text extends React.Component {
         </div>
         <div className="m-messenger__message-body">
           {
-            this.props.lastItem && this.props.itemPayload.text !== '' &&
+            this.props.lastItem &&
+            this.props.itemPayload.text !== '' &&
+            this.props.itemPayload.buttons.length === 0 &&
             <div style={{bottom: 0}} class="m-messenger__message-arrow"></div>
           }
-          <div style={{minHeight: '55px'}} className="m-messenger__message-content">
+          <div style={{minHeight: '55px', borderRadius: this.props.itemPayload.buttons.length > 0 && '10px 10px 0px 0px'}} className="m-messenger__message-content">
             <div className="m-messenger__message-text">
               {this.props.itemPayload.text}
             </div>
           </div>
+          {
+            this.props.itemPayload.buttons.map((button, index) => (
+              <div key={`button-preview-${this.props.itemPayload.id}-${index}`} style={{marginLeft: '10px', border: 'none'}} className='card'>
+                <BUTTONITEM
+                  title={button.title}
+                />
+              </div>
+            ))
+          }
         </div>
         {
           !this.props.isActive &&
