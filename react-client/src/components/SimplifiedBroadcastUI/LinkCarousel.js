@@ -176,6 +176,7 @@ class LinkCarouselModal extends React.Component {
                 validateUrl:this.props.validateUrl,
                 links: this.state.links,
                 componentType: 'gallery',
+                //componentName: 'links carousel',
                 cards
             }, this.props.edit)
         }

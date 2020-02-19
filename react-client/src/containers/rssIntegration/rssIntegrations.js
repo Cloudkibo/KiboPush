@@ -600,7 +600,8 @@ function mapStateToProps (state) {
   return {
     pages: (state.pagesInfo.pages),
     rssFeeds: (state.feedsInfo.rssFeeds),
-    count: (state.feedsInfo.count)
+    count: (state.feedsInfo.count),
+    defaultFeeds: (state.feedsInfo.defaultFeeds)
   }
 }
 
