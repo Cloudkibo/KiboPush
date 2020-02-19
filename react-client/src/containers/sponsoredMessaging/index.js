@@ -46,7 +46,7 @@ class sponsoredMessaging extends React.Component {
    this.isAnyFilter = this.isAnyFilter.bind(this)
    this.searchAds = this.searchAds.bind(this)
    this.handlePageClick = this.handlePageClick.bind(this)
-   
+
   }
 
   isAnyFilter(search, page, status) {
@@ -429,6 +429,7 @@ class sponsoredMessaging extends React.Component {
                         pageCount={Math.ceil(this.state.totalLength / 10)}
                         marginPagesDisplayed={2}
                         pageRangeDisplayed={3}
+                        forcePage={this.state.pageNumber}
                         onPageChange={this.handlePageClick}
                         containerClassName={'pagination'}
                         subContainerClassName={'pages pagination'}
