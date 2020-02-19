@@ -38,6 +38,9 @@ class Gallery extends React.Component {
         data.cards[index].size = value.size
         data.cards[index].type = value.type
         break
+      case 'buttons':
+        data.cards[index].buttons = value
+        break
       default:
         return null
     }
@@ -72,7 +75,7 @@ class Gallery extends React.Component {
     const data = this.props.componentData
     data.activeCard = this.props.componentData.cards.length - 1
     this.setState({activeCard: data.cards.length}, () => {
-      this.scrollToBottom()
+      setTimeout(this.scrollToBottom, 1)
     })
     this.props.updateBroadcastData(this.props.blockId, this.props.componentData.id, 'update', data)
   }
@@ -88,8 +91,9 @@ class Gallery extends React.Component {
   }
 
   scrollToBottom () {
+    console.log('scrollToBottom called in gallery')
     if (this.bottom) {
-      this.bottom.scrollIntoView({behavior: 'smooth'})
+      this.bottom.scrollIntoView({behavior: 'smooth', block: 'end'})
     }
   }
 

@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import CARD from './card'
+import BUTTONITEM from './buttonItem'
 
 class Gallery extends React.Component {
   constructor (props) {
@@ -61,6 +62,15 @@ class Gallery extends React.Component {
                   selectedIndex={this.props.itemPayload.activeCard}
                   currentIndex={index}
                 />
+              ))
+            }
+            {
+              this.props.itemPayload.cards[this.props.itemPayload.activeCard].buttons.map(button => (
+                <div style={{marginLeft: '15px', border: 'none', maxWidth: '150px'}} className='card'>
+                  <BUTTONITEM
+                    title={button.title}
+                  />
+                </div>
               ))
             }
             </div>

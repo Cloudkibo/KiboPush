@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import CARD from './card'
+import BUTTONITEM from './buttonItem'
 
 class YouTubeVideo extends React.Component {
   constructor (props) {
@@ -36,6 +37,15 @@ class YouTubeVideo extends React.Component {
                 selectedIndex={0}
                 currentIndex={0}
               />
+              {
+                this.props.itemPayload.buttons.map(button => (
+                  <div style={{marginLeft: '15px', border: 'none', maxWidth: '150px'}} className='card'>
+                    <BUTTONITEM
+                      title={button.title}
+                    />
+                  </div>
+                ))
+              }
             </div>
           </div>
         </div>

@@ -1,11 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { RingLoader } from 'halogenium'
+import BUTTONSCONTAINER from './buttonsContainer'
 
 class Card extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
+      buttons: props.card.buttons,
       title: props.card.title,
       subtitle: props.card.subtitle,
       image: props.card.fileName,
@@ -16,6 +18,10 @@ class Card extends React.Component {
     this.onSubtitleChange = this.onSubtitleChange.bind(this)
     this.onImageChange = this.onImageChange.bind(this)
     this.handleImageUpload = this.handleImageUpload.bind(this)
+    this.addButton = this.addButton.bind(this)
+    this.updateButton = this.updateButton.bind(this)
+    this.removeButton = this.removeButton.bind(this)
+    this.scrollToBottom = this.scrollToBottom.bind(this)
   }
 
   onTitleChange (e) {
@@ -49,6 +55,35 @@ class Card extends React.Component {
       } else {
         this.props.uploadImage(file, this.props.id - 1, this.handleImageUpload)
       }
+    }
+  }
+
+  addButton (button) {
+    let data = this.state.buttons
+    data.push(button)
+    this.setState({buttons: data}, () => {
+      setTimeout(this.scrollToBottom, 1)
+    })
+    this.props.updateCard('buttons', data, this.props.id - 1)
+  }
+
+  updateButton (button, index) {
+    let data = this.state.buttons
+    data[index] = button
+    this.props.updateCard('buttons', data, this.props.id - 1)
+  }
+
+  removeButton (index) {
+    let data = this.state.buttons
+    data.splice(index, 1)
+    this.setState({buttons: data})
+    this.props.updateCard('buttons', data, this.props.id - 1)
+  }
+
+  scrollToBottom () {
+    const cardBottom = document.getElementById(`card-${this.props.id}`)
+    if (cardBottom) {
+      cardBottom.scrollIntoView({behavior: 'smooth', block: 'end'})
     }
   }
 
@@ -155,6 +190,14 @@ class Card extends React.Component {
                 </div>
               </div>
             </div>
+            <BUTTONSCONTAINER
+              buttons={this.state.buttons}
+              addButton={this.addButton}
+              updateButton={this.updateButton}
+              removeButton={this.removeButton}
+              limit={3}
+            />
+            <div id={`card-${this.props.id}`} style={{float: 'left', clear: 'both'}} />
           </div>
         </div>
       </div>
