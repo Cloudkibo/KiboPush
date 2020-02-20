@@ -281,7 +281,7 @@ class Header extends React.Component {
           data-logged_in_greeting='Hi, Let us know if you find any bugs or have a feature request'
           data-logged_out_greeting='Hi, Let us know if you find any bugs or have a feature request' />
 
-        {this.props.socketData && Object.keys(this.props.socketData).length > 0 &&
+        {this.props.socketData && Object.keys(this.props.socketData).length > 0 && !this.props.socketData.action &&
           <Notification
           ignore={this.state.ignore}
           title={'New Message'}

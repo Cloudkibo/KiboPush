@@ -659,9 +659,9 @@ class ChatBox extends React.Component {
     }
     if (nextProps.socketData && nextProps.socketData.subscriber_id === nextProps.currentSession._id) {
       console.log('socketData matches currentSession', nextProps.socketData)
-      if (nextProps.socketData.subscriber.waitingForUserInput && nextProps.socketData.subscriber.waitingForUserInput.componentIndex === -1) {
+      if (nextProps.socketData.subscriber && nextProps.socketData.subscriber.waitingForUserInput && nextProps.socketData.subscriber.waitingForUserInput.componentIndex === -1) {
         this.setState({waitingForUserInput: false})
-      } else if (nextProps.socketData.subscriber.waitingForUserInput && nextProps.socketData.subscriber.waitingForUserInput.componentIndex !== -1) {
+      } else if (nextProps.socketData.subscriber && nextProps.socketData.subscriber.waitingForUserInput && nextProps.socketData.subscriber.waitingForUserInput.componentIndex !== -1) {
         this.setState({waitingForUserInput: true})
       }
     }
@@ -2049,7 +2049,7 @@ class ChatBox extends React.Component {
                      </div>
                   }
                 </div>
-                : (!this.state.sessionValid) ? 
+                : (!this.state.sessionValid) ?
                 <span>
                   <p>
                     Chat's 24 hours window session has been expired for this subscriber. You cannot send a message to this subscriber now. Please ask the subsriber to message you first in order to be able to chat with him/her.
