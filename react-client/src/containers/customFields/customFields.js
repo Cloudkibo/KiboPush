@@ -16,12 +16,20 @@ class CustomFields extends React.Component {
       filter: false,
       search_value: '',
       pageNumber: 0,
-      showingSearchResult: true
+      showingSearchResult: true,
+      openVideo: false
     }
     props.loadCustomFields()
     this.createCustomField = this.createCustomField.bind(this)
     this.updateCustomField = this.updateCustomField.bind(this)
     this.deleteCustomField = this.deleteCustomField.bind(this)
+    this.openVideoTutorial = this.openVideoTutorial.bind(this)
+  }
+  openVideoTutorial () {
+    this.setState({
+      openVideo: true
+    })
+    this.refs.customFieldVideo.click()
   }
 
   componentDidMount() {
@@ -108,7 +116,8 @@ class CustomFields extends React.Component {
             </div>
           </div>
         </div>
-        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="video" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <a href='#/' style={{ display: 'none' }} ref='customFieldVideo' data-toggle='modal' data-backdrop='static' data-keyboard='false' data-target="#customFieldVideo">videoMessengerRefModal</a>
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="customFieldVideo" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog modal-lg" role="document">
             <div className="modal-content" style={{ width: '687px', top: '100' }}>
               <div style={{ display: 'block' }} className="modal-header">
@@ -122,7 +131,7 @@ class CustomFields extends React.Component {
                 </button>
               </div>
               <div style={{ color: 'black' }} className="modal-body">
-                <YouTube
+              {this.state.openVideo && <YouTube
                   videoId='XZRjUDSZDWo'
                   opts={{
                     height: '390',
@@ -132,6 +141,7 @@ class CustomFields extends React.Component {
                     }
                   }}
                 />
+                }
               </div>
             </div>
           </div>
@@ -141,7 +151,12 @@ class CustomFields extends React.Component {
           <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog modal-lg" role="document">
             <div className="modal-content">
               <div style={{ display: 'block' }} className="modal-header">
-                <button style={{ marginTop: '-60px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                <button style={{ marginTop: '-60px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" 
+                aria-label="Close"
+                onClick={() => {
+                  this.setState({
+                    openVideo: false
+                  })}}>
                   <span aria-hidden="true">
                     &times;
                     </span>
@@ -149,7 +164,7 @@ class CustomFields extends React.Component {
               </div>
               <div style={{ color: 'black' }} className="modal-body">
                 <div>
-                  <YouTube
+                {this.state.openVideo && <YouTube
                     videoId='9kY3Fmj_tbM'
                     opts={{
                       height: '390',
@@ -159,6 +174,7 @@ class CustomFields extends React.Component {
                       }
                     }}
                   />
+                  }
                 </div>
               </div>
             </div>
@@ -184,7 +200,7 @@ class CustomFields extends React.Component {
             </div>
             <div className='m-alert__text'>
               Need help in understanding custom fields? Here is the <a href='http://kibopush.com/custom-fields/' target='_blank' rel='noopener noreferrer'>documentation</a>.
-              Or check out this <a href='#/' data-toggle="modal" data-target="#video">video tutorial</a>
+              Or check out this <a href='#/' onClick={this.openVideoTutorial}>video tutorial</a>
             </div>
           </div>
           <div className='row'>

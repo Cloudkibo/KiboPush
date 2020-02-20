@@ -71,6 +71,10 @@ export function dashboardInfo (state = initialState, action) {
       return Object.assign({}, state, {
         integrationsSummary: action.data
       })
+    case ActionTypes.UPDATE_NEWS_SUMMARY:
+      return Object.assign({}, state, {
+        newsSummary: action.data
+      })
     default:
       return state
   }

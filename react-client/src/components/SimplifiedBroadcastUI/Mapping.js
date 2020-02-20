@@ -23,13 +23,15 @@ class Mapping extends React.Component {
       </div>
     )
     for (let i = 0; i < this.props.mappingData.length; i++) {
+        //console.log('this.props.leftColumns.data[0].value', this.props.leftColumn)
+        //style={{display: 'inherit', paddingRight: (this.props.isFirstRequired && i === 0) ? 'none' : '22px'}}
       content.push(
         <div>
         <div className='row'>
-          <div className={this.props.deleteRow ? 'col-5' : 'col-6'} style={{display: 'inherit', paddingRight: (this.props.isFirstRequired && i === 0) ? 'none' : '22px'}}>
+          <div className={this.props.deleteRow ? 'col-5' : 'col-6'} >
               {
                   this.props.updateLeftColumn ?
-                  <select value={this.props.mappingData[i].leftColumn ? this.props.mappingData[i].leftColumn : ''} className='form-control m-bootstrap-select m_selectpicker' style={{height: '40px', opacity: '1'}} onChange={(e) => this.props.updateLeftColumn(e, i)}>
+                  <select value={this.props.mappingData[i].leftColumn ? this.props.mappingData[i].leftColumn : ''} className='form-control m-bootstrap-select m_selectpicker' style={{height: '40px', opacity: '1',borderColor: (this.props.isFirstRequired && i === 0 && !this.props.mappingData[i].leftColumn) ? 'red' : ''}} onChange={(e) => this.props.updateLeftColumn(e, i)}>
                     <option key='' value='' disabled>{this.props.defaultLeftOption}</option>
                     {
                         !this.props.leftColumns.groups ? 
@@ -55,7 +57,7 @@ class Mapping extends React.Component {
                       }             
                   </div>
               }
-            {(this.props.isFirstRequired && i === 0) && <span style={{ color: 'red' }}> * </span> }
+           <div style={{ marginBottom: '30px', color: 'red' }}>{(this.props.isFirstRequired && i === 0 && !this.props.mappingData[i].leftColumn) ? '*Required' : '' }</div>
           </div>
           <div className='col-1'>
             <center>
@@ -122,7 +124,6 @@ class Mapping extends React.Component {
             }
           </div>
         </div>
-        <br />
         </div>
       )
     }

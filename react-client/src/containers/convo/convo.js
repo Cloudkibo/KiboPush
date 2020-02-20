@@ -33,7 +33,8 @@ class Convo extends React.Component {
       filter: false,
       pageNumber: 0,
       pageValue: '',
-      messageType:''
+      messageType:'',
+      openVideo: false
     }
     props.allBroadcasts({last_id: 'none', number_of_records: 10, first_page: 'first', filter: false, filter_criteria: {search_value: '', type_value: '', days: '0', messageType:''}})
     props.loadSubscribersCount({})
@@ -48,6 +49,14 @@ class Convo extends React.Component {
     this.onDaysChange = this.onDaysChange.bind(this)
     this.goToSettings = this.goToSettings.bind(this)
     this.initializePageSelect = this.initializePageSelect.bind(this)
+    this.openVideoTutorial = this.openVideoTutorial.bind(this)
+
+  }
+  openVideoTutorial () {
+    this.setState({
+      openVideo: true
+    })
+    this.refs.videoBroadcast.click()
   }
   goToSettings () {
     this.props.history.push({
@@ -310,21 +319,27 @@ class Convo extends React.Component {
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <div style={{float: 'left', clear: 'both'}}
           ref={(el) => { this.top = el }} />
-           <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="video" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <a href='#/' style={{ display: 'none' }} ref='videoBroadcast' data-toggle='modal' data-backdrop='static' data-keyboard='false' data-target="#videoBroadcast">videoMessengerRefModal</a>
+           <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="videoBroadcast" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog modal-lg" role="document">
               <div className="modal-content" style={{width: '687px', top: '100'}}>
               <div style={{ display: 'block'}} className="modal-header">
                   <h5 className="modal-title" id="exampleModalLabel">
                     Broadcast Video Tutorial
 									</h5>
-                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" 
+                  aria-label="Close"
+                  onClick={() => {
+                    this.setState({
+                      openVideo: false
+                    })}}>
                     <span aria-hidden="true">
                       &times;
 											</span>
                   </button>
                 </div>
                 <div style={{color: 'black'}} className="modal-body">
-                <YouTube
+                {this.state.openVideo && <YouTube
                   videoId='p3BPp3fHBBc'
                   opts={{
                     height: '390',
@@ -334,6 +349,7 @@ class Convo extends React.Component {
                     }
                   }}
               />
+                }
                 </div>
               </div>
             </div>
@@ -469,7 +485,7 @@ class Convo extends React.Component {
             </div>
             <div className='m-alert__text'>
               Need help in understanding broadcasts? Here is the <a href='http://kibopush.com/broadcasts/' target='_blank' rel='noopener noreferrer'>documentation</a>.
-              Or check out this <a href='#/' data-toggle="modal" data-target="#video">video tutorial</a>
+              Or check out this <a href='#/' onClick={this.openVideoTutorial}>video tutorial</a>
             </div>
           </div>
           <div className='row'>
