@@ -3,8 +3,7 @@ import PropTypes from 'prop-types'
 import MAPCUSTOMER from './mapCustomer'
 import { Popover, PopoverHeader, PopoverBody } from 'reactstrap'
 import Select from 'react-select'
-import CreateCustomField from '../customFields/createCustomField'
-import CustomFields from '../customFields/customfields'
+import { Link } from 'react-router-dom'
 
 class ProfileArea extends React.Component {
   constructor(props, context) {
@@ -358,8 +357,6 @@ class ProfileArea extends React.Component {
     console.log('props in profile Area:', this.props)
     return (
       <div className='col-xl-3'>
-        <CustomFields />
-        <CreateCustomField />
         <div className='m-portlet m-portlet--full-height'>
           <div style={{ padding: '0rem 1.5rem' }} className='m-portlet__body'>
             <div className='m-card-profile'>
@@ -600,7 +597,9 @@ class ProfileArea extends React.Component {
                       </span>
                       : null
                     }
-                    <a href='#/' id='customfieldid' data-toggle='modal' data-target='#cf_modal' style={{ color: '#716aca', cursor: 'pointer', float: 'right', fontSize: '12px' }}><i className='la la-gear' style={{ fontSize: '13px' }} /> Manage Fields</a>
+                    <Link to='/customFields'>
+                      <span id='customfieldid' style={{ color: '#716aca', cursor: 'pointer', float: 'right', fontSize: '12px' }}><i className='la la-gear' style={{ fontSize: '13px' }} /> Manage Fields</span>
+                    </Link>
                   </span>
                 </div>
               </div>
