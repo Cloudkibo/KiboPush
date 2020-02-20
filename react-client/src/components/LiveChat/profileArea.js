@@ -211,15 +211,15 @@ class ProfileArea extends React.Component {
     })
   }
 
-  removeTags(value) {
+  removeTags(tag) {
     var payload = {}
     var selectedIds = []
     selectedIds.push(this.props.activeSession._id)
     payload.subscribers = selectedIds
     this.setState({
-      removeTag: value
+      removeTag: tag.tag
     })
-    payload.tag = value
+    payload.tagId = tag._id
     this.props.unassignTags(payload, this.props.msg)
   }
 
@@ -231,10 +231,14 @@ class ProfileArea extends React.Component {
 
   handleAdd(value) {
     var index = 0
+    var tag_id = ''
     if (value) {
       for (var i = 0; i < this.props.tags.length; i++) {
         if (this.props.tags[i].tag !== value.label) {
           index++
+        }
+        if (this.props.tags[i].tag === value.label) {
+          value.tag_id = this.props.tags[i]._id
         }
       }
       if (index === this.props.tags.length) {
@@ -275,7 +279,7 @@ class ProfileArea extends React.Component {
       return
     }
     payload.subscribers = selectedIds
-    payload.tag = this.state.addTag.label
+    payload.tagId = this.state.addTag.tag_id
     this.props.assignTags(payload, this.props.msg)
     this.hideAddTag()
   }
@@ -577,7 +581,7 @@ class ProfileArea extends React.Component {
                       <span key={i} style={{ display: 'flex' }} className='tagLabel'>
                         <label className='tagName'>{tag.tag}</label>
                         <div className='deleteTag' style={{ marginLeft: '10px' }}>
-                          <i className='fa fa-times fa-stack' style={{ marginRight: '-8px', cursor: 'pointer' }} onClick={() => this.removeTags(tag.tag)} />
+                          <i className='fa fa-times fa-stack' style={{ marginRight: '-8px', cursor: 'pointer' }} onClick={() => this.removeTags(tag)} />
                         </div>
                       </span>
                     ))
