@@ -162,6 +162,26 @@ class Subscriber extends React.Component {
     this.setSelectedField = this.setSelectedField.bind(this)
     this.handleSelectedFieldValue = this.handleSelectedFieldValue.bind(this)
     this.unselectAllSubscribers = this.unselectAllSubscribers.bind(this)
+    this.getSubscriberSource = this.getSubscriberSource.bind(this)
+  }
+
+  getSubscriberSource () {
+    switch (this.state.subscriber.source) {
+      case 'customer_matching':
+        return 'Phone Number'
+      case 'direct_message':
+        return 'Direct Message'
+      case 'chat_plugin':
+        return 'Chat Plugin'
+      case 'messaging_referrals':
+        return 'Messaging Referral'
+      case 'landing_page':
+        return 'Landing Page'
+      case 'shopify':
+        return 'Shopify'
+      default:
+        return 'Direct Message'
+    }
   }
 
   saveSetCustomField() {
@@ -1867,7 +1887,7 @@ class Subscriber extends React.Component {
                                 <div>
                                   <span style={{ fontWeight: 600 }}>Source:</span>
                                   <br />
-                                  <span>{this.state.subscriber.source === 'customer_matching' ? 'Phone Number' : this.state.subscriber.source === 'direct_message' ? 'Direct Message' : 'Chat Plugin'}</span>
+                                  <span>{this.getSubscriberSource()}</span>
                                 </div>
                               </div>
                             </div>
