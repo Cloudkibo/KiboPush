@@ -52,18 +52,26 @@ class ProfileArea extends React.Component {
     this.handleSetCustomField = this.handleSetCustomField.bind(this)
     this.showToggle = this.showToggle.bind(this)
     this.unSubscribe = this.unSubscribe.bind(this)
+    this.handleUnsubscribe = this.handleUnsubscribe.bind(this)
     this.toggleSetFieldPopover = this.toggleSetFieldPopover.bind(this)
   }
 
   unSubscribe() {
-    this.props.changeActiveSession('none')
+    //this.props.changeActiveSession('none')
     if (this.props.module === 'WHATSAPP') {
       this.props.unSubscribe(this.props.activeSession._id, { isSubscribed: false, unSubscribedBy: 'agent' }, this.props.msg)
     } else {
-      this.props.unSubscribe({ subscriber_id: this.props.activeSession._id, page_id: this.props.activeSession.pageId._id })
+      this.props.unSubscribe({ subscriber_id: this.props.activeSession._id, page_id: this.props.activeSession.pageId._id }, this.handleUnsubscribe)
     }
   }
-
+  handleUnsubscribe (res) {
+    if (res.status === 'success') {
+      this.props.msg.success('Unsubscribed successfully')
+      this.props.changeActiveSession('none')
+    } else {
+      this.props.msg.error('Unable to unsubscribe subscriber')
+    }
+  }
   showToggle() {
     this.setState({ show: !this.state.show })
   }
