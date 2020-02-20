@@ -30,7 +30,7 @@ class MediaModal extends React.Component {
   }
 
   handleDone() {
-    if (this.props.noButtons || !this.props.pages) {
+    if (this.props.noButtons) {
       this.addComponent([])
     } else {
       this.AddButton.handleDone()
@@ -44,8 +44,12 @@ class MediaModal extends React.Component {
       for (let i = 0; i < this.state.buttonPayloads.length; i++) {
         let foundPayload = false
         for (let j = 0; j < buttons.length; j++) {
-          if (this.state.buttonPayloads[i] === buttons[j].payload) {
-            foundPayload = true
+          let oldButtonPayload = this.state.buttonPayloads[i].substr(1, this.state.buttonPayloads[i].length-2)
+          let newButtonPayload = buttons[j].payload.substr(1, buttons[j].payload.length - 2)
+          if (newButtonPayload.includes('send_message_block')) {
+            if (newButtonPayload.includes(oldButtonPayload) || oldButtonPayload.includes(newButtonPayload)) {
+              foundPayload = true
+            }
           }
         }
         if (!foundPayload) {
@@ -154,7 +158,7 @@ class MediaModal extends React.Component {
                 size={this.state.file ? this.state.file.size : ''}
                 type={this.state.file ? this.state.file.type : ''} />
               {
-                (this.props.pages && !this.props.noButtons && this.state.file) &&
+                (!this.props.noButtons && this.state.file) &&
                 <AddButton
                   replyWithMessage={this.props.replyWithMessage}
                   buttons={this.state.buttons}

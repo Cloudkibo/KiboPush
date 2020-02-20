@@ -15,7 +15,10 @@ import ActionsPopover from './ActionsPopover'
 class QuickReplies extends React.Component {
   constructor (props) {
     super(props)
-    let actions = ['send_message_block']
+    let actions = []
+    if (this.props.module === 'broadcast') {
+        actions.push('send_message_block')
+    }
     if (this.props.customFields && this.props.customFields.length > 0) {
         actions.push('set_custom_field')
     }
@@ -91,7 +94,7 @@ class QuickReplies extends React.Component {
         let googleIntegration = nextProps.integrations.filter(integration => integration.integrationName === 'Google Sheets')
         let hubspotIntegration = nextProps.integrations.filter(integration => integration.integrationName === 'Hubspot')
         if (!actions.includes('google sheets') && googleIntegration && googleIntegration.length > 0) {
-            actions.push('google sheets')
+            actions.push('google_sheets')
             this.setState({actions})
         }
         if (!actions.includes('hubspot') && hubspotIntegration && hubspotIntegration.length > 0) {
@@ -125,7 +128,7 @@ class QuickReplies extends React.Component {
       }
       if (action === 'hubspot') {
         quickReplyActions.push({title: 'Hubspot', action: () => this.selectAction(action)})
-      }
+      }      
       if (action === 'assign_tag') {
         quickReplyActions.push({title: 'Assign Tag', action: () => this.selectAction(action)})
       }
@@ -235,7 +238,7 @@ class QuickReplies extends React.Component {
           return true
       }
       for (let i = 0; i < this.state.currentActions.length; i++) {
-          if (!this.state.currentActions[i].action &&
+          if (this.state.currentActions[i].action &&
             !this.state.currentActions[i].sequenceId &&
             !this.state.currentActions[i].templateId &&
             !this.state.currentActions[i].tagId &&
@@ -250,12 +253,8 @@ class QuickReplies extends React.Component {
           if (this.state.currentActions[i].googleSheetAction && !this.state.currentActions[i].worksheet && !this.state.currentActions[i].worksheetName) {
               return true
           }
-          if(this.state.currentActions[i].hubspotAction) {
-
-          }
       }
-      console.log('null')
-      return null
+      return false
   }
 
   saveQuickReply () {
@@ -477,18 +476,25 @@ class QuickReplies extends React.Component {
     } else if (action.includes('custom')) {
         return (
             <div>
-                <select value={this.state.currentActions[index].customFieldId ? this.state.currentActions[index].customFieldId : ''} style={{borderColor: !this.state.currentActions[index].customFieldId  ? 'red' : ''}} className='form-control m-input' onChange={(event) => this.updateCustomField(event, index)}>
-                    <option value={''} disabled>Select a custom field</option>
+            <select value={this.state.currentActions[index].customFieldId ? this.state.currentActions[index].customFieldId : ''} style={{borderColor: !this.state.currentActions[index].customFieldId  ? 'red' : ''}} className='form-control m-input' onChange={(event) => this.updateCustomField(event, index)}>
+              <option value={''} disabled>Select a custom field</option>
+                <optgroup label='Default Custom Fields'>
                     {
-                        this.props.customFields.map((customField, index) => {
-                            return (
-                                <option key={index} value={customField._id}>{customField.name}</option>
-                            )
-                        })
+                    this.props.customFields.filter(cf => !!cf.default).map((cf, i) => (
+                        <option key={i} value={cf._id}>{cf.name}</option>
+                    ))
                     }
-                    {/* <option value={'Custom Field 1'}>{'Custom Field 1'}</option>
-                    <option value={'Custom Field 2'}>{'Custom Field 2'}</option>
-                    <option value={'Custom Field 3'}>{'Custom Field 3'}</option>                                     */}
+                </optgroup>
+                    {
+                    this.props.customFields.filter(cf => !cf.default).length > 0 &&
+                    <optgroup label='User Defined Custom Fields'>
+                        {
+                        this.props.customFields.filter(cf => !cf.default).map((cf, i) => (
+                            <option key={i} value={cf._id}>{cf.name}</option>
+                        ))
+                        }
+                    </optgroup>
+                    }
                 </select>
                 {
                     this.state.currentActions[index].customFieldId &&

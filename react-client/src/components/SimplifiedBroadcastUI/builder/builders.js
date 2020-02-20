@@ -4,11 +4,13 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import AlertContainer from 'react-alert'
 import PropTypes from 'prop-types'
-
+import { uploadTemplate } from '../../../redux/actions/convos.actions'
+import { RingLoader } from 'halogenium'
 import {validateYoutubeURL} from '../../../utility/utils'
 
 import { loadTags } from '../../../redux/actions/tags.actions'
 import { fetchAllSequence } from '../../../redux/actions/sequence.action'
+import { loadCustomFields } from '../../../redux/actions/customFields.actions'
 
 import BASICBUILDER from './basicBuilder'
 import FLOWBUILDER from './flowBuilder'
@@ -37,18 +39,18 @@ class Builders extends React.Component {
   constructor (props, context) {
     super(props, context)
     let hiddenComponents = this.props.hiddenComponents.map(component => component.toLowerCase())
-    let currentId = new Date().getTime()
+    let currentId = this.props.linkedMessages ? this.props.linkedMessages[0].id : new Date().getTime()
     let lists = {
     }
     lists[currentId] = []
     let quickReplies = {}
     quickReplies[currentId] = []
+    let quickRepliesComponents = {}
     this.state = {
       tempConvoTitle: this.props.convoTitle,
-      customFields: [],
       lists,
       quickReplies,
-      quickRepliesComponents: {},
+      quickRepliesComponents,
       broadcast: this.props.broadcast.slice(),
       isShowingModal: false,
       convoTitle: this.props.convoTitle,
@@ -60,7 +62,8 @@ class Builders extends React.Component {
       currentId,
       quickRepliesIndex: -1,
       editingFlowBuilder: false,
-      showGSModal: false
+      showGSModal: false,
+      loading: this.props.linkedMessages && this.props.linkedMessages.length > 0
     }
     this.defaultTitle = this.props.convoTitle
     this.reset = this.reset.bind(this)
@@ -107,6 +110,10 @@ class Builders extends React.Component {
     this.onLoadCustomFields = this.onLoadCustomFields.bind(this)
     this.createLinkedMessagesFromQuickReplies = this.createLinkedMessagesFromQuickReplies.bind(this)
     this.titleChange = this.titleChange.bind(this)
+    this.checkMediaComponents = this.checkMediaComponents.bind(this)
+    this.updateFileUrl = this.updateFileUrl.bind(this)
+    this.confirmDeleteModal = this.confirmDeleteModal.bind(this)
+
 
     this.GSModalContent = null
 
@@ -114,8 +121,23 @@ class Builders extends React.Component {
       props.setReset(this.reset)
     }
 
+
+    if (this.props.linkedMessages && this.props.linkedMessages.length > 0) {
+      this.updateLinkedMessagesPayload(this.props.linkedMessages[0].messageContent)
+    }
+    if (this.props.linkedMessages && this.props.linkedMessages.length > 0) {
+      let messageContent = this.props.linkedMessages[0].messageContent
+      if (messageContent[messageContent.length - 1].quickReplies) {
+        quickReplies[currentId] = messageContent[messageContent.length - 1].quickReplies
+        quickRepliesComponents[currentId] = this.getQuickReplies(quickReplies[currentId]) 
+        this.state.quickReplies = quickReplies
+        this.state.quickRepliesComponents = quickRepliesComponents
+      }
+    }
+
     this.props.loadTags()
     this.props.fetchAllSequence()
+    this.props.loadCustomFields()
     console.log('builders props in constructor', this.props)
   }
 
@@ -155,7 +177,7 @@ class Builders extends React.Component {
         let messageIndex = messages.findIndex(m => m.id === id)
         if (messageIndex > -1) {
           console.log('changing message', this.state.linkedMessages[messageIndex])
-          this.setState({currentId: id, tempConvoTitle: this.state.linkedMessages[messageIndex].title}, () => {
+          this.setState({currentId: id, tempConvoTitle: messages[messageIndex].title}, () => {
             // let filteredData = this.state.linkedMessages.concat(this.state.unlinkedMessages).filter((lm) => lm.id === id)
             // let list = filteredData.length > 0 ? filteredData[0].messageContent : []
             // this.initializeList(list)
@@ -412,10 +434,10 @@ class Builders extends React.Component {
     this.setState({linkedMessages, lists, quickReplies})
   }
 
-  removeLinkedMessages (deletePayload) {
+  removeLinkedMessages (deletePayload, linkedMessageIds) {
     let linkedMessages = this.state.linkedMessages
     let unlinkedMessages = this.state.unlinkedMessages
-    deletePayload = deletePayload.map(payload => {
+    deletePayload = linkedMessageIds ? linkedMessageIds : deletePayload.map(payload => {
       if (payload && payload.action === 'send_message_block') {
         return payload.blockUniqueId
       }
@@ -550,6 +572,65 @@ class Builders extends React.Component {
     console.log('appendQuickRepliesToEnd', broadcast)
     return broadcast
   }
+  checkMediaComponents (linkedMessages) {
+    var isMediaValid = true
+    for (var i = 0; i < linkedMessages.length; i++) {
+      for (var j = 0; j < linkedMessages[i].messageContent.length; j++) {
+        var component = linkedMessages[i].messageContent[j]
+        if (component.componentType === 'media' && component.fileurl && !component.fileurl.attachment_id) {
+          isMediaValid = false
+          this.props.uploadTemplate({pages: this.props.pages,
+            url: component.fileurl.url,
+            componentType: component.mediaType,
+            id: component.fileurl.id,
+            name: component.fileurl.name
+          }, { id: component.id,
+            componentType: component.mediaType,
+            fileName: component.fileurl.name,
+            type: component.fileurl.type,
+            size: component.fileurl.size
+          }, (data) => this.updateFileUrl(data))
+        } else {
+          if (isMediaValid && i === linkedMessages.length -1) {
+            this.setState({
+              loading: false
+            })
+          }
+        }
+      }
+    }
+
+  }
+  updateFileUrl (data) {
+    var linkedMessages = this.state.linkedMessages
+    for (var i = 0; i < linkedMessages.length; i++) {
+      for (var j = 0; j < linkedMessages[i].messageContent.length; j++) {
+        var component = linkedMessages[i].messageContent[j]
+        if (component.id === data.id) {
+          component.fileurl = data.fileurl
+          break
+        }
+      }
+    }
+    this.setState({
+      linkedMessages : linkedMessages
+    })
+    var isMediaValid = true
+    for (var i = 0; i < linkedMessages.length; i++) {
+      for (var j = 0; j < linkedMessages[i].messageContent.length; j++) {
+        var component = linkedMessages[i].messageContent[j]
+        if (component.componentType === 'media' && component.fileurl && !component.fileurl.attachment_id) {
+          isMediaValid = false
+          break
+        }
+      }
+    }
+    if (isMediaValid) {
+      this.setState({
+        loading: false
+      })
+    }
+  }
 
   componentDidMount () {
     console.log('componentDidMount for Builder', this.state)
@@ -557,6 +638,7 @@ class Builders extends React.Component {
     if (this.state.broadcast && this.state.broadcast.length > 0) {
       this.initializeList(this.state.linkedMessages.concat(this.state.unlinkedMessages).filter((lm) => lm.id === this.state.currentId)[0].messageContent)
     }
+    this.checkMediaComponents(this.state.linkedMessages)
     console.log('genericMessage props in end of componentDidMount', this.props)
   }
 
@@ -573,6 +655,10 @@ class Builders extends React.Component {
 
   scrollToTop () {
     this.top.scrollIntoView({behavior: 'instant'})
+  }
+
+  confirmDeleteModal () {
+    this.refs.deleteModal.click()
   }
 
   reset (showDialog = true) {
@@ -961,31 +1047,85 @@ class Builders extends React.Component {
 
   removeMessage () {
     console.log('removing message', this.state.currentId)
+    let currentId = this.state.currentId
     let linkedMessages = this.state.linkedMessages
     let unlinkedMessages = this.state.unlinkedMessages
     let lists = this.state.lists
     let quickReplies = this.state.quickReplies
     let quickRepliesComponents = this.state.quickRepliesComponents
 
+    let deletePayload = [this.state.currentId]
+    let linkedMessageIndex = this.props.linkedMessages.findIndex(m => m.id === this.state.currentId)
+
+    if (linkedMessageIndex > -1) {
+      for (let i = 0; i < deletePayload.length; i++) {
+        let messageIndex = this.props.linkedMessages.findIndex(m => m.id === deletePayload[i])
+        let message = this.props.linkedMessages[messageIndex]
+        for (let j = 0; j < message.messageContent.length; j++) {
+          let messageContent = message.messageContent[j]
+          if (messageContent.quickReplies) {
+            for (let k = 0; k < messageContent.quickReplies.length; k++) {
+              let quickReply = messageContent.quickReplies[k]
+              let payload = JSON.parse(quickReply.payload)
+              for (let l = 0; l < payload.length; l++) {
+                if (payload[l].blockUniqueId) {
+                  deletePayload.push(payload[l].blockUniqueId)
+                }
+              } 
+            }
+          }
+          if (messageContent.buttons) {
+            for (let k = 0; k < messageContent.buttons.length; k++) {
+              let button = messageContent.buttons[k]
+              if (button.type === 'postback') {
+                let payload = JSON.parse(button.payload)
+                for (let l = 0; l < payload.length; l++) {
+                  if (payload[l].blockUniqueId) {
+                    deletePayload.push(payload[l].blockUniqueId)
+                  }
+                }
+              }
+            }
+          } else if (messageContent.cards) {
+            for (let m = 0; m < messageContent.cards.length; m++) {
+              for (let k = 0; k < messageContent.cards[m].buttons.length; k++) {
+                let button = messageContent.cards[m].buttons[k]
+                if (button.type === 'postback') {
+                  let payload = JSON.parse(button.payload)
+                  for (let l = 0; l < payload.length; l++) {
+                    if (payload[l].blockUniqueId) {
+                      deletePayload.push(payload[l].blockUniqueId)
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+      deletePayload.splice(0, 1)
+      this.removeLinkedMessages(null, deletePayload)
+    }
+
     let messageFound = false
     for (let i = 0; i < linkedMessages.length; i++) {
-      if (linkedMessages[i].id === this.state.currentId) {
+      if (linkedMessages[i].id === currentId) {
         messageFound = true
         linkedMessages.splice(i,1)
-        delete lists[this.state.currentId]
-        delete quickReplies[this.state.currentId]
-        delete quickRepliesComponents[this.state.currentId]
+        delete lists[currentId]
+        delete quickReplies[currentId]
+        delete quickRepliesComponents[currentId]
         break
       }
     }
     if (!messageFound) {
       for (let i = 0; i < unlinkedMessages.length; i++) {
-        if (unlinkedMessages[i].id === this.state.currentId) {
+        if (unlinkedMessages[i].id === currentId) {
           messageFound = true
           unlinkedMessages.splice(i,1)
-          delete lists[this.state.currentId]
-          delete quickReplies[this.state.currentId]
-          delete quickRepliesComponents[this.state.currentId]
+          delete lists[currentId]
+          delete quickReplies[currentId]
+          delete quickRepliesComponents[currentId]
           break
         }
       }
@@ -998,8 +1138,136 @@ class Builders extends React.Component {
       lists,
       quickReplies,
       quickRepliesComponents
+    }, () => {
+      this.deleteButtonPayload(currentId)
     })
   }
+
+  deleteButtonPayload (blockUniqueId) {
+    console.log('deleteButtonPayload', this.state)
+    let linkedMessages = this.state.linkedMessages
+    for (let i = 0; i < linkedMessages.length; i++) {
+      let message = linkedMessages[i]
+      for (let j = 0; j < message.messageContent.length; j++) {
+        let component = message.messageContent[j]
+        if (component.quickReplies) {
+          for (let k = 0; k < component.quickReplies.length; k++) {
+            let quickReply = component.quickReplies[k]
+            let payload = JSON.parse(quickReply.payload)
+            for (let l = 0; l < payload.length; l++) {
+              if (payload[l].blockUniqueId && payload[l].blockUniqueId.toString() === blockUniqueId.toString()) {
+                payload[l] = {
+                  action: 'send_message_block'
+                }
+                linkedMessages[i].messageContent[j].quickReplies[k].payload = JSON.stringify(payload)
+                return
+              }
+            } 
+          }
+        }
+        if (component.buttons) {
+          for (let k = 0; k < component.buttons.length; k++) {
+            let button = component.buttons[k]
+            if (button.type === 'postback') {
+              let payload = JSON.parse(button.payload)
+              for (let l = 0; l < payload.length; l++) {
+                if (payload[l].blockUniqueId && payload[l].blockUniqueId.toString() === blockUniqueId.toString()) {
+                  document.getElementById('button-' + linkedMessages[i].messageContent[j].buttons[k].id).style['border-color'] = 'red'
+                  payload[l] = {
+                    action: 'send_message_block'
+                  }
+                  linkedMessages[i].messageContent[j].buttons[k].payload = JSON.stringify(payload)
+                  return
+                }
+              }
+            }
+          }
+        } else if (component.cards) {
+          for (let m = 0; m < component.cards.length; m++) {
+            for (let k = 0; k < component.cards[m].buttons.length; k++) {
+              let button = component.cards[m].buttons[k]
+              if (button.type === 'postback') {
+                let payload = JSON.parse(button.payload)
+                for (let l = 0; l < payload.length; l++) {
+                  if (payload[l].blockUniqueId && payload[l].blockUniqueId.toString() === blockUniqueId.toString()) {
+                    document.getElementById('button-' + linkedMessages[i].messageContent[j].cards[m].buttons[k].id).style['border-color'] = 'red'
+                    payload[l] = {
+                      action: 'send_message_block'
+                    }
+                    linkedMessages[i].messageContent[j].cards[m].buttons[k].payload = JSON.stringify(payload)
+                    return
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    let unlinkedMessages = this.state.unlinkedMessages
+    for (let i = 0; i < unlinkedMessages.length; i++) {
+      let message = unlinkedMessages[i]
+      for (let j = 0; j < message.messageContent.length; j++) {
+        let component = message.messageContent[j]
+        if (component.quickReplies) {
+          for (let k = 0; k < component.quickReplies.length; k++) {
+            let quickReply = component.quickReplies[k]
+            let payload = JSON.parse(quickReply.payload)
+            for (let l = 0; l < payload.length; l++) {
+              if (payload[l].blockUniqueId && payload[l].blockUniqueId.toString() === blockUniqueId.toString()) {
+                payload[l] = {
+                  action: 'send_message_block'
+                }
+                unlinkedMessages[i].messageContent[j].quickReplies[k].payload = JSON.stringify(payload)
+                return
+              }
+            } 
+          }
+        }
+        if (component.buttons) {
+          for (let k = 0; k < component.buttons.length; k++) {
+            let button = component.buttons[k]
+            if (button.type === 'postback') {
+              let payload = JSON.parse(button.payload)
+              for (let l = 0; l < payload.length; l++) {
+                if (payload[l].blockUniqueId && payload[l].blockUniqueId.toString() === blockUniqueId.toString()) {
+                  document.getElementById('button-' + linkedMessages[i].messageContent[j].buttons[k].id).style['border-color'] = 'red'
+                  payload[l] = {
+                    action: 'send_message_block'
+                  }
+                  unlinkedMessages[i].messageContent[j].buttons[k].payload = JSON.stringify(payload)
+                  return
+                }
+              }
+            }
+          }
+        } else if (component.cards) {
+          for (let m = 0; m < component.cards.length; m++) {
+            for (let k = 0; k < component.cards[m].buttons.length; k++) {
+              let button = component.cards[m].buttons[k]
+              if (button.type === 'postback') {
+                let payload = JSON.parse(button.payload)
+                for (let l = 0; l < payload.length; l++) {
+                  if (payload[l].blockUniqueId && payload[l].blockUniqueId.toString() === blockUniqueId.toString()) {
+                    document.getElementById('button-' + linkedMessages[i].messageContent[j].cards[m].buttons[k].id).style['border-color'] = 'red'
+                    payload[l] = {
+                      action: 'send_message_block'
+                    }
+                    unlinkedMessages[i].messageContent[j].cards[m].buttons[k].payload = JSON.stringify(payload)
+                    return
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    this.setState({linkedMessages, unlinkedMessages})
+  }
+
+  
 
   addComponent (componentDetails, edit) {
     console.log('componentDetails', componentDetails)
@@ -1149,7 +1417,7 @@ class Builders extends React.Component {
         addComponent={this.addComponent} />),
         'userInput': (<UserInputModal
           buttons={[]}
-          customFields={this.state.customFields}
+          customFields={this.props.customFields}
           module = {this.props.module}
           edit={this.state.editData ? true : false}
           {...this.state.editData}
@@ -1459,11 +1727,12 @@ class Builders extends React.Component {
     return {
       content:
         <QuickReplies
+          module = {this.props.module}
           setToggleQuickReply={toggleAddQuickReply => { this.toggleAddQuickReply = toggleAddQuickReply }}
           setRemoveQuickReply={removeQuickReply => {this.removeQuickReply = removeQuickReply}}
           toggleGSModal={this.toggleGSModal}
           closeGSModal={this.closeGSModal}
-          customFields={this.state.customFields}
+          customFields={this.props.customFields}
           sequences={this.props.sequences}
           tags={this.props.tags}
           quickReplies={quickReplies}
@@ -1486,11 +1755,12 @@ class Builders extends React.Component {
           quickRepliesComponents[id] = {
             content:
               <QuickReplies
+                module = {this.props.module}
                 setToggleQuickReply={toggleAddQuickReply => { this.toggleAddQuickReply = toggleAddQuickReply }}
                 setRemoveQuickReply={removeQuickReply => {this.removeQuickReply = removeQuickReply}}
                 toggleGSModal={this.toggleGSModal}
                 closeGSModal={this.closeGSModal}
-                customFields={this.state.customFields}
+                customFields={this.props.customFields}
                 sequences={this.props.sequences}
                 tags={this.props.tags}
                 quickReplies={this.state.quickReplies[id]}
@@ -1525,7 +1795,15 @@ class Builders extends React.Component {
       <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
       <div style={{float: 'left', clear: 'both'}}
         ref={(el) => { this.top = el }} /> 
-
+         { this.state.loading &&
+        <div style={{ width: '100vw', height: '100vh', background: 'rgba(33, 37, 41, 0.6)', position: 'fixed', zIndex: '99999', top: '0px' }}>
+            <div style={{ position: 'fixed', top: '50%', left: '50%', width: '30em', height: '18em', marginLeft: '-10em' }}
+              className='align-center'>
+              <center><RingLoader color='#716aca' /></center>
+              <center><span style={{color: '#5867dd', fontSize: 'large', fontWeight: '900'}}>Uploading Media...</span></center>
+            </div>
+          </div>
+        }
       <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="closeQuickReply" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div style={{ transform: 'translate(0px, 100px)' }} className="modal-dialog" role="document">
               <div className="modal-content">
@@ -1687,9 +1965,41 @@ class Builders extends React.Component {
         </div>
       </div>
 
+      <a href='#/' style={{ display: 'none' }} ref='deleteModal' data-toggle="modal" data-target="#deleteModal">deleteMessage</a>
+      <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+          <div className="modal-content">
+            <div style={{ display: 'block' }} className="modal-header">
+              <h5 className="modal-title" id="exampleModalLabel">
+                Warning
+              </h5>
+              <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">
+                  &times;
+                </span>
+              </button>
+            </div>
+            <div style={{ color: 'black' }} className="modal-body">
+              <p>Are you sure you want to delete this message? All messages linked to this message will be unlinked.</p>
+              <button style={{ float: 'right', marginLeft: '10px' }}
+                className='btn btn-primary btn-sm'
+                onClick={() => {
+                  this.removeMessage()
+                }} data-dismiss='modal'>Yes
+            </button>
+              <button style={{ float: 'right' }}
+                className='btn btn-primary btn-sm'
+                data-dismiss='modal'>Cancel
+            </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {
         this.props.builderValue === 'basic'
         ? <BASICBUILDER
+          confirmDeleteModal={this.confirmDeleteModal}
           linkedMessages={this.state.linkedMessages}
           unlinkedMessages={this.state.unlinkedMessages}
           currentId={this.state.currentId}
@@ -1713,6 +2023,7 @@ class Builders extends React.Component {
         />
         : this.props.builderValue === 'flow' &&
         <FLOWBUILDER
+          confirmDeleteModal={this.confirmDeleteModal}
           currentId={this.state.currentId}
           rerenderFlowBuilder={this.props.rerenderFlowBuilder}
           showAddComponentModal={this.showAddComponentModal}
@@ -1778,14 +2089,17 @@ function mapStateToProps (state) {
   console.log(state)
   return {
     sequences: state.sequenceInfo.sequences,
-    tags: state.tagsInfo.tags
+    tags: state.tagsInfo.tags,
+    customFields: (state.customFieldInfo.customFields)
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-      fetchAllSequence: fetchAllSequence,
-      loadTags: loadTags
+      fetchAllSequence,
+      loadTags,
+      loadCustomFields,
+      uploadTemplate
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps, null, { withRef: true })(Builders)

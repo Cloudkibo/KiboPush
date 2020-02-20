@@ -35,6 +35,7 @@ class RssIntegrations extends React.Component {
       search_value: '',
       status_value: '',
       type_value: '',
+      page_value: '',
       integrationType: 'rss'
     })
     props.saveCurrentFeed(null)
@@ -105,8 +106,19 @@ class RssIntegrations extends React.Component {
         for (var j=0; j < permissions.length; j++) {
           if (this.props.pages[i]._id === permissions[j].pageId) {
             var status = permissions[j]
+            var badge = 'm-badge--secondary'
             status.pageName = this.props.pages[i].pageName
             status.pagePic = this.props.pages[i].pagePic
+            if (status.smpStatus === 'notApplied') {
+              badge = 'm-badge--warning'
+            } else if (status.smpStatus === 'approved') {
+              badge = 'm-badge--success'
+            } else if (status.smpStatus === 'pending') {
+              badge = 'm-badge--primary'
+            } else if (status.smpStatus === 'rejected') {
+              badge = 'm-badge--danger'
+            }
+            status.badgeColor = badge
             pageStatus.push(status)
           }
         }
@@ -119,6 +131,9 @@ class RssIntegrations extends React.Component {
       searchValue: '',
       status: '',
       pageNumber: 0,
+      deleteId: '',
+      page_value: '',
+      type_value: ''
     })
   }
   setStatus (feed) {
@@ -135,7 +150,14 @@ class RssIntegrations extends React.Component {
       feedId: feed._id,
       updatedObject: updated
     }
-    this.props.updateNewsFeed(data, this.msg, true)
+    var filters = {
+      search_value: this.state.searchValue,
+      status_value: this.state.status,
+      page_value: this.state.page_value,
+      type_value: this.state.type_value,
+      integrationType: 'rss'
+    }
+    this.props.updateNewsFeed(data, this.msg, true, null, filters)
   }
   onTypeFilter (e) {
     this.setState({type_value: e.target.value, pageNumber: 0})
@@ -366,7 +388,14 @@ class RssIntegrations extends React.Component {
                   <button style={{ float: 'right' }}
                     className='btn btn-primary btn-sm'
                     onClick={() => {
-                      this.props.deleteNewsFeed(this.state.deleteId, this.msg, this.resetFilters, 'rss')
+                      var filters = {
+                        search_value: this.state.searchValue,
+                        status_value: this.state.status,
+                        page_value: this.state.page_value,
+                        type_value: this.state.type_value,
+                        integrationType: 'rss'
+                      }
+                      this.props.deleteNewsFeed(this.state.deleteId, this.msg, filters)
                     }}
                     data-dismiss='modal'>Delete
                   </button>
@@ -425,7 +454,7 @@ class RssIntegrations extends React.Component {
                   <span>
                     <img alt='pic' src={item.pagePic}/>&nbsp;&nbsp;
                     <span>{item.pageName}</span>&nbsp;&nbsp;&nbsp;
-                    <span className='m-badge m-badge--wide m-badge--success'> {this.getStatusValue(item.smpStatus)}</span>
+                    <span className={`m-badge m-badge--wide ${item.badgeColor}`}> {this.getStatusValue(item.smpStatus)}</span>
                   </span>
                   <br /><br />
                 </span>
@@ -465,7 +494,7 @@ class RssIntegrations extends React.Component {
                 <div className='col-12'>
                   <p> <b>Note:</b> Subscribers who are engaged in live chat with an agent, will receive autoposts after 30 mins of ending the conversation.</p>
                 </div>
-                <div className='m-form m-form--label-align-right m--margin-top-20 m--margin-bottom-30'>
+                <div className='m-form m-form--label-align-right m--margin-top-10 m--margin-bottom-20'>
                   <div className='row align-items-center'>
                     <div className='col-xl-8 order-2 order-xl-1' />
                     <div className='col-xl-4 order-1 order-xl-2 m--align-right'>
@@ -474,7 +503,7 @@ class RssIntegrations extends React.Component {
                   </div>
                 </div>
                 { (this.state.feeds && this.state.feeds.length > 0) || this.state.filter
-                ? <div className='row' style={{marginBottom: '15px', marginLeft: '5px'}}>
+                ? <div className='row' style={{padding: '5px'}}>
                     <div className='col-md-4'>
                       <select className='custom-select' style={{width: '100%'}} value= {this.state.status} onChange={this.onStatusFilter}>
                         <option value='' disabled>Filter by Status...</option>
@@ -510,6 +539,14 @@ class RssIntegrations extends React.Component {
                   </div>
                 : <div />
                 }
+                 <div className='m-form m-form--label-align-right m--margin-top-10 m--margin-bottom-20'>
+                  <div className='row align-items-center'>
+                    <div className='col-xl-8 order-2 order-xl-1' />
+                    <div className='col-xl-4 order-1 order-xl-2 m--align-right'>
+                      <div className='m-separator m-separator--dashed d-xl-none' />
+                    </div>
+                  </div>
+                </div>
                 <div className='row' >
                   { this.state.feeds && this.state.feeds.length > 0
                   ? <div className='col-12 m-widget5'>
@@ -563,7 +600,8 @@ function mapStateToProps (state) {
   return {
     pages: (state.pagesInfo.pages),
     rssFeeds: (state.feedsInfo.rssFeeds),
-    count: (state.feedsInfo.count)
+    count: (state.feedsInfo.count),
+    defaultFeeds: (state.feedsInfo.defaultFeeds)
   }
 }
 
