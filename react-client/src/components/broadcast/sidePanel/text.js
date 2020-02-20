@@ -35,6 +35,7 @@ class Text extends React.Component {
   updateButton (button, index) {
     let data = this.props.componentData
     data.buttons[index] = button
+    this.setState({buttons: data.buttons})
     this.props.updateBroadcastData(this.props.blockId, data.id, 'update', data)
   }
 
@@ -83,6 +84,9 @@ class Text extends React.Component {
             insertButton={this.props.insertButton}
             editButton={this.props.editButton}
             alertMsg={this.props.alertMsg}
+            page={this.props.page}
+            whitelistedDomains={this.props.whitelistedDomains}
+            sequences={this.props.sequences}
           />
           <div style={{float: 'left', clear: 'both'}}
             ref={(el) => { this.bottom = el }} />
@@ -96,7 +100,10 @@ Text.propTypes = {
   'updateBroadcastData': PropTypes.func.isRequired,
   'blockId': PropTypes.number.isRequired,
   'insertButton': PropTypes.func.isRequired,
-  'editButton': PropTypes.func.isRequired
+  'editButton': PropTypes.func.isRequired,
+  'page': PropTypes.object.isRequired,
+  'whitelistedDomains': PropTypes.array.isRequired,
+  'sequences': PropTypes.array
 }
 
 export default Text

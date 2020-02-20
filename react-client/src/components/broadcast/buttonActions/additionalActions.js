@@ -7,6 +7,13 @@ class AdditionalActions extends React.Component {
   constructor(props) {
     super(props)
     this.state = {}
+    this.onActionClick = this.onActionClick.bind(this)
+  }
+
+  onActionClick (action) {
+    this.props.onActionClick(action)
+    this.props.updateAdditionalActions(action, 'Reply with a message')
+    this.props.togglePopover()
   }
 
   render () {
@@ -25,7 +32,7 @@ class AdditionalActions extends React.Component {
               <div style={{border: 'none', marginTop: '10px'}} className='card'>
                 <BUTTONITEM
                   title={action}
-                  onButtonClick={() => {}}
+                  onButtonClick={this.onActionClick}
                 />
               </div>
             ))
@@ -40,7 +47,9 @@ AdditionalActions.propTypes = {
   'actions': PropTypes.array.isRequired,
   'showPopover': PropTypes.bool.isRequired,
   'togglePopover': PropTypes.func.isRequired,
-  'target': PropTypes.string.isRequired
+  'target': PropTypes.string.isRequired,
+  'onActionClick': PropTypes.func.isRequired,
+  'updateAdditionalActions': PropTypes.func.isRequired
 }
 
 export default AdditionalActions
