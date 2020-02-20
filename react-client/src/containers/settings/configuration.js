@@ -327,7 +327,7 @@ class Webhook extends React.Component {
                                       <div className='m-widget4__item'>
                                         <div className='m-widget4__info'>
                                           <span className='m-widget4__title'>
-                                            <i className='socicon-facebook' />&nbsp;&nbsp;&nbsp;
+                                            <i className='fa fa-facebook-official' style={{fontSize: '15px'}} />&nbsp;&nbsp;&nbsp;
                                             <span>
                                               Facebook
                                             </span>
@@ -336,10 +336,10 @@ class Webhook extends React.Component {
                                         </div>
                                         <div className='m-widget4__ext'>
                                           {this.props.user.facebookInfo
-                                            ? <a href='#/' data-toggle="modal" data-target="#disconnectFacebook" className='m-btn m-btn--pill m-btn--hover-danger btn btn-danger' style={{borderColor: '#d9534f', color: '#d9534f', marginRight: '10px'}} data-toggle="modal" data-target="#disconnect" onClick={() => { this.showDialogDisconnect('sms')} }>
+                                            ? <a href='#/' data-toggle="modal" data-target="#disconnectFacebook" className='m-btn m-btn--pill m-btn--hover-danger btn btn-danger' style={{borderColor: '#d9534f', color: '#d9534f', marginRight: '10px'}}>
                                               Disconnect
                                             </a>
-                                            : <a href='/auth/facebook' className='m-btn m-btn--pill m-btn--hover-success btn btn-success' style={{borderColor: '#34bfa3', color: '#34bfa3', marginRight: '10px'}} data-toggle="modal" data-target="#connect">
+                                            : <a href='/auth/facebook' className='m-btn m-btn--pill m-btn--hover-success btn btn-success' style={{borderColor: '#34bfa3', color: '#34bfa3', marginRight: '10px'}}>
                                               Connect
                                             </a>
                                           }
@@ -349,7 +349,7 @@ class Webhook extends React.Component {
                                     <div className='m-widget4__item'>
                                       <div className='m-widget4__info'>
                                         <span className='m-widget4__title'>
-                                          <i className='flaticon-chat-1' />&nbsp;&nbsp;&nbsp;
+                                          <i className='fa fa-envelope-o' style={{fontSize: '15px'}} />&nbsp;&nbsp;&nbsp;
                                           <span>
                                             SMS
                                           </span>
@@ -372,7 +372,7 @@ class Webhook extends React.Component {
                                     <div className='m-widget4__item'>
                                       <div className='m-widget4__info'>
                                         <span className='m-widget4__title'>
-                                          <i className='flaticon-chat-1' />&nbsp;&nbsp;&nbsp;
+                                          <i className='fa fa-whatsapp' style={{fontSize: '18px'}} />&nbsp;&nbsp;&nbsp;
                                           <span>
                                             WhatsApp
                                           </span>
