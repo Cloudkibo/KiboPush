@@ -40,7 +40,7 @@ class Link extends React.Component {
   componentDidMount () {
     let self = this
     let typingTimer
-    let doneTypingInterval = 100
+    let doneTypingInterval = this.props.typingInterval
     let input = document.getElementById(`side_panel_link_component_${this.props.index}`)
     input.addEventListener('keyup', () => {
       clearTimeout(typingTimer)
@@ -104,7 +104,8 @@ Link.propTypes = {
   'showRemove': PropTypes.bool.isRequired,
   'handleUrlChange': PropTypes.func.isRequired,
   'updateActiveLink': PropTypes.func,
-  'placeholder': PropTypes.string.isRequired
+  'placeholder': PropTypes.string.isRequired,
+  'typingInterval': PropTypes.number.isRequired
 }
 
 export default Link

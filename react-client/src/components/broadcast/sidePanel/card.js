@@ -196,6 +196,9 @@ class Card extends React.Component {
               updateButton={this.updateButton}
               removeButton={this.removeButton}
               limit={3}
+              insertButton={this.props.insertButton}
+              editButton={this.props.editButton}
+              alertMsg={this.props.alertMsg}
             />
             <div id={`card-${this.props.id}`} style={{float: 'left', clear: 'both'}} />
           </div>
@@ -208,7 +211,9 @@ class Card extends React.Component {
 Card.propTypes = {
   'card': PropTypes.object.isRequired,
   'id': PropTypes.number.isRequired,
-  'updateActiveCard': PropTypes.func.isRequired
+  'updateActiveCard': PropTypes.func.isRequired,
+  'insertButton': PropTypes.func.isRequired,
+  'editButton': PropTypes.func.isRequired
 }
 
 export default Card
