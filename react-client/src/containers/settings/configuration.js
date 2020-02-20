@@ -1,7 +1,7 @@
 /* eslint-disable no-useless-constructor */
 import React from 'react'
 import { updatePlatformSettings, updatePlatformWhatsApp, disconnect } from '../../redux/actions/settings.actions'
-import { getAutomatedOptions } from '../../redux/actions/basicinfo.actions'
+import { getAutomatedOptions, disconnectFacebook } from '../../redux/actions/basicinfo.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import AlertContainer from 'react-alert'
@@ -220,6 +220,32 @@ class Webhook extends React.Component {
             </div>
           </div>
         </div>
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)'}} className="modal fade" id="disconnectFacebook" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+              <div className="modal-content">
+                <div style={{ display: 'block' }} className="modal-header">
+                  <h5 className="modal-title" id="exampleModalLabel">
+                    Disconnet Facebook Account
+									</h5>
+                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">
+                      &times;
+											</span>
+                  </button>
+                </div>
+                <div style={{color: 'black'}} className="modal-body">
+                <p>Are you sure you want to disconnect your Facebook account?</p>
+                <button style={{float: 'right'}}
+                    className='btn btn-primary btn-sm'
+                    onClick={() => {
+                    this.props.disconnectFacebook()
+                    this.logout()
+                  }} data-dismiss='modal'>Yes
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
         <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="connectWapp" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
             <div className="modal-content">
@@ -297,6 +323,29 @@ class Webhook extends React.Component {
                               <div style={{position: 'relative', overflowY: 'scroll', height: '100%', maxWidth: '100%', maxHeight: 'none', outline: 0, direction: 'ltr'}}>
                                 <div style={{position: 'relative', top: 0, left: 0, overflow: 'hidden', width: 'auto', height: 'auto'}} >
                                   <div className='tab-pane active' id='m_widget4_tab1_content'><div className='m-widget4' >
+                                    {this.props.user && this.props.user.role === 'buyer' &&
+                                      <div className='m-widget4__item'>
+                                        <div className='m-widget4__info'>
+                                          <span className='m-widget4__title'>
+                                            <i className='socicon-facebook' />&nbsp;&nbsp;&nbsp;
+                                            <span>
+                                              Facebook
+                                            </span>
+                                          </span>
+                                          <br />
+                                        </div>
+                                        <div className='m-widget4__ext'>
+                                          {this.props.user.facebookInfo
+                                            ? <a href='#/' data-toggle="modal" data-target="#disconnectFacebook" className='m-btn m-btn--pill m-btn--hover-danger btn btn-danger' style={{borderColor: '#d9534f', color: '#d9534f', marginRight: '10px'}} data-toggle="modal" data-target="#disconnect" onClick={() => { this.showDialogDisconnect('sms')} }>
+                                              Disconnect
+                                            </a>
+                                            : <a href='/auth/facebook' className='m-btn m-btn--pill m-btn--hover-success btn btn-success' style={{borderColor: '#34bfa3', color: '#34bfa3', marginRight: '10px'}} data-toggle="modal" data-target="#connect">
+                                              Connect
+                                            </a>
+                                          }
+                                        </div>
+                                      </div>
+                                    }
                                     <div className='m-widget4__item'>
                                       <div className='m-widget4__info'>
                                         <span className='m-widget4__title'>
@@ -365,7 +414,8 @@ class Webhook extends React.Component {
 }
 function mapStateToProps (state) {
   return {
-    automated_options: (state.basicInfo.automated_options)
+    automated_options: (state.basicInfo.automated_options),
+    user: (state.basicInfo.user)
   }
 }
 function mapDispatchToProps (dispatch) {
@@ -373,7 +423,8 @@ function mapDispatchToProps (dispatch) {
     updatePlatformSettings: updatePlatformSettings,
     getAutomatedOptions: getAutomatedOptions,
     updatePlatformWhatsApp: updatePlatformWhatsApp,
-    disconnect: disconnect
+    disconnect: disconnect,
+    disconnectFacebook: disconnectFacebook
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Webhook)
