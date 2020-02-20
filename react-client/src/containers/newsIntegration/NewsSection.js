@@ -18,7 +18,7 @@ class RssFeed extends React.Component {
               </span>
             <div className='m-widget5__info'>
               <span className='m-widget5__info-date m--font-info'>
-                <button data-toggle="modal" data-target="#deleteFeed" onClick={() => this.props.setDeleteId(this.props.feed._id)} className='btn btn-outline-danger m-btn m-btn--icon btn-sm m-btn--icon-only m-btn--pill m-btn--air'>
+                <button data-toggle="modal" data-target="#deleteFeed" onClick={() => this.props.deleteFeed(this.props.feed)} className='btn btn-outline-danger m-btn m-btn--icon btn-sm m-btn--icon-only m-btn--pill m-btn--air'>
                   <i className='la la-remove' />&nbsp;&nbsp;
                 </button>
               </span>
