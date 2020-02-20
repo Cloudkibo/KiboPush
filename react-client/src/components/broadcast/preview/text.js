@@ -42,7 +42,7 @@ class Text extends React.Component {
           </div>
           {
             this.props.itemPayload.buttons.map((button, index) => (
-              <div key={`button-preview-${this.props.itemPayload.id}-${index}`} style={{marginLeft: '10px', border: 'none'}} className='card'>
+              <div key={`button-preview-${this.props.itemPayload.id}-${index}`} style={{marginLeft: '10px', marginRight: '7px', border: 'none'}} className='card'>
                 <BUTTONITEM
                   title={button.title}
                 />

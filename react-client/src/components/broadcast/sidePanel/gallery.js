@@ -121,6 +121,9 @@ class Gallery extends React.Component {
                 removeCard={this.removeCard}
                 showRemove={this.props.componentData.cards.length < 2 ? false : true}
                 updateActiveCard={this.updateActiveCard}
+                insertButton={this.props.insertButton}
+                editButton={this.props.editButton}
+                alertMsg={this.props.alertMsg}
               />
             ))
           }
@@ -145,7 +148,9 @@ Gallery.propTypes = {
   'blockId': PropTypes.number.isRequired,
   'componentData': PropTypes.object.isRequired,
   'uploadAttachment': PropTypes.func.isRequired,
-  'showErrorMessage': PropTypes.func.isRequired
+  'showErrorMessage': PropTypes.func.isRequired,
+  'insertButton': PropTypes.func.isRequired,
+  'editButton': PropTypes.func.isRequired
 }
 
 export default Gallery

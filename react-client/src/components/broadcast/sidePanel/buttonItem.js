@@ -11,7 +11,7 @@ class ButtonItem extends React.Component {
     console.log('props in button item side panel', this.props)
     return (
       <button
-        onClick={this.props.onButtonClick}
+        onClick={() => this.props.onButtonClick(this.props.title)}
         style={{border: '1px dashed #36a3f7', cursor: 'pointer'}}
         type="button"
         className="btn m-btn--pill btn-outline-info btn-sm m-btn m-btn--custom"

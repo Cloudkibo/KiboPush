@@ -204,6 +204,9 @@ class Attachments extends React.Component {
               updateButton={this.updateButton}
               removeButton={this.removeButton}
               limit={3}
+              insertButton={this.props.insertButton}
+              editButton={this.props.editButton}
+              alertMsg={this.props.alertMsg}
             />
           }
           <div style={{float: 'left', clear: 'both'}}
@@ -218,7 +221,9 @@ Attachments.propTypes = {
   'updateBroadcastData': PropTypes.func.isRequired,
   'blockId': PropTypes.number.isRequired,
   'showErrorMessage': PropTypes.func.isRequired,
-  'uploadAttachment': PropTypes.func.isRequired
+  'uploadAttachment': PropTypes.func.isRequired,
+  'insertButton': PropTypes.func.isRequired,
+  'editButton': PropTypes.func.isRequired
 }
 
 export default Attachments

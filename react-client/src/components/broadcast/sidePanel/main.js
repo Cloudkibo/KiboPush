@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { uploadAttachment } from '../../../redux/actions/convos.actions'
 import { urlMetaData } from '../../../redux/actions/convos.actions'
+import { addButton, editButton } from '../../../redux/actions/broadcast.actions'
 import TEXT from './text'
 import ATTACHMENTS from './attachments'
 import GALLERY from './gallery'
@@ -38,6 +39,9 @@ class SidePanel extends React.Component {
           updateBroadcastData={this.props.updateBroadcastData}
           blockId={this.props.panelProps.blockId}
           componentData={this.props.panelProps.componentData}
+          insertButton={this.props.addButton}
+          editButton={this.props.editButton}
+          alertMsg={this.props.alertMsg}
         />
       case 'attachments':
         return <ATTACHMENTS
@@ -47,6 +51,9 @@ class SidePanel extends React.Component {
           showErrorMessage={this.showErrorMessage}
           uploadAttachment={this.props.uploadAttachment}
           page={this.props.page}
+          insertButton={this.props.addButton}
+          editButton={this.props.editButton}
+          alertMsg={this.props.alertMsg}
         />
       case 'file':
         return <ATTACHMENTS
@@ -56,6 +63,9 @@ class SidePanel extends React.Component {
           showErrorMessage={this.showErrorMessage}
           uploadAttachment={this.props.uploadAttachment}
           page={this.props.page}
+          insertButton={this.props.addButton}
+          editButton={this.props.editButton}
+          alertMsg={this.props.alertMsg}
         />
       case 'audio':
         return <ATTACHMENTS
@@ -65,6 +75,9 @@ class SidePanel extends React.Component {
           showErrorMessage={this.showErrorMessage}
           uploadAttachment={this.props.uploadAttachment}
           page={this.props.page}
+          insertButton={this.props.addButton}
+          editButton={this.props.editButton}
+          alertMsg={this.props.alertMsg}
         />
       case 'media':
         return <ATTACHMENTS
@@ -74,6 +87,9 @@ class SidePanel extends React.Component {
           showErrorMessage={this.showErrorMessage}
           uploadAttachment={this.props.uploadAttachment}
           page={this.props.page}
+          insertButton={this.props.addButton}
+          editButton={this.props.editButton}
+          alertMsg={this.props.alertMsg}
         />
       case 'gallery':
         return <GALLERY
@@ -83,6 +99,9 @@ class SidePanel extends React.Component {
           showErrorMessage={this.showErrorMessage}
           uploadAttachment={this.props.uploadAttachment}
           page={this.props.page}
+          insertButton={this.props.addButton}
+          editButton={this.props.editButton}
+          alertMsg={this.props.alertMsg}
         />
       case 'links carousel':
         return <LINKSCAROUSEL
@@ -155,7 +174,9 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
       uploadAttachment,
-      urlMetaData
+      urlMetaData,
+      addButton,
+      editButton
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(SidePanel)

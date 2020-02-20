@@ -29,6 +29,9 @@ class ButtonsContainer extends React.Component {
               removeButton={this.props.removeButton}
               mainActions={['Open a website', 'Open a webview', 'Reply with a message']}
               additionalActions={['Subscribe to Sequence', 'Unsubscribe from Sequence', 'Set Custom Field', 'Google Sheets actions', 'HubSpot actions']}
+              insertButton={this.props.insertButton}
+              editButton={this.props.editButton}
+              alertMsg={this.props.alertMsg}
             />
           ))
         }
@@ -51,7 +54,9 @@ ButtonsContainer.propTypes = {
   'addButton': PropTypes.func.isRequired,
   'limit': PropTypes.number.isRequired,
   'removeButton': PropTypes.func.isRequired,
-  'updateButton': PropTypes.func.isRequired
+  'updateButton': PropTypes.func.isRequired,
+  'insertButton': PropTypes.func.isRequired,
+  'editButton': PropTypes.func.isRequired
 }
 
 export default ButtonsContainer

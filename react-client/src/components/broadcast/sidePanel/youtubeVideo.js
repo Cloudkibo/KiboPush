@@ -103,6 +103,7 @@ class YouTubeVideo extends React.Component {
           showRemove={this.props.componentData.links.length > 1 ? true : false}
           handleUrlChange={this.handleUrlChange}
           updateActiveLink={this.updateActiveLink}
+          typingInterval={100}
         />
         <span>Note: The link will be converted and sent as a card</span>
       </div>

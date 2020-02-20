@@ -80,6 +80,9 @@ class Text extends React.Component {
             updateButton={this.updateButton}
             removeButton={this.removeButton}
             limit={3}
+            insertButton={this.props.insertButton}
+            editButton={this.props.editButton}
+            alertMsg={this.props.alertMsg}
           />
           <div style={{float: 'left', clear: 'both'}}
             ref={(el) => { this.bottom = el }} />
@@ -91,7 +94,9 @@ class Text extends React.Component {
 
 Text.propTypes = {
   'updateBroadcastData': PropTypes.func.isRequired,
-  'blockId': PropTypes.number.isRequired
+  'blockId': PropTypes.number.isRequired,
+  'insertButton': PropTypes.func.isRequired,
+  'editButton': PropTypes.func.isRequired
 }
 
 export default Text
