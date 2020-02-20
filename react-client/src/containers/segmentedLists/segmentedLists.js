@@ -25,15 +25,24 @@ class SegmentedList extends React.Component {
       customerLists: [],
       totalLength: 0,
       pageNumber: 0,
+      openVideo: false
+
     }
     this.showDialogDelete = this.showDialogDelete.bind(this)
     this.saveCurrentList = this.saveCurrentList.bind(this)
     this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
+    this.openVideoTutorial = this.openVideoTutorial.bind(this)
     props.loadMyPagesList()
     props.loadSubscribersList()
     props.loadCustomerListsNew({ last_id: 'none', number_of_records: 10, first_page: 'first' })
     props.clearCurrentList()
+  }
+  openVideoTutorial () {
+    this.setState({
+      openVideo: true
+    })
+    this.refs.videoList.click()
   }
   scrollToTop() {
     this.top.scrollIntoView({ behavior: 'instant' })
@@ -137,21 +146,27 @@ class SegmentedList extends React.Component {
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div style={{ float: 'left', clear: 'both' }}
           ref={(el) => { this.top = el }} />
-        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="video" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <a href='#/' style={{ display: 'none' }} ref='videoList' data-toggle='modal' data-backdrop='static' data-keyboard='false' data-target="#videoList">SegmentListModal</a>
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="videoList" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog modal-lg" role="document">
             <div className="modal-content" style={{ width: '687px', top: '100' }}>
               <div style={{ display: 'block' }} className="modal-header">
                 <h5 className="modal-title" id="exampleModalLabel">
                   Segmented List Video Tutorial
 									</h5>
-                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" 
+                aria-label="Close"
+                onClick={() => {
+                  this.setState({
+                    openVideo: false
+                  })}}>
                   <span aria-hidden="true">
                     &times;
 											</span>
                 </button>
               </div>
               <div style={{ color: 'black' }} className="modal-body">
-                <YouTube
+              {this.state.openVideo && <YouTube
                   videoId='5ett7iCFirs'
                   opts={{
                     height: '390',
@@ -161,6 +176,7 @@ class SegmentedList extends React.Component {
                     }
                   }}
                 />
+                }
               </div>
             </div>
           </div>
@@ -235,7 +251,7 @@ class SegmentedList extends React.Component {
             </div>
             <div className='m-alert__text'>
               Need help in understanding Segmented Subscribers Lists? <a href='http://kibopush.com/segmented-subscribers/' target='_blank' rel='noopener noreferrer'>Click Here </a>
-              Or check out this <a href='#/' data-toggle="modal" data-target="#video">video tutorial</a>
+              Or check out this <a href='#/' onClick={this.openVideoTutorial}>video tutorial</a>
             </div>
           </div>
           <div className='row'>
