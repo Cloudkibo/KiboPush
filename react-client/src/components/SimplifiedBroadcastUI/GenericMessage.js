@@ -251,9 +251,9 @@ class GenericMessage extends React.Component {
 
     if (!isPresent) {
       if (obj.buttons.length > 0) {
-        temp.push({id: obj.id, text: obj.text, componentType: 'text', buttons: obj.buttons})
+        temp.push({id: obj.id, text: obj.text, componentType: 'text', componentName: 'text', buttons: obj.buttons})
       } else {
-        temp.push({id: obj.id, text: obj.text, componentType: 'text'})
+        temp.push({id: obj.id, text: obj.text, componentType: 'text', componentName: 'text'})
       }
     }
     temp = this.appendQuickRepliesToEnd(temp, this.state.quickReplies)
@@ -278,6 +278,7 @@ class GenericMessage extends React.Component {
       if (data.id === obj.id) {
         console.log('enter in function')
         temp[a].componentType = obj.componentType
+        temp[a].componentName = obj.componentName
         temp[a].fileName = obj.fileName
         temp[a].fileurl = obj.fileurl
         temp[a].image_url = obj.image_url
@@ -336,6 +337,7 @@ class GenericMessage extends React.Component {
         }
         temp[a].fileName = obj.fileName
         temp[a].mediaType = obj.mediaType
+        temp[a].componentName = obj.componentName
         temp[a].fileurl = obj.fileurl
         temp[a].image_url = obj.image_url
         temp[a].size = obj.size
@@ -672,6 +674,7 @@ class GenericMessage extends React.Component {
             id: componentId,
             links: broadcast.links,
             componentType: 'card',
+            componentName:  broadcast.componentName ? broadcast.componentName: 'card',
             title: broadcast.title ? broadcast.title : '',
             description: broadcast.description ? broadcast.description : '',
             fileurl: broadcast.fileurl ? broadcast.fileurl : '',
@@ -706,6 +709,7 @@ class GenericMessage extends React.Component {
             id: componentId,
             links: broadcast.links,
             componentType: 'gallery',
+            componentName: broadcast.componentName ? broadcast.componentName: 'gallery',
             cards: broadcast.cards,
             deletePayload: broadcast.deletePayload
           })
@@ -726,6 +730,7 @@ class GenericMessage extends React.Component {
           this.handleFile({
             id: componentId,
             componentType: 'audio',
+            componentName: 'audio',
             file: broadcast.file ? broadcast.file : ''
           })
         }
@@ -744,6 +749,7 @@ class GenericMessage extends React.Component {
         handler: () => {
           this.handleFile({id: componentId,
             componentType: 'file',
+            componentName: 'file',
             file: broadcast.file ? broadcast.file : ''
           })
         }
@@ -763,6 +769,7 @@ class GenericMessage extends React.Component {
           this.handleImage({
             id: componentId,
             componentType: 'image',
+            componentName: 'image',
             image_url: broadcast.image_url ? broadcast.image_url : '',
             fileurl: broadcast.fileurl ? broadcast.fileurl : '',
             fileName: broadcast.fileName,
@@ -791,6 +798,7 @@ class GenericMessage extends React.Component {
             youtubeLink: broadcast.youtubeLink && broadcast.youtubeLink,
             videoLink: broadcast.videoLink && broadcast.videoLink,
             componentType: 'video',
+            componentName: 'video',
             file: broadcast.file,
             fileurl: broadcast.fileurl,
             fileName: broadcast.fileName,
@@ -822,6 +830,7 @@ class GenericMessage extends React.Component {
             youtubeLink: broadcast.youtubeLink && broadcast.youtubeLink,
             videoLink: broadcast.videoLink && broadcast.videoLink,
             componentType: 'media',
+            componentName: 'media',
             fileurl: broadcast.fileurl,
             fileName: broadcast.fileName,
             image_url: broadcast.image_url,
