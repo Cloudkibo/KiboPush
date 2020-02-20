@@ -9,9 +9,9 @@ class OpenWebsite extends React.Component {
     this.state = {
       link: {
         url: props.button.url,
-        errorMsg: '',
-        valid: false,
-        loading: false
+        errorMsg: (props.button.url && props.button.errorMsg) ? props.button.errorMsg : '',
+        valid: props.button.valid,
+        loading: props.button.loading
       }
     }
     this.handleUrlChange = this.handleUrlChange.bind(this)
@@ -36,7 +36,7 @@ class OpenWebsite extends React.Component {
         newUrl: url,
         title: this.props.button.title
       }
-      this.props.handleButton(addData, editData)
+      this.props.handleButton(addData, editData, callback)
     } else {
       const link = {
         url,
@@ -46,14 +46,23 @@ class OpenWebsite extends React.Component {
       }
       callback(link)
       this.setState({link})
+      this.props.button.url = url
+      this.props.button.errorMsg = link.errorMsg
+      this.props.button.valid = link.valid
+      this.props.button.loading = link.loading
+      this.props.updateButton(this.props.button, this.props.buttonIndex)
     }
   }
 
   UNSAFE_componentWillReceiveProps (nextProps) {
     console.log('componentWillRecieveProps of open website side panel called ', nextProps)
     if (nextProps.button) {
-      let link = this.state.link
-      link.url = nextProps.button.url
+      let link = {
+        url: this.state.link.url,
+        errorMsg: (this.state.link.url && nextProps.button.errorMsg) ? nextProps.button.errorMsg : '',
+        valid: nextProps.button.valid,
+        loading: nextProps.button.loading
+      }
       this.setState({link})
     }
   }
@@ -66,8 +75,8 @@ class OpenWebsite extends React.Component {
           <span>
             Open a website
           </span>
-          <span style={{cursor: 'pointer'}} class="pull-right">
-            <i class="la la-close"></i>
+          <span onClick={() => {this.props.removeAction(this.props.index)}} style={{cursor: 'pointer'}} class="pull-right">
+            <i className="la la-close"></i>
           </span>
         </div>
         <div className='card-body'>
@@ -88,7 +97,11 @@ class OpenWebsite extends React.Component {
 
 OpenWebsite.propTypes = {
   'handleButton': PropTypes.func.isRequired,
-  'button': PropTypes.object.isRequired
+  'button': PropTypes.object.isRequired,
+  'index': PropTypes.number.isRequired,
+  'removeAction': PropTypes.func.isRequired,
+  'updateButton': PropTypes.func.isRequired,
+  'buttonIndex': PropTypes.number.isRequired
 }
 
 export default OpenWebsite

@@ -207,6 +207,9 @@ class Attachments extends React.Component {
               insertButton={this.props.insertButton}
               editButton={this.props.editButton}
               alertMsg={this.props.alertMsg}
+              page={this.props.page}
+              whitelistedDomains={this.props.whitelistedDomains}
+              sequences={this.props.sequences}
             />
           }
           <div style={{float: 'left', clear: 'both'}}
@@ -223,7 +226,10 @@ Attachments.propTypes = {
   'showErrorMessage': PropTypes.func.isRequired,
   'uploadAttachment': PropTypes.func.isRequired,
   'insertButton': PropTypes.func.isRequired,
-  'editButton': PropTypes.func.isRequired
+  'editButton': PropTypes.func.isRequired,
+  'page': PropTypes.object.isRequired,
+  'whitelistedDomains': PropTypes.array.isRequired,
+  'sequences': PropTypes.array
 }
 
 export default Attachments

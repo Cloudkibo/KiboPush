@@ -5,6 +5,8 @@ import { bindActionCreators } from 'redux'
 import { uploadAttachment } from '../../../redux/actions/convos.actions'
 import { urlMetaData } from '../../../redux/actions/convos.actions'
 import { addButton, editButton } from '../../../redux/actions/broadcast.actions'
+import { fetchWhiteListedDomains } from '../../../redux/actions/settings.actions'
+import { fetchAllSequence } from '../../../redux/actions/sequence.action'
 import TEXT from './text'
 import ATTACHMENTS from './attachments'
 import GALLERY from './gallery'
@@ -14,10 +16,16 @@ import YOUTUBEVIDEO from './youtubeVideo'
 class SidePanel extends React.Component {
   constructor (props) {
     super(props)
-    this.state = {}
+    this.state = {
+      whitelistedDomains: []
+    }
     this.getComponent = this.getComponent.bind(this)
     this.getComponentName = this.getComponentName.bind(this)
     this.showErrorMessage = this.showErrorMessage.bind(this)
+    this.handleWhiteListedDomains = this.handleWhiteListedDomains.bind(this)
+
+    props.fetchWhiteListedDomains(props.page.pageId, this.handleWhiteListedDomains)
+    props.fetchAllSequence()
   }
 
   showErrorMessage (message) {
@@ -42,6 +50,9 @@ class SidePanel extends React.Component {
           insertButton={this.props.addButton}
           editButton={this.props.editButton}
           alertMsg={this.props.alertMsg}
+          page={this.props.page}
+          whitelistedDomains={this.state.whitelistedDomains}
+          sequences={this.props.sequences}
         />
       case 'attachments':
         return <ATTACHMENTS
@@ -54,6 +65,8 @@ class SidePanel extends React.Component {
           insertButton={this.props.addButton}
           editButton={this.props.editButton}
           alertMsg={this.props.alertMsg}
+          whitelistedDomains={this.state.whitelistedDomains}
+          sequences={this.props.sequences}
         />
       case 'file':
         return <ATTACHMENTS
@@ -66,6 +79,8 @@ class SidePanel extends React.Component {
           insertButton={this.props.addButton}
           editButton={this.props.editButton}
           alertMsg={this.props.alertMsg}
+          whitelistedDomains={this.state.whitelistedDomains}
+          sequences={this.props.sequences}
         />
       case 'audio':
         return <ATTACHMENTS
@@ -78,6 +93,8 @@ class SidePanel extends React.Component {
           insertButton={this.props.addButton}
           editButton={this.props.editButton}
           alertMsg={this.props.alertMsg}
+          whitelistedDomains={this.state.whitelistedDomains}
+          sequences={this.props.sequences}
         />
       case 'media':
         return <ATTACHMENTS
@@ -90,6 +107,8 @@ class SidePanel extends React.Component {
           insertButton={this.props.addButton}
           editButton={this.props.editButton}
           alertMsg={this.props.alertMsg}
+          whitelistedDomains={this.state.whitelistedDomains}
+          sequences={this.props.sequences}
         />
       case 'gallery':
         return <GALLERY
@@ -102,6 +121,8 @@ class SidePanel extends React.Component {
           insertButton={this.props.addButton}
           editButton={this.props.editButton}
           alertMsg={this.props.alertMsg}
+          whitelistedDomains={this.state.whitelistedDomains}
+          sequences={this.props.sequences}
         />
       case 'links carousel':
         return <LINKSCAROUSEL
@@ -125,6 +146,12 @@ class SidePanel extends React.Component {
         />
       default:
         return null
+    }
+  }
+
+  handleWhiteListedDomains (resp) {
+    if (resp.status === 'success') {
+      this.setState({ whitelistedDomains: resp.payload })
     }
   }
 
@@ -168,7 +195,9 @@ SidePanel.propTypes = {
 }
 
 function mapStateToProps (state) {
-  return {}
+  return {
+    sequences: (state.sequenceInfo.sequences)
+  }
 }
 
 function mapDispatchToProps (dispatch) {
@@ -176,7 +205,9 @@ function mapDispatchToProps (dispatch) {
       uploadAttachment,
       urlMetaData,
       addButton,
-      editButton
+      editButton,
+      fetchWhiteListedDomains,
+      fetchAllSequence
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(SidePanel)
