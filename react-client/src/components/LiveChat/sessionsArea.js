@@ -60,7 +60,6 @@ class SessionsArea extends React.Component {
             fetchSessions={this.props.fetchSessions ? this.props.fetchSessions : []}
             updateState={this.updateState}
             module={this.props.module}
-            filters={this.props.filters}
           />
           <div style={{padding: '0rem 2.2rem'}}>
             <ul className='nav nav-tabs m-tabs-line' role='tablist'>
