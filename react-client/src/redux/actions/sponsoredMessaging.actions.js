@@ -157,14 +157,22 @@ export function createSponsoredMessage(data, cb) {
     }
 }
 
-export function deleteSponsoredMessage(id, msg){
+export function deleteSponsoredMessage(id, msg, searchValue, statusValue, pageValue){
+  let data = {
+    last_id: 'none',
+    number_of_records: 10,
+    first_page: 'first',
+    search_value: searchValue,
+    status_value: statusValue,
+    page_value: pageValue
+  }
     return (dispatch) => {
         callApi(`sponsoredmessaging/${id}`,'delete')
         .then(res => {
             if(res.status === 'success'){
                 msg.success('Sponsored Message deleted successfully')
-                dispatch(fetchSponsoredMessages())
-            }else{
+                dispatch(fetchSponsoredMessages(data))
+          }   else{
                 msg.error('Failed to delete sponsored message')
             }
         })

@@ -280,7 +280,7 @@ class sponsoredMessaging extends React.Component {
                 <button style={{ float: 'right' }}
                   className='btn btn-primary btn-sm'
                   onClick={() => {
-                    this.props.deleteSponsoredMessage(this.state.deleteid, this.msg)
+                    this.props.deleteSponsoredMessage(this.state.deleteid, this.msg, this.state.searchValue, this.state.status, this.state.page_value)
                   }} data-dismiss='modal'>Delete
               </button>
               </div>
