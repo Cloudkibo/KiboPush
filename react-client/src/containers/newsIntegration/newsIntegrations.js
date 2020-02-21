@@ -19,7 +19,7 @@ class NewsIntegrations extends React.Component {
     this.state = {
       newsPages: [],
       smpStatus: [],
-      deleteId: '',
+      selectedFeed: '',
       searchValue: '',
       status: '',
       pageNumber: 0,
@@ -41,7 +41,7 @@ class NewsIntegrations extends React.Component {
     props.saveCurrentFeed(null)
     this.gotoSettings = this.gotoSettings.bind(this)
     this.gotoMessages = this.gotoMessages.bind(this)
-    this.setDeleteId = this.setDeleteId.bind(this)
+    this.deleteFeed = this.deleteFeed.bind(this)
     this.viewGuide = this.viewGuide.bind(this)
     this.searchSections = this.searchSections.bind(this)
     this.onStatusFilter = this.onStatusFilter.bind(this)
@@ -136,7 +136,7 @@ class NewsIntegrations extends React.Component {
   }
   resetFilters () {
     this.setState({
-      deleteId: '',
+      selectedFeed: '',
       searchValue: '',
       status: '',
       pageNumber: 0,
@@ -144,7 +144,14 @@ class NewsIntegrations extends React.Component {
       type_value: '',
     })
   }
-  setStatus (feed) {
+  setStatus (feed, notified) {
+    if (feed.defaultFeed && feed.isActive && !notified) {
+      this.setState({
+        selectedFeed: feed
+      })
+      this.refs.disableDefault.click()
+      return
+    }
     var updated = {
       title: feed.title,
       defaultFeed: feed.defaultFeed,
@@ -211,8 +218,8 @@ class NewsIntegrations extends React.Component {
   scrollToTop () {
     this.top.scrollIntoView({behavior: 'instant'})
   }
-  setDeleteId (id) {
-    this.setState({deleteId: id})
+  deleteFeed (feed) {
+    this.setState({selectedFeed: feed})
   }
 
   displayData (n, feeds) {
@@ -308,9 +315,6 @@ class NewsIntegrations extends React.Component {
     this.setState({pageNumber: data.selected})
     this.displayData(data.selected, this.props.rssFeeds)
   }
-  updateDeleteID (id) {
-    this.setState({deleteid: id})
-  }
 
   gotoSettings (feed) {
     this.props.saveCurrentFeed(feed)
@@ -390,7 +394,10 @@ class NewsIntegrations extends React.Component {
                   </button>
                 </div>
                 <div style={{ color: 'black' }} className="modal-body">
-                  <p>Are you sure you want to delete this news section?</p>
+                  { this.state.selectedFeed.defaultFeed ?
+                  <p>If you remove the default news section, your subscribers will not receive daily news updates from <strong>{this.state.selectedFeed.title}</strong>. Are you sure you want to delete this news section ?</p>
+                  : <p>Are you sure you want to delete this news section?</p>
+                  }
                   <button style={{ float: 'right' }}
                     className='btn btn-primary btn-sm'
                     onClick={() => {
@@ -401,9 +408,37 @@ class NewsIntegrations extends React.Component {
                         type_value: this.state.type_value,
                         integrationType: 'manual'
                       }
-                      this.props.deleteNewsFeed(this.state.deleteId, this.msg, filters)
+                      this.props.deleteNewsFeed(this.state.selectedFeed._id, this.msg, filters)
                     }}
                     data-dismiss='modal'>Delete
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <a href='#/' style={{ display: 'none' }} ref='disableDefault' data-toggle="modal" data-target="#disableDefault">disableDefault</a>
+          <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="disableDefault" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+              <div className="modal-content">
+                <div style={{ display: 'block' }} className="modal-header">
+                  <h5 className="modal-title" id="exampleModalLabel">
+                    Disable Integration
+                  </h5>
+                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">
+                      &times;
+                    </span>
+                  </button>
+                </div>
+                <div style={{ color: 'black' }} className="modal-body">
+                  <p>If you disable the default news section, your subscribers will not receive daily news updates from <strong>{this.state.selectedFeed.title}</strong>. Are you sure you want to continue ?</p>
+                  <button style={{ float: 'right' }}
+                    className='btn btn-primary btn-sm'
+                    onClick={() => {
+                      this.setStatus(this.state.selectedFeed, true)
+                      this.refs.disableDefault.click()
+                    }}
+                    >Yes
                   </button>
                 </div>
               </div>
@@ -562,7 +597,7 @@ class NewsIntegrations extends React.Component {
                         page={this.props.pages.filter((page) => page._id === feed.pageIds[0])[0]}
                         openSettings={this.gotoSettings}
                         gotoMessages={this.gotoMessages}
-                        setDeleteId={this.setDeleteId}
+                        deleteFeed={this.deleteFeed}
                         setStatus={this.setStatus}
                       />
                     ))
