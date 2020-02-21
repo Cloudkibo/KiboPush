@@ -1172,7 +1172,9 @@ class Builders extends React.Component {
               let payload = JSON.parse(button.payload)
               for (let l = 0; l < payload.length; l++) {
                 if (payload[l].blockUniqueId && payload[l].blockUniqueId.toString() === blockUniqueId.toString()) {
-                  document.getElementById('button-' + linkedMessages[i].messageContent[j].buttons[k].id).style['border-color'] = 'red'
+                  this.setState({currentId: linkedMessages[i].id}, () => {
+                    document.getElementById('button-' + linkedMessages[i].messageContent[j].buttons[k].id).style['border-color'] = 'red'
+                  })
                   payload[l] = {
                     action: 'send_message_block'
                   }
@@ -1190,7 +1192,9 @@ class Builders extends React.Component {
                 let payload = JSON.parse(button.payload)
                 for (let l = 0; l < payload.length; l++) {
                   if (payload[l].blockUniqueId && payload[l].blockUniqueId.toString() === blockUniqueId.toString()) {
-                    document.getElementById('button-' + linkedMessages[i].messageContent[j].cards[m].buttons[k].id).style['border-color'] = 'red'
+                    this.setState({currentId: linkedMessages[i].id}, () => {
+                      document.getElementById('button-' + linkedMessages[i].messageContent[j].cards[m].buttons[k].id).style['border-color'] = 'red'
+                    })
                     payload[l] = {
                       action: 'send_message_block'
                     }
@@ -1232,7 +1236,9 @@ class Builders extends React.Component {
               let payload = JSON.parse(button.payload)
               for (let l = 0; l < payload.length; l++) {
                 if (payload[l].blockUniqueId && payload[l].blockUniqueId.toString() === blockUniqueId.toString()) {
-                  document.getElementById('button-' + linkedMessages[i].messageContent[j].buttons[k].id).style['border-color'] = 'red'
+                  this.setState({currentId: unlinkedMessages[i].id}, () => {
+                    document.getElementById('button-' + unlinkedMessages[i].messageContent[j].buttons[k].id).style['border-color'] = 'red'
+                  })
                   payload[l] = {
                     action: 'send_message_block'
                   }
@@ -1250,7 +1256,9 @@ class Builders extends React.Component {
                 let payload = JSON.parse(button.payload)
                 for (let l = 0; l < payload.length; l++) {
                   if (payload[l].blockUniqueId && payload[l].blockUniqueId.toString() === blockUniqueId.toString()) {
-                    document.getElementById('button-' + linkedMessages[i].messageContent[j].cards[m].buttons[k].id).style['border-color'] = 'red'
+                    this.setState({currentId: unlinkedMessages[i].id}, () => {
+                      document.getElementById('button-' + unlinkedMessages[i].messageContent[j].cards[m].buttons[k].id).style['border-color'] = 'red'
+                    })
                     payload[l] = {
                       action: 'send_message_block'
                     }
