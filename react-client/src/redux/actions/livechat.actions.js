@@ -385,10 +385,16 @@ export function changeStatus (data, handleActiveSession) {
   }
 }
 
-export function unSubscribe (data) {
+export function unSubscribe (data, handleUnsubscribe) {
   return (dispatch) => {
+    var fetchData = { first_page: true, last_id: 'none', number_of_records: 10, filter: false, filter_criteria: { sort_value: -1, page_value: '', search_value: '' } }
     callApi('subscribers/unSubscribe', 'post', data).then(res => {
-      // dispatch(fetchSessions())
+      if (handleUnsubscribe) {
+        handleUnsubscribe(res)
+      }
+      if (res.status === 'success') {
+        dispatch(fetchOpenSessions(fetchData))
+      }
     })
   }
 }

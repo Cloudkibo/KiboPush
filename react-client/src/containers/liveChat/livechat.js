@@ -127,30 +127,36 @@ class LiveChat extends React.Component {
   }
 
   changeActiveSession(session) {
-    session.unreadCount = 0
-    this.setState({ activeSession: session, scroll: true })
-    if (Object.keys(session).length > 0 && session.constructor === Object) {
-      if (this.state.tabValue === 'open') {
-        var temp = this.props.openSessions
-        for (var i = 0; i < temp.length; i++) {
-          if (temp[i]._id === session._id && temp[i].unreadCount) {
-            temp[i].unreadCount = 0
+    if (session && session !== 'none') {
+      session.unreadCount = 0
+      this.setState({ activeSession: session, scroll: true })
+      if (Object.keys(session).length > 0 && session.constructor === Object) {
+        if (this.state.tabValue === 'open') {
+          var temp = this.props.openSessions
+          for (var i = 0; i < temp.length; i++) {
+            if (temp[i]._id === session._id && temp[i].unreadCount) {
+              temp[i].unreadCount = 0
+            }
+          }
+        } else {
+          var tempClose = this.props.closeSessions
+          for (var j = 0; j < tempClose.length; j++) {
+            if (tempClose[j]._id === session._id && tempClose[j].unreadCount) {
+              tempClose[j].unreadCount = 0
+            }
           }
         }
-      } else {
-        var tempClose = this.props.closeSessions
-        for (var j = 0; j < tempClose.length; j++) {
-          if (tempClose[j]._id === session._id && tempClose[j].unreadCount) {
-            tempClose[j].unreadCount = 0
-          }
+        this.props.fetchUserChats(session._id, { page: 'first', number: 25 })
+        this.props.markRead(session._id)
+        this.props.getSubscriberTags(session._id, this.msg)
+        this.props.getCustomFieldValue(session._id)
+        if (this.props.user.currentPlan.unique_ID === 'plan_C' || this.props.user.currentPlan.unique_ID === 'plan_D') {
+          this.props.loadTeamsList({pageId: session.pageId._id})
         }
       }
-      this.props.fetchUserChats(session._id, { page: 'first', number: 25 })
-      this.props.markRead(session._id)
-      this.props.getSubscriberTags(session._id, this.msg)
-      this.props.getCustomFieldValue(session._id)
-      if (this.props.user.currentPlan.unique_ID === 'plan_C' || this.props.user.currentPlan.unique_ID === 'plan_D') {
-        this.props.loadTeamsList({pageId: session.pageId._id})
+    } else {
+      if (session === 'none') {
+        this.setState({ activeSession: {} })
       }
     }
   }
