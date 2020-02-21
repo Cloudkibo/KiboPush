@@ -73,6 +73,8 @@ class CreateSponsoredMessage extends React.Component {
   }
   onSend () {
     if (checkValidations(this.props.sponsoredMessage)) {
+      let pageId = this.props.pages && this.props.pages.filter(p => p._id === this.props.sponsoredMessage.pageId)[0].pageId
+      this.props.sponsoredMessage.pageId = pageId
       this.props.send(this.props.sponsoredMessage, this.msg, this.handleResponse)
     } else {
       this.msg.error('Please complete all the steps')
@@ -135,6 +137,7 @@ function mapStateToProps (state) {
   console.log(state)
   return {
     sponsoredMessage: (state.sponsoredMessagingInfo.sponsoredMessage),
+    pages: state.pagesInfo.pages
   }
 }
 
