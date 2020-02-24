@@ -74,6 +74,7 @@ export function getCurrentProduct () {
 }
 
 export function isWebURL (value) {
+  /* eslint-disable */
   var regexp = /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/
   return regexp.test(value)
 }

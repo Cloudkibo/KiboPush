@@ -38,8 +38,55 @@ class LiveChat extends React.Component {
     }
 
     this.fetchSessions = this.fetchSessions.bind(this)
+    this.updateFilterPage = this.updateFilterPage.bind(this)
+    this.updateFilterSort = this.updateFilterSort.bind(this)
+    this.updateFilterSearch = this.updateFilterSearch.bind(this)
+    this.updateFilterPending = this.updateFilterPending.bind(this)
+    this.updateFilterUnread = this.updateFilterUnread.bind(this)
+    this.removeFilters = this.removeFilters.bind(this)
 
     this.fetchSessions(true, 'none', true)
+  }
+
+  removeFilters () {
+    this.setState({
+      filterPage: '',
+      filterSearch: '',
+      filterPending: false,
+      filterUnread: false,
+    }, () => {
+      this.fetchSessions(true, 'none')
+    })
+  }
+
+  updateFilterPage (filterPage) {
+    this.setState({filterPage}, () => {
+      this.fetchSessions(true, 'none')
+    })
+  }
+
+  updateFilterSort (filterSort) {
+    this.setState({filterSort}, () => {
+      this.fetchSessions(true, 'none')
+    })
+  }
+
+  updateFilterSearch (value) {
+    this.setState({filterSearch: value}, () => {
+      this.fetchSessions(true, 'none')
+    })
+  }
+
+  updateFilterPending (filterPending) {
+    this.setState({filterPending}, () => {
+      this.fetchSessions(true, 'none')
+    })
+  }
+
+  updateFilterUnread (filterUnread) {
+    this.setState({filterUnread}, () => {
+      this.fetchSessions(true, 'none')
+    })
   }
 
   fetchSessions(firstPage, lastId, fetchBoth) {
@@ -108,9 +155,21 @@ class LiveChat extends React.Component {
               this.props.openCount > 0 || this.props.closeCount > 0
               ? <div className='row'>
                 <SESSIONS
+                  pages={this.props.pages}
                   tabValue={this.state.tabValue}
                   sessions={this.state.sessions}
                   sessionsCount={this.state.sessionsCount}
+                  removeFilters={this.removeFilters}
+                  updateFilterSort={this.updateFilterSort}
+                  updateFilterPage={this.updateFilterPage}
+                  updateFilterSearch={this.updateFilterSearch}
+                  updateFilterPending={this.updateFilterPending}
+                  updateFilterUnread={this.updateFilterUnread}
+                  filterSort={this.state.filterSort}
+                  filterPage={this.state.filterPage}
+                  filterSearch={this.state.filterSearch}
+                  filterPending={this.state.filterPending}
+                  filterUnread={this.state.filterUnread}
                 />
               </div>
               : <p>No data to display</p>
@@ -128,7 +187,8 @@ function mapStateToProps(state) {
     openSessions: (state.liveChat.openSessions),
     openCount: (state.liveChat.openCount),
     closeCount: (state.liveChat.closeCount),
-    closeSessions: (state.liveChat.closeSessions)
+    closeSessions: (state.liveChat.closeSessions),
+    pages: (state.pagesInfo.pages)
   }
 }
 
