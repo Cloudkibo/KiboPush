@@ -93,13 +93,16 @@ export function getuserdetails () {
   }
 }
 
-export function updatePicture () {
+export function updatePicture (data, callback) {
   return (dispatch) => {
-    callApi('users/updatePicture', 'get', undefined, 'accounts')
+    callApi('updatePicture', 'post', data, 'accounts')
       .then(res => {
         console.log('response from updatePicture', res)
         if (res.status === 'success') {
           dispatch(getuserdetails())
+          if (callback) {
+            callback(res.payload)
+          }
         }
       })
   }

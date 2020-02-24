@@ -82,7 +82,7 @@ class Header extends React.Component {
   profilePicError (e) {
     console.log('profile picture error for user')
     // e.target.src = 'https://emblemsbf.com/img/27447.jpg'
-    this.props.updatePicture()
+    this.props.updatePicture({user: this.props.user})
   }
   logout () {
     this.props.updateShowIntegrations({showIntegrations: true})
