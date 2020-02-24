@@ -286,24 +286,6 @@ class CreateTeam extends React.Component {
                                           Agents
                                         </span>
                                       </li>
-                                      <li className='m-nav__item'>
-                                        <a href='#/' className='m-nav__link' style={{cursor: 'pointer'}}><span className='m-nav__link-text'>
-                                            ak;anisha
-                                          </span>
-                                        </a>
-                                      </li>
-                                      <li className='m-nav__item'>
-                                        <a href='#/' className='m-nav__link' style={{cursor: 'pointer'}}><span className='m-nav__link-text'>
-                                            ak;anisha
-                                          </span>
-                                        </a>
-                                      </li>
-                                      <li className='m-nav__item'>
-                                        <a href='#/' className='m-nav__link' style={{cursor: 'pointer'}}><span className='m-nav__link-text'>
-                                            ak;anisha
-                                          </span>
-                                        </a>
-                                      </li>
                                       {
                                         this.props.members.map((member, i) => (
                                           <li className='m-nav__item'>
