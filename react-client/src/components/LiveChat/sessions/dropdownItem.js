@@ -4,25 +4,7 @@ import PropTypes from 'prop-types'
 class DropdownItem extends React.Component {
   constructor (props, context) {
     super(props, context)
-    this.state = {
-      showDropDown: false,
-      typingInterval: 1000,
-      filterSearch: this.props.filterSearch
-    }
     console.log('DropdownItem constructor')
-  }
-
-  componentDidMount () {
-    let typingTimer
-    let doneTypingInterval = this.state.typingInterval
-    let input = document.getElementById(`generalSearch`)
-    input.addEventListener('keyup', () => {
-      clearTimeout(typingTimer)
-      typingTimer = setTimeout(() => {
-          this.props.updateFilterSearch(this.state.filterSearch)
-      }, doneTypingInterval)
-    })
-    input.addEventListener('keydown', () => {clearTimeout(typingTimer)})
   }
 
   render () {
