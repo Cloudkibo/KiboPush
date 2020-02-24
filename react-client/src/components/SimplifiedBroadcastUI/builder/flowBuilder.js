@@ -357,7 +357,7 @@ class FlowBuilder extends React.Component {
     console.log('getting chart data')
     const messages = this.props.linkedMessages.concat(this.props.unlinkedMessages)
     let {ports, links} = this.getPortsNLinks(messages[0])
-    let chartSimple = (this.state && this.state.chart) ? this.state.chart : {
+    let chartSimple = {
       offset: {
         x: 0,
         y: 0
@@ -871,6 +871,17 @@ class FlowBuilder extends React.Component {
               let message = this.props.linkedMessages[messageIndex]
               for (let j = 0; j < message.messageContent.length; j++) {
                 let messageContent = message.messageContent[j]
+                if (messageContent.quickReplies) {
+                  for (let k = 0; k < messageContent.quickReplies.length; k++) {
+                    let quickReply = messageContent.quickReplies[k]
+                    let payload = JSON.parse(quickReply.payload)
+                    for (let l = 0; l < payload.length; l++) {
+                      if (payload[l].blockUniqueId) {
+                        deletePayload.push(payload[l].blockUniqueId)
+                      }
+                    } 
+                  }
+                }
                 if (messageContent.buttons) {
                   for (let k = 0; k < messageContent.buttons.length; k++) {
                     let button = messageContent.buttons[k]
@@ -997,7 +1008,7 @@ class FlowBuilder extends React.Component {
               let payload = JSON.parse(button.payload)
               for (let l = 0; l < payload.length; l++) {
                 if (payload[l].blockUniqueId && payload[l].blockUniqueId.toString() === blockUniqueId.toString()) {
-                  document.getElementById('button-' + this.props.linkedMessages[i].messageContent[j].buttons[k].id).style['border-color'] = 'red'
+                  document.getElementById('button-' + this.props.unlinkedMessages[i].messageContent[j].buttons[k].id).style['border-color'] = 'red'
                   payload[l] = {
                     action: 'send_message_block'
                   }
@@ -1015,7 +1026,7 @@ class FlowBuilder extends React.Component {
                 let payload = JSON.parse(button.payload)
                 for (let l = 0; l < payload.length; l++) {
                   if (payload[l].blockUniqueId && payload[l].blockUniqueId.toString() === blockUniqueId.toString()) {
-                    document.getElementById('button-' + this.props.linkedMessages[i].messageContent[j].cards[m].buttons[k].id).style['border-color'] = 'red'
+                    document.getElementById('button-' + this.props.unlinkedMessages[i].messageContent[j].cards[m].buttons[k].id).style['border-color'] = 'red'
                     payload[l] = {
                       action: 'send_message_block'
                     }

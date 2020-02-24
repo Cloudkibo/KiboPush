@@ -6,6 +6,7 @@ export function feedsInfo (state = {}, action) {
       return Object.assign({}, state, {
         rssFeeds: action.rssFeeds,
         count: action.count,
+        defaultFeeds: action.defaultFeeds
       })
     case ActionTypes.SHOW_RSS_FEED_POSTS:
       return Object.assign({}, state, {
