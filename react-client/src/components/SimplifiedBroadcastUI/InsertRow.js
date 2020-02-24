@@ -44,7 +44,7 @@ class InsertRow extends React.Component {
 
   componentDidMount () {
     console.log('in componentDidMount of InsertRow', this.props)
-    if (!this.props.mapping && !this.props.questions) {
+    if (this.props.mapping && !this.props.questions) {
       let mappingDataValues = [].concat(this.props.mapping)
       for (let i = 0; i < this.props.mapping.length; i++) {
         if (this.props.mapping[i].kiboPushColumn) {

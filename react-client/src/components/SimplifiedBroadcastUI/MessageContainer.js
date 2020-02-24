@@ -27,7 +27,7 @@ class GenericMessage extends React.Component {
                       />
                     </div>
                     <div className='col-lg-6 col-md-6 col-sm-12 col-xs-12'>
-                    <div className='iphone-x' style={{
+                      <div className='iphone-x' style={{
                           height: !this.props.noDefaultHeight ? 90 + 'vh' : null, 
                           marginTop: '-30px', 
                           paddingRight: '10%', 
