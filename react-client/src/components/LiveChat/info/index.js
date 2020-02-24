@@ -1,6 +1,8 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
 import YouTube from 'react-youtube'
+
 class Info extends React.Component {
   constructor(props, context) {
     super(props, context)
@@ -8,8 +10,8 @@ class Info extends React.Component {
       openVideo: false
     }
     this.openVideoTutorial = this.openVideoTutorial.bind(this)
-
   }
+
   openVideoTutorial () {
     this.setState({
       openVideo: true
@@ -40,16 +42,18 @@ class Info extends React.Component {
                 </button>
               </div>
               <div style={{ color: 'black' }} className="modal-body">
-              {this.state.openVideo && <YouTube
-                  videoId='XUXc2ZD_lQY'
-                  opts={{
-                    height: '390',
-                    width: '640',
-                    playerVars: { // https://developers.google.com/youtube/player_parameters
-                      autoplay: 0
-                    }
-                  }}
-                />
+                {
+                  this.state.openVideo &&
+                  <YouTube
+                    videoId={this.props.videoId}
+                    opts={{
+                      height: '390',
+                      width: '640',
+                      playerVars: { // https://developers.google.com/youtube/player_parameters
+                        autoplay: 0
+                      }
+                    }}
+                  />
                 }
               </div>
             </div>
@@ -119,19 +123,14 @@ class Info extends React.Component {
             <div className='m-alert__icon'>
               <i className='flaticon-technology m--font-accent' />
             </div>
-            {this.props.module === 'WHATSAPP' && <div className='m-alert__text'>
-              Need help in understanding this page? <a href='https://kibopush.com/whatsapp-twilio/' target='_blank' rel='noopener noreferrer'>Click Here. </a>
+            <div className='m-alert__text'>
+              Need help in understanding this page? <a href={this.props.clickHereLink} target='_blank' rel='noopener noreferrer'>Click Here. </a>
               Or check out this <a href='#/' onClick={this.openVideoTutorial}>video tutorial.</a>
             </div>
-            }
-            {this.props.module === 'KIBOCHAT' && <div className='m-alert__text'>
-              Need help in understanding this page? <a href='http://kibopush.com/livechat/' target='_blank' rel='noopener noreferrer'>Click Here. </a>
-              Or check out this <a href='#/' onClick={this.openVideoTutorial}>video tutorial.</a>
-            </div>
-            }
           </div>
         </div>
-        {this.props.module === 'KIBOCHAT' &&
+        {
+          this.props.showGuideline &&
           <div className='col'>
             <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
               <div className='m-alert__icon'>
@@ -146,6 +145,12 @@ class Info extends React.Component {
       </div>
     )
   }
+}
+
+Info.propTypes = {
+  'showGuideline': PropTypes.bool.isRequired,
+  'clickHereLink': PropTypes.string.isRequired,
+  'videoId': PropTypes.string.isRequired
 }
 
 export default Info
