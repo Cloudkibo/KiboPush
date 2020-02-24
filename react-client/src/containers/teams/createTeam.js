@@ -6,7 +6,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { Link } from 'react-router-dom'
-import { getuserdetails } from '../../redux/actions/basicinfo.actions'
+import { getuserdetails, updatePicture } from '../../redux/actions/basicinfo.actions'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
 import { createTeam } from '../../redux/actions/teams.actions'
 import { loadMembersList } from '../../redux/actions/members.actions'
@@ -37,6 +37,7 @@ class CreateTeam extends React.Component {
     this.removePage = this.removePage.bind(this)
     this.exists = this.exists.bind(this)
     this.existsPage = this.existsPage.bind(this)
+    this.profilePicError = this.profilePicError.bind(this)
   }
   showDropDown () {
     this.setState({showDropDown: true})
@@ -52,6 +53,22 @@ class CreateTeam extends React.Component {
   hideDropDown1 () {
     this.setState({showDropDown1: false})
   }
+  profilePicError(e, member) {
+    e.persist()
+    this.setDefaultPicture(e)
+    this.props.updatePicture({user: member}, (newProfilePic) => {
+      if (newProfilePic) {
+        e.target.src = newProfilePic
+      } else {
+        this.setDefaultPicture(e)
+      }
+    })
+  }
+
+  setDefaultPicture(e) {
+      e.target.src = 'https://www.mastermindpromotion.com/wp-content/uploads/2015/02/facebook-default-no-profile-pic-300x300.jpg'
+  }
+
   componentDidMount () {
     this.scrollToTop()
     const hostname =  window.location.hostname;
@@ -239,7 +256,9 @@ class CreateTeam extends React.Component {
                             this.state.agentIds.map((agent, i) => (
                               <li className='m-nav__item'>
                                 <span>
-                                  <img alt='pic' style={{height: '30px'}} src={(agent.userId.facebookInfo) ? agent.userId.facebookInfo.profilePic : 'https://cdn.cloudkibo.com/public/icons/users.jpg'} />&nbsp;&nbsp;
+                                  <img alt='pic' style={{height: '30px'}}
+                                    onError={(e) => this.profilePicError(e, agent.userId)}
+                                    src={(agent.userId.facebookInfo) ? agent.userId.facebookInfo.profilePic : 'https://cdn.cloudkibo.com/public/icons/users.jpg'} />&nbsp;&nbsp;
                                   <span>{agent.userId.name}</span>&nbsp;&nbsp;&nbsp;
                                   <i style={{cursor: 'pointer'}} className='fa fa-times' onClick={() => this.removeAgent(agent.userId.name)} />
                                 </span>
@@ -410,7 +429,8 @@ function mapDispatchToProps (dispatch) {
     getuserdetails: getuserdetails,
     loadMyPagesList: loadMyPagesList,
     createTeam: createTeam,
-    loadMembersList: loadMembersList
+    loadMembersList: loadMembersList,
+    updatePicture: updatePicture
   },
     dispatch)
 }

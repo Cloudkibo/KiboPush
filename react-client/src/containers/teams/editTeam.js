@@ -6,7 +6,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { Link } from 'react-router-dom'
-import { getuserdetails } from '../../redux/actions/basicinfo.actions'
+import { getuserdetails, updatePicture } from '../../redux/actions/basicinfo.actions'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
 import { update, addAgent, addPage, removePage, removeAgent, loadTeamsList, fetchPages, fetchAgents } from '../../redux/actions/teams.actions'
 import { loadMembersList } from '../../redux/actions/members.actions'
@@ -42,7 +42,26 @@ class EditTeam extends React.Component {
     this.existsPage = this.existsPage.bind(this)
     this.existsValue = this.existsValue.bind(this)
     this.cancel = this.cancel.bind(this)
+    this.profilePicError = this.profilePicError.bind(this)
+    this.setDefaultPicture = this.setDefaultPicture.bind(this)
   }
+
+  profilePicError(e, member) {
+    e.persist()
+    this.setDefaultPicture(e)
+    this.props.updatePicture({user: member}, (newProfilePic) => {
+      if (newProfilePic) {
+        e.target.src = newProfilePic
+      } else {
+        this.setDefaultPicture(e)
+      }
+    })
+  }
+
+  setDefaultPicture(e) {
+      e.target.src = 'https://www.mastermindpromotion.com/wp-content/uploads/2015/02/facebook-default-no-profile-pic-300x300.jpg'
+  }
+
   showDropDown () {
     this.setState({showDropDown: true})
   }
@@ -408,7 +427,9 @@ class EditTeam extends React.Component {
                             this.state.agentIds.map((agent, i) => (
                               <li className='m-nav__item'>
                                 <span>
-                                  <img alt='pic' style={{height: '30px'}} src={(agent.facebookInfo) ? agent.facebookInfo.profilePic : 'https://cdn.cloudkibo.com/public/icons/users.jpg'} />&nbsp;&nbsp;
+                                  <img alt='pic' style={{height: '30px'}}
+                                    onError={(e) => this.profilePicError(e, agent)}
+                                    src={(agent.facebookInfo) ? agent.facebookInfo.profilePic : 'https://cdn.cloudkibo.com/public/icons/users.jpg'} />&nbsp;&nbsp;
                                   <span>{agent.name}</span>&nbsp;&nbsp;&nbsp;
                                   {this.props.location.state.module === 'edit' &&
                                   <i style={{cursor: 'pointer'}} className='fa fa-times' onClick={() => this.removeAgent(agent)} />
@@ -605,7 +626,8 @@ function mapDispatchToProps (dispatch) {
     update: update,
     loadTeamsList: loadTeamsList,
     fetchAgents: fetchAgents,
-    fetchPages: fetchPages
+    fetchPages: fetchPages,
+    updatePicture: updatePicture
   },
     dispatch)
 }
