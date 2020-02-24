@@ -47,7 +47,7 @@ class DropdownItem extends React.Component {
 }
 
 DropdownItem.propTypes = {
-    'performAction': PropTypes.func.isRequired,
+    'action': PropTypes.func.isRequired,
     'option': PropTypes.string.isRequired,
     'selected': PropTypes.bool.isRequired
 }
