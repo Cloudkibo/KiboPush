@@ -119,7 +119,7 @@ class Info extends React.Component {
           </div>
         </div>
         <div style={{padding: '0px'}} className='col'>
-          <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
+          <div style={{marginBottom: '15px'}} className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible' role='alert'>
             <div className='m-alert__icon'>
               <i className='flaticon-technology m--font-accent' />
             </div>
@@ -132,7 +132,7 @@ class Info extends React.Component {
         {
           this.props.showGuideline &&
           <div style={{paddingRight: '0px'}} className='col'>
-            <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
+            <div style={{marginBottom: '15px'}} className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible' role='alert'>
               <div className='m-alert__icon'>
                 <i className='flaticon-exclamation m--font-brand' />
               </div>

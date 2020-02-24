@@ -230,7 +230,7 @@ class LiveChat extends React.Component {
           >
             <center><RingLoader color='#716aca' /></center>
           </div>
-          : <div className='m-content'>
+          : <div style={{padding: '15px 30px'}} className='m-content'>
             <INFO
               videoId='XUXc2ZD_lQY'
               showGuideline={true}

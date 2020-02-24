@@ -13,7 +13,7 @@ class Sessions extends React.Component {
 
   render() {
     return (
-      <div style={{padding: '0px', border: '1px solid #DADDE1'}} className='col-xl-4'>
+      <div style={{padding: '0px', border: '1px solid #F2F3F8'}} className='col-xl-4'>
         <div style={{marginBottom: '0px'}} className='m-portlet' >
           <HEADER
               pages={this.props.pages ? this.props.pages : []}
