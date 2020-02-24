@@ -118,7 +118,7 @@ class Info extends React.Component {
             </div>
           </div>
         </div>
-        <div className='col'>
+        <div style={{padding: '0px'}} className='col'>
           <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
             <div className='m-alert__icon'>
               <i className='flaticon-technology m--font-accent' />
@@ -131,7 +131,7 @@ class Info extends React.Component {
         </div>
         {
           this.props.showGuideline &&
-          <div className='col'>
+          <div style={{paddingRight: '0px'}} className='col'>
             <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
               <div className='m-alert__icon'>
                 <i className='flaticon-exclamation m--font-brand' />

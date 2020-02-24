@@ -7,8 +7,11 @@ import { RingLoader } from 'halogenium'
 // actions
 import {
   fetchOpenSessions,
-  fetchCloseSessions
+  fetchCloseSessions,
+  fetchTeamAgents,
+  changeStatus
 } from '../../redux/actions/livechat.actions'
+import { updatePicture } from '../../redux/actions/subscribers.actions'
 
 // components
 import { INFO, SESSIONS } from '../../components/LiveChat'
@@ -34,7 +37,10 @@ class LiveChat extends React.Component {
       filterPending: false,
       filterUnread: false,
       sessions: [],
-      sessionsCount: 0
+      sessionsCount: 0,
+      activeSession: {_id: ''},
+      teamAgents: [],
+      userChat: []
     }
 
     this.fetchSessions = this.fetchSessions.bind(this)
@@ -44,6 +50,14 @@ class LiveChat extends React.Component {
     this.updateFilterPending = this.updateFilterPending.bind(this)
     this.updateFilterUnread = this.updateFilterUnread.bind(this)
     this.removeFilters = this.removeFilters.bind(this)
+    this.changeTab = this.changeTab.bind(this)
+    this.changeActiveSession = this.changeActiveSession.bind(this)
+    this.setDefaultPicture = this.setDefaultPicture.bind(this)
+    this.profilePicError = this.profilePicError.bind(this)
+    this.changeStatus = this.changeStatus.bind(this)
+    this.performAction = this.performAction.bind(this)
+    this.handleTeamAgents = this.handleTeamAgents.bind(this)
+    this.handleStatusChange = this.handleStatusChange.bind(this)
 
     this.fetchSessions(true, 'none', true)
   }
@@ -86,6 +100,77 @@ class LiveChat extends React.Component {
   updateFilterUnread (filterUnread) {
     this.setState({filterUnread}, () => {
       this.fetchSessions(true, 'none')
+    })
+  }
+
+  handleStatusChange () {
+    this.setState({userChat: [], activeSession: {_id: ''}})
+  }
+
+  handleTeamAgents (agents) {
+    this.setState({teamAgents: agents})
+  }
+
+  performAction (errorMsg, session) {
+    let isAllowed = true
+    if (session.is_assigned) {
+      if (session.assigned_to.type === 'agent' && session.assigned_to.id !== this.props.user._id) {
+        isAllowed = false
+        errorMsg = `Only assigned agent can ${errorMsg}`
+      } else if (this.props.session.assigned_to.type === 'team') {
+        const agentIds = this.state.teamAgents.map((agent) => agent.agentId._id)
+        if (!agentIds.includes(this.props.user._id)) {
+          isAllowed = false
+          errorMsg = `Only agents who are part of assigned team can ${errorMsg}`
+        }
+      }
+    }
+    errorMsg = `You can not perform this action. ${errorMsg}`
+    return {isAllowed, errorMsg}
+  }
+
+  changeStatus (status, session) {
+    let errorMsg = (status === 'resolved') ? 'mark this session as resolved' : 'reopen this session'
+    const data = this.performAction(errorMsg, session)
+    if (data.isAllowed) {
+      this.props.changeStatus({_id: session._id, status: status}, this.handleStatusChange)
+    } else {
+      this.alertMsg.error(data.errorMsg)
+    }
+  }
+
+  profilePicError(e, subscriber) {
+    e.persist()
+    this.setDefaultPicture(e, subscriber)
+    this.props.updatePicture({ subscriber }, (newProfilePic) => {
+      if (newProfilePic) {
+        e.target.src = newProfilePic
+      } else {
+        this.setDefaultPicture(e, subscriber)
+      }
+    })
+  }
+
+  setDefaultPicture (e, subscriber) {
+    if (subscriber.gender === 'female') {
+      e.target.src = 'https://i.pinimg.com/236x/50/28/b5/5028b59b7c35b9ea1d12496c0cfe9e4d.jpg'
+    } else {
+      e.target.src = 'https://www.mastermindpromotion.com/wp-content/uploads/2015/02/facebook-default-no-profile-pic-300x300.jpg'
+    }
+  }
+
+  changeActiveSession (session) {
+    this.setState({activeSession: session})
+    if (session.is_assigned && session.assigned_to.type === 'team') {
+      this.props.fetchTeamAgents(session.assigned_to.id, this.handleTeamAgents)
+    }
+  }
+
+  changeTab (value) {
+    this.setState({
+      tabValue: 'open',
+      sessions: value === 'open' ? this.props.openSessions : this.props.closeSessions,
+      sessionsCount: value === 'open' ? this.props.openCount : this.props.closeCount
     })
   }
 
@@ -170,6 +255,11 @@ class LiveChat extends React.Component {
                   filterSearch={this.state.filterSearch}
                   filterPending={this.state.filterPending}
                   filterUnread={this.state.filterUnread}
+                  changeTab={this.changeTab}
+                  activeSession={this.state.activeSession}
+                  changeActiveSession={this.changeActiveSession}
+                  profilePicError={this.profilePicError}
+                  changeStatus={this.changeStatus}
                 />
               </div>
               : <p>No data to display</p>
@@ -188,14 +278,18 @@ function mapStateToProps(state) {
     openCount: (state.liveChat.openCount),
     closeCount: (state.liveChat.closeCount),
     closeSessions: (state.liveChat.closeSessions),
-    pages: (state.pagesInfo.pages)
+    pages: (state.pagesInfo.pages),
+    user: (state.basicInfo.user)
   }
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators({
     fetchOpenSessions,
-    fetchCloseSessions
+    fetchCloseSessions,
+    updatePicture,
+    fetchTeamAgents,
+    changeStatus
   }, dispatch)
 }
 
