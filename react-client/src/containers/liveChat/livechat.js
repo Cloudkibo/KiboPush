@@ -11,7 +11,7 @@ import {
 } from '../../redux/actions/livechat.actions'
 
 // components
-import { INFO } from '../../components/LiveChat'
+import { INFO, SESSIONS } from '../../components/LiveChat'
 
 const alertOptions = {
   offset: 14,
@@ -32,7 +32,9 @@ class LiveChat extends React.Component {
       filterPage: '',
       filterSearch: '',
       filterPending: false,
-      filterUnread: false
+      filterUnread: false,
+      sessions: [],
+      sessionsCount: 0
     }
 
     this.fetchSessions = this.fetchSessions.bind(this)
@@ -68,6 +70,11 @@ class LiveChat extends React.Component {
     console.log('UNSAFE_componentWillMount called in live chat')
     if (nextProps.openSessions || nextProps.closeSessions) {
       this.setState({loading: false})
+      if (this.state.tabValue === 'open') {
+        this.setState({sessions: nextProps.openSessions, sessionsCount: nextProps.openCount})
+      } else if (this.state.tabValue === 'close') {
+        this.setState({sessions: nextProps.closeSessions, sessionsCount: nextProps.closeCount})
+      }
     }
   }
 
@@ -97,6 +104,17 @@ class LiveChat extends React.Component {
               showGuideline={true}
               clickHereLink='http://kibopush.com/livechat/'
             />
+            {
+              this.props.openCount > 0 || this.props.closeCount > 0
+              ? <div className='row'>
+                <SESSIONS
+                  tabValue={this.state.tabValue}
+                  sessions={this.state.sessions}
+                  sessionsCount={this.state.sessionsCount}
+                />
+              </div>
+              : <p>No data to display</p>
+            }
           </div>
         }
       </div>
