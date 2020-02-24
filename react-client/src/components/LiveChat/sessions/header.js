@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import DropdownItem from './dropdownItem'
 
 class Header extends React.Component {
   constructor (props, context) {
@@ -41,9 +42,7 @@ class Header extends React.Component {
   }
 
   handleSearch (e) {
-    this.setState({
-        filterSearch: e.target.value
-    })
+    this.setState({filterSearch: e.target.value})
   }
 
   handleSort (value) {
@@ -58,12 +57,12 @@ class Header extends React.Component {
     }
   }
 
-  handlePendingFilter (value) {
-    this.props.updateFilterPending(value)
+  handlePendingFilter () {
+    this.props.updateFilterPending(!this.props.filterPending)
   }
 
-  handleUnreadFilter (value) {
-    this.props.updateFilterUnread(value)
+  handleUnreadFilter () {
+    this.props.updateFilterUnread(!this.props.filterUnread)
   }
 
   render () {
@@ -93,93 +92,56 @@ class Header extends React.Component {
                         <div className='m-dropdown__body'>
                           <div className='m-dropdown__content'>
                             <ul className='m-nav'>
-                              <li className='m-nav__section m-nav__section--first'>
-                                <span className='m-nav__section-text'>
-                                  Sort By:
-                                </span>
-                              </li>
-                              <li className='m-nav__item'>
-                                <a href='#/' onClick={() => this.handleSort(1)} className='m-nav__link' style={{cursor: 'pointer'}}>
-                                  {
-                                    this.props.filterSort === 1
-                                    ? <span style={{fontWeight: 600}} className='m-nav__link-text'>
-                                      <i className='la la-check' /> Oldest to Newest
+                                <li className='m-nav__section m-nav__section--first'>
+                                    <span className='m-nav__section-text'>
+                                    Sort By:
                                     </span>
-                                    : <span className='m-nav__link-text'>
-                                      Oldest to Newest
-                                    </span>
-                                  }
-                                </a>
-                              </li>
-                              <li className='m-nav__item'>
-                                <a href='#/' onClick={() => this.handleSort(-1)} className='m-nav__link' style={{cursor: 'pointer'}}>
-                                  {
-                                    this.props.filterSort === -1
-                                    ? <span style={{fontWeight: 600}} className='m-nav__link-text'>
-                                      <i className='la la-check' /> Newest to Oldest
-                                    </span>
-                                    : <span className='m-nav__link-text'>
-                                      Newest to Oldest
-                                    </span>
-                                  }
-                                </a>
-                              </li>
+                                </li>
+                                <DropdownItem
+                                    selected={this.props.filterSort === 1}
+                                    option='Oldest to Newest'
+                                    action={() => this.handleSort(1)} 
+                                />
+
+                                <DropdownItem
+                                    selected={this.props.filterSort === -1}
+                                    option='Newest to Oldest'
+                                    action={() => this.handleSort(-1)} 
+                                />
+
                               <li className='m-nav__section m-nav__section--first'>
                                 <span className='m-nav__section-text'>
                                   Filter by:
                                 </span>
                               </li>
-                              <li className='m-nav__item'>
-                                <a href='#/' onClick={() => this.handleUnreadFilter(this.props.filterUnread ? false : true)} 
-                                    className='m-nav__link' style={{cursor: 'pointer'}}>
-                                  {
-                                    this.props.filterUnread
-                                    ? <span style={{fontWeight: 600}} className='m-nav__link-text'>
-                                      <i className='la la-check' /> Unread Messages
-                                    </span>
-                                    : <span className='m-nav__link-text'>
-                                      Unread Messages
-                                    </span>
-                                  }
-                                </a>
-                              </li>
-                              <li className='m-nav__item'>
-                                <a href='#/' onClick={() => this.handlePendingFilter(this.props.filterPending ? false : true)} 
-                                    className='m-nav__link' style={{cursor: 'pointer'}}>
-                                  {
-                                    this.props.filterPending
-                                    ? <span style={{fontWeight: 600}} className='m-nav__link-text'>
-                                      <i className='la la-check' /> Pending Sessions
-                                    </span>
-                                    : <span className='m-nav__link-text'>
-                                      Pending Sessions
-                                    </span>
-                                  }
-                                </a>
-                              </li>
+                             
+                                <DropdownItem
+                                    selected={this.props.filterUnread}
+                                    option='Unread Messages'
+                                    action={() => this.handleUnreadFilter()} 
+                                />
+
+                                <DropdownItem
+                                    selected={this.props.filterPending}
+                                    option='Pending Sessions'
+                                    action={() => this.handlePendingFilter()} 
+                                />
+
                               {
                                 this.props.pages.map((page, i) => (
-                                  <li key={page.pageId} className='m-nav__item'>
-                                    <a href='#/' onClick={() => this.handlePageFilter(page._id)} className='m-nav__link' style={{cursor: 'pointer'}}>
-                                      {
-                                        page._id === this.props.filterPage
-                                        ? <span style={{fontWeight: 600}} className='m-nav__link-text'>
-                                          <i className='la la-check' /> {page.pageName}
-                                        </span>
-                                        : <span className='m-nav__link-text'>
-                                          {page.pageName}
-                                        </span>
-                                      }
-                                    </a>
-                                  </li>
+                                    <DropdownItem
+                                        selected={page._id === this.props.filterPage}
+                                        option={page.pageName}
+                                        action={() => this.handlePageFilter(page._id)} 
+                                    />
                                 ))
                               }
                             { (this.props.filterPage !== '' || this.props.filterUnread !== '' || this.props.filterPending !== '') &&
                             <li className='m-nav__item'>
-                              <a href='#/' onClick={this.props.removeFilters} style={{borderColor: '#f4516c', color: '#f4516c'}} 
+                              <span onClick={this.props.removeFilters} style={{borderColor: '#f4516c', color: '#f4516c'}} 
                                 className='btn btn-outline-danger m-btn m-btn--pill m-btn--wide btn-sm'>
                                     Remove Filters
-                              </a>
+                              </span>
                             </li>
                             }
                             </ul>
