@@ -354,7 +354,7 @@ class EditTeam extends React.Component {
       transition: 'scale'
     }
     return (
-      <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+      <div className='m-grid__item m-grid__item--fluid m-wrapper' style={{overflow: 'visible'}}>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div style={{float: 'left', clear: 'both'}}
           ref={(el) => { this.top = el }} />
