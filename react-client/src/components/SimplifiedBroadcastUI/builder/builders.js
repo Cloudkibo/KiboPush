@@ -63,7 +63,8 @@ class Builders extends React.Component {
       quickRepliesIndex: -1,
       editingFlowBuilder: false,
       showGSModal: false,
-      loading: this.props.linkedMessages && this.props.linkedMessages.length > 0
+      loading: this.props.linkedMessages && this.props.linkedMessages.length > 0,
+      fileError: ''
     }
     this.defaultTitle = this.props.convoTitle
     this.reset = this.reset.bind(this)
@@ -112,13 +113,13 @@ class Builders extends React.Component {
     this.titleChange = this.titleChange.bind(this)
     this.checkMediaComponents = this.checkMediaComponents.bind(this)
     this.updateFileUrl = this.updateFileUrl.bind(this)
+    this.onFilesError = this.onFilesError.bind(this)
 
     this.GSModalContent = null
 
     if (props.setReset) {
       props.setReset(this.reset)
     }
-
 
     if (this.props.linkedMessages && this.props.linkedMessages.length > 0) {
       this.updateLinkedMessagesPayload(this.props.linkedMessages[0].messageContent)
@@ -156,6 +157,13 @@ class Builders extends React.Component {
   closeGSModal () {
     this.setState({showGSModal: false})
     this.refs.ActionModal.click()
+  }
+  
+  onFilesError (errorMsg) {
+    this.setState({
+      fileError: errorMsg   
+    })
+    this.refs.fileError.click()
   }
 
   getCurrentMessage () {
@@ -614,10 +622,10 @@ class Builders extends React.Component {
       linkedMessages : linkedMessages
     })
     var isMediaValid = true
-    for (var i = 0; i < linkedMessages.length; i++) {
-      for (var j = 0; j < linkedMessages[i].messageContent.length; j++) {
-        var component = linkedMessages[i].messageContent[j]
-        if (component.componentType === 'media' && component.fileurl && !component.fileurl.attachment_id) {
+    for (var m = 0; m < linkedMessages.length; m++) {
+      for (var n = 0; n < linkedMessages[m].messageContent.length; n++) {
+        var componentObj = linkedMessages[m].messageContent[n]
+        if (componentObj.componentType === 'media' && componentObj.fileurl && !componentObj.fileurl.attachment_id) {
           isMediaValid = false
           break
         }
@@ -1186,6 +1194,7 @@ class Builders extends React.Component {
         pageId={this.props.pageId.pageId}
         showCloseModalAlertDialog={this.showCloseModalAlertDialog}
         closeModal={this.closeAddComponentModal}
+        onFilesError={this.onFilesError}
         toggleGSModal={this.toggleGSModal}
         closeGSModal={this.closeGSModal}
         addComponent={this.addComponent} />),
@@ -1709,7 +1718,28 @@ class Builders extends React.Component {
           {this.state.isShowingAddComponentModal && this.openModal()}
         </div>
       </div>
-
+      
+      <a href='#/' style={{ display: 'none' }} ref='fileError' data-toggle="modal" data-target="#fileError">fileError</a>
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="fileError" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+             <div className="modal-content">
+              <div style={{ display: 'block' }} className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">
+                  <i className='fa fa-exclamation-triangle' aria-hidden='true' /> Error
+                </h5>
+                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">
+                    &times;
+                  </span>
+                </button>
+              </div>
+              <div style={{ color: 'black' }} className="modal-body">
+                <p>{this.state.fileError}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
       <a href='#/' style={{ display: 'none' }} ref='lossData' data-toggle="modal" data-target="#lossData">lossData</a>
       <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="lossData" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
