@@ -23,10 +23,9 @@ class Header extends React.Component {
 
   removeFilters () {
       if (this.state.filterSearch) {
-          this.setState({filterSearch: ''}, () => {
-            this.props.removeFilters()
-          })
+          this.setState({filterSearch: ''})
       }
+      this.props.removeFilters()
   }
 
   componentDidMount () {
