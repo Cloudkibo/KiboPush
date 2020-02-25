@@ -110,9 +110,7 @@ export function showCloseChatSessions (sessions, firstPage) {
   }
 }
 export function updateChatSessions (session, appendDeleteInfo) {
-  // let name = session.name.split(' ')
-  // session.firstName = name[0]
-  // session.lastName = name[1]
+  session.name = `${session.firstName} ${session.lastName}`
   return {
     type: ActionTypes.UPDATE_CHAT_SESSIONS,
     session,
