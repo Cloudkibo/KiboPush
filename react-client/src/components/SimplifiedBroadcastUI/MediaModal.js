@@ -152,6 +152,7 @@ class MediaModal extends React.Component {
                 file={this.state.file}
                 updateImage={this.updateImage}
                 updateFile={this.updateFile}
+                onFilesError={this.props.onFilesError}
                 fileurl={this.state.file ? this.state.file.fileurl : ''}
                 fileName={this.state.file ? this.state.file.fileName : ''}
                 image_url={this.state.file && this.state.file.image_url ? this.state.file.image_url : ''}
