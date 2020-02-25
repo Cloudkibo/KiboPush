@@ -14,7 +14,7 @@ class Sessions extends React.Component {
   render() {
     return (
       <div style={{padding: '0px', border: '1px solid #F2F3F8'}} className='col-xl-4'>
-        <div style={{marginBottom: '0px'}} className='m-portlet' >
+        <div style={{overflow: 'hidden', marginBottom: '0px'}} className='m-portlet' >
           <HEADER
               pages={this.props.pages ? this.props.pages : []}
               removeFilters={this.props.removeFilters}
@@ -43,7 +43,7 @@ class Sessions extends React.Component {
               </li>
             </ul>
           </div>
-          <div style={{height: '525px', overflowY: 'scroll', padding: '0rem'}} className='m-portlet__body'>
+          <div style={{overflowY: 'scroll', height: '67vh', padding: '0rem'}} className='m-portlet__body'>
             <div className='tab-content'>
               <div className='tab-pane active' id='m_widget4_tab1_content'>
                 {
