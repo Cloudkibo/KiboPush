@@ -238,9 +238,7 @@ class LiveChat extends React.Component {
               showGuideline={true}
               clickHereLink='http://kibopush.com/livechat/'
             />
-            {
-              this.props.openCount > 0 || this.props.closeCount > 0
-              ? <div className='row'>
+              <div className='row'>
                 <SESSIONS
                   pages={this.props.pages}
                   loading={this.state.sessionsLoading}
@@ -265,8 +263,6 @@ class LiveChat extends React.Component {
                   changeStatus={this.changeStatus}
                 />
               </div>
-              : <p>No data to display</p>
-            }
           </div>
         }
       </div>
