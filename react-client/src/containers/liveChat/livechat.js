@@ -203,13 +203,20 @@ class LiveChat extends React.Component {
 
   UNSAFE_componentWillReceiveProps (nextProps) {
     console.log('UNSAFE_componentWillMount called in live chat')
-    if (nextProps.openSessions || nextProps.closeSessions) {
+    if (this.state.tabValue === 'open' && nextProps.openSessions) {
       this.setState({loading: false, sessionsLoading: false})
-      if (this.state.tabValue === 'open') {
-        this.setState({sessions: nextProps.openSessions, sessionsCount: nextProps.openCount})
-      } else if (this.state.tabValue === 'close') {
-        this.setState({sessions: nextProps.closeSessions, sessionsCount: nextProps.closeCount})
+      let index = nextProps.openSessions.findIndex((session) => session._id === this.state.activeSession._id)
+      if (index === -1) {
+        this.setState({activeSession: {}, userChat: []})
       }
+      this.setState({sessions: nextProps.openSessions, sessionsCount: nextProps.openCount})
+    } else if (this.state.tabValue === 'close' && nextProps.closeSessions) {
+      this.setState({loading: false, sessionsLoading: false})
+      let index = nextProps.closeSessions.findIndex((session) => session._id === this.state.activeSession._id)
+      if (index === -1) {
+        this.setState({activeSession: {}, userChat: []})
+      }
+      this.setState({sessions: nextProps.closeSessions, sessionsCount: nextProps.closeCount})
     }
   }
 
