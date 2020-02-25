@@ -612,10 +612,11 @@ class Button extends React.Component {
   }
 
   changeTitle(event) {
-    if (this.props.updateButtonStatus) {
-      this.props.updateButtonStatus({ buttonDisabled: !this.checkValid() })
-    }
-    this.setState({ title: event.target.value })
+    this.setState({ title: event.target.value }, () => {
+      if (this.props.updateButtonStatus) {
+        this.props.updateButtonStatus({ buttonDisabled: !this.checkValid() })
+      }
+    })
     if (this.props.handleTitleChange) {
       this.props.handleTitleChange(event.target.value, this.props.button_id)
     }
