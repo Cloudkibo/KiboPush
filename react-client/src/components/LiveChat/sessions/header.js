@@ -18,6 +18,14 @@ class Header extends React.Component {
     this.handlePageFilter = this.handlePageFilter.bind(this)
     this.handleUnreadFilter = this.handleUnreadFilter.bind(this)
     this.handlePendingFilter = this.handlePendingFilter.bind(this)
+    this.removeFilters = this.removeFilters.bind(this)
+  }
+
+  removeFilters () {
+      if (this.state.filterSearch) {
+          this.setState({filterSearch: ''})
+      }
+      this.props.removeFilters()
   }
 
   componentDidMount () {
@@ -138,7 +146,7 @@ class Header extends React.Component {
                               }
                             { (this.props.filterPage !== '' || this.props.filterUnread !== '' || this.props.filterPending !== '') &&
                             <li className='m-nav__item'>
-                              <span onClick={this.props.removeFilters} style={{borderColor: '#f4516c', color: '#f4516c'}} 
+                              <span onClick={this.removeFilters} style={{borderColor: '#f4516c', color: '#f4516c'}} 
                                 className='btn btn-outline-danger m-btn m-btn--pill m-btn--wide btn-sm'>
                                     Remove Filters
                               </span>

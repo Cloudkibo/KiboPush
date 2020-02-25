@@ -29,6 +29,7 @@ class LiveChat extends React.Component {
     super(props, context)
     this.state = {
       loading: true,
+      sessionsLoading: false,
       tabValue: 'open',
       numberOfRecords: 25,
       filterSort: -1,
@@ -68,37 +69,38 @@ class LiveChat extends React.Component {
       filterSearch: '',
       filterPending: false,
       filterUnread: false,
+      sessionsLoading: true
     }, () => {
       this.fetchSessions(true, 'none')
     })
   }
 
   updateFilterPage (filterPage) {
-    this.setState({filterPage}, () => {
+    this.setState({filterPage, sessionsLoading: true}, () => {
       this.fetchSessions(true, 'none')
     })
   }
 
   updateFilterSort (filterSort) {
-    this.setState({filterSort}, () => {
+    this.setState({filterSort, sessionsLoading: true}, () => {
       this.fetchSessions(true, 'none')
     })
   }
 
   updateFilterSearch (value) {
-    this.setState({filterSearch: value}, () => {
+    this.setState({filterSearch: value, sessionsLoading: true}, () => {
       this.fetchSessions(true, 'none')
     })
   }
 
   updateFilterPending (filterPending) {
-    this.setState({filterPending}, () => {
+    this.setState({filterPending, sessionsLoading: true}, () => {
       this.fetchSessions(true, 'none')
     })
   }
 
   updateFilterUnread (filterUnread) {
-    this.setState({filterUnread}, () => {
+    this.setState({filterUnread, sessionsLoading: true}, () => {
       this.fetchSessions(true, 'none')
     })
   }
@@ -201,7 +203,7 @@ class LiveChat extends React.Component {
   UNSAFE_componentWillReceiveProps (nextProps) {
     console.log('UNSAFE_componentWillMount called in live chat')
     if (nextProps.openSessions || nextProps.closeSessions) {
-      this.setState({loading: false})
+      this.setState({loading: false, sessionsLoading: false})
       if (this.state.tabValue === 'open') {
         this.setState({sessions: nextProps.openSessions, sessionsCount: nextProps.openCount})
       } else if (this.state.tabValue === 'close') {
@@ -236,11 +238,10 @@ class LiveChat extends React.Component {
               showGuideline={true}
               clickHereLink='http://kibopush.com/livechat/'
             />
-            {
-              this.props.openCount > 0 || this.props.closeCount > 0
-              ? <div className='row'>
+              <div className='row'>
                 <SESSIONS
                   pages={this.props.pages}
+                  loading={this.state.sessionsLoading}
                   tabValue={this.state.tabValue}
                   sessions={this.state.sessions}
                   sessionsCount={this.state.sessionsCount}
@@ -262,8 +263,6 @@ class LiveChat extends React.Component {
                   changeStatus={this.changeStatus}
                 />
               </div>
-              : <p>No data to display</p>
-            }
           </div>
         }
       </div>

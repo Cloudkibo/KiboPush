@@ -46,21 +46,32 @@ class Sessions extends React.Component {
           <div style={{height: '525px', overflowY: 'scroll', padding: '0rem'}} className='m-portlet__body'>
             <div className='tab-content'>
               <div className='tab-pane active' id='m_widget4_tab1_content'>
-                <div className='m-widget4'>
-                  {
-                    this.props.sessionsCount > 0
-                    ? this.props.sessions.map((session, index) => (
-                      <SESSIONITEM
-                        session={session}
-                        activeSession={this.props.activeSession}
-                        changeActiveSession={this.props.changeActiveSession}
-                        profilePicError={this.props.profilePicError}
-                        changeStatus={this.props.changeStatus}
-                      />
-                    ))
-                    : <p style={{marginLeft: '30px'}}>No data to display</p>
-                  }
-                </div>
+                {
+                  this.props.loading
+                  ? 
+                  <div className='align-center'>
+                    <center>
+                      <div className="m-loader" style={{width: "30px", display: "inline-block"}}></div>
+                      <span>Loading...</span>
+                    </center>
+                  </div>
+                  :
+                  <div className='m-widget4'>
+                    {
+                      this.props.sessionsCount > 0
+                      ? this.props.sessions.map((session, index) => (
+                        <SESSIONITEM
+                          session={session}
+                          activeSession={this.props.activeSession}
+                          changeActiveSession={this.props.changeActiveSession}
+                          profilePicError={this.props.profilePicError}
+                          changeStatus={this.props.changeStatus}
+                        />
+                      ))
+                      : <p style={{marginLeft: '30px'}}>No data to display</p>
+                    }
+                  </div>
+                }
               </div>
             </div>
           </div>
