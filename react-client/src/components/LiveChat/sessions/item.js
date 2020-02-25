@@ -84,7 +84,10 @@ class SessionItem extends React.Component {
                     ? <i
                       id={'resolve_session'+this.props.session._id}
                       style={{marginRight: '10px', cursor: 'pointer', color: '#34bfa3', fontSize: '20px', fontWeight: 'bold'}}
-                      onClick={(e) => this.changeStatus('resolved', this.props.session)}
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        this.props.changeStatus('resolved', this.props.session)
+                      }}
                       data-tip='Mark as done'
                       className='la la-check'
                     />
@@ -92,7 +95,10 @@ class SessionItem extends React.Component {
                       id={'reopen_session'+this.props.session._id}
                       style={{ marginLeft: '10px', cursor: 'pointer', color: '#34bfa3', fontSize: '20px', fontWeight: 'bold' }}
                       data-tip='Reopen'
-                      onClick={(e) => { this.changeStatus('new', this.props.session)}}
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        this.props.changeStatus('new', this.props.session)
+                      }}
                       className='fa fa-envelope-open-o'
                     />
                   }

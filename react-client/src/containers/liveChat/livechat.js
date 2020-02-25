@@ -106,8 +106,13 @@ class LiveChat extends React.Component {
     })
   }
 
-  handleStatusChange () {
-    this.setState({userChat: [], activeSession: {}})
+  handleStatusChange (session, status) {
+    const message = (status === 'resolved') ? 'Session has been marked as resoleved successfully' : 'Session has been reopened successfully'
+    this.setState({
+      userChat: [],
+      activeSession: (session._id === this.state.activeSession._id) ? {} : this.state.activeSession
+    })
+    this.alertMsg.success(message)
   }
 
   handleTeamAgents (agents) {
@@ -136,7 +141,7 @@ class LiveChat extends React.Component {
     let errorMsg = (status === 'resolved') ? 'mark this session as resolved' : 'reopen this session'
     const data = this.performAction(errorMsg, session)
     if (data.isAllowed) {
-      this.props.changeStatus({_id: session._id, status: status}, this.handleStatusChange)
+      this.props.changeStatus({_id: session._id, status: status}, () => this.handleStatusChange(session, status))
     } else {
       this.alertMsg.error(data.errorMsg)
     }
@@ -163,17 +168,21 @@ class LiveChat extends React.Component {
   }
 
   changeActiveSession (session) {
-    this.setState({activeSession: session})
-    if (session.is_assigned && session.assigned_to.type === 'team') {
-      this.props.fetchTeamAgents(session.assigned_to.id, this.handleTeamAgents)
+    if (session._id !== this.state.activeSession._id) {
+      this.setState({activeSession: session})
+      if (session.is_assigned && session.assigned_to.type === 'team') {
+        this.props.fetchTeamAgents(session.assigned_to.id, this.handleTeamAgents)
+      }
     }
   }
 
   changeTab (value) {
     this.setState({
-      tabValue: 'open',
+      tabValue: value,
       sessions: value === 'open' ? this.props.openSessions : this.props.closeSessions,
-      sessionsCount: value === 'open' ? this.props.openCount : this.props.closeCount
+      sessionsCount: value === 'open' ? this.props.openCount : this.props.closeCount,
+      userChat: [],
+      activeSession: {}
     })
   }
 
