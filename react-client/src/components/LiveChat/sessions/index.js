@@ -5,9 +5,6 @@ import PropTypes from 'prop-types'
 import SESSIONITEM from './item'
 import HEADER from './header'
 
-
-import { RingLoader } from 'halogenium'
-
 class Sessions extends React.Component {
   constructor(props, context) {
     super(props, context)
