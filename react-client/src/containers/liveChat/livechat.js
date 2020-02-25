@@ -14,7 +14,8 @@ import {
 import { updatePicture } from '../../redux/actions/subscribers.actions'
 
 // components
-import { INFO, SESSIONS } from '../../components/LiveChat'
+import HELPWIDGET from '../../components/extras/helpWidget'
+import { SESSIONS } from '../../components/LiveChat'
 
 const alertOptions = {
   offset: 14,
@@ -39,7 +40,7 @@ class LiveChat extends React.Component {
       filterUnread: false,
       sessions: [],
       sessionsCount: 0,
-      activeSession: {_id: ''},
+      activeSession: {},
       teamAgents: [],
       userChat: []
     }
@@ -106,7 +107,7 @@ class LiveChat extends React.Component {
   }
 
   handleStatusChange () {
-    this.setState({userChat: [], activeSession: {_id: ''}})
+    this.setState({userChat: [], activeSession: {}})
   }
 
   handleTeamAgents (agents) {
@@ -215,7 +216,7 @@ class LiveChat extends React.Component {
   render () {
     console.log('render in live chat')
     return (
-      <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+      <div className='m-grid__item m-grid__item--fluid m-wrapper' style={{marginBottom: 0, overflow: 'hidden'}}>
         <AlertContainer ref={a => { this.alertMsg = a }} {...alertOptions} />
         {
           this.state.loading
@@ -233,10 +234,9 @@ class LiveChat extends React.Component {
             <center><RingLoader color='#716aca' /></center>
           </div>
           : <div style={{padding: '15px 30px'}} className='m-content'>
-            <INFO
-              videoId='XUXc2ZD_lQY'
-              showGuideline={true}
-              clickHereLink='http://kibopush.com/livechat/'
+            <HELPWIDGET
+              documentation={{link: 'http://kibopush.com/livechat/'}}
+              videoTutorial={{videoId: 'XUXc2ZD_lQY'}}
             />
               <div className='row'>
                 <SESSIONS
@@ -262,6 +262,14 @@ class LiveChat extends React.Component {
                   profilePicError={this.profilePicError}
                   changeStatus={this.changeStatus}
                 />
+                {
+                  Object.keys(this.state.activeSession).length === 0 && this.state.activeSession.constructor === Object &&
+                  <div style={{border: '1px solid #F2F3F8', marginBottom: '0px'}} className='col-xl-8 m-portlet'>
+                    <div style={{ textAlign: 'center', padding: '20px' }}>
+                      <p>Please select a session to view its chat.</p>
+                    </div>
+                  </div>
+                }
               </div>
           </div>
         }
