@@ -9,7 +9,7 @@ import {
   loadMyPagesListNew,
   removePage
 } from '../../redux/actions/pages.actions'
-import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
+import { loadSubscribersCount } from '../../redux/actions/subscribers.actions'
 import { getuserdetails } from '../../redux/actions/basicinfo.actions'
 import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
@@ -20,9 +20,9 @@ class Page extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      isShowingZeroSubModal: this.props.subscribers && this.props.subscribers.length === 0,
-      isShowingZeroPageModal: this.props.pages && this.props.pages.length === 0,
-      displayVideo: false,
+      isShowingZeroSubModal: false,
+      isShowingZeroPageModal: false,
+      displayVideo: true,
       page: {},
       pagesData: [],
       totalLength: 0,
@@ -51,7 +51,7 @@ class Page extends React.Component {
   UNSAFE_componentWillMount() {
     this.props.getuserdetails()
     this.props.loadMyPagesListNew({ last_id: 'none', number_of_records: 10, first_page: 'first', filter: false, filter_criteria: { search_value: '' } })
-    this.props.loadSubscribersList()
+    this.props.loadSubscribersCount({})
   }
 
   UNSAFE_componentWillUnmount() {
@@ -125,7 +125,7 @@ class Page extends React.Component {
     } else {
       this.setState({ pagesData: [], totalLength: 0 })
     }
-    if (((nextProps.subscribers && nextProps.subscribers.length === 0) ||
+    if ((nextProps.subscribersCount === 0 ||
       (nextProps.pages && nextProps.pages.length === 0))
     ) {
       this.setState({displayVideo: true})
@@ -459,7 +459,7 @@ function mapStateToProps(state) {
     pages: (state.pagesInfo.pages),
     count: (state.pagesInfo.count),
     user: (state.basicInfo.user),
-    subscribers: (state.subscribersInfo.subscribers)
+    subscribersCount: (state.subscribersInfo.subscribersCount)
   }
 }
 
@@ -469,7 +469,7 @@ function mapDispatchToProps(dispatch) {
     getuserdetails: getuserdetails,
     removePage: removePage,
     addPages: addPages,
-    loadSubscribersList: loadSubscribersList
+    loadSubscribersCount: loadSubscribersCount
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Page)

@@ -104,15 +104,27 @@ export function updateAllSubscribersListNew (data) {
 
 export function loadSubscribersList () {
   // here we will fetch list of subscribers from endpoint
-  return (dispatch) => {
-    callApi('subscribers').then(res => dispatch(updateSubscribersList(res.payload)))
+    return (dispatch) => {
+      callApi('subscribers').then(res => {
+        if (res.status === 'success') {
+          dispatch(updateSubscribersList(res.payload))
+        } else {
+          dispatch(updateSubscribersList([]))
+        }
+    })
   }
 }
 
 export function loadAllSubscribersList () {
   // here we will fetch list of subscribers from endpoint
   return (dispatch) => {
-    callApi('subscribers/allSubscribers').then(res => dispatch(updateAllSubscribersList(res)))
+    callApi('subscribers/allSubscribers').then(res => {
+      if (res.status === 'success') {
+        dispatch(updateAllSubscribersList(res.payload))
+      } else {
+        dispatch(updateAllSubscribersList([]))
+      }
+    })
   }
 }
 

@@ -121,7 +121,6 @@ class Builders extends React.Component {
       props.setReset(this.reset)
     }
 
-
     if (this.props.linkedMessages && this.props.linkedMessages.length > 0) {
       this.updateLinkedMessagesPayload(this.props.linkedMessages[0].messageContent)
     }
@@ -158,6 +157,13 @@ class Builders extends React.Component {
   closeGSModal () {
     this.setState({showGSModal: false})
     this.refs.ActionModal.click()
+  }
+  
+  onFilesError (errorMsg) {
+    this.setState({
+      fileError: errorMsg   
+    })
+    this.refs.fileError.click()
   }
 
   onFilesError (errorMsg) {
@@ -1389,6 +1395,7 @@ class Builders extends React.Component {
         pageId={this.props.pageId.pageId}
         showCloseModalAlertDialog={this.showCloseModalAlertDialog}
         closeModal={this.closeAddComponentModal}
+        onFilesError={this.onFilesError}
         toggleGSModal={this.toggleGSModal}
         closeGSModal={this.closeGSModal}
         onFilesError={this.onFilesError}
@@ -1942,6 +1949,7 @@ class Builders extends React.Component {
             </div>
           </div>
         </div>
+
       <a href='#/' style={{ display: 'none' }} ref='lossData' data-toggle="modal" data-target="#lossData">lossData</a>
       <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="lossData" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
