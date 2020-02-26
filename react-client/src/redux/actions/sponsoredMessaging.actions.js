@@ -32,7 +32,8 @@ export function showAdSets (data) {
 
 export function insights (data) {
   return {
-    data
+      type: ActionTypes.GET_INSIGHTS,
+      data
   }
 }
 
@@ -196,7 +197,8 @@ export function getInsights (adId) {
   return (dispatch) => {
     callApi(`sponsoredmessaging/insights/${adId}`, 'get')
       .then(res => {
-        if(res.status === 'success') {
+        console.log('response from insights', res)
+        if (res.status === 'success') {
           dispatch(insights(res.payload))
         } else {
           console.log(res)

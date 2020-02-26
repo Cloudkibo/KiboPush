@@ -400,7 +400,7 @@ export const CREATE_SPONSORED_MESSAGE = 'CREATE_SPONSORED_MESSAGE'
 export const SHOW_AD_ACCOUNTS = 'SHOW_AD_ACCOUNTS'
 export const SHOW_CAMPAIGNS = 'SHOW_CAMPAIGNS'
 export const SHOW_AD_SETS = 'SHOW_AD_SETS'
-
+export const GET_INSIGHTS = 'GET_INSIGHTS'
 
 // constants for smsWhatsAppDashboard
 export const SHOW_SENT_SEEN = 'SHOW_SENT_SEEN'
