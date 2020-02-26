@@ -16,7 +16,7 @@ import IntegrationsSummary from './integrationsSummary'
 import { loadDashboardData, loadSubscriberSummary, sentVsSeen, loadGraphData, loadTopPages, updateSubscriptionPermission, loadSentSeen } from '../../redux/actions/dashboard.actions'
 import { bindActionCreators } from 'redux'
 import { loadMyPagesList, updateCurrentPage } from '../../redux/actions/pages.actions'
-import { loadAllSubscribersListNew } from '../../redux/actions/subscribers.actions'
+import { loadSubscribersCount } from '../../redux/actions/subscribers.actions'
 import {
   createbroadcast
 } from '../../redux/actions/broadcast.actions'
@@ -66,18 +66,12 @@ class Dashboard extends React.Component {
     this.onKeyDown = this.onKeyDown.bind(this)
   }
   UNSAFE_componentWillMount () {
-    var fetchSubscribers = {
-      last_id: 'none',
-      number_of_records: 10,
-      first_page: 'first',
-      filter: false,
-      filter_criteria: {}
-    }
+
     this.props.validateUserAccessToken(this.checkUserAccessToken)
     this.props.getuserdetails()
     this.props.loadDashboardData()
     this.props.updateSubscriptionPermission()
-    this.props.loadAllSubscribersListNew(fetchSubscribers)
+    this.props.loadSubscribersCount({})
     this.props.loadGraphData(0)
     this.props.loadTopPages()
     this.props.loadMyPagesList()
@@ -251,7 +245,7 @@ class Dashboard extends React.Component {
       } else if (nextprops.user.platform === 'messenger' && nextprops.subscribersCount > 0) {
         // this means more than 0 subscribers
         this.setState({isShowingModal: false})
-      } else if (nextprops.user.platform === 'messenger' && nextprops.pages && nextprops.pages.length > 0 && nextprops.subscribers && nextprops.subscribers.length === 0) {
+      } else if (nextprops.user.platform === 'messenger' && nextprops.pages && nextprops.pages.length > 0 && nextprops.subscribersCount === 0) {
         // this means 0 subscribers
         this.setState({isShowingModal: true})
       } else if (nextprops.pages && nextprops.pages.length === 0) {
@@ -718,8 +712,7 @@ function mapStateToProps (state) {
     sentseendata: (state.dashboardInfo.sentseendata),
     pages: (state.pagesInfo.pages),
     currentPage: (state.pagesInfo.currentPage),
-    subscribers: (state.subscribersInfo.subscribers),
-    subscribersCount: (state.subscribersInfo.count),
+    subscribersCount: (state.subscribersInfo.subscribersCount),
     graphData: (state.dashboardInfo.graphData),
     topPages: (state.dashboardInfo.topPages),
     automated_options: (state.basicInfo.automated_options),
@@ -733,7 +726,7 @@ function mapDispatchToProps (dispatch) {
       loadDashboardData: loadDashboardData,
       updateSubscriptionPermission: updateSubscriptionPermission,
       loadMyPagesList: loadMyPagesList,
-      loadAllSubscribersListNew: loadAllSubscribersListNew,
+      loadSubscribersCount: loadSubscribersCount,
       createbroadcast: createbroadcast,
       getuserdetails: getuserdetails,
       sentVsSeen: sentVsSeen,
