@@ -14,6 +14,12 @@ class Sessions extends React.Component {
     this.updateFilterSearch = this.updateFilterSearch.bind(this)
     this.updateFilterPending = this.updateFilterPending.bind(this)
     this.updateFilterUnread = this.updateFilterUnread.bind(this)
+    this.onLoadMore = this.onLoadMore.bind(this)
+  }
+
+  onLoadMore () {
+    const lastId = this.props.sessions[this.props.sessions.length - 1].last_activity_time
+    this.props.fetchSessions(false, lastId)
   }
 
   removeFilters () {
@@ -117,6 +123,26 @@ class Sessions extends React.Component {
                         />
                       ))
                       : <p style={{marginLeft: '30px'}}>No data to display</p>
+                    }
+                    {
+                      this.props.sessionsCount > 0 &&
+                      this.props.sessionsCount > this.props.sessions.length &&
+                      <center style={{marginBottom: '15px'}}>
+                        <i className='fa fa-refresh' style={{color: '#716aca'}} />&nbsp;
+                        <button
+                          id='load-more-chat-sessions'
+                          className='m-link'
+                          style={{
+                            color: '#716aca',
+                            cursor: 'pointer',
+                            marginTop: '20px',
+                            border: 'none'
+                          }}
+                          onClick={this.onLoadMore}
+                        >
+                          Load More
+                        </button>
+                      </center>
                     }
                   </div>
                 }
