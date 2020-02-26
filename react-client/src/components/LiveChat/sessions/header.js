@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import DropdownItem from './dropdownItem'
 
-class Header extends React.Component {
+class SessionsHeader extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
@@ -168,7 +168,7 @@ class Header extends React.Component {
   }
 }
 
-Header.propTypes = {
+SessionsHeader.propTypes = {
   'pages': PropTypes.array.isRequired,
   'filterPage': PropTypes.string.isRequired,
   'filterSort': PropTypes.number.isRequired,
@@ -183,4 +183,4 @@ Header.propTypes = {
   'removeFilters': PropTypes.func.isRequired
 }
 
-export default Header
+export default SessionsHeader
