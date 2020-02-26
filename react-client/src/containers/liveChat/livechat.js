@@ -11,7 +11,7 @@ import {
   fetchTeamAgents,
   changeStatus,
   unSubscribe,
-  getCustomers, 
+  getCustomers,
   appendSubscriber
 } from '../../redux/actions/livechat.actions'
 import { updatePicture } from '../../redux/actions/subscribers.actions'
@@ -49,13 +49,7 @@ class LiveChat extends React.Component {
     }
 
     this.fetchSessions = this.fetchSessions.bind(this)
-    this.updateFilterPage = this.updateFilterPage.bind(this)
-    this.updateFilterSort = this.updateFilterSort.bind(this)
-    this.updateFilterSearch = this.updateFilterSearch.bind(this)
-    this.updateFilterPending = this.updateFilterPending.bind(this)
-    this.updateFilterUnread = this.updateFilterUnread.bind(this)
-    this.removeFilters = this.removeFilters.bind(this)
-    this.changeTab = this.changeTab.bind(this)
+    this.updateState = this.updateState.bind(this)
     this.changeActiveSession = this.changeActiveSession.bind(this)
     this.setDefaultPicture = this.setDefaultPicture.bind(this)
     this.profilePicError = this.profilePicError.bind(this)
@@ -63,49 +57,48 @@ class LiveChat extends React.Component {
     this.performAction = this.performAction.bind(this)
     this.handleTeamAgents = this.handleTeamAgents.bind(this)
     this.handleStatusChange = this.handleStatusChange.bind(this)
+    this.getChatPreview = this.getChatPreview.bind(this)
 
     this.fetchSessions(true, 'none', true)
   }
 
-  removeFilters () {
-    this.setState({
-      filterPage: '',
-      filterSearch: '',
-      filterPending: false,
-      filterUnread: false,
-      sessionsLoading: true
-    }, () => {
-      this.fetchSessions(true, 'none')
-    })
+  getChatPreview (message, repliedBy, subscriberName) {
+    let chatPreview = ''
+    if (message.componentType) {
+      // agent
+      chatPreview = (!repliedBy || (repliedBy.id === this.props.user._id)) ? `You` : `${repliedBy.name}`
+      if (message.componentType === 'text') {
+        chatPreview = `${chatPreview}: ${message.text.length > 15 ? message.text.substring(0, 15) + '...' : message.text}`
+      } else {
+        chatPreview = `${chatPreview} shared ${message.componentType}`
+      }
+    } else {
+      // subscriber
+      chatPreview = `${subscriberName}`
+      if (message.attachments) {
+        if (message.attachments[0].type === 'template' &&
+          message.attachments[0].payload.template_type === 'generic'
+        ) {
+          chatPreview = message.attachments[0].payload.elements.length > 1 ? `${chatPreview} sent a gallery` : `${chatPreview} sent a card`
+        } else if (message.attachments[0].type === 'template' &&
+          message.attachments[0].payload.template_type === 'media'
+        ) {
+          chatPreview = `${chatPreview} sent a media`
+        } else if (['image', 'audio', 'location', 'video', 'file'].includes(message.attachments[0].type)) {
+          chatPreview = `${chatPreview} shared ${message.attachments[0].type}`
+        } else {
+          chatPreview = `${chatPreview}: ${message.text.length > 20 ? message.text.substring(0, 20) + '...' : message.text}`
+        }
+      } else {
+        chatPreview = `${chatPreview}: ${message.text.length > 20 ? message.text.substring(0, 20) + '...' : message.text}`
+      }
+    }
+    return chatPreview
   }
 
-  updateFilterPage (filterPage) {
-    this.setState({filterPage, sessionsLoading: true}, () => {
-      this.fetchSessions(true, 'none')
-    })
-  }
-
-  updateFilterSort (filterSort) {
-    this.setState({filterSort, sessionsLoading: true}, () => {
-      this.fetchSessions(true, 'none')
-    })
-  }
-
-  updateFilterSearch (value) {
-    this.setState({filterSearch: value, sessionsLoading: true}, () => {
-      this.fetchSessions(true, 'none')
-    })
-  }
-
-  updateFilterPending (filterPending) {
-    this.setState({filterPending, filterUnread: false, sessionsLoading: true}, () => {
-      this.fetchSessions(true, 'none')
-    })
-  }
-
-  updateFilterUnread (filterUnread) {
-    this.setState({filterUnread, filterPending: false, sessionsLoading: true}, () => {
-      this.fetchSessions(true, 'none')
+  updateState (state, callback) {
+    this.setState(state, () => {
+      callback()
     })
   }
 
@@ -177,16 +170,6 @@ class LiveChat extends React.Component {
         this.props.fetchTeamAgents(session.assigned_to.id, this.handleTeamAgents)
       }
     }
-  }
-
-  changeTab (value) {
-    this.setState({
-      tabValue: value,
-      sessions: value === 'open' ? this.props.openSessions : this.props.closeSessions,
-      sessionsCount: value === 'open' ? this.props.openCount : this.props.closeCount,
-      userChat: [],
-      activeSession: {}
-    })
   }
 
   fetchSessions(firstPage, lastId, fetchBoth) {
@@ -264,26 +247,22 @@ class LiveChat extends React.Component {
                   tabValue={this.state.tabValue}
                   sessions={this.state.sessions}
                   sessionsCount={this.state.sessionsCount}
-                  removeFilters={this.removeFilters}
-                  updateFilterSort={this.updateFilterSort}
-                  updateFilterPage={this.updateFilterPage}
-                  updateFilterSearch={this.updateFilterSearch}
-                  updateFilterPending={this.updateFilterPending}
-                  updateFilterUnread={this.updateFilterUnread}
                   filterSort={this.state.filterSort}
                   filterPage={this.state.filterPage}
                   filterSearch={this.state.filterSearch}
                   filterPending={this.state.filterPending}
                   filterUnread={this.state.filterUnread}
-                  changeTab={this.changeTab}
                   activeSession={this.state.activeSession}
                   changeActiveSession={this.changeActiveSession}
                   profilePicError={this.profilePicError}
                   changeStatus={this.changeStatus}
+                  updateState={this.updateState}
+                  fetchSessions={this.fetchSessions}
+                  getChatPreview={this.getChatPreview}
                 />
                 {
                    Object.keys(this.state.activeSession).length > 0 &&
-                   <PROFILE 
+                   <PROFILE
                       activeSession={this.state.activeSession}
                       user={this.props.user}
                       profilePicError={this.profilePicError}
@@ -296,10 +275,10 @@ class LiveChat extends React.Component {
                 }
                 {
                   Object.keys(this.state.activeSession).length === 0 && this.state.activeSession.constructor === Object &&
-                  <div style={{border: '1px solid #F2F3F8', 
-                    marginBottom: '0px', 
-                    display: 'flex', 
-                    justifyContent: 'center', 
+                  <div style={{border: '1px solid #F2F3F8',
+                    marginBottom: '0px',
+                    display: 'flex',
+                    justifyContent: 'center',
                     alignItems: 'center'}} className='col-xl-8 m-portlet'>
                     <div style={{ textAlign: 'center', padding: '20px' }}>
                       <p>Please select a session to view its chat.</p>
@@ -334,7 +313,7 @@ function mapDispatchToProps(dispatch) {
     fetchCloseSessions,
     updatePicture,
     fetchTeamAgents,
-    changeStatus,    
+    changeStatus,
     getCustomers,
     appendSubscriber
   }, dispatch)

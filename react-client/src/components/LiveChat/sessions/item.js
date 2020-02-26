@@ -107,7 +107,13 @@ class SessionItem extends React.Component {
               }
             </div>
             <br />
-            {/* chat preview */}
+            <span className='m-widget4__sub'>
+              {
+                this.props.session.lastPayload
+                ? this.props.getChatPreview(this.props.session.lastPayload, this.props.session.lastRepliedBy, this.props.session.firstName)
+                : 'No chat preview is available'
+              }
+            </span>
             <br />
             <span className='m-widget4__sub'>
               <i className='fa fa-facebook-square' />&nbsp;&nbsp;
