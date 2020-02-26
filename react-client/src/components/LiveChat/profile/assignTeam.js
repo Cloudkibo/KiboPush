@@ -29,22 +29,19 @@ class AssignTeam extends React.Component {
   onTeamChange(value) {
     console.log('onTeamChange', value)
     if (value) {
-        let team = {}
-        for (let i = 0; i < this.props.teams.length; i++) {
-            if (this.props.teams[i]._id === value.value) {
-            team = this.props.teams[i]
-            break
-            }
-        }
-        this.setState({selectedTeam: value, teamObject: team,})
+        let team = this.props.teams.find(team => team._id === value.value)
+        this.setState({selectedTeam: value, teamObject: team})
     }
   }
 
   assignToTeam() {
     console.log('assignToTeam', this.state)
     this.props.updateState({ 
-        isAssigned: true,
-        assignedTeam: this.state.teamObject.name
+        assignInfo: {
+            isAssigned: true,
+            type: 'Team',
+            name: this.state.teamObject.name
+        }
     }, () => {
         this.toggle()
         let data = {

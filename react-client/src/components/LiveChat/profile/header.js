@@ -81,28 +81,23 @@ class ProfileHeader extends React.Component {
           <br />
           <div>
             <span className='m--font-bolder'>Status:</span>
-            <span> {this.props.isAssigned ? 'Assigned' : 'Unassigned'}</span>
+            <span> {this.props.assignInfo.isAssigned ? 'Assigned' : 'Unassigned'}</span>
           </div>
           
           {
-            this.props.isAssigned &&
+            this.props.assignInfo.isAssigned &&
             <div style={{ marginBottom: '20px' }}>
-              {
-                this.props.assignedTeam &&
-                <div>
-                  <span className='m--font-bolder'>Team:</span>
-                  <span> {this.props.assignedTeam}</span>
-                </div>
-              }
-              {/* <span className='m--font-bolder'>Agent:</span>
-              <span> {this.state.role === 'agent' ? this.state.assignedAgent : 'Not Assigned'}</span> */}
+              <div>
+                <span className='m--font-bolder'>{this.props.assignInfo.type === 'team' ? 'Team:' : 'Agent:'}</span>
+                <span> {this.props.assignInfo.name}</span>
+              </div>
             </div>
           }
 
           {
-            this.props.isAssigned &&
+            this.props.assignInfo.isAssigned &&
             (
-              this.props.assignedTeam
+              this.props.assignInfo.type === 'team'
                 ? <div>
                   <button style={{ marginTop: '10px' }} className='btn btn-primary' onClick={this.unassignTeam}>Unassign Team</button>
                   <br />

@@ -8,8 +8,11 @@ class Profile extends React.Component {
   constructor(props, context) {
     super(props, context)
     this.state = {
-      isAssigned: props.activeSession.is_assigned,
-      assignedTeam: props.activeSession.assigned_to && props.activeSession.assigned_to.type === 'team' ? props.activeSession.assigned_to.name : ''
+        assignInfo: {
+            isAssigned: props.activeSession.is_assigned,
+            type: props.activeSession.assigned_to ? props.activeSession.assigned_to.type : '',
+            name: props.activeSession.assigned_to ? props.activeSession.assigned_to.name : ''
+        }
     }
     this.updateState = this.updateState.bind(this)
   }
@@ -31,8 +34,7 @@ class Profile extends React.Component {
                         <HEADER
                             updateState={this.updateState}
                             unSubscribe={this.props.unSubscribe}
-                            isAssigned={this.state.isAssigned}
-                            assignedTeam={this.state.assignedTeam}
+                            isAssigned={this.state.assignInfo}
                             activeSession={this.props.activeSession}
                             user={this.props.user}
                             profilePicError={this.props.profilePicError}
