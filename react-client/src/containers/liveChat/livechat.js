@@ -277,7 +277,7 @@ class LiveChat extends React.Component {
           >
             <center><RingLoader color='#716aca' /></center>
           </div>
-          : <div style={{padding: '15px 30px'}} className='m-content'>
+          : <div style={{padding: '10px 30px'}} className='m-content'>
             <HELPWIDGET
               documentation={{link: 'http://kibopush.com/livechat/'}}
               videoTutorial={{videoId: 'XUXc2ZD_lQY'}}
