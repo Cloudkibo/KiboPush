@@ -5,57 +5,84 @@ import ProfileAction from './profileAction'
 class AssignTeam extends React.Component {
   constructor (props, context) {
     super(props, context)
+    let teams = this.props.teams.map(team => {
+        return {
+            label: team.name,
+            value: team._id
+        }
+    })
     this.state = {
-      selectedCustomer: '',
-      customers: []
+      selectedTeam: '',
+      teamObject: {},
+      teams,
+      expanded: false
     }
-    this.mapCustomerId = this.mapCustomerId.bind(this)
-    this.attachCustomer = this.attachCustomer.bind(this)
-    this.props.getCustomers()
+    this.onTeamChange = this.onTeamChange.bind(this)
+    this.assignToTeam = this.assignToTeam.bind(this)
+    this.toggle = this.toggle.bind(this)
   }
 
-  UNSAFE_componentWillReceiveProps (nextProps) {
-    if (nextProps.customers) {
-      let temp = []
-      for (let i = 0; i < nextProps.customers.length; i++) {
-        temp.push({label: `${nextProps.customers[i].firstName} ${nextProps.customers[i].lastName}`, value: nextProps.customers[i]._id})
-      }
-      this.setState({customers: temp})
+  toggle () {
+    this.setState({expanded: !this.state.expanded, selectedTeam: ''})
+  }
+
+  onTeamChange(value) {
+    console.log('onTeamChange', value)
+    if (value) {
+        let team = {}
+        for (let i = 0; i < this.props.teams.length; i++) {
+            if (this.props.teams[i]._id === value.value) {
+            team = this.props.teams[i]
+            break
+            }
+        }
+        this.setState({selectedTeam: value, teamObject: team,})
     }
   }
 
-  mapCustomerId (value) {
-    this.setState({selectedCustomer: value})
+  assignToTeam() {
+    console.log('assignToTeam', this.state)
+    this.props.updateState({ 
+        isAssigned: true,
+        assignedTeam: this.state.teamObject.name
+    }, () => {
+        this.toggle()
+        let data = {
+            teamId: this.state.teamObject._id,
+            teamName: this.state.teamObject.name,
+            subscriberId: this.props.activeSession._id,
+            isAssigned: true
+        }
+        this.props.fetchTeamAgents(this.state.teamObject._id)
+        this.props.assignToTeam(data)
+    })
   }
 
-  attachCustomer () {
-    let data = {
-      subscriberId: this.props.currentSession.subscriber_id._id,
-      customerId: this.state.selectedCustomer.value
-    }
-    this.props.appendSubscriber(data, this.props.currentSession, this.props.msg)
-  }
 
   render () {
     return (
         <ProfileAction 
-            title='Attach Customer ID'
-            options={this.state.customers}
-            currentSelected={this.state.selectedCustomer}
-            selectPlaceholder='Select a customer...'
-            performAction={this.attachCustomer}
-            onSelectChange={this.mapCustomerId}
-            actionTitle='Attach'
-            iconClass='flaticon-user-add'
+            expanded={this.state.expanded}
+            toggle={this.toggle}
+            title='Assign to Team'
+            options={this.state.teams}
+            currentSelected={this.state.selectedTeam}
+            selectPlaceholder='Select a team...'
+            performAction={this.assignToTeam}
+            onSelectChange={this.onTeamChange}
+            actionTitle='Assign'
+            iconClass='fa fa-users'
         />
     )
   }
 }
 
 AssignTeam.propTypes = {
-    'customers': PropTypes.array.isRequired,
-    'getCustomers': PropTypes.func.isRequired,
-    'appendSubscriber': PropTypes.func.isRequired
+    'teams': PropTypes.array.isRequired,
+    'fetchTeamAgents': PropTypes.func.isRequired,
+    'assignToTeam': PropTypes.func.isRequired,
+    'updateState': PropTypes.func.isRequired,
+    'activeSession': PropTypes.object.isRequired
   }
   
   export default AssignTeam

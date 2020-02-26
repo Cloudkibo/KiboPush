@@ -3,30 +3,19 @@ import Select from 'react-select'
 import PropTypes from 'prop-types'
 
 class ProfileAction extends React.Component {
-  constructor (props, context) {
-    super(props, context)
-    this.state = {
-      expanded: false
-    }
-    this.toggle = this.toggle.bind(this)
-  }
-
-  toggle () {
-      this.setState({expanded: !this.state.expanded})
-  }
 
   render () {
     return (
       <div style={{marginTop: '20px'}} className='m-accordion m-accordion--default'>
         <div style={{overflow: 'visible'}} className='m-accordion__item'>
           {
-            this.state.expanded
+            this.props.expanded
             ? <div className='m-accordion__item-head'>
               <span className='m-accordion__item-icon'>
                 <i className={this.props.iconClass} />
               </span>
               <span className='m-accordion__item-title'>{this.props.title}</span>
-              <span style={{cursor: 'pointer'}} onClick={this.toggle} className='m-accordion__item-icon'>
+              <span style={{cursor: 'pointer'}} onClick={this.props.toggle} className='m-accordion__item-icon'>
                 <i className='la la-minus' />
               </span>
             </div>
@@ -35,13 +24,13 @@ class ProfileAction extends React.Component {
                 <i className={this.props.iconClass} />
               </span>
               <span className='m-accordion__item-title'>{this.props.title}</span>
-              <span style={{cursor: 'pointer'}} onClick={this.toggle} className='m-accordion__item-icon'>
+              <span style={{cursor: 'pointer'}} onClick={this.props.toggle} className='m-accordion__item-icon'>
                 <i className='la la-plus' />
               </span>
             </div>
           }
           {
-            this.state.expanded &&
+            this.props.expanded &&
             <div className='m-accordion__item-body'>
               <div className='m-accordion__item-content' style={{textAlign: 'center'}}>
                     <Select
@@ -63,9 +52,14 @@ class ProfileAction extends React.Component {
 }
 
 ProfileAction.propTypes = {
+    'expanded': PropTypes.bool.isRequired,
+    'toggle': PropTypes.func.isRequired,
     'title': PropTypes.string.isRequired,
     'options': PropTypes.array.isRequired,
-    'currentSelected': PropTypes.string.isRequired,
+    'currentSelected': PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.object,
+    ]).isRequired,
     'selectPlaceholder': PropTypes.string.isRequired,
     'performAction': PropTypes.func.isRequired,
     'actionTitle': PropTypes.string.isRequired,

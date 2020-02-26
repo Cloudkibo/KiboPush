@@ -7,11 +7,18 @@ class MapCustomer extends React.Component {
     super(props, context)
     this.state = {
       selectedCustomer: '',
-      customers: []
+      customers: [],
+      expanded: false
     }
     this.mapCustomerId = this.mapCustomerId.bind(this)
     this.attachCustomer = this.attachCustomer.bind(this)
+    this.toggle = this.toggle.bind(this)
     this.props.getCustomers()
+  }
+
+
+  toggle () {
+    this.setState({expanded: !this.state.expanded, selectedCustomer: ''})
   }
 
   UNSAFE_componentWillReceiveProps (nextProps) {
@@ -25,7 +32,9 @@ class MapCustomer extends React.Component {
   }
 
   mapCustomerId (value) {
-    this.setState({selectedCustomer: value})
+      if (value) {
+        this.setState({selectedCustomer: value})
+      }
   }
 
   attachCustomer () {
@@ -33,12 +42,15 @@ class MapCustomer extends React.Component {
       subscriberId: this.props.currentSession.subscriber_id._id,
       customerId: this.state.selectedCustomer.value
     }
+    this.toggle()
     this.props.appendSubscriber(data, this.props.currentSession, this.props.alertMsg)
   }
 
   render () {
     return (
         <ProfileAction
+            expanded={this.state.expanded}
+            toggle={this.toggle}
             title='Attach Customer ID'
             options={this.state.customers}
             currentSelected={this.state.selectedCustomer}
@@ -53,7 +65,7 @@ class MapCustomer extends React.Component {
 }
 
 MapCustomer.propTypes = {
-    'customers': PropTypes.array.isRequired,
+    'customers': PropTypes.array,
     'getCustomers': PropTypes.func.isRequired,
     'appendSubscriber': PropTypes.func.isRequired
   }

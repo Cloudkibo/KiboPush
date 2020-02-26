@@ -12,9 +12,12 @@ import {
   changeStatus,
   unSubscribe,
   getCustomers,
-  appendSubscriber
+  appendSubscriber,
+  assignToTeam,
+  sendNotifications
 } from '../../redux/actions/livechat.actions'
 import { updatePicture } from '../../redux/actions/subscribers.actions'
+import { loadTeamsList } from '../../redux/actions/teams.actions'
 
 // components
 import HELPWIDGET from '../../components/extras/helpWidget'
@@ -59,10 +62,35 @@ class LiveChat extends React.Component {
     this.handleStatusChange = this.handleStatusChange.bind(this)
     this.changeTab = this.changeTab.bind(this)
     this.getChatPreview = this.getChatPreview.bind(this)
+    this.handleAgents = this.handleAgents.bind(this)
+    this.fetchTeamAgents = this.fetchTeamAgents.bind(this)
 
     this.fetchSessions(true, 'none', true)
   }
 
+  handleAgents(teamAgents) {
+    let agentIds = []
+    for (let i = 0; i < teamAgents.length; i++) {
+      if (teamAgents[i].agentId !== this.props.user._id) {
+        agentIds.push(teamAgents[i].agentId)
+      }
+    }
+    if (agentIds.length > 0) {
+      let notificationsData = {
+        message: `Session of subscriber ${this.state.activeSession.firstName + ' ' + this.state.activeSession.lastName} has been assigned to your team.`,
+        category: { type: 'chat_session', id: this.state.activeSession._id },
+        agentIds: agentIds,
+        companyId: this.state.activeSession.companyId
+      }
+      this.props.sendNotifications(notificationsData)
+    }
+  }
+
+  fetchTeamAgents(id) {
+    this.props.fetchTeamAgents(id, this.handleAgents)
+  }
+
+  
   changeTab (value) {
     this.setState({
       tabValue: value,
@@ -180,6 +208,9 @@ class LiveChat extends React.Component {
       if (session.is_assigned && session.assigned_to.type === 'team') {
         this.props.fetchTeamAgents(session.assigned_to.id, this.handleTeamAgents)
       }
+      if (this.props.user.currentPlan.unique_ID === 'plan_C' || this.props.user.currentPlan.unique_ID === 'plan_D') {
+        this.props.loadTeamsList({pageId: session.pageId._id})
+      }
     }
   }
 
@@ -275,6 +306,9 @@ class LiveChat extends React.Component {
                 {
                    Object.keys(this.state.activeSession).length > 0 &&
                    <PROFILE
+                      teams={this.props.teams ? this.props.teams : []}
+                      agents={this.props.members ? this.getAgents(this.props.members) : []}
+                      subscriberTags={this.props.subscriberTags ? this.props.subscriberTags : []}
                       activeSession={this.state.activeSession}
                       user={this.props.user}
                       profilePicError={this.profilePicError}
@@ -283,6 +317,9 @@ class LiveChat extends React.Component {
                       unSubscribe={this.props.unSubscribe}
                       customers={this.props.customers}
                       getCustomers={this.props.getCustomers}
+                      fetchTeamAgents={this.fetchTeamAgents}
+                      assignToTeam={this.props.assignToTeam}
+                      appendSubscriber={this.props.appendSubscriber}
                     />
                 }
                 {
@@ -314,7 +351,10 @@ function mapStateToProps(state) {
     closeSessions: (state.liveChat.closeSessions),
     pages: (state.pagesInfo.pages),
     user: (state.basicInfo.user),
-    customers: (state.liveChat.customers)
+    customers: (state.liveChat.customers),
+    members: (state.membersInfo.members),
+    teams: (state.teamsInfo.teams),
+    subscriberTags: (state.tagsInfo.subscriberTags)
   }
 }
 
@@ -325,9 +365,12 @@ function mapDispatchToProps(dispatch) {
     fetchCloseSessions,
     updatePicture,
     fetchTeamAgents,
+    assignToTeam,
     changeStatus,
     getCustomers,
-    appendSubscriber
+    appendSubscriber,
+    loadTeamsList,
+    sendNotifications
   }, dispatch)
 }
 
