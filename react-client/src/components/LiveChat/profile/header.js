@@ -6,6 +6,29 @@ class ProfileHeader extends React.Component {
     super(props, context)
     this.state = {
     }
+    this.unassignTeam = this.unassignTeam.bind(this)
+    this.unSubscribe = this.unSubscribe.bind(this)
+    this.handleUnsubscribe = this.handleUnsubscribe.bind(this)
+  }
+
+  unassignTeam() {
+    console.log('unassignTeam')
+    this.props.updateState({
+      assignInfo: {
+        isAssigned: false,
+        type: '',
+        name: ''
+      }
+    }, () => {
+      let data = {
+        teamId: this.props.activeSession.assigned_to.id,
+        teamName: this.props.activeSession.assigned_to.name,
+        subscriberId: this.props.activeSession._id,
+        isAssigned: false
+      }
+      this.props.fetchTeamAgents(this.props.activeSession.assigned_to.id)
+      this.props.assignToTeam(data)
+    })
   }
 
   unSubscribe() {
@@ -59,6 +82,38 @@ class ProfileHeader extends React.Component {
               <i className='fa fa-external-link' /> View Customer Details
             </a>
           }
+          <br />
+          <div>
+            <span className='m--font-bolder'>Status:</span>
+            <span> {this.props.assignInfo.isAssigned ? 'Assigned' : 'Unassigned'}</span>
+          </div>
+          
+          {
+            this.props.assignInfo.isAssigned &&
+            <div style={{ marginBottom: '20px' }}>
+              <div>
+                <span className='m--font-bolder'>{this.props.assignInfo.type === 'team' ? 'Team:' : 'Agent:'}</span>
+                <span> {this.props.assignInfo.name}</span>
+              </div>
+            </div>
+          }
+
+          {
+            this.props.assignInfo.isAssigned &&
+            (
+              this.props.assignInfo.type === 'team'
+                ? <div>
+                  <button style={{ marginTop: '10px' }} className='btn btn-primary' onClick={this.unassignTeam}>Unassign Team</button>
+                  <br />
+                  <br />
+                </div>
+                : <div>
+                  <button style={{ marginTop: '10px' }} className='btn btn-primary' onClick={this.unassignAgent}>Unassign Agent</button>
+                  <br />
+                  <br />
+                </div>
+            )
+          }
         </div>
 
         <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="unsubscribe" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -99,8 +154,9 @@ class ProfileHeader extends React.Component {
 }
 
 ProfileHeader.propTypes = {
-  'activeSession': PropTypes.object.isRequired,
+  'updateState': PropTypes.func.isRequired,
   'unSubscribe': PropTypes.func.isRequired,
+  'activeSession': PropTypes.object.isRequired,
   'user': PropTypes.object.isRequired,
   'profilePicError': PropTypes.func.isRequired
 }

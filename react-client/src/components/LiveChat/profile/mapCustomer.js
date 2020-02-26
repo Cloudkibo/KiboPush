@@ -14,6 +14,7 @@ class MapCustomer extends React.Component {
     this.props.getCustomers()
   }
 
+
   UNSAFE_componentWillReceiveProps (nextProps) {
     if (nextProps.customers) {
       let temp = []
@@ -25,7 +26,9 @@ class MapCustomer extends React.Component {
   }
 
   mapCustomerId (value) {
-    this.setState({selectedCustomer: value})
+      if (value) {
+        this.setState({selectedCustomer: value})
+      }
   }
 
   attachCustomer () {
@@ -53,7 +56,7 @@ class MapCustomer extends React.Component {
 }
 
 MapCustomer.propTypes = {
-    'customers': PropTypes.array.isRequired,
+    'customers': PropTypes.array,
     'getCustomers': PropTypes.func.isRequired,
     'appendSubscriber': PropTypes.func.isRequired
   }
