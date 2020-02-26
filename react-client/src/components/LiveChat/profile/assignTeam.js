@@ -20,10 +20,6 @@ class AssignTeam extends React.Component {
     this.assignToTeam = this.assignToTeam.bind(this)
   }
 
-  toggle () {
-    this.setState({expanded: !this.state.expanded, selectedTeam: ''})
-  }
-
   onTeamChange(value) {
     console.log('onTeamChange', value)
     if (value) {
