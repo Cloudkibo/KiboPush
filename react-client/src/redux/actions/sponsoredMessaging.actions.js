@@ -184,7 +184,6 @@ export function send(data, msg, handleResponse) {
     callApi(`sponsoredmessaging/send/${data._id}`, 'post', data)
       .then(res => {
         if(res.status === 'success') {
-          dispatch(fetchSponsoredMessages())
           msg.success('Ad has been sent to Ads Manager')
           handleResponse()
         } else {
