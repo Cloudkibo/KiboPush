@@ -37,7 +37,8 @@ class CustomerMatching extends React.Component {
       nameColumn: '',
       phoneColumn: '',
       columnAlerts: false,
-      fileContent: []
+      fileContent: [],
+      openVideo: false
     }
 
     this.onTextChange = this.onTextChange.bind(this)
@@ -58,9 +59,16 @@ class CustomerMatching extends React.Component {
     this.handlePhoneColumn = this.handlePhoneColumn.bind(this)
     this.saveColumns = this.saveColumns.bind(this)
     this.parseCSV = this.parseCSV.bind(this)
+    this.openVideoTutorial = this.openVideoTutorial.bind(this)
     this.props.clearAlertMessage()
     this.props.loadCustomerListsNew({ last_id: 'none', number_of_records: 10, first_page: 'first' })
     this.props.getPendingSubscriptions()
+  }
+  openVideoTutorial () {
+    this.setState({
+      openVideo: true
+    })
+    this.refs.videoCustomerMatching.click()
   }
   saveColumns() {
     if (this.state.phoneColumn === '' || this.state.nameColumn === '') {
@@ -476,21 +484,27 @@ class CustomerMatching extends React.Component {
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div style={{ float: 'left', clear: 'both' }}
           ref={(el) => { this.top = el }} />
-        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="video" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <a href='#/' style={{ display: 'none' }} ref='videoCustomerMatching' data-toggle='modal' data-backdrop='static' data-keyboard='false' data-target="#videoCustomerMatching">videoCustomerMatching</a>
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="videoCustomerMatching" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog modal-lg" role="document">
             <div className="modal-content" style={{ width: '687px', top: '100' }}>
               <div style={{ display: 'block' }} className="modal-header">
                 <h5 className="modal-title" id="exampleModalLabel">
                   Invite Using Phone Number Video Tutorial
 									</h5>
-                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" 
+                aria-label="Close"
+                onClick={() => {
+                  this.setState({
+                    openVideo: false
+                  })}}>
                   <span aria-hidden="true">
                     &times;
 											</span>
                 </button>
               </div>
               <div style={{ color: 'black' }} className="modal-body">
-                <YouTube
+              {this.state.openVideo && <YouTube
                   videoId='gytuYccBcyQ'
                   opts={{
                     height: '390',
@@ -500,6 +514,7 @@ class CustomerMatching extends React.Component {
                     }
                   }}
                 />
+                }
               </div>
             </div>
           </div>
@@ -641,7 +656,7 @@ class CustomerMatching extends React.Component {
             </div>
             <div className='m-alert__text'>
               Need help in understanding Invite Using Phone Numbers? Here is the <a href='http://kibopush.com/invite-using-phone-numbers/' target='_blank' rel='noopener noreferrer'>documentation</a>&nbsp;
-            Or check out this <a href='#/' data-toggle="modal" data-target="#video">video tutorial</a>
+            Or check out this <a href='#/' onClick={this.openVideoTutorial}>video tutorial</a>
             </div>
           </div>
           <div
