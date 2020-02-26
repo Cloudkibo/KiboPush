@@ -9,13 +9,16 @@ import {
   fetchOpenSessions,
   fetchCloseSessions,
   fetchTeamAgents,
-  changeStatus
+  changeStatus,
+  unSubscribe,
+  getCustomers, 
+  appendSubscriber
 } from '../../redux/actions/livechat.actions'
 import { updatePicture } from '../../redux/actions/subscribers.actions'
 
 // components
 import HELPWIDGET from '../../components/extras/helpWidget'
-import { SESSIONS } from '../../components/LiveChat'
+import { SESSIONS, PROFILE } from '../../components/LiveChat'
 
 const alertOptions = {
   offset: 14,
@@ -95,13 +98,13 @@ class LiveChat extends React.Component {
   }
 
   updateFilterPending (filterPending) {
-    this.setState({filterPending, sessionsLoading: true}, () => {
+    this.setState({filterPending, filterUnread: false, sessionsLoading: true}, () => {
       this.fetchSessions(true, 'none')
     })
   }
 
   updateFilterUnread (filterUnread) {
-    this.setState({filterUnread, sessionsLoading: true}, () => {
+    this.setState({filterUnread, filterPending: false, sessionsLoading: true}, () => {
       this.fetchSessions(true, 'none')
     })
   }
@@ -279,8 +282,25 @@ class LiveChat extends React.Component {
                   changeStatus={this.changeStatus}
                 />
                 {
+                   Object.keys(this.state.activeSession).length > 0 &&
+                   <PROFILE 
+                      activeSession={this.state.activeSession}
+                      user={this.props.user}
+                      profilePicError={this.profilePicError}
+                      changeActiveSession={this.changeActiveSession}
+                      msg={this.alertMsg}
+                      unSubscribe={this.props.unSubscribe}
+                      customers={this.props.customers}
+                      getCustomers={this.props.getCustomers}
+                    />
+                }
+                {
                   Object.keys(this.state.activeSession).length === 0 && this.state.activeSession.constructor === Object &&
-                  <div style={{border: '1px solid #F2F3F8', marginBottom: '0px'}} className='col-xl-8 m-portlet'>
+                  <div style={{border: '1px solid #F2F3F8', 
+                    marginBottom: '0px', 
+                    display: 'flex', 
+                    justifyContent: 'center', 
+                    alignItems: 'center'}} className='col-xl-8 m-portlet'>
                     <div style={{ textAlign: 'center', padding: '20px' }}>
                       <p>Please select a session to view its chat.</p>
                     </div>
@@ -302,17 +322,21 @@ function mapStateToProps(state) {
     closeCount: (state.liveChat.closeCount),
     closeSessions: (state.liveChat.closeSessions),
     pages: (state.pagesInfo.pages),
-    user: (state.basicInfo.user)
+    user: (state.basicInfo.user),
+    customers: (state.liveChat.customers)
   }
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators({
+    unSubscribe,
     fetchOpenSessions,
     fetchCloseSessions,
     updatePicture,
     fetchTeamAgents,
-    changeStatus
+    changeStatus,    
+    getCustomers,
+    appendSubscriber
   }, dispatch)
 }
 

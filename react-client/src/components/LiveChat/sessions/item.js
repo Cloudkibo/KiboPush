@@ -129,6 +129,7 @@ class SessionItem extends React.Component {
 SessionItem.propTypes = {
   'session': PropTypes.object.isRequired,
   'activeSession': PropTypes.object.isRequired,
+  'profilePicError': PropTypes.func.isRequired,
   'changeActiveSession': PropTypes.func.isRequired,
   'profilePicError': PropTypes.func.isRequired,
   'changeStatus': PropTypes.func.isRequired
