@@ -36,7 +36,6 @@ class MapCustomer extends React.Component {
       subscriberId: this.props.currentSession.subscriber_id._id,
       customerId: this.state.selectedCustomer.value
     }
-    this.toggle()
     this.props.appendSubscriber(data, this.props.currentSession, this.props.alertMsg)
   }
 
