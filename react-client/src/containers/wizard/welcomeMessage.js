@@ -259,7 +259,7 @@ class EditTemplate extends React.Component {
                             </Link>
                           </div>
                           <div className='col-lg-6 m--align-right'>
-                            <Link to={this.props.user.uiMode.mode === 'kibocommerce' || this.props.user.uiMode.mode === 'kibochat' ? '/menuWizard' : '/autopostingWizard'} className='btn btn-success m-btn m-btn--custom m-btn--icon' data-wizard-action='next'>
+                            <Link to={getCurrentProduct() === 'KiboEngage' ||  getCurrentProduct() === 'localhost' ? '/autopostingWizard' : '/menuWizard'} className='btn btn-success m-btn m-btn--custom m-btn--icon' data-wizard-action='next'>
                               <span>
                                 <span>Next</span>&nbsp;&nbsp;
                                 <i className='la la-arrow-right' />
