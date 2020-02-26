@@ -732,7 +732,7 @@ class Menu extends React.Component {
                       <div className='m-form__actions'>
                         <div className='row'>
                           <div className='col-lg-6 m--align-left' >
-                            <Link to={this.props.user.uiMode.mode === 'kibochat' || this.props.user.uiMode.mode === 'kibocommerce' ? '/welcomeMessageWizard' : '/autopostingWizard'} className='btn btn-secondary m-btn m-btn--custom m-btn--icon' data-wizard-action='next'>
+                            <Link to={ getCurrentProduct() === 'KiboChat' ? '/welcomeMessageWizard' : '/autopostingWizard'} className='btn btn-secondary m-btn m-btn--custom m-btn--icon' data-wizard-action='next'>
                               <span>
                                 <i className='la la-arrow-left' />
                                 <span>Back</span>&nbsp;&nbsp;
@@ -740,7 +740,7 @@ class Menu extends React.Component {
                             </Link>
                           </div>
                           <div className='col-lg-6 m--align-right'>
-                            <Link to={this.props.user.uiMode.mode === 'kiboengage' || this.props.user.uiMode.mode === 'kibocommerce' ? '/finish' : '/responseMethods'} className='btn btn-success m-btn m-btn--custom m-btn--icon' data-wizard-action='next'>
+                            <Link to={getCurrentProduct() === 'KiboEngage' || getCurrentProduct() === 'localhost' ? '/finish' : '/responseMethods'} className='btn btn-success m-btn m-btn--custom m-btn--icon' data-wizard-action='next'>
                               <span>
                                 <span>Next</span>&nbsp;&nbsp;
                                 <i className='la la-arrow-right' />
