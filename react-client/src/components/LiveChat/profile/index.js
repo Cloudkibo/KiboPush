@@ -34,7 +34,7 @@ class Profile extends React.Component {
                         <HEADER
                             updateState={this.updateState}
                             unSubscribe={this.props.unSubscribe}
-                            isAssigned={this.state.assignInfo}
+                            assignInfo={this.state.assignInfo}
                             activeSession={this.props.activeSession}
                             user={this.props.user}
                             profilePicError={this.props.profilePicError}

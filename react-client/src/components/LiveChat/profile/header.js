@@ -12,9 +12,13 @@ class ProfileHeader extends React.Component {
   }
 
   unassignTeam() {
+    console.log('unassignTeam')
     this.props.updateState({
-      isAssigned: false, 
-      assignedTeam: ''
+      assignInfo: {
+        isAssigned: false,
+        type: '',
+        name: ''
+      }
     }, () => {
       let data = {
         teamId: this.props.activeSession.assigned_to.id,

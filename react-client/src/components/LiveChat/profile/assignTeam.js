@@ -39,7 +39,7 @@ class AssignTeam extends React.Component {
     this.props.updateState({ 
         assignInfo: {
             isAssigned: true,
-            type: 'Team',
+            type: 'team',
             name: this.state.teamObject.name
         }
     }, () => {
