@@ -56,6 +56,10 @@ export function sponsoredMessagingInfo (state = initialState, action) {
           return Object.assign({}, state, {
             adSets: action.data
         })
+        case ActionTypes.GET_INSIGHTS:
+          return Object.assign({}, state, {
+            insights: action.data
+        })
       default:
         return state
     }
