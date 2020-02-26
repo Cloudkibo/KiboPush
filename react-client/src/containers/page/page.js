@@ -9,7 +9,7 @@ import {
   loadMyPagesListNew,
   removePage
 } from '../../redux/actions/pages.actions'
-import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
+import { loadAllSubscribersListNew } from '../../redux/actions/subscribers.actions'
 import { getuserdetails } from '../../redux/actions/basicinfo.actions'
 import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
@@ -41,9 +41,16 @@ class Page extends React.Component {
   }
 
   UNSAFE_componentWillMount() {
+    var fetchSubscribers = {
+      last_id: 'none',
+      number_of_records: 10,
+      first_page: 'first',
+      filter: false,
+      filter_criteria: {}
+    }
     this.props.getuserdetails()
     this.props.loadMyPagesListNew({ last_id: 'none', number_of_records: 10, first_page: 'first', filter: false, filter_criteria: { search_value: '' } })
-    this.props.loadSubscribersList()
+    this.props.loadAllSubscribersListNew(fetchSubscribers)
   }
 
   UNSAFE_componentWillUnmount() {
@@ -117,7 +124,7 @@ class Page extends React.Component {
     } else {
       this.setState({ pagesData: [], totalLength: 0 })
     }
-    if (((nextProps.subscribers && nextProps.subscribers.length === 0) ||
+    if (((nextProps.subscribers && nextProps.subscribersCount === 0) ||
       (nextProps.pages && nextProps.pages.length === 0))
     ) {
       this.refs.zeroModal.click()
@@ -437,7 +444,8 @@ function mapStateToProps(state) {
     pages: (state.pagesInfo.pages),
     count: (state.pagesInfo.count),
     user: (state.basicInfo.user),
-    subscribers: (state.subscribersInfo.subscribers)
+    subscribers: (state.subscribersInfo.subscribers),
+    subscribersCount: (state.subscribersInfo.count),
   }
 }
 
@@ -447,7 +455,7 @@ function mapDispatchToProps(dispatch) {
     getuserdetails: getuserdetails,
     removePage: removePage,
     addPages: addPages,
-    loadSubscribersList: loadSubscribersList
+    loadAllSubscribersListNew: loadAllSubscribersListNew
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Page)
