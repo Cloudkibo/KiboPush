@@ -25,7 +25,7 @@ class OverlayWidgets extends React.Component {
       filter: false,
       searchValue: '',
       pageNumber: 0,
-      status: '', 
+      status: '',
       page_value: '',
       type_value: '',
       setupPage: '',
@@ -33,8 +33,8 @@ class OverlayWidgets extends React.Component {
     }
 
     props.fetchOverlayWidgets({
-      last_id: 'none', 
-      number_of_records: 10, 
+      last_id: 'none',
+      number_of_records: 10,
       first_page: 'first',
       page_value: '',
       status_value: '',
@@ -68,7 +68,7 @@ class OverlayWidgets extends React.Component {
     })
     document.title = `${title} | Overlay Widgets`
   }
-  
+
   isAnyFilter(search, page, status, type) {
     if (search !== '' || page !== '' || status !== '' || type !== '') {
       this.setState({
@@ -93,7 +93,7 @@ class OverlayWidgets extends React.Component {
       value = 'Page Takeover'
     }
     return value
-  } 
+  }
   onPageFilter (event) {
     this.setState({
       page_value: event.target.value, pageNumber:0
@@ -309,7 +309,7 @@ class OverlayWidgets extends React.Component {
               <i className='flaticon-technology m--font-accent' />
             </div>
             <div className='m-alert__text'>
-              Need help in understanding Overlay Widgets? Here is the <a href='http://kibopush.com/overlay_widgets' target='_blank' rel='noopener noreferrer'>documentation</a>.
+              Need help in understanding Overlay Widgets? Here is the <a href='https://kibopush.com/overlay-widgets/' target='_blank' rel='noopener noreferrer'>documentation</a>.
               Or check out this <a href='#/' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>
             </div>
           </div>
@@ -409,7 +409,7 @@ class OverlayWidgets extends React.Component {
                           <tr data-row={i}
                             className='m-datatable__row m-datatable__row--even'
                             style={{height: '55px'}} key={i}>
-                            <td data-field='page' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '150px'}}>{widget.title}</span></td>  
+                            <td data-field='page' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '150px'}}>{widget.title}</span></td>
                             <td data-field='page' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '150px'}}>{this.props.pages && this.props.pages.filter((page) => page._id === widget.pageId)[0].pageName}</span></td>
                             <td data-field='status' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{this.getWidgetType(widget.widgetType)}</span></td>
                             <td data-field='status' className='m-datatable__cell--center m-datatable__cell'>

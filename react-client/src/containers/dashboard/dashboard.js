@@ -13,6 +13,7 @@ import ProgressBoxKiboChat from '../../components/Dashboard/ProgressBoxKiboChat'
 import SubscriberSummary from './subscriberSummary'
 import AutopostingSummary from './autopostingSummary'
 import IntegrationsSummary from './integrationsSummary'
+import NewsIntegrationsSummary from './newsIntegrationsSummary'
 import { loadDashboardData, loadSubscriberSummary, sentVsSeen, loadGraphData, loadTopPages, updateSubscriptionPermission, loadSentSeen } from '../../redux/actions/dashboard.actions'
 import { bindActionCreators } from 'redux'
 import { loadMyPagesList, updateCurrentPage } from '../../redux/actions/pages.actions'
@@ -48,7 +49,8 @@ class Dashboard extends React.Component {
       showDropDown: false,
       days: '30',
       pageId: 'all',
-      selectedPage: {}
+      selectedPage: {},
+      openVideo: false
     }
     this.onDaysChange = this.onDaysChange.bind(this)
     this.prepareLineChartData = this.prepareLineChartData.bind(this)
@@ -64,6 +66,13 @@ class Dashboard extends React.Component {
     this.checkUserAccessToken = this.checkUserAccessToken.bind(this)
     this.changeDays = this.changeDays.bind(this)
     this.onKeyDown = this.onKeyDown.bind(this)
+    this.openVideoTutorial = this.openVideoTutorial.bind(this)
+  }
+  openVideoTutorial () {
+    this.setState({
+      openVideo: true
+    })
+    this.refs.videoDashboard.click()
   }
   UNSAFE_componentWillMount () {
     var fetchSubscribers = {
@@ -542,21 +551,27 @@ class Dashboard extends React.Component {
               </div>
             </div>
           </div>
-        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="video" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <a href='#/' style={{ display: 'none' }} ref='videoDashboard' data-toggle='modal' data-backdrop='static' data-keyboard='false' data-target="#videoDashboard">videoMessengerRefModal</a>
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="videoDashboard" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog modal-lg" role="document">
               <div className="modal-content" style={{width: '687px', top: '100'}}>
               <div style={{ display: 'block'}} className="modal-header">
                   <h5 className="modal-title" id="exampleModalLabel">
                     Dashboard Video Tutorial
 									</h5>
-                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal"
+                   aria-label="Close"
+                   onClick={() => {
+                    this.setState({
+                      openVideo: false
+                    })}}>
                     <span aria-hidden="true">
                       &times;
 											</span>
                   </button>
                 </div>
                 <div style={{color: 'black'}} className="modal-body">
-                  <YouTube
+                {this.state.openVideo && <YouTube
                     videoId='NhqPaGp3TF8'
                     opts={{
                       height: '390',
@@ -566,6 +581,7 @@ class Dashboard extends React.Component {
                       }
                     }}
                     />
+                  }
                 </div>
               </div>
             </div>
@@ -600,7 +616,7 @@ class Dashboard extends React.Component {
             </div>
             <div className='m-alert__text'>
               Need help in understanding dashboard? Here is the <a href='http://kibopush.com/dashboard/' target='_blank' rel='noopener noreferrer'>documentation</a>.
-              Or check out this <a href='#/' data-toggle="modal" data-target="#video">video tutorial</a>
+              Or check out this <a href='#/' onClick={this.openVideoTutorial}>video tutorial</a>
             </div>
           </div>
           {
@@ -652,6 +668,11 @@ class Dashboard extends React.Component {
             {(url.includes('kiboengage.cloudkibo.com') || url.includes('localhost')) &&
               <div className='row'>
                 <AutopostingSummary />
+              </div>
+            }
+            {(url.includes('kiboengage.cloudkibo.com') || url.includes('localhost')) &&
+              <div className='row'>
+                <NewsIntegrationsSummary />
               </div>
             }
             {(url.includes('kiboengage.cloudkibo.com') || url.includes('localhost')) &&

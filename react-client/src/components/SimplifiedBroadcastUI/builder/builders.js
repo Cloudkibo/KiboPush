@@ -114,7 +114,7 @@ class Builders extends React.Component {
     this.checkMediaComponents = this.checkMediaComponents.bind(this)
     this.updateFileUrl = this.updateFileUrl.bind(this)
     this.onFilesError = this.onFilesError.bind(this)
-
+    this.confirmDeleteModal = this.confirmDeleteModal.bind(this)
     this.GSModalContent = null
 
     if (props.setReset) {
@@ -159,6 +159,13 @@ class Builders extends React.Component {
     this.refs.ActionModal.click()
   }
   
+  onFilesError (errorMsg) {
+    this.setState({
+      fileError: errorMsg   
+    })
+    this.refs.fileError.click()
+  }
+
   onFilesError (errorMsg) {
     this.setState({
       fileError: errorMsg   
@@ -440,10 +447,10 @@ class Builders extends React.Component {
     this.setState({linkedMessages, lists, quickReplies})
   }
 
-  removeLinkedMessages (deletePayload) {
+  removeLinkedMessages (deletePayload, linkedMessageIds) {
     let linkedMessages = this.state.linkedMessages
     let unlinkedMessages = this.state.unlinkedMessages
-    deletePayload = deletePayload.map(payload => {
+    deletePayload = linkedMessageIds ? linkedMessageIds : deletePayload.map(payload => {
       if (payload && payload.action === 'send_message_block') {
         return payload.blockUniqueId
       }
@@ -661,6 +668,10 @@ class Builders extends React.Component {
 
   scrollToTop () {
     this.top.scrollIntoView({behavior: 'instant'})
+  }
+
+  confirmDeleteModal () {
+    this.refs.deleteModal.click()
   }
 
   reset (showDialog = true) {
@@ -1049,31 +1060,85 @@ class Builders extends React.Component {
 
   removeMessage () {
     console.log('removing message', this.state.currentId)
+    let currentId = this.state.currentId
     let linkedMessages = this.state.linkedMessages
     let unlinkedMessages = this.state.unlinkedMessages
     let lists = this.state.lists
     let quickReplies = this.state.quickReplies
     let quickRepliesComponents = this.state.quickRepliesComponents
 
+    let deletePayload = [this.state.currentId]
+    let linkedMessageIndex = this.props.linkedMessages.findIndex(m => m.id === this.state.currentId)
+
+    if (linkedMessageIndex > -1) {
+      for (let i = 0; i < deletePayload.length; i++) {
+        let messageIndex = this.props.linkedMessages.findIndex(m => m.id === deletePayload[i])
+        let message = this.props.linkedMessages[messageIndex]
+        for (let j = 0; j < message.messageContent.length; j++) {
+          let messageContent = message.messageContent[j]
+          if (messageContent.quickReplies) {
+            for (let k = 0; k < messageContent.quickReplies.length; k++) {
+              let quickReply = messageContent.quickReplies[k]
+              let payload = JSON.parse(quickReply.payload)
+              for (let l = 0; l < payload.length; l++) {
+                if (payload[l].blockUniqueId) {
+                  deletePayload.push(payload[l].blockUniqueId)
+                }
+              } 
+            }
+          }
+          if (messageContent.buttons) {
+            for (let k = 0; k < messageContent.buttons.length; k++) {
+              let button = messageContent.buttons[k]
+              if (button.type === 'postback') {
+                let payload = JSON.parse(button.payload)
+                for (let l = 0; l < payload.length; l++) {
+                  if (payload[l].blockUniqueId) {
+                    deletePayload.push(payload[l].blockUniqueId)
+                  }
+                }
+              }
+            }
+          } else if (messageContent.cards) {
+            for (let m = 0; m < messageContent.cards.length; m++) {
+              for (let k = 0; k < messageContent.cards[m].buttons.length; k++) {
+                let button = messageContent.cards[m].buttons[k]
+                if (button.type === 'postback') {
+                  let payload = JSON.parse(button.payload)
+                  for (let l = 0; l < payload.length; l++) {
+                    if (payload[l].blockUniqueId) {
+                      deletePayload.push(payload[l].blockUniqueId)
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+      deletePayload.splice(0, 1)
+      this.removeLinkedMessages(null, deletePayload)
+    }
+
     let messageFound = false
     for (let i = 0; i < linkedMessages.length; i++) {
-      if (linkedMessages[i].id === this.state.currentId) {
+      if (linkedMessages[i].id === currentId) {
         messageFound = true
         linkedMessages.splice(i,1)
-        delete lists[this.state.currentId]
-        delete quickReplies[this.state.currentId]
-        delete quickRepliesComponents[this.state.currentId]
+        delete lists[currentId]
+        delete quickReplies[currentId]
+        delete quickRepliesComponents[currentId]
         break
       }
     }
     if (!messageFound) {
       for (let i = 0; i < unlinkedMessages.length; i++) {
-        if (unlinkedMessages[i].id === this.state.currentId) {
+        if (unlinkedMessages[i].id === currentId) {
           messageFound = true
           unlinkedMessages.splice(i,1)
-          delete lists[this.state.currentId]
-          delete quickReplies[this.state.currentId]
-          delete quickRepliesComponents[this.state.currentId]
+          delete lists[currentId]
+          delete quickReplies[currentId]
+          delete quickRepliesComponents[currentId]
           break
         }
       }
@@ -1086,8 +1151,144 @@ class Builders extends React.Component {
       lists,
       quickReplies,
       quickRepliesComponents
+    }, () => {
+      this.deleteButtonPayload(currentId)
     })
   }
+
+  deleteButtonPayload (blockUniqueId) {
+    console.log('deleteButtonPayload', this.state)
+    let linkedMessages = this.state.linkedMessages
+    for (let i = 0; i < linkedMessages.length; i++) {
+      let message = linkedMessages[i]
+      for (let j = 0; j < message.messageContent.length; j++) {
+        let component = message.messageContent[j]
+        if (component.quickReplies) {
+          for (let k = 0; k < component.quickReplies.length; k++) {
+            let quickReply = component.quickReplies[k]
+            let payload = JSON.parse(quickReply.payload)
+            for (let l = 0; l < payload.length; l++) {
+              if (payload[l].blockUniqueId && payload[l].blockUniqueId.toString() === blockUniqueId.toString()) {
+                payload[l] = {
+                  action: 'send_message_block'
+                }
+                linkedMessages[i].messageContent[j].quickReplies[k].payload = JSON.stringify(payload)
+                return
+              }
+            } 
+          }
+        }
+        if (component.buttons) {
+          for (let k = 0; k < component.buttons.length; k++) {
+            let button = component.buttons[k]
+            if (button.type === 'postback') {
+              let payload = JSON.parse(button.payload)
+              for (let l = 0; l < payload.length; l++) {
+                if (payload[l].blockUniqueId && payload[l].blockUniqueId.toString() === blockUniqueId.toString()) {
+                  this.setState({currentId: linkedMessages[i].id}, () => {
+                    document.getElementById('button-' + linkedMessages[i].messageContent[j].buttons[k].id).style['border-color'] = 'red'
+                  })
+                  payload[l] = {
+                    action: 'send_message_block'
+                  }
+                  linkedMessages[i].messageContent[j].buttons[k].payload = JSON.stringify(payload)
+                  return
+                }
+              }
+            }
+          }
+        } else if (component.cards) {
+          for (let m = 0; m < component.cards.length; m++) {
+            for (let k = 0; k < component.cards[m].buttons.length; k++) {
+              let button = component.cards[m].buttons[k]
+              if (button.type === 'postback') {
+                let payload = JSON.parse(button.payload)
+                for (let l = 0; l < payload.length; l++) {
+                  if (payload[l].blockUniqueId && payload[l].blockUniqueId.toString() === blockUniqueId.toString()) {
+                    this.setState({currentId: linkedMessages[i].id}, () => {
+                      document.getElementById('button-' + linkedMessages[i].messageContent[j].cards[m].buttons[k].id).style['border-color'] = 'red'
+                    })
+                    payload[l] = {
+                      action: 'send_message_block'
+                    }
+                    linkedMessages[i].messageContent[j].cards[m].buttons[k].payload = JSON.stringify(payload)
+                    return
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    let unlinkedMessages = this.state.unlinkedMessages
+    for (let i = 0; i < unlinkedMessages.length; i++) {
+      let message = unlinkedMessages[i]
+      for (let j = 0; j < message.messageContent.length; j++) {
+        let component = message.messageContent[j]
+        if (component.quickReplies) {
+          for (let k = 0; k < component.quickReplies.length; k++) {
+            let quickReply = component.quickReplies[k]
+            let payload = JSON.parse(quickReply.payload)
+            for (let l = 0; l < payload.length; l++) {
+              if (payload[l].blockUniqueId && payload[l].blockUniqueId.toString() === blockUniqueId.toString()) {
+                payload[l] = {
+                  action: 'send_message_block'
+                }
+                unlinkedMessages[i].messageContent[j].quickReplies[k].payload = JSON.stringify(payload)
+                return
+              }
+            } 
+          }
+        }
+        if (component.buttons) {
+          for (let k = 0; k < component.buttons.length; k++) {
+            let button = component.buttons[k]
+            if (button.type === 'postback') {
+              let payload = JSON.parse(button.payload)
+              for (let l = 0; l < payload.length; l++) {
+                if (payload[l].blockUniqueId && payload[l].blockUniqueId.toString() === blockUniqueId.toString()) {
+                  this.setState({currentId: unlinkedMessages[i].id}, () => {
+                    document.getElementById('button-' + unlinkedMessages[i].messageContent[j].buttons[k].id).style['border-color'] = 'red'
+                  })
+                  payload[l] = {
+                    action: 'send_message_block'
+                  }
+                  unlinkedMessages[i].messageContent[j].buttons[k].payload = JSON.stringify(payload)
+                  return
+                }
+              }
+            }
+          }
+        } else if (component.cards) {
+          for (let m = 0; m < component.cards.length; m++) {
+            for (let k = 0; k < component.cards[m].buttons.length; k++) {
+              let button = component.cards[m].buttons[k]
+              if (button.type === 'postback') {
+                let payload = JSON.parse(button.payload)
+                for (let l = 0; l < payload.length; l++) {
+                  if (payload[l].blockUniqueId && payload[l].blockUniqueId.toString() === blockUniqueId.toString()) {
+                    this.setState({currentId: unlinkedMessages[i].id}, () => {
+                      document.getElementById('button-' + unlinkedMessages[i].messageContent[j].cards[m].buttons[k].id).style['border-color'] = 'red'
+                    })
+                    payload[l] = {
+                      action: 'send_message_block'
+                    }
+                    unlinkedMessages[i].messageContent[j].cards[m].buttons[k].payload = JSON.stringify(payload)
+                    return
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    this.setState({linkedMessages, unlinkedMessages})
+  }
+
+  
 
   addComponent (componentDetails, edit) {
     console.log('componentDetails', componentDetails)
@@ -1197,6 +1398,7 @@ class Builders extends React.Component {
         onFilesError={this.onFilesError}
         toggleGSModal={this.toggleGSModal}
         closeGSModal={this.closeGSModal}
+        onFilesError={this.onFilesError}
         addComponent={this.addComponent} />),
       'video': (<LinkCarousel
         elementLimit={1}
@@ -1352,6 +1554,14 @@ class Builders extends React.Component {
             id: componentId,
             componentName: broadcast.componentName,
             youtubeVideo: broadcast.youtubeVideo,
+            elementLimit: broadcast.elementLimit,
+            header: broadcast.header,
+            defaultErrorMsg: broadcast.defaultErrorMsg,
+            invalidMsg: broadcast.invalidMsg,
+            validMsg: broadcast.validMsg, 
+            retrievingMsg: broadcast.retrievingMsg,
+            buttonTitle: broadcast.buttonTitle,
+            validateUrl: broadcast.validateUrl,
             links: broadcast.links,
             componentType: 'card',
             title: broadcast.title ? broadcast.title : '',
@@ -1718,7 +1928,7 @@ class Builders extends React.Component {
           {this.state.isShowingAddComponentModal && this.openModal()}
         </div>
       </div>
-      
+
       <a href='#/' style={{ display: 'none' }} ref='fileError' data-toggle="modal" data-target="#fileError">fileError</a>
         <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="fileError" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
@@ -1739,7 +1949,6 @@ class Builders extends React.Component {
             </div>
           </div>
         </div>
-        
       <a href='#/' style={{ display: 'none' }} ref='lossData' data-toggle="modal" data-target="#lossData">lossData</a>
       <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="lossData" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
@@ -1807,9 +2016,41 @@ class Builders extends React.Component {
         </div>
       </div>
 
+      <a href='#/' style={{ display: 'none' }} ref='deleteModal' data-toggle="modal" data-target="#deleteModal">deleteMessage</a>
+      <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+          <div className="modal-content">
+            <div style={{ display: 'block' }} className="modal-header">
+              <h5 className="modal-title" id="exampleModalLabel">
+                Warning
+              </h5>
+              <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">
+                  &times;
+                </span>
+              </button>
+            </div>
+            <div style={{ color: 'black' }} className="modal-body">
+              <p>Are you sure you want to delete this message? All messages linked to this message will be unlinked.</p>
+              <button style={{ float: 'right', marginLeft: '10px' }}
+                className='btn btn-primary btn-sm'
+                onClick={() => {
+                  this.removeMessage()
+                }} data-dismiss='modal'>Yes
+            </button>
+              <button style={{ float: 'right' }}
+                className='btn btn-primary btn-sm'
+                data-dismiss='modal'>Cancel
+            </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {
         this.props.builderValue === 'basic'
         ? <BASICBUILDER
+          confirmDeleteModal={this.confirmDeleteModal}
           linkedMessages={this.state.linkedMessages}
           unlinkedMessages={this.state.unlinkedMessages}
           currentId={this.state.currentId}
@@ -1833,6 +2074,7 @@ class Builders extends React.Component {
         />
         : this.props.builderValue === 'flow' &&
         <FLOWBUILDER
+          confirmDeleteModal={this.confirmDeleteModal}
           currentId={this.state.currentId}
           rerenderFlowBuilder={this.props.rerenderFlowBuilder}
           showAddComponentModal={this.showAddComponentModal}

@@ -19,9 +19,16 @@ class InviteSubscribers extends React.Component {
       fblink: '',
       copied: false,
       selectPage: {},
+      openVideo: false
     }
+    this.openVideoTutorial = this.openVideoTutorial.bind(this)
   }
-
+  openVideoTutorial () {
+    this.setState({
+      openVideo: true
+    })
+    this.refs.videoInviteSubscriber.click()
+  }
   getlink() {
     let linkurl = 'https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fweb.facebook.com%2F' +
       this.state.selectPage.pageName + '-' +
@@ -95,21 +102,27 @@ class InviteSubscribers extends React.Component {
   render() {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
-        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="video" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <a href='#/' style={{ display: 'none' }} ref='videoInviteSubscriber' data-toggle='modal' data-backdrop='static' data-keyboard='false' data-target="#videoInviteSubscriber">InviteSubscribers</a>
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="videoInviteSubscriber" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog modal-lg" role="document">
             <div className="modal-content" style={{ width: '687px', top: '100' }}>
               <div style={{ display: 'block' }} className="modal-header">
                 <h5 className="modal-title" id="exampleModalLabel">
                   Invite Subscribers Video Tutorial
 									</h5>
-                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" 
+                aria-label="Close"
+                onClick={() => {
+                  this.setState({
+                    openVideo: false
+                  })}}>
                   <span aria-hidden="true">
                     &times;
 											</span>
                 </button>
               </div>
               <div style={{ color: 'black' }} className="modal-body">
-                <YouTube
+              {this.state.openVideo && <YouTube
                   videoId='e89WqM7SjQA'
                   opts={{
                     height: '390',
@@ -119,6 +132,7 @@ class InviteSubscribers extends React.Component {
                     }
                   }}
                 />
+              }
               </div>
             </div>
           </div>
@@ -137,7 +151,7 @@ class InviteSubscribers extends React.Component {
             </div>
             <div className='m-alert__text'>
               Need help in understanding this page? <a href='http://kibopush.com/user-guide/' target='_blank' rel='noopener noreferrer'>Click Here </a>
-              Or check out this <a href='#/' data-toggle="modal" data-target="#video">video tutorial</a>
+              Or check out this <a href='#/' onClick={this.openVideoTutorial}>video tutorial</a>
             </div>
           </div>
           <div className='row'>

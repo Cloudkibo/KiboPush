@@ -22,7 +22,7 @@ class Page extends React.Component {
     this.state = {
       isShowingZeroSubModal: this.props.subscribers && this.props.subscribers.length === 0,
       isShowingZeroPageModal: this.props.pages && this.props.pages.length === 0,
-      displayVideo: true,
+      displayVideo: false,
       page: {},
       pagesData: [],
       totalLength: 0,
@@ -30,7 +30,8 @@ class Page extends React.Component {
       search_value: '',
       connectedPages: false,
       pageNumber: 0,
-      showingSearchResult: true
+      showingSearchResult: true,
+      openVideo: false,
     }
     this.removePage = this.removePage.bind(this)
     this.showDialog = this.showDialog.bind(this)
@@ -38,6 +39,13 @@ class Page extends React.Component {
     this.handlePageClick = this.handlePageClick.bind(this)
     this.searchPages = this.searchPages.bind(this)
     this.goToAddPages = this.goToAddPages.bind(this)
+    this.openVideoTutorial = this.openVideoTutorial.bind(this)
+  }
+  openVideoTutorial () {
+    this.setState({
+      openVideo: true
+    })
+    this.refs.videoManagePages.click()
   }
 
   UNSAFE_componentWillMount() {
@@ -127,6 +135,7 @@ class Page extends React.Component {
     if (((nextProps.subscribers && nextProps.subscribersCount === 0) ||
       (nextProps.pages && nextProps.pages.length === 0))
     ) {
+      this.setState({displayVideo: true})
       this.refs.zeroModal.click()
     }
   }
@@ -190,21 +199,27 @@ class Page extends React.Component {
     console.log('showingSearchResult', this.state.showingSearchResult)
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
-        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="video" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <a href='#/' style={{ display: 'none' }} ref='videoManagePages' data-toggle='modal' data-backdrop='static' data-keyboard='false' data-target="#videoManagePages">videoManagePages</a>
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="videoManagePages" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog modal-lg" role="document">
             <div className="modal-content" style={{ width: '687px', top: '100' }}>
               <div style={{ display: 'block' }} className="modal-header">
                 <h5 className="modal-title" id="exampleModalLabel">
                   Pages Video Tutorial
 									</h5>
-                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" 
+                aria-label="Close"
+                onClick={() => {
+                  this.setState({
+                    openVideo: false
+                  })}}>
                   <span aria-hidden="true">
                     &times;
 											</span>
                 </button>
               </div>
               <div style={{ color: 'black' }} className="modal-body">
-                <YouTube
+              {this.state.openVideo && <YouTube
                   videoId='9kY3Fmj_tbM'
                   opts={{
                     height: '390',
@@ -214,6 +229,7 @@ class Page extends React.Component {
                     }
                   }}
                 />
+              }
               </div>
             </div>
           </div>
@@ -227,7 +243,12 @@ class Page extends React.Component {
                   ? <AlertMessageModal type='page' />
                   : <AlertMessageModal type='subscriber' />
                 }
-                <button style={{ marginTop: '-60px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                <button style={{ marginTop: '-60px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" 
+                aria-label="Close"
+                onClick={() => {
+                  this.setState({
+                    displayVideo: false
+                  })}}>
                   <span aria-hidden="true">
                     &times;
                     </span>
@@ -235,7 +256,7 @@ class Page extends React.Component {
               </div>
               <div style={{ color: 'black' }} className="modal-body">
                 <div>
-                  <YouTube
+                {this.state.displayVideo &&<YouTube
                     videoId='9kY3Fmj_tbM'
                     opts={{
                       height: '390',
@@ -245,6 +266,7 @@ class Page extends React.Component {
                       }
                     }}
                   />
+                  }
                 </div>
               </div>
             </div>
@@ -270,7 +292,7 @@ class Page extends React.Component {
             </div>
             <div className='m-alert__text'>
               Need help in understanding pages? Here is the <a href='http://kibopush.com/manage-pages/' target='_blank' rel='noopener noreferrer'>documentation</a>.
-              Or check out this <a href='#/' data-toggle="modal" data-target="#video">video tutorial</a>
+              Or check out this  <a href='#/' onClick={this.openVideoTutorial}>video tutorial</a>
             </div>
           </div>
           <div className='row'>
