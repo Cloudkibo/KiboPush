@@ -7,19 +7,13 @@ class MapCustomer extends React.Component {
     super(props, context)
     this.state = {
       selectedCustomer: '',
-      customers: [],
-      expanded: false
+      customers: []
     }
     this.mapCustomerId = this.mapCustomerId.bind(this)
     this.attachCustomer = this.attachCustomer.bind(this)
-    this.toggle = this.toggle.bind(this)
     this.props.getCustomers()
   }
 
-
-  toggle () {
-    this.setState({expanded: !this.state.expanded, selectedCustomer: ''})
-  }
 
   UNSAFE_componentWillReceiveProps (nextProps) {
     if (nextProps.customers) {
@@ -49,8 +43,6 @@ class MapCustomer extends React.Component {
   render () {
     return (
         <ProfileAction
-            expanded={this.state.expanded}
-            toggle={this.toggle}
             title='Attach Customer ID'
             options={this.state.customers}
             currentSelected={this.state.selectedCustomer}

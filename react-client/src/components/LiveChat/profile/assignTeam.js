@@ -14,12 +14,10 @@ class AssignTeam extends React.Component {
     this.state = {
       selectedTeam: '',
       teamObject: {},
-      teams,
-      expanded: false
+      teams
     }
     this.onTeamChange = this.onTeamChange.bind(this)
     this.assignToTeam = this.assignToTeam.bind(this)
-    this.toggle = this.toggle.bind(this)
   }
 
   toggle () {
@@ -43,7 +41,6 @@ class AssignTeam extends React.Component {
             name: this.state.teamObject.name
         }
     }, () => {
-        this.toggle()
         let data = {
             teamId: this.state.teamObject._id,
             teamName: this.state.teamObject.name,
@@ -59,8 +56,6 @@ class AssignTeam extends React.Component {
   render () {
     return (
         <ProfileAction 
-            expanded={this.state.expanded}
-            toggle={this.toggle}
             title='Assign to Team'
             options={this.state.teams}
             currentSelected={this.state.selectedTeam}
