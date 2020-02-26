@@ -14,10 +14,10 @@ class ProfileHeader extends React.Component {
 
   handleUnsubscribe (res) {
     if (res.status === 'success') {
-      this.props.msg.success('Unsubscribed successfully')
+      this.props.alertMsg.success('Unsubscribed successfully')
       this.props.changeActiveSession('none')
     } else {
-      this.props.msg.error('Unable to unsubscribe subscriber')
+      this.props.alertMsg.error('Unable to unsubscribe subscriber')
     }
   }
 
@@ -60,7 +60,7 @@ class ProfileHeader extends React.Component {
             </a>
           }
         </div>
-        
+
         <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="unsubscribe" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
             <div className="modal-content">

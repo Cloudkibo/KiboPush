@@ -71,7 +71,7 @@ class Profile extends React.Component {
       this.props.msg.error('Unable to unsubscribe subscriber')
     }
   }
-  
+
   showToggle() {
     this.setState({ show: !this.state.show })
   }
@@ -322,22 +322,21 @@ class Profile extends React.Component {
             <div style={{overflow: 'hidden', marginBottom: '0px'}} className='m-portlet' >
                 <div style={{ padding: '0rem 1.5rem' }} className='m-portlet__body'>
                     <div className='m-card-profile'>
-                        <HEADER 
+                        <HEADER
                             activeSession={this.props.activeSession}
                             user={this.props.user}
                             profilePicError={this.props.profilePicError}
-                            msg={this.props.msg}
+                            alertMsg={this.props.alertMsg}
                             changeActiveSession={this.props.changeActiveSession}
                         />
                         {
                         this.props.user.isSuperUser &&
                         <MAPCUSTOMER
                             currentSession={this.props.activeSession}
-                            msg={this.props.msg}
+                            alertMsg={this.props.alertMsg}
                             customers={this.props.customers}
                             getCustomers={this.props.getCustomers}
                             appendSubscriber={this.props.appendSubscriber}
-                            msg={this.props.msg}
                         />
                         }
                     </div>
