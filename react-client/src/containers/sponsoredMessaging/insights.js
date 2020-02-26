@@ -16,8 +16,7 @@ class adInsights extends React.Component {
     super(props, context)
     this.state = {
   }
-
-    this.props.getInsights(this.props.location.state.sponsoredMessage.ad_id)
+  this.props.getInsights(this.props.location.state.sponsoredMessage.adId)
 }
 
 componentDidMount () {
