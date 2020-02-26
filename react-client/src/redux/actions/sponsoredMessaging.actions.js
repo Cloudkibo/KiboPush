@@ -187,7 +187,7 @@ export function send(data, msg, handleResponse) {
           msg.success('Ad has been sent to Ads Manager')
           handleResponse()
         } else {
-          msg.error(res.payload.message)
+          msg.error(res.payload)
         }
       })
    }
