@@ -398,7 +398,7 @@ class sponsoredMessaging extends React.Component {
                               <span style={{width: '100px'}}>{this.props.pages.filter((page) => page._id === sponsoredMessage.pageId)[0].pageName}</span>
                             </td>
                             <td data-field='status' className='m-datatable__cell--center m-datatable__cell'>
-                              <span style={{width: '100px'}}>{sponsoredMessage.status}</span>
+                              <span style={{width: '100px'}}>{sponsoredMessage.status === 'in_review' ? 'In Review' : sponsoredMessage.status}</span>
                             </td>
                             <td data-field='actions' className='m-datatable__cell--center m-datatable__cell'>
                               <span style={{width: '230px'}}>

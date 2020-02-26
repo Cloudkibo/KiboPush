@@ -83,9 +83,8 @@ export function saveDraft(id, data, msg, cb) {
             if (cb) {
               cb()
             }
-            dispatch(fetchSponsoredMessages())
           } else {
-            // msg.error('Failed to save Information')
+            msg.error(res.payload)
           }
       })
   }
