@@ -14,22 +14,24 @@ class Header extends React.Component {
             <h3 className='m-portlet__head-text'>
               {
               this.props.isEdit
-              ? 'Edit Sponsored Meessage'
-              : 'Create Sponsored Meessage'
+              ? 'Edit Sponsored Message'
+              : 'Create Sponsored Message'
             }
             </h3>
           </div>
         </div>
         <div className='m-portlet__head-tools'>
-          {/* <button className='addLink btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' onClick={this.props.onEdit}>
-            <span>Save Draft</span>
-          </button> */}
-            <button 
-              className='addLink btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' 
-              style={{marginLeft: '5px'}} onClick={this.props.onSend}
-              disabled= {this.props.sendDisabled}>
-              <span>Send to Facebook</span>
-            </button>
+          <button onClick={this.props.onSave} className='addLink btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
+            Save
+          </button>
+          <button style={{marginLeft: '5px'}} disabled={this.props.sendDisabled} onClick={this.props.onSend} className='addLink btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
+            <span>
+              Publish
+              <span>
+                <i className='la la-paper-plane-o' />
+                </span>
+            </span>
+          </button>
         </div>
       </div>
     )

@@ -8,13 +8,8 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import AlertContainer from 'react-alert'
 import Header from './header'
-import AdAccount from './adAccount'
-import Campaign from './campaign'
-import StepsBar from './stepsBar'
-import AdSet from './adSet'
-import Ad from './ad'
+import Tabs from './tabs'
 import {updateSponsoredMessage, saveDraft, send } from '../../redux/actions/sponsoredMessaging.actions'
-import {checkValidations } from './utility'
 
 
 class CreateSponsoredMessage extends React.Component {
@@ -23,27 +18,13 @@ class CreateSponsoredMessage extends React.Component {
     this.state = {
       isEdit: false,
       editSponsoredMessage: this.props.location.state ? this.props.location.state.sponsoredMessage : {},
-      sendDisabled: false,
-      currentStep: 'adAccount'
+      sendDisabled: false
     }
     if(this.props.location.state && this.props.location.state.module === 'edit'  && this.props.location.state.sponsoredMessage) {
       this.props.updateSponsoredMessage(this.props.location.state.sponsoredMessage)
     }
     this.onEdit = this.onEdit.bind(this)
     this.onSend = this.onSend.bind(this)
-    this.changeCurrentStep = this.changeCurrentStep.bind(this)
-    this.onSave = this.onSave.bind(this)
-    this.handleResponse = this.handleResponse.bind(this)
-  }
-
-  handleResponse () {
-    this.props.history.push({
-      pathname: '/sponsoredMessaging'
-    })
-  }
-
-  changeCurrentStep (value) {
-    this.setState({currentStep: value})
   }
 
   componentDidMount () {
@@ -72,20 +53,7 @@ class CreateSponsoredMessage extends React.Component {
     }
   }
   onSend () {
-    if (checkValidations(this.props.sponsoredMessage)) {
-      let pageId = this.props.pages && this.props.pages.filter(p => p._id === this.props.sponsoredMessage.pageId)[0].pageId
-      this.props.sponsoredMessage.pageId = pageId
-      this.props.send(this.props.sponsoredMessage, this.msg, this.handleResponse)
-    } else {
-      this.msg.error('Please complete all the steps')
-    }
-  }
-  onSave () {
-    if (checkValidations(this.props.sponsoredMessage)) {
-      this.props.saveDraft(this.props.sponsoredMessage._id, this.props.sponsoredMessage, this.msg, this.handleResponse)
-    } else {
-      this.msg.error('Please complete all the steps')
-    }
+    this.props.send(this.props.sponsoredMessage, this.msg)
   }
   render () {
     var alertOptions = {
@@ -106,23 +74,13 @@ class CreateSponsoredMessage extends React.Component {
                   onEdit={this.onEdit}
                   isEdit={this.state.isEdit}
                   sendDisabled = {this.state.sendDisabled}
-                  onSave = {this.onSave}
                 />
                 <div className='m-portlet__body'>
-                  <StepsBar currentStep={this.state.currentStep} />
-                  <br /><br /><br />
-                  {this.state.currentStep === 'adAccount' &&
-                    <AdAccount changeCurrentStep={this.changeCurrentStep} msg={this.msg} />
-                  }
-                  {this.state.currentStep === 'campaign' &&
-                    <Campaign changeCurrentStep={this.changeCurrentStep} msg={this.msg} />
-                  }
-                  {this.state.currentStep === 'adSet' &&
-                    <AdSet changeCurrentStep={this.changeCurrentStep} msg={this.msg} />
-                  }
-                  {this.state.currentStep === 'ad' &&
-                    <Ad changeCurrentStep={this.changeCurrentStep} msg={this.msg} />
-                  }
+                  <div className='row'>
+                    <div className='col-md-12 col-lg-12 col-sm-12'>
+                    <Tabs editSponsoredMessage={this.state.editSponsoredMessage} onEdit={this.onEdit}/>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -137,7 +95,6 @@ function mapStateToProps (state) {
   console.log(state)
   return {
     sponsoredMessage: (state.sponsoredMessagingInfo.sponsoredMessage),
-    pages: state.pagesInfo.pages
   }
 }
 
