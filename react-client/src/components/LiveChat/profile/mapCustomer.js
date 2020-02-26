@@ -33,12 +33,12 @@ class MapCustomer extends React.Component {
       subscriberId: this.props.currentSession.subscriber_id._id,
       customerId: this.state.selectedCustomer.value
     }
-    this.props.appendSubscriber(data, this.props.currentSession, this.props.msg)
+    this.props.appendSubscriber(data, this.props.currentSession, this.props.alertMsg)
   }
 
   render () {
     return (
-        <ProfileAction 
+        <ProfileAction
             title='Attach Customer ID'
             options={this.state.customers}
             currentSelected={this.state.selectedCustomer}
@@ -57,5 +57,5 @@ MapCustomer.propTypes = {
     'getCustomers': PropTypes.func.isRequired,
     'appendSubscriber': PropTypes.func.isRequired
   }
-  
+
   export default MapCustomer

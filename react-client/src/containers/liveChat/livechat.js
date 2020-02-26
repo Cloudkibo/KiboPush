@@ -57,9 +57,20 @@ class LiveChat extends React.Component {
     this.performAction = this.performAction.bind(this)
     this.handleTeamAgents = this.handleTeamAgents.bind(this)
     this.handleStatusChange = this.handleStatusChange.bind(this)
+    this.changeTab = this.changeTab.bind(this)
     this.getChatPreview = this.getChatPreview.bind(this)
 
     this.fetchSessions(true, 'none', true)
+  }
+
+  changeTab (value) {
+    this.setState({
+      tabValue: value,
+      sessions: value === 'open' ? this.props.openSessions : this.props.closeSessions,
+      sessionsCount: value === 'open' ? this.props.openCount : this.props.closeCount,
+      userChat: [],
+      activeSession: {}
+    })
   }
 
   getChatPreview (message, repliedBy, subscriberName) {
@@ -98,7 +109,7 @@ class LiveChat extends React.Component {
 
   updateState (state, callback) {
     this.setState(state, () => {
-      callback()
+      if (callback) callback()
     })
   }
 
@@ -256,6 +267,7 @@ class LiveChat extends React.Component {
                   changeActiveSession={this.changeActiveSession}
                   profilePicError={this.profilePicError}
                   changeStatus={this.changeStatus}
+                  changeTab={this.changeTab}
                   updateState={this.updateState}
                   fetchSessions={this.fetchSessions}
                   getChatPreview={this.getChatPreview}
@@ -267,7 +279,7 @@ class LiveChat extends React.Component {
                       user={this.props.user}
                       profilePicError={this.profilePicError}
                       changeActiveSession={this.changeActiveSession}
-                      msg={this.alertMsg}
+                      alertMsg={this.alertMsg}
                       unSubscribe={this.props.unSubscribe}
                       customers={this.props.customers}
                       getCustomers={this.props.getCustomers}
