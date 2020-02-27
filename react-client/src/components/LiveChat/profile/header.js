@@ -12,23 +12,14 @@ class ProfileHeader extends React.Component {
   }
 
   unassignTeam() {
-    console.log('unassignTeam')
-    this.props.updateState({
-      assignInfo: {
-        isAssigned: false,
-        type: '',
-        name: ''
-      }
-    }, () => {
-      let data = {
-        teamId: this.props.activeSession.assigned_to.id,
-        teamName: this.props.activeSession.assigned_to.name,
-        subscriberId: this.props.activeSession._id,
-        isAssigned: false
-      }
-      this.props.fetchTeamAgents(this.props.activeSession.assigned_to.id)
-      this.props.assignToTeam(data)
-    })
+    let data = {
+      teamId: this.props.activeSession.assigned_to.id,
+      teamName: this.props.activeSession.assigned_to.name,
+      subscriberId: this.props.activeSession._id,
+      isAssigned: false
+    }
+    this.props.fetchTeamAgents(this.props.activeSession.assigned_to.id)
+    this.props.assignToTeam(data)
   }
 
   unSubscribe() {
@@ -85,23 +76,23 @@ class ProfileHeader extends React.Component {
           <br />
           <div>
             <span className='m--font-bolder'>Status:</span>
-            <span> {this.props.assignInfo.isAssigned ? 'Assigned' : 'Unassigned'}</span>
+            <span> {this.props.activeSession.is_assigned ? 'Assigned' : 'Unassigned'}</span>
           </div>
           
           {
-            this.props.assignInfo.isAssigned &&
+            this.props.activeSession.is_assigned &&
             <div style={{ marginBottom: '20px' }}>
               <div>
-                <span className='m--font-bolder'>{this.props.assignInfo.type === 'team' ? 'Team:' : 'Agent:'}</span>
-                <span> {this.props.assignInfo.name}</span>
+                <span className='m--font-bolder'>{this.props.activeSession.assigned_to.type === 'team' ? 'Team:' : 'Agent:'}</span>
+                <span> {this.props.activeSession.assigned_to.name}</span>
               </div>
             </div>
           }
 
           {
-            this.props.assignInfo.isAssigned &&
+            this.props.activeSession.is_assigned &&
             (
-              this.props.assignInfo.type === 'team'
+              this.props.activeSession.assigned_to.type === 'team'
                 ? <div>
                   <button style={{ marginTop: '10px' }} className='btn btn-primary' onClick={this.unassignTeam}>Unassign Team</button>
                   <br />
