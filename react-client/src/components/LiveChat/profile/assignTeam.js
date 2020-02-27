@@ -5,15 +5,8 @@ import ProfileAction from './profileAction'
 class AssignTeam extends React.Component {
   constructor (props, context) {
     super(props, context)
-    let teams = this.props.teams.map(team => {
-        return {
-            label: team.name,
-            value: team._id
-        }
-    })
     this.state = {
-      selectedTeam: '',
-      teams
+      selectedTeam: ''
     }
     this.onTeamChange = this.onTeamChange.bind(this)
     this.assignToTeam = this.assignToTeam.bind(this)
@@ -42,7 +35,7 @@ class AssignTeam extends React.Component {
     return (
         <ProfileAction 
             title='Assign to Team'
-            options={this.state.teams}
+            options={this.props.teams}
             currentSelected={this.state.selectedTeam}
             selectPlaceholder='Select a team...'
             performAction={this.assignToTeam}

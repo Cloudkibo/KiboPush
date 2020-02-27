@@ -5,15 +5,8 @@ import ProfileAction from './profileAction'
 class AssignAgent extends React.Component {
   constructor (props, context) {
     super(props, context)
-    let agents = this.props.agents.map(agent => {
-        return {
-            label: agent.name,
-            value: agent._id
-        }
-    })
     this.state = {
-      selectedAgent: '',
-      agents
+      selectedAgent: ''
     }
     this.onAgentChange = this.onAgentChange.bind(this)
     this.assignToAgent = this.assignToAgent.bind(this)
@@ -50,7 +43,7 @@ class AssignAgent extends React.Component {
     return (
         <ProfileAction 
             title='Assign to Agent'
-            options={this.state.agents}
+            options={this.props.agents}
             currentSelected={this.state.selectedAgent}
             selectPlaceholder='Select an agent...'
             performAction={this.assignToAgent}

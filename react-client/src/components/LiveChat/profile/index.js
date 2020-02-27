@@ -39,14 +39,24 @@ class Profile extends React.Component {
                           this.props.teams && this.props.teams.length > 0 &&
                           <AssignTeam
                             activeSession={this.props.activeSession}
-                            teams={this.props.teams}
+                            teams={this.props.teams.map(team => {
+                                return {
+                                    label: team.name,
+                                    value: team._id
+                                }
+                            })}
                             fetchTeamAgents={this.props.fetchTeamAgents}
                             assignToTeam={this.props.assignToTeam}
                         />
                         }
                         <AssignAgent
                             activeSession={this.props.activeSession}
-                            agents={this.props.agents}
+                            agents={this.props.agents.map(agent => {
+                                return {
+                                    label: agent.name,
+                                    value: agent._id
+                                }
+                            })}
                             sendNotifications={this.props.sendNotifications}
                             assignToAgent={this.props.assignToAgent}
                             user={this.props.user}
