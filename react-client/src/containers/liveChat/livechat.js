@@ -14,13 +14,9 @@ import {
   getCustomers,
   appendSubscriber,
   assignToTeam,
-<<<<<<< HEAD
   assignToAgent,
-  sendNotifications
-=======
   sendNotifications,
   updatePendingResponse
->>>>>>> pending session and chat area
 } from '../../redux/actions/livechat.actions'
 import { updatePicture } from '../../redux/actions/subscribers.actions'
 import { loadTeamsList } from '../../redux/actions/teams.actions'
