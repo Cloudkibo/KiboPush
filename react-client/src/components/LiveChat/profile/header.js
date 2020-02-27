@@ -1,6 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
+// Components
+import CONFIRMATIONMODAL from '../../extras/confirmationModal'
+
 class ProfileHeader extends React.Component {
   constructor(props, context) {
     super(props, context)
@@ -70,7 +73,7 @@ class ProfileHeader extends React.Component {
           </span>
           {
             this.props.user && (this.props.user.role === 'admin' || this.props.user.role === 'buyer') &&
-            <span className='m-card-profile__email m-link' data-toggle="modal" data-target="#unsubscribe" style={{ color: '#716aca', cursor: 'pointer' }}>
+            <span className='m-card-profile__email m-link' data-toggle="modal" data-target="#_unsubscribe" style={{ color: '#716aca', cursor: 'pointer' }}>
               (Unsubscribe)
             </span>
           }
@@ -98,7 +101,7 @@ class ProfileHeader extends React.Component {
             <span className='m--font-bolder'>Status:</span>
             <span> {this.props.activeSession.is_assigned ? 'Assigned' : 'Not assigned'}</span>
           </div>
-          
+
           {
             this.props.activeSession.is_assigned &&
             <div style={{ marginBottom: '20px' }}>
@@ -127,37 +130,12 @@ class ProfileHeader extends React.Component {
           }
         </div>
 
-        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="unsubscribe" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-          <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
-            <div className="modal-content">
-              <div style={{ display: 'block' }} className="modal-header">
-                <h5 className="modal-title" id="exampleModalLabel">
-                  Unsubscribe
-									</h5>
-                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">
-                    &times;
-											</span>
-                </button>
-              </div>
-              <div style={{ color: 'black' }} className="modal-body">
-                <p>Are you sure you want to Unsubscribe this Subscriber?</p>
-                <div style={{ width: '100%', textAlign: 'center' }}>
-                  <div style={{ display: 'inline-block', padding: '5px' }}>
-                    <button className='btn btn-primary' onClick={this.unSubscribe} data-dismiss='modal'>
-                      Yes
-                    </button>
-                  </div>
-                  <div style={{ display: 'inline-block', padding: '5px' }}>
-                    <button className='btn btn-primary' data-dismiss='modal'>
-                      No
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <CONFIRMATIONMODAL
+          id='_unsubscribe'
+          title='Unsubscribe'
+          description='Are you sure you want to Unsubscribe this Subscriber?'
+          onConfirm={this.unSubscribe}
+        />
 
       </div>
     )
