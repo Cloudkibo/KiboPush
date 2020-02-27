@@ -33,7 +33,12 @@ export function assignTags (data, handleResponse, msg) {
     callApi('tags/assign', 'post', data)
     .then(res => {
       if (res.status === 'success') {
+        console.log('tag assigned successfully', res)
         msg.success(`${res.description}`)
+        // for (let i = 0; i < data.subscribers.length; i++) {
+        //   console.log('assignTags getSubscriberTags', data.subscribers)
+        //   dispatch(getSubscriberTags(data.subscribers[i]))
+        // }
       } else {
         if (res.status === 'failed' && res.description) {
           msg.error(`Unable to assign tags. ${res.description}`)
@@ -48,12 +53,16 @@ export function assignTags (data, handleResponse, msg) {
   }
 }
 export function unassignTags (data, handleResponse, msg) {
-  console.log('Actions for saving subscriber Tags', data)
+  console.log('Actions for unassignTags', data)
   return (dispatch) => {
     callApi('tags/unassign', 'post', data)
     .then(res => {
       if (res.status === 'success') {
         msg.success(`${res.description}`)
+        // for (let i = 0; i < data.subscribers.length; i++) {
+        //   console.log('unassignTags getSubscriberTags', data.subscribers)
+        //   dispatch(getSubscriberTags(data.subscribers[i]))
+        // }
       } else {
         if (res.status === 'failed' && res.description) {
           msg.error(`Unable to unassign tags. ${res.description}`)
@@ -61,7 +70,9 @@ export function unassignTags (data, handleResponse, msg) {
           msg.error('Unable to unassign tags')
         }
       }
-      handleResponse()
+      if (handleResponse) {
+        handleResponse()
+      }
     })
   }
 }
@@ -88,6 +99,7 @@ export function getSubscriberTags (id, msg) {
     callApi('tags/subscribertags/', 'post', {subscriberId: id})
       .then(res => {
         if (res.status === 'success' && res.payload) {
+          console.log('getSubscribersTag success', res.payload)
           dispatch(loadSubscriberTags(res.payload))
         } else {
           if (msg) {

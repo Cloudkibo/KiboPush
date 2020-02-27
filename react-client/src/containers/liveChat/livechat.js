@@ -342,6 +342,7 @@ class LiveChat extends React.Component {
                       sendNotifications={this.props.sendNotifications}
                       assignToAgent={this.props.assignToAgent}
                       assignTags={this.props.assignTags}
+                      unassignTags={this.props.unassignTags}
                       createTag={this.props.createTag}
                     />
                 }
@@ -400,7 +401,8 @@ function mapDispatchToProps(dispatch) {
     getSubscriberTags,
     loadTags,
     assignTags,
-    createTag
+    createTag,
+    unassignTags
   }, dispatch)
 }
 
