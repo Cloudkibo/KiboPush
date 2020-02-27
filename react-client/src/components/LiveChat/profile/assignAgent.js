@@ -12,7 +12,7 @@ class AssignAgent extends React.Component {
         }
     })
     this.state = {
-      selectedTeam: '',
+      selectedAgent: '',
       agents
     }
     this.onAgentChange = this.onAgentChange.bind(this)
