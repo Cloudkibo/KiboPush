@@ -5,7 +5,6 @@
 
 import React from 'react'
 import { connect } from 'react-redux'
-import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
 import {
   addBroadcast,
   clearAlertMessage,
@@ -157,8 +156,7 @@ function mapStateToProps (state) {
   return {
     broadcasts: (state.broadcastsInfo.broadcasts),
     successMessage: (state.broadcastsInfo.successMessage),
-    errorMessage: (state.broadcastsInfo.errorMessage),
-    subscribers: (state.subscribersInfo.subscribers)
+    errorMessage: (state.broadcastsInfo.errorMessage)
   }
 }
 
@@ -168,7 +166,6 @@ function mapDispatchToProps (dispatch) {
     addBroadcast: addBroadcast,
     sendbroadcast: sendbroadcast,
     clearAlertMessage: clearAlertMessage,
-    loadSubscribersList: loadSubscribersList,
     uploadFile: uploadFile
   }, dispatch)
 }
