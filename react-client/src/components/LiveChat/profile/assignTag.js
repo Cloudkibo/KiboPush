@@ -23,7 +23,7 @@ class AssignTag extends React.Component {
     }
     this.props.unassignTags(payload, () => {
         let subscriberTags = this.state.subscriberTags
-        let index = subscriberTags.find(tag => tag._id === tagToRemove._id)
+        let index = subscriberTags.findIndex(tag => tag._id === tagToRemove._id)
         subscriberTags.splice(index, 1)
         this.setState({subscriberTags})
     }, this.props.alertMsg)
