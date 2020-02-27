@@ -69,8 +69,6 @@ class ProfileAction extends React.Component {
 }
 
 ProfileAction.propTypes = {
-    'expanded': PropTypes.bool.isRequired,
-    'toggle': PropTypes.func.isRequired,
     'title': PropTypes.string.isRequired,
     'options': PropTypes.array.isRequired,
     'currentSelected': PropTypes.oneOfType([

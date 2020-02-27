@@ -114,6 +114,7 @@ class Sessions extends React.Component {
                       this.props.sessionsCount > 0
                       ? this.props.sessions.map((session, index) => (
                         <SESSIONITEM
+                          key={index}
                           session={session}
                           activeSession={this.props.activeSession}
                           changeActiveSession={this.props.changeActiveSession}

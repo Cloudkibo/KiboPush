@@ -67,7 +67,7 @@ AssignAgent.propTypes = {
     'activeSession': PropTypes.object.isRequired,
     'assignToAgent': PropTypes.func.isRequired,
     'sendNotifications': PropTypes.func.isRequired,
-    'user': PropTypes.func.isRequired
+    'user': PropTypes.object.isRequired
   }
   
   export default AssignAgent
