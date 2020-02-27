@@ -4,6 +4,7 @@ import Header from './header'
 import MapCustomer from './mapCustomer'
 import AssignTeam from './assignTeam'
 import AssignAgent from './assignAgent'
+import AssignTag from './assignTag'
 
 class Profile extends React.Component {
 
@@ -61,6 +62,19 @@ class Profile extends React.Component {
                             assignToAgent={this.props.assignToAgent}
                             user={this.props.user}
                         />
+                        <AssignTag
+                            assignTags={this.props.assignTags}
+                            createTag={this.props.createTag}
+                            alertMsg={this.props.alertMsg}
+                            subscriberTags={this.props.subscriberTags}
+                            activeSession={this.props.activeSession}
+                            tags={this.props.tags.map(tag => {
+                                return {
+                                    label: tag.tag,
+                                    value: tag._id
+                                }
+                            })}
+                        />
                     </div>
                 </div>
         </div>
@@ -82,7 +96,11 @@ Profile.propTypes = {
   'unSubscribe': PropTypes.func.isRequired,
   'agents': PropTypes.array.isRequired,
   'assignToAgent': PropTypes.func.isRequired,
-  'sendNotifications': PropTypes.func.isRequired
+  'sendNotifications': PropTypes.func.isRequired,
+  'tags': PropTypes.array.isRequired,
+  'subscriberTags': PropTypes.array.isRequired,
+  'assignTags': PropTypes.func.isRequired,
+  'createTag': PropTypes.func.isRequired
 }
 
 export default Profile

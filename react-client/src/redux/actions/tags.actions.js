@@ -41,7 +41,9 @@ export function assignTags (data, handleResponse, msg) {
           msg.error('Unable to assign tags')
         }
       }
-      handleResponse()
+      if (handleResponse) {
+        handleResponse() 
+      }
     })
   }
 }
@@ -68,7 +70,10 @@ export function createTag (tag, handleResponse) {
   return (dispatch) => {
     callApi('tags', 'post', {tag: tag})
       .then(res => {
-        handleResponse(res)
+        console.log('createTag res', res)
+        if (handleResponse) {
+          handleResponse(res)
+        }
         if (res.status === 'success' && res.payload) {
           dispatch(loadTags())
         } else {

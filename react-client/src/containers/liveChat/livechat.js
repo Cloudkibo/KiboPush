@@ -20,6 +20,13 @@ import {
 import { updatePicture } from '../../redux/actions/subscribers.actions'
 import { loadTeamsList } from '../../redux/actions/teams.actions'
 import { loadMembersList } from '../../redux/actions/members.actions'
+import {
+  getSubscriberTags,
+  unassignTags,
+  createTag,
+  assignTags,
+  loadTags
+} from '../../redux/actions/tags.actions'
 
 // components
 import HELPWIDGET from '../../components/extras/helpWidget'
@@ -70,6 +77,7 @@ class LiveChat extends React.Component {
     
     this.fetchSessions(true, 'none', true)
     props.loadMembersList()
+    props.loadTags()
   }
 
   handleAgents(teamAgents) {
@@ -209,6 +217,7 @@ class LiveChat extends React.Component {
   changeActiveSession (session) {
     if (session._id !== this.state.activeSession._id) {
       this.setState({activeSession: session})
+      this.props.getSubscriberTags(session._id, this.alertMsg)
       if (session.is_assigned && session.assigned_to.type === 'team') {
         this.props.fetchTeamAgents(session.assigned_to.id, this.handleTeamAgents)
       }
@@ -316,6 +325,7 @@ class LiveChat extends React.Component {
                    Object.keys(this.state.activeSession).length > 0 &&
                    <PROFILE
                       teams={this.props.teams ? this.props.teams : []}
+                      tags={this.props.tags ? this.props.tags : []}
                       agents={this.props.members ? this.getAgents(this.props.members) : []}
                       subscriberTags={this.props.subscriberTags ? this.props.subscriberTags : []}
                       activeSession={this.state.activeSession}
@@ -331,6 +341,8 @@ class LiveChat extends React.Component {
                       appendSubscriber={this.props.appendSubscriber}
                       sendNotifications={this.props.sendNotifications}
                       assignToAgent={this.props.assignToAgent}
+                      assignTags={this.props.assignTags}
+                      createTag={this.props.createTag}
                     />
                 }
                 {
@@ -365,7 +377,8 @@ function mapStateToProps(state) {
     customers: (state.liveChat.customers),
     members: (state.membersInfo.members),
     teams: (state.teamsInfo.teams),
-    subscriberTags: (state.tagsInfo.subscriberTags)
+    subscriberTags: (state.tagsInfo.subscriberTags),
+    tags: (state.tagsInfo.tags)
   }
 }
 
@@ -384,6 +397,10 @@ function mapDispatchToProps(dispatch) {
     sendNotifications,
     loadMembersList,
     assignToAgent,
+    getSubscriberTags,
+    loadTags,
+    assignTags,
+    createTag
   }, dispatch)
 }
 

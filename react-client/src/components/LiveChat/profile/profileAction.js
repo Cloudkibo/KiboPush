@@ -50,15 +50,26 @@ class ProfileAction extends React.Component {
                 this.state.expanded &&
                 <div className='m-accordion__item-body'>
                 <div className='m-accordion__item-content' style={{textAlign: 'center'}}>
+                    {
+                        this.props.creatable ? 
+                        <Select.Creatable
+                            options={this.props.options}
+                            onChange={this.props.onSelectChange}
+                            onNewOptionClick={this.props.onCreateOption}
+                            value={this.props.currentSelected}
+                            placeholder={this.props.selectPlaceholder}
+                            menuShouldScrollIntoView={true}
+                        /> :
                         <Select
                             options={this.props.options}
                             onChange={this.props.onSelectChange}
                             value={this.props.currentSelected}
                             placeholder={this.props.selectPlaceholder}
                         />
-                        <button disabled={!this.props.currentSelected} style={{marginTop: '10px'}} className='btn btn-primary' onClick={this.performAction}>
-                            {this.props.actionTitle}
-                        </button>
+                    }
+                    <button disabled={!this.props.currentSelected} style={{marginTop: '10px'}} className='btn btn-primary' onClick={this.performAction}>
+                        {this.props.actionTitle}
+                    </button>
                 </div>
                 </div>
             }

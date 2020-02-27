@@ -16,6 +16,8 @@ class AssignAgent extends React.Component {
     console.log('onAgentChange', value)
     if (value) {
         this.setState({selectedAgent: value})
+    } else {
+        this.setState({selectedAgent: ''})
     }
   }
 

@@ -15,6 +15,8 @@ class AssignTeam extends React.Component {
   onTeamChange(value) {
     if (value) {
         this.setState({selectedTeam: value})
+    } else {
+        this.setState({selectedTeam: ''})
     }
   }
 
