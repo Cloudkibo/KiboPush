@@ -30,22 +30,14 @@ class AssignTeam extends React.Component {
 
   assignToTeam() {
     console.log('assignToTeam', this.state)
-    this.props.updateState({ 
-        assignInfo: {
-            isAssigned: true,
-            type: 'team',
-            name: this.state.teamObject.name
-        }
-    }, () => {
-        let data = {
-            teamId: this.state.teamObject._id,
-            teamName: this.state.teamObject.name,
-            subscriberId: this.props.activeSession._id,
-            isAssigned: true
-        }
-        this.props.fetchTeamAgents(this.state.teamObject._id)
-        this.props.assignToTeam(data)
-    })
+    let data = {
+        teamId: this.state.teamObject._id,
+        teamName: this.state.teamObject.name,
+        subscriberId: this.props.activeSession._id,
+        isAssigned: true
+    }
+    this.props.fetchTeamAgents(this.state.teamObject._id)
+    this.props.assignToTeam(data)
   }
 
 
@@ -69,7 +61,6 @@ AssignTeam.propTypes = {
     'teams': PropTypes.array.isRequired,
     'fetchTeamAgents': PropTypes.func.isRequired,
     'assignToTeam': PropTypes.func.isRequired,
-    'updateState': PropTypes.func.isRequired,
     'activeSession': PropTypes.object.isRequired
   }
   

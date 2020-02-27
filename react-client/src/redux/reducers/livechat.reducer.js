@@ -19,7 +19,7 @@ export function liveChat (state = initialState, action) {
       })
 
     case ActionTypes.UPDATE_SESSIONS:
-      let sessions = state.openSessions
+      let sessions = [...state.openSessions]
       let ids = sessions.map(s => s._id)
       let index = ids.indexOf(action.data.subscriberId)
       sessions[index].is_assigned = action.data.isAssigned

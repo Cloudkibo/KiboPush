@@ -5,25 +5,6 @@ import MAPCUSTOMER from './mapCustomer'
 import ASSIGNTEAM from './assignTeam'
 
 class Profile extends React.Component {
-  constructor(props, context) {
-    super(props, context)
-    this.state = {
-        assignInfo: {
-            isAssigned: props.activeSession.is_assigned,
-            type: props.activeSession.assigned_to ? props.activeSession.assigned_to.type : '',
-            name: props.activeSession.assigned_to ? props.activeSession.assigned_to.name : ''
-        }
-    }
-    this.updateState = this.updateState.bind(this)
-  }
-
-  updateState (state, callback) {
-      this.setState(state, () => {
-          if (callback) {
-              callback()
-          }
-      })
-  }
 
   render() {
     return (
@@ -32,9 +13,7 @@ class Profile extends React.Component {
                 <div style={{ padding: '0rem 1.5rem' }} className='m-portlet__body'>
                     <div className='m-card-profile'>
                         <HEADER
-                            updateState={this.updateState}
                             unSubscribe={this.props.unSubscribe}
-                            assignInfo={this.state.assignInfo}
                             activeSession={this.props.activeSession}
                             user={this.props.user}
                             profilePicError={this.props.profilePicError}
@@ -57,7 +36,6 @@ class Profile extends React.Component {
                           this.props.user && this.props.user.role !== 'agent' && 
                           this.props.teams && this.props.teams.length > 0 &&
                           <ASSIGNTEAM
-                            updateState={this.updateState}
                             activeSession={this.props.activeSession}
                             teams={this.props.teams}
                             fetchTeamAgents={this.props.fetchTeamAgents}
