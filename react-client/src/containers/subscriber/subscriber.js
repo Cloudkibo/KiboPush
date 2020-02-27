@@ -1003,7 +1003,7 @@ class Subscriber extends React.Component {
     this.props.loadAllSubscribersListNew({
       current_page: currentPage,
       requested_page: requestedPage,
-      last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none',
+      last_id: this.props.subscribers && this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none',
       number_of_records: 10,
       first_page: currentPage < requestedPage ? 'next' : currentPage > requestedPage ? 'previous' : 'first',
       filter: true,
