@@ -5,16 +5,6 @@ import MAPCUSTOMER from './mapCustomer'
 import ASSIGNTEAM from './assignTeam'
 
 class Profile extends React.Component {
-  constructor(props, context) {
-    super(props, context)
-    this.state = {
-        assignInfo: {
-            isAssigned: props.activeSession.is_assigned,
-            type: props.activeSession.assigned_to ? props.activeSession.assigned_to.type : '',
-            name: props.activeSession.assigned_to ? props.activeSession.assigned_to.name : ''
-        }
-    }
-  }
 
   render() {
     return (
@@ -24,7 +14,6 @@ class Profile extends React.Component {
                     <div className='m-card-profile'>
                         <HEADER
                             unSubscribe={this.props.unSubscribe}
-                            assignInfo={this.state.assignInfo}
                             activeSession={this.props.activeSession}
                             user={this.props.user}
                             profilePicError={this.props.profilePicError}
