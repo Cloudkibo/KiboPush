@@ -9,7 +9,7 @@ import RssFeed from './RssFeed'
 import AlertContainer from 'react-alert'
 import YouTube from 'react-youtube'
 import { Link } from 'react-router-dom'
-import { fetchRssFeed, deleteRssFeed, saveCurrentFeed, updateFeed, checkSubscriptionPermissions, saveNewsPages  } from '../../redux/actions/rssIntegration.actions'
+import { fetchNewsFeed, deleteNewsFeed, saveCurrentFeed, updateNewsFeed, checkSubscriptionPermissions, saveNewsPages  } from '../../redux/actions/rssIntegration.actions'
 import ReactPaginate from 'react-paginate'
 import { RingLoader } from 'halogenium'
 
@@ -19,7 +19,7 @@ class RssIntegrations extends React.Component {
     this.state = {
       newsPages: [],
       smpStatus: [],
-      deleteId: '',
+      selectedFeed: '',
       searchValue: '',
       status: '',
       pageNumber: 0,
@@ -29,17 +29,19 @@ class RssIntegrations extends React.Component {
       filter: false,
       loading: true
     }
-    props.fetchRssFeed({last_id: 'none',
+    props.fetchNewsFeed({last_id: 'none',
       number_of_records: 10,
       first_page: 'first',
       search_value: '',
       status_value: '',
-      type_value: ''
+      type_value: '',
+      page_value: '',
+      integrationType: 'rss'
     })
     props.saveCurrentFeed(null)
     this.gotoSettings = this.gotoSettings.bind(this)
     this.gotoMessages = this.gotoMessages.bind(this)
-    this.setDeleteId = this.setDeleteId.bind(this)
+    this.deleteFeed = this.deleteFeed.bind(this)
     this.viewGuide = this.viewGuide.bind(this)
     this.searchFeeds = this.searchFeeds.bind(this)
     this.onStatusFilter = this.onStatusFilter.bind(this)
@@ -104,8 +106,19 @@ class RssIntegrations extends React.Component {
         for (var j=0; j < permissions.length; j++) {
           if (this.props.pages[i]._id === permissions[j].pageId) {
             var status = permissions[j]
+            var badge = 'm-badge--secondary'
             status.pageName = this.props.pages[i].pageName
             status.pagePic = this.props.pages[i].pagePic
+            if (status.smpStatus === 'notApplied') {
+              badge = 'm-badge--warning'
+            } else if (status.smpStatus === 'approved') {
+              badge = 'm-badge--success'
+            } else if (status.smpStatus === 'pending') {
+              badge = 'm-badge--primary'
+            } else if (status.smpStatus === 'rejected') {
+              badge = 'm-badge--danger'
+            }
+            status.badgeColor = badge
             pageStatus.push(status)
           }
         }
@@ -118,31 +131,49 @@ class RssIntegrations extends React.Component {
       searchValue: '',
       status: '',
       pageNumber: 0,
+      selectedFeed: '',
+      page_value: '',
+      type_value: ''
     })
   }
-  setStatus (feed) {
+  setStatus (feed, notified) {
+    if (feed.defaultFeed && feed.isActive && !notified) {
+      this.setState({
+        selectedFeed: feed
+      })
+      this.refs.disableDefault.click()
+      return
+    }
     var updated = {
       feedUrl: feed.feedUrl,
       title: feed.title,
       storiesCount: feed.storiesCount,
       defaultFeed: feed.defaultFeed,
       isActive: !feed.isActive,
-      pageIds: [feed.pageIds[0]]
+      pageIds: [feed.pageIds[0]],
+      integrationType: 'rss'
     }
     var data = {
       feedId: feed._id,
       updatedObject: updated
     }
-    this.props.updateFeed(data, this.msg, true)
+    var filters = {
+      search_value: this.state.searchValue,
+      status_value: this.state.status,
+      page_value: this.state.page_value,
+      type_value: this.state.type_value,
+      integrationType: 'rss'
+    }
+    this.props.updateNewsFeed(data, this.msg, true, null, filters)
   }
   onTypeFilter (e) {
     this.setState({type_value: e.target.value, pageNumber: 0})
     this.isAnyFilter(this.state.searchValue, this.state.page_value, this.state.status, e.target.value)
     if (e.target.value !== '' && e.target.value !== 'all') {
       this.setState({pageNumber: 0})
-      this.props.fetchRssFeed({last_id: this.props.rssFeeds.length > 0 ? this.props.rssFeeds[this.props.rssFeeds.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: this.state.searchValue, status_value: this.state.status, page_value: this.state.page_value, type_value: e.target.value})
+      this.props.fetchNewsFeed({last_id: this.props.rssFeeds.length > 0 ? this.props.rssFeeds[this.props.rssFeeds.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: this.state.searchValue, status_value: this.state.status, page_value: this.state.page_value, type_value: e.target.value, integrationType: 'rss'})
     } else {
-      this.props.fetchRssFeed({last_id: this.props.rssFeeds.length > 0 ? this.props.rssFeeds[this.props.rssFeeds.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: this.state.searchValue, status_value: this.state.status, page_value: this.state.page_value, type_value: ''})
+      this.props.fetchNewsFeed({last_id: this.props.rssFeeds.length > 0 ? this.props.rssFeeds[this.props.rssFeeds.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: this.state.searchValue, status_value: this.state.status, page_value: this.state.page_value, type_value: '', integrationType: 'rss'})
     }
   }
   onPageFilter (e) {
@@ -150,9 +181,9 @@ class RssIntegrations extends React.Component {
     this.isAnyFilter(this.state.searchValue, e.target.value, this.state.status, this.state.type_value)
     if (e.target.value !== '' && e.target.value !== 'all') {
       this.setState({pageNumber: 0})
-      this.props.fetchRssFeed({last_id: this.props.rssFeeds.length > 0 ? this.props.rssFeeds[this.props.rssFeeds.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: this.state.searchValue, status_value: this.state.status, page_value: e.target.value, type_value: this.state.type_value})
+      this.props.fetchNewsFeed({last_id: this.props.rssFeeds.length > 0 ? this.props.rssFeeds[this.props.rssFeeds.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: this.state.searchValue, status_value: this.state.status, page_value: e.target.value, type_value: this.state.type_value, integrationType: 'rss'})
     } else {
-      this.props.fetchRssFeed({last_id: this.props.rssFeeds.length > 0 ? this.props.rssFeeds[this.props.rssFeeds.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: this.state.searchValue, status_value: this.state.status, page_value: '', type_value: this.state.type_value})
+      this.props.fetchNewsFeed({last_id: this.props.rssFeeds.length > 0 ? this.props.rssFeeds[this.props.rssFeeds.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: this.state.searchValue, status_value: this.state.status, page_value: '', type_value: this.state.type_value, integrationType: 'rss'})
     }
   }
   onStatusFilter (e) {
@@ -160,9 +191,9 @@ class RssIntegrations extends React.Component {
     this.isAnyFilter(this.state.searchValue, this.state.page_value, e.target.value, this.state.type_value)
     if (e.target.value !== '' && e.target.value !== 'all') {
       this.setState({pageNumber: 0})
-      this.props.fetchRssFeed({last_id: this.props.rssFeeds.length > 0 ? this.props.rssFeeds[this.props.rssFeeds.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: this.state.searchValue, status_value: e.target.value, page_value: this.state.page_value, type_value: this.state.type_value})
+      this.props.fetchNewsFeed({last_id: this.props.rssFeeds.length > 0 ? this.props.rssFeeds[this.props.rssFeeds.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: this.state.searchValue, status_value: e.target.value, page_value: this.state.page_value, type_value: this.state.type_value, integrationType: 'rss'})
     } else {
-      this.props.fetchRssFeed({last_id: this.props.rssFeeds.length > 0 ? this.props.rssFeeds[this.props.rssFeeds.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: this.state.searchValue, status_value: '', page_value: this.state.page_value, type_value: this.state.type_value})
+      this.props.fetchNewsFeed({last_id: this.props.rssFeeds.length > 0 ? this.props.rssFeeds[this.props.rssFeeds.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: this.state.searchValue, status_value: '', page_value: this.state.page_value, type_value: this.state.type_value, integrationType: 'rss'})
     }
   }
 
@@ -172,17 +203,17 @@ class RssIntegrations extends React.Component {
     })
     this.isAnyFilter(event.target.value, this.state.page_value, this.state.status, this.state.type_value)
     if (event.target.value !== '') {
-      this.props.fetchRssFeed({last_id: this.props.rssFeeds.length > 0 ? this.props.rssFeeds[this.props.rssFeeds.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: event.target.value.toLowerCase(), status_value: this.state.status, page_value: this.state.page_value, type_value: this.state.type_value})
+      this.props.fetchNewsFeed({last_id: this.props.rssFeeds.length > 0 ? this.props.rssFeeds[this.props.rssFeeds.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: event.target.value.toLowerCase(), status_value: this.state.status, page_value: this.state.page_value, type_value: this.state.type_value, integrationType: 'rss'})
     } else {
-      this.props.fetchRssFeed({last_id: this.props.rssFeeds.length > 0 ? this.props.rssFeeds[this.props.rssFeeds.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: '', status_value: this.state.status, page_value: this.state.page_value, type_value: this.state.type_value})
+      this.props.fetchNewsFeed({last_id: this.props.rssFeeds.length > 0 ? this.props.rssFeeds[this.props.rssFeeds.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: '', status_value: this.state.status, page_value: this.state.page_value, type_value: this.state.type_value, integrationType: 'rss'})
     }
   }
 
   scrollToTop () {
     this.top.scrollIntoView({behavior: 'instant'})
   }
-  setDeleteId (id) {
-    this.setState({deleteId: id})
+  deleteFeed (feed) {
+    this.setState({selectedFeed: feed})
   }
 
   displayData (n, feeds) {
@@ -238,17 +269,18 @@ class RssIntegrations extends React.Component {
   handlePageClick(data) {
     console.log('data.selected', data.selected)
     if (data.selected === 0) {
-      this.props.fetchRssFeed({
+      this.props.fetchNewsFeed({
         last_id: 'none',
         number_of_records: 10,
         first_page: 'first',
         search_value: this.state.searchValue,
         status_value: this.state.status,
         page_value: this.state.page_value,
-        type_value: this.state.type_value
+        type_value: this.state.type_value,
+        integrationType: 'rss'
       })
     } else if (this.state.pageNumber < data.selected) {
-      this.props.fetchRssFeed({
+      this.props.fetchNewsFeed({
         current_page: this.state.pageNumber,
         requested_page: data.selected,
         last_id: this.props.rssFeeds.length > 0 ? this.props.rssFeeds[this.props.rssFeeds.length - 1]._id : 'none',
@@ -257,10 +289,11 @@ class RssIntegrations extends React.Component {
         search_value: this.state.searchValue,
         status_value: this.state.status,
         page_value: this.state.page_value,
-        type_value: this.state.type_value
+        type_value: this.state.type_value,
+        integrationType: 'rss'
       })
     } else {
-      this.props.fetchRssFeed({
+      this.props.fetchNewsFeed({
         current_page: this.state.pageNumber,
         requested_page: data.selected,
         last_id: this.props.rssFeeds.length > 0 ? this.props.rssFeeds[this.props.rssFeeds.length - 1]._id : 'none',
@@ -269,14 +302,12 @@ class RssIntegrations extends React.Component {
         search_value: this.state.searchValue,
         status_value: this.state.status,
         page_value: this.state.page_value,
-        type_value: this.state.type_value
+        type_value: this.state.type_value,
+        integrationType: 'rss'
       })
     }
     this.setState({pageNumber: data.selected})
     this.displayData(data.selected, this.props.rssFeeds)
-  }
-  updateDeleteID (id) {
-    this.setState({deleteid: id})
   }
 
   gotoSettings (feed) {
@@ -357,13 +388,51 @@ class RssIntegrations extends React.Component {
                   </button>
                 </div>
                 <div style={{ color: 'black' }} className="modal-body">
-                  <p>Are you sure you want to delete this Rss Feed Integration?</p>
+                  { this.state.selectedFeed.defaultFeed ?
+                  <p>If you remove the default rss feed, your subscribers will not receive daily news updates from <strong>{this.state.selectedFeed.title}</strong>. Are you sure you want to delete this rss integration ?</p>
+                  : <p>Are you sure you want to delete this rss feed?</p>
+                  }
                   <button style={{ float: 'right' }}
                     className='btn btn-primary btn-sm'
                     onClick={() => {
-                      this.props.deleteRssFeed(this.state.deleteId, this.msg, this.resetFilters)
+                      var filters = {
+                        search_value: this.state.searchValue,
+                        status_value: this.state.status,
+                        page_value: this.state.page_value,
+                        type_value: this.state.type_value,
+                        integrationType: 'rss'
+                      }
+                      this.props.deleteNewsFeed(this.state.selectedFeed._id, this.msg, filters)
                     }}
                     data-dismiss='modal'>Delete
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <a href='#/' style={{ display: 'none' }} ref='disableDefault' data-toggle="modal" data-target="#disableDefault">disableDefault</a>
+          <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="disableDefault" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+              <div className="modal-content">
+                <div style={{ display: 'block' }} className="modal-header">
+                  <h5 className="modal-title" id="exampleModalLabel">
+                    Disable Integration
+                  </h5>
+                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">
+                      &times;
+                    </span>
+                  </button>
+                </div>
+                <div style={{ color: 'black' }} className="modal-body">
+                  <p>If you disable the default rss feed, your subscribers will not receive daily news updates from <strong>{this.state.selectedFeed.title}</strong>. Are you sure you want to continue ?</p>
+                  <button style={{ float: 'right' }}
+                    className='btn btn-primary btn-sm'
+                    onClick={() => {
+                      this.setStatus(this.state.selectedFeed, true)
+                      this.refs.disableDefault.click()
+                    }}
+                    >Yes
                   </button>
                 </div>
               </div>
@@ -420,7 +489,7 @@ class RssIntegrations extends React.Component {
                   <span>
                     <img alt='pic' src={item.pagePic}/>&nbsp;&nbsp;
                     <span>{item.pageName}</span>&nbsp;&nbsp;&nbsp;
-                    <span className='m-badge m-badge--wide m-badge--success'> {this.getStatusValue(item.smpStatus)}</span>
+                    <span className={`m-badge m-badge--wide ${item.badgeColor}`}> {this.getStatusValue(item.smpStatus)}</span>
                   </span>
                   <br /><br />
                 </span>
@@ -460,7 +529,7 @@ class RssIntegrations extends React.Component {
                 <div className='col-12'>
                   <p> <b>Note:</b> Subscribers who are engaged in live chat with an agent, will receive autoposts after 30 mins of ending the conversation.</p>
                 </div>
-                <div className='m-form m-form--label-align-right m--margin-top-20 m--margin-bottom-30'>
+                <div className='m-form m-form--label-align-right m--margin-top-10 m--margin-bottom-20'>
                   <div className='row align-items-center'>
                     <div className='col-xl-8 order-2 order-xl-1' />
                     <div className='col-xl-4 order-1 order-xl-2 m--align-right'>
@@ -469,7 +538,7 @@ class RssIntegrations extends React.Component {
                   </div>
                 </div>
                 { (this.state.feeds && this.state.feeds.length > 0) || this.state.filter
-                ? <div className='row' style={{marginBottom: '15px', marginLeft: '5px'}}>
+                ? <div className='row' style={{padding: '5px'}}>
                     <div className='col-md-4'>
                       <select className='custom-select' style={{width: '100%'}} value= {this.state.status} onChange={this.onStatusFilter}>
                         <option value='' disabled>Filter by Status...</option>
@@ -505,6 +574,14 @@ class RssIntegrations extends React.Component {
                   </div>
                 : <div />
                 }
+                 <div className='m-form m-form--label-align-right m--margin-top-10 m--margin-bottom-20'>
+                  <div className='row align-items-center'>
+                    <div className='col-xl-8 order-2 order-xl-1' />
+                    <div className='col-xl-4 order-1 order-xl-2 m--align-right'>
+                      <div className='m-separator m-separator--dashed d-xl-none' />
+                    </div>
+                  </div>
+                </div>
                 <div className='row' >
                   { this.state.feeds && this.state.feeds.length > 0
                   ? <div className='col-12 m-widget5'>
@@ -513,7 +590,7 @@ class RssIntegrations extends React.Component {
                         page={this.props.pages.filter((page) => page._id === feed.pageIds[0])[0]}
                         openSettings={this.gotoSettings}
                         gotoMessages={this.gotoMessages}
-                        setDeleteId={this.setDeleteId}
+                        deleteFeed={this.deleteFeed}
                         setStatus={this.setStatus}
                       />
                     ))
@@ -558,16 +635,17 @@ function mapStateToProps (state) {
   return {
     pages: (state.pagesInfo.pages),
     rssFeeds: (state.feedsInfo.rssFeeds),
-    count: (state.feedsInfo.count)
+    count: (state.feedsInfo.count),
+    defaultFeeds: (state.feedsInfo.defaultFeeds)
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-    fetchRssFeed: fetchRssFeed,
-    deleteRssFeed: deleteRssFeed,
+    fetchNewsFeed: fetchNewsFeed,
+    deleteNewsFeed: deleteNewsFeed,
     saveCurrentFeed: saveCurrentFeed,
-    updateFeed: updateFeed,
+    updateNewsFeed: updateNewsFeed,
     saveNewsPages: saveNewsPages,
     checkSubscriptionPermissions: checkSubscriptionPermissions
   }, dispatch)

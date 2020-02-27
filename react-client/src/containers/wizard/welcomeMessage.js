@@ -16,7 +16,6 @@ import {
 import { Link } from 'react-router-dom'
 import { loadCustomerLists } from '../../redux/actions/customerLists.actions'
 import { loadBroadcastDetails, saveBroadcastInformation } from '../../redux/actions/templates.actions'
-import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
 import { createWelcomeMessage, isWelcomeMessageEnabled } from '../../redux/actions/welcomeMessage.actions'
 import { bindActionCreators } from 'redux'
 import AlertContainer from 'react-alert'
@@ -40,7 +39,6 @@ class EditTemplate extends React.Component {
       pageId: this.props.pages.filter((page) => page._id === this.props.pages[0]._id)[0].pageId
     }
     props.getuserdetails()
-    props.loadSubscribersList()
     props.loadCustomerLists()
     this.initializePageSelect = this.initializePageSelect.bind(this)
     this.sendConvo = this.sendConvo.bind(this)
@@ -289,9 +287,7 @@ function mapStateToProps (state) {
     user: (state.basicInfo.user),
     broadcastDetails: (state.templatesInfo.broadcastDetails),
     currentBroadcast: (state.templatesInfo.currentBroadcast),
-    customerLists: (state.listsInfo.customerLists),
-    subscribers: (state.subscribersInfo.subscribers)
-
+    customerLists: (state.listsInfo.customerLists)
   }
 }
 
@@ -308,7 +304,6 @@ function mapDispatchToProps (dispatch) {
       saveBroadcastInformation: saveBroadcastInformation,
       createWelcomeMessage: createWelcomeMessage,
       loadCustomerLists: loadCustomerLists,
-      loadSubscribersList: loadSubscribersList,
       isWelcomeMessageEnabled: isWelcomeMessageEnabled,
       loadMyPagesList: loadMyPagesList
     },
