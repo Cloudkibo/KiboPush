@@ -7,8 +7,28 @@ class ProfileHeader extends React.Component {
     this.state = {
     }
     this.unassignTeam = this.unassignTeam.bind(this)
+    this.unassignAgent = this.unassignAgent.bind(this)
     this.unSubscribe = this.unSubscribe.bind(this)
     this.handleUnsubscribe = this.handleUnsubscribe.bind(this)
+  }
+
+  unassignAgent() {
+    let data = {
+      agentId: this.props.activeSession.assigned_to.id,
+      agentName: this.props.activeSession.assigned_to.name,
+      subscriberId: this.props.activeSession._id,
+      isAssigned: false
+    }
+    this.props.assignToAgent(data)
+    if (this.props.activeSession.assigned_to.id !== this.props.user._id) {
+      let notificationsData = {
+        message: `Session of subscriber ${this.props.activeSession.firstName + ' ' + this.props.activeSession.lastName} has been unassigned from you.`,
+        category: { type: 'chat_session', id: this.props.activeSession._id },
+        agentIds: [this.props.activeSession.assigned_to.id],
+        companyId: this.props.activeSession.companyId
+      }
+      this.props.sendNotifications(notificationsData)
+    }
   }
 
   unassignTeam() {

@@ -13,7 +13,6 @@ class AssignTeam extends React.Component {
     })
     this.state = {
       selectedTeam: '',
-      teamObject: {},
       teams
     }
     this.onTeamChange = this.onTeamChange.bind(this)
@@ -21,22 +20,20 @@ class AssignTeam extends React.Component {
   }
 
   onTeamChange(value) {
-    console.log('onTeamChange', value)
     if (value) {
-        let team = this.props.teams.find(team => team._id === value.value)
-        this.setState({selectedTeam: value, teamObject: team})
+        this.setState({selectedTeam: value})
     }
   }
 
   assignToTeam() {
     console.log('assignToTeam', this.state)
     let data = {
-        teamId: this.state.teamObject._id,
-        teamName: this.state.teamObject.name,
+        teamId: this.state.selectedTeam.value,
+        teamName: this.state.selectedTeam.label,
         subscriberId: this.props.activeSession._id,
         isAssigned: true
     }
-    this.props.fetchTeamAgents(this.state.teamObject._id)
+    this.props.fetchTeamAgents(this.state.selectedTeam.value)
     this.props.assignToTeam(data)
   }
 
