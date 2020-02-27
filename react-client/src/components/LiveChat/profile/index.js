@@ -14,15 +14,6 @@ class Profile extends React.Component {
             name: props.activeSession.assigned_to ? props.activeSession.assigned_to.name : ''
         }
     }
-    this.updateState = this.updateState.bind(this)
-  }
-
-  updateState (state, callback) {
-      this.setState(state, () => {
-          if (callback) {
-              callback()
-          }
-      })
   }
 
   render() {
@@ -32,7 +23,6 @@ class Profile extends React.Component {
                 <div style={{ padding: '0rem 1.5rem' }} className='m-portlet__body'>
                     <div className='m-card-profile'>
                         <HEADER
-                            updateState={this.updateState}
                             unSubscribe={this.props.unSubscribe}
                             assignInfo={this.state.assignInfo}
                             activeSession={this.props.activeSession}
@@ -57,7 +47,6 @@ class Profile extends React.Component {
                           this.props.user && this.props.user.role !== 'agent' && 
                           this.props.teams && this.props.teams.length > 0 &&
                           <ASSIGNTEAM
-                            updateState={this.updateState}
                             activeSession={this.props.activeSession}
                             teams={this.props.teams}
                             fetchTeamAgents={this.props.fetchTeamAgents}

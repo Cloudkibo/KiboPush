@@ -145,7 +145,6 @@ class ProfileHeader extends React.Component {
 }
 
 ProfileHeader.propTypes = {
-  'updateState': PropTypes.func.isRequired,
   'unSubscribe': PropTypes.func.isRequired,
   'activeSession': PropTypes.object.isRequired,
   'user': PropTypes.object.isRequired,
