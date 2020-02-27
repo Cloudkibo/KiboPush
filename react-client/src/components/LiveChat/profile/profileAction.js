@@ -23,7 +23,7 @@ class ProfileAction extends React.Component {
 
     render () {
         return (
-        <div style={{marginTop: '20px'}} className='m-accordion m-accordion--default'>
+        <div style={{marginTop: '20px', marginLeft: '10px'}} className='m-accordion m-accordion--default'>
             <div style={{overflow: 'visible'}} className='m-accordion__item'>
             {
                 this.state.expanded

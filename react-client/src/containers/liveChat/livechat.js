@@ -14,10 +14,12 @@ import {
   getCustomers,
   appendSubscriber,
   assignToTeam,
+  assignToAgent,
   sendNotifications
 } from '../../redux/actions/livechat.actions'
 import { updatePicture } from '../../redux/actions/subscribers.actions'
 import { loadTeamsList } from '../../redux/actions/teams.actions'
+import { loadMembersList } from '../../redux/actions/members.actions'
 
 // components
 import HELPWIDGET from '../../components/extras/helpWidget'
@@ -64,8 +66,10 @@ class LiveChat extends React.Component {
     this.getChatPreview = this.getChatPreview.bind(this)
     this.handleAgents = this.handleAgents.bind(this)
     this.fetchTeamAgents = this.fetchTeamAgents.bind(this)
-
+    this.getAgents = this.getAgents.bind(this)
+    
     this.fetchSessions(true, 'none', true)
+    props.loadMembersList()
   }
 
   handleAgents(teamAgents) {
@@ -238,6 +242,11 @@ class LiveChat extends React.Component {
     }
   }
 
+  getAgents (members) {
+    let agents = members.map(m => m.userId)
+    return agents
+  }
+
   UNSAFE_componentWillReceiveProps (nextProps) {
     console.log('UNSAFE_componentWillMount called in live chat')
     if (this.state.tabValue === 'open' && nextProps.openSessions) {
@@ -320,6 +329,8 @@ class LiveChat extends React.Component {
                       fetchTeamAgents={this.fetchTeamAgents}
                       assignToTeam={this.props.assignToTeam}
                       appendSubscriber={this.props.appendSubscriber}
+                      sendNotifications={this.props.sendNotifications}
+                      assignToAgent={this.props.assignToAgent}
                     />
                 }
                 {
@@ -370,7 +381,9 @@ function mapDispatchToProps(dispatch) {
     getCustomers,
     appendSubscriber,
     loadTeamsList,
-    sendNotifications
+    sendNotifications,
+    loadMembersList,
+    assignToAgent,
   }, dispatch)
 }
 
