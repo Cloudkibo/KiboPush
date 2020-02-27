@@ -366,10 +366,11 @@ export function markRead (sessionid) {
   }
 }
 
-export function updatePendingResponse (data) {
+export function updatePendingResponse (data, callback) {
   return (dispatch) => {
     callApi(`sessions/updatePendingResponse`, 'post', data).then(res => {
       console.log('response from updatePendingSession', res)
+      if (callback) callback(res)
     })
   }
 }

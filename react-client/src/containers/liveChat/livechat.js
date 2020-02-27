@@ -14,8 +14,13 @@ import {
   getCustomers,
   appendSubscriber,
   assignToTeam,
+<<<<<<< HEAD
   assignToAgent,
   sendNotifications
+=======
+  sendNotifications,
+  updatePendingResponse
+>>>>>>> pending session and chat area
 } from '../../redux/actions/livechat.actions'
 import { updatePicture } from '../../redux/actions/subscribers.actions'
 import { loadTeamsList } from '../../redux/actions/teams.actions'
@@ -23,7 +28,7 @@ import { loadMembersList } from '../../redux/actions/members.actions'
 
 // components
 import HELPWIDGET from '../../components/extras/helpWidget'
-import { SESSIONS, PROFILE } from '../../components/LiveChat'
+import { SESSIONS, PROFILE, CHAT } from '../../components/LiveChat'
 
 const alertOptions = {
   offset: 14,
@@ -50,7 +55,8 @@ class LiveChat extends React.Component {
       sessionsCount: 0,
       activeSession: {},
       teamAgents: [],
-      userChat: []
+      userChat: [],
+      showSearch: false
     }
 
     this.fetchSessions = this.fetchSessions.bind(this)
@@ -67,9 +73,37 @@ class LiveChat extends React.Component {
     this.handleAgents = this.handleAgents.bind(this)
     this.fetchTeamAgents = this.fetchTeamAgents.bind(this)
     this.getAgents = this.getAgents.bind(this)
-    
+    this.handlePendingResponse = this.handlePendingResponse.bind(this)
+    this.updatePendingStatus = this.updatePendingStatus.bind(this)
+    this.showSearch = this.showSearch.bind(this)
+
     this.fetchSessions(true, 'none', true)
     props.loadMembersList()
+  }
+
+  showSearch () {
+    this.setState({showSearch: true})
+  }
+
+  updatePendingStatus (res, value, sessionId) {
+    if (res.status === 'success') {
+      let sessions = this.state.sessions
+      let activeSession = this.state.activeSession
+      let index = sessions.findIndex((session) => session._id === sessionId)
+      sessions[index].pendingResponse = value
+      activeSession.pendingResponse = value
+      this.setState({sessions, activeSession})
+    } else {
+      const message = value ? 'Failed to remove pending flag' : 'Failed to mark session as pending'
+      this.alertMsg.error(message)
+    }
+  }
+
+  handlePendingResponse (session, value) {
+    this.props.updatePendingResponse(
+      {id: session._id, pendingResponse: value},
+      (res) => this.updatePendingStatus(res, value, session._id)
+    )
   }
 
   handleAgents(teamAgents) {
@@ -94,7 +128,7 @@ class LiveChat extends React.Component {
     this.props.fetchTeamAgents(id, this.handleAgents)
   }
 
-  
+
   changeTab (value) {
     this.setState({
       tabValue: value,
@@ -313,7 +347,19 @@ class LiveChat extends React.Component {
                   getChatPreview={this.getChatPreview}
                 />
                 {
-                   Object.keys(this.state.activeSession).length > 0 &&
+                  this.state.activeSession.constructor === Object && Object.keys(this.state.activeSession).length > 0 &&
+                  <CHAT
+                    userChat={this.state.userChat}
+                    activeSession={this.state.activeSession}
+                    changeStatus={this.changeStatus}
+                    updateState={this.updateState}
+                    getChatPreview={this.getChatPreview}
+                    handlePendingResponse={this.handlePendingResponse}
+                    showSearch={this.showSearch}
+                  />
+                }
+                {
+                   this.state.activeSession.constructor === Object && Object.keys(this.state.activeSession).length > 0 &&
                    <PROFILE
                       teams={this.props.teams ? this.props.teams : []}
                       agents={this.props.members ? this.getAgents(this.props.members) : []}
@@ -334,7 +380,7 @@ class LiveChat extends React.Component {
                     />
                 }
                 {
-                  Object.keys(this.state.activeSession).length === 0 && this.state.activeSession.constructor === Object &&
+                  this.state.activeSession.constructor === Object && Object.keys(this.state.activeSession).length === 0 &&
                   <div style={{border: '1px solid #F2F3F8',
                     marginBottom: '0px',
                     display: 'flex',
@@ -384,6 +430,7 @@ function mapDispatchToProps(dispatch) {
     sendNotifications,
     loadMembersList,
     assignToAgent,
+    updatePendingResponse
   }, dispatch)
 }
 
