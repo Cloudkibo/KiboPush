@@ -76,7 +76,7 @@ class ProfileHeader extends React.Component {
           <br />
           <div>
             <span className='m--font-bolder'>Status:</span>
-            <span> {this.props.activeSession.is_assigned ? 'Assigned' : 'Unassigned'}</span>
+            <span> {this.props.activeSession.is_assigned ? 'Assigned' : 'Not assigned'}</span>
           </div>
           
           {
