@@ -21,6 +21,7 @@ class Campaign extends React.Component {
     }
 
     props.fetchCampaigns(props.sponsoredMessage.adAccountId)
+
     this.handleCampaignType = this.handleCampaignType.bind(this)
     this.changeCampaignName = this.changeCampaignName.bind(this)
     this.selectCampaign = this.selectCampaign.bind(this)
