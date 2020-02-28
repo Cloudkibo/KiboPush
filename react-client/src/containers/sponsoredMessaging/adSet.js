@@ -22,7 +22,9 @@ class AdSet extends React.Component {
       budgetType: props.sponsoredMessage.budgetType && props.sponsoredMessage.budgetType !== '' ? props.sponsoredMessage.budgetType : 'daily_budget',
       budgetAmount: props.sponsoredMessage.budgetAmount && props.sponsoredMessage.budgetAmount !== '' ? props.sponsoredMessage.budgetAmount : 0,
       bidAmount: props.sponsoredMessage.bidAmount && props.sponsoredMessage.bidAmount !== '' ? props.sponsoredMessage.bidAmount : 0,
-      currency: props.sponsoredMessage.currency && props.sponsoredMessage.currency !== '' ? props.sponsoredMessage.currency : 'PKR'
+      currency: props.sponsoredMessage.currency && props.sponsoredMessage.currency !== '' ? props.sponsoredMessage.currency : 'PKR',
+      loading: false,
+      loadingAdSets: true
     }
     props.fetchAdSets(props.sponsoredMessage.campaignId)
 
@@ -77,6 +79,7 @@ class AdSet extends React.Component {
       if (this.state.selectedAdSet === '') {
         this.props.msg.error('Please select an Ad Set')
       } else {
+        this.setState({loading: true})
         this.props.saveAdSet({_id: this.props.sponsoredMessage._id, type: this.state.adSetType, id: this.state.selectedAdSet}, this.handleResponse)
       }
     } else if (this.state.adSetType === 'new') {
@@ -101,6 +104,7 @@ class AdSet extends React.Component {
       ) {
         this.props.changeCurrentStep('ad')
       } else {
+        this.setState({loading: true})
         let pageId = this.props.pages && this.props.pages.filter(p => p._id === this.props.sponsoredMessage.pageId)[0].pageId
         this.props.saveAdSet({
           _id: this.props.sponsoredMessage._id,
@@ -123,6 +127,7 @@ class AdSet extends React.Component {
   }
 
   handleResponse (res) {
+    this.setState({loading: false})
     if (res.status === 'success') {
       if (this.state.adSetType === 'existing') {
         this.props.updateSponsoredMessage(this.props.sponsoredMessage, '', '', {adSetId: res.payload, adSetType: this.state.adSetType })
@@ -164,10 +169,11 @@ class AdSet extends React.Component {
   }
 
   UNSAFE_componentWillReceiveProps (nextProps) {
-    if (nextProps.adSets && nextProps.adSets.length > 0) {
+    if (nextProps.adSets) {
+      this.setState({loadingAdSets: false})
       if (nextProps.sponsoredMessage.adSetId && nextProps.sponsoredMessage.adSetId !== '') {
         this.setState({selectedCampaign: nextProps.sponsoredMessage.adSetId})
-      } else {
+      } else if (nextProps.adSets.length > 0) {
         this.setState({selectedAdSet: nextProps.adSets[0].id})
       }
     }
@@ -198,17 +204,23 @@ class AdSet extends React.Component {
               <br /><br />
               {this.state.adSetType === 'existing' &&
               <div>
-                {this.props.adSets && this.props.adSets.length > 0
-                ? <select className='form-control' value={this.state.selectedAdSet} onChange={this.selectAdSet} style={{width: '50%'}}>
-                {
-                  this.props.adSets.map((adSet, i) => (
-                    <option key={adSet.id} value={adSet.id} selected={adSet.id === this.state.selectedAdSet}>{adSet.name}</option>
-                  ))
-                }
-              </select>
-              : <div><span style={{color: 'red'}}>You do not have any existing Ad Sets. Please create a new one.</span>
-                  <br />
-                </div>
+                {this.state.loadingAdSets
+                  ? <div className='align-center'>
+                      <div className='m-loader m-loader--primary' style={{width: '30px', display: 'inline-block'}}></div>
+                      <span style={{color: '#5867dd'}}>Loading Ad Sets...</span>
+                    </div>
+                  : (this.props.adSets && this.props.adSets.length > 0
+                    ? <select className='form-control' value={this.state.selectedAdSet} onChange={this.selectAdSet} style={{width: '50%'}}>
+                    {
+                      this.props.adSets.map((adSet, i) => (
+                        <option key={adSet.id} value={adSet.id} selected={adSet.id === this.state.selectedAdSet}>{adSet.name}</option>
+                      ))
+                    }
+                  </select>
+                  : <div><span style={{color: 'red'}}>You do not have any existing Ad Sets. Please create a new one.</span>
+                      <br />
+                    </div>
+                  )
                 }
               <br />
             </div>
@@ -294,6 +306,7 @@ class AdSet extends React.Component {
           currentStep='adSet'
           handleNext={this.handleNext}
           handleBack={this.handleBack}
+          loading={this.state.loading}
           />
       </div>
     )
