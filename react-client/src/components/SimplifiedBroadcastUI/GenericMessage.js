@@ -6,7 +6,7 @@ import { bindActionCreators } from 'redux'
 import { loadTags } from '../../redux/actions/tags.actions'
 import { fetchAllSequence } from '../../redux/actions/sequence.action'
 import { loadCustomFields } from '../../redux/actions/customFields.actions'
-
+import {validateYoutubeURL} from '../../utility/utils'
 
 // import Image from './PreviewComponents/Image'
 import Audio from './PreviewComponents/Audio'
@@ -556,7 +556,16 @@ class GenericMessage extends React.Component {
         toggleGSModal={this.toggleGSModal}
         closeGSModal={this.closeGSModal}
         addComponent={this.addComponent} />),
-      'video': (<YoutubeVideoModal
+      'video': (<LinkCarousel
+        elementLimit={1}
+        componentName={'YouTube video'}
+        header={'YouTube video'}
+        defaultErrorMsg={'Please enter a valid YouTube link'}
+        invalidMsg={'Invalid YouTube link'}
+        validMsg={'YouTube link is valid'}
+        retrievingMsg={'Retrieving YouTube video metadata'}
+        buttonTitle={'Watch on YouTube'}
+        validateUrl={(url) => validateYoutubeURL(url)}
         buttons={[]}
         noButtons={this.props.noButtons}
         module = {this.props.module}
@@ -565,7 +574,6 @@ class GenericMessage extends React.Component {
         buttonActions={this.props.buttonActions}
         pages={this.props.pages}
         replyWithMessage={this.props.replyWithMessage}
-        pageId={this.props.pageId}
         showCloseModalAlertDialog={this.showCloseModalAlertDialog}
         closeModal={this.closeAddComponentModal}
         toggleGSModal={this.toggleGSModal}
@@ -646,6 +654,15 @@ class GenericMessage extends React.Component {
       'card': {
         component: (<Card
           id={componentId}
+          elementLimit={broadcast.elementLimit}
+          componentName={broadcast.componentName}
+          header={broadcast.header}
+          defaultErrorMsg={broadcast.defaultErrorMsg}
+          invalidMsg={broadcast.invalidMsg}
+          validMsg={broadcast.validMsg}
+          retrievingMsg={broadcast.retrievingMsg}
+          buttonTitle={broadcast.buttonTitle}
+          validateUrl={broadcast.validateUrl}
           links={broadcast.links}
           fileurl={broadcast.fileurl}
           image_url={broadcast.image_url}
@@ -672,6 +689,16 @@ class GenericMessage extends React.Component {
         handler: () => {
           this.handleCard({
             id: componentId,
+            componentName: broadcast.componentName,
+            youtubeVideo: broadcast.youtubeVideo,
+            elementLimit: broadcast.elementLimit,
+            header: broadcast.header,
+            defaultErrorMsg: broadcast.defaultErrorMsg,
+            invalidMsg: broadcast.invalidMsg,
+            validMsg: broadcast.validMsg, 
+            retrievingMsg: broadcast.retrievingMsg,
+            buttonTitle: broadcast.buttonTitle,
+            validateUrl: broadcast.validateUrl,
             links: broadcast.links,
             componentType: 'card',
             componentName:  broadcast.componentName ? broadcast.componentName: 'card',
@@ -892,14 +919,17 @@ class GenericMessage extends React.Component {
               <div className='col-12'>
                 <div className='row'>
                   <div className='col-lg-6 col-md-6 col-sm-12 col-xs-12'>
-                    <div style={{marginBottom: '30px', border: '1px solid #ccc', borderRadius: '0px', zIndex: 1}} className='ui-block'>
-                      <div style={{padding: '5px'}}>
-                        {!this.props.titleEditable
-                              ? <h3> {this.state.convoTitle} </h3>
-                              : <h3>{this.state.convoTitle} <i onClick={this.showDialog} id='convoTitle' style={{cursor: 'pointer'}} className='fa fa-pencil-square-o' aria-hidden='true' /></h3>
-                            }
+                    {this.props.module && this.props.module === 'sponsorMessaging'
+                      ? <div></div>
+                      :<div style={{marginBottom: '30px', border: '1px solid #ccc', borderRadius: '0px', zIndex: 1}} className='ui-block'>
+                        <div style={{padding: '5px'}}>
+                          {!this.props.titleEditable
+                                ? <h3> {this.state.convoTitle} </h3>
+                                : <h3>{this.state.convoTitle} <i onClick={this.showDialog} id='convoTitle' style={{cursor: 'pointer'}} className='fa fa-pencil-square-o' aria-hidden='true' /></h3>
+                              }
+                        </div>
                       </div>
-                    </div>
+                    }
                     <GenericMessageComponents hiddenComponents={this.state.hiddenComponents} addComponent={this.showAddComponentModal} addedComponents={this.state.list.length} module= {this.props.module}/>
                   </div>
                   <div className='col-lg-6 col-md-6 col-sm-12 col-xs-12'>

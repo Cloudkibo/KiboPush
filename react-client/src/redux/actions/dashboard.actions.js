@@ -19,6 +19,12 @@ export function updateAutopostingSummary (data) {
     data
   }
 }
+export function updateNewsSummary (data) {
+  return {
+    type: ActionTypes.UPDATE_NEWS_SUMMARY,
+    data
+  }
+}
 export function updateIntegrationsSummary (data) {
   return {
     type: ActionTypes.UPDATE_INTEGRATIONS_SUMMARY,
@@ -131,6 +137,16 @@ export function loadAutopostingSummary (data) {
       .then(res => {
         console.log('response from loadAutopostingSummary', res)
         dispatch(updateAutopostingSummary(res.payload))
+      })
+  }
+}
+export function loadNewsIntegrationsSummary (data) {
+  console.log('data for loadNewsIntegrationsSummary', data)
+  return (dispatch) => {
+    callApi(`dashboard/fetchNewsIntegrations`, 'post', data)
+      .then(res => {
+        console.log('response from loadNewsIntegrationsSummary', res)
+        dispatch(updateNewsSummary(res.payload))
       })
   }
 }

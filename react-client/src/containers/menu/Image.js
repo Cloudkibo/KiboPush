@@ -5,7 +5,6 @@
 
 import React from 'react'
 import { connect } from 'react-redux'
-import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
 import {
   addBroadcast,
   clearAlertMessage,
@@ -91,7 +90,7 @@ class Image extends React.Component {
         <div className='ui-block hoverborder' style={{minHeight: 100, maxWidth: 400, padding: 25}}>
           {
             this.state.loading
-            ? {<div className='align-center'><center><RingLoader color='#FF5E3A' /></center></div>
+            ? <div className='align-center'><center><RingLoader color='#FF5E3A' /></center></div>
             : <div>
               <input
                 ref='file'
@@ -127,8 +126,7 @@ function mapStateToProps (state) {
   return {
     broadcasts: (state.broadcastsInfo.broadcasts),
     successMessage: (state.broadcastsInfo.successMessage),
-    errorMessage: (state.broadcastsInfo.errorMessage),
-    subscribers: (state.subscribersInfo.subscribers)
+    errorMessage: (state.broadcastsInfo.errorMessage)
   }
 }
 
@@ -138,7 +136,6 @@ function mapDispatchToProps (dispatch) {
     addBroadcast: addBroadcast,
     sendbroadcast: sendbroadcast,
     clearAlertMessage: clearAlertMessage,
-    loadSubscribersList: loadSubscribersList,
     uploadRequest: uploadRequest,
     uploadImage: uploadImage
   }, dispatch)
