@@ -11,7 +11,7 @@ import { Link } from 'react-router-dom'
 import {getInsights} from '../../redux/actions/sponsoredMessaging.actions'
 
 
-class adInsights extends React.Component {
+class AdInsights extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
@@ -154,4 +154,4 @@ function mapDispatchToProps (dispatch) {
     getInsights,
   }, dispatch)
 }
-export default connect(mapStateToProps, mapDispatchToProps)(adInsights)
+export default connect(mapStateToProps, mapDispatchToProps)(AdInsights)

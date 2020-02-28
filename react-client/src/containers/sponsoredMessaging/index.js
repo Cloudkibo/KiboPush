@@ -11,7 +11,7 @@ import {deleteSponsoredMessage, createSponsoredMessage, fetchSponsoredMessages, 
 import AlertContainer from 'react-alert'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
 
-class sponsoredMessaging extends React.Component {
+class SponsoredMessaging extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
@@ -469,4 +469,4 @@ function mapDispatchToProps (dispatch) {
     showUpdatedData: showUpdatedData
   }, dispatch)
 }
-export default connect(mapStateToProps, mapDispatchToProps)(sponsoredMessaging)
+export default connect(mapStateToProps, mapDispatchToProps)(SponsoredMessaging)

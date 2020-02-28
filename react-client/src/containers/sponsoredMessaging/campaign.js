@@ -9,7 +9,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import Footer from './footer'
 
-class campaign extends React.Component {
+class Campaign extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
@@ -165,4 +165,4 @@ function mapDispatchToProps (dispatch) {
 
   }, dispatch)
 }
-export default connect(mapStateToProps, mapDispatchToProps)(campaign)
+export default connect(mapStateToProps, mapDispatchToProps)(Campaign)

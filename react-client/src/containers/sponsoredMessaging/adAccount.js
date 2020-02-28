@@ -9,7 +9,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import Footer from './footer'
 
-class adAccount extends React.Component {
+class AdAccount extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
@@ -94,4 +94,4 @@ function mapDispatchToProps (dispatch) {
     updateSponsoredMessage
   }, dispatch)
 }
-export default connect(mapStateToProps, mapDispatchToProps)(adAccount)
+export default connect(mapStateToProps, mapDispatchToProps)(AdAccount)

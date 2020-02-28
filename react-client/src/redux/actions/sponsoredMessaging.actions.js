@@ -54,16 +54,6 @@ export function createdSponsoredData (data) {
 export function fetchSponsoredMessages (data) {
     console.log('data for fetchSponsoredMessages', data)
     return (dispatch) => {
-      // let payload = {
-      //     sponsoredMessages: [
-      //       {_id: '5e4a431c45c40d0b2bb23d06',
-      //        pageId: '5b2899b3c0e3227a031bcc5b',
-      //        adName: 'New Ad',
-      //        status: 'draft'
-      //     }],
-      //     count: 10
-      // }
-      // dispatch(showAllSponsoredMessages(payload))
         callApi('sponsoredmessaging/fetchSponsoredMessages', 'post', data).then(res => {
             console.log('response from sponsoredmessaging', res)
             if(res.status === 'success' && res.payload){
@@ -99,15 +89,6 @@ export function updateSponsoredMessage(sponsoredMessage, key, value, edit) {
     for (let i = 0; i < fields.length; i++ ) {
       temp[fields[i]] = edit[fields[i]]
     }
-    // temp.campaignType = edit.campaignType ? edit.campaignType : temp.campaignType
-    // temp.campaignName = edit.campaignName ? edit.campaignName : temp.campaignName
-    // temp.campaignId = edit.campaignId ? edit.campaignId : temp.campaignId
-    // temp.adSetType = edit.adSetType ? edit.adSetType : temp.adSetType
-    // temp.adSetName = edit.adSetName ? edit.adSetName : temp.adSetName
-    // temp.budgetType = edit.budgetType ? edit.budgetType : temp.budgetType
-    // temp.budgetAmount = edit.budgetAmount ? edit.budgetAmount : temp.budgetAmount
-    // temp.bidAmount = edit.bidAmount ? edit.bidAmount : temp.bidAmount
-    // temp.adSetId = edit.adSetId ? edit.adSetId : temp.adSetId
     if (edit.targeting) {
       temp.targeting = {
         gender: edit.targeting.gender,
@@ -137,12 +118,6 @@ export function updateSponsoredMessage(sponsoredMessage, key, value, edit) {
 export function createSponsoredMessage(data, cb) {
   console.log('data for createSponsoredMessage', data)
     return (dispatch) => {
-      // let payload = {
-      //   _id: '5e4a431c45c40d0b2bb23d06',
-      //    pageId: '5b2899b3c0e3227a031bcc5b',
-      //    adName: 'New Ad'
-      // }
-      // dispatch(createdSponsoredData(payload))
         callApi('sponsoredmessaging', 'post', data)
         .then(res => {
           console.log('response from createSponsoredMessage', res)
@@ -208,12 +183,6 @@ export function getInsights (adId) {
 }
 export function fetchAdAccounts () {
   return (dispatch) => {
-    // let data = [
-    //   {id: 1, name: 'acAccount1'},
-    //   {id: 2, name: 'adAccount2'},
-    //   {id: 3, name: 'adAccount3'}
-    // ]
-    // dispatch(showAdAccounts(data))
     callApi(`sponsoredmessaging/adAccounts`, 'get')
       .then(res => {
         console.log('response from fetchAdAccounts', res)
@@ -226,12 +195,6 @@ export function fetchAdAccounts () {
 export function fetchCampaigns (id) {
   console.log('data for fetchCampaigns', id)
   return (dispatch) => {
-    // let data = [
-    //   {id: 1, name: 'campaign1'},
-    //   {id: 2, name: 'campaign2'},
-    //   {id: 3, name: 'campaign3'}
-    // ]
-    // dispatch(showCampaigns(data))
     callApi(`sponsoredmessaging/campaigns/${id}`, 'get')
       .then(res => {
         console.log('response from fetchCampaigns', res)
@@ -244,12 +207,6 @@ export function fetchCampaigns (id) {
 export function fetchAdSets (id) {
   console.log('data for fetchCampaigns', id)
   return (dispatch) => {
-    // let data = [
-    //   {id: 1, name: 'adSet1'},
-    //   {id: 2, name: 'adSet2'},
-    //   {id: 3, name: 'adSet3'}
-    // ]
-    // dispatch(showAdSets(data))
     callApi(`sponsoredmessaging/adSets/${id}`, 'get')
       .then(res => {
         console.log('response from fetchAdSets', res)
@@ -267,13 +224,11 @@ export function saveCampaign (data, cb) {
         console.log('response for saveCampaign', res)
         cb(res)
       })
-    // cb({status: 'success', payload: '6166516933356'})
    }
 }
 export function saveAdAccount(id, data, cb) {
   console.log('data for saveAdAccount', data)
   return (dispatch) => {
-    // cb({status: 'success'})
     callApi(`sponsoredmessaging/update/${id}`, 'post', data)
       .then(res => {
         console.log('response from saveAdAccount', res)
@@ -289,6 +244,5 @@ export function saveAdSet(data, cb) {
         console.log('response from saveAdSet', res)
         cb (res)
     })
-    // cb ({status: 'success', payload: '3'})
   }
 }

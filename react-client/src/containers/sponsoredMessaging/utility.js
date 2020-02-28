@@ -23,7 +23,7 @@ export function checkValidations (sponsoredMessage) {
     !sponsoredMessage.targeting ||
     sponsoredMessage.targeting.gender === '' || !sponsoredMessage.targeting.gender ||
     sponsoredMessage.targeting.minAge === '' || !sponsoredMessage.targeting.minAge ||
-    sponsoredMessage.targeting.maxAge === '' || !sponsoredMessage.targeting.maxAge  
+    sponsoredMessage.targeting.maxAge === '' || !sponsoredMessage.targeting.maxAge
     )
   ) {
     return false
