@@ -65,7 +65,7 @@
     "react-router-dom": "^5.1.2",
     "react-router-redux": "^4.0.4",
     "react-scroll": "^1.7.14",
-    "react-select": "^1.2.0",
+    "react-select": "^3.0.8",
     "react-select-picker": "0.0.7",
     "react-simple-popover": "^0.2.4",
     "react-slick": "^0.15.4",

@@ -369,7 +369,7 @@ class LiveChat extends React.Component {
                       teams={this.props.teams ? this.props.teams : []}
                       tags={this.props.tags ? this.props.tags : []}
                       agents={this.props.members ? this.getAgents(this.props.members) : []}
-                      subscriberTags={this.props.subscriberTags ? this.props.subscriberTags : []}
+                      subscriberTags={this.props.subscriberTags}
                       activeSession={this.state.activeSession}
                       user={this.props.user}
                       profilePicError={this.profilePicError}

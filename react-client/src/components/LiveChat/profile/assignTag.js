@@ -1,29 +1,35 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import ProfileAction from './profileAction'
+import Creatable from 'react-select/creatable';
 
 class AssignTag extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
       selectedTag: '',
-      subscriberTags: this.props.subscriberTags
+      subscriberTags: props.subscriberTags.map(tag => (
+            {
+                label: tag.tag,
+                value: tag._id
+            }
+        ))
     }
     this.onTagChange = this.onTagChange.bind(this)
     this.assignTag = this.assignTag.bind(this)
     this.handleCreateTag = this.handleCreateTag.bind(this)
     this.onCreateTag = this.onCreateTag.bind(this)
     this.removeTags = this.removeTags.bind(this)
+    this.onSelectChange = this.onSelectChange.bind(this)
   }
 
-  removeTags(tagToRemove) {
+  removeTags() {
     let payload = {
         subscribers: [this.props.activeSession._id],
-        tagId: tagToRemove._id
+        tagId: this.state.selectedTag.value
     }
     this.props.unassignTags(payload, () => {
         let subscriberTags = this.state.subscriberTags
-        let index = subscriberTags.findIndex(tag => tag._id === tagToRemove._id)
+        let index = subscriberTags.findIndex(tag => tag.value === this.state.selectedTag.value)
         subscriberTags.splice(index, 1)
         this.setState({subscriberTags})
     }, this.props.alertMsg)
@@ -40,7 +46,7 @@ class AssignTag extends React.Component {
 
   onCreateTag (tag) {
     console.log('onCreateTag', tag)
-    this.props.createTag(tag.value, this.handleCreateTag)
+    this.props.createTag(tag, this.handleCreateTag)
   }
 
   handleCreateTag (res) {
@@ -51,6 +57,8 @@ class AssignTag extends React.Component {
                 value: res.payload._id,
                 label: res.payload.tag
             }
+        }, () => {
+            this.assignTag()
         })
     } else {
         this.props.alertMsg.error(`Tag couldn't be created`)
@@ -59,7 +67,7 @@ class AssignTag extends React.Component {
 
 
   assignTag() {
-    let index = this.props.subscriberTags.findIndex(tag => tag._id === this.state.selectedTag.value)
+    let index = this.state.subscriberTags.findIndex(tag => tag.value === this.state.selectedTag.value)
     if (index === -1) {
         let payload = {
             subscribers: [this.props.activeSession._id],
@@ -68,8 +76,8 @@ class AssignTag extends React.Component {
         this.props.assignTags(payload, () => {
             let subscriberTags = this.state.subscriberTags
             subscriberTags.push({
-                _id: this.state.selectedTag.value,
-                tag: this.state.selectedTag.label
+                value: this.state.selectedTag.value,
+                label: this.state.selectedTag.label
             })
             this.setState({subscriberTags})
         }, this.props.alertMsg)
@@ -78,11 +86,43 @@ class AssignTag extends React.Component {
     }
   }
 
+  onSelectChange (selected) {
+    console.log('assignTag onSelectChange', selected)
+    console.log('assignTag onSelectChange previousSelected', this.state.subscriberTags)
+    if (selected && selected.length > 0 && selected.length > this.state.subscriberTags.length) {
+        this.setState({selectedTag: {
+            value: selected[selected.length - 1].value,
+            label: selected[selected.length - 1].label
+        }}, () => {
+            this.assignTag()
+        })
+    } else if (this.state.subscriberTags.length > 0) {
+        this.setState({selectedTag: {
+            value: this.state.subscriberTags[this.state.subscriberTags.length - 1].value,
+            label: this.state.subscriberTags[this.state.subscriberTags.length - 1].label
+        }}, () => {
+            this.removeTags()
+        })
+    }
+  }
+
 
   render () {
     return (
         <div>
-            <ProfileAction 
+            <div style={{marginBottom: '20px', marginTop: '20px'}}>
+                <h6>Tags:</h6>
+                <Creatable
+                    isMulti
+                    isClearable={false}
+                    onCreateOption={this.onCreateTag}
+                    options={this.props.tags}
+                    onChange={this.onSelectChange}
+                    value={[...this.state.subscriberTags]}
+                    placeholder={'Assign tag(s)'}
+                />
+            </div>
+            {/* <ProfileAction 
                 creatable
                 onCreateOption={this.onCreateTag}
                 title='Assign Tags'
@@ -108,7 +148,7 @@ class AssignTag extends React.Component {
                     ))
                   }
                 </div>
-              }
+              } */}
         </div>
     )
   }

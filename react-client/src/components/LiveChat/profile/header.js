@@ -9,41 +9,10 @@ class ProfileHeader extends React.Component {
     super(props, context)
     this.state = {
     }
-    this.unassignTeam = this.unassignTeam.bind(this)
-    this.unassignAgent = this.unassignAgent.bind(this)
     this.unSubscribe = this.unSubscribe.bind(this)
     this.handleUnsubscribe = this.handleUnsubscribe.bind(this)
   }
 
-  unassignAgent() {
-    let data = {
-      agentId: this.props.activeSession.assigned_to.id,
-      agentName: this.props.activeSession.assigned_to.name,
-      subscriberId: this.props.activeSession._id,
-      isAssigned: false
-    }
-    this.props.assignToAgent(data)
-    if (this.props.activeSession.assigned_to.id !== this.props.user._id) {
-      let notificationsData = {
-        message: `Session of subscriber ${this.props.activeSession.firstName + ' ' + this.props.activeSession.lastName} has been unassigned from you.`,
-        category: { type: 'chat_session', id: this.props.activeSession._id },
-        agentIds: [this.props.activeSession.assigned_to.id],
-        companyId: this.props.activeSession.companyId
-      }
-      this.props.sendNotifications(notificationsData)
-    }
-  }
-
-  unassignTeam() {
-    let data = {
-      teamId: this.props.activeSession.assigned_to.id,
-      teamName: this.props.activeSession.assigned_to.name,
-      subscriberId: this.props.activeSession._id,
-      isAssigned: false
-    }
-    this.props.fetchTeamAgents(this.props.activeSession.assigned_to.id)
-    this.props.assignToTeam(data)
-  }
 
   unSubscribe() {
     this.props.unSubscribe({ subscriber_id: this.props.activeSession._id, page_id: this.props.activeSession.pageId._id }, this.handleUnsubscribe)
@@ -63,7 +32,7 @@ class ProfileHeader extends React.Component {
     return (
       <div>
         <div className='m-card-profile__pic'>
-          <div className='m-card-profile__pic-wrapper'>
+          <div className='m-card-profile__pic-wrapper' style={{margin: '10px auto'}}>
             <img onError={(e) => this.props.profilePicError(e, this.props.activeSession)} style={{ width: '80px', height: '80px' }} src={this.props.activeSession.profilePic} alt='' />
           </div>
         </div>
@@ -78,7 +47,7 @@ class ProfileHeader extends React.Component {
             </span>
           }
           <br />
-          <span className='m-card-profile__email m-link'>
+          <span style={{pointerEvents: 'none'}} className='m-card-profile__email m-link'>
             {
               (this.props.activeSession.gender && this.props.activeSession.locale) &&
                 this.props.activeSession.gender + ', ' + this.props.activeSession.locale
@@ -97,37 +66,6 @@ class ProfileHeader extends React.Component {
             </a>
           }
           <br />
-          <div>
-            <span className='m--font-bolder'>Status:</span>
-            <span> {this.props.activeSession.is_assigned ? 'Assigned' : 'Not assigned'}</span>
-          </div>
-
-          {
-            this.props.activeSession.is_assigned &&
-            <div style={{ marginBottom: '20px' }}>
-              <div>
-                <span className='m--font-bolder'>{this.props.activeSession.assigned_to.type === 'team' ? 'Team:' : 'Agent:'}</span>
-                <span> {this.props.activeSession.assigned_to.name}</span>
-              </div>
-            </div>
-          }
-
-          {
-            this.props.activeSession.is_assigned &&
-            (
-              this.props.activeSession.assigned_to.type === 'team'
-                ? <div>
-                  <button style={{ marginTop: '10px' }} className='btn btn-primary' onClick={this.unassignTeam}>Unassign Team</button>
-                  <br />
-                  <br />
-                </div>
-                : <div>
-                  <button style={{ marginTop: '10px' }} className='btn btn-primary' onClick={this.unassignAgent}>Unassign Agent</button>
-                  <br />
-                  <br />
-                </div>
-            )
-          }
         </div>
 
         <CONFIRMATIONMODAL
