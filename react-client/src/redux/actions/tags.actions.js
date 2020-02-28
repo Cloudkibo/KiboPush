@@ -35,10 +35,6 @@ export function assignTags (data, handleResponse, msg) {
       if (res.status === 'success') {
         console.log('tag assigned successfully', res)
         msg.success(`${res.description}`)
-        // for (let i = 0; i < data.subscribers.length; i++) {
-        //   console.log('assignTags getSubscriberTags', data.subscribers)
-        //   dispatch(getSubscriberTags(data.subscribers[i]))
-        // }
       } else {
         if (res.status === 'failed' && res.description) {
           msg.error(`Unable to assign tags. ${res.description}`)
@@ -59,10 +55,6 @@ export function unassignTags (data, handleResponse, msg) {
     .then(res => {
       if (res.status === 'success') {
         msg.success(`${res.description}`)
-        // for (let i = 0; i < data.subscribers.length; i++) {
-        //   console.log('unassignTags getSubscriberTags', data.subscribers)
-        //   dispatch(getSubscriberTags(data.subscribers[i]))
-        // }
       } else {
         if (res.status === 'failed' && res.description) {
           msg.error(`Unable to unassign tags. ${res.description}`)
