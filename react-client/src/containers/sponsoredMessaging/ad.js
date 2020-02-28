@@ -5,7 +5,7 @@ import { bindActionCreators } from 'redux'
 import Footer from './footer'
 import GenericMessage from '../../components/SimplifiedBroadcastUI/GenericMessage'
 
-class ad extends React.Component {
+class Ad extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
@@ -26,9 +26,6 @@ class ad extends React.Component {
   handleChange (broadcast) {
       this.setState(broadcast)
       this.props.updateSponsoredMessage(this.props.sponsoredMessage, 'payload', broadcast)
-  }
-
-  UNSAFE_componentWillReceiveProps (nextProps) {
   }
 
   handleBack () {
@@ -70,4 +67,4 @@ function mapDispatchToProps (dispatch) {
     saveDraft
   }, dispatch)
 }
-export default connect(mapStateToProps, mapDispatchToProps)(ad)
+export default connect(mapStateToProps, mapDispatchToProps)(Ad)
