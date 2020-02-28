@@ -22,10 +22,10 @@ class Footer extends React.Component {
           </div>
           <div className='col-lg-6 m--align-right'>
             {this.props.currentStep !== 'ad' &&
-              <button className='btn btn-success m-btn m-btn--custom m-btn--icon' data-wizard-action='next' onClick={this.props.handleNext}>
+              <button className={this.props.loading ? 'btn btn-success m-btn m-btn--custom m-loader m-loader--light m-loader--right' : 'btn btn-success m-btn m-btn--custom m-btn--icon'} data-wizard-action='next' onClick={this.props.handleNext}>
                 <span>
                   <span>Next</span>&nbsp;&nbsp;
-                  <i className='la la-arrow-right' />
+                  {!this.props.loading && <i className='la la-arrow-right' />}
                 </span>
               </button>
             }

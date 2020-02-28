@@ -24,7 +24,8 @@ class CreateSponsoredMessage extends React.Component {
       isEdit: false,
       editSponsoredMessage: this.props.location.state ? this.props.location.state.sponsoredMessage : {},
       sendDisabled: false,
-      currentStep: 'adAccount'
+      currentStep: 'adAccount',
+      loading: false
     }
     if(this.props.location.state && this.props.location.state.module === 'edit'  && this.props.location.state.sponsoredMessage) {
       this.props.updateSponsoredMessage(this.props.location.state.sponsoredMessage)
@@ -34,12 +35,24 @@ class CreateSponsoredMessage extends React.Component {
     this.changeCurrentStep = this.changeCurrentStep.bind(this)
     this.onSave = this.onSave.bind(this)
     this.handleResponse = this.handleResponse.bind(this)
+    this.handleSaveResponse = this.handleSaveResponse.bind(this)
   }
 
-  handleResponse () {
+  handleSaveResponse () {
     this.props.history.push({
       pathname: '/sponsoredMessaging'
     })
+  }
+
+  handleResponse (res) {
+    this.setState({loading: false})
+    if (res.status === 'success') {
+      this.props.history.push({
+        pathname: '/sponsoredMessaging'
+      })
+    } else {
+      this.msg.error(res.payload)
+    }
   }
 
   changeCurrentStep (value) {
@@ -73,16 +86,18 @@ class CreateSponsoredMessage extends React.Component {
   }
   onSend () {
     if (checkValidations(this.props.sponsoredMessage)) {
+      this.setState({loading: true})
       let pageId = this.props.pages && this.props.pages.filter(p => p._id === this.props.sponsoredMessage.pageId)[0].pageId
-      this.props.sponsoredMessage.pageId = pageId
-      this.props.send(this.props.sponsoredMessage, this.msg, this.handleResponse)
+      let sponsoredMessage = this.props.sponsoredMessage
+      sponsoredMessage.pageId = pageId
+      this.props.send(sponsoredMessage, this.handleResponse)
     } else {
       this.msg.error('Please complete all the steps')
     }
   }
   onSave () {
     if (checkValidations(this.props.sponsoredMessage)) {
-      this.props.saveDraft(this.props.sponsoredMessage._id, this.props.sponsoredMessage, this.msg, this.handleResponse)
+      this.props.saveDraft(this.props.sponsoredMessage._id, this.props.sponsoredMessage, this.msg, this.handleSaveResponse)
     } else {
       this.msg.error('Please complete all the steps')
     }
@@ -107,6 +122,7 @@ class CreateSponsoredMessage extends React.Component {
                   isEdit={this.state.isEdit}
                   sendDisabled = {this.state.sendDisabled}
                   onSave = {this.onSave}
+                  loading={this.state.loading}
                 />
                 <div className='m-portlet__body'>
                   <StepsBar currentStep={this.state.currentStep} />
