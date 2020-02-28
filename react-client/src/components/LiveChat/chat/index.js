@@ -40,7 +40,17 @@ class Chat extends React.Component {
           handlePendingResponse={this.props.handlePendingResponse}
         />
         <BODY />
-        <FOOTER />
+        <FOOTER
+          performAction={this.props.performAction}
+          activeSession={this.props.activeSession}
+          user={this.props.user}
+          sendChatMessage={this.props.sendChatMessage}
+          alertMsg={this.props.alertMsg}
+          updateState={this.props.updateState}
+          userChat={this.props.userChat}
+          uploadAttachment={this.props.uploadAttachment}
+          sendAttachment={this.props.sendAttachment}
+        />
       </div>
     )
   }
@@ -53,7 +63,12 @@ Chat.propTypes = {
   'updateState': PropTypes.func.isRequired,
   'getChatPreview': PropTypes.func.isRequired,
   'handlePendingResponse': PropTypes.func.isRequired,
-  'showSearch': PropTypes.func.isRequired
+  'showSearch': PropTypes.func.isRequired,
+  'performAction': PropTypes.func.isRequired,
+  'user': PropTypes.object.isRequired,
+  'sendChatMessage': PropTypes.func.isRequired,
+  'uploadAttachment': PropTypes.func.isRequired,
+  'sendAttachment': PropTypes.func.isRequired
 }
 
 export default Chat

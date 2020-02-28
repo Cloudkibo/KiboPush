@@ -16,7 +16,10 @@ import {
   assignToTeam,
   assignToAgent,
   sendNotifications,
-  updatePendingResponse
+  updatePendingResponse,
+  sendChatMessage,
+  uploadAttachment,
+  sendAttachment
 } from '../../redux/actions/livechat.actions'
 import { updatePicture } from '../../redux/actions/subscribers.actions'
 import { loadTeamsList } from '../../redux/actions/teams.actions'
@@ -149,7 +152,7 @@ class LiveChat extends React.Component {
       // agent
       chatPreview = (!repliedBy || (repliedBy.id === this.props.user._id)) ? `You` : `${repliedBy.name}`
       if (message.componentType === 'text') {
-        chatPreview = `${chatPreview}: ${message.text.length > 15 ? message.text.substring(0, 15) + '...' : message.text}`
+        chatPreview = `${chatPreview}: ${message.text.length > 20 ? message.text.substring(0, 20) + '...' : message.text}`
       } else {
         chatPreview = `${chatPreview} shared ${message.componentType}`
       }
@@ -361,6 +364,12 @@ class LiveChat extends React.Component {
                     getChatPreview={this.getChatPreview}
                     handlePendingResponse={this.handlePendingResponse}
                     showSearch={this.showSearch}
+                    performAction={this.performAction}
+                    alertMsg={this.alertMsg}
+                    user={this.props.user}
+                    sendChatMessage={this.props.sendChatMessage}
+                    uploadAttachment={this.props.uploadAttachment}
+                    sendAttachment={this.props.sendAttachment}
                   />
                 }
                 {
@@ -445,7 +454,10 @@ function mapDispatchToProps(dispatch) {
     assignTags,
     createTag,
     unassignTags,
-    updatePendingResponse
+    updatePendingResponse,
+    sendChatMessage,
+    uploadAttachment,
+    sendAttachment
   }, dispatch)
 }
 
