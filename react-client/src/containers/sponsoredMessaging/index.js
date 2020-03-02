@@ -361,6 +361,31 @@ class SponsoredMessaging extends React.Component {
                         </select>
                       </div>
                     </div>
+                    {
+                      this.state.refreshRequired
+                      ? <div class="m-alert m-alert--icon alert alert-danger" role="alert">
+                        <div class="m-alert__text">
+                          {this.state.refreshMessage}
+											  </div>
+                        <div class="m-alert__actions" style="width: 220px;">
+                          <button type="button" 
+                            class="btn btn-outline-light btn-sm m-btn m-btn--hover-primary" 
+                            data-dismiss="alert1" 
+                            aria-label="Close"
+                            onClick={() => {
+                              this.props.fetchSponsoredMessages({last_id: 'none',
+                              number_of_records: 10,
+                              first_page: 'first',
+                              search_value: '',
+                              status_value: '',
+                              page_value: ''})
+                            }}>
+													  Refresh
+												  </button>
+											  </div>
+                      </div>
+                      : <div></div>
+                    }
                   <div className='form-row'>
                     { this.state.sponsoredMessages && this.state.sponsoredMessages.length > 0
                   ? <div className='col-md-12 m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
@@ -455,6 +480,8 @@ function mapStateToProps (state) {
     console.log(state)
   return {
     sponsoredMessages: (state.sponsoredMessagingInfo.sponsoredMessages),
+    refreshRequired: (state.sponsoredMessagingInfo.refreshRequired),
+    refreshMessage: (state.sponsoredMessagingInfo.refreshMessage),
     pages: (state.pagesInfo.pages),
     count: (state.sponsoredMessagingInfo.count)
   }

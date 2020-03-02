@@ -15,6 +15,7 @@ import { loadSurveysListNew } from './../redux/actions/surveys.actions'
 import { loadTags } from './../redux/actions/tags.actions'
 import { loadAllSubscribersListNew, updateCustomFieldForSubscriber } from './../redux/actions/subscribers.actions'
 import { fetchNotifications } from './../redux/actions/notifications.actions'
+import { addToSponsoredMessages, updateSponsoredMessagesListItemStatus } from './../redux/actions/sponsoredMessaging.actions'
 const whatsAppActions = require('./../redux/actions/whatsAppChat.actions')
 
 const socket = io('')
@@ -127,6 +128,12 @@ socket.on('message', (data) => {
   } else if (data.action === 'set_custom_field_value') {
     console.log('socket.io custom field set', data)
     store.dispatch(updateCustomFieldForSubscriber(data.payload.setCustomField))
+  } else if (data.action === 'sponsoredMessaging_newCreated') {
+    console.log('created new sponsored by admin', data)
+    store.dispatch(addToSponsoredMessages(data.payload))
+  } else if (data.action === 'sponsoredMessaging_statusChanged') {
+    console.log('update status of new sponsored message')
+    store.dispatch(updateSponsoredMessagesListItemStatus(data.payload))
   }
 
   if (callbacks[data.action]) {
