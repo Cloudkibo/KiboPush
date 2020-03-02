@@ -28,6 +28,11 @@ import {
   assignTags,
   loadTags
 } from '../../redux/actions/tags.actions'
+import { 
+  setCustomFieldValue, 
+  loadCustomFields, 
+  getCustomFieldValue 
+} from '../../redux/actions/customFields.actions'
 
 // components
 import HELPWIDGET from '../../components/extras/helpWidget'
@@ -59,7 +64,9 @@ class LiveChat extends React.Component {
       activeSession: {},
       teamAgents: [],
       userChat: [],
-      showSearch: false
+      showSearch: false,
+      customFieldOptions: [],
+      showingCustomFieldPopover: false
     }
 
     this.fetchSessions = this.fetchSessions.bind(this)
@@ -79,10 +86,13 @@ class LiveChat extends React.Component {
     this.handlePendingResponse = this.handlePendingResponse.bind(this)
     this.updatePendingStatus = this.updatePendingStatus.bind(this)
     this.showSearch = this.showSearch.bind(this)
+    this.saveCustomField = this.saveCustomField.bind(this)
+    this.handleCustomFieldResponse = this.handleCustomFieldResponse.bind(this)
 
     this.fetchSessions(true, 'none', true)
     props.loadMembersList()
     props.loadTags()
+    props.loadCustomFields()
   }
 
   showSearch () {
@@ -244,10 +254,33 @@ class LiveChat extends React.Component {
     }
   }
 
+  saveCustomField (data) {
+    this.props.setCustomFieldValue(data, this.handleCustomFieldResponse)
+  }
+
+  handleCustomFieldResponse (res, body) {
+    console.log("res",res)
+    if (res.status === 'success') {
+      this.alertMsg.success('Value set successfully')
+      let customFields = this.state.customFieldOptions
+      let temp = this.props.customFields.map((cf) => cf._id)
+      let index = temp.indexOf(body.customFieldId)
+      customFields[index].value = body.value
+      this.setState({customFieldOptions: customFields})
+    } else {
+      if (res.status === 'failed') {
+        this.msg.error(`Unable to set Custom field value. ${res.description}`)
+      } else {
+        this.msg.error('Unable to set Custom Field value')
+      }
+    }
+  }
+
   changeActiveSession (session) {
     if (session._id !== this.state.activeSession._id) {
       this.setState({activeSession: session})
       this.props.getSubscriberTags(session._id, this.alertMsg)
+      this.props.getCustomFieldValue(session._id)
       if (session.is_assigned && session.assigned_to.type === 'team') {
         this.props.fetchTeamAgents(session.assigned_to.id, this.handleTeamAgents)
       }
@@ -303,12 +336,33 @@ class LiveChat extends React.Component {
       }
       this.setState({sessions: nextProps.closeSessions, sessionsCount: nextProps.closeCount})
     }
+
+
+    if (nextProps.customFields && nextProps.customFieldValues ) {
+      let fieldOptions = []
+      for (let a = 0; a < nextProps.customFields.length; a++) {
+        if (nextProps.customFieldValues.length > 0) {
+          let assignedFields = nextProps.customFieldValues.map((cv) => cv.customFieldId._id)
+          let index = assignedFields.indexOf(nextProps.customFields[a]._id)
+          if (index !== -1) {
+            fieldOptions.push({ 'default': nextProps.customFields[a].default, '_id': nextProps.customFields[a]._id, 'label': nextProps.customFields[a].name, 'type': nextProps.customFields[a].type, 'value': nextProps.customFieldValues[index].value })
+          } else {
+            fieldOptions.push({ 'default': nextProps.customFields[a].default, '_id': nextProps.customFields[a]._id, 'label': nextProps.customFields[a].name, 'type': nextProps.customFields[a].type, 'value': '' })
+          }
+        } else {
+          fieldOptions.push({ 'default': nextProps.customFields[a].default, '_id': nextProps.customFields[a]._id, 'label': nextProps.customFields[a].name, 'type': nextProps.customFields[a].type, 'value': '' })
+        }
+      }
+      this.setState({
+        customFieldOptions: fieldOptions
+      })
+    }
   }
 
   render () {
     console.log('render in live chat')
     return (
-      <div className='m-grid__item m-grid__item--fluid m-wrapper' style={{marginBottom: 0, overflow: 'hidden'}}>
+      <div id='mainLiveChat' className='m-grid__item m-grid__item--fluid m-wrapper' style={{marginBottom: 0, overflow: 'hidden'}}>
         <AlertContainer ref={a => { this.alertMsg = a }} {...alertOptions} />
         {
           this.state.loading
@@ -386,6 +440,8 @@ class LiveChat extends React.Component {
                       assignTags={this.props.assignTags}
                       unassignTags={this.props.unassignTags}
                       createTag={this.props.createTag}
+                      customFieldOptions={this.state.customFieldOptions}
+                      setCustomFieldValue={this.saveCustomField}
                     />
                 }
                 {
@@ -421,7 +477,9 @@ function mapStateToProps(state) {
     members: (state.membersInfo.members),
     teams: (state.teamsInfo.teams),
     subscriberTags: (state.tagsInfo.subscriberTags),
-    tags: (state.tagsInfo.tags)
+    tags: (state.tagsInfo.tags),
+    customFieldValues: (state.customFieldInfo.customFieldSubscriber),
+    customFields: (state.customFieldInfo.customFields)
   }
 }
 
@@ -445,7 +503,10 @@ function mapDispatchToProps(dispatch) {
     assignTags,
     createTag,
     unassignTags,
-    updatePendingResponse
+    updatePendingResponse,
+    loadCustomFields,
+    getCustomFieldValue,
+    setCustomFieldValue
   }, dispatch)
 }
 
