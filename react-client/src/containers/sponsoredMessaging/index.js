@@ -417,6 +417,28 @@ class SponsoredMessaging extends React.Component {
                             >
 													  Reconnect Facebook
 												  </a>
+                    }
+                    {
+                      this.props.refreshRequired &&
+                      <div className="m-alert m-alert--icon alert alert-danger" role="alert">
+                        <div className="m-alert__text">
+                          {this.props.refreshMessage}
+											  </div>
+                        <div className="m-alert__actions" style={{width: "220px"}}>
+                          <button type="button" 
+                            className="btn btn-outline-light btn-sm m-btn m-btn--hover-primary" 
+                            data-dismiss="alert1" 
+                            aria-label="Close"
+                            onClick={() => {
+                              this.props.fetchSponsoredMessages({last_id: 'none',
+                              number_of_records: 10,
+                              first_page: 'first',
+                              search_value: '',
+                              status_value: '',
+                              page_value: ''})
+                            }}>
+													  Refresh
+												  </button>
 											  </div>
                       </div>
                     }
@@ -523,6 +545,8 @@ function mapStateToProps (state) {
     console.log(state)
   return {
     sponsoredMessages: (state.sponsoredMessagingInfo.sponsoredMessages),
+    refreshRequired: (state.sponsoredMessagingInfo.refreshRequired),
+    refreshMessage: (state.sponsoredMessagingInfo.refreshMessage),
     pages: (state.pagesInfo.pages),
     reconnectFbRequired: (state.sponsoredMessagingInfo.reconnectFbRequired),
     count: (state.sponsoredMessagingInfo.count)
