@@ -24,7 +24,10 @@ class CreateSponsoredMessage extends React.Component {
       isEdit: false,
       editSponsoredMessage: this.props.location.state ? this.props.location.state.sponsoredMessage : {},
       sendDisabled: false,
-      currentStep: 'adAccount',
+      currentStep: props.sponsoredMessage.adSetId && props.sponsoredMessage.adSetId !== '' ? 'ad'
+      : props.sponsoredMessage.campaignId && props.sponsoredMessage.campaignId !== '' ? 'adSet'
+      : props.sponsoredMessage.adAccountId && props.sponsoredMessage.adAccountId !== '' ? 'campaign'
+      : 'adAccount',
       loading: false
     }
     if(this.props.location.state && this.props.location.state.module === 'edit'  && this.props.location.state.sponsoredMessage) {
@@ -36,6 +39,20 @@ class CreateSponsoredMessage extends React.Component {
     this.onSave = this.onSave.bind(this)
     this.handleResponse = this.handleResponse.bind(this)
     this.handleSaveResponse = this.handleSaveResponse.bind(this)
+  }
+
+  UNSAFE_componentWillReceiveProps (nextProps) {
+    if (nextProps.sponsoredMessage) {
+      if (nextProps.sponsoredMessage.adSetId && nextProps.sponsoredMessage.adSetId !== '') {
+        this.setState({currentStep: 'ad'})
+      } else if (nextProps.sponsoredMessage.campaignId && nextProps.sponsoredMessage.campaignId !== '') {
+        this.setState({currentStep: 'adSet'})
+      } else if (nextProps.sponsoredMessage.adAccountId && nextProps.sponsoredMessage.adAccountId !== '') {
+        this.setState({currentStep: 'campaign'})
+      } else {
+        this.setState({currentStep: 'adAccount'})
+      }
+    }
   }
 
   handleSaveResponse () {
@@ -78,10 +95,14 @@ class CreateSponsoredMessage extends React.Component {
     }
   }
   onEdit () {
+    let sponsoredMessage = JSON.parse(JSON.stringify(this.props.sponsoredMessage))
+    if (sponsoredMessage.pageFbId) {
+      delete sponsoredMessage.pageFbId
+    }
     if(this.props.location.state && this.props.location.state.module === 'edit') {
-      this.props.saveDraft(this.state.editSponsoredMessage._id, this.props.sponsoredMessage, this.msg)
+      this.props.saveDraft(this.state.editSponsoredMessage._id, sponsoredMessage, this.msg)
     } else {
-      this.props.saveDraft(this.props.sponsoredMessage._id, this.props.sponsoredMessage, this.msg)
+      this.props.saveDraft(this.props.sponsoredMessage._id, sponsoredMessage, this.msg)
     }
   }
   onSend () {
@@ -89,7 +110,7 @@ class CreateSponsoredMessage extends React.Component {
       this.setState({loading: true})
       let pageId = this.props.pages && this.props.pages.filter(p => p._id === this.props.sponsoredMessage.pageId)[0].pageId
       let sponsoredMessage = JSON.parse(JSON.stringify(this.props.sponsoredMessage))
-      sponsoredMessage.pageId = pageId
+      sponsoredMessage.pageFbId = pageId
       this.props.send(sponsoredMessage, this.handleResponse)
     } else {
       this.msg.error('Please complete all the steps')
@@ -125,7 +146,9 @@ class CreateSponsoredMessage extends React.Component {
                   loading={this.state.loading}
                 />
                 <div className='m-portlet__body'>
-                  <StepsBar currentStep={this.state.currentStep} />
+                  <StepsBar currentStep={this.state.currentStep}
+                    sponsoredMessage={this.props.sponsoredMessage}
+                    changeCurrentStep={this.changeCurrentStep} />
                   <br /><br /><br />
                   {this.state.currentStep === 'adAccount' &&
                     <AdAccount changeCurrentStep={this.changeCurrentStep} msg={this.msg} />
