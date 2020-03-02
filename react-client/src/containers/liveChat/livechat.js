@@ -19,7 +19,8 @@ import {
   updatePendingResponse,
   sendChatMessage,
   uploadAttachment,
-  sendAttachment
+  sendAttachment,
+  uploadRecording
 } from '../../redux/actions/livechat.actions'
 import { updatePicture } from '../../redux/actions/subscribers.actions'
 import { loadTeamsList } from '../../redux/actions/teams.actions'
@@ -370,6 +371,7 @@ class LiveChat extends React.Component {
                     sendChatMessage={this.props.sendChatMessage}
                     uploadAttachment={this.props.uploadAttachment}
                     sendAttachment={this.props.sendAttachment}
+                    uploadRecording={this.props.uploadRecording}
                   />
                 }
                 {
@@ -457,7 +459,8 @@ function mapDispatchToProps(dispatch) {
     updatePendingResponse,
     sendChatMessage,
     uploadAttachment,
-    sendAttachment
+    sendAttachment,
+    uploadRecording
   }, dispatch)
 }
 
