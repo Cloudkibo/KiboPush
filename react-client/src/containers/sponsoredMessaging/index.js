@@ -401,7 +401,7 @@ class SponsoredMessaging extends React.Component {
                         <div className="m-alert__text">
                           {this.props.refreshMessage}
 											  </div>
-                        <div className="m-alert__actions" style="width: 220px;">
+                        <div className="m-alert__actions" style={{width: "220px"}}>
                           <button type="button" 
                             className="btn btn-outline-light btn-sm m-btn m-btn--hover-primary" 
                             data-dismiss="alert1" 
