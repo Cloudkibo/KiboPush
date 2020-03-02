@@ -362,14 +362,14 @@ class SponsoredMessaging extends React.Component {
                       </div>
                     </div>
                     {
-                      this.state.refreshRequired
-                      ? <div class="m-alert m-alert--icon alert alert-danger" role="alert">
-                        <div class="m-alert__text">
-                          {this.state.refreshMessage}
+                      this.props.refreshRequired &&
+                      <div className="m-alert m-alert--icon alert alert-danger" role="alert">
+                        <div className="m-alert__text">
+                          {this.props.refreshMessage}
 											  </div>
-                        <div class="m-alert__actions" style="width: 220px;">
+                        <div className="m-alert__actions" style="width: 220px;">
                           <button type="button" 
-                            class="btn btn-outline-light btn-sm m-btn m-btn--hover-primary" 
+                            className="btn btn-outline-light btn-sm m-btn m-btn--hover-primary" 
                             data-dismiss="alert1" 
                             aria-label="Close"
                             onClick={() => {
@@ -384,7 +384,6 @@ class SponsoredMessaging extends React.Component {
 												  </button>
 											  </div>
                       </div>
-                      : <div></div>
                     }
                   <div className='form-row'>
                     { this.state.sponsoredMessages && this.state.sponsoredMessages.length > 0
