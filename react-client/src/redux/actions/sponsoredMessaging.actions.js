@@ -5,6 +5,7 @@ export function showAllSponsoredMessages (data) {
     return {
       type: ActionTypes.SHOW_SPONSORED_MESSAGES,
       sponsoredMessages: data.sponsoredMessages,
+      reconnectFbRequired: !data.permissionsGiven,
       count: data.count
     }
   }
