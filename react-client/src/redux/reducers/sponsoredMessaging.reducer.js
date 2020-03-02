@@ -1,6 +1,9 @@
 import * as ActionTypes from '../constants/constants'
 
 const initialState = {
+    refreshRequired: false,
+    refreshMessage: '',
+    sponsoredMessages: [],
     sponsoredMessage :{
       _id: '',
       adAccountId: '',
@@ -34,7 +37,24 @@ export function sponsoredMessagingInfo (state = initialState, action) {
       case ActionTypes.SHOW_SPONSORED_MESSAGES:
         return Object.assign({}, state, {
           sponsoredMessages: action.sponsoredMessages,
-          count: action.count
+          count: action.count,
+          refreshRequired: action.refreshRequired
+        })
+      case ActionTypes.ADD_TO_SPONSORED_MESSAGES:
+        return Object.assign({}, state, {
+          refreshMessage: action.message,
+          refreshRequired: true
+        })
+      case ActionTypes.UPDATE_SPONSORED_MESSAGES_LIST_ITEM:
+        let currentMessages = state.sponsoredMessages
+        for (let i = 0; i < currentMessages.length; i++) {
+          if (currentMessages[i]._id === action.sponsoredMessage._id) {
+            currentMessages[i].status = action.status
+            console.log('updated the sponsored data for status using socket')
+          }
+        }
+        return Object.assign({}, state, {
+          sponsoredMessages: currentMessages
         })
         case ActionTypes.CREATE_SPONSORED_MESSAGE:
           return Object.assign(state, {}, {
