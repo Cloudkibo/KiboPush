@@ -122,8 +122,8 @@ export function createSponsoredMessage(data, cb) {
         .then(res => {
           console.log('response from createSponsoredMessage', res)
           if(res.status === 'success'){
-              cb()
               dispatch(createdSponsoredData(res.payload))
+              cb()
             }
         })
         .catch(err => {
