@@ -405,18 +405,11 @@ class SponsoredMessaging extends React.Component {
                           <a href='/auth/facebook/'
                             className="btn btn-outline-light btn-sm m-btn m-btn--hover-primary" 
                             data-dismiss="alert1" 
-                            aria-label="Close"
-                            // onClick={() => {
-                            //   this.props.fetchSponsoredMessages({last_id: 'none',
-                            //   number_of_records: 10,
-                            //   first_page: 'first',
-                            //   search_value: '',
-                            //   status_value: '',
-                            //   page_value: ''})
-                            // }}
-                            >
+                            aria-label="Close">
 													  Reconnect Facebook
 												  </a>
+</div>
+                      </div>
                     }
                     {
                       this.props.refreshRequired &&
