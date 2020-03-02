@@ -88,7 +88,7 @@ class CreateSponsoredMessage extends React.Component {
     if (checkValidations(this.props.sponsoredMessage)) {
       this.setState({loading: true})
       let pageId = this.props.pages && this.props.pages.filter(p => p._id === this.props.sponsoredMessage.pageId)[0].pageId
-      let sponsoredMessage = this.props.sponsoredMessage
+      let sponsoredMessage = JSON.parse(JSON.stringify(this.props.sponsoredMessage))
       sponsoredMessage.pageId = pageId
       this.props.send(sponsoredMessage, this.handleResponse)
     } else {

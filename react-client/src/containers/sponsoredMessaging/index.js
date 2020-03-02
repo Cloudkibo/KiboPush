@@ -451,7 +451,7 @@ class SponsoredMessaging extends React.Component {
                                     Delete
                                 </button>
                                 }
-                                {sponsoredMessage.adSetId && sponsoredMessage.payload && sponsoredMessage.payload.length > 0 &&
+                                {sponsoredMessage.adSetId && sponsoredMessage.payload && sponsoredMessage.payload.length > 0 && sponsoredMessage.status === 'draft' &&
                                   <button className='btn btn-primary btn-sm' style={{margin: 2}} onClick={() => this.publish(sponsoredMessage)}>
                                     Publish
                                   </button>
