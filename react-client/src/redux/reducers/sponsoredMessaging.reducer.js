@@ -29,7 +29,8 @@ const initialState = {
       budgetAmount: '',
       bidAmount: '',
       currency: ''
-    }
+    },
+    reconnectFbRequired: false
 }
 
 export function sponsoredMessagingInfo (state = initialState, action) {
@@ -37,6 +38,7 @@ export function sponsoredMessagingInfo (state = initialState, action) {
       case ActionTypes.SHOW_SPONSORED_MESSAGES:
         return Object.assign({}, state, {
           sponsoredMessages: action.sponsoredMessages,
+          reconnectFbRequired: action.reconnectFbRequired,
           count: action.count,
           refreshRequired: action.refreshRequired
         })

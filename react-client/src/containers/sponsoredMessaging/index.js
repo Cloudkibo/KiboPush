@@ -347,7 +347,7 @@ class SponsoredMessaging extends React.Component {
                     </div>
                   </div>
                   <div className='m-portlet__head-tools'>
-                    {this.props.pages && this.props.pages.length > 0
+                    {this.props.pages && this.props.pages.length > 0 && !this.props.reconnectFbRequired
                       ? <a href='#/' data-toggle="modal" data-target="#create" onClick={this.showCreateDialog} className='addLink btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
                         <span>
                           <i className='la la-plus' />
@@ -395,6 +395,29 @@ class SponsoredMessaging extends React.Component {
                         </select>
                       </div>
                     </div>
+                    {
+                      this.props.reconnectFbRequired &&
+                      <div className="m-alert m-alert--icon alert alert-danger" role="alert">
+                        <div className="m-alert__text">
+                          Please connect your facebook account to grant KiboPush permission to your ad account.
+											  </div>
+                        <div className="m-alert__actions" style={{width: "220px"}}>
+                          <a href='/auth/facebook/'
+                            className="btn btn-outline-light btn-sm m-btn m-btn--hover-primary" 
+                            data-dismiss="alert1" 
+                            aria-label="Close"
+                            // onClick={() => {
+                            //   this.props.fetchSponsoredMessages({last_id: 'none',
+                            //   number_of_records: 10,
+                            //   first_page: 'first',
+                            //   search_value: '',
+                            //   status_value: '',
+                            //   page_value: ''})
+                            // }}
+                            >
+													  Reconnect Facebook
+												  </a>
+                    }
                     {
                       this.props.refreshRequired &&
                       <div className="m-alert m-alert--icon alert alert-danger" role="alert">
@@ -525,6 +548,7 @@ function mapStateToProps (state) {
     refreshRequired: (state.sponsoredMessagingInfo.refreshRequired),
     refreshMessage: (state.sponsoredMessagingInfo.refreshMessage),
     pages: (state.pagesInfo.pages),
+    reconnectFbRequired: (state.sponsoredMessagingInfo.reconnectFbRequired),
     count: (state.sponsoredMessagingInfo.count)
   }
 }
