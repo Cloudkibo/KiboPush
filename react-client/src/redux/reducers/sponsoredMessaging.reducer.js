@@ -37,7 +37,7 @@ export function sponsoredMessagingInfo (state = initialState, action) {
           count: action.count
         })
         case ActionTypes.CREATE_SPONSORED_MESSAGE:
-          return Object.assign({}, state, {
+          return Object.assign(state, {}, {
             sponsoredMessage: action.data
           })
         case ActionTypes.UPDATE_SPONSORED_MESSAGE:
