@@ -16,9 +16,12 @@ class Campaign extends React.Component {
       campaignType: props.sponsoredMessage.campaignType && props.sponsoredMessage.campaignType !== '' ? props.sponsoredMessage.campaignType : 'existing',
       selectedCampaign: props.sponsoredMessage.campaignId && props.sponsoredMessage.campaignId !== '' ? props.sponsoredMessage.campaignId : '',
       campaignName: props.sponsoredMessage.campaignName && props.sponsoredMessage.campaignName !== '' ? props.sponsoredMessage.campaignName : '',
+      loadingCampaigns: true,
+      loading: false
     }
 
     props.fetchCampaigns(props.sponsoredMessage.adAccountId)
+
     this.handleCampaignType = this.handleCampaignType.bind(this)
     this.changeCampaignName = this.changeCampaignName.bind(this)
     this.selectCampaign = this.selectCampaign.bind(this)
@@ -36,6 +39,7 @@ class Campaign extends React.Component {
         if (this.state.campaignName === this.props.sponsoredMessage.campaignName) {
           this.props.changeCurrentStep('adSet')
         } else {
+          this.setState({loading: true})
           this.props.saveCampaign({_id: this.props.sponsoredMessage._id, type: this.state.campaignType, name: this.state.campaignName, adAccountId: this.props.sponsoredMessage.adAccountId}, this.handleResponse)
         }
       }
@@ -43,12 +47,14 @@ class Campaign extends React.Component {
       if (this.state.selectedCampaign === '') {
         this.props.msg.error('Please select a campaign')
       } else {
+        this.setState({loading: true})
         this.props.saveCampaign({_id: this.props.sponsoredMessage._id, type: this.state.campaignType, id: this.state.selectedCampaign}, this.handleResponse)
       }
     }
   }
 
   handleResponse (res) {
+    this.setState({loading: false})
     if (res.status === 'success') {
       if (this.state.campaignType === 'existing') {
         this.props.updateSponsoredMessage(this.props.sponsoredMessage, '', '', {campaignType: this.state.campaignType, campaignId: res.payload})
@@ -78,10 +84,11 @@ class Campaign extends React.Component {
   }
 
   UNSAFE_componentWillReceiveProps (nextProps) {
-    if (nextProps.campaigns && nextProps.campaigns.length > 0) {
+    if (nextProps.campaigns) {
+      this.setState({loadingCampaigns: false})
       if (nextProps.sponsoredMessage.campaignId && nextProps.sponsoredMessage.campaignId !== '') {
         this.setState({selectedCampaign: nextProps.sponsoredMessage.campaignId, campaignType: nextProps.sponsoredMessage.campaignType})
-      } else {
+      } else if (nextProps.campaigns.length > 0){
         this.setState({selectedCampaign: nextProps.campaigns[0].id})
       }
     }
@@ -106,21 +113,26 @@ class Campaign extends React.Component {
               <span />
               <br /><br />
               {this.state.campaignType === 'existing' &&
-              <div>
-                {this.props.campaigns && this.props.campaigns.length > 0
-                ? <select className='form-control' value={this.state.selectedCampaign} onChange={this.selectCampaign} style={{width: '50%'}}>
-                {
-                  this.props.campaigns.map((campaign, i) => (
-                    <option key={campaign.id} value={campaign.id} selected={campaign.id === this.state.selectedCampaign}>{campaign.name}</option>
-                  ))
+                <div>
+                  {this.state.loadingCampaigns
+                    ? <div className='align-center'>
+                        <div className='m-loader m-loader--primary' style={{width: '30px', display: 'inline-block'}}></div>
+                        <span style={{color: '#5867dd'}}>Loading Campaigns...</span>
+                      </div>
+                    : (this.props.campaigns && this.props.campaigns.length > 0
+                      ? <select className='form-control' value={this.state.selectedCampaign} onChange={this.selectCampaign} style={{width: '50%'}}>
+                      {
+                        this.props.campaigns.map((campaign, i) => (
+                          <option key={campaign.id} value={campaign.id} selected={campaign.id === this.state.selectedCampaign}>{campaign.name}</option>
+                        ))
+                      }
+                      </select>
+                      : <div><span style={{color: 'red'}}>You do not have any existing campaigns. Please create a new one.</span>
+                        <br />
+                      </div>)
                 }
-              </select>
-              : <div><span style={{color: 'red'}}>You do not have any existing campaigns. Please create a new one.</span>
                 <br />
               </div>
-              }
-              <br />
-            </div>
             }
             </span>
             <span className='radio'>
@@ -143,6 +155,7 @@ class Campaign extends React.Component {
           currentStep='campaign'
           handleNext={this.handleNext}
           handleBack={this.handleBack}
+          loading={this.state.loading}
           />
       </div>
     )

@@ -7,7 +7,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
-import {deleteSponsoredMessage, createSponsoredMessage, fetchSponsoredMessages, showUpdatedData} from '../../redux/actions/sponsoredMessaging.actions'
+import {deleteSponsoredMessage, createSponsoredMessage, fetchSponsoredMessages, showUpdatedData, send} from '../../redux/actions/sponsoredMessaging.actions'
 import AlertContainer from 'react-alert'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
 
@@ -46,7 +46,39 @@ class SponsoredMessaging extends React.Component {
    this.isAnyFilter = this.isAnyFilter.bind(this)
    this.searchAds = this.searchAds.bind(this)
    this.handlePageClick = this.handlePageClick.bind(this)
+   this.getStatusValue = this.getStatusValue.bind(this)
+   this.publish = this.publish.bind(this)
+   this.handlePublishResponse = this.handlePublishResponse.bind(this)
+  }
 
+  publish (sponsoredMessage) {
+    let pageId = this.props.pages && this.props.pages.filter(p => p._id === sponsoredMessage.pageId)[0].pageId
+    sponsoredMessage.pageId = pageId
+    this.props.send(sponsoredMessage, this.handlePublishResponse)
+  }
+
+  handlePublishResponse (res) {
+    if (res.status === 'success') {
+      this.msg.success('Ad has been sent to Ads Manager')
+    } else {
+      this.msg.error(res.payload)
+    }
+  }
+
+  getStatusValue (status) {
+    let statusValue = ''
+    if (status.toLowerCase() === 'draft') {
+      statusValue = 'Draft'
+    } else if (status.toLowerCase() === 'sent_to_fb') {
+      statusValue = 'Sent to Facebook'
+    } else if (status.toLowerCase() === 'pending_review') {
+      statusValue = 'Pending Review'
+    } else if (status.toLowerCase() === 'active') {
+      statusValue = 'Active'
+    } else if (status.toLowerCase() === 'rejected') {
+      statusValue = 'Rejected'
+    }
+    return statusValue
   }
 
   isAnyFilter(search, page, status) {
@@ -301,7 +333,6 @@ class SponsoredMessaging extends React.Component {
             </div>
             <div className='m-alert__text'>
               Need help in understanding Sponsored Messages? Here is the <a href='https://kibopush.com/sponsored-broadcast/' target='_blank' rel='noopener noreferrer'>documentation</a>.
-              Or check out this <a href='#/' onClick={() => { this.setState({showVideo: true}) }}>video tutorial</a>
             </div>
           </div>
           <div className='row'>
@@ -344,7 +375,7 @@ class SponsoredMessaging extends React.Component {
                       <div className='col-md-4'>
                         <select className='custom-select' style={{width: '100%'}} value= {this.state.page_value} onChange={this.onPageFilter}>
                           <option value='' disabled>Filter by Page...</option>
-                          <option value=''>All</option>
+                          <option value='all'>All</option>
                           {
                             this.props.pages && this.props.pages.length > 0 && this.props.pages.map((page, i) => (
                               <option key={page._id} value={page._id} selected={page._id === this.state.page_value}>{page.pageName}</option>
@@ -355,9 +386,12 @@ class SponsoredMessaging extends React.Component {
                       <div className='col-md-4'>
                         <select className='custom-select' style={{width: '100%'}} value= {this.state.status} onChange={this.onStatusFilter}>
                           <option value='' disabled>Filter by Status...</option>
-                          <option value=''>All</option>
+                          <option value='all'>All</option>
                           <option value='draft'>Draft</option>
-                          <option value='in_review'>In review</option>
+                          <option value='sent_to_fb'>Sent to Facebook</option>
+                          <option value='pending_review'>Pending Review</option>
+                          <option value='active'>Active</option>
+                          <option value='rejected'>Rejected</option>
                         </select>
                       </div>
                     </div>
@@ -395,24 +429,33 @@ class SponsoredMessaging extends React.Component {
                               <span style={{width: '150px'}}>{sponsoredMessage.adName}</span>
                             </td>
                             <td data-field='pageName' className='m-datatable__cell--center m-datatable__cell'>
-                              <span style={{width: '100px'}}>{this.props.pages.filter((page) => page._id === sponsoredMessage.pageId)[0].pageName}</span>
+                              <span style={{width: '100px'}}>{this.props.pages.filter((page) => page._id === sponsoredMessage.pageId)[0] ? this.props.pages.filter((page) => page._id === sponsoredMessage.pageId)[0].pageName : '-'}</span>
                             </td>
                             <td data-field='status' className='m-datatable__cell--center m-datatable__cell'>
-                              <span style={{width: '100px'}}>{sponsoredMessage.status === 'in_review' ? 'In Review' : sponsoredMessage.status}</span>
+                              <span style={{width: '100px'}}>{this.getStatusValue(sponsoredMessage.status)}</span>
                             </td>
                             <td data-field='actions' className='m-datatable__cell--center m-datatable__cell'>
                               <span style={{width: '230px'}}>
-                                <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2, marginLeft: '40px'}} onClick={() => this.onInsights(sponsoredMessage)}>
-                                    Insights
-                                </button>
-                                {sponsoredMessage.status === 'draft' &&
-                                  <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}} onClick={() => this.onEdit(sponsoredMessage)}>
+                                {sponsoredMessage.status.toLowerCase() === 'active' &&
+                                  <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2, marginLeft: '40px'}} onClick={() => this.onInsights(sponsoredMessage)}>
+                                      Insights
+                                  </button>
+                                }
+                                {sponsoredMessage.status.toLowerCase() === 'draft' &&
+                                  <button className='btn btn-primary btn-sm' style={{margin: 2}} onClick={() => this.onEdit(sponsoredMessage)}>
                                     Edit
                                   </button>
                                 }
-                                <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}} data-toggle="modal" data-target="#delete" onClick={() => this.showDialogDelete(sponsoredMessage._id)}>
+                                {sponsoredMessage.status.toLowerCase() === 'draft' &&
+                                  <button className='btn btn-primary btn-sm' style={{margin: 2}} data-toggle="modal" data-target="#delete" onClick={() => this.showDialogDelete(sponsoredMessage._id)}>
                                     Delete
                                 </button>
+                                }
+                                {sponsoredMessage.adSetId && sponsoredMessage.payload && sponsoredMessage.payload.length > 0 && sponsoredMessage.status === 'draft' &&
+                                  <button className='btn btn-primary btn-sm' style={{margin: 2}} onClick={() => this.publish(sponsoredMessage)}>
+                                    Publish
+                                  </button>
+                                }
                               </span>
                             </td>
                           </tr>
@@ -466,7 +509,8 @@ function mapDispatchToProps (dispatch) {
     createSponsoredMessage: createSponsoredMessage,
     deleteSponsoredMessage: deleteSponsoredMessage,
     loadMyPagesList: loadMyPagesList,
-    showUpdatedData: showUpdatedData
+    showUpdatedData: showUpdatedData,
+    send: send
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(SponsoredMessaging)

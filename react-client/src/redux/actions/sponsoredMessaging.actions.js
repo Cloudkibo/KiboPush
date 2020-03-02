@@ -154,16 +154,11 @@ export function deleteSponsoredMessage(id, msg, searchValue, statusValue, pageVa
     }
 }
 
-export function send(data, msg, handleResponse) {
+export function send(data, handleResponse) {
   return (dispatch) => {
     callApi(`sponsoredmessaging/send/${data._id}`, 'post', data)
       .then(res => {
-        if(res.status === 'success') {
-          msg.success('Ad has been sent to Ads Manager')
-          handleResponse()
-        } else {
-          msg.error(res.payload)
-        }
+        handleResponse(res)
       })
    }
 }
