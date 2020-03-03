@@ -122,9 +122,18 @@ class AssignTag extends React.Component {
   render () {
     return (
         <div>
-            <div style={{marginBottom: '10px', marginTop: '20px'}}>
+            <div style={{marginBottom: '10px', marginTop: '15px'}}>
                 <h6>Tags:</h6>
                 <Creatable
+                    styles={
+                        {
+                            valueContainer: (base) => ({
+                                ...base,
+                                maxHeight: '15vh',
+                                overflowY: 'scroll'
+                            })
+                        }
+                    }
                     isMulti
                     isClearable={false}
                     onCreateOption={this.onCreateTag}

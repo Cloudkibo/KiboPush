@@ -20,7 +20,10 @@ import {
   sendChatMessage,
   uploadAttachment,
   sendAttachment,
-  uploadRecording
+  uploadRecording,
+  searchChat, 
+  fetchUserChats,
+  clearSearchResult
 } from '../../redux/actions/livechat.actions'
 import { updatePicture } from '../../redux/actions/subscribers.actions'
 import { loadTeamsList } from '../../redux/actions/teams.actions'
@@ -40,7 +43,7 @@ import {
 
 // components
 import HELPWIDGET from '../../components/extras/helpWidget'
-import { SESSIONS, PROFILE, CHAT } from '../../components/LiveChat'
+import { SESSIONS, PROFILE, CHAT, SEARCHAREA } from '../../components/LiveChat'
 
 const alertOptions = {
   offset: 14,
@@ -92,11 +95,18 @@ class LiveChat extends React.Component {
     this.showSearch = this.showSearch.bind(this)
     this.saveCustomField = this.saveCustomField.bind(this)
     this.handleCustomFieldResponse = this.handleCustomFieldResponse.bind(this)
+    this.hideSearch = this.hideSearch.bind(this)
 
     this.fetchSessions(true, 'none', true)
     props.loadMembersList()
     props.loadTags()
     props.loadCustomFields()
+  }
+
+
+  hideSearch() {
+    this.setState({ showSearch: false })
+    this.props.clearSearchResult()
   }
 
   showSearch () {
@@ -430,7 +440,7 @@ class LiveChat extends React.Component {
                   />
                 }
                 {
-                   this.state.activeSession.constructor === Object && Object.keys(this.state.activeSession).length > 0 &&
+                   this.state.activeSession.constructor === Object && Object.keys(this.state.activeSession).length > 0 && !this.state.showSearch &&
                    <PROFILE
                       teams={this.props.teams ? this.props.teams : []}
                       tags={this.props.tags ? this.props.tags : []}
@@ -455,6 +465,18 @@ class LiveChat extends React.Component {
                       customFieldOptions={this.state.customFieldOptions}
                       setCustomFieldValue={this.saveCustomField}
                     />
+                }
+                {
+                  Object.keys(this.state.activeSession).length > 0 && this.state.activeSession.constructor === Object && this.state.showSearch &&
+                  <SEARCHAREA
+                    activeSession={this.state.activeSession}
+                    hideSearch={this.hideSearch}
+                    searchChatMsgs={this.props.searchChatMsgs}
+                    userChat={this.props.userChat}
+                    searchChat={this.props.searchChat}
+                    fetchUserChats={this.props.fetchUserChats}
+                    clearSearchResult={this.props.clearSearchResult}
+                  />
                 }
                 {
                   this.state.activeSession.constructor === Object && Object.keys(this.state.activeSession).length === 0 &&
@@ -491,7 +513,9 @@ function mapStateToProps(state) {
     subscriberTags: (state.tagsInfo.subscriberTags),
     tags: (state.tagsInfo.tags),
     customFieldValues: (state.customFieldInfo.customFieldSubscriber),
-    customFields: (state.customFieldInfo.customFields)
+    customFields: (state.customFieldInfo.customFields),
+    searchChatMsgs: (state.liveChat.searchChat),
+    userChat: (state.liveChat.userChat)
   }
 }
 
@@ -522,7 +546,10 @@ function mapDispatchToProps(dispatch) {
     sendChatMessage,
     uploadAttachment,
     sendAttachment,
-    uploadRecording
+    uploadRecording,
+    searchChat,
+    fetchUserChats,
+    clearSearchResult
   }, dispatch)
 }
 

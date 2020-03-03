@@ -50,7 +50,7 @@ class CustomFields extends React.Component {
         currentSelected: '',
         currentSelectedValue: '',
         settingCustomField: false,
-        currentTarget: 'customFieldTarget1'
+        currentTarget: '_custom_fields'
     }
     this.toggle = this.toggle.bind(this)
     this.hoverOn = this.hoverOn.bind(this)
@@ -180,7 +180,7 @@ class CustomFields extends React.Component {
         })
     }
     return (
-        <div>
+        <div id='_custom_fields'>
             <div className='row'>
                 <div className='col-12'>
                     <span style={{ fontWeight: 500, marginLeft: '10px', fontSize: '12px' }}>
@@ -206,7 +206,7 @@ class CustomFields extends React.Component {
                 </div>
             </div>
 
-            <div id='customFields' style={{ overflowY: this.state.showingPopover ? 'hidden' : 'scroll', overflowX: 'hidden', maxHeight: '20vh' }} className='collapse'>
+            <div id='customFields' style={{ overflowY: this.state.showingPopover ? 'hidden' : 'scroll', overflowX: 'hidden', maxHeight: '15vh' }} className='collapse'>
                 <div id='setCustomField' style={{marginBottom: '10px'}}>
                     <span onClick={this.setCustomField} className='m-link' style={{ cursor: 'pointer' }}>+ Set Custom Field</span>
                 </div>
