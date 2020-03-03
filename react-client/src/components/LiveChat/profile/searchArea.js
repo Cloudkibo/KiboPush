@@ -9,21 +9,42 @@ class SearchArea extends React.Component {
     super(props, context)
     this.state = {
       searchValue: '',
-      searching: false
+      searching: false,
+      loadingMore: false,
+      searchedTerm: '',
+      searchResults: this.props.searchChatMsgs ? this.props.searchChatMsgs.messages : null
     }
     this.changeSearchValue = this.changeSearchValue.bind(this)
     this.searchChat = this.searchChat.bind(this)
     this.scrollToMessage = this.scrollToMessage.bind(this)
+    this.loadMore = this.loadMore.bind(this)
   }
 
   UNSAFE_componentWillReceiveProps (nextProps) {
       if (nextProps.searchChatMsgs) {
-          this.setState({searching: false})
+          if (this.state.loadingMore) {
+            let searchResults = this.state.searchResults
+            searchResults = searchResults.concat(nextProps.searchChatMsgs.messages)
+            this.setState({loadingMore: false, searchResults})
+          } else {
+            this.setState({searching: false, searchResults: nextProps.searchChatMsgs.messages})
+          }
       }
   }
 
   changeSearchValue (e) {
     this.setState({searchValue: e.target.value})
+  }
+
+  loadMore () {
+    this.setState({loadingMore: true})
+    const data = {
+      subscriber_id: this.props.activeSession._id,
+      text: this.state.searchValue,
+      datetime: this.state.searchResults[this.state.searchResults.length - 1].datetime
+    }
+    console.log('data to search', data)
+    this.props.searchChat(data)
   }
 
   scrollToMessage (messageId) {
@@ -46,7 +67,7 @@ class SearchArea extends React.Component {
 
   searchChat () {
     this.props.clearSearchResult()
-    this.setState({searching: true})
+    this.setState({searching: true, searchedTerm: this.state.searchValue})
     const data = {
       subscriber_id: this.props.activeSession._id,
       text: this.state.searchValue
@@ -83,17 +104,17 @@ class SearchArea extends React.Component {
                   </div>
                 }
               {
-                this.props.searchChatMsgs && this.props.searchChatMsgs.length > 0
-                ? this.props.searchChatMsgs.map((chat, index) => (
+                this.state.searchResults && this.state.searchResults.length > 0
+                ? this.state.searchResults.map((chat, index) => (
                   <div key={chat._id} onClick={() => { this.scrollToMessage(chat._id) }} style={{cursor: 'pointer'}} className='m-widget4__item'>
                     <div className='m-widget4__info'>
                       <span className='m-widget4__sub'>{new Date(chat.datetime).getDate() + '/' + new Date(chat.datetime).getMonth() + '/' + new Date(chat.datetime).getFullYear()}</span>
                       <br />
-                      <Dotdotdot clamp={2}>
+                      <Dotdotdot clamp={10}>
                         <span style={{fontWeight: 'normal'}} className='m-widget4__title'>
                           <strong>{chat.format === 'facebook' ? (this.props.activeSession.firstName + ': ') : 'You: '}</strong>
                           <Highlighter
-                            searchWords={this.state.searchValue.split(' ')}
+                            searchWords={this.state.searchedTerm.split(' ')}
                             highlightStyle={{backgroundColor: 'yellow'}}
                             autoEscape
                             textToHighlight={chat.payload.text}
@@ -103,8 +124,38 @@ class SearchArea extends React.Component {
                     </div>
                   </div>
                 ))
-                : this.props.searchChatMsgs && this.props.searchChatMsgs.length === 0 &&
+                : this.state.searchResults && this.state.searchResults.length === 0 &&
                 <p style={{textAlign: 'center'}}>No search result found</p>
+              }
+              {
+                this.state.loadingMore &&
+                <div style={{marginTop: '15px', marginBottom: '15px'}} className='align-center'>
+                  <center>
+                    <div className="m-loader" style={{width: "30px", display: "inline-block"}}></div>
+                    <span>Loading more...</span>
+                  </center>
+                </div>
+              }
+              {
+                !this.state.loadingMore && this.state.searchResults && this.props.searchChatMsgs && 
+                this.state.searchResults.length > 0 &&
+                this.state.searchResults.length < this.props.searchChatMsgs.count &&
+                <center style={{marginBottom: '15px'}}>
+                  <i className='fa fa-refresh' style={{color: '#716aca'}} />&nbsp;
+                  <button
+                    id='load-more-search-results'
+                    className='m-link'
+                    style={{
+                      color: '#716aca',
+                      cursor: 'pointer',
+                      marginTop: '20px',
+                      border: 'none'
+                    }}
+                    onClick={this.loadMore}
+                  >
+                    Load More
+                  </button>
+                </center>
               }
             </div>
           </div>
@@ -117,7 +168,7 @@ class SearchArea extends React.Component {
 SearchArea.propTypes = {
     'activeSession': PropTypes.object.isRequired,
     'hideSearch': PropTypes.func.isRequired,
-    'searchChatMsgs': PropTypes.array,
+    'searchChatMsgs': PropTypes.object,
     'userChat': PropTypes.array.isRequired,
     'searchChat': PropTypes.func.isRequired,
     'fetchUserChats': PropTypes.func.isRequired,

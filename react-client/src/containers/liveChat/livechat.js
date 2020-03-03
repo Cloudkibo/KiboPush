@@ -293,7 +293,8 @@ class LiveChat extends React.Component {
   changeActiveSession (session) {
     console.log('changeActiveSession', session)
     if (session._id !== this.state.activeSession._id) {
-      this.setState({activeSession: session})
+      this.setState({activeSession: session, showSearch: false})
+      this.props.clearSearchResult()
       this.props.getSubscriberTags(session._id, this.alertMsg)
       this.props.getCustomFieldValue(session._id)
       if (session.is_assigned && session.assigned_to.type === 'team') {

@@ -326,6 +326,7 @@ export function searchChat (data) {
   return (dispatch) => {
     callApi('livechat/search', 'post', data).then(res => {
       if (res.status === 'success') {
+        console.log('searchChat results', res.payload)
         dispatch(showSearchChat(res.payload))
       } else {
         console.log('response got from server', res.description)
