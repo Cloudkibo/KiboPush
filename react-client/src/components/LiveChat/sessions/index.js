@@ -96,7 +96,7 @@ class Sessions extends React.Component {
               </li>
             </ul>
           </div>
-          <div style={{overflowY: 'scroll', height: '68vh', padding: '0rem'}} className='m-portlet__body'>
+          <div style={{overflowY: 'scroll', overflowX: 'hidden', height: '68vh', padding: '0rem'}} className='m-portlet__body'>
             <div className='tab-content'>
               <div className='tab-pane active' id='m_widget4_tab1_content'>
                 {
