@@ -368,7 +368,9 @@ class SponsoredMessaging extends React.Component {
                   </div>
                 </div>
                 <div className='m-portlet__body'>
-                  <div className='row' style={{marginBottom: '28px'}}>
+                  {
+                    !this.props.reconnectFbRequired &&
+                    <div className='row' style={{marginBottom: '28px'}}>
                       <div className='col-md-4'>
                         <input type='text' placeholder='Search By Ad Name..' className='form-control' value={this.state.searchValue} onChange={this.searchAds} />
                       </div>
@@ -395,11 +397,12 @@ class SponsoredMessaging extends React.Component {
                         </select>
                       </div>
                     </div>
+                  }
                     {
                       this.props.reconnectFbRequired &&
                       <div className="m-alert m-alert--icon alert alert-danger" role="alert">
                         <div className="m-alert__text">
-                          Please connect your facebook account to grant KiboPush permission to your ad account.
+                          Please reconnect your facebook account to grant KiboPush permission to your ad accounts.
 											  </div>
                         <div className="m-alert__actions" style={{width: "220px"}}>
                           <a href='/auth/facebook/'
@@ -408,7 +411,7 @@ class SponsoredMessaging extends React.Component {
                             aria-label="Close">
 													  Reconnect Facebook
 												  </a>
-</div>
+                        </div>
                       </div>
                     }
                     {
@@ -436,7 +439,7 @@ class SponsoredMessaging extends React.Component {
                       </div>
                     }
                   <div className='form-row'>
-                    { this.state.sponsoredMessages && this.state.sponsoredMessages.length > 0
+                    { this.state.sponsoredMessages && this.state.sponsoredMessages.length > 0 && !this.props.reconnectFbRequired
                   ? <div className='col-md-12 m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
                     <table className='m-datatable__table' style={{display: 'block', height: 'auto', overflowX: 'auto'}}>
                       <thead className='m-datatable__head'>
