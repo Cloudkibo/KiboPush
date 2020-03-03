@@ -438,95 +438,98 @@ class SponsoredMessaging extends React.Component {
 											  </div>
                       </div>
                     }
-                  <div className='form-row'>
-                    { this.state.sponsoredMessages && this.state.sponsoredMessages.length > 0 && !this.props.reconnectFbRequired
-                  ? <div className='col-md-12 m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
-                    <table className='m-datatable__table' style={{display: 'block', height: 'auto', overflowX: 'auto'}}>
-                      <thead className='m-datatable__head'>
-                        <tr className='m-datatable__row'
-                          style={{height: '53px'}}>
-                          <th data-field='adName'
-                            className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '150px'}}>Ad Name</span>
-                          </th>
-                          <th data-field='pageName'
-                            className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '100px'}}>Page Name</span>
-                          </th>
-                          <th data-field='status'
-                            className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '100px'}}>Status</span>
-                          </th>
-                          <th data-field='actions'
-                            className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '230px'}}>Actions</span>
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody className='m-datatable__body'>
-                        {
-                        this.state.sponsoredMessages.map((sponsoredMessage, i) => (
-                          <tr data-row={i}
-                            className="m-datatable__row m-datatable__row--even" key={i}>
-                            <td data-field='adName' className='m-datatable__cell--center m-datatable__cell'>
-                              <span style={{width: '150px'}}>{sponsoredMessage.adName}</span>
-                            </td>
-                            <td data-field='pageName' className='m-datatable__cell--center m-datatable__cell'>
-                              <span style={{width: '100px'}}>{this.props.pages.filter((page) => page._id === sponsoredMessage.pageId)[0] ? this.props.pages.filter((page) => page._id === sponsoredMessage.pageId)[0].pageName : '-'}</span>
-                            </td>
-                            <td data-field='status' className='m-datatable__cell--center m-datatable__cell'>
-                              <span style={{width: '100px'}}>{this.getStatusValue(sponsoredMessage.status)}</span>
-                            </td>
-                            <td data-field='actions' className='m-datatable__cell--center m-datatable__cell'>
-                              <span style={{width: '230px'}}>
-                                {sponsoredMessage.status.toLowerCase() === 'active' &&
-                                  <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2, marginLeft: '40px'}} onClick={() => this.onInsights(sponsoredMessage)}>
-                                      Insights
-                                  </button>
-                                }
-                                {sponsoredMessage.status.toLowerCase() === 'draft' &&
-                                  <button className='btn btn-primary btn-sm' style={{margin: 2}} onClick={() => this.onEdit(sponsoredMessage)}>
-                                    Edit
-                                  </button>
-                                }
-                                {sponsoredMessage.status.toLowerCase() === 'draft' &&
-                                  <button className='btn btn-primary btn-sm' style={{margin: 2}} data-toggle="modal" data-target="#delete" onClick={() => this.showDialogDelete(sponsoredMessage._id)}>
-                                    Delete
-                                </button>
-                                }
-                                {sponsoredMessage.adSetId && sponsoredMessage.payload && sponsoredMessage.payload.length > 0 && sponsoredMessage.status === 'draft' &&
-                                  <button className='btn btn-primary btn-sm' style={{margin: 2}} onClick={() => this.publish(sponsoredMessage)}>
-                                    Publish
-                                  </button>
-                                }
-                              </span>
-                            </td>
+                  {
+                    !this.props.reconnectFbRequired &&
+                    <div className='form-row'>
+                      { this.state.sponsoredMessages && this.state.sponsoredMessages.length > 0
+                    ? <div className='col-md-12 m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
+                      <table className='m-datatable__table' style={{display: 'block', height: 'auto', overflowX: 'auto'}}>
+                        <thead className='m-datatable__head'>
+                          <tr className='m-datatable__row'
+                            style={{height: '53px'}}>
+                            <th data-field='adName'
+                              className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                              <span style={{width: '150px'}}>Ad Name</span>
+                            </th>
+                            <th data-field='pageName'
+                              className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                              <span style={{width: '100px'}}>Page Name</span>
+                            </th>
+                            <th data-field='status'
+                              className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                              <span style={{width: '100px'}}>Status</span>
+                            </th>
+                            <th data-field='actions'
+                              className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                              <span style={{width: '230px'}}>Actions</span>
+                            </th>
                           </tr>
-                        ))
-                      }
-                      </tbody>
-                    </table>
-                    <div className='pagination'>
-                      <ReactPaginate
-                        previousLabel={'previous'}
-                        nextLabel={'next'}
-                        breakLabel={<a href='#/'>...</a>}
-                        breakClassName={'break-me'}
-                        pageCount={Math.ceil(this.state.totalLength / 10)}
-                        marginPagesDisplayed={2}
-                        pageRangeDisplayed={3}
-                        forcePage={this.state.pageNumber}
-                        onPageChange={this.handlePageClick}
-                        containerClassName={'pagination'}
-                        subContainerClassName={'pages pagination'}
-                        activeClassName={'active'} />
+                        </thead>
+                        <tbody className='m-datatable__body'>
+                          {
+                          this.state.sponsoredMessages.map((sponsoredMessage, i) => (
+                            <tr data-row={i}
+                              className="m-datatable__row m-datatable__row--even" key={i}>
+                              <td data-field='adName' className='m-datatable__cell--center m-datatable__cell'>
+                                <span style={{width: '150px'}}>{sponsoredMessage.adName}</span>
+                              </td>
+                              <td data-field='pageName' className='m-datatable__cell--center m-datatable__cell'>
+                                <span style={{width: '100px'}}>{this.props.pages.filter((page) => page._id === sponsoredMessage.pageId)[0] ? this.props.pages.filter((page) => page._id === sponsoredMessage.pageId)[0].pageName : '-'}</span>
+                              </td>
+                              <td data-field='status' className='m-datatable__cell--center m-datatable__cell'>
+                                <span style={{width: '100px'}}>{this.getStatusValue(sponsoredMessage.status)}</span>
+                              </td>
+                              <td data-field='actions' className='m-datatable__cell--center m-datatable__cell'>
+                                <span style={{width: '230px'}}>
+                                  {sponsoredMessage.status.toLowerCase() === 'active' &&
+                                    <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2, marginLeft: '40px'}} onClick={() => this.onInsights(sponsoredMessage)}>
+                                        Insights
+                                    </button>
+                                  }
+                                  {sponsoredMessage.status.toLowerCase() === 'draft' &&
+                                    <button className='btn btn-primary btn-sm' style={{margin: 2}} onClick={() => this.onEdit(sponsoredMessage)}>
+                                      Edit
+                                    </button>
+                                  }
+                                  {sponsoredMessage.status.toLowerCase() === 'draft' &&
+                                    <button className='btn btn-primary btn-sm' style={{margin: 2}} data-toggle="modal" data-target="#delete" onClick={() => this.showDialogDelete(sponsoredMessage._id)}>
+                                      Delete
+                                  </button>
+                                  }
+                                  {sponsoredMessage.adSetId && sponsoredMessage.payload && sponsoredMessage.payload.length > 0 && sponsoredMessage.status === 'draft' &&
+                                    <button className='btn btn-primary btn-sm' style={{margin: 2}} onClick={() => this.publish(sponsoredMessage)}>
+                                      Publish
+                                    </button>
+                                  }
+                                </span>
+                              </td>
+                            </tr>
+                          ))
+                        }
+                        </tbody>
+                      </table>
+                      <div className='pagination'>
+                        <ReactPaginate
+                          previousLabel={'previous'}
+                          nextLabel={'next'}
+                          breakLabel={<a href='#/'>...</a>}
+                          breakClassName={'break-me'}
+                          pageCount={Math.ceil(this.state.totalLength / 10)}
+                          marginPagesDisplayed={2}
+                          pageRangeDisplayed={3}
+                          forcePage={this.state.pageNumber}
+                          onPageChange={this.handlePageClick}
+                          containerClassName={'pagination'}
+                          subContainerClassName={'pages pagination'}
+                          activeClassName={'active'} />
+                      </div>
                     </div>
-                  </div>
-                  : <div className='col-12'>
-                    <p> No data to display </p>
-                  </div>
-                }
-                  </div>
+                    : <div className='col-12'>
+                      <p> No data to display </p>
+                    </div>
+                  }
+                    </div>
+                  }
                 </div>
               </div>
             </div>
