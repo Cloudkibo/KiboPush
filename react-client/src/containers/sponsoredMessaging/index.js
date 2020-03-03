@@ -406,8 +406,8 @@ class SponsoredMessaging extends React.Component {
 											  </div>
                         <div className="m-alert__actions" style={{width: "220px"}}>
                           <a href='/auth/facebook/'
-                            className="btn btn-outline-light btn-sm m-btn m-btn--hover-primary" 
-                            data-dismiss="alert1" 
+                            className="btn btn-outline-light btn-sm m-btn m-btn--hover-primary"
+                            data-dismiss="alert1"
                             aria-label="Close">
 													  Reconnect Facebook
 												  </a>
@@ -421,9 +421,9 @@ class SponsoredMessaging extends React.Component {
                           {this.props.refreshMessage}
 											  </div>
                         <div className="m-alert__actions" style={{width: "220px"}}>
-                          <button type="button" 
-                            className="btn btn-outline-light btn-sm m-btn m-btn--hover-primary" 
-                            data-dismiss="alert1" 
+                          <button type="button"
+                            className="btn btn-outline-light btn-sm m-btn m-btn--hover-primary"
+                            data-dismiss="alert1"
                             aria-label="Close"
                             onClick={() => {
                               this.props.fetchSponsoredMessages({last_id: 'none',
@@ -453,11 +453,11 @@ class SponsoredMessaging extends React.Component {
                             </th>
                             <th data-field='pageName'
                               className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                              <span style={{width: '100px'}}>Page Name</span>
+                              <span style={{width: '150px'}}>Page Name</span>
                             </th>
                             <th data-field='status'
                               className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                              <span style={{width: '100px'}}>Status</span>
+                              <span style={{width: '150px'}}>Status</span>
                             </th>
                             <th data-field='actions'
                               className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
@@ -474,10 +474,10 @@ class SponsoredMessaging extends React.Component {
                                 <span style={{width: '150px'}}>{sponsoredMessage.adName}</span>
                               </td>
                               <td data-field='pageName' className='m-datatable__cell--center m-datatable__cell'>
-                                <span style={{width: '100px'}}>{this.props.pages.filter((page) => page._id === sponsoredMessage.pageId)[0] ? this.props.pages.filter((page) => page._id === sponsoredMessage.pageId)[0].pageName : '-'}</span>
+                                <span style={{width: '150px'}}>{this.props.pages.filter((page) => page._id === sponsoredMessage.pageId)[0] ? this.props.pages.filter((page) => page._id === sponsoredMessage.pageId)[0].pageName : '-'}</span>
                               </td>
                               <td data-field='status' className='m-datatable__cell--center m-datatable__cell'>
-                                <span style={{width: '100px'}}>{this.getStatusValue(sponsoredMessage.status)}</span>
+                                <span style={{width: '150px'}}>{this.getStatusValue(sponsoredMessage.status)}</span>
                               </td>
                               <td data-field='actions' className='m-datatable__cell--center m-datatable__cell'>
                                 <span style={{width: '230px'}}>
