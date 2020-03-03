@@ -202,6 +202,7 @@ class SponsoredMessaging extends React.Component {
   }
 
   UNSAFE_componentWillReceiveProps (nextProps) {
+    console.log('nextProps in sponsored', nextProps)
     if (nextProps.sponsoredMessages) {
       this.displayData(0, nextProps.sponsoredMessages)
     }
