@@ -22,10 +22,10 @@ class AssignChat extends React.Component {
   UNSAFE_componentWillReceiveProps (nextProps) {
         if (nextProps.activeSession) {
             this.setState({
-                currentSelected: this.props.activeSession.is_assigned ? {
-                    value: this.props.activeSession.assigned_to.id,
-                    label: this.props.activeSession.assigned_to.name,
-                    group: this.props.activeSession.assigned_to.type
+                currentSelected: nextProps.activeSession.is_assigned ? {
+                    value: nextProps.activeSession.assigned_to.id,
+                    label: nextProps.activeSession.assigned_to.name,
+                    group: nextProps.activeSession.assigned_to.type
                 } : ''
             })
         }
