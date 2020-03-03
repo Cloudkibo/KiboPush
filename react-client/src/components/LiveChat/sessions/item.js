@@ -23,6 +23,7 @@ class SessionItem extends React.Component {
 
     this.showQuickAction = this.showQuickAction.bind(this)
     this.hideQuickAction = this.hideQuickAction.bind(this)
+    this.getChatPreview = this.getChatPreview.bind(this)
   }
 
   showQuickAction (e) {
@@ -31,6 +32,15 @@ class SessionItem extends React.Component {
 
   hideQuickAction (e) {
     this.setState({showingQuickAction: false})
+  }
+
+  getChatPreview () {
+    const chatPreview = this.props.getChatPreview(this.props.session.lastPayload, this.props.session.lastRepliedBy, this.props.session.firstName)
+    if (chatPreview.length > 25) {
+      return `${chatPreview.substring(0, 25)}...`
+    } else {
+      return chatPreview
+    }
   }
 
   render () {
@@ -48,36 +58,19 @@ class SessionItem extends React.Component {
           </div>
           <div className='m-widget4__info'>
             <div style={{marginBottom: '-10px'}} className='row'>
+              <div
+                style={{textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap'}}
+                className={this.state.showingQuickAction ? 'col-10' : 'col-9'}
+              >
+                <span className='m-widget4__title'>
+                  <span style={{marginRight: '5px'}}>
+                    {this.props.session.name}
+                  </span>
+                </span>
+              </div>
               {
                 this.state.showingQuickAction
-                ? <div className='col-10'>
-                  <span className='m-widget4__title'>
-                    <span style={{marginRight: '5px'}}>
-                      {this.props.session.name.length > 20 ? `${this.props.session.name.substring(0, 20)}...` : this.props.session.name}
-                    </span>
-                  </span>
-                </div>
-                : <div className='col-12'>
-                  <span className='m-widget4__title'>
-                    <span style={{marginRight: '5px'}}>
-                      {this.props.session.name.length > 15 ? `${this.props.session.name.substring(0, 12)}...` : this.props.session.name}
-                    </span>
-                  </span>
-                  {
-                    (this.props.session.unreadCount && this.props.session.unreadCount > 0)
-                    ? <a href='#/' style={{backgroundColor: '#d9534f', color: '#fff', fontSize: '0.7em', marginRight: '2px', pointerEvents: 'none'}} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-danger'>
-                      {this.props.session.unreadCount}
-                    </a>
-                    : this.props.session.pendingResponse &&
-                    <span className='m-badge m-badge--metal m-badge--wide'>
-                      pending
-                    </span>
-                  }
-                </div>
-              }
-              {
-                this.state.showingQuickAction &&
-                <div className='col-2'>
+                ? <div className='col-2'>
                   <span title={this.props.session.status === 'new' ? 'Mark as resolved' : 'Reopen session'}>
                   {
                     this.props.session.status === 'new'
@@ -104,13 +97,25 @@ class SessionItem extends React.Component {
                   }
                   </span>
                 </div>
+                : <div style={{paddingLeft: '0px'}} className='col-3'>
+                  {
+                    (this.props.session.unreadCount && this.props.session.unreadCount > 0)
+                    ? <a href='#/' style={{backgroundColor: '#d9534f', color: '#fff', fontSize: '0.7em', marginRight: '2px', pointerEvents: 'none'}} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-danger'>
+                      {this.props.session.unreadCount}
+                    </a>
+                    : this.props.session.pendingResponse &&
+                    <span className='m-badge m-badge--metal m-badge--wide'>
+                      pending
+                    </span>
+                  }
+                </div>
               }
             </div>
             <br />
             <span className='m-widget4__sub'>
               {
                 this.props.session.lastPayload
-                ? this.props.getChatPreview(this.props.session.lastPayload, this.props.session.lastRepliedBy, this.props.session.firstName)
+                ? this.getChatPreview()
                 : 'No chat preview is available'
               }
             </span>

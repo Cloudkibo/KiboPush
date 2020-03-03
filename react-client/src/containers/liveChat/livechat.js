@@ -8,6 +8,7 @@ import { RingLoader } from 'halogenium'
 import {
   fetchOpenSessions,
   fetchCloseSessions,
+  fetchUserChats,
   fetchTeamAgents,
   changeStatus,
   unSubscribe,
@@ -35,10 +36,10 @@ import {
   assignTags,
   loadTags
 } from '../../redux/actions/tags.actions'
-import { 
-  setCustomFieldValue, 
-  loadCustomFields, 
-  getCustomFieldValue 
+import {
+  setCustomFieldValue,
+  loadCustomFields,
+  getCustomFieldValue
 } from '../../redux/actions/customFields.actions'
 
 // components
@@ -58,6 +59,7 @@ class LiveChat extends React.Component {
     super(props, context)
     this.state = {
       loading: true,
+      loadingChat: false,
       sessionsLoading: false,
       tabValue: 'open',
       numberOfRecords: 25,
@@ -173,7 +175,7 @@ class LiveChat extends React.Component {
       // agent
       chatPreview = (!repliedBy || (repliedBy.id === this.props.user._id)) ? `You` : `${repliedBy.name}`
       if (message.componentType === 'text') {
-        chatPreview = `${chatPreview}: ${message.text.length > 20 ? message.text.substring(0, 20) + '...' : message.text}`
+        chatPreview = `${chatPreview}: ${message.text}`
       } else {
         chatPreview = `${chatPreview} shared ${message.componentType}`
       }
@@ -192,10 +194,10 @@ class LiveChat extends React.Component {
         } else if (['image', 'audio', 'location', 'video', 'file'].includes(message.attachments[0].type)) {
           chatPreview = `${chatPreview} shared ${message.attachments[0].type}`
         } else {
-          chatPreview = `${chatPreview}: ${message.text.length > 20 ? message.text.substring(0, 20) + '...' : message.text}`
+          chatPreview = `${chatPreview}: ${message.text}`
         }
       } else {
-        chatPreview = `${chatPreview}: ${message.text.length > 20 ? message.text.substring(0, 20) + '...' : message.text}`
+        chatPreview = `${chatPreview}: ${message.text}`
       }
     }
     return chatPreview
@@ -293,8 +295,9 @@ class LiveChat extends React.Component {
   changeActiveSession (session) {
     console.log('changeActiveSession', session)
     if (session._id !== this.state.activeSession._id) {
-      this.setState({activeSession: session, showSearch: false})
       this.props.clearSearchResult()
+      this.setState({activeSession: session, loadingChat: true, showSearch: false})
+      this.props.fetchUserChats(session._id, { page: 'first', number: 25 })
       this.props.getSubscriberTags(session._id, this.alertMsg)
       this.props.getCustomFieldValue(session._id)
       if (session.is_assigned && session.assigned_to.type === 'team') {
@@ -373,6 +376,10 @@ class LiveChat extends React.Component {
         customFieldOptions: fieldOptions
       })
     }
+
+    if (nextProps.userChat) {
+      this.setState({userChat: nextProps.userChat, loadingChat: false})
+    }
   }
 
   render () {
@@ -438,6 +445,7 @@ class LiveChat extends React.Component {
                     uploadAttachment={this.props.uploadAttachment}
                     sendAttachment={this.props.sendAttachment}
                     uploadRecording={this.props.uploadRecording}
+                    loadingChat={this.state.loadingChat}
                   />
                 }
                 {
@@ -506,6 +514,7 @@ function mapStateToProps(state) {
     openCount: (state.liveChat.openCount),
     closeCount: (state.liveChat.closeCount),
     closeSessions: (state.liveChat.closeSessions),
+    userChat: (state.liveChat.userChat),
     pages: (state.pagesInfo.pages),
     user: (state.basicInfo.user),
     customers: (state.liveChat.customers),
