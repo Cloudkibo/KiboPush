@@ -6,6 +6,10 @@ import { Picker } from 'emoji-mart'
 import StickerMenu from '../../StickerPicker/stickers'
 import GiphySelect from 'react-giphy-select'
 import moment from 'moment'
+import {
+  displayDate,
+  showDate
+} from '../../../containers/liveChat/utilities'
 
 // components
 import HEADER from './header'
@@ -126,7 +130,14 @@ class Chat extends React.Component {
           handlePendingResponse={this.props.handlePendingResponse}
         />
 
-        <BODY />
+        <BODY
+          userChat={this.props.userChat}
+          activeSession={this.props.activeSession}
+          showDate={showDate}
+          displayDate={displayDate}
+          loadingChat={this.props.loadingChat}
+          user={this.props.user}
+        />
 
         {
           !moment(this.props.activeSession.lastMessagedAt).isAfter(moment().subtract(24, 'hours'))
@@ -195,7 +206,8 @@ Chat.propTypes = {
   'sendChatMessage': PropTypes.func.isRequired,
   'uploadAttachment': PropTypes.func.isRequired,
   'sendAttachment': PropTypes.func.isRequired,
-  'uploadRecording': PropTypes.func.isRequired
+  'uploadRecording': PropTypes.func.isRequired,
+  'loadingChat': PropTypes.bool.isRequired
 }
 
 export default Chat
