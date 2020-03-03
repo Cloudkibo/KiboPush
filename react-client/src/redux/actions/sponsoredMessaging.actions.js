@@ -5,9 +5,27 @@ export function showAllSponsoredMessages (data) {
     return {
       type: ActionTypes.SHOW_SPONSORED_MESSAGES,
       sponsoredMessages: data.sponsoredMessages,
-      count: data.count
+      reconnectFbRequired: !data.permissionsGiven,
+      count: data.count,
+      refreshRequired: false
     }
   }
+
+export function addToSponsoredMessages (data) {
+    return {
+      type: ActionTypes.ADD_TO_SPONSORED_MESSAGES,
+      sponsoredMessages: data.sponsoredMessage,
+      message: data.message
+    }
+  }
+
+export function updateSponsoredMessagesListItemStatus (data) {
+  return {
+    type: ActionTypes.UPDATE_SPONSORED_MESSAGES_LIST_ITEM,
+    sponsoredMessage: data.sponsoredMessage,
+    status: data.status
+  }
+}
 
 export function showAdAccounts (data) {
   return {

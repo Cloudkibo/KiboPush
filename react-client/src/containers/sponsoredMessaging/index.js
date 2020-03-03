@@ -347,7 +347,7 @@ class SponsoredMessaging extends React.Component {
                     </div>
                   </div>
                   <div className='m-portlet__head-tools'>
-                    {this.props.pages && this.props.pages.length > 0
+                    {this.props.pages && this.props.pages.length > 0 && !this.props.reconnectFbRequired
                       ? <a href='#/' data-toggle="modal" data-target="#create" onClick={this.showCreateDialog} className='addLink btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
                         <span>
                           <i className='la la-plus' />
@@ -368,7 +368,9 @@ class SponsoredMessaging extends React.Component {
                   </div>
                 </div>
                 <div className='m-portlet__body'>
-                  <div className='row' style={{marginBottom: '28px'}}>
+                  {
+                    !this.props.reconnectFbRequired &&
+                    <div className='row' style={{marginBottom: '28px'}}>
                       <div className='col-md-4'>
                         <input type='text' placeholder='Search By Ad Name..' className='form-control' value={this.state.searchValue} onChange={this.searchAds} />
                       </div>
@@ -395,8 +397,49 @@ class SponsoredMessaging extends React.Component {
                         </select>
                       </div>
                     </div>
+                  }
+                    {
+                      this.props.reconnectFbRequired &&
+                      <div className="m-alert m-alert--icon alert alert-danger" role="alert">
+                        <div className="m-alert__text">
+                          Please reconnect your facebook account to grant KiboPush permission to your ad accounts.
+											  </div>
+                        <div className="m-alert__actions" style={{width: "220px"}}>
+                          <a href='/auth/facebook/'
+                            className="btn btn-outline-light btn-sm m-btn m-btn--hover-primary" 
+                            data-dismiss="alert1" 
+                            aria-label="Close">
+													  Reconnect Facebook
+												  </a>
+                        </div>
+                      </div>
+                    }
+                    {
+                      this.props.refreshRequired &&
+                      <div className="m-alert m-alert--icon alert alert-danger" role="alert">
+                        <div className="m-alert__text">
+                          {this.props.refreshMessage}
+											  </div>
+                        <div className="m-alert__actions" style={{width: "220px"}}>
+                          <button type="button" 
+                            className="btn btn-outline-light btn-sm m-btn m-btn--hover-primary" 
+                            data-dismiss="alert1" 
+                            aria-label="Close"
+                            onClick={() => {
+                              this.props.fetchSponsoredMessages({last_id: 'none',
+                              number_of_records: 10,
+                              first_page: 'first',
+                              search_value: '',
+                              status_value: '',
+                              page_value: ''})
+                            }}>
+													  Refresh
+												  </button>
+											  </div>
+                      </div>
+                    }
                   <div className='form-row'>
-                    { this.state.sponsoredMessages && this.state.sponsoredMessages.length > 0
+                    { this.state.sponsoredMessages && this.state.sponsoredMessages.length > 0 && !this.props.reconnectFbRequired
                   ? <div className='col-md-12 m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
                     <table className='m-datatable__table' style={{display: 'block', height: 'auto', overflowX: 'auto'}}>
                       <thead className='m-datatable__head'>
@@ -498,7 +541,10 @@ function mapStateToProps (state) {
     console.log(state)
   return {
     sponsoredMessages: (state.sponsoredMessagingInfo.sponsoredMessages),
+    refreshRequired: (state.sponsoredMessagingInfo.refreshRequired),
+    refreshMessage: (state.sponsoredMessagingInfo.refreshMessage),
     pages: (state.pagesInfo.pages),
+    reconnectFbRequired: (state.sponsoredMessagingInfo.reconnectFbRequired),
     count: (state.sponsoredMessagingInfo.count)
   }
 }
