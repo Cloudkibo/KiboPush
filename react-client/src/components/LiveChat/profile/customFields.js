@@ -250,6 +250,7 @@ class CustomFields extends React.Component {
                             <div className='row' style={{width: '250px'}}>
                                 <div className='col-12'>
                                     <Select
+                                        isSearchable
                                         options={options}
                                         onChange={this.onSelectChange}
                                         placeholder={'Select a Custom Field'}

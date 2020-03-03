@@ -122,7 +122,7 @@ class AssignTag extends React.Component {
   render () {
     return (
         <div>
-            <div style={{marginBottom: '20px', marginTop: '20px'}}>
+            <div style={{marginBottom: '10px', marginTop: '20px'}}>
                 <h6>Tags:</h6>
                 <Creatable
                     isMulti
