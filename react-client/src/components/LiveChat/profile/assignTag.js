@@ -22,6 +22,18 @@ class AssignTag extends React.Component {
     this.onSelectChange = this.onSelectChange.bind(this)
   }
 
+  UNSAFE_componentWillReceiveProps (nextProps) {
+      if (nextProps.subscriberTags) {
+          this.setState({subscriberTags: nextProps.subscriberTags.map(tag => (
+                    {
+                        label: tag.tag,
+                        value: tag._id
+                    }
+                ))
+            })
+      }
+  } 
+
   removeTags() {
     let payload = {
         subscribers: [this.props.activeSession._id],

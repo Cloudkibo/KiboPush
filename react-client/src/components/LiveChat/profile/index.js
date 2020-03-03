@@ -1,17 +1,18 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import Header from './header'
-import MapCustomer from './mapCustomer'
-import AssignTeam from './assignTeam'
-import AssignAgent from './assignAgent'
+// import MapCustomer from './mapCustomer'
+// import AssignTeam from './assignTeam'
+// import AssignAgent from './assignAgent'
 import AssignTag from './assignTag'
 import AssignChat from './assignChat'
+import CustomFields from './customFields'
 
 class Profile extends React.Component {
 
   render() {
     return (
-        <div style={{padding: '0px', border: '1px solid #F2F3F8', marginBottom: '0px'}} className='col-xl-3 m-portlet'>     
+        <div id='profileArea' style={{padding: '0px', border: '1px solid #F2F3F8', marginBottom: '0px'}} className='col-xl-3 m-portlet'>     
             <div className='m-card-profile'>
                 <div className='m-portlet__head'>
                     <Header
@@ -109,6 +110,14 @@ class Profile extends React.Component {
                             ))}
                         />
                     }
+                    {
+                        this.props.customFieldOptions && this.props.customFieldOptions.length > 0 && 
+                        <CustomFields 
+                            activeSession={this.props.activeSession}
+                            customFieldOptions={this.props.customFieldOptions}
+                            setCustomFieldValue={this.props.setCustomFieldValue}
+                        />
+                    }
                 </div>
             </div>
         </div>
@@ -132,10 +141,12 @@ Profile.propTypes = {
   'assignToAgent': PropTypes.func.isRequired,
   'sendNotifications': PropTypes.func.isRequired,
   'tags': PropTypes.array.isRequired,
-  'subscriberTags': PropTypes.array.isRequired,
+  'subscriberTags': PropTypes.array,
   'assignTags': PropTypes.func.isRequired,
   'unassignTags': PropTypes.func.isRequired,
-  'createTag': PropTypes.func.isRequired
+  'createTag': PropTypes.func.isRequired,
+  'customFieldOptions': PropTypes.array,
+  'setCustomFieldValue': PropTypes.func.isRequired
 }
 
 export default Profile
