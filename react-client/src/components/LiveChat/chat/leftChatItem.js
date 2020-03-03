@@ -16,7 +16,7 @@ class LeftChatItem extends React.Component {
           ? <div className='m-messenger__datetime'>
             {this.props.displayDate(this.props.message.datetime)}
           </div>
-          : index > 0 && this.props.showDate(this.props.lastChatDatetime, this.props.message.datetime) &&
+          : this.props.index > 0 && this.props.showDate(this.props.previousMessage.datetime, this.props.message.datetime) &&
           <div className='m-messenger__datetime'>
             {this.props.displayDate(this.props.message.datetime)}
           </div>
@@ -40,7 +40,8 @@ LeftChatItem.propTypes = {
   'message': PropTypes.object.isRequired,
   'showDate': PropTypes.func.isRequired,
   'displayDate': PropTypes.func.isRequired,
-  'activeSession': PropTypes.object.isRequired
+  'activeSession': PropTypes.object.isRequired,
+  'previousMessage': PropTypes.object
 }
 
 export default LeftChatItem

@@ -11,7 +11,7 @@ const hoverOn = {
     marginBottom: '7px',
     background: 'rgb(60, 60, 123, 0.5)'
   }
-  
+
 const hoverOff = {
     cursor: 'pointer',
     border: '1px solid rgb(220, 220, 220)',
@@ -50,7 +50,7 @@ class CustomFields extends React.Component {
         currentSelected: '',
         currentSelectedValue: '',
         settingCustomField: false,
-        currentTarget: 'customFieldTarget1'
+        currentTarget: '_custom_fields'
     }
     this.toggle = this.toggle.bind(this)
     this.hoverOn = this.hoverOn.bind(this)
@@ -79,7 +79,7 @@ class CustomFields extends React.Component {
   }
 
   togglePopover () {
-      this.setState({showingPopover: !this.state.showingPopover, 
+      this.setState({showingPopover: !this.state.showingPopover,
         selectedField: {
             label: '',
             value: ''
@@ -180,7 +180,7 @@ class CustomFields extends React.Component {
         })
     }
     return (
-        <div>
+        <div id='_custom_fields'>
             <div className='row'>
                 <div className='col-12'>
                     <span style={{ fontWeight: 500, marginLeft: '10px', fontSize: '12px' }}>
@@ -228,7 +228,7 @@ class CustomFields extends React.Component {
                     ))
                 }
 
-                <Popover 
+                <Popover
                     modifiers={
                         {
                         preventOverflow: {
@@ -239,14 +239,14 @@ class CustomFields extends React.Component {
                           }
                         }
                     }
-                    placement='left' 
-                    className='subscriberPopover' 
-                    isOpen={this.state.showingPopover} 
+                    placement='left'
+                    className='subscriberPopover'
+                    isOpen={this.state.showingPopover}
                     target={this.state.currentTarget}
                     toggle={this.togglePopover}>
                     <PopoverBody>
                         {
-                            this.state.settingCustomField ? 
+                            this.state.settingCustomField ?
                             <div className='row' style={{width: '250px'}}>
                                 <div className='col-12'>
                                     <Select
@@ -256,18 +256,18 @@ class CustomFields extends React.Component {
                                         placeholder={'Select a Custom Field'}
                                     />
                                 </div>
-                                
+
                                 <div style={{marginTop: '10px'}} className='col-12'>
                                     {setFieldInput}
                                 </div>
-                                
+
                               <div style={{marginTop: '10px', textAlign: 'center'}} className='col-12'>
                                 <button disabled={!this.state.selectedField || !this.state.selectedField.value} onClick={() => this.saveCustomField()} className='btn btn-primary'>
                                   Save
                                 </button>
                               </div>
                             </div>
-                            : 
+                            :
                             <div className='row'>
                                 <div className='col-12'>
                                     <label>Set "{this.state.selectedField.label}" Value</label>
@@ -284,10 +284,10 @@ class CustomFields extends React.Component {
                             </div>
                         }
                     </PopoverBody>
-                </Popover>   
+                </Popover>
             </div>
 
-            
+
         </div>
     )
   }
@@ -298,5 +298,5 @@ CustomFields.propTypes = {
     'customFieldOptions': PropTypes.array.isRequired,
     'setCustomFieldValue': PropTypes.func.isRequired
   }
-  
+
 export default CustomFields

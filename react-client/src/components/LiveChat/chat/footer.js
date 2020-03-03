@@ -396,7 +396,7 @@ class Footer extends React.Component {
                 <input
                   style={{cursor: 'not-allowed'}}
                   type='text'
-                  value={`Attachment: ${this.state.attachment.name}`}
+                  value={`Attachment: ${this.state.attachment.name.length > 20 ? this.state.attachment.name.substring(0, 20) + '...' : this.state.attachment.name}`}
                   className='m-messenger__form-input'
                   disabled
                 />
