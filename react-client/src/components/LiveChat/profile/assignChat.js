@@ -19,6 +19,18 @@ class AssignChat extends React.Component {
     this.unassignTeam = this.unassignTeam.bind(this)
   }
 
+  UNSAFE_componentWillReceiveProps (nextProps) {
+        if (nextProps.activeSession) {
+            this.setState({
+                currentSelected: nextProps.activeSession.is_assigned ? {
+                    value: nextProps.activeSession.assigned_to.id,
+                    label: nextProps.activeSession.assigned_to.name,
+                    group: nextProps.activeSession.assigned_to.type
+                } : ''
+            })
+        }
+    } 
+
   unassignAgent() {
     let data = {
       agentId: this.props.activeSession.assigned_to.id,
@@ -120,6 +132,7 @@ class AssignChat extends React.Component {
             <h6>Assigned to:</h6>
             <Select
                 isClearable
+                isSearchable
                 options={options}
                 onChange={this.onSelectChange}
                 value={this.state.currentSelected}

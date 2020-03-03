@@ -95,7 +95,9 @@ export function getSubscriberTags (id, msg) {
           dispatch(loadSubscriberTags(res.payload))
         } else {
           if (msg) {
-            msg.error('Error in getting subscriber tags')
+            console.log('Error in getting subscriber tags', res)
+            dispatch(loadSubscriberTags([]))
+            // msg.error('Error in getting subscriber tags')
           }
         }
       })
