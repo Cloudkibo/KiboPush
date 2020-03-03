@@ -109,9 +109,13 @@ class AssignTag extends React.Component {
             this.assignTag()
         })
     } else if (this.state.subscriberTags.length > 0) {
+        let removedTag = this.state.subscriberTags[0]
+        if (selected && selected.length > 0) {
+            removedTag = this.state.subscriberTags.filter(tag => !selected.includes(tag))[0]
+        }
         this.setState({selectedTag: {
-            value: this.state.subscriberTags[this.state.subscriberTags.length - 1].value,
-            label: this.state.subscriberTags[this.state.subscriberTags.length - 1].label
+            value: removedTag.value,
+            label: removedTag.label
         }}, () => {
             this.removeTags()
         })
