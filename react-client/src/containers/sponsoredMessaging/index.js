@@ -98,9 +98,20 @@ class SponsoredMessaging extends React.Component {
     this.isAnyFilter(this.state.searchValue, e.target.value, this.state.status, this.state.type_value)
     if (e.target.value !== '' && e.target.value !== 'all') {
       this.setState({pageNumber: 0})
-      this.props.fetchSponsoredMessages({last_id: this.props.sponsoredMessages.length > 0 ? this.props.sponsoredMessages[this.props.sponsoredMessages.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: this.state.searchValue, status_value: this.state.status, page_value: e.target.value})
+      this.props.fetchSponsoredMessages({
+        last_id: this.props.sponsoredMessages.length > 0 ? this.props.sponsoredMessages[this.props.sponsoredMessages.length - 1]._id : 'none',
+        number_of_records: 10,
+        first_page: 'first',
+        search_value: this.state.searchValue === 'all' ? '' : this.state.searchValue,
+        status_value: this.state.status === 'all' ? '' : this.state.status,
+        page_value: e.target.value})
     } else {
-      this.props.fetchSponsoredMessages({last_id: this.props.sponsoredMessages.length > 0 ? this.props.sponsoredMessages[this.props.sponsoredMessages.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: this.state.searchValue, status_value: this.state.status, page_value: ''})
+      this.props.fetchSponsoredMessages({
+        last_id: this.props.sponsoredMessages.length > 0 ? this.props.sponsoredMessages[this.props.sponsoredMessages.length - 1]._id : 'none',
+        number_of_records: 10, first_page: 'first',
+        search_value: this.state.searchValue === 'all' ? '' : this.state.searchValue,
+        status_value: this.state.status === 'all' ? '' : this.state.status,
+        page_value: ''})
     }
   }
   onStatusFilter (e) {
@@ -108,9 +119,21 @@ class SponsoredMessaging extends React.Component {
     this.isAnyFilter(this.state.searchValue, this.state.page_value, e.target.value)
     if (e.target.value !== '' && e.target.value !== 'all') {
       this.setState({pageNumber: 0})
-      this.props.fetchSponsoredMessages({last_id: this.props.sponsoredMessages.length > 0 ? this.props.sponsoredMessages[this.props.sponsoredMessages.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: this.state.searchValue, status_value: e.target.value, page_value: this.state.page_value})
+      this.props.fetchSponsoredMessages({
+        last_id: this.props.sponsoredMessages.length > 0 ? this.props.sponsoredMessages[this.props.sponsoredMessages.length - 1]._id : 'none',
+        number_of_records: 10,
+        first_page: 'first',
+        search_value: this.state.searchValue === 'all' ? '' : this.state.searchValue,
+        status_value: e.target.value,
+        page_value: this.state.page_value === 'all' ? '' : this.state.page_value })
     } else {
-      this.props.fetchSponsoredMessages({last_id: this.props.sponsoredMessages.length > 0 ? this.props.sponsoredMessages[this.props.sponsoredMessages.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: this.state.searchValue, status_value: '', page_value: this.state.page_value})
+      this.props.fetchSponsoredMessages({
+        last_id: this.props.sponsoredMessages.length > 0 ? this.props.sponsoredMessages[this.props.sponsoredMessages.length - 1]._id : 'none',
+        number_of_records: 10,
+        first_page: 'first',
+        search_value: this.state.searchValue === 'all' ? '' : this.state.searchValue,
+        status_value: '',
+        page_value: this.state.page_value === 'all' ? '' : this.state.page_value })
     }
   }
   searchAds (event) {
@@ -119,9 +142,21 @@ class SponsoredMessaging extends React.Component {
     })
     this.isAnyFilter(event.target.value, this.state.page_value, this.state.status)
     if (event.target.value !== '') {
-      this.props.fetchSponsoredMessages({last_id: this.props.sponsoredMessages.length > 0 ? this.props.sponsoredMessages[this.props.sponsoredMessages.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: event.target.value.toLowerCase(), status_value: this.state.status, page_value: this.state.page_value})
+      this.props.fetchSponsoredMessages({
+        last_id: this.props.sponsoredMessages.length > 0 ? this.props.sponsoredMessages[this.props.sponsoredMessages.length - 1]._id : 'none',
+        number_of_records: 10,
+        first_page: 'first',
+        search_value: event.target.value.toLowerCase(),
+        status_value: this.state.status === 'all' ? '' : this.state.status,
+        page_value: this.state.page_value === 'all' ? '' : this.state.page_value})
     } else {
-      this.props.fetchSponsoredMessages({last_id: this.props.sponsoredMessages.length > 0 ? this.props.sponsoredMessages[this.props.sponsoredMessages.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: '', status_value: this.state.status, page_value: this.state.page_value})
+      this.props.fetchSponsoredMessages({
+        last_id: this.props.sponsoredMessages.length > 0 ? this.props.sponsoredMessages[this.props.sponsoredMessages.length - 1]._id : 'none',
+        number_of_records: 10,
+        first_page: 'first',
+        search_value: '',
+        status_value: this.state.status === 'all' ? '' : this.state.status,
+        page_value: this.state.page_value === 'all' ? '' : this.state.page_value})
     }
   }
 
@@ -132,9 +167,9 @@ class SponsoredMessaging extends React.Component {
         last_id: 'none',
         number_of_records: 10,
         first_page: 'first',
-        search_value: this.state.searchValue,
-        status_value: this.state.status,
-        page_value: this.state.page_value
+        search_value: this.state.searchValue === 'all' ? '' : this.state.searchValue,
+        status_value: this.state.status === 'all' ? '' : this.state.status,
+        page_value: this.state.page_value === 'all' ? '' : this.state.page_value
       })
     } else if (this.state.pageNumber < data.selected) {
       this.props.fetchSponsoredMessages({
@@ -143,9 +178,9 @@ class SponsoredMessaging extends React.Component {
         last_id: this.props.sponsoredMessages.length > 0 ? this.props.sponsoredMessages[this.props.sponsoredMessages.length - 1]._id : 'none',
         number_of_records: 10,
         first_page: 'next',
-        search_value: this.state.searchValue,
-        status_value: this.state.status,
-        page_value: this.state.page_value
+        search_value: this.state.searchValue === 'all' ? '' : this.state.searchValue,
+        status_value: this.state.status === 'all' ? '' : this.state.status,
+        page_value: this.state.page_value === 'all' ? '' : this.state.page_value
       })
     } else {
       this.props.fetchSponsoredMessages({
@@ -154,9 +189,9 @@ class SponsoredMessaging extends React.Component {
         last_id: this.props.sponsoredMessages.length > 0 ? this.props.sponsoredMessages[this.props.sponsoredMessages.length - 1]._id : 'none',
         number_of_records: 10,
         first_page: 'previous',
-        search_value: this.state.searchValue,
-        status_value: this.state.status,
-        page_value: this.state.page_value
+        search_value: this.state.searchValue === 'all' ? '' : this.state.searchValue,
+        status_value: this.state.status === 'all' ? '' : this.state.status,
+        page_value: this.state.page_value === 'all' ? '' : this.state.page_value
       })
     }
     this.setState({pageNumber: data.selected})
@@ -407,8 +442,8 @@ class SponsoredMessaging extends React.Component {
 											  </div>
                         <div className="m-alert__actions" style={{width: "220px"}}>
                           <a href='/auth/facebook/'
-                            className="btn btn-outline-light btn-sm m-btn m-btn--hover-primary" 
-                            data-dismiss="alert1" 
+                            className="btn btn-outline-light btn-sm m-btn m-btn--hover-primary"
+                            data-dismiss="alert1"
                             aria-label="Close">
 													  Reconnect Facebook
 												  </a>
@@ -422,9 +457,9 @@ class SponsoredMessaging extends React.Component {
                           {this.props.refreshMessage}
 											  </div>
                         <div className="m-alert__actions" style={{width: "220px"}}>
-                          <button type="button" 
-                            className="btn btn-outline-light btn-sm m-btn m-btn--hover-primary" 
-                            data-dismiss="alert1" 
+                          <button type="button"
+                            className="btn btn-outline-light btn-sm m-btn m-btn--hover-primary"
+                            data-dismiss="alert1"
                             aria-label="Close"
                             onClick={() => {
                               this.props.fetchSponsoredMessages({last_id: 'none',
@@ -454,11 +489,11 @@ class SponsoredMessaging extends React.Component {
                             </th>
                             <th data-field='pageName'
                               className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                              <span style={{width: '100px'}}>Page Name</span>
+                              <span style={{width: '150px'}}>Page Name</span>
                             </th>
                             <th data-field='status'
                               className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                              <span style={{width: '100px'}}>Status</span>
+                              <span style={{width: '150px'}}>Status</span>
                             </th>
                             <th data-field='actions'
                               className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
@@ -475,10 +510,10 @@ class SponsoredMessaging extends React.Component {
                                 <span style={{width: '150px'}}>{sponsoredMessage.adName}</span>
                               </td>
                               <td data-field='pageName' className='m-datatable__cell--center m-datatable__cell'>
-                                <span style={{width: '100px'}}>{this.props.pages.filter((page) => page._id === sponsoredMessage.pageId)[0] ? this.props.pages.filter((page) => page._id === sponsoredMessage.pageId)[0].pageName : '-'}</span>
+                                <span style={{width: '150px'}}>{this.props.pages.filter((page) => page._id === sponsoredMessage.pageId)[0] ? this.props.pages.filter((page) => page._id === sponsoredMessage.pageId)[0].pageName : '-'}</span>
                               </td>
                               <td data-field='status' className='m-datatable__cell--center m-datatable__cell'>
-                                <span style={{width: '100px'}}>{this.getStatusValue(sponsoredMessage.status)}</span>
+                                <span style={{width: '150px'}}>{this.getStatusValue(sponsoredMessage.status)}</span>
                               </td>
                               <td data-field='actions' className='m-datatable__cell--center m-datatable__cell'>
                                 <span style={{width: '230px'}}>
