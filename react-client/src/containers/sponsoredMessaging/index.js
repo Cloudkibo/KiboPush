@@ -411,8 +411,8 @@ class SponsoredMessaging extends React.Component {
               <i className='flaticon-technology m--font-accent' />
             </div>
             <div className='m-alert__text'>
-              Need help in understanding Sponsored Messages? Here is the <a href='https://kibopush.com/sponsored-broadcast/' target='_blank' rel='noopener noreferrer'> documentation</a>
-               Or check out this <a href='#/' onClick={this.openVideoTutorial}>video tutorial</a>.
+              Need help in understanding Sponsored Messages? Here is the <a href='https://kibopush.com/sponsored-broadcast/' target='_blank' rel='noopener noreferrer'> documentation </a>
+              Or check out this <a href='#/' onClick={this.openVideoTutorial}>video tutorial</a>
             </div>
           </div>
           <div className='row'>

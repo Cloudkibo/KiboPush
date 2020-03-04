@@ -159,12 +159,6 @@ class Builders extends React.Component {
     this.refs.ActionModal.click()
   }
   
-  onFilesError (errorMsg) {
-    this.setState({
-      fileError: errorMsg   
-    })
-    this.refs.fileError.click()
-  }
 
   onFilesError (errorMsg) {
     this.setState({
@@ -1398,7 +1392,6 @@ class Builders extends React.Component {
         onFilesError={this.onFilesError}
         toggleGSModal={this.toggleGSModal}
         closeGSModal={this.closeGSModal}
-        onFilesError={this.onFilesError}
         addComponent={this.addComponent} />),
       'video': (<LinkCarousel
         elementLimit={1}
