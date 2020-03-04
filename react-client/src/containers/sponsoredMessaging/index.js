@@ -10,6 +10,7 @@ import ReactPaginate from 'react-paginate'
 import {deleteSponsoredMessage, createSponsoredMessage, fetchSponsoredMessages, showUpdatedData, send} from '../../redux/actions/sponsoredMessaging.actions'
 import AlertContainer from 'react-alert'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
+import YouTube from 'react-youtube'
 
 class SponsoredMessaging extends React.Component {
   constructor (props, context) {
@@ -24,7 +25,8 @@ class SponsoredMessaging extends React.Component {
       status: '',
       pageNumber: 0,
       page_value: '',
-      filter: false
+      filter: false,
+      openVideo: false
     }
    props.loadMyPagesList()
    props.fetchSponsoredMessages({last_id: 'none',
@@ -49,8 +51,14 @@ class SponsoredMessaging extends React.Component {
    this.getStatusValue = this.getStatusValue.bind(this)
    this.publish = this.publish.bind(this)
    this.handlePublishResponse = this.handlePublishResponse.bind(this)
+   this.openVideoTutorial = this.openVideoTutorial.bind(this)
   }
-
+  openVideoTutorial () {
+    this.setState({
+      openVideo: true
+    })
+    this.refs.videoSponsored.click()
+  }
   publish (sponsoredMessage) {
     let pageId = this.props.pages && this.props.pages.filter(p => p._id === sponsoredMessage.pageId)[0].pageId
     sponsoredMessage.pageId = pageId
@@ -293,6 +301,41 @@ class SponsoredMessaging extends React.Component {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
+        <a href='#/' style={{ display: 'none' }} ref='videoSponsored' data-toggle='modal' data-backdrop='static' data-keyboard='false' data-target="#videoSponsored">videoSponsored</a>
+            <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="videoSponsored" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog modal-lg" role="document">
+              <div className="modal-content" style={{width: '687px', top: '100'}}>
+                <div style={{ display: 'block'}} className="modal-header">
+                  <h5 className="modal-title" id="exampleModalLabel">
+                    Sponsored Broadcast Video Tutorial
+                  </h5>
+                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" 
+                  aria-label="Close"
+                  onClick={() => {
+                    this.setState({
+                      openVideo: false
+                    })}}>
+                    <span aria-hidden="true">
+                      &times;
+                      </span>
+                  </button>
+                </div>
+                <div style={{color: 'black'}} className="modal-body">
+                  {this.state.openVideo && <YouTube
+                    videoId='ZrZJs_n-wOg'
+                    opts={{
+                      height: '390',
+                      width: '640',
+                      playerVars: { // https://developers.google.com/youtube/player_parameters
+                        autoplay: 0
+                      }
+                    }}
+                  />
+                }
+                </div>
+              </div>
+            </div>
+          </div>  
           <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="create" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
               <div className="modal-content">
@@ -368,7 +411,8 @@ class SponsoredMessaging extends React.Component {
               <i className='flaticon-technology m--font-accent' />
             </div>
             <div className='m-alert__text'>
-              Need help in understanding Sponsored Messages? Here is the <a href='https://kibopush.com/sponsored-broadcast/' target='_blank' rel='noopener noreferrer'>documentation</a>.
+              Need help in understanding Sponsored Messages? Here is the <a href='https://kibopush.com/sponsored-broadcast/' target='_blank' rel='noopener noreferrer'> documentation</a>
+               Or check out this <a href='#/' onClick={this.openVideoTutorial}>video tutorial</a>.
             </div>
           </div>
           <div className='row'>
