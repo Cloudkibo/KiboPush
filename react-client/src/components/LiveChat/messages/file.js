@@ -9,32 +9,22 @@ class File extends React.Component {
 
   render() {
     return (
-      <div>
-        <div className='m-messenger__message-content'>
-          <div className='m-messenger__message-username'>
-            {this.props.repliedByMessage}
-          </div>
-          <a
-            download={this.props.message.payload.fileName}
-            target='_blank'
-            rel='noopener noreferrer'
-            href={this.props.message.payload.fileurl.url}
-          >
-            <h6 style={{color: 'white'}}>
-              <i className='fa fa-file-text-o' /> {this.props.message.payload.fileName}
-            </h6>
-          </a>
-        </div>
-        {this.props.seenElement}
-      </div>
+      <a
+        download={this.props.file.fileName}
+        target='_blank'
+        rel='noopener noreferrer'
+        href={this.props.file.fileurl.url}
+      >
+        <h6 style={{color: 'white'}}>
+          <i className='fa fa-file-text-o' /> {this.props.file.fileName}
+        </h6>
+      </a>
     )
   }
 }
 
 File.propTypes = {
-  'message': PropTypes.object.isRequired,
-  'repliedByMessage': PropTypes.string.isRequired,
-  'seenElement': PropTypes.element.isRequired
+  'file': PropTypes.object.isRequired
 }
 
 export default File

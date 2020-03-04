@@ -132,11 +132,13 @@ class Chat extends React.Component {
 
         <BODY
           userChat={this.props.userChat}
+          chatCount={this.props.chatCount}
           activeSession={this.props.activeSession}
           showDate={showDate}
           displayDate={displayDate}
           loadingChat={this.props.loadingChat}
           user={this.props.user}
+          fetchUserChats={this.props.fetchUserChats}
         />
 
         {
@@ -151,7 +153,7 @@ class Chat extends React.Component {
               padding: '15px'
             }}
           >
-            <span>Chat's 24 hours window session has been expired for this subscriber. You cannot send a message to this subscriber now. Please ask the subsriber to message you first in order to be able to chat with him/her.</span>
+            <span>Chat's 24 hours window session has been expired for this subscriber. You cannot send a message to this subscriber until they message you.</span>
           </div>
           : this.props.activeSession.waitingForUserInput &&
           this.props.activeSession.waitingForUserInput.componentIndex > -1
@@ -166,10 +168,14 @@ class Chat extends React.Component {
             }}
           >
             <span>
-              A user input component was last sent to this subscriber. A response is currently pending. Do you want to override the user input component?
+              A user input component was last sent to this subscriber and we are waiting for a response from them.
             </span>
-            <button style={{marginLeft: '33%'}} onClick={() => this.overrideUserInput()} className='btn btn-primary'>
-              Yes
+            <button
+              className='m-link'
+              style={{float: 'right', border: 'none', cursor: 'pointer'}}
+              onClick={() => this.overrideUserInput()}
+            >
+              I don't want to wait
             </button>
           </div>
           : <FOOTER
@@ -195,6 +201,7 @@ class Chat extends React.Component {
 
 Chat.propTypes = {
   'userChat': PropTypes.array.isRequired,
+  'chatCount': PropTypes.number.isRequired,
   'activeSession': PropTypes.object.isRequired,
   'changeStatus': PropTypes.func.isRequired,
   'updateState': PropTypes.func.isRequired,
@@ -207,7 +214,8 @@ Chat.propTypes = {
   'uploadAttachment': PropTypes.func.isRequired,
   'sendAttachment': PropTypes.func.isRequired,
   'uploadRecording': PropTypes.func.isRequired,
-  'loadingChat': PropTypes.bool.isRequired
+  'loadingChat': PropTypes.bool.isRequired,
+  'fetchUserChats': PropTypes.func.isRequired
 }
 
 export default Chat

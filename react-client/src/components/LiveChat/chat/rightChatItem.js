@@ -10,6 +10,8 @@ import FILE from '../messages/file'
 import POLL from '../messages/poll'
 import SURVEY from '../messages/survey'
 import LIST from '../messages/list'
+import CARD from '../messages/card'
+import GALLERY from '../messages/gallery'
 
 class RightChatItem extends React.Component {
   constructor(props, context) {
@@ -33,69 +35,66 @@ class RightChatItem extends React.Component {
   }
 
   getMessage () {
-    const type = this.props.message.payload.componentType
-    if (type === 'text') {
+    const message = this.props.message.payload
+    const type = message.componentType
+    if (['text', 'template'].includes(type)) {
       return (
         <TEXT
-          message={this.props.message}
-          repliedByMessage={this.getRepliedByMsg()}
-          seenElement={this.props.seenElement}
+          text={message}
         />
       )
     } else if (['image', 'sticker', 'gif', 'thumbsUp'].includes(type)) {
       return (
         <IMAGE
-          message={this.props.message}
-          repliedByMessage={this.getRepliedByMsg()}
-          seenElement={this.props.seenElement}
+          image={message}
         />
       )
     } else if (type === 'audio') {
       return (
         <AUDIO
-          message={this.props.message}
-          repliedByMessage={this.getRepliedByMsg()}
-          seenElement={this.props.seenElement}
+          audio={message}
         />
       )
     } else if (type === 'video') {
       return (
         <VIDEO
-          message={this.props.message}
-          repliedByMessage={this.getRepliedByMsg()}
-          seenElement={this.props.seenElement}
+          video={message}
         />
       )
     } else if (type === 'file') {
       return (
         <FILE
-          message={this.props.message}
-          repliedByMessage={this.getRepliedByMsg()}
-          seenElement={this.props.seenElement}
+          file={message}
         />
       )
     } else if (type === 'poll') {
       return (
         <POLL
-          message={this.props.message}
-          repliedByMessage={this.getRepliedByMsg()}
-          seenElement={this.props.seenElement}
+          poll={message}
         />
       )
     } else if (type === 'survey') {
       return (
         <SURVEY
-          message={this.props.message}
-          repliedByMessage={this.getRepliedByMsg()}
-          seenElement={this.props.seenElement}
+          survey={message}
         />
       )
     } else if (type === 'list') {
       return (
         <LIST
-          message={this.props.message}
-          repliedByMessage={this.getRepliedByMsg()}
-          seenElement={this.props.seenElement}
+          list={message}
+        />
+      )
+    } else if (type === 'card') {
+      return (
+        <CARD
+          card={message}
+        />
+      )
+    } else if (type === 'gallery') {
+      return (
+        <GALLERY
+          gallery={message}
         />
       )
     } else {
@@ -105,7 +104,7 @@ class RightChatItem extends React.Component {
 
   render() {
     return (
-      <div style={{marginLeft: 0, marginRight: 0, display: 'block', clear: 'both'}} className='row'>
+      <div id={this.props.message._id} style={{marginLeft: 0, marginRight: 0, display: 'block', clear: 'both'}} className='row'>
         {
           this.props.index === 0
           ? <div className='m-messenger__datetime'>
@@ -116,10 +115,16 @@ class RightChatItem extends React.Component {
             {this.props.displayDate(this.props.message.datetime)}
           </div>
         }
-        <div style={{minWidth: '200px', maxWidth: '200px'}} className='m-messenger__message m-messenger__message--out'>
+        <div style={{minWidth: '200px', maxWidth: '250px'}} className='m-messenger__message m-messenger__message--out'>
           <div className='m-messenger__message-body'>
             <div className='m-messenger__message-arrow' />
-            {this.getMessage()}
+            <div style={{maxWidth: '250px'}} className='m-messenger__message-content'>
+              <div className='m-messenger__message-username'>
+                {this.getRepliedByMsg()}
+              </div>
+              {this.getMessage()}
+            </div>
+            {this.props.seenElement}
           </div>
         </div>
       </div>
