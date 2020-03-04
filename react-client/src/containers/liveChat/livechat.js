@@ -30,6 +30,7 @@ import { loadTeamsList } from '../../redux/actions/teams.actions'
 import { loadMembersList } from '../../redux/actions/members.actions'
 import {
   getSubscriberTags,
+  clearSubscriberTags,
   unassignTags,
   createTag,
   assignTags,
@@ -38,7 +39,8 @@ import {
 import {
   setCustomFieldValue,
   loadCustomFields,
-  getCustomFieldValue
+  getCustomFieldValue,
+  clearCustomFieldValues
 } from '../../redux/actions/customFields.actions'
 
 // components
@@ -294,8 +296,10 @@ class LiveChat extends React.Component {
   changeActiveSession (session) {
     console.log('changeActiveSession', session)
     if (session._id !== this.state.activeSession._id) {
-      this.setState({activeSession: session, loadingChat: true, showSearch: false})
+      this.setState({activeSession: session, loadingChat: true, showSearch: false, customFieldOptions: []})
+      this.props.clearCustomFieldValues()
       this.props.clearSearchResult()
+      this.props.clearSubscriberTags()
       this.props.fetchUserChats(session._id, { page: 'first', number: 25 })
       this.props.getSubscriberTags(session._id, this.alertMsg)
       this.props.getCustomFieldValue(session._id)
@@ -557,7 +561,9 @@ function mapDispatchToProps(dispatch) {
     uploadRecording,
     searchChat,
     fetchUserChats,
-    clearSearchResult
+    clearSearchResult,
+    clearSubscriberTags,
+    clearCustomFieldValues
   }, dispatch)
 }
 

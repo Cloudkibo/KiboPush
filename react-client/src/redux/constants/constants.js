@@ -254,6 +254,7 @@ export const REMOVE_TAG = 'REMOVE_TAG'
 export const UPDATE_TAG = 'UPDATE_TAG'
 export const ASSIGN_TAG = 'ASSIGN_TAG'
 export const UNASSIGN_TAG = 'UNASSIGN_TAG'
+export const CLEAR_SUBSCRIBER_TAGS = 'CLEAR_SUBSCRIBER_TAGS'
 
 // constants for notifications
 export const SHOW_NOTIFICATIONS = 'SHOW_NOTIFICATIONS'
@@ -367,6 +368,7 @@ export const RESET_STATE_REF_URL = 'RESET_STATE_REF_URL'
 // constants for custom fields
 export const LOAD_CUSTOM_FIELDS = 'LOAD_CUSTOM_FIELDS'
 export const GET_CUSTOM_FIELD_SUBSCRIBER = 'GET_CUSTOM_FIELD_SUBSCRIBER'
+export const CLEAR_CUSTOM_FIELD_VALUES = 'CLEAR_CUSTOM_FIELD_VALUES'
 
 // constants for contacts
 export const LOAD_CONTACTS_LIST = 'LOAD_CONTACTS_LIST'

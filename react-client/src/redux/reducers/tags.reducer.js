@@ -61,6 +61,10 @@ export function tagsInfo (state = {}, action) {
       return Object.assign({}, state, {
         subscriberTags: action.data
       })
+    case ActionTypes.CLEAR_SUBSCRIBER_TAGS:
+      return Object.assign({}, state, {
+        subscriberTags: undefined
+      })
     default:
       return state
   }

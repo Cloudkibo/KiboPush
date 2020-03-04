@@ -1,6 +1,12 @@
 import * as ActionTypes from '../constants/constants'
 import callApi from '../../utility/api.caller.service'
 
+export const clearCustomFieldValues = () => {
+  return {
+    type: ActionTypes.CLEAR_CUSTOM_FIELD_VALUES
+  }
+}
+
 export const getCustomFieldlist = (data) => {
   return {
     type: ActionTypes.LOAD_CUSTOM_FIELDS,

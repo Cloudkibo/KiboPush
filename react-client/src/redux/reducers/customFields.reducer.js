@@ -11,6 +11,10 @@ export function customFieldInfo (state = {}, action) {
         return Object.assign({}, state, {
           customFieldSubscriber: action.data
         })
+      case ActionTypes.CLEAR_CUSTOM_FIELD_VALUES:
+        return Object.assign({}, state, {
+          customFieldSubscriber: undefined
+        })
     default:
       return state
   }

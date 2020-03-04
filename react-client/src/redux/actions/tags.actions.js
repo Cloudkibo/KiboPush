@@ -1,6 +1,12 @@
 import * as ActionTypes from '../constants/constants'
 import callApi from '../../utility/api.caller.service'
 
+export function clearSubscriberTags () {
+  return {
+    type: ActionTypes.CLEAR_SUBSCRIBER_TAGS
+  }
+}
+
 export function assignTag (data) {
   console.log('assignTag', data)
   return {
