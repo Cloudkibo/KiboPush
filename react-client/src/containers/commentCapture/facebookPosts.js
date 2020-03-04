@@ -34,7 +34,9 @@ class FacebookPosts extends React.Component {
       dateRangeWarning: '',
       openVideo: false
     }
-    props.fetchAllPosts({last_id: 'none',
+    props.fetchAllPosts({
+      pageIds: props.pages ? props.pages.map(p => p._id) : [],
+      last_id: 'none',
       number_of_records: 10,
       first_page: 'first',
       search_value: '',
@@ -99,10 +101,23 @@ class FacebookPosts extends React.Component {
     })
     if (this.validDateRange(this.state.startDate, e.target.value)) {
       this.setState({pageNumber: 0})
-      this.props.fetchAllPosts({last_id: this.props.posts.length > 0 ? this.props.posts[this.props.posts.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: this.state.searchValue, type_value: e.target.value, startDate: this.state.startDate, endDate: e.target.value})
+      this.props.fetchAllPosts({pageIds: this.props.pages ? this.props.pages.map(p => p._id) : [],
+        last_id: this.props.posts.length > 0 ? this.props.posts[this.props.posts.length - 1]._id : 'none',
+        number_of_records: 10,
+        first_page: 'first',
+        search_value: this.state.searchValue,
+        type_value: e.target.value,
+        startDate: this.state.startDate,
+        endDate: e.target.value})
     } else {
       this.setState({pageNumber: 0})
-      this.props.fetchAllPosts({last_id: this.props.posts.length > 0 ? this.props.posts[this.props.posts.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: this.state.searchValue, type_value: e.target.value, startDate: '', endDate: ''})
+      this.props.fetchAllPosts({pageIds: this.props.pages ? this.props.pages.map(p => p._id) : [],
+        last_id: this.props.posts.length > 0 ? this.props.posts[this.props.posts.length - 1]._id : 'none',
+        number_of_records: 10, first_page: 'first',
+        search_value: this.state.searchValue,
+        type_value: e.target.value,
+        startDate: '',
+        endDate: ''})
     }
   }
   changeDateFrom (e) {
@@ -112,10 +127,23 @@ class FacebookPosts extends React.Component {
     })
     if (this.validDateRange(e.target.value, this.state.endDate)) {
       this.setState({pageNumber: 0})
-      this.props.fetchAllPosts({last_id: this.props.posts.length > 0 ? this.props.posts[this.props.posts.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: this.state.searchValue, type_value: e.target.value, startDate: e.target.value, endDate: this.state.endDate})
+      this.props.fetchAllPosts({pageIds: this.props.pages ? this.props.pages.map(p => p._id) : [],
+        last_id: this.props.posts.length > 0 ? this.props.posts[this.props.posts.length - 1]._id : 'none',
+        number_of_records: 10,
+        first_page: 'first',
+        search_value: this.state.searchValue,
+        type_value: e.target.value,
+        startDate: e.target.value,
+        endDate: this.state.endDate})
     } else {
       this.setState({pageNumber: 0})
-      this.props.fetchAllPosts({last_id: this.props.posts.length > 0 ? this.props.posts[this.props.posts.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: this.state.searchValue, type_value: e.target.value, startDate: '', endDate: ''})
+      this.props.fetchAllPosts({pageIds: this.props.pages ? this.props.pages.map(p => p._id) : [],
+        last_id: this.props.posts.length > 0 ? this.props.posts[this.props.posts.length - 1]._id : 'none',
+        number_of_records: 10, first_page: 'first',
+        search_value: this.state.searchValue,
+        type_value: e.target.value,
+        startDate: '',
+        endDate: ''})
     }
   }
   showDialogDelete(id) {
@@ -126,9 +154,23 @@ class FacebookPosts extends React.Component {
     this.setState({captureType: e.target.value, pageNumber: 0, filter:true})
     if (e.target.value !== '' && e.target.value !== 'all') {
       this.setState({pageNumber: 0})
-      this.props.fetchAllPosts({last_id: this.props.posts.length > 0 ? this.props.posts[this.props.posts.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: this.state.searchValue, type_value: e.target.value, startDate: '', endDate: ''})
+      this.props.fetchAllPosts({pageIds: this.props.pages ? this.props.pages.map(p => p._id) : [],
+        last_id: this.props.posts.length > 0 ? this.props.posts[this.props.posts.length - 1]._id : 'none',
+        number_of_records: 10,
+        first_page: 'first',
+        search_value: this.state.searchValue,
+        type_value: e.target.value,
+        startDate: '',
+        endDate: ''})
     } else {
-      this.props.fetchAllPosts({last_id: this.props.posts.length > 0 ? this.props.posts[this.props.posts.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: this.state.searchValue, type_value: '', startDate: '', endDate: ''})
+      this.props.fetchAllPosts({pageIds: this.props.pages ? this.props.pages.map(p => p._id) : [],
+        last_id: this.props.posts.length > 0 ? this.props.posts[this.props.posts.length - 1]._id : 'none',
+        number_of_records: 10,
+        first_page: 'first',
+        search_value: this.state.searchValue,
+        type_value: '',
+        startDate: '',
+        endDate: ''})
     }
   }
   componentDidMount() {
@@ -203,6 +245,7 @@ class FacebookPosts extends React.Component {
     console.log('data.selected', data.selected)
     if (data.selected === 0) {
       this.props.fetchAllPosts({
+        pageIds: this.props.pages ? this.props.pages.map(p => p._id) : [],
         last_id: 'none',
         number_of_records: 10,
         first_page: 'first',
@@ -213,6 +256,7 @@ class FacebookPosts extends React.Component {
       })
     } else if (this.state.pageNumber < data.selected) {
       this.props.fetchAllPosts({
+        pageIds: this.props.pages ? this.props.pages.map(p => p._id) : [],
         current_page: this.state.pageNumber,
         requested_page: data.selected,
         last_id: this.props.posts.length > 0 ? this.props.posts[this.props.posts.length - 1]._id : 'none',
@@ -225,6 +269,7 @@ class FacebookPosts extends React.Component {
       })
     } else {
       this.props.fetchAllPosts({
+        pageIds: this.props.pages ? this.props.pages.map(p => p._id) : [],
         current_page: this.state.pageNumber,
         requested_page: data.selected,
         last_id: this.props.posts.length > 0 ? this.props.posts[this.props.posts.length - 1]._id : 'none',
@@ -255,9 +300,23 @@ class FacebookPosts extends React.Component {
       filter:true
     })
     if (event.target.value !== '') {
-      this.props.fetchAllPosts({last_id: this.props.posts.length > 0 ? this.props.posts[this.props.posts.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: event.target.value.toLowerCase(), type_value: this.state.captureType, startDate: '', endDate: ''})
+      this.props.fetchAllPosts({pageIds: this.props.pages ? this.props.pages.map(p => p._id) : [],
+        last_id: this.props.posts.length > 0 ? this.props.posts[this.props.posts.length - 1]._id : 'none',
+        number_of_records: 10,
+        first_page: 'first',
+        search_value: event.target.value.toLowerCase(),
+        type_value: this.state.captureType,
+        startDate: '',
+        endDate: ''})
     } else {
-      this.props.fetchAllPosts({last_id: this.props.posts.length > 0 ? this.props.posts[this.props.posts.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', search_value: '', type_value: this.state.captureType, startDate: '', endDate: ''})
+      this.props.fetchAllPosts({pageIds: this.props.pages ? this.props.pages.map(p => p._id) : [],
+        last_id: this.props.posts.length > 0 ? this.props.posts[this.props.posts.length - 1]._id : 'none',
+        number_of_records: 10,
+        first_page: 'first',
+        search_value: '',
+        type_value: this.state.captureType,
+        startDate: '',
+        endDate: ''})
     }
   }
 
@@ -280,7 +339,7 @@ class FacebookPosts extends React.Component {
                 <h5 className="modal-title" id="exampleModalLabel">
                   Comment Capture Video Tutorial
 									</h5>
-                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" 
+                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal"
                 aria-label="Close"
                 onClick={() => {
                   this.setState({
@@ -380,7 +439,7 @@ class FacebookPosts extends React.Component {
                 </div>
                 <div className='m-portlet__body'>
                 { (this.state.postsData && this.state.postsData.length > 0) || this.state.filter
-                ? 
+                ?
                   <div className='form-row'>
                     <div style={{ display: 'inline-block' }} className='col-md-3'>
                       <select className='custom-select' style={{width: '100%'}} value= {this.state.captureType} onChange={this.onTypeFilter}>
