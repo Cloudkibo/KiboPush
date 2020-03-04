@@ -27,7 +27,8 @@ class RssIntegrations extends React.Component {
       page_value: '',
       type_value: '',
       filter: false,
-      loading: true
+      loading: true,
+      openVideo: false
     }
     props.fetchNewsFeed({last_id: 'none',
       number_of_records: 10,
@@ -56,7 +57,14 @@ class RssIntegrations extends React.Component {
     this.handlePermissions = this.handlePermissions.bind(this)
     this.getStatusValue = this.getStatusValue.bind(this)
     this.isAnyFilter = this.isAnyFilter.bind(this)
+    this.openVideoTutorial = this.openVideoTutorial.bind(this)
     this.props.checkSubscriptionPermissions(this.handlePermissions)
+  }
+  openVideoTutorial () {
+    this.setState({
+      openVideo: true
+    })
+    this.refs.videorss.click()
   }
   getStatusValue(status) {
     var value = 'Not Found'
@@ -346,22 +354,28 @@ class RssIntegrations extends React.Component {
         : <div className='m-grid__item m-grid__item--fluid m-wrapper'>
           <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
           <div style={{float: 'left', clear: 'both'}} ref={(el) => { this.top = el }} />
-            <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="video" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <a href='#/' style={{ display: 'none' }} ref='videorss' data-toggle='modal' data-backdrop='static' data-keyboard='false' data-target="#videorss">videorss</a>
+            <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="videorss" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog modal-lg" role="document">
               <div className="modal-content" style={{width: '687px', top: '100'}}>
                 <div style={{ display: 'block'}} className="modal-header">
                   <h5 className="modal-title" id="exampleModalLabel">
-                    RssFeeds Integrations Video Tutorial
+                    Rss Feeds Integrations Video Tutorial
                   </h5>
-                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" 
+                  aria-label="Close"
+                  onClick={() => {
+                    this.setState({
+                      openVideo: false
+                    })}}>
                     <span aria-hidden="true">
                       &times;
                       </span>
                   </button>
                 </div>
                 <div style={{color: 'black'}} className="modal-body">
-                  <YouTube
-                    videoId='Rt4uOwG9vQE'
+                  {this.state.openVideo && <YouTube
+                    videoId='25LtWD0NR60'
                     opts={{
                       height: '390',
                       width: '640',
@@ -370,6 +384,7 @@ class RssIntegrations extends React.Component {
                       }
                     }}
                   />
+                }
                 </div>
               </div>
             </div>
@@ -453,7 +468,7 @@ class RssIntegrations extends React.Component {
               </div>
               <div className='m-alert__text'>
                 Need help in understanding Rss Integration? Here is the <a href='https://kibopush.com/rss-integration/' target='_blank' rel='noopener noreferrer'>documentation</a>.
-                Or check out this <a href='#/' data-toggle="modal" data-target="#video">video tutorial</a>
+                Or check out this <a href='#/' onClick={this.openVideoTutorial}>video tutorial</a>
               </div>
             </div>
             }

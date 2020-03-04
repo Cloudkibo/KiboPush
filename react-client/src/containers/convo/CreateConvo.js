@@ -317,6 +317,7 @@ class CreateConvo extends React.Component {
       action: function (data) {
         compProp.getAdminSubscriptions()
         comp.msg.success('Subscribed successfully. Click on the test button again to test')
+        comp.refs.messengerModal.click()
       }
     })
   }
