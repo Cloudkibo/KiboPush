@@ -129,7 +129,7 @@ class Page extends React.Component {
     if (this.state.showingSearchResult && (nextProps.subscribersCount === 0 ||
       (nextProps.pages && nextProps.pages.length === 0))
     ) {
-      this.setState({displayVideo: true})
+      this.setState({displayVideo: true, showingSearchResult: false})
       this.refs.zeroModal.click()
     }
   }
@@ -249,8 +249,8 @@ class Page extends React.Component {
                 </button>
               </div>
               <div style={{ color: 'black' }} className="modal-body">
-                <div>
-                {this.state.displayVideo &&<YouTube
+                <center>
+                {this.state.displayVideo && <YouTube
                     videoId='9kY3Fmj_tbM'
                     opts={{
                       height: '390',
@@ -261,7 +261,7 @@ class Page extends React.Component {
                     }}
                   />
                   }
-                </div>
+                </center>
               </div>
             </div>
           </div>
