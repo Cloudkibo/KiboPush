@@ -252,6 +252,8 @@ export const LOAD_SUBSCRIBER_TAGS = 'LOAD_SUBSCRIBER_TAGS'
 export const ADD_TAG = 'ADD_TAG'
 export const REMOVE_TAG = 'REMOVE_TAG'
 export const UPDATE_TAG = 'UPDATE_TAG'
+export const ASSIGN_TAG = 'ASSIGN_TAG'
+export const UNASSIGN_TAG = 'UNASSIGN_TAG'
 
 // constants for notifications
 export const SHOW_NOTIFICATIONS = 'SHOW_NOTIFICATIONS'

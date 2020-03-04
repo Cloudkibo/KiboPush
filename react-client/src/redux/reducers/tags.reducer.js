@@ -26,6 +26,33 @@ export function tagsInfo (state = {}, action) {
         tags
       })
     }
+    case ActionTypes.ASSIGN_TAG: {
+      if (state.tags && state.subscriberTags && state.subscriberTags.subscriberId === action.data.subscriberId) {
+        let tag = state.tags.find(tag => tag._id === action.data.tagId)
+        let subscriberTags = {...state.subscriberTags}
+        subscriberTags.tags.push({
+          _id: tag._id,
+          tag: tag.tag
+        })
+        return Object.assign({}, state, {
+          subscriberTags
+        })
+      } else {
+        return state
+      }
+    }
+    case ActionTypes.UNASSIGN_TAG: {
+      if (state.subscriberTags && state.subscriberTags.subscriberId === action.data.subscriberId) {
+        let index = state.subscriberTags.tags.findIndex(tag => tag._id === action.data.tagId)
+        let subscriberTags = {...state.subscriberTags}
+        subscriberTags.tags.splice(index, 1)
+        return Object.assign({}, state, {
+          subscriberTags
+        })
+      } else {
+        return state
+      }
+    }
     case ActionTypes.LOAD_TAGS_LIST:
       return Object.assign({}, state, {
         tags: action.data
