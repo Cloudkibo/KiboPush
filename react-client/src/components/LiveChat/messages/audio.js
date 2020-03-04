@@ -10,28 +10,18 @@ class Audio extends React.Component {
 
   render() {
     return (
-      <div>
-        <div className='m-messenger__message-content'>
-          <div className='m-messenger__message-username'>
-            {this.props.repliedByMessage}
-          </div>
-          <ReactPlayer
-            url={this.props.message.payload.fileurl.url}
-            controls
-            width='200px'
-            height='60px'
-          />
-        </div>
-        {this.props.seenElement}
-      </div>
+      <ReactPlayer
+        url={this.props.audio.fileurl.url}
+        controls
+        width='200px'
+        height='60px'
+      />
     )
   }
 }
 
 Audio.propTypes = {
-  'message': PropTypes.object.isRequired,
-  'repliedByMessage': PropTypes.string.isRequired,
-  'seenElement': PropTypes.element.isRequired
+  'audio': PropTypes.object.isRequired
 }
 
 export default Audio

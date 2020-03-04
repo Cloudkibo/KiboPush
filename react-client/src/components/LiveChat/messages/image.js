@@ -9,27 +9,17 @@ class Image extends React.Component {
 
   render() {
     return (
-      <div>
-        <div className='m-messenger__message-content'>
-          <div className='m-messenger__message-username'>
-            {this.props.repliedByMessage}
-          </div>
-          <img
-            alt=''
-            src={this.props.message.payload.fileurl.url || this.props.message.payload.fileurl}
-            style={{maxWidth: '150px', maxHeight: '85px'}}
-          />
-        </div>
-        {this.props.seenElement}
-      </div>
+      <img
+        alt=''
+        src={this.props.image.fileurl.url || this.props.image.fileurl}
+        style={{maxWidth: '150px', maxHeight: '85px'}}
+      />
     )
   }
 }
 
 Image.propTypes = {
-  'message': PropTypes.object.isRequired,
-  'repliedByMessage': PropTypes.string.isRequired,
-  'seenElement': PropTypes.element.isRequired
+  'image': PropTypes.object.isRequired
 }
 
 export default Image
