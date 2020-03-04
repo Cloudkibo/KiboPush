@@ -65,7 +65,7 @@ class Profile extends React.Component {
                     />
                     } */}
                     {
-                        this.props.subscriberTags &&
+                        this.props.subscriberTags ?
                         <AssignTag
                             assignTags={this.props.assignTags}
                             unassignTags={this.props.unassignTags}
@@ -79,15 +79,27 @@ class Profile extends React.Component {
                                     value: tag._id
                                 }
                             ))}
-                        />
+                        /> :
+                        <div style={{marginTop: '50px', marginBottom: '50px'}} className='align-center'>
+                            <center>
+                            <div className="m-loader" style={{width: "30px", display: "inline-block"}}></div>
+                            <span>Loading Tags...</span>
+                            </center>
+                        </div>
                     }
                     {
-                        this.props.customFieldOptions && this.props.customFieldOptions.length > 0 && 
+                        this.props.customFieldOptions && this.props.customFieldOptions.length > 0 ?
                         <CustomFields 
                             activeSession={this.props.activeSession}
                             customFieldOptions={this.props.customFieldOptions}
                             setCustomFieldValue={this.props.setCustomFieldValue}
-                        />
+                        /> :
+                        <div style={{ marginTop: '50px'}} className='align-center'>
+                            <center>
+                            <div className="m-loader" style={{width: "30px", display: "inline-block"}}></div>
+                            <span>Loading Custom Fields...</span>
+                            </center>
+                        </div>
                     }
                 </div>
             </div>

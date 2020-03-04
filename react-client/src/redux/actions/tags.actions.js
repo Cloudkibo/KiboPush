@@ -1,6 +1,52 @@
 import * as ActionTypes from '../constants/constants'
 import callApi from '../../utility/api.caller.service'
 
+export function clearSubscriberTags () {
+  return {
+    type: ActionTypes.CLEAR_SUBSCRIBER_TAGS
+  }
+}
+
+export function assignTag (data) {
+  console.log('assignTag', data)
+  return {
+    type: ActionTypes.ASSIGN_TAG,
+    data
+  }
+}
+
+export function unassignTag (data) {
+  console.log('unassignTag', data)
+  return {
+    type: ActionTypes.UNASSIGN_TAG,
+    data
+  }
+}
+
+export function addTag (data) {
+  console.log('addTag', data)
+  return {
+    type: ActionTypes.ADD_TAG,
+    data
+  }
+}
+
+export function removeTag (data) {
+  console.log('removeTag', data)
+  return {
+    type: ActionTypes.REMOVE_TAG,
+    data
+  }
+}
+
+export function updateTag (data) {
+  console.log('update', data)
+  return {
+    type: ActionTypes.UPDATE_TAG,
+    data
+  }
+}
+
 export function updateTagsList (data) {
   console.log('Data Fetched From Tags', data)
   return {
@@ -8,11 +54,14 @@ export function updateTagsList (data) {
     data
   }
 }
-export function loadSubscriberTags (data) {
-  console.log('Subscriber Tags', data)
+export function loadSubscriberTags (subscriberId, tags) {
+  console.log('Subscriber Tags', tags)
   return {
     type: ActionTypes.LOAD_SUBSCRIBER_TAGS,
-    data
+    data: {
+      subscriberId,
+      tags
+    }
   }
 }
 export function loadTags () {
@@ -77,11 +126,11 @@ export function createTag (tag, handleResponse) {
         if (handleResponse) {
           handleResponse(res)
         }
-        if (res.status === 'success' && res.payload) {
-          dispatch(loadTags())
-        } else {
-          dispatch(loadTags())
-        }
+        // if (res.status === 'success' && res.payload) {
+        //   dispatch(loadTags())
+        // } else {
+        //   dispatch(loadTags())
+        // }
       })
   }
 }
@@ -92,11 +141,11 @@ export function getSubscriberTags (id, msg) {
       .then(res => {
         if (res.status === 'success' && res.payload) {
           console.log('getSubscribersTag success', res.payload)
-          dispatch(loadSubscriberTags(res.payload))
+          dispatch(loadSubscriberTags(id, res.payload))
         } else {
           if (msg) {
             console.log('Error in getting subscriber tags', res)
-            dispatch(loadSubscriberTags([]))
+            dispatch(loadSubscriberTags(id, []))
             // msg.error('Error in getting subscriber tags')
           }
         }
@@ -113,7 +162,7 @@ export function deleteTag (tag, msg,loadsubscriberData) {
           if (loadsubscriberData) {
             loadsubscriberData({tag_value: false})
           }
-          dispatch(loadTags())
+          //dispatch(loadTags())
         } else {
           if (res.status === 'failed' && res.description) {
             msg.error(`Unable to delete tag. ${res.description}`)
@@ -135,7 +184,7 @@ export function renameTag (payload, handleEdit,loadsubscriberData) {
           if (loadsubscriberData) {
             loadsubscriberData({tag_value: true})
           }
-          dispatch(loadTags())
+          //dispatch(loadTags())
         }
       })
   }

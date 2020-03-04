@@ -7,7 +7,7 @@ class AssignTag extends React.Component {
     super(props, context)
     this.state = {
       selectedTag: '',
-      subscriberTags: props.subscriberTags.map(tag => (
+      subscriberTags: props.subscriberTags.tags.map(tag => (
             {
                 label: tag.tag,
                 value: tag._id
@@ -24,7 +24,7 @@ class AssignTag extends React.Component {
 
   UNSAFE_componentWillReceiveProps (nextProps) {
       if (nextProps.subscriberTags) {
-          this.setState({subscriberTags: nextProps.subscriberTags.map(tag => (
+          this.setState({subscriberTags: nextProps.subscriberTags.tags.map(tag => (
                     {
                         label: tag.tag,
                         value: tag._id
@@ -39,12 +39,7 @@ class AssignTag extends React.Component {
         subscribers: [this.props.activeSession._id],
         tagId: this.state.selectedTag.value
     }
-    this.props.unassignTags(payload, () => {
-        let subscriberTags = this.state.subscriberTags
-        let index = subscriberTags.findIndex(tag => tag.value === this.state.selectedTag.value)
-        subscriberTags.splice(index, 1)
-        this.setState({subscriberTags})
-    }, this.props.alertMsg)
+    this.props.unassignTags(payload, null, this.props.alertMsg)
   }
 
   onTagChange (value) {
@@ -85,14 +80,7 @@ class AssignTag extends React.Component {
             subscribers: [this.props.activeSession._id],
             tagId: this.state.selectedTag.value
         }
-        this.props.assignTags(payload, () => {
-            let subscriberTags = this.state.subscriberTags
-            subscriberTags.push({
-                value: this.state.selectedTag.value,
-                label: this.state.selectedTag.label
-            })
-            this.setState({subscriberTags})
-        }, this.props.alertMsg)
+        this.props.assignTags(payload, null, this.props.alertMsg)
     } else {
         this.props.alertMsg.error('Tag is already assigned')
     }

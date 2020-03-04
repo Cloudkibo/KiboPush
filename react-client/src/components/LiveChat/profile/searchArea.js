@@ -93,7 +93,7 @@ class SearchArea extends React.Component {
                 </span>
               </div>
             </div>
-            <div style={{height: '65vh', overflowY: 'scroll'}} className='m-widget4'>
+            <div style={{height: '68vh', overflowY: 'scroll'}} className='m-widget4'>
                 {
                   this.state.searching &&
                   <div className='align-center'>
