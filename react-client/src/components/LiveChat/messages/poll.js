@@ -18,7 +18,7 @@ class Poll extends React.Component {
             this.props.poll.quick_replies &&
             this.props.poll.quick_replies.length > 0 &&
             this.props.poll.quick_replies.map((b, x) => (
-              <button key={x} style={{margin: '3px'}} type='button' className='btn m-btn--pill btn-secondary m-btn m-btn--bolder btn-sm'>
+              <button key={x} style={{margin: '3px', backgroundColor: 'white'}} type='button' className='btn m-btn--pill btn-secondary m-btn m-btn--bolder btn-sm'>
                 {b.title}
               </button>
             ))

@@ -6,7 +6,6 @@ import React from 'react'
 import auth from '../../utility/auth.service'
 import { connect } from 'react-redux'
 import {
-  getuserdetails,
   updateShowIntegrations,
   disconnectFacebook,
   updateMode,
@@ -178,9 +177,6 @@ class Header extends React.Component {
       planInfo = ''
     }
     this.setState({ planInfo: planInfo })
-  }
-  UNSAFE_componentWillMount () {
-    this.props.getuserdetails()
   }
   timeSince (date) {
     var newDate = new Date(date)
@@ -895,7 +891,6 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-    getuserdetails: getuserdetails,
     fetchNotifications: fetchNotifications,
     resetSocket: resetSocket,
     markRead: markRead,

@@ -10,7 +10,6 @@ import { addPoll, loadPollsList, sendpoll, sendPollDirectly } from '../../redux/
 import { saveCurrentPoll } from '../../redux/actions/backdoor.actions'
 import { bindActionCreators } from 'redux'
 import { Link } from 'react-router-dom'
-import { getuserdetails } from '../../redux/actions/basicinfo.actions'
 import AlertContainer from 'react-alert'
 import { checkConditions } from './utility'
 import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
@@ -28,7 +27,6 @@ class CreatePoll extends React.Component {
     super(props, context)
     this.createPoll = this.createPoll.bind(this)
     props.fetchAllSequence()
-    props.getuserdetails()
     props.loadSubscribersList()
     props.loadTags()
     this.state = {
@@ -719,7 +717,6 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators({
     loadPollsList: loadPollsList,
     addPoll: addPoll,
-    getuserdetails: getuserdetails,
     sendpoll: sendpoll,
     loadSubscribersList: loadSubscribersList,
     sendPollDirectly: sendPollDirectly,

@@ -8,7 +8,6 @@ import Sidebar from './sidebar'
 import { connect } from 'react-redux'
 // import { Link } from 'react-router-dom'
 import { updateChecks } from '../../redux/actions/wizard.actions'
-import { getuserdetails } from '../../redux/actions/basicinfo.actions'
 import AlertContainer from 'react-alert'
 // import { ModalContainer, ModalDialog } from 'react-modal-dialog'
 import {
@@ -24,7 +23,6 @@ class AddPage extends React.Component {
   constructor (props) {
     super(props)
     props.loadMyPagesListNew({last_id: 'none', number_of_records: 10, first_page: 'first', filter: false, filter_criteria: {search_value: ''}})
-    props.getuserdetails()
     props.addPages()
     this.state = {
       counter: 0,
@@ -255,7 +253,6 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-    getuserdetails: getuserdetails,
     enablePage: enablePage,
     removePageInAddPage: removePageInAddPage,
     addPages: addPages,

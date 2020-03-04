@@ -6,7 +6,7 @@
 import React, {Component} from 'react'
 import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
-import { getuserdetails, getAutomatedOptions } from '../../redux/actions/basicinfo.actions'
+import { getAutomatedOptions } from '../../redux/actions/basicinfo.actions'
 import { bindActionCreators } from 'redux'
 import { fetchSingleSession, fetchUserChats, resetSocket } from '../../redux/actions/livechat.actions'
 
@@ -78,7 +78,6 @@ class Sidebar extends Component {
       console.log('kibolite')
       this.setState({rssIntegration: false, newsIntegration: false, broadcasts: false, polls: false, surveys: false, sequenceMessaging: false, templates: false, autoposting: false, livechat: false, smartReplies: false, waitingResponse: false, businessGateway: true, isKiboLite: true})
     }
-    this.props.getuserdetails()
     this.props.getAutomatedOptions()
   }
 
@@ -1222,7 +1221,6 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-    getuserdetails: getuserdetails,
     getAutomatedOptions: getAutomatedOptions,
     fetchUserChats: fetchUserChats,
     resetSocket: resetSocket,

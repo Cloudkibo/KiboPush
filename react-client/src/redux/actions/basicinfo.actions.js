@@ -80,13 +80,14 @@ export function setSocketStatus (data) {
   }
 }
 
-export function getuserdetails () {
+export function getuserdetails (joinRoom) {
   return (dispatch) => {
     callApi('users').then(res => {
       console.log('response from getuserdetails', res)
       if (res.status === 'Unauthorized') {
         auth.logout()
       } else {
+        if (joinRoom) joinRoom(res.payload.companyId)
         dispatch(showuserdetails(res.payload))
       }
     })
