@@ -206,7 +206,7 @@ class CustomFields extends React.Component {
                 </div>
             </div>
 
-            <div id='customFields' style={{ overflowY: this.state.showingPopover ? 'hidden' : 'scroll', overflowX: 'hidden', maxHeight: '20vh' }} className='collapse'>
+            <div id='customFields' style={{ overflowY: this.state.showingPopover ? 'hidden' : 'scroll', overflowX: 'hidden', maxHeight: '15vh' }} className='collapse'>
                 <div id='setCustomField' style={{marginBottom: '10px'}}>
                     <span onClick={this.setCustomField} className='m-link' style={{ cursor: 'pointer' }}>+ Set Custom Field</span>
                 </div>
