@@ -523,8 +523,7 @@ function mapStateToProps(state) {
     tags: (state.tagsInfo.tags),
     customFieldValues: (state.customFieldInfo.customFieldSubscriber),
     customFields: (state.customFieldInfo.customFields),
-    searchChatMsgs: (state.liveChat.searchChat),
-    userChat: (state.liveChat.userChat)
+    searchChatMsgs: (state.liveChat.searchChat)
   }
 }
 

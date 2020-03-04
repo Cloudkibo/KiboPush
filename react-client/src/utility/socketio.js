@@ -12,7 +12,7 @@ import { loadDashboardData, sentVsSeen } from './../redux/actions/dashboard.acti
 // import { allBroadcasts } from './../redux/actions/broadcast.actions'
 import { loadPollsListNew } from './../redux/actions/poll.actions'
 import { loadSurveysListNew } from './../redux/actions/surveys.actions'
-import { loadTags } from './../redux/actions/tags.actions'
+import { addTag, removeTag, updateTag } from './../redux/actions/tags.actions'
 import { loadAllSubscribersListNew, updateCustomFieldForSubscriber } from './../redux/actions/subscribers.actions'
 import { fetchNotifications } from './../redux/actions/notifications.actions'
 const whatsAppActions = require('./../redux/actions/whatsAppChat.actions')
@@ -108,7 +108,14 @@ socket.on('message', (data) => {
     store.dispatch(loadSurveysListNew({last_id: 'none', number_of_records: 10, first_page: 'first', days: '0'}))
     // store.dispatch(sentVsSeen())
   } else if (['new_tag', 'tag_rename', 'tag_remove'].indexOf(data.action) > -1) {
-    store.dispatch(loadTags())
+    //store.dispatch(loadTags())
+    if (data.action === 'new_tag') {
+      store.dispatch(addTag(data.payload)) 
+    } else if (data.action === 'tag_remove') {
+      store.dispatch(removeTag(data.payload)) 
+    } else if (data.action === 'tag_rename') {
+      store.dispatch(updateTag(data.payload)) 
+    }
   } else if (['tag_assign', 'tag_unassign'].indexOf(data.action) > -1) {
     store.dispatch(loadAllSubscribersListNew({last_id: 'none', number_of_records: 10, first_page: 'first', filter: false, filter_criteria: {search_value: '', gender_value: '', page_value: '', locale_value: '', tag_value: '', status_value: ''}}))
   } else if (data.action === 'session_assign') {
