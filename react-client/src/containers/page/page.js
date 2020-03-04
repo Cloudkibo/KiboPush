@@ -31,7 +31,7 @@ class Page extends React.Component {
       connectedPages: false,
       pageNumber: 0,
       showingSearchResult: true,
-      openVideo: false,
+      openVideo: false
     }
     this.removePage = this.removePage.bind(this)
     this.showDialog = this.showDialog.bind(this)
@@ -41,6 +41,7 @@ class Page extends React.Component {
     this.goToAddPages = this.goToAddPages.bind(this)
     this.openVideoTutorial = this.openVideoTutorial.bind(this)
   }
+
   openVideoTutorial () {
     this.setState({
       openVideo: true
@@ -125,7 +126,7 @@ class Page extends React.Component {
     } else {
       this.setState({ pagesData: [], totalLength: 0 })
     }
-    if ((nextProps.subscribersCount === 0 ||
+    if (this.state.showingSearchResult && (nextProps.subscribersCount === 0 ||
       (nextProps.pages && nextProps.pages.length === 0))
     ) {
       this.setState({displayVideo: true})
@@ -176,7 +177,7 @@ class Page extends React.Component {
       // }
     } else {
       this.props.loadMyPagesListNew({ last_id: this.props.pages.length > 0 ? this.props.pages[this.props.pages.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: false, filter_criteria: { search_value: '' } })
-      this.setState({ filter: false, search_value: '', showingSearchResult: true })
+      this.setState({ filter: false, search_value: '', showingSearchResult: false })
       // filtered = this.props.pages
     }
     // this.displayData(0, filtered)
@@ -200,7 +201,7 @@ class Page extends React.Component {
                 <h5 className="modal-title" id="exampleModalLabel">
                   Pages Video Tutorial
 									</h5>
-                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" 
+                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal"
                 aria-label="Close"
                 onClick={() => {
                   this.setState({
@@ -236,7 +237,7 @@ class Page extends React.Component {
                   ? <AlertMessageModal type='page' />
                   : <AlertMessageModal type='subscriber' />
                 }
-                <button style={{ marginTop: '-60px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" 
+                <button style={{ marginTop: '-60px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal"
                 aria-label="Close"
                 onClick={() => {
                   this.setState({
