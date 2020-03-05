@@ -58,6 +58,8 @@ export function customFieldInfo (state = {}, action) {
         return Object.assign({}, state, {
           customFieldSubscriber: {...customFieldSubscriber}
         })
+      } else {
+        return state
       }
     }
     default:

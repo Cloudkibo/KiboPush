@@ -1,7 +1,6 @@
 import React from 'react'
 import Dotdotdot from 'react-dotdotdot'
 import Highlighter from 'react-highlight-words'
-import { scroller } from 'react-scroll'
 import PropTypes from 'prop-types'
 
 class SearchArea extends React.Component {

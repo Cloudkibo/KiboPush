@@ -302,10 +302,12 @@ class LiveChat extends React.Component {
   changeActiveSession (session) {
     console.log('changeActiveSession', session)
     if (session._id !== this.state.activeSession._id) {
-      this.props.clearUserChat()
-      this.props.clearCustomFieldValues()
-      this.props.clearSearchResult()
-      this.props.clearSubscriberTags()
+      if (Object.keys(this.state.activeSession).length > 0) {
+        this.props.clearUserChat()
+        this.props.clearCustomFieldValues()
+        this.props.clearSearchResult()
+        this.props.clearSubscriberTags()
+      }
       this.setState({activeSession: session, loadingChat: true, showSearch: false}, () => {
         clearTimeout(this.sessionClickTimer)
         this.sessionClickTimer = setTimeout(() => this.loadActiveSession({...session}), 1000)
