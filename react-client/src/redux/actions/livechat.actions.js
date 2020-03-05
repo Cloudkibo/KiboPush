@@ -5,6 +5,13 @@ import auth from '../../utility/auth.service'
 export const API_URL = '/api'
 // import store from '../store/store'
 
+export function clearUserChat () {
+  console.log('clearUserChat called')
+  return {
+    type: ActionTypes.CLEAR_USER_CHAT
+  }
+}
+
 export function handleCustomers (customers) {
   console.log('handleCustomers called: ', customers)
   return {

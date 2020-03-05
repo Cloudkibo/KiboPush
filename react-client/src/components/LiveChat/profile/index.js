@@ -25,33 +25,36 @@ class Profile extends React.Component {
                         assignToAgent={this.props.assignToAgent}
                         sendNotifications={this.props.sendNotifications}
                     />
-                    <AssignChat 
-                        activeSession={this.props.activeSession}
-                        teams={
-                            (this.props.user && this.props.user.role !== 'agent' && 
-                            this.props.teams && this.props.teams.length > 0) ?
-                                this.props.teams.map(team => (
-                                    {
-                                        label: team.name,
-                                        value: team._id,
-                                        group: 'team'
-                                    })
-                                )
-                            : []
-                        }
-                        agents={this.props.agents.map(agent => (
-                            {
-                                label: agent.name,
-                                value: agent._id,
-                                group: 'agent'
-                            }
-                        ))}
-                        fetchTeamAgents={this.props.fetchTeamAgents}
-                        assignToTeam={this.props.assignToTeam}
-                        sendNotifications={this.props.sendNotifications}
-                        assignToAgent={this.props.assignToAgent}
-                        user={this.props.user}
-                    />
+                  {
+                      (this.props.user.currentPlan.unique_ID === 'plan_C' || this.props.user.currentPlan.unique_ID === 'plan_D') &&
+                      <AssignChat 
+                      activeSession={this.props.activeSession}
+                      teams={
+                          (this.props.user && this.props.user.role !== 'agent' && 
+                          this.props.teams && this.props.teams.length > 0) ?
+                              this.props.teams.map(team => (
+                                  {
+                                      label: team.name,
+                                      value: team._id,
+                                      group: 'team'
+                                  })
+                              )
+                          : []
+                      }
+                      agents={this.props.agents.map(agent => (
+                          {
+                              label: agent.name,
+                              value: agent._id,
+                              group: 'agent'
+                          }
+                      ))}
+                      fetchTeamAgents={this.props.fetchTeamAgents}
+                      assignToTeam={this.props.assignToTeam}
+                      sendNotifications={this.props.sendNotifications}
+                      assignToAgent={this.props.assignToAgent}
+                      user={this.props.user}
+                      />
+                  }
                 </div>
                 <div style={{ padding: '0rem 1.5rem' }} className='m-portlet__body'>
                     {/* {
