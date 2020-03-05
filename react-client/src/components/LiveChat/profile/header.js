@@ -21,7 +21,7 @@ class ProfileHeader extends React.Component {
   handleUnsubscribe (res) {
     if (res.status === 'success') {
       this.props.alertMsg.success('Unsubscribed successfully')
-      this.props.changeActiveSession('none')
+      this.props.updateState({activeSession: {}})
     } else {
       this.props.alertMsg.error('Unable to unsubscribe subscriber')
     }
@@ -84,7 +84,8 @@ ProfileHeader.propTypes = {
   'unSubscribe': PropTypes.func.isRequired,
   'activeSession': PropTypes.object.isRequired,
   'user': PropTypes.object.isRequired,
-  'profilePicError': PropTypes.func.isRequired
+  'profilePicError': PropTypes.func.isRequired,
+  'updateState': PropTypes.func.isRequired
 }
 
 export default ProfileHeader

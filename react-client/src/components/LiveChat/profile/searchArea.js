@@ -60,8 +60,10 @@ class SearchArea extends React.Component {
       if (this.state.scrollingToMessage) {
         this.props.showFetchingChat(false)
         this.setState({scrollingToMessage: null})
+        setTimeout(() => message.scrollIntoView({behavior: 'smooth', block: 'start'}), 500)
+      } else {
+        message.scrollIntoView({behavior: 'smooth', block: 'start'})
       }
-      message.scrollIntoView({behavior: 'smooth', block: 'end'})
     } else {
       this.setState({scrollingToMessage: messageId}, () => {
         this.props.showFetchingChat(true)
