@@ -104,7 +104,7 @@ class RightChatItem extends React.Component {
 
   render() {
     return (
-      <div id={this.props.message._id} style={{marginLeft: 0, marginRight: 0, display: 'block', clear: 'both'}} className='row'>
+      <div style={{marginLeft: 0, marginRight: 0, display: 'block', clear: 'both'}} className='row'>
         {
           this.props.index === 0
           ? <div className='m-messenger__datetime'>
@@ -115,7 +115,7 @@ class RightChatItem extends React.Component {
             {this.props.displayDate(this.props.message.datetime)}
           </div>
         }
-        <div style={{minWidth: '200px', maxWidth: '250px'}} className='m-messenger__message m-messenger__message--out'>
+        <div id={this.props.message._id} style={{minWidth: '200px', maxWidth: '250px'}} className='m-messenger__message m-messenger__message--out'>
           <div className='m-messenger__message-body'>
             <div className='m-messenger__message-arrow' />
             <div style={{maxWidth: '250px'}} className='m-messenger__message-content'>
