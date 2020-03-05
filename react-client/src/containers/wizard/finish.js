@@ -12,7 +12,6 @@ import { Link } from 'react-router-dom'
 import {
   sendBroadcast, clearAlertMessage
 } from '../../redux/actions/broadcast.actions'
-import { getuserdetails } from '../../redux/actions/basicinfo.actions'
 import AlertContainer from 'react-alert'
 import swal from 'sweetalert2'
 import {getCurrentProduct} from '../../utility/utils'
@@ -20,7 +19,6 @@ import {getCurrentProduct} from '../../utility/utils'
 class Finish extends React.Component {
   constructor (props, context) {
     super(props, context)
-    props.getuserdetails()
     props.loadMyPagesList()
     this.getlink = this.getlink.bind(this)
     this.onChangeValue = this.onChangeValue.bind(this)
@@ -280,7 +278,6 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-    getuserdetails: getuserdetails,
     loadMyPagesList: loadMyPagesList,
     clearAlertMessage: clearAlertMessage,
     sendBroadcast: sendBroadcast

@@ -23,7 +23,8 @@ class Survey extends React.Component {
                 style={{
                   margin: '3px 3px -4px 3px',
                   borderRadius: (this.props.survey.attachment.payload.buttons.length === (i + 1)) ? '0px 0px 10px 10px' : 0,
-                  borderColor: '#716aca'
+                  borderColor: '#716aca',
+                  backgroundColor: 'white'
                 }}
                 type='button'
                 className='btn btn-secondary btn-block'

@@ -8,13 +8,11 @@ import { resendEmail } from '../../redux/actions/signup.actions'
 import { bindActionCreators } from 'redux'
 import { Link } from 'react-router-dom'
 import auth from '../../utility/auth.service'
-import { getuserdetails } from '../../redux/actions/basicinfo.actions'
 import $ from 'jquery'
 
 class ResendEmail extends React.Component {
   constructor (props) {
     super(props)
-    props.getuserdetails()
     this.resend = this.resend.bind(this)
   }
   UNSAFE_componentWillMount () {
@@ -121,7 +119,6 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return bindActionCreators(
     {
-      getuserdetails: getuserdetails,
       resendEmail: resendEmail
     },
     dispatch)

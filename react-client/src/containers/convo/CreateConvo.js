@@ -16,7 +16,7 @@ import { addPages, removePage } from '../../redux/actions/pages.actions'
 import { validateFields } from './utility'
 // import DragSortableList from 'react-drag-sortable'
 import AlertContainer from 'react-alert'
-import { getuserdetails, getFbAppId, getAdminSubscriptions } from '../../redux/actions/basicinfo.actions'
+import { getFbAppId, getAdminSubscriptions } from '../../redux/actions/basicinfo.actions'
 import { registerAction } from '../../utility/socketio'
 import {loadTags} from '../../redux/actions/tags.actions'
 import BUILDER from '../../components/SimplifiedBroadcastUI/builder/builders'
@@ -57,7 +57,6 @@ class CreateConvo extends React.Component {
       showBuilderDropdown: false,
       builderValue: 'basic'
     }
-    props.getuserdetails()
     props.getFbAppId()
     props.getAdminSubscriptions()
     props.loadTags()
@@ -463,7 +462,7 @@ class CreateConvo extends React.Component {
               } else if (component.action.type === 'hubspot'){
                 temp.action.hubspotColumn = mapping.hubspotColumn
               }
-            } 
+            }
             userInputComponents.push(temp)
             linkedMessages[x].messageContent.push(temp)
             linkedMessages[x].messageContent.splice(y, 1)
@@ -804,7 +803,6 @@ function mapDispatchToProps (dispatch) {
       removePage: removePage,
       addPages: addPages,
       sendBroadcast: sendBroadcast,
-      getuserdetails: getuserdetails,
       getFbAppId: getFbAppId,
       getAdminSubscriptions: getAdminSubscriptions,
       loadTags: loadTags,

@@ -3,7 +3,6 @@
  */
 
 import React from 'react'
-import { getuserdetails } from '../../redux/actions/basicinfo.actions'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { getNGP, enableNGP, disableNGP, saveNGP } from '../../redux/actions/settings.actions'
@@ -108,7 +107,6 @@ class Settings extends React.Component {
         openTab: 'whitelistDomains', show: false
       })
     }
-    this.props.getuserdetails()
     this.props.getNGP({company_id: this.props.user.companyId})
   }
   goToSettings () {
@@ -701,7 +699,6 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-    getuserdetails: getuserdetails,
     getNGP: getNGP,
     enableNGP: enableNGP,
     disableNGP: disableNGP,

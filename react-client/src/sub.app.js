@@ -1,11 +1,14 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
 import Header from './components/header/header'
 import SimpleHeader from './containers/wizard/header'
 import Sidebar from './components/sidebar/sidebar'
 import auth from './utility/auth.service'
 import $ from 'jquery'
+import { getuserdetails } from './redux/actions/basicinfo.actions'
+import { joinRoom } from './utility/socketio'
 
 class App extends Component {
   constructor (props) {
@@ -15,6 +18,8 @@ class App extends Component {
       showContent: (auth.getToken() !== undefined && auth.getToken() !== '')
     }
     this.handleDemoSSAPage = this.handleDemoSSAPage.bind(this)
+
+    props.getuserdetails(joinRoom)
   }
 
   handleDemoSSAPage () {
@@ -56,6 +61,7 @@ class App extends Component {
       }, 1000)
     }
   }
+
   UNSAFE_componentWillUnmount () {
     this.unlisten()
   }
@@ -123,4 +129,15 @@ App.propTypes = {
   children: PropTypes.object.isRequired
 }
 
-export default connect()(App)
+function mapStateToProps (state) {
+  console.log('store state in app', state)
+  return {}
+}
+
+function mapDispatchToProps (dispatch) {
+  return bindActionCreators({
+      getuserdetails
+    }, dispatch)
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(App)

@@ -6,7 +6,7 @@ import Sidebar from './sidebar'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 // import {StripeProvider, Elements} from 'react-stripe-elements'
-import { getuserdetails, updatePlan, updateCard, getKeys } from '../../redux/actions/basicinfo.actions'
+import { updatePlan, updateCard, getKeys } from '../../redux/actions/basicinfo.actions'
 // import InjectedCheckoutForm from './checkout'
 import AlertContainer from 'react-alert'
 // import { ModalContainer, ModalDialog } from 'react-modal-dialog'
@@ -14,7 +14,6 @@ import AlertContainer from 'react-alert'
 class PaymentMethods extends React.Component {
   constructor (props, context) {
     super(props, context)
-    props.getuserdetails()
     props.getKeys()
     this.state = {
       selectedRadio: 'free',
@@ -234,7 +233,6 @@ function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     updatePlan: updatePlan,
     updateCard: updateCard,
-    getuserdetails: getuserdetails,
     getKeys: getKeys
   }, dispatch)
 }

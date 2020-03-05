@@ -14,7 +14,6 @@ import { saveGreetingMessage } from '../../redux/actions/settings.actions'
 import ViewScreen from '../settings/viewScreen'
 import Header from './header'
 import Sidebar from './sidebar'
-import { getuserdetails } from '../../redux/actions/basicinfo.actions'
 import {getCurrentProduct} from '../../utility/utils'
 
 const styles = {
@@ -33,7 +32,6 @@ const styles = {
 class GreetingMessage extends React.Component {
   constructor (props, context) {
     super(props, context)
-    props.getuserdetails()
     this.state = {
       greetingMessage: '',
       showEmojiPicker: false,
@@ -419,8 +417,7 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     loadMyPagesList: loadMyPagesList,
-    saveGreetingMessage: saveGreetingMessage,
-    getuserdetails: getuserdetails
+    saveGreetingMessage: saveGreetingMessage
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(GreetingMessage)

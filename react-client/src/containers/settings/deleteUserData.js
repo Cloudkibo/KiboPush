@@ -4,8 +4,8 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import AlertContainer from 'react-alert'
 import { saveDeleteOption, authenticatePassword, cancelDeletion } from '../../redux/actions/settings.actions'
-import { getuserdetails } from '../../redux/actions/basicinfo.actions'
 import moment from 'moment'
+import { getuserdetails } from '../../redux/actions/basicinfo.actions'
 
 class DeleteUserData extends React.Component {
   constructor (props, context) {
@@ -17,7 +17,6 @@ class DeleteUserData extends React.Component {
       password: '',
       showEmailAlert: ''
     }
-    props.getuserdetails()
     this.handleRadioChange = this.handleRadioChange.bind(this)
     this.saveDeleteOption = this.saveDeleteOption.bind(this)
     this.updateDeleteOption = this.updateDeleteOption.bind(this)
@@ -272,8 +271,8 @@ function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     saveDeleteOption: saveDeleteOption,
     authenticatePassword: authenticatePassword,
-    getuserdetails: getuserdetails,
-    cancelDeletion: cancelDeletion
+    cancelDeletion: cancelDeletion,
+    getuserdetails
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(DeleteUserData)

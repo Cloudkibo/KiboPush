@@ -10,7 +10,6 @@ import {
   removePage
 } from '../../redux/actions/pages.actions'
 import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
-import { getuserdetails } from '../../redux/actions/basicinfo.actions'
 import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
 import YouTube from 'react-youtube'
@@ -49,7 +48,6 @@ class Page extends React.Component {
   }
 
   UNSAFE_componentWillMount() {
-    this.props.getuserdetails()
     this.props.loadMyPagesListNew({ last_id: 'none', number_of_records: 10, first_page: 'first', filter: false, filter_criteria: { search_value: '' } })
     this.props.loadSubscribersList()
   }
@@ -200,7 +198,7 @@ class Page extends React.Component {
                 <h5 className="modal-title" id="exampleModalLabel">
                   Pages Video Tutorial
 									</h5>
-                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" 
+                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal"
                 aria-label="Close"
                 onClick={() => {
                   this.setState({
@@ -236,7 +234,7 @@ class Page extends React.Component {
                   ? <AlertMessageModal type='page' />
                   : <AlertMessageModal type='subscriber' />
                 }
-                <button style={{ marginTop: '-60px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" 
+                <button style={{ marginTop: '-60px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal"
                 aria-label="Close"
                 onClick={() => {
                   this.setState({
@@ -466,7 +464,6 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return bindActionCreators({
     loadMyPagesListNew: loadMyPagesListNew,
-    getuserdetails: getuserdetails,
     removePage: removePage,
     addPages: addPages,
     loadSubscribersList: loadSubscribersList
