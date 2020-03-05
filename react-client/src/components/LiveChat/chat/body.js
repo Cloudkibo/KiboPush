@@ -98,7 +98,7 @@ class Body extends React.Component {
     }
     if (prevProps.userChat.length !== this.props.userChat.length) {
       if (this.props.activeSession._id !== prevProps.activeSession._id) {
-        this.scrollToBottom(this.props.userChat)
+        //this.scrollToBottom(this.props.userChat)
       } else {
         setTimeout(() => {this.updateScrollTop()}, 100)
       }

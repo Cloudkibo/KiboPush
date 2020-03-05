@@ -290,11 +290,6 @@ class LiveChat extends React.Component {
     console.log("res",res)
     if (res.status === 'success') {
       this.alertMsg.success('Value set successfully')
-      let customFields = this.state.customFieldOptions
-      let temp = this.props.customFields.map((cf) => cf._id)
-      let index = temp.indexOf(body.customFieldId)
-      customFields[index].value = body.value
-      this.setState({customFieldOptions: customFields})
     } else {
       if (res.status === 'failed') {
         this.msg.error(`Unable to set Custom field value. ${res.description}`)
@@ -307,10 +302,12 @@ class LiveChat extends React.Component {
   changeActiveSession (session) {
     console.log('changeActiveSession', session)
     if (session._id !== this.state.activeSession._id) {
-      this.props.clearUserChat()
-      this.props.clearCustomFieldValues()
-      this.props.clearSearchResult()
-      this.props.clearSubscriberTags()
+      if (Object.keys(this.state.activeSession).length > 0) {
+        this.props.clearUserChat()
+        this.props.clearCustomFieldValues()
+        this.props.clearSearchResult()
+        this.props.clearSubscriberTags()
+      }
       this.setState({activeSession: session, loadingChat: true, showSearch: false}, () => {
         clearTimeout(this.sessionClickTimer)
         this.sessionClickTimer = setTimeout(() => this.loadActiveSession({...session}), 1000)
@@ -386,11 +383,11 @@ class LiveChat extends React.Component {
     if (nextProps.customFields && nextProps.customFieldValues ) {
       let fieldOptions = []
       for (let a = 0; a < nextProps.customFields.length; a++) {
-        if (nextProps.customFieldValues.length > 0) {
-          let assignedFields = nextProps.customFieldValues.map((cv) => cv.customFieldId._id)
+        if (nextProps.customFieldValues.customFields.length > 0) {
+          let assignedFields = nextProps.customFieldValues.customFields.map((cv) => cv.customFieldId._id)
           let index = assignedFields.indexOf(nextProps.customFields[a]._id)
           if (index !== -1) {
-            fieldOptions.push({ 'default': nextProps.customFields[a].default, '_id': nextProps.customFields[a]._id, 'label': nextProps.customFields[a].name, 'type': nextProps.customFields[a].type, 'value': nextProps.customFieldValues[index].value })
+            fieldOptions.push({ 'default': nextProps.customFields[a].default, '_id': nextProps.customFields[a]._id, 'label': nextProps.customFields[a].name, 'type': nextProps.customFields[a].type, 'value': nextProps.customFieldValues.customFields[index].value })
           } else {
             fieldOptions.push({ 'default': nextProps.customFields[a].default, '_id': nextProps.customFields[a]._id, 'label': nextProps.customFields[a].name, 'type': nextProps.customFields[a].type, 'value': '' })
           }
@@ -507,6 +504,7 @@ class LiveChat extends React.Component {
                 {
                    this.state.activeSession.constructor === Object && Object.keys(this.state.activeSession).length > 0 && !this.state.showSearch &&
                    <PROFILE
+                      updateState={this.updateState}
                       teams={this.props.teams ? this.props.teams : []}
                       tags={this.props.tags ? this.props.tags : []}
                       agents={this.props.members ? this.getAgents(this.props.members) : []}
@@ -514,7 +512,6 @@ class LiveChat extends React.Component {
                       activeSession={this.state.activeSession}
                       user={this.props.user}
                       profilePicError={this.profilePicError}
-                      changeActiveSession={this.changeActiveSession}
                       alertMsg={this.alertMsg}
                       unSubscribe={this.props.unSubscribe}
                       customers={this.props.customers}

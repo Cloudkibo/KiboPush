@@ -19,7 +19,7 @@ class Profile extends React.Component {
                         user={this.props.user}
                         profilePicError={this.props.profilePicError}
                         alertMsg={this.props.alertMsg}
-                        changeActiveSession={this.props.changeActiveSession}
+                        updateState={this.props.updateState}
                         fetchTeamAgents={this.props.fetchTeamAgents}
                         assignToTeam={this.props.assignToTeam}
                         assignToAgent={this.props.assignToAgent}
@@ -115,7 +115,7 @@ Profile.propTypes = {
   'activeSession': PropTypes.object.isRequired,
   'user': PropTypes.object.isRequired,
   'profilePicError': PropTypes.func.isRequired,
-  'changeActiveSession': PropTypes.func.isRequired,
+  'updateState': PropTypes.func.isRequired,
   'customers': PropTypes.array,
   'appendSubscriber': PropTypes.func,
   'getCustomers': PropTypes.func.isRequired,
