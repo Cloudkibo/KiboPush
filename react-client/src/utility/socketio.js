@@ -12,6 +12,7 @@ import { loadDashboardData, sentVsSeen } from './../redux/actions/dashboard.acti
 // import { allBroadcasts } from './../redux/actions/broadcast.actions'
 import { loadPollsListNew } from './../redux/actions/poll.actions'
 import { loadSurveysListNew } from './../redux/actions/surveys.actions'
+import {updateCustomFieldValue, addCustomField, removeCustomField} from './../redux/actions/customFields.actions'
 import { addTag, removeTag, updateTag, assignTag, unassignTag } from './../redux/actions/tags.actions'
 import { loadAllSubscribersListNew, updateCustomFieldForSubscriber } from './../redux/actions/subscribers.actions'
 import { fetchNotifications } from './../redux/actions/notifications.actions'
@@ -154,7 +155,12 @@ socket.on('message', (data) => {
     store.dispatch(fetchAllSequence())
   } else if (data.action === 'set_custom_field_value') {
     console.log('socket.io custom field set', data)
+    store.dispatch(updateCustomFieldValue(data.payload.setCustomField))
     store.dispatch(updateCustomFieldForSubscriber(data.payload.setCustomField))
+  } else if (data.action === 'new_custom_field') {
+    store.dispatch(addCustomField(data.payload.newCustomField))
+  } else if (data.action === 'custom_field_remove') {
+    store.dispatch(removeCustomField(data.payload.customFieldId))
   }
 
   if (callbacks[data.action]) {
