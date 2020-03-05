@@ -20,6 +20,13 @@ export function handleCustomers (customers) {
   }
 }
 
+export function updateLiveChatInfo (data) {
+  return {
+    type: ActionTypes.UPDATE_LIVECHAT_INFO,
+    data
+  }
+}
+
 export function updateSessions (data) {
   return {
     type: ActionTypes.UPDATE_SESSIONS,

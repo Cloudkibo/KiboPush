@@ -39,10 +39,25 @@ class Footer extends React.Component {
     this.setEmoji = this.setEmoji.bind(this)
     this.sendSticker = this.sendSticker.bind(this)
     this.sendGif = this.sendGif.bind(this)
+    this.updateChatData = this.updateChatData.bind(this)
   }
 
   setEmoji (emoji) {
     this.setState({text: this.state.text + emoji.native})
+  }
+
+  updateChatData (data, payload) {
+    let sessions = this.props.sessions
+    let session = this.props.activeSession
+    let index = sessions.findIndex((s) => s._id === session._id)
+    sessions.splice(index, 1)
+    session.lastPayload = payload
+    session.lastRepliedBy = data.replied_by
+    this.props.updateState({
+      userChat: [...this.props.userChat, data],
+      activeSession: session,
+      sessions: [session, ...sessions]
+    })
   }
 
   sendSticker (sticker) {
@@ -54,12 +69,7 @@ class Footer extends React.Component {
     const data = this.setMessageData(this.props.activeSession, payload)
     this.props.sendChatMessage(data)
     data.format = 'convos'
-    this.props.activeSession.lastPayload = payload
-    this.props.activeSession.lastRepliedBy = data.replied_by
-    this.props.updateState({
-      userChat: [...this.props.userChat, data],
-      activeSession: this.props.activeSession
-    })
+    this.updateChatData(data, payload)
   }
 
   sendGif (gif) {
@@ -71,12 +81,7 @@ class Footer extends React.Component {
     const data = this.setMessageData(this.props.activeSession, payload)
     this.props.sendChatMessage(data)
     data.format = 'convos'
-    this.props.activeSession.lastPayload = payload
-    this.props.activeSession.lastRepliedBy = data.replied_by
-    this.props.updateState({
-      userChat: [...this.props.userChat, data],
-      activeSession: this.props.activeSession
-    })
+    this.updateChatData(data, payload)
   }
 
   onInputChange (e) {
@@ -173,12 +178,7 @@ class Footer extends React.Component {
   handleMessageResponse (res, data, payload) {
     if (res.status === 'success') {
       data.format = 'convos'
-      this.props.activeSession.lastPayload = payload
-      this.props.activeSession.lastRepliedBy = data.replied_by
-      this.props.updateState({
-        userChat: [...this.props.userChat, data],
-        activeSession: this.props.activeSession
-      })
+      this.updateChatData(data, payload)
       this.setState({
         attachment: {},
         componentType: '',
@@ -318,14 +318,9 @@ class Footer extends React.Component {
           data = this.setMessageData(this.props.activeSession, payload)
           this.props.sendChatMessage(data)
           this.setState({ text: '' })
+          data.format = 'convos'
+          this.updateChatData(data, payload)
         }
-        data.format = 'convos'
-        this.props.activeSession.lastPayload = payload
-        this.props.activeSession.lastRepliedBy = data.replied_by
-        this.props.updateState({
-          userChat: [...this.props.userChat, data],
-          activeSession: this.props.activeSession
-        })
       } else {
         this.props.alertMsg.error(data.errorMsg)
       }
@@ -337,12 +332,7 @@ class Footer extends React.Component {
     let data = this.setMessageData(this.props.activeSession, payload)
     this.props.sendChatMessage(data)
     data.format = 'convos'
-    this.props.activeSession.lastPayload = payload
-    this.props.activeSession.lastRepliedBy = data.replied_by
-    this.props.updateState({
-      userChat: [...this.props.userChat, data],
-      activeSession: this.props.activeSession
-    })
+    this.updateChatData(data, payload)
   }
 
   sendAttachment () {
@@ -490,6 +480,7 @@ Footer.propTypes = {
   'sendChatMessage': PropTypes.func.isRequired,
   'updateState': PropTypes.func.isRequired,
   'userChat': PropTypes.array.isRequired,
+  'sessions': PropTypes.array.isRequired,
   'uploadAttachment': PropTypes.func.isRequired,
   'sendAttachment': PropTypes.func.isRequired,
   'uploadRecording': PropTypes.func.isRequired,

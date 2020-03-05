@@ -17,6 +17,9 @@ export function liveChat (state = initialState, action) {
         count: action.count
       })
 
+    case ActionTypes.UPDATE_LIVECHAT_INFO:
+      return Object.assign({}, state, action, action.data)
+
     case ActionTypes.UPDATE_SESSIONS:
       let sessions = [...state.openSessions]
       let ids = sessions.map(s => s._id)
