@@ -50,6 +50,7 @@ import {botIntentsInfo} from './smat_replies_intnets.reducer'
 import {hubSpotInfo} from './hubSpot.reducer'
 import {feedsInfo} from './rssIntegration.reducer'
 import {overlayWidgetsInfo} from './overlayWidgets.reducer'
+import {socketInfo} from './socket.reducer'
 
 const appReducer = combineReducers({
   basicInfo,
@@ -66,6 +67,7 @@ const appReducer = combineReducers({
   convosInfo,
   growthToolsInfo,
   liveChat,
+  socketInfo,
   settingsInfo,
   menuInfo,
   templatesInfo,

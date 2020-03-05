@@ -5,18 +5,12 @@ import Dashboard from './dashboard/dashboard'
 import WhatsAppDashboard from './smsWhatsAppDashboard/whatsAppDashboard'
 import SmsDashboard from './smsWhatsAppDashboard/smsDashboard'
 
-import { getuserdetails } from '../redux/actions/basicinfo.actions'
-
 class Home extends Component {
   constructor (props, context) {
     super(props, context)
     this.state={
       kiboLiteUrl: window.location.hostname.includes('kibolite')
     }
-
-  }
-  UNSAFE_componentWillMount () {
-    this.props.getuserdetails()
   }
 
   UNSAFE_componentWillReceiveProps (nextProps) {
@@ -26,10 +20,6 @@ class Home extends Component {
       })
     }
   }
-  componentDidMount() {
-    console.log('this.props.location.state.isKiboLite in did mount', this.props.location.state)
-  }
-
 
   render () {
     console.log('this.props.location.state.isKiboLite', this.props.location.state)
@@ -63,9 +53,7 @@ function mapStateToProps (state) {
 }
 
 function mapDispatchToProps (dispatch) {
-  return bindActionCreators({
-    getuserdetails
-  }, dispatch)
+  return bindActionCreators({}, dispatch)
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home)

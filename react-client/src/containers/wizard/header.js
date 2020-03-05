@@ -5,7 +5,6 @@
 import React from 'react'
 import auth from '../../utility/auth.service'
 import { connect } from 'react-redux'
-import { getuserdetails } from '../../redux/actions/basicinfo.actions'
 import { resetSocket } from '../../redux/actions/livechat.actions'
 import { bindActionCreators } from 'redux'
 import { Link } from 'react-router-dom'
@@ -50,9 +49,6 @@ class Header extends React.Component {
       // })
       console.log('FS identify Executed')
     }
-  }
-  UNSAFE_componentWillMount () {
-    this.props.getuserdetails()
   }
 
   render () {
@@ -277,7 +273,6 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-    getuserdetails: getuserdetails,
     resetSocket: resetSocket
   }, dispatch)
 }

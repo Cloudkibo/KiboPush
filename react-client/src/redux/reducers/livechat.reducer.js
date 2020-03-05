@@ -2,15 +2,11 @@ import * as ActionTypes from '../constants/constants'
 
 const initialState = {
   socketSession: '',
-  socketData: {},
-  userChat: [],
-  openSessions: [],
-  closeSessions: [],
-  openCount: 0,
-  closeCount: 0
+  socketData: {}
 }
 
 export function liveChat (state = initialState, action) {
+  console.log('livechat reducer', action)
   switch (action.type) {
     case ActionTypes.EMPTY_SOCKET_DATA:
       return Object.assign({}, state, {
@@ -22,8 +18,11 @@ export function liveChat (state = initialState, action) {
         count: action.count
       })
 
+    case ActionTypes.UPDATE_LIVECHAT_INFO:
+      return Object.assign({}, state, action, action.data)
+
     case ActionTypes.UPDATE_SESSIONS:
-      let sessions = state.openSessions
+      let sessions = [...state.openSessions]
       let ids = sessions.map(s => s._id)
       let index = ids.indexOf(action.data.subscriberId)
       sessions[index].is_assigned = action.data.isAssigned
@@ -260,7 +259,11 @@ export function liveChat (state = initialState, action) {
       return Object.assign({}, state, {
         openSessions: tempClose
       })
-
+    case ActionTypes.CLEAR_USER_CHAT:
+      return Object.assign({}, state, {
+        userChat: undefined,
+        chatCount: 0
+      })
     default:
       return state
   }

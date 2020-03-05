@@ -6,7 +6,6 @@ class Info extends React.Component {
     super(props, context)
     this.state = {
       openVideo: false
-
     }
     this.openVideoTutorial = this.openVideoTutorial.bind(this)
 
@@ -29,7 +28,7 @@ class Info extends React.Component {
                 <h5 className="modal-title" id="exampleModalLabel">
                   Livechat Video Tutorial
 									</h5>
-                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" 
+                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal"
                 aria-label="Close"
                 onClick={() => {
                   this.setState({

@@ -5,7 +5,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { getuserdetails } from '../../redux/actions/basicinfo.actions'
 import {
   addPages,
   enablePage,
@@ -18,7 +17,6 @@ import $ from 'jquery'
 class AddPage extends React.Component {
   constructor (props) {
     super(props)
-    props.getuserdetails()
     props.addPages()
     this.state = {
       showAlert: false,
@@ -227,7 +225,6 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-    getuserdetails: getuserdetails,
     enablePage: enablePage,
     removePageInAddPage: removePageInAddPage,
     addPages: addPages,

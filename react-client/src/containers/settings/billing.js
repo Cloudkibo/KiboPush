@@ -5,12 +5,11 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { getuserdetails, updatePlan } from '../../redux/actions/basicinfo.actions'
+import { updatePlan } from '../../redux/actions/basicinfo.actions'
 import AlertContainer from 'react-alert'
 class Billing extends React.Component {
   constructor (props, context) {
     super(props, context)
-    props.getuserdetails()
     this.state = {
       selectedRadio: props.pro === 'true' ? 'premium' : 'free',
     }
@@ -216,8 +215,7 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-    updatePlan: updatePlan,
-    getuserdetails: getuserdetails
+    updatePlan: updatePlan
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Billing)

@@ -238,7 +238,6 @@ class ProfileArea extends React.Component {
 
   handleAdd(value) {
     var index = 0
-    var tag_id = ''
     if (value) {
       for (var i = 0; i < this.props.tags.length; i++) {
         if (this.props.tags[i].tag !== value.label) {

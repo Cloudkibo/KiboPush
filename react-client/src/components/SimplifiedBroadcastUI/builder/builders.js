@@ -609,10 +609,10 @@ class Builders extends React.Component {
 
   }
   updateFileUrl (data) {
-    var linkedMessages = this.state.linkedMessages
-    for (var i = 0; i < linkedMessages.length; i++) {
-      for (var j = 0; j < linkedMessages[i].messageContent.length; j++) {
-        var component = linkedMessages[i].messageContent[j]
+    let linkedMessages = this.state.linkedMessages
+    for (let i = 0; i < linkedMessages.length; i++) {
+      for (let j = 0; j < linkedMessages[i].messageContent.length; j++) {
+        let component = linkedMessages[i].messageContent[j]
         if (component.id === data.id) {
           component.fileurl = data.fileurl
           break

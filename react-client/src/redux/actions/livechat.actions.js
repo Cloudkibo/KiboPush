@@ -5,11 +5,25 @@ import auth from '../../utility/auth.service'
 export const API_URL = '/api'
 // import store from '../store/store'
 
+export function clearUserChat () {
+  console.log('clearUserChat called')
+  return {
+    type: ActionTypes.CLEAR_USER_CHAT
+  }
+}
+
 export function handleCustomers (customers) {
   console.log('handleCustomers called: ', customers)
   return {
     type: ActionTypes.SHOW_CUSTOMERS,
     data: customers
+  }
+}
+
+export function updateLiveChatInfo (data) {
+  return {
+    type: ActionTypes.UPDATE_LIVECHAT_INFO,
+    data
   }
 }
 
@@ -110,9 +124,7 @@ export function showCloseChatSessions (sessions, firstPage) {
   }
 }
 export function updateChatSessions (session, appendDeleteInfo) {
-  // let name = session.name.split(' ')
-  // session.firstName = name[0]
-  // session.lastName = name[1]
+  session.name = `${session.firstName} ${session.lastName}`
   return {
     type: ActionTypes.UPDATE_CHAT_SESSIONS,
     session,
@@ -328,6 +340,7 @@ export function searchChat (data) {
   return (dispatch) => {
     callApi('livechat/search', 'post', data).then(res => {
       if (res.status === 'success') {
+        console.log('searchChat results', res.payload)
         dispatch(showSearchChat(res.payload))
       } else {
         console.log('response got from server', res.description)
@@ -368,10 +381,11 @@ export function markRead (sessionid) {
   }
 }
 
-export function updatePendingResponse (data) {
+export function updatePendingResponse (data, callback) {
   return (dispatch) => {
     callApi(`sessions/updatePendingResponse`, 'post', data).then(res => {
       console.log('response from updatePendingSession', res)
+      if (callback) callback(res)
     })
   }
 }

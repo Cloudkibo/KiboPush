@@ -11,7 +11,6 @@ import { loadPollDetails } from '../../redux/actions/templates.actions'
 import { addPoll, sendpoll, sendPollDirectly } from '../../redux/actions/poll.actions'
 import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
 import { Link } from 'react-router-dom'
-import { getuserdetails } from '../../redux/actions/basicinfo.actions'
 import { checkConditions } from './utility'
 import AlertContainer from 'react-alert'
 import { loadTags } from '../../redux/actions/tags.actions'
@@ -20,7 +19,6 @@ import Targeting from '../convo/Targeting'
 class EditPoll extends React.Component {
   constructor(props, context) {
     super(props, context)
-    props.getuserdetails()
     if (this.props.currentPoll) {
       const id = this.props.currentPoll._id
       props.loadPollDetails(id)
@@ -461,7 +459,6 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators({
     addPoll: addPoll,
     loadPollDetails: loadPollDetails,
-    getuserdetails: getuserdetails,
     sendpoll: sendpoll,
     loadSubscribersList: loadSubscribersList,
     sendPollDirectly: sendPollDirectly,

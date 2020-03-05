@@ -6,7 +6,7 @@ import { editautoposting, clearAlertMessages } from '../../redux/actions/autopos
 import { Alert } from 'react-bs-notifier'
 import {loadTags} from '../../redux/actions/tags.actions'
 import AlertContainer from 'react-alert'
-import { getuserdetails, getFbAppId, fetchAdminSubscriptions } from '../../redux/actions/basicinfo.actions'
+import { getFbAppId, fetchAdminSubscriptions } from '../../redux/actions/basicinfo.actions'
 var MessengerPlugin = require('react-messenger-plugin').default
 
 class ItemSettings extends React.Component {
@@ -57,7 +57,6 @@ class ItemSettings extends React.Component {
       defaultPages: []
     }
     props.getFbAppId()
-    props.getuserdetails()
     props.clearAlertMessages()
     this.handlePageChange = this.handlePageChange.bind(this)
     this.handleGenderChange = this.handleGenderChange.bind(this)
@@ -771,7 +770,6 @@ function mapDispatchToProps (dispatch) {
       editautoposting: editautoposting,
       clearAlertMessages: clearAlertMessages,
       loadTags: loadTags,
-      getuserdetails: getuserdetails,
       getFbAppId: getFbAppId,
       fetchAdminSubscriptions: fetchAdminSubscriptions
     },
