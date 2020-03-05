@@ -73,20 +73,6 @@ class SearchArea extends React.Component {
           })
       })
     }
-
-    // let counter = 0
-    // for (let i = 0; i < this.props.userChat.length; i++) {
-    //   if (this.props.userChat[i]._id === messageId) {
-    //     counter = 1
-    //     break
-    //   }
-    // }
-
-    // if (counter === 1) {
-    //   scroller.scrollTo(messageId, {delay: 3000, containerId: 'chat-container'})
-    // } else {
-    //   this.props.fetchUserChats(this.props.activeSession._id, {page: 'next', number: 25, last_id: this.props.userChat[0]._id, messageId: messageId}, this.scrollToMessage)
-    // }
   }
 
   searchChat () {
