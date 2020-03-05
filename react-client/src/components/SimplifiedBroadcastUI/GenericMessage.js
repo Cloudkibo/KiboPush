@@ -25,7 +25,6 @@ import ImageModal from './ImageModal'
 import FileModal from './FileModal'
 import AudioModal from './AudioModal'
 import MediaModal from './MediaModal'
-import YoutubeVideoModal from './YoutubeVideoModal'
 import LinkCarousel from './LinkCarousel';
 import QuickReplies from './QuickReplies'
 
@@ -689,7 +688,6 @@ class GenericMessage extends React.Component {
         handler: () => {
           this.handleCard({
             id: componentId,
-            componentName: broadcast.componentName,
             youtubeVideo: broadcast.youtubeVideo,
             elementLimit: broadcast.elementLimit,
             header: broadcast.header,
