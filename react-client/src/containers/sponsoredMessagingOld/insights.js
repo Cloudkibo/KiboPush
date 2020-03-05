@@ -11,12 +11,13 @@ import { Link } from 'react-router-dom'
 import {getInsights} from '../../redux/actions/sponsoredMessaging.actions'
 
 
-class AdInsights extends React.Component {
+class adInsights extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
   }
-  this.props.getInsights(this.props.location.state.sponsoredMessage.adId)
+
+    this.props.getInsights(this.props.location.state.sponsoredMessage.ad_id)
 }
 
 componentDidMount () {
@@ -48,15 +49,18 @@ componentDidMount () {
 
 
                 <div className='form-row'>
-                  {this.props.insights && this.props.insights.length > 0
-                  ? <div className='col-md-12 m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
+                  <div className='col-md-12 m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
                     <table className='m-datatable__table' style={{display: 'block', height: 'auto', overflowX: 'auto'}}>
                       <thead className='m-datatable__head'>
                         <tr className='m-datatable__row'
                           style={{height: '53px'}}>
-                          <th data-field='name'
+                          <th data-field='page'
                             className='m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '100px'}}>Ad Name</span>
+                            <span style={{width: '150px'}}>Campaign Name</span>
+                          </th>
+                          <th data-field='status'
+                            className='m-datatable__cell m-datatable__cell--sort'>
+                            <span style={{width: '100px'}}>Status</span>
                           </th>
                           <th data-field='impression'
                             className='m-datatable__cell m-datatable__cell--sort'>
@@ -72,42 +76,42 @@ componentDidMount () {
                           </th>
                           <th data-field='amount_spent'
                             className='m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '100px'}}>Amount Spent</span>
+                            <span style={{width: '150px'}}>Amount Spent</span>
                           </th>
                           <th data-field='start_date'
                             className='m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '100px'}}>Start date</span>
+                            <span style={{width: '150px'}}>Start date</span>
                           </th>
                           <th data-field='end_date'
                             className='m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '100px'}}>End date</span>
+                            <span style={{width: '150px'}}>End date</span>
                           </th>
 
                         </tr>
                       </thead>
                       <tbody className='m-datatable__body'>
-                          {this.props.insights.map((insight, i) => (
-                            <tr data-row={i}
+                          <tr data-row="0"
                             className='m-datatable__row m-datatable__row--even'
                             style={{height: '64px'}}
                             >
-                              <td data-field='name' className='m-datatable__cell'>
-                                <span style={{width: '150px'}}>{insight.ad_name}</span></td>
+                            <td data-field='page' className='m-datatable__cell'>
+                                <span style={{width: '150px'}}>My Like Campaign</span></td>
+                            <td data-field='status' className='m-datatable__cell'>
+                              <span style={{width: '100px'}}>DELETED</span></td>
                               <td data-field='impression' className='m-datatable__cell'>
-                              <span style={{width: '100px'}}>{insight.impressions}</span></td>
+                              <span style={{width: '100px'}}>1741</span></td>
                               <td data-field='reach' className='m-datatable__cell'>
-                              <span style={{width: '100px'}}>{insight.reach}</span></td>
+                              <span style={{width: '100px'}}>10240</span></td>
                               <td data-field='clicks' className='m-datatable__cell'>
-                              <span style={{width: '100px'}}>{insight.clicks}</span></td>
+                              <span style={{width: '100px'}}>6510</span></td>
                               <td data-field='amount_spent' className='m-datatable__cell'>
-                              <span style={{width: '150px'}}>{insight.spend}</span></td>
+                              <span style={{width: '150px'}}>2352.45</span></td>
                               <td data-field='start_date' className='m-datatable__cell'>
-                              <span style={{width: '150px'}}>{insight.date_start}</span></td>
-                              <td data-field='end_date' className='m-datatable__cell'>
-                              <span style={{width: '150px'}}>{insight.date_stop}</span></td>
+                              <span style={{width: '150px'}}>2016-03-11</span></td>
+                              <td data-field='end_date  `' className='m-datatable__cell'>
+                              <span style={{width: '150px'}}>2016-03-12</span></td>
                             </tr>
-                          ))
-                          }
+
                       </tbody>
                     </table>
                     <div className='pagination'>
@@ -126,8 +130,6 @@ componentDidMount () {
                         activeClassName={'active'} />
                     </div>
                   </div>
-                  : <div>No data to display</div>
-                }
                   {/* <div className='col-12'>
                     <p> No data to display </p>
                   </div> */}
@@ -145,7 +147,7 @@ componentDidMount () {
 
 function mapStateToProps (state) {
   return {
-    insights: (state.sponsoredMessagingInfo.insights),
+    sponsoredMessages: (state.sponsoredMessagingInfo.sponsoredMessages),
   }
 }
 
@@ -154,4 +156,4 @@ function mapDispatchToProps (dispatch) {
     getInsights,
   }, dispatch)
 }
-export default connect(mapStateToProps, mapDispatchToProps)(AdInsights)
+export default connect(mapStateToProps, mapDispatchToProps)(adInsights)

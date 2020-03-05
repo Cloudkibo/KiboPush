@@ -19,9 +19,9 @@ class Page extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      isShowingZeroSubModal: this.props.subscribers && this.props.subscribers.length === 0,
-      isShowingZeroPageModal: this.props.pages && this.props.pages.length === 0,
-      displayVideo: false,
+      isShowingZeroSubModal: false,
+      isShowingZeroPageModal: false,
+      displayVideo: true,
       page: {},
       pagesData: [],
       totalLength: 0,
@@ -30,7 +30,7 @@ class Page extends React.Component {
       connectedPages: false,
       pageNumber: 0,
       showingSearchResult: true,
-      openVideo: false,
+      openVideo: false
     }
     this.removePage = this.removePage.bind(this)
     this.showDialog = this.showDialog.bind(this)
@@ -40,6 +40,7 @@ class Page extends React.Component {
     this.goToAddPages = this.goToAddPages.bind(this)
     this.openVideoTutorial = this.openVideoTutorial.bind(this)
   }
+
   openVideoTutorial () {
     this.setState({
       openVideo: true
@@ -49,7 +50,7 @@ class Page extends React.Component {
 
   UNSAFE_componentWillMount() {
     this.props.loadMyPagesListNew({ last_id: 'none', number_of_records: 10, first_page: 'first', filter: false, filter_criteria: { search_value: '' } })
-    this.props.loadSubscribersList()
+    this.props.loadSubscribersCount({})
   }
 
   UNSAFE_componentWillUnmount() {
@@ -123,10 +124,10 @@ class Page extends React.Component {
     } else {
       this.setState({ pagesData: [], totalLength: 0 })
     }
-    if (((nextProps.subscribers && nextProps.subscribers.length === 0) ||
+    if (this.state.showingSearchResult && (nextProps.subscribersCount === 0 ||
       (nextProps.pages && nextProps.pages.length === 0))
     ) {
-      this.setState({displayVideo: true})
+      this.setState({displayVideo: true, showingSearchResult: false})
       this.refs.zeroModal.click()
     }
   }
@@ -174,7 +175,7 @@ class Page extends React.Component {
       // }
     } else {
       this.props.loadMyPagesListNew({ last_id: this.props.pages.length > 0 ? this.props.pages[this.props.pages.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: false, filter_criteria: { search_value: '' } })
-      this.setState({ filter: false, search_value: '', showingSearchResult: true })
+      this.setState({ filter: false, search_value: '', showingSearchResult: false })
       // filtered = this.props.pages
     }
     // this.displayData(0, filtered)
@@ -246,8 +247,8 @@ class Page extends React.Component {
                 </button>
               </div>
               <div style={{ color: 'black' }} className="modal-body">
-                <div>
-                {this.state.displayVideo &&<YouTube
+                <center>
+                {this.state.displayVideo && <YouTube
                     videoId='9kY3Fmj_tbM'
                     opts={{
                       height: '390',
@@ -258,7 +259,7 @@ class Page extends React.Component {
                     }}
                   />
                   }
-                </div>
+                </center>
               </div>
             </div>
           </div>
@@ -457,7 +458,7 @@ function mapStateToProps(state) {
     pages: (state.pagesInfo.pages),
     count: (state.pagesInfo.count),
     user: (state.basicInfo.user),
-    subscribers: (state.subscribersInfo.subscribers)
+    subscribersCount: (state.subscribersInfo.subscribersCount)
   }
 }
 
@@ -466,7 +467,7 @@ function mapDispatchToProps(dispatch) {
     loadMyPagesListNew: loadMyPagesListNew,
     removePage: removePage,
     addPages: addPages,
-    loadSubscribersList: loadSubscribersList
+    loadSubscribersCount: loadSubscribersCount
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Page)

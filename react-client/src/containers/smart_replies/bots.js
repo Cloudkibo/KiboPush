@@ -122,7 +122,6 @@ class Bot extends React.Component {
     this.setState({ password: e.target.value })
   }
   UNSAFE_componentWillMount() {
-    // this.props.loadSubscribersList()
     //  document.title('KiboPush | Poll')
   }
 

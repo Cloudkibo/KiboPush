@@ -16,7 +16,6 @@ import {
 import { Link } from 'react-router-dom'
 import { loadCustomerLists } from '../../redux/actions/customerLists.actions'
 import { loadBroadcastDetails, saveBroadcastInformation } from '../../redux/actions/templates.actions'
-import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
 import { createWelcomeMessage, isWelcomeMessageEnabled } from '../../redux/actions/welcomeMessage.actions'
 import { bindActionCreators } from 'redux'
 import AlertContainer from 'react-alert'
@@ -38,7 +37,6 @@ class EditTemplate extends React.Component {
       welcomeMessage: false,
       pageId: this.props.pages.filter((page) => page._id === this.props.pages[0]._id)[0].pageId
     }
-    props.loadSubscribersList()
     props.loadCustomerLists()
     this.initializePageSelect = this.initializePageSelect.bind(this)
     this.sendConvo = this.sendConvo.bind(this)
@@ -257,7 +255,7 @@ class EditTemplate extends React.Component {
                             </Link>
                           </div>
                           <div className='col-lg-6 m--align-right'>
-                            <Link to={this.props.user.uiMode.mode === 'kibocommerce' || this.props.user.uiMode.mode === 'kibochat' ? '/menuWizard' : '/autopostingWizard'} className='btn btn-success m-btn m-btn--custom m-btn--icon' data-wizard-action='next'>
+                            <Link to={getCurrentProduct() === 'KiboEngage' ||  getCurrentProduct() === 'localhost' ? '/autopostingWizard' : '/menuWizard'} className='btn btn-success m-btn m-btn--custom m-btn--icon' data-wizard-action='next'>
                               <span>
                                 <span>Next</span>&nbsp;&nbsp;
                                 <i className='la la-arrow-right' />
@@ -287,9 +285,7 @@ function mapStateToProps (state) {
     user: (state.basicInfo.user),
     broadcastDetails: (state.templatesInfo.broadcastDetails),
     currentBroadcast: (state.templatesInfo.currentBroadcast),
-    customerLists: (state.listsInfo.customerLists),
-    subscribers: (state.subscribersInfo.subscribers)
-
+    customerLists: (state.listsInfo.customerLists)
   }
 }
 
@@ -305,7 +301,6 @@ function mapDispatchToProps (dispatch) {
       saveBroadcastInformation: saveBroadcastInformation,
       createWelcomeMessage: createWelcomeMessage,
       loadCustomerLists: loadCustomerLists,
-      loadSubscribersList: loadSubscribersList,
       isWelcomeMessageEnabled: isWelcomeMessageEnabled,
       loadMyPagesList: loadMyPagesList
     },

@@ -1016,7 +1016,7 @@ class Subscriber extends React.Component {
     this.props.loadAllSubscribersListNew({
       current_page: currentPage,
       requested_page: requestedPage,
-      last_id: this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none',
+      last_id: this.props.subscribers && this.props.subscribers.length > 0 ? this.props.subscribers[this.props.subscribers.length - 1]._id : 'none',
       number_of_records: 10,
       first_page: currentPage < requestedPage ? 'next' : currentPage > requestedPage ? 'previous' : 'first',
       filter: true,
@@ -1036,7 +1036,6 @@ class Subscriber extends React.Component {
   UNSAFE_componentWillReceiveProps(nextProps) {
     //debugger;
     console.log('next Props in subscribers', nextProps)
-    console.log('nextProps in subscribers', nextProps)
     if (nextProps.pages && !this.state.filterByPage) {
       this.setState({ filterByPage: nextProps.pages[0]._id, filterPage: nextProps.pages[0].pageName }, () => {
         this.loadSubscribers()
@@ -1053,7 +1052,7 @@ class Subscriber extends React.Component {
           if (nextProps.subscribers[i]._id === this.state.subscribersData[j]._id) {
             nextProps.subscribers[i].selected = this.state.subscribersData[j].selected
           }
-        } 
+        }
       }
       this.displayData(0, nextProps.subscribers)
       this.setState({ totalLength: nextProps.count, subscribersLoaded: true })
@@ -1066,6 +1065,8 @@ class Subscriber extends React.Component {
           }
         }
       }
+    } else if (nextProps.subscribers && nextProps.count === 0) {
+      this.setState({subscribersData: [], subscribersDataAll: [], totalLength: 0, subscribersLoaded: true })
     } else {
       this.setState({subscribersData: [], subscribersDataAll: [], totalLength: 0 })
     }
@@ -1172,7 +1173,6 @@ class Subscriber extends React.Component {
 
   handleFilterByTag(e) {
     this.setState({ tagValue: e.target.value })
-    console.log('e.target.value', e.target.value)
     if (e.target.value !== '' && e.target.value !== 'all') {
       this.setState({ filter: true, filterByTag: e.target.value, pageSelected: 0 }, () => {
         this.loadSubscribers()
@@ -1289,9 +1289,6 @@ class Subscriber extends React.Component {
   }
 
   render() {
-    console.log('subscriber state', this.state)
-    console.log('sequence options in subscriberss,', this.state.sequenceOptions)
-    console.log('subscriber props', this.props)
     var hostname = window.location.hostname
     var hoverOn = {
       cursor: 'pointer',

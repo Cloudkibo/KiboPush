@@ -56,7 +56,7 @@ class UpdateStories extends React.Component {
   handleUrlMetaData (data, index) {
     console.log('url meta data retrieved', data)
     var stories = this.state.stories
-    if (!data || !data.ogTitle || !data.ogDescription) {
+    if (!data || !data.ogTitle) {
       let linkMsg = ''
       if (!data) {
         linkMsg = 'Invalid website link'
