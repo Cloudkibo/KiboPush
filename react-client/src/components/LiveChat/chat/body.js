@@ -98,7 +98,10 @@ class Body extends React.Component {
     }
     if (prevProps.userChat.length !== this.props.userChat.length) {
       if (this.props.activeSession._id !== prevProps.activeSession._id) {
-        //this.scrollToBottom(this.props.userChat)
+        // this.scrollToBottom(this.props.userChat)
+      } else if (this.props.newMessage) {
+        this.scrollToBottom(this.props.userChat)
+        this.props.updateNewMessage(false)
       } else {
         setTimeout(() => {this.updateScrollTop()}, 100)
       }
@@ -194,7 +197,9 @@ Body.propTypes = {
   'user': PropTypes.object.isRequired,
   'fetchUserChats': PropTypes.func.isRequired,
   'markRead': PropTypes.func.isRequired,
-  'updateState': PropTypes.func.isRequired
+  'updateState': PropTypes.func.isRequired,
+  'newMessage': PropTypes.bool.isRequired,
+  'updateNewMessage': PropTypes.func.isRequired
 }
 
 export default Body

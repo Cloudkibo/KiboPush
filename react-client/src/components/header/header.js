@@ -16,7 +16,6 @@ import { fetchNotifications, markRead } from '../../redux/actions/notifications.
 import { resetSocket } from '../../redux/actions/livechat.actions'
 import { bindActionCreators } from 'redux'
 import { Link } from 'react-router-dom'
-import Notification from 'react-web-notification'
 import cookie from 'react-cookie'
 
 class Header extends React.Component {
@@ -24,7 +23,6 @@ class Header extends React.Component {
     super(props, context)
     props.fetchNotifications()
     this.state = {
-      ignore: true,
       url: window.location.hostname.includes('kibolite'),
       planInfo: '',
       seenNotifications: [],
@@ -33,8 +31,6 @@ class Header extends React.Component {
       showViewingAsDropDown: false,
       mode: 'All',
     }
-    this.handleNotificationOnShow = this.handleNotificationOnShow.bind(this)
-    this.onNotificationClick = this.onNotificationClick.bind(this)
     this.toggleSidebar = this.toggleSidebar.bind(this)
     this.getPlanInfo = this.getPlanInfo.bind(this)
     this.timeSince = this.timeSince.bind(this)
@@ -110,25 +106,9 @@ class Header extends React.Component {
     $('body').toggleClass(' m-aside-left--minimize m-brand--minimize')
     /* eslint-enable */
   }
-  handleNotificationOnShow () {
-    this.setState({ ignore: true })
-    this.props.resetSocket()
-  }
-
-  onNotificationClick () {
-    window.focus()
-    this.props.history.push({
-      pathname: '/live',
-      state: { session_id: this.props.socketData.session_id }
-    })
-    this.setState({ ignore: true })
-  }
 
   UNSAFE_componentWillReceiveProps (nextProps) {
     console.log('nextProps in header', nextProps)
-    if (nextProps.socketSession !== '' && this.state.ignore) {
-      this.setState({ ignore: false })
-    }
     if (nextProps.user) {
       let mode = nextProps.user.uiMode && nextProps.user.uiMode.mode === 'kiboengage' ? 'Customer Engagement' : nextProps.user.uiMode.mode === 'kibochat' ? 'Customer Chat' : nextProps.user.uiMode.mode === 'kibocommerce' ? 'E-Commerce' : 'All'
       this.setState({ mode: mode })
@@ -277,21 +257,6 @@ class Header extends React.Component {
           data-minimized='true'
           data-logged_in_greeting='Hi, Let us know if you find any bugs or have a feature request'
           data-logged_out_greeting='Hi, Let us know if you find any bugs or have a feature request' />
-
-        {this.props.socketData && Object.keys(this.props.socketData).length > 0 && !this.props.socketData.action &&
-          <Notification
-          ignore={this.state.ignore}
-          title={'New Message'}
-          onShow={this.handleNotificationOnShow}
-          onClick={this.onNotificationClick}
-          options={{
-            body: `You got a new message from ${this.props.socketData.name}: ${this.props.socketData.text ? this.props.socketData.text : this.props.socketData.message.payload.attachments[0].type}`,
-            lang: 'en',
-            dir: 'ltr',
-            icon: this.props.socketData.subscriber ? this.props.socketData.subscriber.profilePic : ''
-          }}
-        />
-    }
 
         <div className='m-container m-container--fluid m-container--full-height'>
           <div className='m-stack m-stack--ver m-stack--desktop'>
