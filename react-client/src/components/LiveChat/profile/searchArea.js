@@ -21,7 +21,7 @@ class SearchArea extends React.Component {
   }
 
   UNSAFE_componentWillReceiveProps (nextProps) {
-      if (nextProps.searchChatMsgs) {
+      if (nextProps.searchChatMsgs && !this.state.scrollingToMessage) {
           if (this.state.loadingMore) {
             let searchResults = this.state.searchResults
             searchResults = searchResults.concat(nextProps.searchChatMsgs.messages)
@@ -30,6 +30,12 @@ class SearchArea extends React.Component {
             this.setState({searching: false, searchResults: nextProps.searchChatMsgs.messages})
           }
       }
+  }
+
+  componentDidUpdate (prevProps) {
+    if (prevProps.userChat.length < this.props.userChat.length && this.state.scrollingToMessage) {
+      this.scrollToMessage(this.state.scrollingToMessage)
+    } 
   }
 
   changeSearchValue (e) {
@@ -48,21 +54,39 @@ class SearchArea extends React.Component {
   }
 
   scrollToMessage (messageId) {
-    console.log('scrollToMessage called')
-    // check if message exists
-    let counter = 0
-    for (let i = 0; i < this.props.userChat.length; i++) {
-      if (this.props.userChat[i]._id === messageId) {
-        counter = 1
-        break
+    console.log('scrollToMessage called', messageId)
+    let message = document.getElementById(messageId)
+    if (message) {
+      if (this.state.scrollingToMessage) {
+        this.props.showFetchingChat(false)
+        this.setState({scrollingToMessage: null})
       }
+      message.scrollIntoView({behavior: 'smooth', block: 'end'})
+    } else {
+      this.setState({scrollingToMessage: messageId}, () => {
+        this.props.showFetchingChat(true)
+        this.props.fetchUserChats(this.props.activeSession._id, 
+          {
+            page: 'next',
+            number: 25, 
+            last_id: this.props.userChat[0]._id, 
+          })
+      })
     }
 
-    if (counter === 1) {
-      scroller.scrollTo(messageId, {delay: 3000, containerId: 'chat-container'})
-    } else {
-      this.props.fetchUserChats(this.props.activeSession._id, {page: 'next', number: 25, last_id: this.props.userChat[0]._id, messageId: messageId}, this.scrollToMessage)
-    }
+    // let counter = 0
+    // for (let i = 0; i < this.props.userChat.length; i++) {
+    //   if (this.props.userChat[i]._id === messageId) {
+    //     counter = 1
+    //     break
+    //   }
+    // }
+
+    // if (counter === 1) {
+    //   scroller.scrollTo(messageId, {delay: 3000, containerId: 'chat-container'})
+    // } else {
+    //   this.props.fetchUserChats(this.props.activeSession._id, {page: 'next', number: 25, last_id: this.props.userChat[0]._id, messageId: messageId}, this.scrollToMessage)
+    // }
   }
 
   searchChat () {
@@ -172,7 +196,8 @@ SearchArea.propTypes = {
     'userChat': PropTypes.array.isRequired,
     'searchChat': PropTypes.func.isRequired,
     'fetchUserChats': PropTypes.func.isRequired,
-    'clearSearchResult': PropTypes.func.isRequired
+    'clearSearchResult': PropTypes.func.isRequired,
+    'showFetchingChat': PropTypes.func.isRequired
 }
   
 export default SearchArea

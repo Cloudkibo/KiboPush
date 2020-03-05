@@ -103,6 +103,7 @@ class LiveChat extends React.Component {
     this.handleCustomFieldResponse = this.handleCustomFieldResponse.bind(this)
     this.hideSearch = this.hideSearch.bind(this)
     this.loadActiveSession = this.loadActiveSession.bind(this)
+    this.showFetchingChat = this.showFetchingChat.bind(this)
 
     this.fetchSessions(true, 'none', true)
     props.loadMembersList()
@@ -163,6 +164,9 @@ class LiveChat extends React.Component {
     this.props.fetchTeamAgents(id, this.handleAgents)
   }
 
+  showFetchingChat (fetchingChat) {
+    this.setState({fetchingChat})
+  }
 
   changeTab (value) {
     this.setState({
@@ -521,6 +525,7 @@ class LiveChat extends React.Component {
                     searchChat={this.props.searchChat}
                     fetchUserChats={this.props.fetchUserChats}
                     clearSearchResult={this.props.clearSearchResult}
+                    showFetchingChat={this.showFetchingChat}
                   />
                 }
                 {

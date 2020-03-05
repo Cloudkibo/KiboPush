@@ -90,7 +90,7 @@ class LeftChatItem extends React.Component {
 
   render() {
     return (
-      <div id={this.props.message._id} style={{marginLeft: 0, marginRight: 0, display: 'block', clear: 'both'}} className='row'>
+      <div style={{marginLeft: 0, marginRight: 0, display: 'block', clear: 'both'}} className='row'>
         {
           this.props.index === 0
           ? <div className='m-messenger__datetime'>
@@ -101,7 +101,7 @@ class LeftChatItem extends React.Component {
             {this.props.displayDate(this.props.message.datetime)}
           </div>
         }
-        <div style={{minWidth: '200px', maxWidth: '200px'}} className='m-messenger__message m-messenger__message--in'>
+        <div id={this.props.message._id} style={{minWidth: '200px', maxWidth: '200px'}} className='m-messenger__message m-messenger__message--in'>
           <div className='m-messenger__message-pic'>
             <img src={this.props.activeSession.profilePic} alt='' />
           </div>
