@@ -31,6 +31,13 @@ class Chat extends React.Component {
     this.togglePopover = this.togglePopover.bind(this)
     this.getPicker = this.getPicker.bind(this)
     this.overrideUserInput = this.overrideUserInput.bind(this)
+    this.updateNewMessage = this.updateNewMessage.bind(this)
+
+    this.newMessage = false
+  }
+
+  updateNewMessage (value) {
+    this.newMessage = value
   }
 
   togglePopover () {
@@ -141,6 +148,8 @@ class Chat extends React.Component {
           fetchUserChats={this.props.fetchUserChats}
           markRead={this.props.markRead}
           updateState={this.props.updateState}
+          newMessage={this.newMessage}
+          updateNewMessage={this.updateNewMessage}
         />
 
         {
@@ -194,6 +203,7 @@ class Chat extends React.Component {
             uploadRecording={this.props.uploadRecording}
             getPicker={this.getPicker}
             togglePopover={this.togglePopover}
+            updateNewMessage={this.updateNewMessage}
           />
         }
 

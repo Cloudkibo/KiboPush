@@ -3,7 +3,16 @@ export function handleSocketEvent (data, state, props, updateLiveChatInfo, user,
   switch (data.action) {
     case 'new_chat':
       handleIncomingMessage(data.payload, state, props, updateLiveChatInfo, clearSocketData)
-      break;
+      break
+    case 'agent_replied':
+      handleAgentReply(data.payload, state, props, updateLiveChatInfo, clearSocketData, user)
+      break
+    case 'session_pending_response':
+      handlePendingResponse(data.payload, state, props, updateLiveChatInfo, clearSocketData, user)
+      break
+    case 'unsubscribe':
+      handleUnsubscribe(data.payload, state, props, updateLiveChatInfo, clearSocketData, user)
+      break
     default:
   }
 }
@@ -48,4 +57,77 @@ const handleIncomingMessage = (payload, state, props, updateLiveChatInfo, clearS
   }
   updateLiveChatInfo(data)
   clearSocketData()
+}
+
+const handleAgentReply = (payload, state, props, updateLiveChatInfo, clearSocketData, user) => {
+  if (user._id !== payload.user_id) {
+    let data = {}
+    let sessions = state.sessions
+    let session = sessions.find((s) => s._id === payload.subscriber_id)
+    const index = sessions.findIndex((s) => s._id === payload.subscriber_id)
+    if (state.activeSession._id === payload.subscriber_id) {
+      let userChat = state.userChat
+      userChat.push(payload.message)
+      session = sessions.splice(index, 1)[0]
+      session.lastPayload = payload.message.payload
+      if (state.tabValue === 'open') sessions = [session, ...sessions]
+      data = {
+        userChat,
+        chatCount: props.chatCount + 1,
+        openSessions: state.tabValue === 'open' && sessions,
+        closeSessions: state.tabValue === 'close' && sessions,
+        closeCount: state.tabValue === 'close' && props.closeCount - 1
+      }
+    } else if (index >= 0) {
+      session = sessions.splice(index, 1)[0]
+      session.lastPayload = payload.message.payload
+      if (state.tabValue === 'open') sessions = [session, ...sessions]
+      data = {
+        openSessions: state.tabValue === 'open' && sessions,
+        closeSessions: state.tabValue === 'close' && sessions,
+        closeCount: state.tabValue === 'close' && props.closeCount - 1
+      }
+    }
+    updateLiveChatInfo(data)
+    clearSocketData()
+  } else {
+    clearSocketData()
+  }
+}
+
+const handleUnsubscribe = (payload, state, props, updateLiveChatInfo, clearSocketData, user) => {
+  if (user._id !== payload.user_id) {
+    let data = {}
+    let sessions = state.sessions
+    const index = sessions.findIndex((s) => s._id === payload.subscriber_id)
+    if (index >= 0) {
+      sessions.splice(index, 1)
+      data = {
+        openSessions: state.tabValue === 'open' && sessions,
+        openCount: state.tabValue === 'open' && props.openCount - 1,
+        closeSessions: state.tabValue === 'close' && sessions,
+        closeCount: state.tabValue === 'close' && props.closeCount - 1
+      }
+      updateLiveChatInfo(data)
+    }
+    clearSocketData()
+  } else {
+    clearSocketData()
+  }
+}
+
+const handlePendingResponse = (payload, state, props, updateLiveChatInfo, clearSocketData, user) => {
+  if (user._id !== payload.user_id) {
+    let sessions = state.sessions
+    const index = sessions.findIndex((s) => s._id === payload.session_id)
+    sessions[index].pendingResponse = payload.pendingResponse
+    const data = {
+      openSessions: state.tabValue === 'open' && sessions,
+      closeSessions: state.tabValue === 'close' && sessions
+    }
+    updateLiveChatInfo(data)
+    clearSocketData()
+  } else {
+    clearSocketData()
+  }
 }

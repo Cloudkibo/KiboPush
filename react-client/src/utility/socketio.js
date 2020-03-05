@@ -74,14 +74,10 @@ socket.on('new_chat', (data) => {
 
 socket.on('message', (data) => {
   console.log('socket called', data)
-  if (['new_chat'].includes(data.action)) {
-    data.showNotification = true
+  if (['new_chat', 'agent_replied', 'session_pending_response', 'unsubscribe'].includes(data.action)) {
+    if (data.action === 'new_chat') data.showNotification = true
     store.dispatch(handleSocketEvent(data))
   }
-  // if (data.action === 'new_chat' || data.action === 'agent_replied') {
-  //   console.log('new message received from customer')
-  //   store.dispatch(socketUpdate(data.payload))
-  // }
   if (data.action === 'new_chat_sms') {
     console.log('new message received from customer sms')
     store.dispatch(socketUpdateSms(data.payload))

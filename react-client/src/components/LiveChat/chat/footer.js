@@ -47,15 +47,17 @@ class Footer extends React.Component {
   }
 
   updateChatData (data, payload) {
+    data._id = new Date().getTime()
     let sessions = this.props.sessions
     let session = this.props.activeSession
     let index = sessions.findIndex((s) => s._id === session._id)
     sessions.splice(index, 1)
     session.lastPayload = payload
     session.lastRepliedBy = data.replied_by
+    this.props.updateNewMessage(true)
     this.props.updateState({
+      reducer: true,
       userChat: [...this.props.userChat, data],
-      activeSession: session,
       sessions: [session, ...sessions]
     })
   }
@@ -485,7 +487,8 @@ Footer.propTypes = {
   'sendAttachment': PropTypes.func.isRequired,
   'uploadRecording': PropTypes.func.isRequired,
   'getPicker': PropTypes.func.isRequired,
-  'togglePopover': PropTypes.func.isRequired
+  'togglePopover': PropTypes.func.isRequired,
+  'updateNewMessage': PropTypes.func.isRequired
 }
 
 export default Footer

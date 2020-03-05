@@ -216,9 +216,18 @@ class LiveChat extends React.Component {
   }
 
   updateState (state, callback) {
-    this.setState(state, () => {
-      if (callback) callback()
-    })
+    if (state.reducer) {
+      const data = {
+        userChat: state.userChat,
+        openSessions: this.state.tabValue === 'open' && state.sessions,
+        closeSessions: this.state.tabValue === 'close' && state.sessions
+      }
+      this.props.updateLiveChatInfo(data)
+    } else {
+      this.setState(state, () => {
+        if (callback) callback()
+      })
+    }
   }
 
   handleStatusChange (session, status) {
@@ -307,6 +316,10 @@ class LiveChat extends React.Component {
         this.props.clearCustomFieldValues()
         this.props.clearSearchResult()
         this.props.clearSubscriberTags()
+        if (session.unreadCount && session.unreadCount > 0) {
+          this.props.markRead(session._id)
+          session.unreadCount = 0
+        }
       }
       this.setState({activeSession: session, loadingChat: true, showSearch: false}, () => {
         clearTimeout(this.sessionClickTimer)
@@ -318,10 +331,6 @@ class LiveChat extends React.Component {
   loadActiveSession (session) {
     console.log('loadActiveSession', session)
     this.props.fetchUserChats(session._id, { page: 'first', number: 25 })
-    if (session.unreadCount && session.unreadCount > 0) {
-      this.props.markRead(session._id)
-      session.unreadCount = 0
-    }
     this.props.getSubscriberTags(session._id, this.alertMsg)
     this.props.getCustomFieldValue(session._id)
     if (session.is_assigned && session.assigned_to.type === 'team') {
@@ -369,6 +378,8 @@ class LiveChat extends React.Component {
       let index = nextProps.openSessions.findIndex((session) => session._id === this.state.activeSession._id)
       if (index === -1) {
         this.setState({activeSession: {}, userChat: []})
+      } else {
+        this.setState({activeSession: nextProps.openSessions[index]})
       }
       this.setState({sessions: nextProps.openSessions, sessionsCount: nextProps.openCount})
     } else if (this.state.tabValue === 'close' && nextProps.closeSessions) {

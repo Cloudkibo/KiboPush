@@ -73,20 +73,25 @@ class Body extends React.Component {
   }
 
   addScrollEvent () {
-    this.refs.chatScroll.addEventListener('scroll', () => {
+    this.refs.chatScroll.addEventListener('scroll', (event) => {
+      let element = event.target
       this.previousScrollHeight = this.refs.chatScroll.scrollHeight
+      console.log('scrolling')
+      console.log(element)
+      console.log(this.props.activeSession)
       if (this.refs.chatScroll.scrollTop === 0) {
         if (this.shoudLoadMore()) {
           this.loadMoreMessage()
         }
       } else if (
-        this.refs.chatScroll.scrollTop === this.refs.chatScroll.scrollHeight &&
+        (element.scrollHeight - element.scrollTop - 100) <= element.clientHeight  &&
         this.props.activeSession.unreadCount > 0
       ) {
+        console.log('scrolled')
         let session = this.props.activeSession
         session.unreadCount = 0
         this.props.markRead(session._id)
-        this.updateState({activeSession: session})
+        this.props.updateState({activeSession: session})
       }
     })
     this.setState({scrollEventAdded: true})
@@ -98,7 +103,10 @@ class Body extends React.Component {
     }
     if (prevProps.userChat.length !== this.props.userChat.length) {
       if (this.props.activeSession._id !== prevProps.activeSession._id) {
-        //this.scrollToBottom(this.props.userChat)
+        // this.scrollToBottom(this.props.userChat)
+      } else if (this.props.newMessage) {
+        this.scrollToBottom(this.props.userChat)
+        this.props.updateNewMessage(false)
       } else {
         setTimeout(() => {this.updateScrollTop()}, 100)
       }
@@ -194,7 +202,9 @@ Body.propTypes = {
   'user': PropTypes.object.isRequired,
   'fetchUserChats': PropTypes.func.isRequired,
   'markRead': PropTypes.func.isRequired,
-  'updateState': PropTypes.func.isRequired
+  'updateState': PropTypes.func.isRequired,
+  'newMessage': PropTypes.bool.isRequired,
+  'updateNewMessage': PropTypes.func.isRequired
 }
 
 export default Body
