@@ -255,7 +255,11 @@ export function liveChat (state = initialState, action) {
       return Object.assign({}, state, {
         openSessions: tempClose
       })
-
+    case ActionTypes.CLEAR_USER_CHAT:
+      return Object.assign({}, state, {
+        userChat: undefined,
+        chatCount: 0
+      })
     default:
       return state
   }

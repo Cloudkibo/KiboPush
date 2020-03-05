@@ -24,7 +24,8 @@ import {
   uploadRecording,
   searchChat,
   clearSearchResult,
-  markRead
+  markRead,
+  clearUserChat
 } from '../../redux/actions/livechat.actions'
 import { updatePicture } from '../../redux/actions/subscribers.actions'
 import { loadTeamsList } from '../../redux/actions/teams.actions'
@@ -61,6 +62,7 @@ class LiveChat extends React.Component {
     super(props, context)
     this.state = {
       loading: true,
+      fetchingChat: false,
       loadingChat: true,
       sessionsLoading: false,
       tabValue: 'open',
@@ -100,6 +102,7 @@ class LiveChat extends React.Component {
     this.saveCustomField = this.saveCustomField.bind(this)
     this.handleCustomFieldResponse = this.handleCustomFieldResponse.bind(this)
     this.hideSearch = this.hideSearch.bind(this)
+    this.loadActiveSession = this.loadActiveSession.bind(this)
 
     this.fetchSessions(true, 'none', true)
     props.loadMembersList()
@@ -230,7 +233,7 @@ class LiveChat extends React.Component {
       if (session.assigned_to.type === 'agent' && session.assigned_to.id !== this.props.user._id) {
         isAllowed = false
         errorMsg = `Only assigned agent can ${errorMsg}`
-      } else if (this.props.session.assigned_to.type === 'team') {
+      } else if (session.assigned_to.type === 'team') {
         const agentIds = this.state.teamAgents.map((agent) => agent.agentId._id)
         if (!agentIds.includes(this.props.user._id)) {
           isAllowed = false
@@ -297,24 +300,33 @@ class LiveChat extends React.Component {
   changeActiveSession (session) {
     console.log('changeActiveSession', session)
     if (session._id !== this.state.activeSession._id) {
-      this.props.fetchUserChats(session._id, { page: 'first', number: 25 })
-      if (session.unreadCount && session.unreadCount > 0) {
-        this.props.markRead(session._id)
-        session.unreadCount = 0
-      }
-      this.props.getSubscriberTags(session._id, this.alertMsg)
-      this.props.getCustomFieldValue(session._id)
-      if (session.is_assigned && session.assigned_to.type === 'team') {
-        this.props.fetchTeamAgents(session.assigned_to.id, this.handleTeamAgents)
-      }
-      if (this.props.user.currentPlan.unique_ID === 'plan_C' || this.props.user.currentPlan.unique_ID === 'plan_D') {
-        this.props.loadTeamsList({pageId: session.pageId._id})
-      }
+      this.props.clearUserChat()
       this.props.clearCustomFieldValues()
       this.props.clearSearchResult()
       this.props.clearSubscriberTags()
-      this.setState({activeSession: session, loadingChat: true, showSearch: false, customFieldOptions: []})
+      this.setState({activeSession: session, loadingChat: true, showSearch: false}, () => {
+        clearTimeout(this.sessionClickTimer)
+        this.sessionClickTimer = setTimeout(() => this.loadActiveSession({...session}), 1000)
+      })
     }
+  }
+
+  loadActiveSession (session) {
+    console.log('loadActiveSession', session)
+    this.props.fetchUserChats(session._id, { page: 'first', number: 25 })
+    if (session.unreadCount && session.unreadCount > 0) {
+      this.props.markRead(session._id)
+      session.unreadCount = 0
+    }
+    this.props.getSubscriberTags(session._id, this.alertMsg)
+    this.props.getCustomFieldValue(session._id)
+    if (session.is_assigned && session.assigned_to.type === 'team') {
+      this.props.fetchTeamAgents(session.assigned_to.id, this.handleTeamAgents)
+    }
+    if (this.props.user.currentPlan.unique_ID === 'plan_C' || this.props.user.currentPlan.unique_ID === 'plan_D') {
+      this.props.loadTeamsList({pageId: session.pageId._id})
+    }
+    this.setState({activeSession: session})
   }
 
   fetchSessions(firstPage, lastId, fetchBoth) {
@@ -382,10 +394,16 @@ class LiveChat extends React.Component {
       this.setState({
         customFieldOptions: fieldOptions
       })
+    } else {
+      this.setState({
+        customFieldOptions: []
+      })
     }
 
     if (nextProps.userChat) {
       this.setState({userChat: nextProps.userChat, loadingChat: false})
+    } else {
+      this.setState({userChat: []})
     }
   }
 
@@ -410,6 +428,15 @@ class LiveChat extends React.Component {
             <center><RingLoader color='#716aca' /></center>
           </div>
           : <div style={{padding: '10px 30px'}} className='m-content'>
+              { 
+                this.state.fetchingChat && 
+                <div style={{ width: '100vw', height: '100vh', background: 'rgba(33, 37, 41, 0.6)', position: 'fixed', zIndex: '99999', top: '0', left: '0' }}>
+                  <div style={{ position: 'fixed', top: '50%', left: '50%', width: '30em', height: '18em', marginLeft: '-10em' }}
+                  className='align-center'>
+                  <center><RingLoader color='#716aca' />Fetching chat...</center>
+                  </div>
+                </div>
+              }
             <HELPWIDGET
               documentation={{link: 'http://kibopush.com/livechat/'}}
               videoTutorial={{videoId: 'XUXc2ZD_lQY'}}
@@ -571,7 +598,8 @@ function mapDispatchToProps(dispatch) {
     clearSearchResult,
     clearSubscriberTags,
     clearCustomFieldValues,
-    markRead
+    markRead,
+    clearUserChat
   }, dispatch)
 }
 
