@@ -79,6 +79,14 @@ class Body extends React.Component {
         if (this.shoudLoadMore()) {
           this.loadMoreMessage()
         }
+      } else if (
+        this.refs.chatScroll.scrollTop === this.refs.chatScroll.scrollHeight &&
+        this.props.activeSession.unreadCount > 0
+      ) {
+        let session = this.props.activeSession
+        session.unreadCount = 0
+        this.props.markRead(session._id)
+        this.updateState({activeSession: session})
       }
     })
     this.setState({scrollEventAdded: true})
@@ -89,7 +97,11 @@ class Body extends React.Component {
       this.addScrollEvent()
     }
     if (prevProps.userChat.length !== this.props.userChat.length) {
-      setTimeout(() => {this.updateScrollTop()}, 100)
+      if (this.props.activeSession._id !== prevProps.activeSession._id) {
+        this.scrollToBottom(this.props.userChat)
+      } else {
+        setTimeout(() => {this.updateScrollTop()}, 100)
+      }
     }
     if (
       !this.props.loadingChat &&
@@ -180,7 +192,9 @@ Body.propTypes = {
   'activeSession': PropTypes.object.isRequired,
   'loadingChat': PropTypes.bool.isRequired,
   'user': PropTypes.object.isRequired,
-  'fetchUserChats': PropTypes.func.isRequired
+  'fetchUserChats': PropTypes.func.isRequired,
+  'markRead': PropTypes.func.isRequired,
+  'updateState': PropTypes.func.isRequired
 }
 
 export default Body

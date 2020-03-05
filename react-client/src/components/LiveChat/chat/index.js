@@ -139,6 +139,8 @@ class Chat extends React.Component {
           loadingChat={this.props.loadingChat}
           user={this.props.user}
           fetchUserChats={this.props.fetchUserChats}
+          markRead={this.props.markRead}
+          updateState={this.props.updateState}
         />
 
         {
@@ -186,6 +188,7 @@ class Chat extends React.Component {
             alertMsg={this.props.alertMsg}
             updateState={this.props.updateState}
             userChat={this.props.userChat}
+            sessions={this.props.sessions}
             uploadAttachment={this.props.uploadAttachment}
             sendAttachment={this.props.sendAttachment}
             uploadRecording={this.props.uploadRecording}
@@ -202,6 +205,7 @@ class Chat extends React.Component {
 Chat.propTypes = {
   'userChat': PropTypes.array.isRequired,
   'chatCount': PropTypes.number.isRequired,
+  'sessions': PropTypes.array.isRequired,
   'activeSession': PropTypes.object.isRequired,
   'changeStatus': PropTypes.func.isRequired,
   'updateState': PropTypes.func.isRequired,
@@ -215,7 +219,8 @@ Chat.propTypes = {
   'sendAttachment': PropTypes.func.isRequired,
   'uploadRecording': PropTypes.func.isRequired,
   'loadingChat': PropTypes.bool.isRequired,
-  'fetchUserChats': PropTypes.func.isRequired
+  'fetchUserChats': PropTypes.func.isRequired,
+  'markRead': PropTypes.func.isRequired
 }
 
 export default Chat

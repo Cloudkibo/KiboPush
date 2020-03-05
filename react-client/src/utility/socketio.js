@@ -15,6 +15,7 @@ import { loadSurveysListNew } from './../redux/actions/surveys.actions'
 import { addTag, removeTag, updateTag, assignTag, unassignTag } from './../redux/actions/tags.actions'
 import { loadAllSubscribersListNew, updateCustomFieldForSubscriber } from './../redux/actions/subscribers.actions'
 import { fetchNotifications } from './../redux/actions/notifications.actions'
+import { handleSocketEvent } from '../redux/actions/socket.actions'
 const whatsAppActions = require('./../redux/actions/whatsAppChat.actions')
 
 const socket = io('')
@@ -72,10 +73,15 @@ socket.on('new_chat', (data) => {
 
 socket.on('message', (data) => {
   console.log('socket called', data)
-  if (data.action === 'new_chat' || data.action === 'agent_replied') {
-    console.log('new message received from customer')
-    store.dispatch(socketUpdate(data.payload))
-  } if (data.action === 'new_chat_sms') {
+  if (['new_chat'].includes(data.action)) {
+    data.showNotification = true
+    store.dispatch(handleSocketEvent(data))
+  }
+  // if (data.action === 'new_chat' || data.action === 'agent_replied') {
+  //   console.log('new message received from customer')
+  //   store.dispatch(socketUpdate(data.payload))
+  // }
+  if (data.action === 'new_chat_sms') {
     console.log('new message received from customer sms')
     store.dispatch(socketUpdateSms(data.payload))
   } if (data.action === 'new_chat_whatsapp') {
@@ -110,11 +116,11 @@ socket.on('message', (data) => {
   } else if (['new_tag', 'tag_rename', 'tag_remove'].indexOf(data.action) > -1) {
     //store.dispatch(loadTags())
     if (data.action === 'new_tag') {
-      store.dispatch(addTag(data.payload)) 
+      store.dispatch(addTag(data.payload))
     } else if (data.action === 'tag_remove') {
-      store.dispatch(removeTag(data.payload)) 
+      store.dispatch(removeTag(data.payload))
     } else if (data.action === 'tag_rename') {
-      store.dispatch(updateTag(data.payload)) 
+      store.dispatch(updateTag(data.payload))
     }
   } else if (['tag_assign', 'tag_unassign'].indexOf(data.action) > -1) {
     if (data.action === 'tag_assign') {

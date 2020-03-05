@@ -25,7 +25,8 @@ import {
   searchChat,
   clearSearchResult,
   markRead,
-  clearUserChat
+  clearUserChat,
+  updateLiveChatInfo
 } from '../../redux/actions/livechat.actions'
 import { updatePicture } from '../../redux/actions/subscribers.actions'
 import { loadTeamsList } from '../../redux/actions/teams.actions'
@@ -44,6 +45,8 @@ import {
   getCustomFieldValue,
   clearCustomFieldValues
 } from '../../redux/actions/customFields.actions'
+import { handleSocketEvent } from './socket'
+import { clearSocketData } from '../../redux/actions/socket.actions'
 
 // components
 import HELPWIDGET from '../../components/extras/helpWidget'
@@ -359,7 +362,7 @@ class LiveChat extends React.Component {
   }
 
   UNSAFE_componentWillReceiveProps (nextProps) {
-    console.log('UNSAFE_componentWillMount called in live chat')
+    console.log('UNSAFE_componentWillMount called in live chat', nextProps)
     if (this.state.tabValue === 'open' && nextProps.openSessions) {
       this.setState({loading: false, sessionsLoading: false})
       let index = nextProps.openSessions.findIndex((session) => session._id === this.state.activeSession._id)
@@ -405,6 +408,17 @@ class LiveChat extends React.Component {
     } else {
       this.setState({userChat: []})
     }
+
+    if (nextProps.socketData) {
+      handleSocketEvent(
+        nextProps.socketData,
+        this.state,
+        this.props,
+        this.props.updateLiveChatInfo,
+        this.props.user,
+        this.props.clearSocketData
+      )
+    }
   }
 
   render () {
@@ -428,8 +442,8 @@ class LiveChat extends React.Component {
             <center><RingLoader color='#716aca' /></center>
           </div>
           : <div style={{padding: '10px 30px'}} className='m-content'>
-              { 
-                this.state.fetchingChat && 
+              {
+                this.state.fetchingChat &&
                 <div style={{ width: '100vw', height: '100vh', background: 'rgba(33, 37, 41, 0.6)', position: 'fixed', zIndex: '99999', top: '0', left: '0' }}>
                   <div style={{ position: 'fixed', top: '50%', left: '50%', width: '30em', height: '18em', marginLeft: '-10em' }}
                   className='align-center'>
@@ -467,6 +481,7 @@ class LiveChat extends React.Component {
                   <CHAT
                     userChat={this.state.userChat}
                     chatCount={this.props.chatCount}
+                    sessions={this.state.sessions}
                     activeSession={this.state.activeSession}
                     changeStatus={this.changeStatus}
                     updateState={this.updateState}
@@ -482,6 +497,7 @@ class LiveChat extends React.Component {
                     uploadRecording={this.props.uploadRecording}
                     loadingChat={this.state.loadingChat}
                     fetchUserChats={this.props.fetchUserChats}
+                    markRead={this.props.markRead}
                   />
                 }
                 {
@@ -561,7 +577,8 @@ function mapStateToProps(state) {
     tags: (state.tagsInfo.tags),
     customFieldValues: (state.customFieldInfo.customFieldSubscriber),
     customFields: (state.customFieldInfo.customFields),
-    searchChatMsgs: (state.liveChat.searchChat)
+    searchChatMsgs: (state.liveChat.searchChat),
+    socketData: (state.socketInfo.socketData)
   }
 }
 
@@ -599,7 +616,9 @@ function mapDispatchToProps(dispatch) {
     clearSubscriberTags,
     clearCustomFieldValues,
     markRead,
-    clearUserChat
+    clearUserChat,
+    clearSocketData,
+    updateLiveChatInfo
   }, dispatch)
 }
 
