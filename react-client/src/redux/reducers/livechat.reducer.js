@@ -6,6 +6,7 @@ const initialState = {
 }
 
 export function liveChat (state = initialState, action) {
+  console.log('livechat reducer', action)
   switch (action.type) {
     case ActionTypes.EMPTY_SOCKET_DATA:
       return Object.assign({}, state, {

@@ -73,20 +73,25 @@ class Body extends React.Component {
   }
 
   addScrollEvent () {
-    this.refs.chatScroll.addEventListener('scroll', () => {
+    this.refs.chatScroll.addEventListener('scroll', (event) => {
+      let element = event.target
       this.previousScrollHeight = this.refs.chatScroll.scrollHeight
+      console.log('scrolling')
+      console.log(element)
+      console.log(this.props.activeSession)
       if (this.refs.chatScroll.scrollTop === 0) {
         if (this.shoudLoadMore()) {
           this.loadMoreMessage()
         }
       } else if (
-        this.refs.chatScroll.scrollTop === this.refs.chatScroll.scrollHeight &&
+        (element.scrollHeight - element.scrollTop - 100) <= element.clientHeight  &&
         this.props.activeSession.unreadCount > 0
       ) {
+        console.log('scrolled')
         let session = this.props.activeSession
         session.unreadCount = 0
         this.props.markRead(session._id)
-        this.updateState({activeSession: session})
+        this.props.updateState({activeSession: session})
       }
     })
     this.setState({scrollEventAdded: true})

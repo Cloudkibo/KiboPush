@@ -114,7 +114,7 @@ class App extends Component {
               icon: this.props.socketData.payload.subscriber ? this.props.socketData.payload.subscriber.profilePic : ''
             }}
           />
-    }
+        }
         {
           auth.loggedIn() && ['/addfbpages', '/facebookIntegration', '/integrations'].indexOf(this.state.path) === -1
            ? <div>
