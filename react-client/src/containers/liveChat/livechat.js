@@ -421,11 +421,6 @@ class LiveChat extends React.Component {
       }
     }
 
-    if (nextProps.searchChatMsgs && nextProps.searchChatMsgs.messages.length > 0 &&
-      nextProps.searchChatMsgs.messages[0].subscriber_id === this.state.activeSession._id) {
-        state.searchChatMsgs = nextProps.searchChatMsgs
-    }
-
     this.setState({
       ...state,
       tags: nextProps.tags,
