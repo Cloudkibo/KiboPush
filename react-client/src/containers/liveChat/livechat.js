@@ -24,7 +24,7 @@ import {
   uploadRecording,
   searchChat,
   markRead,
-  updateLiveChatInfo,
+  updateLiveChatInfo
 } from '../../redux/actions/livechat.actions'
 import { updatePicture } from '../../redux/actions/subscribers.actions'
 import { loadTeamsList } from '../../redux/actions/teams.actions'
@@ -104,6 +104,7 @@ class LiveChat extends React.Component {
     this.hideSearch = this.hideSearch.bind(this)
     this.loadActiveSession = this.loadActiveSession.bind(this)
     this.showFetchingChat = this.showFetchingChat.bind(this)
+    this.clearSearchResults = this.clearSearchResults.bind(this)
 
     this.fetchSessions(true, 'none', true)
     props.loadMembersList()
@@ -111,10 +112,12 @@ class LiveChat extends React.Component {
     props.loadCustomFields()
   }
 
+  clearSearchResults () {
+    this.setState({searchChatMsgs: null})
+  }
 
   hideSearch() {
-    this.setState({ showSearch: false })
-    this.props.clearSearchResult()
+    this.setState({ showSearch: false, searchChatMsgs: null })
   }
 
   showSearch () {
@@ -414,10 +417,14 @@ class LiveChat extends React.Component {
         }
     }
 
+    if (nextProps.searchChatMsgs && nextProps.searchChatMsgs.messages.length > 0 && 
+      nextProps.searchChatMsgs.messages[0].subscriber_id === this.state.activeSession._id) {
+        state.searchChatMsgs = nextProps.searchChatMsgs 
+    }
+
     this.setState({
       ...state,
       tags: nextProps.tags, 
-      searchChatMsgs: nextProps.searchChatMsgs, 
       subscriberTags: nextProps.subscriberTags
     })
 
@@ -542,13 +549,13 @@ class LiveChat extends React.Component {
                 {
                   Object.keys(this.state.activeSession).length > 0 && this.state.activeSession.constructor === Object && this.state.showSearch &&
                   <SEARCHAREA
+                    clearSearchResults={this.clearSearchResults}
                     activeSession={this.state.activeSession}
                     hideSearch={this.hideSearch}
                     searchChatMsgs={this.state.searchChatMsgs}
                     userChat={this.state.userChat}
                     searchChat={this.props.searchChat}
                     fetchUserChats={this.props.fetchUserChats}
-                    clearSearchResult={this.props.clearSearchResult}
                     showFetchingChat={this.showFetchingChat}
                   />
                 }
@@ -627,7 +634,7 @@ function mapDispatchToProps(dispatch) {
     fetchUserChats,
     markRead,
     clearSocketData,
-    updateLiveChatInfo,
+    updateLiveChatInfo
   }, dispatch)
 }
 
