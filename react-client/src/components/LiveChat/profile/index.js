@@ -27,7 +27,9 @@ class Profile extends React.Component {
                     />
                   {
                       (this.props.user.currentPlan.unique_ID === 'plan_C' || this.props.user.currentPlan.unique_ID === 'plan_D') &&
+                      (['admin', 'buyer'].includes(this.props.user.role)) &&
                       <AssignChat 
+                      alertMsg={this.props.alertMsg}
                       activeSession={this.props.activeSession}
                       teams={
                           (this.props.user && this.props.user.role !== 'agent' && 

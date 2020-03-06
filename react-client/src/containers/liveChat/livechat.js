@@ -383,7 +383,7 @@ class LiveChat extends React.Component {
         state.activeSession = {}
         state.userChat = []
       } else {
-        state.activeSession = nextProps.openSessions[index]
+        state.activeSession = sessions[index]
       }
       state.sessions = sessions
       state.sessionsCount = this.state.tabValue === 'open' ? nextProps.openCount : nextProps.closeCount
@@ -408,8 +408,10 @@ class LiveChat extends React.Component {
     }
 
     if (nextProps.userChat) {
-      state.userChat = nextProps.userChat
-      state.loadingChat = false
+      if (nextProps.userChat.length > 0 && nextProps.userChat[0].subscriber_id === this.state.activeSession._id) {
+          state.userChat = nextProps.userChat
+          state.loadingChat = false
+        }
     }
 
     this.setState({

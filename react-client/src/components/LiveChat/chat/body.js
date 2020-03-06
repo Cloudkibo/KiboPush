@@ -76,9 +76,6 @@ class Body extends React.Component {
     this.refs.chatScroll.addEventListener('scroll', (event) => {
       let element = event.target
       this.previousScrollHeight = this.refs.chatScroll.scrollHeight
-      console.log('scrolling')
-      console.log(element)
-      console.log(this.props.activeSession)
       if (this.refs.chatScroll.scrollTop === 0) {
         if (this.shoudLoadMore()) {
           this.loadMoreMessage()
@@ -117,7 +114,7 @@ class Body extends React.Component {
       this.props.userChat.length > 0 &&
       this.state.shouldScrollToBottom
     ) {
-      this.setState({shouldScrollToBottom: false}, this.scrollToBottom(this.props.userChat))
+      this.setState({shouldScrollToBottom: false}, () => this.scrollToBottom(this.props.userChat))
     }
     if (this.props.activeSession._id !== prevProps.activeSession._id) {
       this.setState({shouldScrollToBottom: true})

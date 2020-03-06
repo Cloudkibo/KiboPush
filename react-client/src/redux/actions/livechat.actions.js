@@ -426,11 +426,14 @@ export function unSubscribe (data, handleUnsubscribe) {
   }
 }
 
-export function assignToAgent (data) {
+export function assignToAgent (data, handleResponse) {
   return (dispatch) => {
     callApi('sessions/assignAgent', 'post', data).then(res => {
       console.log('assign to agent response', res)
       dispatch(updateSessions(data))
+      if (handleResponse) {
+        handleResponse(res)
+      }
     })
   }
 }
@@ -441,12 +444,15 @@ export function sendNotifications (data) {
   }
 }
 
-export function assignToTeam (data) {
+export function assignToTeam (data, handleResponse) {
   console.log('data for assigned to team', data)
   return (dispatch) => {
     callApi('sessions/assignTeam', 'post', data).then(res => {
       console.log('assign to team response', res)
       dispatch(updateSessions(data))
+      if (handleResponse) {
+        handleResponse(res)
+      }
     })
   }
 }
