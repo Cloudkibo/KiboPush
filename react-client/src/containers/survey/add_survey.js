@@ -6,7 +6,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { createsurvey, sendsurvey, sendSurveyDirectly } from '../../redux/actions/surveys.actions'
-import { getuserdetails } from '../../redux/actions/basicinfo.actions'
 import { loadSurveyDetails } from '../../redux/actions/templates.actions'
 import { bindActionCreators } from 'redux'
 import { Alert } from 'react-bs-notifier'
@@ -26,7 +25,6 @@ import {
 class AddSurvey extends React.Component {
   constructor (props, context) {
     super(props, context)
-    props.getuserdetails()
     props.loadSubscribersList()
     props.loadTags()
     props.fetchAllSequence()
@@ -995,7 +993,6 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     createsurvey: createsurvey,
-    getuserdetails: getuserdetails,
     loadSubscribersList: loadSubscribersList,
     sendsurvey: sendsurvey,
     sendSurveyDirectly: sendSurveyDirectly,

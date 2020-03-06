@@ -19,7 +19,6 @@ import { loadBroadcastDetails, saveBroadcastInformation } from '../../redux/acti
 import { createWelcomeMessage, isWelcomeMessageEnabled } from '../../redux/actions/welcomeMessage.actions'
 import { bindActionCreators } from 'redux'
 import AlertContainer from 'react-alert'
-import { getuserdetails } from '../../redux/actions/basicinfo.actions'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
 import ViewMessage from '../../components/ViewMessage/viewMessage'
 import GenericMessage from '../../components/SimplifiedBroadcastUI/GenericMessage'
@@ -38,7 +37,6 @@ class EditTemplate extends React.Component {
       welcomeMessage: false,
       pageId: this.props.pages.filter((page) => page._id === this.props.pages[0]._id)[0].pageId
     }
-    props.getuserdetails()
     props.loadCustomerLists()
     this.initializePageSelect = this.initializePageSelect.bind(this)
     this.sendConvo = this.sendConvo.bind(this)
@@ -299,7 +297,6 @@ function mapDispatchToProps (dispatch) {
       createbroadcast: createbroadcast,
       updatefileuploadStatus: updatefileuploadStatus,
       sendBroadcast: sendBroadcast,
-      getuserdetails: getuserdetails,
       loadBroadcastDetails: loadBroadcastDetails,
       saveBroadcastInformation: saveBroadcastInformation,
       createWelcomeMessage: createWelcomeMessage,

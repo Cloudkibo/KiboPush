@@ -12,9 +12,11 @@ import { loadDashboardData, sentVsSeen } from './../redux/actions/dashboard.acti
 // import { allBroadcasts } from './../redux/actions/broadcast.actions'
 import { loadPollsListNew } from './../redux/actions/poll.actions'
 import { loadSurveysListNew } from './../redux/actions/surveys.actions'
-import { loadTags } from './../redux/actions/tags.actions'
+import {updateCustomFieldValue, addCustomField, removeCustomField} from './../redux/actions/customFields.actions'
+import { addTag, removeTag, updateTag, assignTag, unassignTag } from './../redux/actions/tags.actions'
 import { loadAllSubscribersListNew, updateCustomFieldForSubscriber } from './../redux/actions/subscribers.actions'
 import { fetchNotifications } from './../redux/actions/notifications.actions'
+import { handleSocketEvent } from '../redux/actions/socket.actions'
 import { addToSponsoredMessages, updateSponsoredMessagesListItemStatus } from './../redux/actions/sponsoredMessaging.actions'
 const whatsAppActions = require('./../redux/actions/whatsAppChat.actions')
 
@@ -73,10 +75,11 @@ socket.on('new_chat', (data) => {
 
 socket.on('message', (data) => {
   console.log('socket called', data)
-  if (data.action === 'new_chat' || data.action === 'agent_replied') {
-    console.log('new message received from customer')
-    store.dispatch(socketUpdate(data.payload))
-  } if (data.action === 'new_chat_sms') {
+  if (['new_chat', 'agent_replied', 'session_pending_response', 'unsubscribe'].includes(data.action)) {
+    if (data.action === 'new_chat') data.showNotification = true
+    store.dispatch(handleSocketEvent(data))
+  }
+  if (data.action === 'new_chat_sms') {
     console.log('new message received from customer sms')
     store.dispatch(socketUpdateSms(data.payload))
   } if (data.action === 'new_chat_whatsapp') {
@@ -109,8 +112,30 @@ socket.on('message', (data) => {
     store.dispatch(loadSurveysListNew({last_id: 'none', number_of_records: 10, first_page: 'first', days: '0'}))
     // store.dispatch(sentVsSeen())
   } else if (['new_tag', 'tag_rename', 'tag_remove'].indexOf(data.action) > -1) {
-    store.dispatch(loadTags())
+    //store.dispatch(loadTags())
+    if (data.action === 'new_tag') {
+      store.dispatch(addTag(data.payload))
+    } else if (data.action === 'tag_remove') {
+      store.dispatch(removeTag(data.payload))
+    } else if (data.action === 'tag_rename') {
+      store.dispatch(updateTag(data.payload))
+    }
   } else if (['tag_assign', 'tag_unassign'].indexOf(data.action) > -1) {
+    if (data.action === 'tag_assign') {
+      if (data.payload.subscriber_ids.length === 1) {
+        store.dispatch(assignTag({
+          subscriberId: data.payload.subscriber_ids[0],
+          tagId: data.payload.tagId
+        }))
+      }
+    } else if (data.action === 'tag_unassign') {
+      if (data.payload.subscriber_ids.length === 1) {
+        store.dispatch(unassignTag({
+          subscriberId: data.payload.subscriber_ids[0],
+          tagId: data.payload.tagId
+        }))
+      }
+    }
     store.dispatch(loadAllSubscribersListNew({last_id: 'none', number_of_records: 10, first_page: 'first', filter: false, filter_criteria: {search_value: '', gender_value: '', page_value: '', locale_value: '', tag_value: '', status_value: ''}}))
   } else if (data.action === 'session_assign') {
     store.dispatch(updateSessions(data.payload.data))
@@ -127,7 +152,12 @@ socket.on('message', (data) => {
     store.dispatch(fetchAllSequence())
   } else if (data.action === 'set_custom_field_value') {
     console.log('socket.io custom field set', data)
+    store.dispatch(updateCustomFieldValue(data.payload.setCustomField))
     store.dispatch(updateCustomFieldForSubscriber(data.payload.setCustomField))
+  } else if (data.action === 'new_custom_field') {
+    store.dispatch(addCustomField(data.payload.newCustomField))
+  } else if (data.action === 'custom_field_remove') {
+    store.dispatch(removeCustomField(data.payload.customFieldId))
   } else if (data.action === 'sponsoredMessaging_newCreated') {
     console.log('created new sponsored by admin', data)
     store.dispatch(addToSponsoredMessages(data.payload))
@@ -135,7 +165,6 @@ socket.on('message', (data) => {
     console.log('update status of new sponsored message')
     store.dispatch(updateSponsoredMessagesListItemStatus(data.payload))
   }
-
   if (callbacks[data.action]) {
     callbacks[data.action](data.payload)
   }

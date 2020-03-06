@@ -5,14 +5,22 @@ export function subscribersInfo (state = {}, action) {
   switch (action.type) {
     case ActionTypes.UPDATE_CUSTOM_FIELD_FOR_SUBSCRIBER:
       let subscribers = state.subscribers
-      let subscriberIndex = subscribers.findIndex(s => s._id === action.data.subscriberId)
-      let customFieldIndex = subscribers[subscriberIndex].customFields.findIndex(cf => cf._id === action.data.customFieldId)
-      subscribers[subscriberIndex].customFields[customFieldIndex].value = action.data.value
-      console.log('UPDATE_CUSTOM_FIELD_FOR_SUBSCRIBER', state)
-      return Object.assign({}, state, {
-        subscribers,
-        timestamp: new Date().getTime()
-      })
+      if (state.subscribers) {
+        let subscriberIndex = subscribers.findIndex(s => s._id === action.data.subscriberId)
+        if (subscribers[subscriberIndex].customFields) {
+          let customFieldIndex = subscribers[subscriberIndex].customFields.findIndex(cf => cf._id === action.data.customFieldId)
+          subscribers[subscriberIndex].customFields[customFieldIndex].value = action.data.value
+          console.log('UPDATE_CUSTOM_FIELD_FOR_SUBSCRIBER', state)
+          return Object.assign({}, state, {
+            subscribers,
+            timestamp: new Date().getTime()
+          })
+        } else {
+          return state
+        }
+      } else {
+        return state
+      }
     case ActionTypes.LOAD_SUBSCRIBERS_LIST:
       return Object.assign({}, state, {
         subscribers: action.data,

@@ -10,7 +10,6 @@ import {
   removePage
 } from '../../redux/actions/pages.actions'
 import { loadSubscribersCount } from '../../redux/actions/subscribers.actions'
-import { getuserdetails } from '../../redux/actions/basicinfo.actions'
 import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
 import YouTube from 'react-youtube'
@@ -50,7 +49,6 @@ class Page extends React.Component {
   }
 
   UNSAFE_componentWillMount() {
-    this.props.getuserdetails()
     this.props.loadMyPagesListNew({ last_id: 'none', number_of_records: 10, first_page: 'first', filter: false, filter_criteria: { search_value: '' } })
     this.props.loadSubscribersCount({})
   }
@@ -467,7 +465,6 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return bindActionCreators({
     loadMyPagesListNew: loadMyPagesListNew,
-    getuserdetails: getuserdetails,
     removePage: removePage,
     addPages: addPages,
     loadSubscribersCount: loadSubscribersCount

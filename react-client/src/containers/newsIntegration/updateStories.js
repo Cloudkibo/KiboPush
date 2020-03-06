@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux'
 import AlertContainer from 'react-alert'
 import { Link } from 'react-router-dom'
 import { updateNewsFeed, previewNewsFeed } from '../../redux/actions/rssIntegration.actions'
-import { getuserdetails, getFbAppId, getAdminSubscriptions } from '../../redux/actions/basicinfo.actions'
+import { getFbAppId, getAdminSubscriptions } from '../../redux/actions/basicinfo.actions'
 import { isWebURL } from './../../utility/utils'
 import { RingLoader } from 'halogenium'
 import { registerAction } from '../../utility/socketio'
@@ -21,7 +21,6 @@ class UpdateStories extends React.Component {
       fbPageId: this.props.newsPages.filter((page) => page._id === this.props.currentFeed.pageIds[0])[0].pageId
     }
     props.getFbAppId()
-    props.getuserdetails()
     props.getAdminSubscriptions()
     this.addMoreStories = this.addMoreStories.bind(this)
     this.preview = this.preview.bind(this)
@@ -147,7 +146,7 @@ class UpdateStories extends React.Component {
     this.validateStories(stories)
     this.setState({
       stories: stories
-    }) 
+    })
   }
   validateStories (stories) {
     var isValid = true
@@ -187,7 +186,7 @@ class UpdateStories extends React.Component {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        { this.state.loading && 
+        { this.state.loading &&
         <div style={{ width: '100vw', height: '100vh', background: 'rgba(33, 37, 41, 0.6)', position: 'fixed', zIndex: '99999', top: '0px' }}>
             <div style={{ position: 'fixed', top: '50%', left: '50%', width: '30em', height: '18em', marginLeft: '-10em' }}
               className='align-center'>
@@ -246,7 +245,7 @@ class UpdateStories extends React.Component {
                         <span style={{ color: story.valid && !story.loadingUrl ? 'green' : 'red', fontSize: 'small'}}>{`*${story.linkMsg}`}</span>
                       </span>
                       </div>
-                      { this.state.stories.length > 1 && 
+                      { this.state.stories.length > 1 &&
                       <div className='col-lg-1'>
                         <div onClick={() => {this.removeStory(index)}} style={{textAlign: 'center', background: 'lightgray', width: '30px', height: '28px', borderRadius: '25px', cursor: 'pointer'}}>
                           <i className='fa fa-close' />
@@ -255,8 +254,8 @@ class UpdateStories extends React.Component {
                       }
                     </div>
                   ))
-                  }      
-                  { this.state.stories.length <= 9 &&      
+                  }
+                  { this.state.stories.length <= 9 &&
                    <div className='form-group m-form__group row'>
                       <div className='col-lg-8' style={{textAlign: 'right'}}>
                         <button type='button' className='btn m-btn--pill btn-focus' onClick={this.addMoreStories}>Add More</button>
@@ -312,7 +311,6 @@ function mapDispatchToProps (dispatch) {
     {
       updateNewsFeed: updateNewsFeed,
       previewNewsFeed: previewNewsFeed,
-      getuserdetails: getuserdetails,
       getFbAppId: getFbAppId,
       getAdminSubscriptions: getAdminSubscriptions,
       urlMetaData: urlMetaData

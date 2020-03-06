@@ -1,11 +1,15 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
 import Header from './components/header/header'
 import SimpleHeader from './containers/wizard/header'
 import Sidebar from './components/sidebar/sidebar'
 import auth from './utility/auth.service'
 import $ from 'jquery'
+import { getuserdetails } from './redux/actions/basicinfo.actions'
+import { joinRoom } from './utility/socketio'
+import Notification from 'react-web-notification'
 
 class App extends Component {
   constructor (props) {
@@ -15,6 +19,9 @@ class App extends Component {
       showContent: (auth.getToken() !== undefined && auth.getToken() !== '')
     }
     this.handleDemoSSAPage = this.handleDemoSSAPage.bind(this)
+    this.onNotificationClick = this.onNotificationClick.bind(this)
+
+    props.getuserdetails(joinRoom)
   }
 
   handleDemoSSAPage () {
@@ -56,6 +63,7 @@ class App extends Component {
       }, 1000)
     }
   }
+
   UNSAFE_componentWillUnmount () {
     this.unlisten()
   }
@@ -79,12 +87,34 @@ class App extends Component {
     }
     return false
   }
+
+  onNotificationClick () {
+    window.focus()
+    this.props.history.push({
+      pathname: '/liveChat',
+      state: { subscriber_id: this.props.socketData.payload.subscriber_id }
+    })
+  }
+
   render () {
     console.log("Public URL ", process.env.PUBLIC_URL)
     console.log('auth.getToken', auth.getToken())
     console.log('browser history', this.props.history)
     return (
       <div>
+        {
+          this.props.socketData && this.props.socketData.showNotification &&
+          <Notification
+            title='New Message'
+            onClick={this.onNotificationClick}
+            options={{
+              body: `You got a new message from ${this.props.socketData.payload.subscriber.firstName} ${this.props.socketData.payload.subscriber.lastName}: ${this.props.socketData.payload.text ? this.props.socketData.payload.text : this.props.socketData.payload.message.payload.attachments[0].type}`,
+              lang: 'en',
+              dir: 'ltr',
+              icon: this.props.socketData.payload.subscriber ? this.props.socketData.payload.subscriber.profilePic : ''
+            }}
+          />
+        }
         {
           auth.loggedIn() && ['/addfbpages', '/facebookIntegration', '/integrations'].indexOf(this.state.path) === -1
            ? <div>
@@ -123,4 +153,18 @@ App.propTypes = {
   children: PropTypes.object.isRequired
 }
 
-export default connect()(App)
+function mapStateToProps (state) {
+  console.log('store state in app', state)
+  return {
+    socketData: (state.socketInfo.socketData),
+    user: (state.basicInfo.user)
+  }
+}
+
+function mapDispatchToProps (dispatch) {
+  return bindActionCreators({
+      getuserdetails
+    }, dispatch)
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(App)

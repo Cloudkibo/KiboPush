@@ -5,7 +5,7 @@ import AlertContainer from 'react-alert'
 import { Link } from 'react-router-dom'
 import { isWebURL, isRssUrl } from './../../utility/utils'
 import { createNewsFeed, updateNewsFeed, previewNewsFeed } from '../../redux/actions/rssIntegration.actions'
-import { getuserdetails, getFbAppId, getAdminSubscriptions } from '../../redux/actions/basicinfo.actions'
+import { getFbAppId, getAdminSubscriptions } from '../../redux/actions/basicinfo.actions'
 import { registerAction } from '../../utility/socketio'
 import { RingLoader } from 'halogenium'
 var MessengerPlugin = require('react-messenger-plugin').default
@@ -28,7 +28,6 @@ class CreateFeed extends React.Component {
       loading: false
     }
     props.getFbAppId()
-    props.getuserdetails()
     props.getAdminSubscriptions()
     this.handleStatusChange = this.handleStatusChange.bind(this)
     this.feedUrlChange = this.feedUrlChange.bind(this)
@@ -84,7 +83,7 @@ class CreateFeed extends React.Component {
           defaultFeed = false
           break
         }
-      } 
+      }
     }
     return defaultFeed
   }
@@ -460,7 +459,6 @@ function mapDispatchToProps (dispatch) {
       createNewsFeed: createNewsFeed,
       previewNewsFeed: previewNewsFeed,
       updateNewsFeed: updateNewsFeed,
-      getuserdetails: getuserdetails,
       getFbAppId: getFbAppId,
       getAdminSubscriptions: getAdminSubscriptions
     },

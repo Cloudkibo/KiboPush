@@ -2,14 +2,31 @@
 import * as ActionTypes from '../constants/constants'
 import callApi from '../../utility/api.caller.service'
 import auth from '../../utility/auth.service'
+
+import { clearSubscriberTags } from '../../redux/actions/tags.actions'
+import { clearCustomFieldValues } from '../../redux/actions/customFields.actions'
+
 export const API_URL = '/api'
-// import store from '../store/store'
+
+export function clearUserChat () {
+  console.log('clearUserChat called')
+  return {
+    type: ActionTypes.CLEAR_USER_CHAT
+  }
+}
 
 export function handleCustomers (customers) {
   console.log('handleCustomers called: ', customers)
   return {
     type: ActionTypes.SHOW_CUSTOMERS,
     data: customers
+  }
+}
+
+export function updateLiveChatInfo (data) {
+  return {
+    type: ActionTypes.UPDATE_LIVECHAT_INFO,
+    data
   }
 }
 
@@ -110,9 +127,7 @@ export function showCloseChatSessions (sessions, firstPage) {
   }
 }
 export function updateChatSessions (session, appendDeleteInfo) {
-  // let name = session.name.split(' ')
-  // session.firstName = name[0]
-  // session.lastName = name[1]
+  session.name = `${session.firstName} ${session.lastName}`
   return {
     type: ActionTypes.UPDATE_CHAT_SESSIONS,
     session,
@@ -229,6 +244,16 @@ export function emptySocketData () {
 //   }
 // }
 
+export function clearData () {
+  console.log('livechat clearData')
+  return (dispatch) => {
+    dispatch(clearUserChat())
+    dispatch(clearCustomFieldValues())
+    dispatch(clearSearchResult())
+    dispatch(clearSubscriberTags())
+  }
+}
+
 export function fetchOpenSessions (data) {
   console.log('fetchOpenSessions data', data)
   return (dispatch) => {
@@ -328,6 +353,7 @@ export function searchChat (data) {
   return (dispatch) => {
     callApi('livechat/search', 'post', data).then(res => {
       if (res.status === 'success') {
+        console.log('searchChat results', res.payload)
         dispatch(showSearchChat(res.payload))
       } else {
         console.log('response got from server', res.description)
@@ -368,10 +394,11 @@ export function markRead (sessionid) {
   }
 }
 
-export function updatePendingResponse (data) {
+export function updatePendingResponse (data, callback) {
   return (dispatch) => {
     callApi(`sessions/updatePendingResponse`, 'post', data).then(res => {
       console.log('response from updatePendingSession', res)
+      if (callback) callback(res)
     })
   }
 }
@@ -387,23 +414,22 @@ export function changeStatus (data, handleActiveSession) {
 
 export function unSubscribe (data, handleUnsubscribe) {
   return (dispatch) => {
-    var fetchData = { first_page: true, last_id: 'none', number_of_records: 10, filter: false, filter_criteria: { sort_value: -1, page_value: '', search_value: '' } }
     callApi('subscribers/unSubscribe', 'post', data).then(res => {
       if (handleUnsubscribe) {
         handleUnsubscribe(res)
-      }
-      if (res.status === 'success') {
-        dispatch(fetchOpenSessions(fetchData))
       }
     })
   }
 }
 
-export function assignToAgent (data) {
+export function assignToAgent (data, handleResponse) {
   return (dispatch) => {
     callApi('sessions/assignAgent', 'post', data).then(res => {
       console.log('assign to agent response', res)
       dispatch(updateSessions(data))
+      if (handleResponse) {
+        handleResponse(res)
+      }
     })
   }
 }
@@ -414,12 +440,15 @@ export function sendNotifications (data) {
   }
 }
 
-export function assignToTeam (data) {
+export function assignToTeam (data, handleResponse) {
   console.log('data for assigned to team', data)
   return (dispatch) => {
     callApi('sessions/assignTeam', 'post', data).then(res => {
       console.log('assign to team response', res)
       dispatch(updateSessions(data))
+      if (handleResponse) {
+        handleResponse(res)
+      }
     })
   }
 }

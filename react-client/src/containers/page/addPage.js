@@ -5,7 +5,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { getuserdetails } from '../../redux/actions/basicinfo.actions'
 import AlertContainer from 'react-alert'
 import {
   addPages,
@@ -17,7 +16,6 @@ import { bindActionCreators } from 'redux'
 class AddPage extends React.Component {
   constructor(props) {
     super(props)
-    props.getuserdetails()
     props.addPages()
     this.state = {
       counter: 0,
@@ -253,7 +251,6 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators({
-    getuserdetails: getuserdetails,
     enablePage: enablePage,
     removePageInAddPage: removePageInAddPage,
     addPages: addPages

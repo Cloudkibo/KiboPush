@@ -25,9 +25,9 @@ import AlertContainer from 'react-alert'
 import YouTube from 'react-youtube'
 import { RingLoader } from 'halogenium'
 //  import GettingStarted from './gettingStarted'
-import { joinRoom, registerAction } from '../../utility/socketio'
+import { registerAction } from '../../utility/socketio'
 import { readShopifyInstallRequest } from '../../utility/utils'
-import { getuserdetails, validateUserAccessToken } from '../../redux/actions/basicinfo.actions'
+import { validateUserAccessToken } from '../../redux/actions/basicinfo.actions'
 // import Reports from './reports'
 // import TopPages from './topPages'
 import moment from 'moment'
@@ -77,7 +77,6 @@ class Dashboard extends React.Component {
   UNSAFE_componentWillMount () {
 
     this.props.validateUserAccessToken(this.checkUserAccessToken)
-    this.props.getuserdetails()
     this.props.loadDashboardData()
     this.props.updateSubscriptionPermission()
     this.props.loadSubscribersCount({})
@@ -196,7 +195,6 @@ class Dashboard extends React.Component {
   UNSAFE_componentWillReceiveProps (nextprops) {
     console.log('in UNSAFE_componentWillReceiveProps dashboard', nextprops)
     if (nextprops.user && nextprops.pages) {
-      joinRoom(nextprops.user.companyId)
       if (nextprops.user.emailVerified === false) {
         this.props.history.push({
           pathname: '/resendVerificationEmail'
@@ -749,7 +747,6 @@ function mapDispatchToProps (dispatch) {
       loadMyPagesList: loadMyPagesList,
       loadSubscribersCount: loadSubscribersCount,
       createbroadcast: createbroadcast,
-      getuserdetails: getuserdetails,
       sentVsSeen: sentVsSeen,
       loadGraphData: loadGraphData,
       loadTopPages: loadTopPages,

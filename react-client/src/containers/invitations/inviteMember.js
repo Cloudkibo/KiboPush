@@ -12,14 +12,12 @@ import {
 } from '../../redux/actions/invitations.actions'
 import { bindActionCreators } from 'redux'
 import { Link } from 'react-router-dom'
-import { getuserdetails } from '../../redux/actions/basicinfo.actions'
 import { Alert } from 'react-bs-notifier'
 import AlertContainer from 'react-alert'
 
 class InviteMembers extends React.Component {
   constructor (props) {
     super(props)
-    props.getuserdetails()
     this.createNewInvitations = this.createNewInvitations.bind(this)
     this.changeName = this.changeName.bind(this)
     this.changeEmail = this.changeEmail.bind(this)
@@ -270,7 +268,6 @@ function mapDispatchToProps (dispatch) {
     {
       loadInvitationsList: loadInvitationsList,
       addInvitation: addInvitation,
-      getuserdetails: getuserdetails,
       clearAlertMessages: clearAlertMessages
     }, dispatch)
 }

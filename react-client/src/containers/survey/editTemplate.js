@@ -8,7 +8,6 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { Alert } from 'react-bs-notifier'
 import { loadSurveyDetails } from '../../redux/actions/templates.actions'
-import { getuserdetails } from '../../redux/actions/basicinfo.actions'
 import { createsurvey, sendsurvey, sendSurveyDirectly } from '../../redux/actions/surveys.actions'
 import { Link } from 'react-router-dom'
 import AlertContainer from 'react-alert'
@@ -21,7 +20,6 @@ import { doesPageHaveSubscribers } from '../../utility/utils'
 class EditTemplate extends React.Component {
   constructor (props, context) {
     super(props, context)
-    props.getuserdetails()
     props.loadSubscribersList()
     props.loadTags()
     if (this.props.currentSurvey) {
@@ -727,7 +725,6 @@ function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     createsurvey: createsurvey,
     loadSurveyDetails: loadSurveyDetails,
-    getuserdetails: getuserdetails,
     loadSubscribersList: loadSubscribersList,
     sendsurvey: sendsurvey,
     sendSurveyDirectly: sendSurveyDirectly,
