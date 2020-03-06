@@ -23,17 +23,14 @@ import {
   sendAttachment,
   uploadRecording,
   searchChat,
-  clearSearchResult,
   markRead,
-  clearUserChat,
-  updateLiveChatInfo
+  updateLiveChatInfo,
 } from '../../redux/actions/livechat.actions'
 import { updatePicture } from '../../redux/actions/subscribers.actions'
 import { loadTeamsList } from '../../redux/actions/teams.actions'
 import { loadMembersList } from '../../redux/actions/members.actions'
 import {
   getSubscriberTags,
-  clearSubscriberTags,
   unassignTags,
   createTag,
   assignTags,
@@ -42,8 +39,7 @@ import {
 import {
   setCustomFieldValue,
   loadCustomFields,
-  getCustomFieldValue,
-  clearCustomFieldValues
+  getCustomFieldValue
 } from '../../redux/actions/customFields.actions'
 import { handleSocketEvent } from './socket'
 import { clearSocketData } from '../../redux/actions/socket.actions'
@@ -51,6 +47,7 @@ import { clearSocketData } from '../../redux/actions/socket.actions'
 // components
 import HELPWIDGET from '../../components/extras/helpWidget'
 import { SESSIONS, PROFILE, CHAT, SEARCHAREA } from '../../components/LiveChat'
+
 
 const alertOptions = {
   offset: 14,
@@ -311,17 +308,15 @@ class LiveChat extends React.Component {
   changeActiveSession (session) {
     console.log('changeActiveSession', session)
     if (session._id !== this.state.activeSession._id) {
-      if (Object.keys(this.state.activeSession).length > 0) {
-        this.props.clearUserChat()
-        this.props.clearCustomFieldValues()
-        this.props.clearSearchResult()
-        this.props.clearSubscriberTags()
-        if (session.unreadCount && session.unreadCount > 0) {
-          this.props.markRead(session._id)
-          session.unreadCount = 0
-        }
-      }
-      this.setState({activeSession: session, loadingChat: true, showSearch: false}, () => {
+      this.setState({
+        activeSession: session, 
+        customFieldOptions: [], 
+        userChat: [],
+        subscriberTags: null, 
+        searchChatMsgs: null, 
+        loadingChat: true, 
+        showSearch: false
+      }, () => {
         clearTimeout(this.sessionClickTimer)
         this.sessionClickTimer = setTimeout(() => this.loadActiveSession({...session}), 1000)
       })
@@ -330,6 +325,10 @@ class LiveChat extends React.Component {
 
   loadActiveSession (session) {
     console.log('loadActiveSession', session)
+    if (session.unreadCount && session.unreadCount > 0) {
+      session.unreadCount = 0
+      this.props.markRead(session._id)
+    }
     this.props.fetchUserChats(session._id, { page: 'first', number: 25 })
     this.props.getSubscriberTags(session._id, this.alertMsg)
     this.props.getCustomFieldValue(session._id)
@@ -373,22 +372,21 @@ class LiveChat extends React.Component {
 
   UNSAFE_componentWillReceiveProps (nextProps) {
     console.log('UNSAFE_componentWillMount called in live chat', nextProps)
-    if (this.state.tabValue === 'open' && nextProps.openSessions) {
-      this.setState({loading: false, sessionsLoading: false})
-      let index = nextProps.openSessions.findIndex((session) => session._id === this.state.activeSession._id)
+    let state = {}
+
+    if (nextProps.openSessions && nextProps.closeSessions) {
+      state.loading = false
+      state.sessionsLoading = false
+      const sessions = this.state.tabValue === 'open' ? nextProps.openSessions : nextProps.closeSessions
+      let index = sessions.findIndex((session) => session._id === this.state.activeSession._id)
       if (index === -1) {
-        this.setState({activeSession: {}, userChat: []})
+        state.activeSession = {}
+        state.userChat = []
       } else {
-        this.setState({activeSession: nextProps.openSessions[index]})
+        state.activeSession = nextProps.openSessions[index]
       }
-      this.setState({sessions: nextProps.openSessions, sessionsCount: nextProps.openCount})
-    } else if (this.state.tabValue === 'close' && nextProps.closeSessions) {
-      this.setState({loading: false, sessionsLoading: false})
-      let index = nextProps.closeSessions.findIndex((session) => session._id === this.state.activeSession._id)
-      if (index === -1) {
-        this.setState({activeSession: {}, userChat: []})
-      }
-      this.setState({sessions: nextProps.closeSessions, sessionsCount: nextProps.closeCount})
+      state.sessions = sessions
+      state.sessionsCount = this.state.tabValue === 'open' ? nextProps.openCount : nextProps.closeCount
     }
 
     if (nextProps.customFields && nextProps.customFieldValues ) {
@@ -406,20 +404,20 @@ class LiveChat extends React.Component {
           fieldOptions.push({ 'default': nextProps.customFields[a].default, '_id': nextProps.customFields[a]._id, 'label': nextProps.customFields[a].name, 'type': nextProps.customFields[a].type, 'value': '' })
         }
       }
-      this.setState({
-        customFieldOptions: fieldOptions
-      })
-    } else {
-      this.setState({
-        customFieldOptions: []
-      })
+      state.customFieldOptions = fieldOptions
     }
 
     if (nextProps.userChat) {
-      this.setState({userChat: nextProps.userChat, loadingChat: false})
-    } else {
-      this.setState({userChat: []})
+      state.userChat = nextProps.userChat
+      state.loadingChat = false
     }
+
+    this.setState({
+      ...state,
+      tags: nextProps.tags, 
+      searchChatMsgs: nextProps.searchChatMsgs, 
+      subscriberTags: nextProps.subscriberTags
+    })
 
     if (nextProps.socketData) {
       handleSocketEvent(
@@ -517,9 +515,9 @@ class LiveChat extends React.Component {
                    <PROFILE
                       updateState={this.updateState}
                       teams={this.props.teams ? this.props.teams : []}
-                      tags={this.props.tags ? this.props.tags : []}
+                      tags={this.state.tags ? this.state.tags : []}
                       agents={this.props.members ? this.getAgents(this.props.members) : []}
-                      subscriberTags={this.props.subscriberTags}
+                      subscriberTags={this.state.subscriberTags}
                       activeSession={this.state.activeSession}
                       user={this.props.user}
                       profilePicError={this.profilePicError}
@@ -544,8 +542,8 @@ class LiveChat extends React.Component {
                   <SEARCHAREA
                     activeSession={this.state.activeSession}
                     hideSearch={this.hideSearch}
-                    searchChatMsgs={this.props.searchChatMsgs}
-                    userChat={this.props.userChat}
+                    searchChatMsgs={this.state.searchChatMsgs}
+                    userChat={this.state.userChat}
                     searchChat={this.props.searchChat}
                     fetchUserChats={this.props.fetchUserChats}
                     clearSearchResult={this.props.clearSearchResult}
@@ -625,13 +623,9 @@ function mapDispatchToProps(dispatch) {
     uploadRecording,
     searchChat,
     fetchUserChats,
-    clearSearchResult,
-    clearSubscriberTags,
-    clearCustomFieldValues,
     markRead,
-    clearUserChat,
     clearSocketData,
-    updateLiveChatInfo
+    updateLiveChatInfo,
   }, dispatch)
 }
 

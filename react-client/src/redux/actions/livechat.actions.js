@@ -2,8 +2,11 @@
 import * as ActionTypes from '../constants/constants'
 import callApi from '../../utility/api.caller.service'
 import auth from '../../utility/auth.service'
+
+import { clearSubscriberTags } from '../../redux/actions/tags.actions'
+import { clearCustomFieldValues } from '../../redux/actions/customFields.actions'
+
 export const API_URL = '/api'
-// import store from '../store/store'
 
 export function clearUserChat () {
   console.log('clearUserChat called')
@@ -240,6 +243,16 @@ export function emptySocketData () {
 //       })
 //   }
 // }
+
+export function clearData () {
+  console.log('livechat clearData')
+  return (dispatch) => {
+    dispatch(clearUserChat())
+    dispatch(clearCustomFieldValues())
+    dispatch(clearSearchResult())
+    dispatch(clearSubscriberTags())
+  }
+}
 
 export function fetchOpenSessions (data) {
   console.log('fetchOpenSessions data', data)

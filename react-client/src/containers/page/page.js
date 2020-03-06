@@ -9,7 +9,7 @@ import {
   loadMyPagesListNew,
   removePage
 } from '../../redux/actions/pages.actions'
-import { loadSubscribersList } from '../../redux/actions/subscribers.actions'
+import { loadSubscribersCount } from '../../redux/actions/subscribers.actions'
 import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
 import YouTube from 'react-youtube'
