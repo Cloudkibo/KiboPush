@@ -9,11 +9,13 @@ class Image extends React.Component {
 
   render() {
     return (
-      <img
-        alt=''
-        src={this.props.image.fileurl.url || this.props.image.fileurl}
-        style={{maxWidth: '150px', maxHeight: '85px'}}
-      />
+      <a href={this.props.image.fileurl.url || this.props.image.fileurl} target='_blank' rel='noopener noreferrer'>
+        <img
+          alt=''
+          src={this.props.image.fileurl.url || this.props.image.fileurl}
+          style={{maxWidth: '150px', maxHeight: '85px'}}
+        />
+      </a>
     )
   }
 }

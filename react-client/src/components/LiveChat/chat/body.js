@@ -114,7 +114,7 @@ class Body extends React.Component {
       this.props.userChat.length > 0 &&
       this.state.shouldScrollToBottom
     ) {
-      this.setState({shouldScrollToBottom: false}, () => this.scrollToBottom(this.props.userChat))
+      this.setState({shouldScrollToBottom: false}, () => {this.scrollToBottom(this.props.userChat)})
     }
     if (this.props.activeSession._id !== prevProps.activeSession._id) {
       this.setState({shouldScrollToBottom: true})
@@ -191,7 +191,7 @@ class Body extends React.Component {
 
 Body.propTypes = {
   'userChat': PropTypes.array.isRequired,
-  'chatCount': PropTypes.number.isRequired,
+  'chatCount': PropTypes.number,
   'showDate': PropTypes.func.isRequired,
   'displayDate': PropTypes.func.isRequired,
   'activeSession': PropTypes.object.isRequired,

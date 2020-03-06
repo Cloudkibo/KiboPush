@@ -24,7 +24,7 @@ class Chat extends React.Component {
       showPopover: false,
       popoverOptions: {
         placement: 'left',
-        target: '_chat_area',
+        target: '_picker',
         content: (<div />)
       }
     }
@@ -103,18 +103,6 @@ class Chat extends React.Component {
           type='dark'
           effect='solid'
         />
-
-        <Popover
-          placement={this.state.popoverOptions.placement}
-          isOpen={this.state.showPopover}
-          className='chatPopover _popover_max_width_400'
-          target={this.state.popoverOptions.target}
-          toggle={this.togglePopover}
-        >
-          <PopoverBody>
-            {this.state.popoverOptions.content}
-          </PopoverBody>
-        </Popover>
 
         <CONFIRMATIONMODAL
           id='_resolve-chat-session'
@@ -204,8 +192,23 @@ class Chat extends React.Component {
             getPicker={this.getPicker}
             togglePopover={this.togglePopover}
             updateNewMessage={this.updateNewMessage}
+            deletefile={this.props.deletefile}
           />
         }
+
+        <div id='_picker'>
+          <Popover
+            placement={this.state.popoverOptions.placement}
+            isOpen={this.state.showPopover}
+            className='chatPopover _popover_max_width_400'
+            target={this.state.popoverOptions.target}
+            toggle={this.togglePopover}
+          >
+            <PopoverBody>
+              {this.state.popoverOptions.content}
+            </PopoverBody>
+          </Popover>
+        </div>
 
       </div>
     )
@@ -230,7 +233,8 @@ Chat.propTypes = {
   'uploadRecording': PropTypes.func.isRequired,
   'loadingChat': PropTypes.bool.isRequired,
   'fetchUserChats': PropTypes.func.isRequired,
-  'markRead': PropTypes.func.isRequired
+  'markRead': PropTypes.func.isRequired,
+  'deletefile': PropTypes.func.isRequired
 }
 
 export default Chat

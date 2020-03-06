@@ -28,6 +28,9 @@ const handleIncomingMessage = (payload, state, props, updateLiveChatInfo, clearS
     session = sessions.splice(index, 1)[0]
     session.unreadCount = session.unreadCount ? session.unreadCount + 1 : 1
     session.lastPayload = payload.message.payload
+    session.last_activity_time = new Date()
+    session.lastMessagedAt = new Date()
+    session.pendingResponse = true
     if (state.tabValue === 'open') sessions = [session, ...sessions]
     data = {
       userChat,
@@ -40,6 +43,10 @@ const handleIncomingMessage = (payload, state, props, updateLiveChatInfo, clearS
     session = sessions.splice(index, 1)[0]
     session.unreadCount = session.unreadCount ? session.unreadCount + 1 : 1
     session.lastPayload = payload.message.payload
+    session.last_activity_time = new Date()
+    session.lastMessagedAt = new Date()
+    session.pendingResponse = true
+    session.status = 'new'
     if (state.tabValue === 'open') sessions = [session, ...sessions]
     data = {
       openSessions: state.tabValue === 'open' && sessions,
@@ -49,6 +56,10 @@ const handleIncomingMessage = (payload, state, props, updateLiveChatInfo, clearS
   } else if (index === -1 && state.tabValue === 'open') {
     session.name = `${session.firstName} ${session.lastName}`
     session.lastPayload = payload.message.payload
+    session.last_activity_time = new Date()
+    session.lastMessagedAt = new Date()
+    session.pendingResponse = true
+    session.status = 'new'
     sessions = [session, ...sessions]
     data = {
       openSessions: sessions,
