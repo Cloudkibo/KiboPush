@@ -20,15 +20,18 @@ class SearchArea extends React.Component {
   }
 
   UNSAFE_componentWillReceiveProps (nextProps) {
-      if (nextProps.searchChatMsgs && !this.state.scrollingToMessage) {
-          if (this.state.loadingMore) {
-            let searchResults = this.state.searchResults
-            searchResults = searchResults.concat(nextProps.searchChatMsgs.messages)
-            this.setState({loadingMore: false, searchResults})
-          } else {
-            this.setState({searching: false, searchResults: nextProps.searchChatMsgs.messages})
-          }
-      }
+    if (!nextProps.searchChatMsgs) {
+      this.setState({searchResults: null})
+    }
+    if (nextProps.searchChatMsgs && !this.state.scrollingToMessage) {
+        if (this.state.loadingMore) {
+          let searchResults = this.state.searchResults
+          searchResults = searchResults.concat(nextProps.searchChatMsgs.messages)
+          this.setState({loadingMore: false, searchResults})
+        } else {
+          this.setState({searching: false, searchResults: nextProps.searchChatMsgs.messages})
+        }
+    }
   }
 
   componentDidUpdate (prevProps) {
@@ -77,7 +80,7 @@ class SearchArea extends React.Component {
   }
 
   searchChat () {
-    this.props.clearSearchResult()
+    this.props.clearSearchResults()
     this.setState({searching: true, searchedTerm: this.state.searchValue})
     const data = {
       subscriber_id: this.props.activeSession._id,
@@ -183,7 +186,7 @@ SearchArea.propTypes = {
     'userChat': PropTypes.array.isRequired,
     'searchChat': PropTypes.func.isRequired,
     'fetchUserChats': PropTypes.func.isRequired,
-    'clearSearchResult': PropTypes.func.isRequired,
+    'clearSearchResults': PropTypes.func.isRequired,
     'showFetchingChat': PropTypes.func.isRequired
 }
   
