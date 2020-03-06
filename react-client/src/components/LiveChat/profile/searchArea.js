@@ -37,7 +37,7 @@ class SearchArea extends React.Component {
   componentDidUpdate (prevProps) {
     if (prevProps.userChat.length < this.props.userChat.length && this.state.scrollingToMessage) {
       this.scrollToMessage(this.state.scrollingToMessage)
-    } 
+    }
   }
 
   changeSearchValue (e) {
@@ -69,11 +69,11 @@ class SearchArea extends React.Component {
     } else {
       this.setState({scrollingToMessage: messageId}, () => {
         this.props.showFetchingChat(true)
-        this.props.fetchUserChats(this.props.activeSession._id, 
+        this.props.fetchUserChats(this.props.activeSession._id,
           {
             page: 'next',
-            number: 25, 
-            last_id: this.props.userChat[0]._id, 
+            number: 25,
+            last_id: this.props.userChat[0]._id,
           })
       })
     }
@@ -122,7 +122,7 @@ class SearchArea extends React.Component {
                 ? this.state.searchResults.map((chat, index) => (
                   <div key={chat._id} onClick={() => { this.scrollToMessage(chat._id) }} style={{cursor: 'pointer'}} className='m-widget4__item'>
                     <div className='m-widget4__info'>
-                      <span className='m-widget4__sub'>{new Date(chat.datetime).getDate() + '/' + (new Date(chat.datetime).getMonth()+1) + '/' + new Date(chat.datetime).getFullYear()}</span>
+                      <span className='m-widget4__sub'>{new Date(chat.datetime).getDate() + '/' + (new Date(chat.datetime).getMonth() + 1) + '/' + new Date(chat.datetime).getFullYear()}</span>
                       <br />
                       <Dotdotdot clamp={10}>
                         <span style={{fontWeight: 'normal'}} className='m-widget4__title'>
@@ -151,7 +151,7 @@ class SearchArea extends React.Component {
                 </div>
               }
               {
-                !this.state.loadingMore && this.state.searchResults && this.props.searchChatMsgs && 
+                !this.state.loadingMore && this.state.searchResults && this.props.searchChatMsgs &&
                 this.state.searchResults.length > 0 &&
                 this.state.searchResults.length < this.props.searchChatMsgs.count &&
                 <center style={{marginBottom: '15px'}}>
@@ -189,5 +189,5 @@ SearchArea.propTypes = {
     'clearSearchResults': PropTypes.func.isRequired,
     'showFetchingChat': PropTypes.func.isRequired
 }
-  
+
 export default SearchArea
