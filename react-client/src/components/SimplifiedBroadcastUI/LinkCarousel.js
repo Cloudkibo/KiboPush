@@ -293,7 +293,6 @@ class LinkCarouselModal extends React.Component {
     }
 
     render () {
-      console.log('this.props in link carousel', this.props)
         return (
             <div className="modal-content" style={{ width: '72vw' }}>
                 <div style={{ display: 'block' }} className="modal-header">
