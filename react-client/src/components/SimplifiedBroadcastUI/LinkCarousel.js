@@ -203,11 +203,11 @@ class LinkCarouselModal extends React.Component {
         console.log('url meta data retrieved', data)
         let links = this.state.links
         let cards = this.state.cards
-        if (!data || !data.ogTitle || !data.ogDescription) {
+        if (!data || !data.ogTitle) {
             let errorMsg = ''
             if (!data) {
                 errorMsg = this.props.invalidMsg ? this.props.invalidMsg : 'Invalid website link'
-            } else if (!data.ogTitle && !data.ogDescription) {
+            } else if (!data.ogTitle) {
                 errorMsg = 'Not enough metadata present in link'
             }
             links[index] = Object.assign(links[index], { loading: false, valid: false, errorMsg })
@@ -222,6 +222,12 @@ class LinkCarouselModal extends React.Component {
             }
             this.setState({ links, cards })
         } else {
+            let description
+            if (data.ogDescription) {
+              description = data.ogDescription.length > 80 ? data.ogDescription.substring(0, 80) + '...' : data.ogDescription
+            } else {
+              description = this.props.connectedPages.filter(page => page.pageId === this.props.pageId)[0].pageName
+            }
             if (data.ogImage && data.ogImage.url && data.ogImage.url.startsWith('/')) {
                 data.ogImage.url = links[index].url + data.ogImage.url
             }
@@ -229,7 +235,7 @@ class LinkCarouselModal extends React.Component {
                 id: index + 1,
                 component: {
                     title: data.ogTitle.length > 80 ? data.ogTitle.substring(0, 80) + '...' : data.ogTitle,
-                    subtitle: data.ogDescription.length > 80 ? data.ogDescription.substring(0, 80) + '...' : data.ogDescription,
+                    subtitle: description,
                     image_url: data.ogImage && data.ogImage.url ? data.ogImage.url : this.defaultImage,
                     buttons: this.props.hideWebUrl ? [] :[
                         {
@@ -244,7 +250,7 @@ class LinkCarouselModal extends React.Component {
             this.setState({ links, cards, selectedIndex: index })
         }
     }
-    
+
     handleLinkChange(e, index) {
         console.log('changing link', e.target.value)
         let link = e.target.value
@@ -287,6 +293,7 @@ class LinkCarouselModal extends React.Component {
     }
 
     render () {
+      console.log('this.props in link carousel', this.props)
         return (
             <div className="modal-content" style={{ width: '72vw' }}>
                 <div style={{ display: 'block' }} className="modal-header">
@@ -446,6 +453,7 @@ class LinkCarouselModal extends React.Component {
 
 function mapStateToProps(state) {
     return {
+      connectedPages: (state.pagesInfo.pages)
     }
 }
 
