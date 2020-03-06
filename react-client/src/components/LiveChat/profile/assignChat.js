@@ -38,7 +38,13 @@ class AssignChat extends React.Component {
       subscriberId: this.props.activeSession._id,
       isAssigned: false
     }
-    this.props.assignToAgent(data)
+    this.props.assignToAgent(data, (res) => {
+      if (res.status === 'success') {
+        this.props.alertMsg.success('Agent unassigned succesfully')
+      } else {
+        this.props.alertMsg.error('Agent was unable to be unassigned')
+      }
+    })
     if (this.props.activeSession.assigned_to.id !== this.props.user._id) {
       let notificationsData = {
         message: `Session of subscriber ${this.props.activeSession.firstName + ' ' + this.props.activeSession.lastName} has been unassigned from you.`,
@@ -58,7 +64,13 @@ class AssignChat extends React.Component {
       isAssigned: false
     }
     this.props.fetchTeamAgents(this.props.activeSession.assigned_to.id)
-    this.props.assignToTeam(data)
+    this.props.assignToTeam(data, (res) => {
+      if (res.status === 'success') {
+        this.props.alertMsg.success('Team unassigned succesfully')
+      } else {
+        this.props.alertMsg.error('Team was unable to be unassigned')
+      }
+    })
   }
 
   assignToAgent() {
@@ -68,7 +80,13 @@ class AssignChat extends React.Component {
       subscriberId: this.props.activeSession._id,
       isAssigned: true
     }
-    this.props.assignToAgent(data)
+    this.props.assignToAgent(data, (res) => {
+      if (res.status === 'success') {
+        this.props.alertMsg.success('Agent assigned succesfully')
+      } else {
+        this.props.alertMsg.error('Agent was unable to be assigned')
+      }
+    })
     if (this.state.currentSelected.value !== this.props.user._id) {
       let notificationsData = {
         message: `Session of subscriber ${this.props.activeSession.firstName + ' ' + this.props.activeSession.lastName} has been assigned to you.`,
@@ -89,7 +107,13 @@ class AssignChat extends React.Component {
         isAssigned: true
     }
     this.props.fetchTeamAgents(this.state.currentSelected.value)
-    this.props.assignToTeam(data)
+    this.props.assignToTeam(data, (res) => {
+      if (res.status === 'success') {
+        this.props.alertMsg.success('Team assigned succesfully')
+      } else {
+        this.props.alertMsg.error('Team was unable to be assigned')
+      }
+    })
   }
 
   onSelectChange (selected) {

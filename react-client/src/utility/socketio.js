@@ -165,7 +165,6 @@ socket.on('message', (data) => {
     console.log('update status of new sponsored message')
     store.dispatch(updateSponsoredMessagesListItemStatus(data.payload))
   }
-
   if (callbacks[data.action]) {
     callbacks[data.action](data.payload)
   }

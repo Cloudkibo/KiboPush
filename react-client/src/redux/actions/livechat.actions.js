@@ -2,8 +2,11 @@
 import * as ActionTypes from '../constants/constants'
 import callApi from '../../utility/api.caller.service'
 import auth from '../../utility/auth.service'
+
+import { clearSubscriberTags } from '../../redux/actions/tags.actions'
+import { clearCustomFieldValues } from '../../redux/actions/customFields.actions'
+
 export const API_URL = '/api'
-// import store from '../store/store'
 
 export function clearUserChat () {
   console.log('clearUserChat called')
@@ -241,6 +244,16 @@ export function emptySocketData () {
 //   }
 // }
 
+export function clearData () {
+  console.log('livechat clearData')
+  return (dispatch) => {
+    dispatch(clearUserChat())
+    dispatch(clearCustomFieldValues())
+    dispatch(clearSearchResult())
+    dispatch(clearSubscriberTags())
+  }
+}
+
 export function fetchOpenSessions (data) {
   console.log('fetchOpenSessions data', data)
   return (dispatch) => {
@@ -413,11 +426,14 @@ export function unSubscribe (data, handleUnsubscribe) {
   }
 }
 
-export function assignToAgent (data) {
+export function assignToAgent (data, handleResponse) {
   return (dispatch) => {
     callApi('sessions/assignAgent', 'post', data).then(res => {
       console.log('assign to agent response', res)
       dispatch(updateSessions(data))
+      if (handleResponse) {
+        handleResponse(res)
+      }
     })
   }
 }
@@ -428,12 +444,15 @@ export function sendNotifications (data) {
   }
 }
 
-export function assignToTeam (data) {
+export function assignToTeam (data, handleResponse) {
   console.log('data for assigned to team', data)
   return (dispatch) => {
     callApi('sessions/assignTeam', 'post', data).then(res => {
       console.log('assign to team response', res)
       dispatch(updateSessions(data))
+      if (handleResponse) {
+        handleResponse(res)
+      }
     })
   }
 }

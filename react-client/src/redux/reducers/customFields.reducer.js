@@ -2,6 +2,7 @@ import * as ActionTypes from '../constants/constants'
 
 export function customFieldInfo (state = {}, action) {
   console.log('customField reducer', action)
+  console.log('customField state', state)
   switch (action.type) {
     case ActionTypes.ADD_CUSTOM_FIELD: {
      let customFields = state.customFields
@@ -54,7 +55,15 @@ export function customFieldInfo (state = {}, action) {
       if (state.customFieldSubscriber && action.data.subscriberId === state.customFieldSubscriber.subscriberId) {
         let customFieldSubscriber = state.customFieldSubscriber
         let index = customFieldSubscriber.customFields.findIndex(cf => cf.customFieldId._id === action.data.customFieldId)
-        customFieldSubscriber.customFields[index].value = action.data.value
+        if (index > -1) {
+          customFieldSubscriber.customFields[index].value = action.data.value
+        } else {
+          let customField = state.customFields.find(cf => cf._id === action.data.customFieldId)
+          customFieldSubscriber.customFields.push({
+            customFieldId: customField,
+            value: action.data.value
+          })
+        }
         return Object.assign({}, state, {
           customFieldSubscriber: {...customFieldSubscriber}
         })
