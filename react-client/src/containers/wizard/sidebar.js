@@ -33,7 +33,7 @@ class Sidebar extends React.Component {
     return (
       <div id='sidebarDiv' className='col-xl-3 col-lg-12 m--padding-top-20 m--padding-bottom-15' style={{paddingLeft: '0', paddingRight: '0', paddingTop: '20px !important', paddingBottom: '15px !important', position: 'relative', width: '100%', minHeight: '1px'}}>
         <div className='m-wizard__head' style={{padding: '0'}}>
-          <div className='m-wizard__nav' style={{paddingBottom: '2rem', display: 'table', width: 'auto', margin: '2rem auto 0 auto'}}>
+          <div className='m-wizard__nav' style={{paddingBottom: '2rem', display: 'table', width: 'auto', margin: '2rem 2rem 0'}}>
             <div className='m-wizard__steps' style={{display: 'block'}}>
               {/* this.props.step === '1'
                 ? <div className='m-wizard__step m-wizard__step--current' data-wizard-target='#m_wizard_form_step_1' style={{borderRadius: '2rem', marginBottom: '1rem', padding: '0.02rem 1rem 0.05rem 0', backgroundColor: '#716aca'}}>
