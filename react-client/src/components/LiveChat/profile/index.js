@@ -10,7 +10,7 @@ class Profile extends React.Component {
 
   render() {
     return (
-        <div id='profileArea' style={{padding: '0px', border: '1px solid #F2F3F8', marginBottom: '0px'}} className='col-xl-3 m-portlet'>     
+        <div id='profileArea' style={{padding: '0px', border: '1px solid #F2F3F8', marginBottom: '0px'}} className='col-xl-3 m-portlet'>
             <div className='m-card-profile'>
                 <div className='m-portlet__head'>
                     <Header
@@ -28,11 +28,11 @@ class Profile extends React.Component {
                   {
                       (this.props.user.currentPlan.unique_ID === 'plan_C' || this.props.user.currentPlan.unique_ID === 'plan_D') &&
                       (['admin', 'buyer'].includes(this.props.user.role)) &&
-                      <AssignChat 
+                      <AssignChat
                       alertMsg={this.props.alertMsg}
                       activeSession={this.props.activeSession}
                       teams={
-                          (this.props.user && this.props.user.role !== 'agent' && 
+                          (this.props.user && this.props.user.role !== 'agent' &&
                           this.props.teams && this.props.teams.length > 0) ?
                               this.props.teams.map(team => (
                                   {
@@ -94,7 +94,7 @@ class Profile extends React.Component {
                     }
                     {
                         this.props.customFieldOptions && this.props.customFieldOptions.length > 0 ?
-                        <CustomFields 
+                        <CustomFields
                             activeSession={this.props.activeSession}
                             customFieldOptions={this.props.customFieldOptions}
                             setCustomFieldValue={this.props.setCustomFieldValue}
@@ -129,7 +129,7 @@ Profile.propTypes = {
   'assignToAgent': PropTypes.func.isRequired,
   'sendNotifications': PropTypes.func.isRequired,
   'tags': PropTypes.array.isRequired,
-  'subscriberTags': PropTypes.array,
+  'subscriberTags': PropTypes.object,
   'assignTags': PropTypes.func.isRequired,
   'unassignTags': PropTypes.func.isRequired,
   'createTag': PropTypes.func.isRequired,

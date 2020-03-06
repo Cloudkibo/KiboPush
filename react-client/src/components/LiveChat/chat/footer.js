@@ -18,7 +18,8 @@ class Footer extends React.Component {
       uploadingFile: false,
       uploaded: false,
       showAudioRecording: false,
-      recording: false
+      recording: false,
+      loading: false
     }
     this.onInputChange = this.onInputChange.bind(this)
     this.onEnter = this.onEnter.bind(this)
@@ -54,6 +55,7 @@ class Footer extends React.Component {
     sessions.splice(index, 1)
     session.lastPayload = payload
     session.lastRepliedBy = data.replied_by
+    session.pendingResponse = false
     this.props.updateNewMessage(true)
     this.props.updateState({
       reducer: true,
@@ -92,6 +94,7 @@ class Footer extends React.Component {
 
   removeAttachment () {
     console.log('removeAttachment called')
+    this.props.deletefile(this.state.attachment.id, () => {})
     this.setState({
       attachment: {},
       componentType: '',
@@ -180,14 +183,17 @@ class Footer extends React.Component {
   handleMessageResponse (res, data, payload) {
     if (res.status === 'success') {
       data.format = 'convos'
-      this.updateChatData(data, payload)
       this.setState({
         attachment: {},
         componentType: '',
         uploadingFile: false,
-        uploaded: false
+        uploaded: false,
+        loading: false
+      }, () => {
+        this.updateChatData(data, payload)
       })
     } else {
+      this.setState({loading: false})
       this.props.alertMsg.error('Failed to send message')
     }
   }
@@ -338,6 +344,7 @@ class Footer extends React.Component {
   }
 
   sendAttachment () {
+    this.setState({loading: true})
     let payload = this.setDataPayload('attachment')
     let data = this.setMessageData(this.props.activeSession, payload)
     this.props.sendAttachment(data, (res) => this.handleMessageResponse(res, data, payload))
@@ -412,7 +419,9 @@ class Footer extends React.Component {
           <div className='m-messenger__form-tools'>
             <button style={{border: '1px solid #36a3f7'}} className='m-messenger__form-attachment' disabled={this.state.uploadingFile}>
               {
-                this.state.uploaded
+                this.state.loading
+                ? <div className="m-loader" style={{width: "30px"}} />
+                : this.state.uploaded
                 ? <i style={{color: '#36a3f7'}} onClick={this.sendAttachment} className='flaticon-paper-plane' />
                 : <i style={{color: '#36a3f7'}} onClick={this.sendThumbsUp} className='la la-thumbs-o-up' />
               }
@@ -488,7 +497,8 @@ Footer.propTypes = {
   'uploadRecording': PropTypes.func.isRequired,
   'getPicker': PropTypes.func.isRequired,
   'togglePopover': PropTypes.func.isRequired,
-  'updateNewMessage': PropTypes.func.isRequired
+  'updateNewMessage': PropTypes.func.isRequired,
+  'deletefile': PropTypes.func.isRequired
 }
 
 export default Footer

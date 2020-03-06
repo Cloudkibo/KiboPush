@@ -24,7 +24,8 @@ import {
   uploadRecording,
   searchChat,
   markRead,
-  updateLiveChatInfo
+  updateLiveChatInfo,
+  deletefile
 } from '../../redux/actions/livechat.actions'
 import { updatePicture } from '../../redux/actions/subscribers.actions'
 import { loadTeamsList } from '../../redux/actions/teams.actions'
@@ -121,7 +122,7 @@ class LiveChat extends React.Component {
   }
 
   showSearch () {
-    this.setState({showSearch: true})
+    this.setState({showSearch: !this.state.showSearch})
   }
 
   updatePendingStatus (res, value, sessionId) {
@@ -312,12 +313,12 @@ class LiveChat extends React.Component {
     console.log('changeActiveSession', session)
     if (session._id !== this.state.activeSession._id) {
       this.setState({
-        activeSession: session, 
-        customFieldOptions: [], 
+        activeSession: session,
+        customFieldOptions: [],
         userChat: [],
-        subscriberTags: null, 
-        searchChatMsgs: null, 
-        loadingChat: true, 
+        subscriberTags: null,
+        searchChatMsgs: null,
+        loadingChat: true,
         showSearch: false
       }, () => {
         clearTimeout(this.sessionClickTimer)
@@ -377,10 +378,11 @@ class LiveChat extends React.Component {
     console.log('UNSAFE_componentWillMount called in live chat', nextProps)
     let state = {}
 
-    if (nextProps.openSessions && nextProps.closeSessions) {
+    if (nextProps.openSessions || nextProps.closeSessions) {
       state.loading = false
       state.sessionsLoading = false
-      const sessions = this.state.tabValue === 'open' ? nextProps.openSessions : nextProps.closeSessions
+      let sessions = this.state.tabValue === 'open' ? nextProps.openSessions : nextProps.closeSessions
+      sessions = sessions || []
       let index = sessions.findIndex((session) => session._id === this.state.activeSession._id)
       if (index === -1) {
         state.activeSession = {}
@@ -412,19 +414,22 @@ class LiveChat extends React.Component {
 
     if (nextProps.userChat) {
       if (nextProps.userChat.length > 0 && nextProps.userChat[0].subscriber_id === this.state.activeSession._id) {
-          state.userChat = nextProps.userChat
-          state.loadingChat = false
-        }
+        state.userChat = nextProps.userChat
+        state.loadingChat = false
+      } else if (nextProps.userChat.length === 0) {
+        state.loadingChat = false
+      }
     }
 
-    if (nextProps.searchChatMsgs && nextProps.searchChatMsgs.messages.length > 0 && 
+    if (nextProps.searchChatMsgs && nextProps.searchChatMsgs.messages.length > 0 &&
       nextProps.searchChatMsgs.messages[0].subscriber_id === this.state.activeSession._id) {
-        state.searchChatMsgs = nextProps.searchChatMsgs 
+        state.searchChatMsgs = nextProps.searchChatMsgs
     }
 
     this.setState({
       ...state,
-      tags: nextProps.tags, 
+      tags: nextProps.tags,
+      searchChatMsgs: nextProps.searchChatMsgs,
       subscriberTags: nextProps.subscriberTags
     })
 
@@ -517,6 +522,7 @@ class LiveChat extends React.Component {
                     loadingChat={this.state.loadingChat}
                     fetchUserChats={this.props.fetchUserChats}
                     markRead={this.props.markRead}
+                    deletefile={this.props.deletefile}
                   />
                 }
                 {
@@ -634,7 +640,8 @@ function mapDispatchToProps(dispatch) {
     fetchUserChats,
     markRead,
     clearSocketData,
-    updateLiveChatInfo
+    updateLiveChatInfo,
+    deletefile
   }, dispatch)
 }
 
