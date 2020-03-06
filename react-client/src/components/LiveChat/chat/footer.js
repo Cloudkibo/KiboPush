@@ -65,27 +65,37 @@ class Footer extends React.Component {
   }
 
   sendSticker (sticker) {
-    this.props.togglePopover()
-    const payload = {
-      componentType: 'sticker',
-      fileurl: sticker.image.hdpi
+    const data = this.props.performAction('send messages', this.props.activeSession)
+    if (data.isAllowed) {
+      this.props.togglePopover()
+      const payload = {
+        componentType: 'sticker',
+        fileurl: sticker.image.hdpi
+      }
+      const data = this.setMessageData(this.props.activeSession, payload)
+      this.props.sendChatMessage(data)
+      data.format = 'convos'
+      this.updateChatData(data, payload)
+    } else {
+      this.props.alertMsg.error(data.errorMsg)
     }
-    const data = this.setMessageData(this.props.activeSession, payload)
-    this.props.sendChatMessage(data)
-    data.format = 'convos'
-    this.updateChatData(data, payload)
   }
 
   sendGif (gif) {
-    this.props.togglePopover()
-    const payload = {
-      componentType: 'gif',
-      fileurl: gif.images.downsized.url
+    const data = this.props.performAction('send messages', this.props.activeSession)
+    if (data.isAllowed) {
+      this.props.togglePopover()
+      const payload = {
+        componentType: 'gif',
+        fileurl: gif.images.downsized.url
+      }
+      const data = this.setMessageData(this.props.activeSession, payload)
+      this.props.sendChatMessage(data)
+      data.format = 'convos'
+      this.updateChatData(data, payload)
+    } else {
+      this.props.alertMsg.error(data.errorMsg)
     }
-    const data = this.setMessageData(this.props.activeSession, payload)
-    this.props.sendChatMessage(data)
-    data.format = 'convos'
-    this.updateChatData(data, payload)
   }
 
   onInputChange (e) {
@@ -336,18 +346,28 @@ class Footer extends React.Component {
   }
 
   sendThumbsUp () {
-    let payload = this.setDataPayload('thumbsUp')
-    let data = this.setMessageData(this.props.activeSession, payload)
-    this.props.sendChatMessage(data)
-    data.format = 'convos'
-    this.updateChatData(data, payload)
+    const data = this.props.performAction('send messages', this.props.activeSession)
+    if (data.isAllowed) {
+      let payload = this.setDataPayload('thumbsUp')
+      let data = this.setMessageData(this.props.activeSession, payload)
+      this.props.sendChatMessage(data)
+      data.format = 'convos'
+      this.updateChatData(data, payload)
+    } else {
+      this.props.alertMsg.error(data.errorMsg)
+    }
   }
 
   sendAttachment () {
-    this.setState({loading: true})
-    let payload = this.setDataPayload('attachment')
-    let data = this.setMessageData(this.props.activeSession, payload)
-    this.props.sendAttachment(data, (res) => this.handleMessageResponse(res, data, payload))
+    const data = this.props.performAction('send messages', this.props.activeSession)
+    if (data.isAllowed) {
+      this.setState({loading: true})
+      let payload = this.setDataPayload('attachment')
+      let data = this.setMessageData(this.props.activeSession, payload)
+      this.props.sendAttachment(data, (res) => this.handleMessageResponse(res, data, payload))
+    } else {
+      this.props.alertMsg.error(data.errorMsg)
+    }
   }
 
   openPicker (type) {
