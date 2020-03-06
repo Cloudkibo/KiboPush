@@ -122,7 +122,7 @@ class SearchArea extends React.Component {
                 ? this.state.searchResults.map((chat, index) => (
                   <div key={chat._id} onClick={() => { this.scrollToMessage(chat._id) }} style={{cursor: 'pointer'}} className='m-widget4__item'>
                     <div className='m-widget4__info'>
-                      <span className='m-widget4__sub'>{new Date(chat.datetime).getDate() + '/' + new Date(chat.datetime).getMonth()+1 + '/' + new Date(chat.datetime).getFullYear()}</span>
+                      <span className='m-widget4__sub'>{new Date(chat.datetime).getDate() + '/' + (new Date(chat.datetime).getMonth()+1) + '/' + new Date(chat.datetime).getFullYear()}</span>
                       <br />
                       <Dotdotdot clamp={10}>
                         <span style={{fontWeight: 'normal'}} className='m-widget4__title'>

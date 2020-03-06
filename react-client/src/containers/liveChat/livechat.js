@@ -25,7 +25,8 @@ import {
   searchChat,
   markRead,
   updateLiveChatInfo,
-  deletefile
+  deletefile,
+  clearSearchResult
 } from '../../redux/actions/livechat.actions'
 import { updatePicture } from '../../redux/actions/subscribers.actions'
 import { loadTeamsList } from '../../redux/actions/teams.actions'
@@ -333,6 +334,7 @@ class LiveChat extends React.Component {
       session.unreadCount = 0
       this.props.markRead(session._id)
     }
+    this.props.clearSearchResult()
     this.props.fetchUserChats(session._id, { page: 'first', number: 25 })
     this.props.getSubscriberTags(session._id, this.alertMsg)
     this.props.getCustomFieldValue(session._id)
@@ -636,7 +638,8 @@ function mapDispatchToProps(dispatch) {
     markRead,
     clearSocketData,
     updateLiveChatInfo,
-    deletefile
+    deletefile,
+    clearSearchResult
   }, dispatch)
 }
 

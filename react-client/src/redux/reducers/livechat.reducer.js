@@ -147,7 +147,6 @@ export function liveChat (state = initialState, action) {
       return Object.assign({}, state, {
         userChat: action.userChat,
         chatCount: action.chatCount,
-        searchChat: undefined,
         changedStatus: ''
       })
 
@@ -159,7 +158,6 @@ export function liveChat (state = initialState, action) {
       return Object.assign({}, state, {
         userChat: orderedChat,
         chatCount: action.chatCount,
-        searchChat: undefined,
         changedStatus: ''
       })
 

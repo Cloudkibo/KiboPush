@@ -90,7 +90,7 @@ class Sessions extends React.Component {
                 </a>
               </li>
               <li className='nav-item m-tabs__item'>
-                <a href='#/' className={`nav-link m-tabs__link ${this.props.tabValue === 'closed' ? 'active' : ''}`} data-toggle='tab' role='tab' style={{cursor: 'pointer'}} onClick={() => this.props.changeTab('closed')}>
+                <a href='#/' className={`nav-link m-tabs__link ${this.props.tabValue === 'close' ? 'active' : ''}`} data-toggle='tab' role='tab' style={{cursor: 'pointer'}} onClick={() => this.props.changeTab('close')}>
                   Closed
                 </a>
               </li>
