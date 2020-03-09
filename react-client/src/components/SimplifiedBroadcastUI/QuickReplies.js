@@ -238,7 +238,7 @@ class QuickReplies extends React.Component {
           return true
       }
       for (let i = 0; i < this.state.currentActions.length; i++) {
-          if (this.state.currentActions[i].action &&
+          if (!this.state.currentActions[i].action &&
             !this.state.currentActions[i].sequenceId &&
             !this.state.currentActions[i].templateId &&
             !this.state.currentActions[i].tagId &&
