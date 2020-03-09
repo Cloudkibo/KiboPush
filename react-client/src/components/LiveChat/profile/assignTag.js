@@ -32,7 +32,7 @@ class AssignTag extends React.Component {
                 ))
             })
       }
-  } 
+  }
 
   removeTags() {
     let payload = {
@@ -135,7 +135,7 @@ class AssignTag extends React.Component {
                     placeholder={'Assign tag(s)'}
                 />
             </div>
-            {/* <ProfileAction 
+            {/* <ProfileAction
                 creatable
                 onCreateOption={this.onCreateTag}
                 title='Assign Tags'
@@ -170,10 +170,10 @@ class AssignTag extends React.Component {
 AssignTag.propTypes = {
     'tags': PropTypes.array.isRequired,
     'activeSession': PropTypes.object.isRequired,
-    'subscriberTags': PropTypes.array.isRequired,
+    'subscriberTags': PropTypes.object.isRequired,
     'assignTags': PropTypes.func.isRequired,
     'unassignTags': PropTypes.func.isRequired,
     'createTag': PropTypes.func.isRequired
   }
-  
+
 export default AssignTag

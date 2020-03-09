@@ -112,7 +112,7 @@ class SessionItem extends React.Component {
               }
             </div>
             <br />
-            <span className='m-widget4__sub'>
+            <span className={`m-widget4__sub ${(this.props.session.unreadCount && this.props.session.unreadCount > 0) && 'm--font-boldest'}`}>
               {
                 this.props.session.lastPayload
                 ? this.getChatPreview()
@@ -120,7 +120,7 @@ class SessionItem extends React.Component {
               }
             </span>
             <br />
-            <span className='m-widget4__sub'>
+            <span className={`m-widget4__sub ${(this.props.session.unreadCount && this.props.session.unreadCount > 0) && 'm--font-boldest'}`}>
               <i className='fa fa-facebook-square' />&nbsp;&nbsp;
               {(this.props.session.pageId.pageName.length > 10) ? this.props.session.pageId.pageName.slice(0, 10) + '...' : this.props.session.pageId.pageName}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
               <i className='fa fa-calendar' />&nbsp;&nbsp;

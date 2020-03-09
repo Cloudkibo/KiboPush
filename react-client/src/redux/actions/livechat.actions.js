@@ -372,6 +372,15 @@ export function sendChatMessage (data, fetchOpenSessions) {
   }
 }
 
+export function getSMPStatus (callback) {
+  return (dispatch) => {
+    callApi('livechat/SMPStatus').then(res => {
+      console.log('getSMPStatus Response', res)
+      callback(res)
+    })
+  }
+}
+
 export function fetchUrlMeta (url) {
   return (dispatch) => {
     dispatch(loadingUrlMeta(url))

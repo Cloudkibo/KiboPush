@@ -1,9 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { ReactMic } from 'react-mic'
+import { getmetaurl } from '../../../containers/liveChat/utilities'
 
 // components
 import MODAL from '../../extras/modal'
+import CARD from '../messages/horizontalCard'
 
 class Footer extends React.Component {
   constructor(props, context) {
@@ -19,7 +21,9 @@ class Footer extends React.Component {
       uploaded: false,
       showAudioRecording: false,
       recording: false,
-      loading: false
+      loading: false,
+      loadingUrlMeta: false,
+      currentUrl: ''
     }
     this.onInputChange = this.onInputChange.bind(this)
     this.onEnter = this.onEnter.bind(this)
@@ -41,6 +45,8 @@ class Footer extends React.Component {
     this.sendSticker = this.sendSticker.bind(this)
     this.sendGif = this.sendGif.bind(this)
     this.updateChatData = this.updateChatData.bind(this)
+    this.handleUrlMeta = this.handleUrlMeta.bind(this)
+    this.removeUrlMeta = this.removeUrlMeta.bind(this)
   }
 
   setEmoji (emoji) {
@@ -98,12 +104,42 @@ class Footer extends React.Component {
     }
   }
 
+  removeUrlMeta () {
+    this.setState({urlmeta: {}})
+    this.props.updateChatAreaHeight('57vh')
+  }
+
+  handleUrlMeta (data) {
+    console.log('urlMeta', data)
+    if (data) {
+      this.setState({
+        loadingUrlMeta: false,
+        urlmeta: data.ogTitle ? data : {}
+      })
+      this.props.updateChatAreaHeight('42vh')
+    } else {
+      this.setState({
+        loadingUrlMeta: false,
+        urlmeta: {}
+      })
+      this.props.updateChatAreaHeight('57vh')
+    }
+  }
+
   onInputChange (e) {
-    this.setState({text: e.target.value})
+    const text = e.target.value
+    let state = {text}
+    const url = getmetaurl(text)
+    console.log('meta url', url)
+    if (url && url !== this.state.currentUrl) {
+      state.loadingUrlMeta = true
+      state.currentUrl = url
+      this.props.fetchUrlMeta(url, this.handleUrlMeta)
+    }
+    this.setState(state)
   }
 
   removeAttachment () {
-    console.log('removeAttachment called')
     this.props.deletefile(this.state.attachment.id, () => {})
     this.setState({
       attachment: {},
@@ -335,7 +371,8 @@ class Footer extends React.Component {
           payload = this.setDataPayload('text')
           data = this.setMessageData(this.props.activeSession, payload)
           this.props.sendChatMessage(data)
-          this.setState({ text: '' })
+          this.setState({ text: '', urlmeta: {}, currentUrl: '' })
+          this.props.updateChatAreaHeight('57vh')
           data.format = 'convos'
           this.updateChatData(data, payload)
         }
@@ -448,6 +485,35 @@ class Footer extends React.Component {
             </button>
           </div>
         </div>
+        {
+          this.state.loadingUrlMeta
+          ? <div style={{marginBottom: '10px'}} className='align-center'>
+            <center>
+              <div className="m-loader" style={{width: "30px", display: "inline-block"}} />
+              <span>Fetching url meta...</span>
+            </center>
+          </div>
+          : this.state.urlmeta.constructor === Object && Object.keys(this.state.urlmeta).length > 0 &&
+          <div
+            style={{
+              borderRadius: '15px',
+              backgroundColor: '#f0f0f0',
+              minHeight: '20px',
+              justifyContent: 'flex-end',
+              position: 'relative',
+              display: 'inline-block',
+              padding: '5px',
+              marginBottom: '10px'
+            }}
+          >
+            <i style={{float: 'right', cursor: 'pointer'}} className='fa fa-times' onClick={this.removeUrlMeta} />
+            <CARD
+              title={this.state.urlmeta.ogTitle}
+              description={this.state.urlmeta.ogDescription}
+              image={this.state.urlmeta.ogImage && this.state.urlmeta.ogImage.url}
+            />
+          </div>
+        }
         <div style={{color: '#575962'}}>
           <input
             ref='_upload_attachment'
@@ -518,7 +584,8 @@ Footer.propTypes = {
   'getPicker': PropTypes.func.isRequired,
   'togglePopover': PropTypes.func.isRequired,
   'updateNewMessage': PropTypes.func.isRequired,
-  'deletefile': PropTypes.func.isRequired
+  'deletefile': PropTypes.func.isRequired,
+  'updateChatAreaHeight': PropTypes.func.isRequired
 }
 
 export default Footer

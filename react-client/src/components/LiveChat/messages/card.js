@@ -18,7 +18,7 @@ class Card extends React.Component {
 
   render() {
     return (
-      <div style={{width: '215px'}}>
+      <div style={{width: '215px', color: this.props.color}}>
         <div
           style={{
             border: '1px solid rgba(0,0,0,.1)',

@@ -41,6 +41,8 @@ class RightChatItem extends React.Component {
       return (
         <TEXT
           text={message}
+          color='white'
+          urlMeta={this.props.message.url_meta}
         />
       )
     } else if (['image', 'sticker', 'gif', 'thumbsUp'].includes(type)) {

@@ -53,7 +53,7 @@
     "react-loading": "^2.0.3",
     "react-messenger-plugin": "^2.1.0",
     "react-messenger-send-to-messenger": "^0.2.0",
-    "react-mic": "^9.1.2",
+    "react-mic": "^12.4.1",
     "react-modal-dialog": "^4.0.7",
     "react-multimedia-capture": "^1.2.4",
     "react-notification-badge": "^1.5.1",
