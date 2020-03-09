@@ -23,7 +23,8 @@ class Footer extends React.Component {
       recording: false,
       loading: false,
       loadingUrlMeta: false,
-      currentUrl: ''
+      currentUrl: '',
+      uploadAudio: true
     }
     this.onInputChange = this.onInputChange.bind(this)
     this.onEnter = this.onEnter.bind(this)
@@ -47,6 +48,7 @@ class Footer extends React.Component {
     this.updateChatData = this.updateChatData.bind(this)
     this.handleUrlMeta = this.handleUrlMeta.bind(this)
     this.removeUrlMeta = this.removeUrlMeta.bind(this)
+    this.closeRecording = this.closeRecording.bind(this)
   }
 
   setEmoji (emoji) {
@@ -150,28 +152,34 @@ class Footer extends React.Component {
   }
 
   startRecording () {
-    this.setState({recording: true, showAudioRecording: true})
+    this.setState({recording: true, showAudioRecording: true, uploadAudio: true})
   }
 
   stopRecording () {
     this.setState({recording: false, showAudioRecording: false})
   }
 
+  closeRecording () {
+    this.setState({recording: false, showAudioRecording: false, uploadAudio: false})
+  }
+
   onStopRecording (recordedBlob) {
-    var file = new File([recordedBlob.blob], 'audio.mp3', { type: 'audio/mp3', lastModified: recordedBlob.stopTime})
-    if (file) {
-      this.setState({
-        uploadingFile: true,
-        attachment: file,
-        componentType: 'audio'
-      })
-      var fileData = new FormData()
-      fileData.append('file', file)
-      fileData.append('filename', file.name)
-      fileData.append('filetype', file.type)
-      fileData.append('filesize', file.size)
-      fileData.append('componentType', 'audio')
-      this.props.uploadRecording(fileData, this.onAttachmentUpload)
+    if (this.state.uploadAudio) {
+      var file = new File([recordedBlob.blob], 'audio.mp3', { type: 'audio/mp3', lastModified: recordedBlob.stopTime})
+      if (file) {
+        this.setState({
+          uploadingFile: true,
+          attachment: file,
+          componentType: 'audio'
+        })
+        var fileData = new FormData()
+        fileData.append('file', file)
+        fileData.append('filename', file.name)
+        fileData.append('filetype', file.type)
+        fileData.append('filesize', file.size)
+        fileData.append('componentType', 'audio')
+        this.props.uploadRecording(fileData, this.onAttachmentUpload)
+      }
     }
   }
 
@@ -436,6 +444,7 @@ class Footer extends React.Component {
           id='_record_audio'
           title='Record Audio'
           content={this.getRecordAudioContent()}
+          onClose={this.closeRecording}
         />
         <div className='m-messenger__form'>
           <div className='m-messenger__form-controls'>
