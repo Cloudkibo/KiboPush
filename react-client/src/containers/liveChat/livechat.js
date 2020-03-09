@@ -26,11 +26,13 @@ import {
   markRead,
   updateLiveChatInfo,
   deletefile,
-  clearSearchResult
+  clearSearchResult,
+  getSMPStatus
 } from '../../redux/actions/livechat.actions'
 import { updatePicture } from '../../redux/actions/subscribers.actions'
 import { loadTeamsList } from '../../redux/actions/teams.actions'
 import { loadMembersList } from '../../redux/actions/members.actions'
+import { urlMetaData } from '../../redux/actions/convos.actions'
 import {
   getSubscriberTags,
   unassignTags,
@@ -81,7 +83,8 @@ class LiveChat extends React.Component {
       userChat: [],
       showSearch: false,
       customFieldOptions: [],
-      showingCustomFieldPopover: false
+      showingCustomFieldPopover: false,
+      smpStatus: []
     }
 
     this.fetchSessions = this.fetchSessions.bind(this)
@@ -107,8 +110,11 @@ class LiveChat extends React.Component {
     this.loadActiveSession = this.loadActiveSession.bind(this)
     this.showFetchingChat = this.showFetchingChat.bind(this)
     this.clearSearchResults = this.clearSearchResults.bind(this)
+    this.handleSMPStatus = this.handleSMPStatus.bind(this)
+    this.isSMPApproved = this.isSMPApproved.bind(this)
 
     this.fetchSessions(true, 'none', true)
+    props.getSMPStatus(this.handleSMPStatus)
     props.loadMembersList()
     props.loadTags()
     props.loadCustomFields()
@@ -124,6 +130,21 @@ class LiveChat extends React.Component {
 
   showSearch () {
     this.setState({showSearch: !this.state.showSearch})
+  }
+
+  handleSMPStatus (res) {
+    if (res.status === 'success') {
+      this.setState({smpStatus: res.payload})
+    }
+  }
+
+  isSMPApproved () {
+    const page = this.state.smpStatus.find((item) => item.pageId === this.state.activeSession.pageId._id)
+    if (page && page.smpStatus === 'approved') {
+      return true
+    } else {
+      return false
+    }
   }
 
   updatePendingStatus (res, value, sessionId) {
@@ -474,7 +495,7 @@ class LiveChat extends React.Component {
               }
             <HELPWIDGET
               documentation={{link: 'http://kibopush.com/livechat/'}}
-              videoTutorial={{videoId: 'XUXc2ZD_lQY'}}
+              videoTutorial={{videoId: 'bLotpQLvsfE'}}
             />
               <div className='row'>
                 <SESSIONS
@@ -520,6 +541,8 @@ class LiveChat extends React.Component {
                     fetchUserChats={this.props.fetchUserChats}
                     markRead={this.props.markRead}
                     deletefile={this.props.deletefile}
+                    fetchUrlMeta={this.props.urlMetaData}
+                    isSMPApproved={this.isSMPApproved()}
                   />
                 }
                 {
@@ -639,7 +662,9 @@ function mapDispatchToProps(dispatch) {
     clearSocketData,
     updateLiveChatInfo,
     deletefile,
-    clearSearchResult
+    clearSearchResult,
+    urlMetaData,
+    getSMPStatus
   }, dispatch)
 }
 
