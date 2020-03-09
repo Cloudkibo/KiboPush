@@ -21,6 +21,7 @@ class Chat extends React.Component {
   constructor(props, context) {
     super(props, context)
     this.state = {
+      chatAreaHieght: '57vh',
       showPopover: false,
       popoverOptions: {
         placement: 'left',
@@ -32,8 +33,13 @@ class Chat extends React.Component {
     this.getPicker = this.getPicker.bind(this)
     this.overrideUserInput = this.overrideUserInput.bind(this)
     this.updateNewMessage = this.updateNewMessage.bind(this)
+    this.updateChatAreaHeight = this.updateChatAreaHeight.bind(this)
 
     this.newMessage = false
+  }
+
+  updateChatAreaHeight (value) {
+    this.setState({chatAreaHieght: value})
   }
 
   updateNewMessage (value) {
@@ -126,6 +132,7 @@ class Chat extends React.Component {
         />
 
         <BODY
+          chatAreaHieght={this.state.chatAreaHieght}
           userChat={this.props.userChat}
           chatCount={this.props.chatCount}
           activeSession={this.props.activeSession}
@@ -141,7 +148,7 @@ class Chat extends React.Component {
         />
 
         {
-          !moment(this.props.activeSession.lastMessagedAt).isAfter(moment().subtract(24, 'hours'))
+          !moment(this.props.activeSession.lastMessagedAt).isAfter(moment().subtract(24, 'hours')) && !this.props.isSMPApproved
           ? <div
             className='m-messenger'
             style={{
@@ -193,6 +200,8 @@ class Chat extends React.Component {
             togglePopover={this.togglePopover}
             updateNewMessage={this.updateNewMessage}
             deletefile={this.props.deletefile}
+            fetchUrlMeta={this.props.fetchUrlMeta}
+            updateChatAreaHeight={this.updateChatAreaHeight}
           />
         }
 
@@ -234,7 +243,9 @@ Chat.propTypes = {
   'loadingChat': PropTypes.bool.isRequired,
   'fetchUserChats': PropTypes.func.isRequired,
   'markRead': PropTypes.func.isRequired,
-  'deletefile': PropTypes.func.isRequired
+  'deletefile': PropTypes.func.isRequired,
+  'fetchUrlMeta': PropTypes.func.isRequired,
+  'isSMPApproved': PropTypes.bool.isRequired
 }
 
 export default Chat

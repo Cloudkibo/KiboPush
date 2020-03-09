@@ -19,6 +19,7 @@ class Body extends React.Component {
     this.updateScrollTop = this.updateScrollTop.bind(this)
     this.shoudLoadMore = this.shoudLoadMore.bind(this)
     this.addScrollEvent = this.addScrollEvent.bind(this)
+    this.markRead = this.markRead.bind(this)
 
     this.previousScrollHeight = undefined
   }
@@ -72,6 +73,13 @@ class Body extends React.Component {
     return (this.props.chatCount > this.props.userChat.length)
   }
 
+  markRead () {
+    let session = this.props.activeSession
+    session.unreadCount = 0
+    this.props.markRead(session._id)
+    this.props.updateState({activeSession: session})
+  }
+
   addScrollEvent () {
     this.refs.chatScroll.addEventListener('scroll', (event) => {
       let element = event.target
@@ -85,18 +93,24 @@ class Body extends React.Component {
         this.props.activeSession.unreadCount > 0
       ) {
         console.log('scrolled')
-        let session = this.props.activeSession
-        session.unreadCount = 0
-        this.props.markRead(session._id)
-        this.props.updateState({activeSession: session})
+        this.markRead()
       }
     })
     this.setState({scrollEventAdded: true})
   }
 
+  componentDidMount () {
+    if (this.props.userChat && this.props.userChat.length > 0) {
+      this.scrollToBottom(this.props.userChat)
+    }
+  }
+
   componentDidUpdate (prevProps) {
     if (!this.state.scrollEventAdded && this.refs.chatScroll) {
       this.addScrollEvent()
+      if (this.refs.chatScroll.scrollHeight <= this.refs.chatScroll.clientHeight) {
+        this.markRead()
+      }
     }
     if (prevProps.userChat.length !== this.props.userChat.length) {
       if (this.props.activeSession._id !== prevProps.activeSession._id) {
@@ -129,14 +143,14 @@ class Body extends React.Component {
             <div className='m-messenger m-messenger--message-arrow m-messenger--skin-light'>
                 {
                   this.props.loadingChat
-                  ? <div style={{height: '57vh', display: 'flex', justifyContent: 'center', alignItems: 'center'}} className='m-messenger__messages'>
+                  ? <div style={{height: this.props.chatAreaHieght, display: 'flex', justifyContent: 'center', alignItems: 'center'}} className='m-messenger__messages'>
                     <div>
                       <div className="m-loader" style={{width: "30px", display: "inline-block"}} />
                       <span>Loading Chat...</span>
                     </div>
                   </div>
                   : this.props.userChat.length > 0
-                  ? <div style={{height: '57vh', position: 'relative', overflow: 'hidden', touchAction: 'pinch-zoom'}} className='m-messenger__messages'>
+                  ? <div style={{height: this.props.chatAreaHieght, position: 'relative', overflow: 'hidden', touchAction: 'pinch-zoom'}} className='m-messenger__messages'>
                     <div id='chat-container' ref='chatScroll' style={{position: 'relative', overflowY: 'scroll', height: '100%', maxWidth: '100%', maxHeight: 'none', outline: 0, direction: 'ltr'}}>
                       <div style={{position: 'relative', top: 0, left: 0, overflow: 'hidden', width: 'auto', height: 'auto'}} >
                         {
@@ -190,6 +204,7 @@ class Body extends React.Component {
 }
 
 Body.propTypes = {
+  'chatAreaHieght': PropTypes.string.isRequired,
   'userChat': PropTypes.array.isRequired,
   'chatCount': PropTypes.number,
   'showDate': PropTypes.func.isRequired,
