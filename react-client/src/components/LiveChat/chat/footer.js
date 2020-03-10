@@ -64,6 +64,7 @@ class Footer extends React.Component {
     session.lastPayload = payload
     session.lastRepliedBy = data.replied_by
     session.pendingResponse = false
+    session.last_activity_time = new Date()
     this.props.updateNewMessage(true)
     this.props.updateState({
       reducer: true,
@@ -164,15 +165,16 @@ class Footer extends React.Component {
   }
 
   onStopRecording (recordedBlob) {
+    console.log('recordedBlob object', recordedBlob)
     if (this.state.uploadAudio) {
-      var file = new File([recordedBlob.blob], 'audio.mp3', { type: 'audio/mp3', lastModified: recordedBlob.stopTime})
+      const file = new File([recordedBlob.blob], 'audio.mp3', { type: 'audio/mp3', lastModified: recordedBlob.stopTime})
       if (file) {
         this.setState({
           uploadingFile: true,
           attachment: file,
           componentType: 'audio'
         })
-        var fileData = new FormData()
+        const fileData = new FormData()
         fileData.append('file', file)
         fileData.append('filename', file.name)
         fileData.append('filetype', file.type)
@@ -192,7 +194,6 @@ class Footer extends React.Component {
           className='sound-wave'
           onStop={this.onStopRecording}
           strokeColor='#000000'
-          mimeType="audio/wav"
         />
         <br />
         {
