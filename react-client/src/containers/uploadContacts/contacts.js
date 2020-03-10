@@ -36,7 +36,17 @@ class Contact extends React.Component {
     this.closeEdit = this.closeEdit.bind(this)
     this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
+    this.getUserGuideLink = this.getUserGuideLink.bind(this)
+  }
 
+  getUserGuideLink () {
+    let link = 'https://kibopush.com'
+    if (this.props.user.platform === 'sms') {
+      link = `${link}/twilio`
+    } else if (this.props.user.platform === 'whatsApp') {
+      link = `${link}/whatsapp-twilio`
+    }
+    return link
   }
 
   changeName (e) {
@@ -238,7 +248,7 @@ class Contact extends React.Component {
               <i className='flaticon-technology m--font-accent' />
             </div>
             <div className='m-alert__text'>
-              Need help in understanding subscribers? Here is the <a href='https://kibopush.com/twilio/' target='_blank' rel='noopener noreferrer'>documentation</a>.
+              Need help in understanding subscribers? Here is the <a href={this.getUserGuideLink()} target='_blank' rel='noopener noreferrer'>documentation</a>.
             </div>
           </div>
           <div className='row'>

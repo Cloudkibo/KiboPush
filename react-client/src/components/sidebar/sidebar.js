@@ -353,6 +353,8 @@ class Sidebar extends Component {
           </div>
         </li>
       )
+    } else if (['sms', 'whatsApp'].includes(this.props.user.platform)) {
+      return (this.showSubscribersItem())
     } else {
       return (
         <div />
@@ -1142,7 +1144,7 @@ class Sidebar extends Component {
               <span />
             </i>
             <span className='m-menu__link-text'>
-              Upload Contacts
+              {this.props.user.platform === 'whatsApp' ? 'Invite Subscribers' : 'Upload Contacts'}
             </span>
           </Link>
         </li>
