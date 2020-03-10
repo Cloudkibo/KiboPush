@@ -31,7 +31,7 @@ class UploadContacts extends React.Component {
         <div className='m-subheader '>
           <div className='d-flex align-items-center'>
             <div className='mr-auto'>
-              <h3 className='m-subheader__title'>Customer Base</h3>
+              <h3 className='m-subheader__title'>Invite Subscribers</h3>
             </div>
           </div>
         </div>
