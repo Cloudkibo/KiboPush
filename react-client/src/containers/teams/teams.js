@@ -71,14 +71,14 @@ class Teams extends React.Component {
   }
 
   displayData (n, teams) {
-    let offset = n * 4
+    let offset = n * 10
     let data = []
     let limit
     let index = 0
-    if ((offset + 4) > teams.length) {
+    if ((offset + 10) > teams.length) {
       limit = teams.length
     } else {
-      limit = offset + 4
+      limit = offset + 10
     }
     for (var i = offset; i < limit; i++) {
       data[index] = teams[i]
@@ -397,7 +397,7 @@ class Teams extends React.Component {
                               nextLabel={'next'}
                               breakLabel={<a href='#/'>...</a>}
                               breakClassName={'break-me'}
-                              pageCount={Math.ceil(this.state.totalLength / 5)}
+                              pageCount={Math.ceil(this.state.totalLength / 10)}
                               marginPagesDisplayed={2}
                               pageRangeDisplayed={3}
                               onPageChange={this.handlePageClick}
