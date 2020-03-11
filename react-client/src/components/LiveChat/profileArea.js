@@ -292,7 +292,7 @@ class ProfileArea extends React.Component {
 
   UNSAFE_componentWillReceiveProps(nextProps) {
     console.log('UNSAFE_componentWillReceiveProps profileArea.js', nextProps)
-    if (nextProps.activeSession.is_assigned) {
+    if (nextProps.activeSession.is_assigned && nextProps.activeSession.assigned_to ) {
       if (nextProps.activeSession.assigned_to.type === 'agent') {
         this.setState({
           assignedAgent: nextProps.activeSession.assigned_to.name,
