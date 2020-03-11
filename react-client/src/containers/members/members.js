@@ -57,20 +57,21 @@ class Members extends React.Component {
     this.setState({isShowingModalDelete: false})
   }
   displayData (n, members) {
-    let offset = n * 4
+    let offset = n * 10
     let data = []
     let limit
     let index = 0
-    if ((offset + 4) > members.length) {
-      limit = members.length
+    let membersData = members.filter(m => !!m.userId)
+    if ((offset + 10) > membersData.length) {
+      limit = membersData.length
     } else {
-      limit = offset + 4
+      limit = offset + 10
     }
     for (var i = offset; i < limit; i++) {
-      data[index] = members[i]
+      data[index] = membersData[i]
       index++
     }
-    this.setState({membersData: data, membersDataAll: members})
+    this.setState({membersData: data, membersDataAll: membersData})
   }
 
   handlePageClick (data) {
@@ -361,7 +362,7 @@ class Members extends React.Component {
                           breakLabel={<a href='#/'>...</a>}
                           breakClassName={'break-me'}
                           pageCount={Math.ceil(
-                                       this.state.totalLength / 4)}
+                                       this.state.totalLength / 10)}
                           marginPagesDisplayed={1}
                           pageRangeDisplayed={3}
                           onPageChange={this.handlePageClick}
