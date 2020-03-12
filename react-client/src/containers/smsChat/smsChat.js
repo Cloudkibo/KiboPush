@@ -23,7 +23,7 @@ import {
   sendAttachment,
   uploadRecording,
   searchChat,
-  markRead,
+  // markRead,
   updateLiveChatInfo,
   deletefile,
   clearSearchResult,
@@ -31,9 +31,9 @@ import {
 import {
   fetchOpenSessions,
   fetchCloseSessions,
-  fetchUserChats
+  fetchUserChats,
 //   searchChat,
-//   markRead
+  markRead
 } from '../../redux/actions/smsChat.actions'
 import { updatePicture } from '../../redux/actions/subscribers.actions'
 import { loadTeamsList } from '../../redux/actions/teams.actions'
