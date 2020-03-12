@@ -6,9 +6,9 @@ import { RingLoader } from 'halogenium'
 
 // actions
 import {
-  fetchOpenSessions,
-  fetchCloseSessions,
-  fetchUserChats,
+  // fetchOpenSessions,
+  // fetchCloseSessions,
+  // fetchUserChats,
   fetchTeamAgents,
   changeStatus,
   unSubscribe,
@@ -27,14 +27,14 @@ import {
   updateLiveChatInfo,
   deletefile,
   clearSearchResult,
-  getSMPStatus
 } from '../../redux/actions/livechat.actions'
-// import {
-//   fetchSessions,
-//   fetchChat,
+import {
+  fetchOpenSessions,
+  fetchCloseSessions,
+  fetchUserChats
 //   searchChat,
 //   markRead
-// } from '../../redux/actions/smsChat.actions'
+} from '../../redux/actions/smsChat.actions'
 import { updatePicture } from '../../redux/actions/subscribers.actions'
 import { loadTeamsList } from '../../redux/actions/teams.actions'
 import { loadMembersList } from '../../redux/actions/members.actions'
@@ -90,7 +90,6 @@ class LiveChat extends React.Component {
       showSearch: false,
       customFieldOptions: [],
       showingCustomFieldPopover: false,
-      smpStatus: []
     }
 
     this.fetchSessions = this.fetchSessions.bind(this)
@@ -116,11 +115,8 @@ class LiveChat extends React.Component {
     this.loadActiveSession = this.loadActiveSession.bind(this)
     this.showFetchingChat = this.showFetchingChat.bind(this)
     this.clearSearchResults = this.clearSearchResults.bind(this)
-    this.handleSMPStatus = this.handleSMPStatus.bind(this)
-    this.isSMPApproved = this.isSMPApproved.bind(this)
 
     this.fetchSessions(true, 'none', true)
-    props.getSMPStatus(this.handleSMPStatus)
     props.loadMembersList()
     props.loadTags()
     props.loadCustomFields()
@@ -136,21 +132,6 @@ class LiveChat extends React.Component {
 
   showSearch () {
     this.setState({showSearch: !this.state.showSearch})
-  }
-
-  handleSMPStatus (res) {
-    if (res.status === 'success') {
-      this.setState({smpStatus: res.payload})
-    }
-  }
-
-  isSMPApproved () {
-    const page = this.state.smpStatus.find((item) => item.pageId === this.state.activeSession.pageId._id)
-    if (page && page.smpStatus === 'approved') {
-      return true
-    } else {
-      return false
-    }
   }
 
   updatePendingStatus (res, value, sessionId) {
@@ -368,9 +349,9 @@ class LiveChat extends React.Component {
     if (session.is_assigned && session.assigned_to.type === 'team') {
       this.props.fetchTeamAgents(session.assigned_to.id, this.handleTeamAgents)
     }
-    if (this.props.user.currentPlan.unique_ID === 'plan_C' || this.props.user.currentPlan.unique_ID === 'plan_D') {
-      this.props.loadTeamsList({pageId: session.pageId._id})
-    }
+    // if (this.props.user.currentPlan.unique_ID === 'plan_C' || this.props.user.currentPlan.unique_ID === 'plan_D') {
+    //   this.props.loadTeamsList({pageId: session.pageId._id})
+    // }
     this.setState({activeSession: session})
   }
 
@@ -442,7 +423,7 @@ class LiveChat extends React.Component {
     }
 
     if (nextProps.userChat) {
-      if (nextProps.userChat.length > 0 && nextProps.userChat[0].subscriber_id === this.state.activeSession._id) {
+      if (nextProps.userChat.length > 0 && nextProps.userChat[0].contactId === this.state.activeSession._id) {
         state.userChat = nextProps.userChat
         state.loadingChat = false
       } else if (nextProps.userChat.length === 0) {
@@ -523,6 +504,7 @@ class LiveChat extends React.Component {
                   updateState={this.updateState}
                   fetchSessions={this.fetchSessions}
                   getChatPreview={this.getChatPreview}
+                  showPageInfo={false}
                 />
                 {
                   this.state.activeSession.constructor === Object && Object.keys(this.state.activeSession).length > 0 &&
@@ -548,7 +530,7 @@ class LiveChat extends React.Component {
                     markRead={this.props.markRead}
                     deletefile={this.props.deletefile}
                     fetchUrlMeta={this.props.urlMetaData}
-                    isSMPApproved={this.isSMPApproved()}
+                    isSMPApproved={true}
                   />
                 }
                 {
@@ -614,12 +596,12 @@ class LiveChat extends React.Component {
 function mapStateToProps(state) {
   console.log('mapStateToProps in live chat', state)
   return {
-    openSessions: (state.liveChat.openSessions),
-    openCount: (state.liveChat.openCount),
-    closeCount: (state.liveChat.closeCount),
-    closeSessions: (state.liveChat.closeSessions),
-    userChat: (state.liveChat.userChat),
-    chatCount: (state.liveChat.chatCount),
+    openSessions: (state.smsChatInfo.openSessions),
+    openCount: (state.smsChatInfo.openCount),
+    closeCount: (state.smsChatInfo.closeCount),
+    closeSessions: (state.smsChatInfo.closeSessions),
+    userChat: (state.smsChatInfo.userChat),
+    chatCount: (state.smsChatInfo.chatCount),
     pages: (state.pagesInfo.pages),
     user: (state.basicInfo.user),
     customers: (state.liveChat.customers),
@@ -670,7 +652,6 @@ function mapDispatchToProps(dispatch) {
     deletefile,
     clearSearchResult,
     urlMetaData,
-    getSMPStatus
   }, dispatch)
 }
 

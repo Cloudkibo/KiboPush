@@ -29,18 +29,19 @@ export function searchChat (data) {
   }
 }
 
-export function showChat (data, originalData) {
+export function showUserChats (payload, originalData) {
+  console.log('showUserChats response', payload)
   if (originalData.page === 'first') {
     return {
-      type: ActionTypes.FETCH_CHAT_OVERWRITE,
-      chat: data.chat,
-      count: data.count
+      type: ActionTypes.SHOW_SMS_USER_CHAT_OVERWRITE,
+      userChat: payload.chat,
+      chatCount: payload.count
     }
   } else {
     return {
-      type: ActionTypes.FETCH_CHAT,
-      chat: data.chat,
-      count: data.count
+      type: ActionTypes.SHOW_SMS_USER_CHAT_OVERWRITE,
+      userChat: payload.chat,
+      chatCount: payload.count
     }
   }
 }
@@ -52,39 +53,90 @@ export function socketUpdateSms (data) {
   }
 }
 
-export function showSessions (data) {
+export function showCloseChatSessions (sessions, firstPage) {
+  var subscribers = sessions.closedSessions.map((s) => {
+    let name = s.name.split(' ')
+    s.firstName = name[0]
+    s.lastName = name[1]
+    return s
+  })
+  if (firstPage) {
+    return {
+      type: ActionTypes.SHOW_SMS_CLOSE_CHAT_SESSIONS_OVERWRITE,
+      closeSessions: subscribers,
+      count: sessions.count
+    }
+  }
   return {
-    type: ActionTypes.FETCH_SESSIONS,
-    sessions: data.sessions,
-    count: data.count
+    type: ActionTypes.SHOW_SMS_CLOSE_CHAT_SESSIONS_OVERWRITE,
+    closeSessions: subscribers,
+    count: sessions.count
   }
 }
 
-export function fetchSessions (data) {
-  console.log('data for fetchSessions', data)
+export function showOpenChatSessions (sessions, data) {
+  var subscribers = sessions.openSessions.map((s) => {
+    let name = s.name.split(' ')
+    s.firstName = name[0]
+    s.lastName = name[1]
+    s.profilePic = 'https://www.mastermindpromotion.com/wp-content/uploads/2015/02/facebook-default-no-profile-pic-300x300.jpg'
+    return s
+  })
+  // var sorted = subscribers.sort(function (a, b) {
+  //   return new Date(b.lastDateTime) - new Date(a.lastDateTime)
+  // })
+  if (data.first_page && (data.page_value !== '' || data.search_value !== '')) {
+    return {
+      type: ActionTypes.SHOW_SMS_OPEN_CHAT_SESSIONS_OVERWRITE,
+      openSessions: subscribers,
+      count: sessions.count
+    }
+  } else {
+    return {
+      type: ActionTypes.SHOW_SMS_OPEN_CHAT_SESSIONS_OVERWRITE,
+      openSessions: subscribers,
+      count: sessions.count
+    }
+  }
+}
+
+export function fetchOpenSessions (data) {
+  console.log('fetchOpenSessions data', data)
   return (dispatch) => {
-    callApi('smsChat/getSessions', 'post', data)
+    callApi('smsSessions/getOpenSessions', 'post', data)
       .then(res => {
-        console.log('response from fetchSessions', res)
-        dispatch(showSessions(res.payload))
+        console.log('fetchOpenSessions response', res)
+        dispatch(showOpenChatSessions(res.payload, data))
       })
   }
 }
 
-export function fetchChat (id, data) {
-  console.log('data for fetchChat', data)
+export function fetchCloseSessions (data) {
+  console.log('fetchCloseSessions data', data)
   return (dispatch) => {
-    callApi(`smsChat/getChat/${id}`, 'post', data)
+    callApi('smsSessions/getClosedSessions', 'post', data)
       .then(res => {
-        console.log('response from fetchChat', res)
-        dispatch(showChat(res.payload, data))
+        console.log('fetchCloseSessions response', res)
+        dispatch(showCloseChatSessions(res.payload, data.first_page))
+      })
+  }
+}
+
+export function fetchUserChats (sessionid, data, handleFunction) {
+  return (dispatch) => {
+    callApi(`smsChat/getChat/${sessionid}`, 'post', data)
+      .then(res => {
+        dispatch(showUserChats(res.payload, data))
+        if (handleFunction) {
+          handleFunction(data.messageId)
+        }
       })
   }
 }
 
 export function markRead (sessionid) {
   return (dispatch) => {
-    callApi(`smsChat/markread/${sessionid}`).then(res => {
+    callApi(`smsSessions/markread/${sessionid}`).then(res => {
       console.log('Mark as read Response', res)
     })
   }

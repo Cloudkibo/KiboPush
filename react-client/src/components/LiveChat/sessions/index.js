@@ -121,6 +121,7 @@ class Sessions extends React.Component {
                           profilePicError={this.props.profilePicError}
                           changeStatus={this.props.changeStatus}
                           getChatPreview={this.props.getChatPreview}
+                          showPageInfo={this.props.showPageInfo}
                         />
                       ))
                       : <p style={{marginLeft: '30px'}}>No data to display</p>
@@ -167,7 +168,12 @@ Sessions.propTypes = {
   'updateState': PropTypes.func.isRequired,
   'changeTab': PropTypes.func.isRequired,
   'fetchSessions': PropTypes.func.isRequired,
-  'getChatPreview': PropTypes.func.isRequired
+  'getChatPreview': PropTypes.func.isRequired,
+  'showPageInfo': PropTypes.bool,
+}
+
+Sessions.defaultProps = {
+  showPageInfo: true
 }
 
 export default Sessions
