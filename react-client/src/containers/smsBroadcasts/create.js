@@ -38,7 +38,7 @@ class SmsBroadcast extends React.Component {
   }
 
   clearFields () {
-    this.msg.success('Broadcast sent successfully')
+   // this.msg.success('Broadcast sent successfully')
     var conditions = [{condition: '', criteria: '', text: ''}]
     this.props.updateCurrentCustomersInfo(this.props.customersInfo, 'filter', conditions)
     this.setState({title: '', message: '', segmentationErrors: []})
@@ -108,7 +108,7 @@ class SmsBroadcast extends React.Component {
         platform: 'twilio',
         title: this.state.title,
         segmentation: this.props.customersInfo && this.props.customersInfo.filter ? this.props.customersInfo.filter : ''
-      }, this.clearFields)
+      }, this.clearFields, this.msg)
     }
   }
 
