@@ -22,17 +22,18 @@ import {
   uploadAttachment,
   sendAttachment,
   uploadRecording,
-  searchChat,
+  // searchChat,
   // markRead,
   updateLiveChatInfo,
   deletefile,
-  clearSearchResult,
+  // clearSearchResult,
 } from '../../redux/actions/livechat.actions'
 import {
   fetchOpenSessions,
   fetchCloseSessions,
   fetchUserChats,
-//   searchChat,
+  searchChat,
+  clearSearchResult,
   markRead
 } from '../../redux/actions/smsChat.actions'
 import { updatePicture } from '../../redux/actions/subscribers.actions'
@@ -611,7 +612,7 @@ function mapStateToProps(state) {
     tags: (state.tagsInfo.tags),
     customFieldValues: (state.customFieldInfo.customFieldSubscriber),
     customFields: (state.customFieldInfo.customFields),
-    searchChatMsgs: (state.liveChat.searchChat),
+    searchChatMsgs: (state.smsChatInfo.searchChat),
     socketData: (state.socketInfo.socketData)
   }
 }
