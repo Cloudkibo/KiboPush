@@ -15,16 +15,22 @@ export function smsChatInfo (state = initialState, action) {
       return Object.assign({}, state, {
         searchChat: action.data
       })
-    case ActionTypes.FETCH_SESSIONS:
+    case ActionTypes.SHOW_SMS_OPEN_CHAT_SESSIONS_OVERWRITE:
       return Object.assign({}, state, {
-        sessions: action.sessions,
-        count: action.count
+        openSessions: action.openSessions,
+        openCount: action.count
       })
-    // case ActionTypes.FETCH_CHAT:
-    //   return Object.assign({}, state, {
-    //     chat: action.chat,
-    //     chatCount: action.count
-    //   })
+    case ActionTypes.SHOW_SMS_CLOSE_CHAT_SESSIONS_OVERWRITE:
+      return Object.assign({}, state, {
+        closeSessions: action.closeSessions,
+        closeCount: action.count
+      })
+    case ActionTypes.SHOW_SMS_USER_CHAT_OVERWRITE:
+      return Object.assign({}, state, {
+        userChat: action.userChat,
+        chatCount: action.chatCount,
+        changedStatus: ''
+      })
     case ActionTypes.UPDATE_SESSION:
       return Object.assign({}, state, {
         sessions: action.sessions

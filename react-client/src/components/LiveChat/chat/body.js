@@ -162,7 +162,7 @@ class Body extends React.Component {
                         }
                         {
                           this.props.userChat.map((chat, index) => (
-                            chat.format === 'convos'
+                            chat.format === 'convos' || chat.format === 'kibopush'
                             ? <RIGHTCHATITEM
                               key={index}
                               message={chat}
