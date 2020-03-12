@@ -7,6 +7,14 @@ const initialState = {
 
 export function smsChatInfo (state = initialState, action) {
   switch (action.type) {
+    case ActionTypes.CLEAR_SEARCH_RESULT_SMS:
+      return Object.assign({}, state, {
+        searchChat: undefined
+      })
+    case ActionTypes.SHOW_SEARCH_CHAT_SMS:
+      return Object.assign({}, state, {
+        searchChat: action.data
+      })
     case ActionTypes.FETCH_SESSIONS:
       return Object.assign({}, state, {
         sessions: action.sessions,
