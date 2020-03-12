@@ -22,17 +22,18 @@ import {
   uploadAttachment,
   sendAttachment,
   uploadRecording,
-  searchChat,
+  // searchChat,
   // markRead,
   updateLiveChatInfo,
   deletefile,
-  clearSearchResult,
+  // clearSearchResult,
 } from '../../redux/actions/livechat.actions'
 import {
   fetchOpenSessions,
   fetchCloseSessions,
   fetchUserChats,
-//   searchChat,
+  searchChat,
+  clearSearchResult,
   markRead
 } from '../../redux/actions/smsChat.actions'
 import { updatePicture } from '../../redux/actions/subscribers.actions'
@@ -67,7 +68,7 @@ const alertOptions = {
   transition: 'scale'
 }
 
-class LiveChat extends React.Component {
+class SmsChat extends React.Component {
   constructor(props, context) {
     super(props, context)
     this.state = {
@@ -655,4 +656,4 @@ function mapDispatchToProps(dispatch) {
   }, dispatch)
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(LiveChat)
+export default connect(mapStateToProps, mapDispatchToProps)(SmsChat)
