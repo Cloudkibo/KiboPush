@@ -36,7 +36,18 @@ class EditTemplate extends React.Component {
     if (!validateFields(this.state.broadcast, this.msg)) {
       return
     }
-    this.props.createWelcomeMessage({_id: this.props.location.state.pages[0], welcomeMessage: this.state.broadcast}, this.msg)
+    let broadcast = this.state.broadcast
+    if (broadcast[broadcast.length-1].quickReplies) {
+      broadcast[broadcast.length-1].quickReplies = broadcast[broadcast.length-1].quickReplies.map((quickReply) => (
+          {
+            content_type: quickReply.content_type,
+            payload: quickReply.payload,
+            title: quickReply.title
+          }
+        )
+      )
+    }
+    this.props.createWelcomeMessage({_id: this.props.location.state.pages[0], welcomeMessage: broadcast}, this.msg)
   }
 
   goBack () {

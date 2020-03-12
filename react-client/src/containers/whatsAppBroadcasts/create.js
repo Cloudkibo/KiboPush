@@ -135,7 +135,6 @@ class CreateWhatsAppBroadcast extends React.Component {
   }
 
   clearFields () {
-    this.msg.success('Broadcast sent successfully')
     this.initTab()
     this.reset(false)
     this.targeting.getWrappedInstance().resetCondition()
@@ -208,7 +207,8 @@ class CreateWhatsAppBroadcast extends React.Component {
         platform: 'Twilio WhatsApp',
         title: this.state.convoTitle,
         segmentation: this.props.customersInfo && this.props.customersInfo.filter ? this.props.customersInfo.filter : ''
-      }, this.clearFields)
+      }, this.clearFields, this.msg)
+      this.msg.info(`Sending broadcast it may take ${this.state.broadcast.length * this.state.subscribersCount} Sec... You will be notified when it is sent.`)
     }
   }
 
