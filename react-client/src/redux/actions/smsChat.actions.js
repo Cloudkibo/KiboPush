@@ -1,6 +1,34 @@
 import callApi from '../../utility/api.caller.service'
 import * as ActionTypes from '../constants/constants'
 
+export function showSearchChat (data) {
+  return {
+    type: ActionTypes.SHOW_SEARCH_CHAT_SMS,
+    data
+  }
+}
+
+
+export function clearSearchResult () {
+  return {
+    type: ActionTypes.CLEAR_SEARCH_RESULT_SMS
+  }
+}
+
+
+export function searchChat (data) {
+  return (dispatch) => {
+    callApi('smsChat/search', 'post', data).then(res => {
+      if (res.status === 'success') {
+        console.log('searchChat results', res.payload)
+        dispatch(showSearchChat(res.payload))
+      } else {
+        console.log('response got from server', res.description)
+      }
+    })
+  }
+}
+
 export function showChat (data, originalData) {
   if (originalData.page === 'first') {
     return {
