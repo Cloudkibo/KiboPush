@@ -350,6 +350,7 @@ class LiveChat extends React.Component {
                     module={CHATMODULE}
                     tabValue={this.state.tabValue}
                     changeTab={this.changeTab}
+                    fetchTeamAgents={this.fetchTeamAgents}
                   />
                   {
                     Object.keys(this.state.activeSession).length === 0 && this.state.activeSession.constructor === Object &&
@@ -365,6 +366,7 @@ class LiveChat extends React.Component {
                     Object.keys(this.state.activeSession).length > 0 && this.state.activeSession.constructor === Object &&
                     <CHATAREA
                       activeSession={this.state.activeSession}
+                      fetchTeamAgents={this.fetchTeamAgents}
                       user={this.props.user}
                       sessions={this.props.sessions ? this.props.sessions: []}
                       disableScroll={this.disableScroll}
