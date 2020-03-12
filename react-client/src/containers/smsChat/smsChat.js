@@ -504,6 +504,7 @@ class LiveChat extends React.Component {
                   updateState={this.updateState}
                   fetchSessions={this.fetchSessions}
                   getChatPreview={this.getChatPreview}
+                  showPageInfo={false}
                 />
                 {
                   this.state.activeSession.constructor === Object && Object.keys(this.state.activeSession).length > 0 &&

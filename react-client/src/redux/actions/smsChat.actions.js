@@ -79,6 +79,7 @@ export function showOpenChatSessions (sessions, data) {
     let name = s.name.split(' ')
     s.firstName = name[0]
     s.lastName = name[1]
+    s.profilePic = 'https://www.mastermindpromotion.com/wp-content/uploads/2015/02/facebook-default-no-profile-pic-300x300.jpg'
     return s
   })
   // var sorted = subscribers.sort(function (a, b) {
