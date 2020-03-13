@@ -15,7 +15,7 @@ import {
   getCustomers,
   appendSubscriber,
   assignToTeam,
-  assignToAgent,
+  // assignToAgent,
   sendNotifications,
   updatePendingResponse,
   sendChatMessage,
@@ -34,7 +34,8 @@ import {
   fetchUserChats,
   searchChat,
   clearSearchResult,
-  markRead
+  markRead,
+  assignToAgent
 } from '../../redux/actions/smsChat.actions'
 import { updatePicture } from '../../redux/actions/subscribers.actions'
 import { loadTeamsList } from '../../redux/actions/teams.actions'
