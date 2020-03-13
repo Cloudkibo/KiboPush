@@ -570,6 +570,8 @@ class LiveChat extends React.Component {
                       createTag={this.props.createTag}
                       customFieldOptions={this.state.customFieldOptions}
                       setCustomFieldValue={this.saveCustomField}
+                      showTags={true}
+                      showCustomFields={true}
                     />
                 }
                 {

@@ -9,12 +9,12 @@ import {
   // fetchOpenSessions,
   // fetchCloseSessions,
   // fetchUserChats,
-  fetchTeamAgents,
+  // fetchTeamAgents,
   changeStatus,
   unSubscribe,
   getCustomers,
   appendSubscriber,
-  assignToTeam,
+  // assignToTeam,
   // assignToAgent,
   sendNotifications,
   updatePendingResponse,
@@ -35,24 +35,14 @@ import {
   searchChat,
   clearSearchResult,
   markRead,
-  assignToAgent
+  assignToAgent,
+  assignToTeam,
+  fetchTeamAgents
 } from '../../redux/actions/smsChat.actions'
 import { updatePicture } from '../../redux/actions/subscribers.actions'
 import { loadTeamsList } from '../../redux/actions/teams.actions'
 import { loadMembersList } from '../../redux/actions/members.actions'
 import { urlMetaData } from '../../redux/actions/convos.actions'
-import {
-  getSubscriberTags,
-  unassignTags,
-  createTag,
-  assignTags,
-  loadTags
-} from '../../redux/actions/tags.actions'
-import {
-  setCustomFieldValue,
-  loadCustomFields,
-  getCustomFieldValue
-} from '../../redux/actions/customFields.actions'
 import { handleSocketEvent } from '../liveChat/socket'
 import { clearSocketData } from '../../redux/actions/socket.actions'
 
@@ -111,7 +101,6 @@ class SmsChat extends React.Component {
     this.handlePendingResponse = this.handlePendingResponse.bind(this)
     this.updatePendingStatus = this.updatePendingStatus.bind(this)
     this.showSearch = this.showSearch.bind(this)
-    this.saveCustomField = this.saveCustomField.bind(this)
     this.handleCustomFieldResponse = this.handleCustomFieldResponse.bind(this)
     this.hideSearch = this.hideSearch.bind(this)
     this.loadActiveSession = this.loadActiveSession.bind(this)
@@ -120,8 +109,6 @@ class SmsChat extends React.Component {
 
     this.fetchSessions(true, 'none', true)
     props.loadMembersList()
-    props.loadTags()
-    props.loadCustomFields()
   }
 
   clearSearchResults () {
@@ -303,10 +290,6 @@ class SmsChat extends React.Component {
     }
   }
 
-  saveCustomField (data) {
-    this.props.setCustomFieldValue(data, this.handleCustomFieldResponse)
-  }
-
   handleCustomFieldResponse (res, body) {
     console.log("res",res)
     if (res.status === 'success') {
@@ -346,8 +329,6 @@ class SmsChat extends React.Component {
     }
     this.props.clearSearchResult()
     this.props.fetchUserChats(session._id, { page: 'first', number: 25 })
-    this.props.getSubscriberTags(session._id, this.alertMsg)
-    this.props.getCustomFieldValue(session._id)
     if (session.is_assigned && session.assigned_to.type === 'team') {
       this.props.fetchTeamAgents(session.assigned_to.id, this.handleTeamAgents)
     }
@@ -555,11 +536,9 @@ class SmsChat extends React.Component {
                       appendSubscriber={this.props.appendSubscriber}
                       sendNotifications={this.props.sendNotifications}
                       assignToAgent={this.props.assignToAgent}
-                      assignTags={this.props.assignTags}
-                      unassignTags={this.props.unassignTags}
-                      createTag={this.props.createTag}
                       customFieldOptions={this.state.customFieldOptions}
-                      setCustomFieldValue={this.saveCustomField}
+                      showTags={false}
+                      showCustomFields={false}
                     />
                 }
                 {
@@ -633,15 +612,7 @@ function mapDispatchToProps(dispatch) {
     sendNotifications,
     loadMembersList,
     assignToAgent,
-    getSubscriberTags,
-    loadTags,
-    assignTags,
-    createTag,
-    unassignTags,
     updatePendingResponse,
-    loadCustomFields,
-    getCustomFieldValue,
-    setCustomFieldValue,
     sendChatMessage,
     uploadAttachment,
     sendAttachment,

@@ -48,6 +48,30 @@ export function assignToAgent (data, handleResponse) {
   }
 }
 
+export function assignToTeam (data, handleResponse) {
+  console.log('data for assigned to team', data)
+  return (dispatch) => {
+    callApi('smsSessions/assignTeam', 'post', data).then(res => {
+      console.log('assign to team response', res)
+      dispatch(updateSessions(data))
+      if (handleResponse) {
+        handleResponse(res)
+      }
+    })
+  }
+}
+
+export function fetchTeamAgents (id, handleAgents) {
+  return (dispatch) => {
+    callApi(`teams/fetchAgents/${id}`)
+      .then(res => {
+        if (res.status === 'success') {
+          handleAgents(res.payload)
+        }
+      })
+  }
+}
+
 export function showUserChats (payload, originalData) {
   console.log('showUserChats response', payload)
   if (originalData.page === 'first') {
