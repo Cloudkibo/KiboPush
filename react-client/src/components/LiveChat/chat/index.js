@@ -120,7 +120,7 @@ class Chat extends React.Component {
         <CONFIRMATIONMODAL
           id='_remove-pending-response'
           title='Remove Pending Response'
-          description='Are you sure you want to mark this session as pending?'
+          description='Are you sure you want to remove the pending flag on this session?'
           onConfirm={() => {this.props.handlePendingResponse(this.props.activeSession, false)}}
         />
 

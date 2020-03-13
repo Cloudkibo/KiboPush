@@ -24,6 +24,7 @@ const handleIncomingMessage = (payload, state, props, updateLiveChatInfo, clearS
   let sessions = state.sessions
   let session = payload.subscriber
   session.profilePic = 'https://www.mastermindpromotion.com/wp-content/uploads/2015/02/facebook-default-no-profile-pic-300x300.jpg'
+  session.firstName = payload.subscriber.name
   let data = {}
   const index = sessions.findIndex((s) => s._id === payload.subscriber._id)
   console.log('index value', index)
@@ -62,7 +63,6 @@ const handleIncomingMessage = (payload, state, props, updateLiveChatInfo, clearS
     }
   } else if (index === -1 && state.tabValue === 'open') {
     console.log('in 3rd if')
-    session.name = `${session.firstName} ${session.lastName}`
     session.lastPayload = payload.message.payload
     session.last_activity_time = new Date()
     session.lastMessagedAt = new Date()
@@ -163,6 +163,7 @@ const handleStatus = (payload, state, props, updateLiveChatInfo, clearSocketData
   let closeSessions = props.closeSessions
   let session = payload.session
   session.profilePic = 'https://www.mastermindpromotion.com/wp-content/uploads/2015/02/facebook-default-no-profile-pic-300x300.jpg'
+  session.firstName = payload.session.name
   let data = {}
   const openIndex = openSessions.findIndex((s) => s._id === session._id)
   const closeIndex = closeSessions.findIndex((s) => s._id === session._id)
