@@ -27,9 +27,7 @@ const handleIncomingMessage = (payload, state, props, updateLiveChatInfo, clearS
   session.firstName = payload.subscriber.name
   let data = {}
   const index = sessions.findIndex((s) => s._id === payload.subscriber._id)
-  console.log('index value', index)
   if (state.activeSession._id === payload.subscriber._id) {
-    console.log('in 1st if')
     let userChat = state.userChat
     userChat.push(payload.message)
     session = sessions.splice(index, 1)[0]
@@ -47,7 +45,6 @@ const handleIncomingMessage = (payload, state, props, updateLiveChatInfo, clearS
       closeCount: state.tabValue === 'close' ? props.closeCount - 1 : props.closeCount
     }
   } else if (index >= 0) {
-    console.log('in 2nd if')
     session = sessions.splice(index, 1)[0]
     session.unreadCount = session.unreadCount ? session.unreadCount + 1 : 1
     session.lastPayload = payload.message.payload
@@ -62,7 +59,6 @@ const handleIncomingMessage = (payload, state, props, updateLiveChatInfo, clearS
       closeCount: state.tabValue === 'close' ? props.closeCount - 1 : props.closeCount
     }
   } else if (index === -1 && state.tabValue === 'open') {
-    console.log('in 3rd if')
     session.lastPayload = payload.message.payload
     session.last_activity_time = new Date()
     session.lastMessagedAt = new Date()
@@ -154,9 +150,6 @@ const handlePendingResponse = (payload, state, props, updateLiveChatInfo, clearS
   }
 }
 const handleStatus = (payload, state, props, updateLiveChatInfo, clearSocketData, user) => {
-  console.log('handleStatus payload', payload)
-  console.log('handleStatus state', state)
-  console.log('handleStatus props', props)
   let openCount = props.openCount
   let closeCount = props.closeCount
   let openSessions = props.openSessions
