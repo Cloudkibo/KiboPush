@@ -36,7 +36,10 @@ class ChatArea extends React.Component {
     this.updateChat = this.updateChat.bind(this)
     this.onEnter = this.onEnter.bind(this)
     this.isUserSessionValid = this.isUserSessionValid.bind(this)
+    this.getDisabledValue = this.getDisabledValue.bind(this)
+    this.handleAgentsForDisbaledValue = this.handleAgentsForDisbaledValue.bind(this)
     // this.updateScrollTop = this.updateScrollTop.bind(this)
+    this.getDisabledValue()
   }
   onEnter (data, type, handleSendAttachment) {
     console.log('in onEnter')
@@ -137,6 +140,28 @@ updateChat (chat, newChat) {
     this.top.scrollIntoView({behavior: 'instant'})
   }
 
+
+  handleAgentsForDisbaledValue(teamAgents) {
+    let agentIds = []
+    for (let i = 0; i < teamAgents.length; i++) {
+      agentIds.push(teamAgents[i].agentId._id)
+    }
+    if (!agentIds.includes(this.props.user._id)) {
+      this.setState({ disabledValue: true })
+    }
+  }
+
+  getDisabledValue() {
+    this.setState({ disabledValue: false })
+    if (this.props.activeSession.is_assigned) {
+      if (this.props.activeSession.assigned_to.type === 'agent' && this.props.activeSession.assigned_to.id !== this.props.user._id) {
+        this.setState({ disabledValue: true })
+      } else if (this.props.activeSession.assigned_to.type === 'team') {
+        this.props.fetchTeamAgents(this.props.activeSession.assigned_to.id, this.handleAgentsForDisbaledValue)
+      }
+    }
+  }
+
   UNSAFE_componentWillReceiveProps (nextProps) {
     console.log('in UNSAFE_componentWillReceiveProps of ChatArea', nextProps)
     if (nextProps.socketSession || nextProps.socketSeen) {
@@ -147,6 +172,7 @@ updateChat (chat, newChat) {
       // this.props.markRead(this.props.activeSession._id, this.props.sessions)
       this.isUserSessionValid(nextProps.chat)
     }
+    this.getDisabledValue()
   }
 
   componentDidUpdate (nextProps) {
@@ -182,7 +208,9 @@ updateChat (chat, newChat) {
                     chat={this.props.chat}
                     scrollToMessage={this.props.scrollToMessage}/>
                   <div className='m-messenger__seperator' />
-                  <ChatBox activeSession={this.props.activeSession}
+                  <ChatBox 
+                    disabledValue={this.state.disabledValue}
+                    activeSession={this.props.activeSession}
                     user={this.props.user}
                     updateChat={this.updateChat}
                     chat={this.props.chat}
