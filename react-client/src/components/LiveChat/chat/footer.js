@@ -129,7 +129,6 @@ class Footer extends React.Component {
     const text = e.target.value
     let state = {text}
     const url = getmetaurl(text)
-    console.log('meta url', url)
     if (url && url !== this.state.currentUrl) {
       state.loadingUrlMeta = true
       state.currentUrl = url
