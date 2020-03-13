@@ -49,6 +49,7 @@ class Footer extends React.Component {
     this.handleUrlMeta = this.handleUrlMeta.bind(this)
     this.removeUrlMeta = this.removeUrlMeta.bind(this)
     this.closeRecording = this.closeRecording.bind(this)
+    this.sendMessage = this.sendMessage.bind(this)
   }
 
   setEmoji (emoji) {
@@ -371,22 +372,26 @@ class Footer extends React.Component {
   onEnter (e) {
     if (e.which === 13) {
       e.preventDefault()
-      const data = this.props.performAction('send messages', this.props.activeSession)
-      if (data.isAllowed) {
-        let payload = {}
-        let data = {}
-        if (this.state.text !== '' && /\S/gm.test(this.state.text)) {
-          payload = this.setDataPayload('text')
-          data = this.setMessageData(this.props.activeSession, payload)
-          this.props.sendChatMessage(data)
-          this.setState({ text: '', urlmeta: {}, currentUrl: '' })
-          this.props.updateChatAreaHeight('57vh')
-          data.format = 'convos'
-          this.updateChatData(data, payload)
-        }
-      } else {
-        this.props.alertMsg.error(data.errorMsg)
+      this.sendMessage()
+    }
+  }
+
+  sendMessage() {
+    const data = this.props.performAction('send messages', this.props.activeSession)
+    if (data.isAllowed) {
+      let payload = {}
+      let data = {}
+      if (this.state.text !== '' && /\S/gm.test(this.state.text)) {
+        payload = this.setDataPayload('text')
+        data = this.setMessageData(this.props.activeSession, payload)
+        this.props.sendChatMessage(data)
+        this.setState({ text: '', urlmeta: {}, currentUrl: '' })
+        this.props.updateChatAreaHeight('57vh')
+        data.format = 'convos'
+        this.updateChatData(data, payload)
       }
+    } else {
+      this.props.alertMsg.error(data.errorMsg)
     }
   }
 
@@ -489,7 +494,13 @@ class Footer extends React.Component {
                 ? <div className="m-loader" style={{width: "30px"}} />
                 : this.state.uploaded
                 ? <i style={{color: '#36a3f7'}} onClick={this.sendAttachment} className='flaticon-paper-plane' />
-                : <i style={{color: '#36a3f7'}} onClick={this.sendThumbsUp} className='la la-thumbs-o-up' />
+                : 
+                (
+                  this.props.showThumbsUp ? 
+                  <i style={{color: '#36a3f7'}} onClick={this.sendThumbsUp} className='la la-thumbs-o-up' />
+                  : 
+                  <i style={{color: '#36a3f7'}} onClick={this.sendMessage} className='flaticon-paper-plane' />
+                )
               }
             </button>
           </div>
@@ -524,55 +535,73 @@ class Footer extends React.Component {
           </div>
         }
         <div style={{color: '#575962'}}>
-          <input
-            ref='_upload_attachment'
-            style={{display: 'none'}}
-            type='file'
-            accept='image/*, audio/*, video/*, application/*, text/*'
-            onChange={this.onFileChange}
-            onClick={(e) => {e.target.value = ''}}
-          />
-          <i
-            style={{cursor: 'pointer', fontSize: '20px', margin: '0px 5px'}}
-            data-tip='Upload Attachment'
-            className='fa fa-paperclip'
-            onClick={() => this.refs._upload_attachment.click()}
-          />
-          <i
-            style={{cursor: 'pointer', fontSize: '20px', margin: '0px 5px'}}
-            data-tip='Record Audio'
-            className='fa fa-microphone'
-            data-target='#_record_audio'
-            data-toggle='modal'
-          />
-          <i
-            style={{
-              cursor: this.state.uploaded ? 'not-allowed' : 'pointer',
-              fontSize: '20px',
-              margin: '0px 5px',
-              pointerEvents: this.state.uploaded && 'none',
-              opacity: this.state.uploaded && '0.5'
-            }}
-            data-tip='Emoticons'
-            className='fa fa-smile-o'
-            id='_emoji_picker'
-            onClick={() => this.openPicker('emoji')}
-          />
-          <i
-            style={{cursor: 'pointer', fontSize: '20px', margin: '0px 5px'}}
-            data-tip='Stickers'
-            className='fa fa-sticky-note'
-            id='_sticker_picker'
-            onClick={() => this.openPicker('sticker')}
-          />
-          <img
-            style={{cursor: 'pointer', height: '20px', margin: '-5px 5px 0px 5px'}}
-            data-tip='Gifs'
-            alt='Gifs'
-            src='https://cdn.cloudkibo.com/public/img/gif-icon.png'
-            id='_gif_picker'
-            onClick={() => this.openPicker('gif')}
-          />
+          {
+            this.props.showUploadAttachment &&
+            <div>
+              <input
+                ref='_upload_attachment'
+                style={{display: 'none'}}
+                type='file'
+                accept='image/*, audio/*, video/*, application/*, text/*'
+                onChange={this.onFileChange}
+                onClick={(e) => {e.target.value = ''}}
+              />
+              <i
+                style={{cursor: 'pointer', fontSize: '20px', margin: '0px 5px'}}
+                data-tip='Upload Attachment'
+                className='fa fa-paperclip'
+                onClick={() => this.refs._upload_attachment.click()}
+              />
+            </div>
+          }
+          {
+            this.props.showRecordAudio &&
+            <i
+              style={{cursor: 'pointer', fontSize: '20px', margin: '0px 5px'}}
+              data-tip='Record Audio'
+              className='fa fa-microphone'
+              data-target='#_record_audio'
+              data-toggle='modal'
+            />
+          }
+          {
+            this.props.showEmoji &&
+            <i
+              style={{
+                cursor: this.state.uploaded ? 'not-allowed' : 'pointer',
+                fontSize: '20px',
+                margin: '0px 5px',
+                pointerEvents: this.state.uploaded && 'none',
+                opacity: this.state.uploaded && '0.5'
+              }}
+              data-tip='Emoticons'
+              className='fa fa-smile-o'
+              id='_emoji_picker'
+              onClick={() => this.openPicker('emoji')}
+            />
+          }
+
+          {
+            this.props.showSticker &&
+            <i
+              style={{cursor: 'pointer', fontSize: '20px', margin: '0px 5px'}}
+              data-tip='Stickers'
+              className='fa fa-sticky-note'
+              id='_sticker_picker'
+              onClick={() => this.openPicker('sticker')}
+            />
+          }
+          {
+            this.props.showGif &&
+            <img
+              style={{cursor: 'pointer', height: '20px', margin: '-5px 5px 0px 5px'}}
+              data-tip='Gifs'
+              alt='Gifs'
+              src='https://cdn.cloudkibo.com/public/img/gif-icon.png'
+              id='_gif_picker'
+              onClick={() => this.openPicker('gif')}
+            />
+          }
         </div>
       </div>
     )
@@ -587,14 +616,20 @@ Footer.propTypes = {
   'updateState': PropTypes.func.isRequired,
   'userChat': PropTypes.array.isRequired,
   'sessions': PropTypes.array.isRequired,
-  'uploadAttachment': PropTypes.func.isRequired,
-  'sendAttachment': PropTypes.func.isRequired,
-  'uploadRecording': PropTypes.func.isRequired,
+  'uploadAttachment': PropTypes.func,
+  'sendAttachment': PropTypes.func,
+  'uploadRecording': PropTypes.func,
   'getPicker': PropTypes.func.isRequired,
   'togglePopover': PropTypes.func.isRequired,
   'updateNewMessage': PropTypes.func.isRequired,
   'deletefile': PropTypes.func.isRequired,
-  'updateChatAreaHeight': PropTypes.func.isRequired
+  'updateChatAreaHeight': PropTypes.func.isRequired,
+  'showUploadAttachment': PropTypes.bool.isRequired,
+  'showRecordAudio': PropTypes.bool.isRequired,
+  'showSticker': PropTypes.bool.isRequired,
+  'showEmoji': PropTypes.bool.isRequired,
+  'showGif': PropTypes.bool.isRequired,
+  'showThumbsUp': PropTypes.bool.isRequired
 }
 
 export default Footer

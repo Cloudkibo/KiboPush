@@ -21,6 +21,12 @@ export function updateSmsChatInfo (data) {
     data
   }
 }
+export function updateSessions (data) {
+  return {
+    type: ActionTypes.UPDATE_SESSIONS_SMS,
+    data
+  }
+}
 
 export function searchChat (data) {
   return (dispatch) => {
@@ -32,6 +38,42 @@ export function searchChat (data) {
         console.log('response got from server', res.description)
       }
     })
+  }
+}
+
+export function assignToAgent (data, handleResponse) {
+  return (dispatch) => {
+    callApi('smsSessions/assignAgent', 'post', data).then(res => {
+      console.log('assign to agent response', res)
+      dispatch(updateSessions(data))
+      if (handleResponse) {
+        handleResponse(res)
+      }
+    })
+  }
+}
+
+export function assignToTeam (data, handleResponse) {
+  console.log('data for assigned to team', data)
+  return (dispatch) => {
+    callApi('smsSessions/assignTeam', 'post', data).then(res => {
+      console.log('assign to team response', res)
+      dispatch(updateSessions(data))
+      if (handleResponse) {
+        handleResponse(res)
+      }
+    })
+  }
+}
+
+export function fetchTeamAgents (id, handleAgents) {
+  return (dispatch) => {
+    callApi(`teams/fetchAgents/${id}`)
+      .then(res => {
+        if (res.status === 'success') {
+          handleAgents(res.payload)
+        }
+      })
   }
 }
 

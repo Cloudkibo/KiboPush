@@ -14,6 +14,7 @@ class Profile extends React.Component {
             <div className='m-card-profile'>
                 <div className='m-portlet__head'>
                     <Header
+                        showUnsubscribe={this.props.showUnsubscribe}
                         unSubscribe={this.props.unSubscribe}
                         activeSession={this.props.activeSession}
                         user={this.props.user}
@@ -70,41 +71,47 @@ class Profile extends React.Component {
                     />
                     } */}
                     {
-                        this.props.subscriberTags ?
-                        <AssignTag
-                            assignTags={this.props.assignTags}
-                            unassignTags={this.props.unassignTags}
-                            createTag={this.props.createTag}
-                            alertMsg={this.props.alertMsg}
-                            subscriberTags={this.props.subscriberTags}
-                            activeSession={this.props.activeSession}
-                            tags={this.props.tags.map(tag => (
-                                {
-                                    label: tag.tag,
-                                    value: tag._id
-                                }
-                            ))}
-                        /> :
-                        <div style={{marginTop: '50px', marginBottom: '50px'}} className='align-center'>
-                            <center>
-                            <div className="m-loader" style={{width: "30px", display: "inline-block"}}></div>
-                            <span>Loading Tags...</span>
-                            </center>
-                        </div>
+                        this.props.showTags && 
+                        (
+                            this.props.subscriberTags ?
+                            <AssignTag
+                                assignTags={this.props.assignTags}
+                                unassignTags={this.props.unassignTags}
+                                createTag={this.props.createTag}
+                                alertMsg={this.props.alertMsg}
+                                subscriberTags={this.props.subscriberTags}
+                                activeSession={this.props.activeSession}
+                                tags={this.props.tags.map(tag => (
+                                    {
+                                        label: tag.tag,
+                                        value: tag._id
+                                    }
+                                ))}
+                            /> :
+                            <div style={{marginTop: '50px', marginBottom: '50px'}} className='align-center'>
+                                <center>
+                                <div className="m-loader" style={{width: "30px", display: "inline-block"}}></div>
+                                <span>Loading Tags...</span>
+                                </center>
+                            </div>
+                        )
                     }
                     {
-                        this.props.customFieldOptions && this.props.customFieldOptions.length > 0 ?
-                        <CustomFields
-                            activeSession={this.props.activeSession}
-                            customFieldOptions={this.props.customFieldOptions}
-                            setCustomFieldValue={this.props.setCustomFieldValue}
-                        /> :
-                        <div style={{ marginTop: '50px'}} className='align-center'>
-                            <center>
-                            <div className="m-loader" style={{width: "30px", display: "inline-block"}}></div>
-                            <span>Loading Custom Fields...</span>
-                            </center>
-                        </div>
+                        this.props.showCustomFields &&
+                        (
+                            this.props.customFieldOptions && this.props.customFieldOptions.length > 0 ?
+                            <CustomFields
+                                activeSession={this.props.activeSession}
+                                customFieldOptions={this.props.customFieldOptions}
+                                setCustomFieldValue={this.props.setCustomFieldValue}
+                            /> :
+                            <div style={{ marginTop: '50px'}} className='align-center'>
+                                <center>
+                                <div className="m-loader" style={{width: "30px", display: "inline-block"}}></div>
+                                <span>Loading Custom Fields...</span>
+                                </center>
+                            </div> 
+                        )
                     }
                 </div>
             </div>
@@ -128,13 +135,15 @@ Profile.propTypes = {
   'agents': PropTypes.array.isRequired,
   'assignToAgent': PropTypes.func.isRequired,
   'sendNotifications': PropTypes.func.isRequired,
-  'tags': PropTypes.array.isRequired,
+  'tags': PropTypes.array,
+  'showTags': PropTypes.bool.isRequired,
   'subscriberTags': PropTypes.object,
-  'assignTags': PropTypes.func.isRequired,
-  'unassignTags': PropTypes.func.isRequired,
-  'createTag': PropTypes.func.isRequired,
+  'assignTags': PropTypes.func,
+  'unassignTags': PropTypes.func,
+  'createTag': PropTypes.func,
   'customFieldOptions': PropTypes.array,
-  'setCustomFieldValue': PropTypes.func.isRequired
+  'setCustomFieldValue': PropTypes.func,
+  'showCustomFields': PropTypes.bool.isRequired
 }
 
 export default Profile

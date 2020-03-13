@@ -9,18 +9,16 @@ import {
   // fetchOpenSessions,
   // fetchCloseSessions,
   // fetchUserChats,
-  fetchTeamAgents,
+  // fetchTeamAgents,
   // changeStatus,
-  unSubscribe,
+  // unSubscribe,
   getCustomers,
   appendSubscriber,
-  assignToTeam,
-  assignToAgent,
+  // assignToTeam,
+  // assignToAgent,
   sendNotifications,
   // updatePendingResponse,
   sendChatMessage,
-  uploadAttachment,
-  sendAttachment,
   uploadRecording,
   // searchChat,
   // markRead,
@@ -37,24 +35,15 @@ import {
   markRead,
   changeStatus,
   updatePendingResponse,
-  updateSmsChatInfo
+  updateSmsChatInfo,
+  assignToAgent,
+  assignToTeam,
+  fetchTeamAgents
 } from '../../redux/actions/smsChat.actions'
 import { updatePicture } from '../../redux/actions/subscribers.actions'
 import { loadTeamsList } from '../../redux/actions/teams.actions'
 import { loadMembersList } from '../../redux/actions/members.actions'
 import { urlMetaData } from '../../redux/actions/convos.actions'
-import {
-  getSubscriberTags,
-  unassignTags,
-  createTag,
-  assignTags,
-  loadTags
-} from '../../redux/actions/tags.actions'
-import {
-  setCustomFieldValue,
-  loadCustomFields,
-  getCustomFieldValue
-} from '../../redux/actions/customFields.actions'
 import { handleSocketEventSms } from './socket'
 import { clearSocketDataSms } from '../../redux/actions/socket.actions'
 
@@ -71,7 +60,7 @@ const alertOptions = {
   transition: 'scale'
 }
 
-class LiveChat extends React.Component {
+class SmsChat extends React.Component {
   constructor(props, context) {
     super(props, context)
     this.state = {
@@ -113,7 +102,6 @@ class LiveChat extends React.Component {
     this.handlePendingResponse = this.handlePendingResponse.bind(this)
     this.updatePendingStatus = this.updatePendingStatus.bind(this)
     this.showSearch = this.showSearch.bind(this)
-    this.saveCustomField = this.saveCustomField.bind(this)
     this.handleCustomFieldResponse = this.handleCustomFieldResponse.bind(this)
     this.hideSearch = this.hideSearch.bind(this)
     this.loadActiveSession = this.loadActiveSession.bind(this)
@@ -121,9 +109,10 @@ class LiveChat extends React.Component {
     this.clearSearchResults = this.clearSearchResults.bind(this)
 
     this.fetchSessions(true, 'none', true)
-    props.loadMembersList()
-    props.loadTags()
-    props.loadCustomFields()
+    if (props.user.currentPlan.unique_ID === 'plan_C' || props.user.currentPlan.unique_ID === 'plan_D') {
+      props.loadMembersList()
+      props.loadTeamsList({platform: 'sms'})
+    }
   }
 
   clearSearchResults () {
@@ -305,10 +294,6 @@ class LiveChat extends React.Component {
     }
   }
 
-  saveCustomField (data) {
-    this.props.setCustomFieldValue(data, this.handleCustomFieldResponse)
-  }
-
   handleCustomFieldResponse (res, body) {
     console.log("res",res)
     if (res.status === 'success') {
@@ -348,14 +333,9 @@ class LiveChat extends React.Component {
     }
     this.props.clearSearchResult()
     this.props.fetchUserChats(session._id, { page: 'first', number: 25 })
-    this.props.getSubscriberTags(session._id, this.alertMsg)
-    this.props.getCustomFieldValue(session._id)
     if (session.is_assigned && session.assigned_to.type === 'team') {
       this.props.fetchTeamAgents(session.assigned_to.id, this.handleTeamAgents)
     }
-    // if (this.props.user.currentPlan.unique_ID === 'plan_C' || this.props.user.currentPlan.unique_ID === 'plan_D') {
-    //   this.props.loadTeamsList({pageId: session.pageId._id})
-    // }
     this.setState({activeSession: session})
   }
 
@@ -526,8 +506,6 @@ class LiveChat extends React.Component {
                     alertMsg={this.alertMsg}
                     user={this.props.user}
                     sendChatMessage={this.props.sendChatMessage}
-                    uploadAttachment={this.props.uploadAttachment}
-                    sendAttachment={this.props.sendAttachment}
                     uploadRecording={this.props.uploadRecording}
                     loadingChat={this.state.loadingChat}
                     fetchUserChats={this.props.fetchUserChats}
@@ -535,6 +513,12 @@ class LiveChat extends React.Component {
                     deletefile={this.props.deletefile}
                     fetchUrlMeta={this.props.urlMetaData}
                     isSMPApproved={true}
+                    showUploadAttachment={false}
+                    showRecordAudio={false}
+                    showSticker={false}
+                    showEmoji={false}
+                    showGif={false}
+                    showThumbsUp={false}
                   />
                 }
                 {
@@ -549,7 +533,6 @@ class LiveChat extends React.Component {
                       user={this.props.user}
                       profilePicError={this.profilePicError}
                       alertMsg={this.alertMsg}
-                      unSubscribe={this.props.unSubscribe}
                       customers={this.props.customers}
                       getCustomers={this.props.getCustomers}
                       fetchTeamAgents={this.fetchTeamAgents}
@@ -557,11 +540,10 @@ class LiveChat extends React.Component {
                       appendSubscriber={this.props.appendSubscriber}
                       sendNotifications={this.props.sendNotifications}
                       assignToAgent={this.props.assignToAgent}
-                      assignTags={this.props.assignTags}
-                      unassignTags={this.props.unassignTags}
-                      createTag={this.props.createTag}
                       customFieldOptions={this.state.customFieldOptions}
-                      setCustomFieldValue={this.saveCustomField}
+                      showTags={false}
+                      showCustomFields={false}
+                      showUnsubscribe={false}
                     />
                 }
                 {
@@ -622,7 +604,6 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators({
-    unSubscribe,
     fetchOpenSessions,
     fetchCloseSessions,
     updatePicture,
@@ -635,18 +616,8 @@ function mapDispatchToProps(dispatch) {
     sendNotifications,
     loadMembersList,
     assignToAgent,
-    getSubscriberTags,
-    loadTags,
-    assignTags,
-    createTag,
-    unassignTags,
     updatePendingResponse,
-    loadCustomFields,
-    getCustomFieldValue,
-    setCustomFieldValue,
     sendChatMessage,
-    uploadAttachment,
-    sendAttachment,
     uploadRecording,
     searchChat,
     fetchUserChats,
@@ -659,4 +630,4 @@ function mapDispatchToProps(dispatch) {
   }, dispatch)
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(LiveChat)
+export default connect(mapStateToProps, mapDispatchToProps)(SmsChat)

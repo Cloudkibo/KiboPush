@@ -543,6 +543,12 @@ class LiveChat extends React.Component {
                     deletefile={this.props.deletefile}
                     fetchUrlMeta={this.props.urlMetaData}
                     isSMPApproved={this.isSMPApproved()}
+                    showUploadAttachment={true}
+                    showRecordAudio={true}
+                    showSticker={true}
+                    showEmoji={true}
+                    showGif={true}
+                    showThumbsUp={true}
                   />
                 }
                 {
@@ -570,6 +576,9 @@ class LiveChat extends React.Component {
                       createTag={this.props.createTag}
                       customFieldOptions={this.state.customFieldOptions}
                       setCustomFieldValue={this.saveCustomField}
+                      showTags={true}
+                      showCustomFields={true}
+                      showUnsubscribe={true}
                     />
                 }
                 {

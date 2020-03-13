@@ -106,8 +106,8 @@ class CreateTeam extends React.Component {
       }
       if (this.props.user.platform === 'messenger') {
         this.props.createTeam({name: this.state.name, description: this.state.description, teamPages: pageNames, agentIds: agents, pageIds: pageIds, platform: 'messenger'})
-      } else if (this.props.user.platform === 'whatsApp') {
-        this.props.createTeam({name: this.state.name, description: this.state.description, agentIds: agents, platform: 'whatsApp'})
+      } else {
+        this.props.createTeam({name: this.state.name, description: this.state.description, agentIds: agents, platform: this.props.user.platform })
       }
       this.props.history.push({
         pathname: `/teams`

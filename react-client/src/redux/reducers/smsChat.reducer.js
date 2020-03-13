@@ -7,6 +7,20 @@ const initialState = {
 
 export function smsChatInfo (state = initialState, action) {
   switch (action.type) {
+    case ActionTypes.UPDATE_SESSIONS_SMS:
+      let sessions = [...state.openSessions]
+      let ids = sessions.map(s => s._id)
+      let index = ids.indexOf(action.data.subscriberId)
+      sessions[index].is_assigned = action.data.isAssigned
+      sessions[index].assigned_to = {
+        type: action.data.teamId ? 'team' : 'agent',
+        id: action.data.teamId ? action.data.teamId : action.data.agentId,
+        name: action.data.teamName ? action.data.teamName : action.data.agentName
+      }
+      return Object.assign({}, state, {
+        openSessions: sessions,
+        updateSessionTimeStamp: new Date().toString()
+      })
     case ActionTypes.CLEAR_SEARCH_RESULT_SMS:
       return Object.assign({}, state, {
         searchChat: undefined

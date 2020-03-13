@@ -19,6 +19,7 @@ import { handleSocketEvent } from '../redux/actions/socket.actions'
 import { handleSocketEventSms } from '../redux/actions/socket.actions'
 import { addToSponsoredMessages, updateSponsoredMessagesListItemStatus } from './../redux/actions/sponsoredMessaging.actions'
 const whatsAppActions = require('./../redux/actions/whatsAppChat.actions')
+const smsActions = require('./../redux/actions/smsChat.actions')
 
 const socket = io('')
 let store
@@ -140,6 +141,8 @@ socket.on('message', (data) => {
     store.dispatch(loadAllSubscribersListNew({last_id: 'none', number_of_records: 10, first_page: 'first', filter: false, filter_criteria: {search_value: '', gender_value: '', page_value: '', locale_value: '', tag_value: '', status_value: ''}}))
   } else if (data.action === 'session_assign') {
     store.dispatch(updateSessions(data.payload.data))
+  } else if (data.action === 'session_assign_sms') {
+    store.dispatch(smsActions.updateSessions(data.payload.data))
   } else if (data.action === 'session_assign_whatsapp') {
     store.dispatch(whatsAppActions.updateSessions(data.payload.data))
   } else if (data.action === 'session_status') {
