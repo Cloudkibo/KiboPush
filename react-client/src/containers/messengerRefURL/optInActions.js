@@ -37,7 +37,7 @@ class OptInActions extends React.Component {
   editMessage () {
     this.props.history.push({
       pathname: `/editMessengerRefURLMessage`,
-      state: {module: this.props.module, messengerRefSelectedURL: this.props.messengerRefSelectedURL}
+      state: {module: this.props.module, messengerRefSelectedURL: this.props.messengerRefSelectedURL, pageName :this.props.pageName}
     })
   }
   render () {
