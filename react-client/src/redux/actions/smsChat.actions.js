@@ -15,6 +15,13 @@ export function clearSearchResult () {
   }
 }
 
+export function updateSessions (data) {
+  return {
+    type: ActionTypes.UPDATE_SESSIONS_SMS,
+    data
+  }
+}
+
 
 export function searchChat (data) {
   return (dispatch) => {
@@ -24,6 +31,18 @@ export function searchChat (data) {
         dispatch(showSearchChat(res.payload))
       } else {
         console.log('response got from server', res.description)
+      }
+    })
+  }
+}
+
+export function assignToAgent (data, handleResponse) {
+  return (dispatch) => {
+    callApi('smsSessions/assignAgent', 'post', data).then(res => {
+      console.log('assign to agent response', res)
+      dispatch(updateSessions(data))
+      if (handleResponse) {
+        handleResponse(res)
       }
     })
   }
