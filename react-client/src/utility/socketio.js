@@ -4,7 +4,6 @@
 import io from 'socket.io-client'
 import { setSocketStatus } from './../redux/actions/basicinfo.actions'
 import { socketUpdate, socketUpdateSeen, fetchSingleSession, updateSessions } from './../redux/actions/livechat.actions'
-import { socketUpdateSms } from './../redux/actions/smsChat.actions'
 import { loadAutopostingList } from './../redux/actions/autoposting.actions'
 import { loadMyPagesList } from './../redux/actions/pages.actions'
 import { fetchAllSequence } from './../redux/actions/sequence.action'
@@ -17,6 +16,7 @@ import { addTag, removeTag, updateTag, assignTag, unassignTag } from './../redux
 import { loadAllSubscribersListNew, updateCustomFieldForSubscriber } from './../redux/actions/subscribers.actions'
 import { fetchNotifications } from './../redux/actions/notifications.actions'
 import { handleSocketEvent } from '../redux/actions/socket.actions'
+import { handleSocketEventSms } from '../redux/actions/socket.actions'
 import { addToSponsoredMessages, updateSponsoredMessagesListItemStatus } from './../redux/actions/sponsoredMessaging.actions'
 const whatsAppActions = require('./../redux/actions/whatsAppChat.actions')
 
@@ -79,10 +79,11 @@ socket.on('message', (data) => {
     if (data.action === 'new_chat') data.showNotification = true
     store.dispatch(handleSocketEvent(data))
   }
-  if (data.action === 'new_chat_sms') {
-    console.log('new message received from customer sms')
-    store.dispatch(socketUpdateSms(data.payload))
-  } if (data.action === 'new_chat_whatsapp') {
+  if (['new_chat_sms', 'agent_replied_sms', 'session_pending_response_sms', 'unsubscribe_sms', 'session_status_sms'].includes(data.action)) {
+    if (data.action === 'new_chat_sms') data.showNotification = true
+    store.dispatch(handleSocketEventSms(data))
+  }
+  if (data.action === 'new_chat_whatsapp') {
     console.log('new message received from customer whatsApp')
     store.dispatch(whatsAppActions.socketUpdateWhatsApp(data.payload))
   } else if (data.action === 'whatsapp_message_seen') {

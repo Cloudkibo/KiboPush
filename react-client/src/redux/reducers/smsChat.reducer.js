@@ -31,6 +31,8 @@ export function smsChatInfo (state = initialState, action) {
         chatCount: action.chatCount,
         changedStatus: ''
       })
+    case ActionTypes.UPDATE_SMSCHAT_INFO:
+      return Object.assign({}, state, action, action.data)
     case ActionTypes.UPDATE_SESSION:
       return Object.assign({}, state, {
         sessions: action.sessions

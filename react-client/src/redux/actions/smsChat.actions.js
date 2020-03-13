@@ -15,6 +15,12 @@ export function clearSearchResult () {
   }
 }
 
+export function updateSmsChatInfo (data) {
+  return {
+    type: ActionTypes.UPDATE_SMSCHAT_INFO,
+    data
+  }
+}
 
 export function searchChat (data) {
   return (dispatch) => {
@@ -58,6 +64,7 @@ export function showCloseChatSessions (sessions, firstPage) {
     let name = s.name.split(' ')
     s.firstName = name[0]
     s.lastName = name[1]
+    s.profilePic = 'https://www.mastermindpromotion.com/wp-content/uploads/2015/02/facebook-default-no-profile-pic-300x300.jpg'
     return s
   })
   if (firstPage) {
@@ -150,5 +157,22 @@ export function sendChatMessage (data) {
         console.log('response from sendChatMessage', res)
         // dispatch(fetchChat(data.contactId))
       })
+  }
+}
+export function updatePendingResponse (data, callback) {
+  return (dispatch) => {
+    callApi(`smsSessions/updatePendingResponse`, 'post', data).then(res => {
+      console.log('response from updatePendingSession', res)
+      if (callback) callback(res)
+    })
+  }
+}
+
+export function changeStatus (data, handleActiveSession) {
+  console.log('changeStatus called')
+  return (dispatch) => {
+    callApi('smsSessions/changeStatus', 'post', data).then(res => {
+      handleActiveSession()
+    })
   }
 }
