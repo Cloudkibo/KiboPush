@@ -176,16 +176,13 @@ const handleStatus = (payload, state, props, updateLiveChatInfo, clearSocketData
       closeCount = closeCount - 1
     }
   } else if (payload.status === 'resolved') {
-    if (state.tabValue === 'open') {
-      if (openIndex > -1) {
-        openSessions.splice(openIndex, 1)
-        openCount = openCount - 1
-      }
-    } else if (state.tabValue === 'close') {
-      if (closeIndex === -1) {
-        closeSessions = [session, ...closeSessions]
-        closeCount = closeCount + 1
-      }
+    if (openIndex > -1) {
+      openSessions.splice(openIndex, 1)
+      openCount = openCount - 1
+    }
+    if (closeIndex === -1) {
+      closeSessions = [session, ...closeSessions]
+      closeCount = closeCount + 1
     }
   }
 
