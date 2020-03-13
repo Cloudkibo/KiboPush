@@ -60,7 +60,7 @@ class ViewMessage extends React.Component {
               <h6 style={{color: '#007aff'}}><i className='fa fa-chevron-left' />Back</h6>
             </div>
             <div style={{display: 'inline-block', margin: '5px'}}>
-              <h7>{this.props.pageName ? this.props.pageName : 'KiboPush'}</h7>
+              <h7>{this.props.pageName}</h7>
               <p style={{color: '#ccc'}}>Typically replies instantly</p>
             </div>
             <div style={{display: 'inline-block', margin: '5px'}}>
@@ -325,6 +325,9 @@ class ViewMessage extends React.Component {
       </div>
     )
   }
+}
+ViewMessage.defaultProps = {
+  pageName: 'KiboPush',
 }
 
 export default ViewMessage
