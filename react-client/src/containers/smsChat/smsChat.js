@@ -10,18 +10,19 @@ import {
   // fetchCloseSessions,
   // fetchUserChats,
   // fetchTeamAgents,
-  changeStatus,
+  // changeStatus,
+  // unSubscribe,
   getCustomers,
   appendSubscriber,
   // assignToTeam,
   // assignToAgent,
   sendNotifications,
-  updatePendingResponse,
+  // updatePendingResponse,
   sendChatMessage,
   uploadRecording,
   // searchChat,
   // markRead,
-  updateLiveChatInfo,
+  // updateLiveChatInfo,
   deletefile,
   // clearSearchResult,
 } from '../../redux/actions/livechat.actions'
@@ -32,6 +33,9 @@ import {
   searchChat,
   clearSearchResult,
   markRead,
+  changeStatus,
+  updatePendingResponse,
+  updateSmsChatInfo,
   assignToAgent,
   assignToTeam,
   fetchTeamAgents
@@ -40,8 +44,8 @@ import { updatePicture } from '../../redux/actions/subscribers.actions'
 import { loadTeamsList } from '../../redux/actions/teams.actions'
 import { loadMembersList } from '../../redux/actions/members.actions'
 import { urlMetaData } from '../../redux/actions/convos.actions'
-import { handleSocketEvent } from '../liveChat/socket'
-import { clearSocketData } from '../../redux/actions/socket.actions'
+import { handleSocketEventSms } from './socket'
+import { clearSocketDataSms } from '../../redux/actions/socket.actions'
 
 // components
 import HELPWIDGET from '../../components/extras/helpWidget'
@@ -419,13 +423,13 @@ class SmsChat extends React.Component {
     })
 
     if (nextProps.socketData) {
-      handleSocketEvent(
+      handleSocketEventSms(
         nextProps.socketData,
         this.state,
         this.props,
-        this.props.updateLiveChatInfo,
+        this.props.updateSmsChatInfo,
         this.props.user,
-        this.props.clearSocketData
+        this.props.clearSocketDataSms
       )
     }
   }
@@ -594,7 +598,7 @@ function mapStateToProps(state) {
     customFieldValues: (state.customFieldInfo.customFieldSubscriber),
     customFields: (state.customFieldInfo.customFields),
     searchChatMsgs: (state.smsChatInfo.searchChat),
-    socketData: (state.socketInfo.socketData)
+    socketData: (state.socketInfo.socketDataSms)
   }
 }
 
@@ -618,8 +622,8 @@ function mapDispatchToProps(dispatch) {
     searchChat,
     fetchUserChats,
     markRead,
-    clearSocketData,
-    updateLiveChatInfo,
+    clearSocketDataSms,
+    updateSmsChatInfo,
     deletefile,
     clearSearchResult,
     urlMetaData,

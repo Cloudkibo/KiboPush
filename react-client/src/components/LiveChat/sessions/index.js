@@ -171,4 +171,8 @@ Sessions.propTypes = {
   'getChatPreview': PropTypes.func.isRequired
 }
 
+Sessions.defaultProps = {
+  showPageInfo: true
+}
+
 export default Sessions
