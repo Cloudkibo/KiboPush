@@ -32,7 +32,6 @@ class Footer extends React.Component {
     this.onAttachmentUpload = this.onAttachmentUpload.bind(this)
     this.openPicker = this.openPicker.bind(this)
     this.setDataPayload = this.setDataPayload.bind(this)
-    this.setMessageData = this.setMessageData.bind(this)
     this.onFileChange = this.onFileChange.bind(this)
     this.getComponentType = this.getComponentType.bind(this)
     this.sendAttachment = this.sendAttachment.bind(this)
@@ -81,7 +80,7 @@ class Footer extends React.Component {
         componentType: 'sticker',
         fileurl: sticker.image.hdpi
       }
-      const data = this.setMessageData(this.props.activeSession, payload)
+      const data = this.props.setMessageData(this.props.activeSession, payload)
       this.props.sendChatMessage(data)
       data.format = 'convos'
       this.updateChatData(data, payload)
@@ -98,7 +97,7 @@ class Footer extends React.Component {
         componentType: 'gif',
         fileurl: gif.images.downsized.url
       }
-      const data = this.setMessageData(this.props.activeSession, payload)
+      const data = this.props.setMessageData(this.props.activeSession, payload)
       this.props.sendChatMessage(data)
       data.format = 'convos'
       this.updateChatData(data, payload)
@@ -348,27 +347,6 @@ class Footer extends React.Component {
     return payload
   }
 
-  setMessageData(session, payload) {
-    const data = {
-      sender_id: session.pageId._id,
-      recipient_id: session._id,
-      sender_fb_id: session.pageId.pageId,
-      recipient_fb_id: session.senderId,
-      subscriber_id: session._id,
-      company_id: session.companyId,
-      payload: payload,
-      url_meta: this.state.urlmeta,
-      datetime: new Date().toString(),
-      status: 'unseen',
-      replied_by: {
-        type: 'agent',
-        id: this.props.user._id,
-        name: this.props.user.name
-      }
-    }
-    return data
-  }
-
   onEnter (e) {
     if (e.which === 13) {
       e.preventDefault()
@@ -383,7 +361,7 @@ class Footer extends React.Component {
       let data = {}
       if (this.state.text !== '' && /\S/gm.test(this.state.text)) {
         payload = this.setDataPayload('text')
-        data = this.setMessageData(this.props.activeSession, payload)
+        data = this.props.setMessageData(this.props.activeSession, payload)
         this.props.sendChatMessage(data)
         this.setState({ text: '', urlmeta: {}, currentUrl: '' })
         this.props.updateChatAreaHeight('57vh')
@@ -399,7 +377,7 @@ class Footer extends React.Component {
     const data = this.props.performAction('send messages', this.props.activeSession)
     if (data.isAllowed) {
       let payload = this.setDataPayload('thumbsUp')
-      let data = this.setMessageData(this.props.activeSession, payload)
+      let data = this.props.setMessageData(this.props.activeSession, payload)
       this.props.sendChatMessage(data)
       data.format = 'convos'
       this.updateChatData(data, payload)
@@ -413,7 +391,7 @@ class Footer extends React.Component {
     if (data.isAllowed) {
       this.setState({loading: true})
       let payload = this.setDataPayload('attachment')
-      let data = this.setMessageData(this.props.activeSession, payload)
+      let data = this.props.setMessageData(this.props.activeSession, payload)
       this.props.sendAttachment(data, (res) => this.handleMessageResponse(res, data, payload))
     } else {
       this.props.alertMsg.error(data.errorMsg)

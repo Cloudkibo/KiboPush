@@ -208,6 +208,7 @@ class Chat extends React.Component {
             showEmoji={this.props.showEmoji}
             showGif={this.props.showGif}
             showThumbsUp={this.props.showThumbsUp}
+            setMessageData={this.props.setMessageData}
           />
         }
 

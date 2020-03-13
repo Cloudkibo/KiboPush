@@ -112,6 +112,7 @@ class LiveChat extends React.Component {
     this.clearSearchResults = this.clearSearchResults.bind(this)
     this.handleSMPStatus = this.handleSMPStatus.bind(this)
     this.isSMPApproved = this.isSMPApproved.bind(this)
+    this.setMessageData = this.setMessageData.bind(this)
 
     this.fetchSessions(true, 'none', true)
     props.getSMPStatus(this.handleSMPStatus)
@@ -166,6 +167,27 @@ class LiveChat extends React.Component {
       {id: session._id, pendingResponse: value},
       (res) => this.updatePendingStatus(res, value, session._id)
     )
+  }
+
+  setMessageData(session, payload) {
+    const data = {
+      sender_id: session.pageId._id,
+      recipient_id: session._id,
+      sender_fb_id: session.pageId.pageId,
+      recipient_fb_id: session.senderId,
+      subscriber_id: session._id,
+      company_id: session.companyId,
+      payload: payload,
+      url_meta: this.state.urlmeta,
+      datetime: new Date().toString(),
+      status: 'unseen',
+      replied_by: {
+        type: 'agent',
+        id: this.props.user._id,
+        name: this.props.user.name
+      }
+    }
+    return data
   }
 
   handleAgents(teamAgents) {
@@ -549,6 +571,7 @@ class LiveChat extends React.Component {
                     showEmoji={true}
                     showGif={true}
                     showThumbsUp={true}
+                    setMessageData={this.setMessageData}
                   />
                 }
                 {

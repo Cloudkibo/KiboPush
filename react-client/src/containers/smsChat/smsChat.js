@@ -18,7 +18,7 @@ import {
   // assignToAgent,
   sendNotifications,
   // updatePendingResponse,
-  sendChatMessage,
+  // sendChatMessage,
   uploadRecording,
   // searchChat,
   // markRead,
@@ -38,7 +38,8 @@ import {
   updateSmsChatInfo,
   assignToAgent,
   assignToTeam,
-  fetchTeamAgents
+  fetchTeamAgents,
+  sendChatMessage,
 } from '../../redux/actions/smsChat.actions'
 import { updatePicture } from '../../redux/actions/subscribers.actions'
 import { loadTeamsList } from '../../redux/actions/teams.actions'
@@ -107,6 +108,7 @@ class SmsChat extends React.Component {
     this.loadActiveSession = this.loadActiveSession.bind(this)
     this.showFetchingChat = this.showFetchingChat.bind(this)
     this.clearSearchResults = this.clearSearchResults.bind(this)
+    this.setMessageData = this.setMessageData.bind(this)
 
     this.fetchSessions(true, 'none', true)
     if (props.user.currentPlan.unique_ID === 'plan_C' || props.user.currentPlan.unique_ID === 'plan_D') {
@@ -225,7 +227,7 @@ class SmsChat extends React.Component {
         openSessions: this.state.tabValue === 'open' && state.sessions,
         closeSessions: this.state.tabValue === 'close' && state.sessions
       }
-      this.props.updateLiveChatInfo(data)
+      this.props.updateSmsChatInfo(data)
     } else {
       this.setState(state, () => {
         if (callback) callback()
@@ -305,6 +307,22 @@ class SmsChat extends React.Component {
         this.msg.error('Unable to set Custom Field value')
       }
     }
+  }
+
+  setMessageData(session, payload) {
+    const data = {
+      senderNumber: this.props.userChat[0].recipientNumber,
+      recipientNumber: this.props.userChat[0].senderNumber,
+      contactId: session._id,
+      payload,
+      datetime: new Date().toString(),
+      repliedBy: {
+        id: this.props.user._id,
+        name: this.props.user.name,
+        type: 'agent'
+      }
+    }
+    return data
   }
 
   changeActiveSession (session) {
@@ -519,6 +537,7 @@ class SmsChat extends React.Component {
                     showEmoji={false}
                     showGif={false}
                     showThumbsUp={false}
+                    setMessageData={this.setMessageData}
                   />
                 }
                 {
