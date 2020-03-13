@@ -15,7 +15,7 @@ export function clearSearchResult () {
   }
 }
 
-export function updateSessions () {
+export function updateSessions (data) {
   return {
     type: ActionTypes.UPDATE_SESSIONS_SMS,
     data
