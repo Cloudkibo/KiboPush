@@ -18,8 +18,6 @@ import {
   sendNotifications,
   updatePendingResponse,
   sendChatMessage,
-  uploadAttachment,
-  sendAttachment,
   uploadRecording,
   // searchChat,
   // markRead,
@@ -107,7 +105,10 @@ class SmsChat extends React.Component {
     this.clearSearchResults = this.clearSearchResults.bind(this)
 
     this.fetchSessions(true, 'none', true)
-    props.loadMembersList()
+    if (props.user.currentPlan.unique_ID === 'plan_C' || props.user.currentPlan.unique_ID === 'plan_D') {
+      props.loadMembersList()
+      props.loadTeamsList({platform: 'sms'})
+    }
   }
 
   clearSearchResults () {
@@ -331,9 +332,6 @@ class SmsChat extends React.Component {
     if (session.is_assigned && session.assigned_to.type === 'team') {
       this.props.fetchTeamAgents(session.assigned_to.id, this.handleTeamAgents)
     }
-    // if (this.props.user.currentPlan.unique_ID === 'plan_C' || this.props.user.currentPlan.unique_ID === 'plan_D') {
-    //   this.props.loadTeamsList({pageId: session.pageId._id})
-    // }
     this.setState({activeSession: session})
   }
 
@@ -504,8 +502,6 @@ class SmsChat extends React.Component {
                     alertMsg={this.alertMsg}
                     user={this.props.user}
                     sendChatMessage={this.props.sendChatMessage}
-                    uploadAttachment={this.props.uploadAttachment}
-                    sendAttachment={this.props.sendAttachment}
                     uploadRecording={this.props.uploadRecording}
                     loadingChat={this.state.loadingChat}
                     fetchUserChats={this.props.fetchUserChats}
@@ -513,6 +509,12 @@ class SmsChat extends React.Component {
                     deletefile={this.props.deletefile}
                     fetchUrlMeta={this.props.urlMetaData}
                     isSMPApproved={true}
+                    showUploadAttachment={false}
+                    showRecordAudio={false}
+                    showSticker={false}
+                    showEmoji={false}
+                    showGif={false}
+                    showThumbsUp={false}
                   />
                 }
                 {
@@ -612,8 +614,6 @@ function mapDispatchToProps(dispatch) {
     assignToAgent,
     updatePendingResponse,
     sendChatMessage,
-    uploadAttachment,
-    sendAttachment,
     uploadRecording,
     searchChat,
     fetchUserChats,
