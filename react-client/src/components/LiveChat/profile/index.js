@@ -14,6 +14,7 @@ class Profile extends React.Component {
             <div className='m-card-profile'>
                 <div className='m-portlet__head'>
                     <Header
+                        showUnsubscribe={this.props.showUnsubscribe}
                         unSubscribe={this.props.unSubscribe}
                         activeSession={this.props.activeSession}
                         user={this.props.user}

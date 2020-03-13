@@ -572,6 +572,7 @@ class LiveChat extends React.Component {
                       setCustomFieldValue={this.saveCustomField}
                       showTags={true}
                       showCustomFields={true}
+                      showUnsubscribe={true}
                     />
                 }
                 {
