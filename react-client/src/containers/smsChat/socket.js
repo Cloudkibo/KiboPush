@@ -38,12 +38,11 @@ const handleIncomingMessage = (payload, state, props, updateLiveChatInfo, clearS
     session.last_activity_time = new Date()
     session.lastMessagedAt = new Date()
     session.pendingResponse = true
-    if (state.tabValue === 'open') sessions = [session, ...sessions]
     data = {
       userChat,
       chatCount: props.chatCount + 1,
-      openSessions: [session, ...sessions],
-      openCount: state.tabValue === 'close' ? props.openCount + 1 : this.props.openCount,
+      openSessions: state.tabValue === 'open' ? [session, ...sessions] : [session, ...props.openSessions],
+      openCount: state.tabValue === 'close' ? props.openCount + 1 : props.openCount,
       closeSessions: state.tabValue === 'close' ? sessions : props.closeSessions,
       closeCount: state.tabValue === 'close' ? props.closeCount - 1 : props.closeCount
     }
@@ -57,8 +56,8 @@ const handleIncomingMessage = (payload, state, props, updateLiveChatInfo, clearS
     session.pendingResponse = true
     session.status = 'new'
     data = {
-      openSessions: [session, ...sessions],
-      openCount: state.tabValue === 'close' ? props.openCount + 1 : this.props.openCount,
+      openSessions: state.tabValue === 'open' ? [session, ...sessions] : [session, ...props.openSessions],
+      openCount: state.tabValue === 'close' ? props.openCount + 1 : props.openCount,
       closeSessions: state.tabValue === 'close' ? sessions : props.closeSessions,
       closeCount: state.tabValue === 'close' ? props.closeCount - 1 : props.closeCount
     }
