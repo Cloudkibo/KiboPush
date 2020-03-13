@@ -250,7 +250,7 @@ Chat.propTypes = {
   'loadingChat': PropTypes.bool.isRequired,
   'fetchUserChats': PropTypes.func.isRequired,
   'markRead': PropTypes.func.isRequired,
-  'deletefile': PropTypes.func.isRequired,
+  'deletefile': PropTypes.func,
   'fetchUrlMeta': PropTypes.func.isRequired,
   'isSMPApproved': PropTypes.bool.isRequired,
   'showUploadAttachment': PropTypes.bool.isRequired,

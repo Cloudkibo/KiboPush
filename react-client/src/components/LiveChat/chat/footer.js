@@ -600,7 +600,7 @@ Footer.propTypes = {
   'getPicker': PropTypes.func.isRequired,
   'togglePopover': PropTypes.func.isRequired,
   'updateNewMessage': PropTypes.func.isRequired,
-  'deletefile': PropTypes.func.isRequired,
+  'deletefile': PropTypes.func,
   'updateChatAreaHeight': PropTypes.func.isRequired,
   'showUploadAttachment': PropTypes.bool.isRequired,
   'showRecordAudio': PropTypes.bool.isRequired,

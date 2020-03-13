@@ -6,25 +6,7 @@ import { RingLoader } from 'halogenium'
 
 // actions
 import {
-  // fetchOpenSessions,
-  // fetchCloseSessions,
-  // fetchUserChats,
-  // fetchTeamAgents,
-  // changeStatus,
-  // unSubscribe,
-  getCustomers,
-  appendSubscriber,
-  // assignToTeam,
-  // assignToAgent,
-  sendNotifications,
-  // updatePendingResponse,
-  // sendChatMessage,
-  uploadRecording,
-  // searchChat,
-  // markRead,
-  // updateLiveChatInfo,
-  deletefile,
-  // clearSearchResult,
+  sendNotifications
 } from '../../redux/actions/livechat.actions'
 import {
   fetchOpenSessions,
@@ -328,6 +310,7 @@ class SmsChat extends React.Component {
   changeActiveSession (session) {
     console.log('changeActiveSession', session)
     if (session._id !== this.state.activeSession._id) {
+      session.firstName = session.name
       this.setState({
         activeSession: session,
         customFieldOptions: [],
@@ -524,11 +507,9 @@ class SmsChat extends React.Component {
                     alertMsg={this.alertMsg}
                     user={this.props.user}
                     sendChatMessage={this.props.sendChatMessage}
-                    uploadRecording={this.props.uploadRecording}
                     loadingChat={this.state.loadingChat}
                     fetchUserChats={this.props.fetchUserChats}
                     markRead={this.props.markRead}
-                    deletefile={this.props.deletefile}
                     fetchUrlMeta={this.props.urlMetaData}
                     isSMPApproved={true}
                     showUploadAttachment={false}
@@ -553,10 +534,8 @@ class SmsChat extends React.Component {
                       profilePicError={this.profilePicError}
                       alertMsg={this.alertMsg}
                       customers={this.props.customers}
-                      getCustomers={this.props.getCustomers}
                       fetchTeamAgents={this.fetchTeamAgents}
                       assignToTeam={this.props.assignToTeam}
-                      appendSubscriber={this.props.appendSubscriber}
                       sendNotifications={this.props.sendNotifications}
                       assignToAgent={this.props.assignToAgent}
                       customFieldOptions={this.state.customFieldOptions}
@@ -629,21 +608,17 @@ function mapDispatchToProps(dispatch) {
     fetchTeamAgents,
     assignToTeam,
     changeStatus,
-    getCustomers,
-    appendSubscriber,
     loadTeamsList,
     sendNotifications,
     loadMembersList,
     assignToAgent,
     updatePendingResponse,
     sendChatMessage,
-    uploadRecording,
     searchChat,
     fetchUserChats,
     markRead,
     clearSocketDataSms,
     updateSmsChatInfo,
-    deletefile,
     clearSearchResult,
     urlMetaData,
   }, dispatch)
