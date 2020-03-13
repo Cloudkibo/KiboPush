@@ -11,7 +11,6 @@ import {
   // fetchUserChats,
   // fetchTeamAgents,
   changeStatus,
-  unSubscribe,
   getCustomers,
   appendSubscriber,
   // assignToTeam,
@@ -528,7 +527,6 @@ class SmsChat extends React.Component {
                       user={this.props.user}
                       profilePicError={this.profilePicError}
                       alertMsg={this.alertMsg}
-                      unSubscribe={this.props.unSubscribe}
                       customers={this.props.customers}
                       getCustomers={this.props.getCustomers}
                       fetchTeamAgents={this.fetchTeamAgents}
@@ -539,6 +537,7 @@ class SmsChat extends React.Component {
                       customFieldOptions={this.state.customFieldOptions}
                       showTags={false}
                       showCustomFields={false}
+                      showUnsubscribe={false}
                     />
                 }
                 {
@@ -599,7 +598,6 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators({
-    unSubscribe,
     fetchOpenSessions,
     fetchCloseSessions,
     updatePicture,
