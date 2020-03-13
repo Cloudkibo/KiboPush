@@ -612,7 +612,7 @@ function mapStateToProps(state) {
     tags: (state.tagsInfo.tags),
     customFieldValues: (state.customFieldInfo.customFieldSubscriber),
     customFields: (state.customFieldInfo.customFields),
-    searchChatMsgs: (state.liveChat.searchChat),
+    searchChatMsgs: (state.smsChatInfo.searchChat),
     socketData: (state.socketInfo.socketData)
   }
 }
