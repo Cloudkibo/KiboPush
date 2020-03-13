@@ -170,15 +170,7 @@ class SmsChat extends React.Component {
 
   getChatPreview (message, repliedBy, subscriberName) {
     let chatPreview = ''
-    if (message.componentType) {
-      // agent
-      chatPreview = (!repliedBy || (repliedBy.id === this.props.user._id)) ? `You` : `${repliedBy.name}`
-      if (message.componentType === 'text') {
-        chatPreview = `${chatPreview}: ${message.text}`
-      } else {
-        chatPreview = `${chatPreview} shared ${message.componentType}`
-      }
-    } else {
+    if (message.format === 'twilio') {
       // subscriber
       chatPreview = `${subscriberName}`
       if (message.attachments) {
@@ -197,6 +189,14 @@ class SmsChat extends React.Component {
         }
       } else {
         chatPreview = `${chatPreview}: ${message.text}`
+      }
+    } else {
+      // agent
+      chatPreview = (!repliedBy || (repliedBy.id === this.props.user._id)) ? `You` : `${repliedBy.name}`
+      if (message.componentType === 'text') {
+        chatPreview = `${chatPreview}: ${message.text}`
+      } else {
+        chatPreview = `${chatPreview} shared ${message.componentType}`
       }
     }
     return chatPreview
@@ -515,7 +515,7 @@ class SmsChat extends React.Component {
                     showUploadAttachment={false}
                     showRecordAudio={false}
                     showSticker={false}
-                    showEmoji={false}
+                    showEmoji={true}
                     showGif={false}
                     showThumbsUp={false}
                     setMessageData={this.setMessageData}
