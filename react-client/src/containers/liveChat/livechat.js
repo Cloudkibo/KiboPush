@@ -242,8 +242,8 @@ class LiveChat extends React.Component {
     if (state.reducer) {
       const data = {
         userChat: state.userChat,
-        openSessions: this.state.tabValue === 'open' && state.sessions,
-        closeSessions: this.state.tabValue === 'close' && state.sessions
+        openSessions: this.state.tabValue === 'open' ? state.sessions : this.props.openSessions,
+        closeSessions: this.state.tabValue === 'close' ? state.sessions : this.props.closeSessions
       }
       this.props.updateLiveChatInfo(data)
     } else {
