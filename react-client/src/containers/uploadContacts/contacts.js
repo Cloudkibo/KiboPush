@@ -271,6 +271,7 @@ class Contact extends React.Component {
                         </h3>
                       </div>
                     </div>
+                    { this.props.user.platform === 'sms' &&
                     <div className='m-portlet__head-tools'>
                     <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' onClick={this.syncContacts}>
                         <span>
@@ -281,6 +282,7 @@ class Contact extends React.Component {
                         </span>
                       </button>
                     </div>
+                    }
                   </div>
                   <div className='m-portlet__body'>
                     { this.state.contactsData && this.state.contactsData.length > 0

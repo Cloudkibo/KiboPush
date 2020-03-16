@@ -99,7 +99,7 @@ class Webhook extends React.Component {
     this.props.updatePlatformSettings({twilio: {
       accountSID: this.state.SID,
       authToken: this.state.token
-    }}, this.msg, this.clearFields)
+    }}, this.msg, this.clearFields, 'sms')
   }
 
   submitWapp () {
@@ -272,10 +272,10 @@ class Webhook extends React.Component {
                       <label className='control-label'>Twilio Auth Token:</label>
                       <input className='form-control' value={this.state.tokenWapp} onChange={(e) => this.updateTokenWapp(e)} />
                     </div>
-                    <div id='question' className='form-group m-form__group'>
+                    {/*<div id='question' className='form-group m-form__group'>
                       <label className='control-label'>WhatsApp Sandbox Number:</label>
                       <input className='form-control' value={this.state.number} onChange={(e) => this.updateNumber(e)} />
-                    </div>
+                    </div>*/}
                     <div id='question' className='form-group m-form__group'>
                       <label className='control-label'>Sandbox Code:</label>
                       <input className='form-control' value={this.state.code} onChange={(e) => this.updateCode(e)} />
