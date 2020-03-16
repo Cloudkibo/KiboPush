@@ -9,7 +9,7 @@ class TargetCustomers extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      conditions: [{condition: '', criteria: '', text: ''}]
+      conditions: [{condition: '', criteria: '', text: ''}],
     }
     this.addCondition = this.addCondition.bind(this)
     this.removeCondition = this.removeCondition.bind(this)
@@ -42,6 +42,11 @@ class TargetCustomers extends React.Component {
     this.props.updateCurrentCustomersInfo(this.props.customersInfo, 'filter', conditions)
   }
   changeCondition (e, index) {
+     let condition = this.state.conditions.filter(condition => condition.condition === e.target.value)
+     if(condition.length > 0) 
+     {
+        this.props.msg.error('you cannot select same condition multiple times')
+     } else {
     let conditions = this.state.conditions
     for (let i = 0; i < this.state.conditions.length; i++) {
       if (index === i) {
@@ -55,6 +60,7 @@ class TargetCustomers extends React.Component {
     this.setState({conditions: conditions})
     this.props.updateCurrentCustomersInfo(this.props.customersInfo, 'filter', conditions)
   }
+}
   changeCriteria (e, index) {
     let conditions = this.state.conditions
     for (let i = 0; i < this.state.conditions.length; i++) {
@@ -225,9 +231,12 @@ class TargetCustomers extends React.Component {
                }
               </tbody>
             </table>
-            <button style={{margin: '15px'}} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary' onClick={this.addCondition}>
+            { (this.state.conditions.length < 2)
+            ? <button style={{margin: '15px'}} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary' onClick={this.addCondition}>
              + Add Condition
            </button>
+           : null
+            }
             <button style={{marginRight: '15px'}} className='m-btn m-btn--pill m-btn--hover-success btn btn-sm btn-secondary' onClick={this.resetCondition}>
               Reset
            </button>
