@@ -515,7 +515,7 @@ class Footer extends React.Component {
         <div style={{color: '#575962'}}>
           {
             this.props.showUploadAttachment &&
-            <div>
+            <div style={{display: 'inline'}}>
               <input
                 ref='_upload_attachment'
                 style={{display: 'none'}}
