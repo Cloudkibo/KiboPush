@@ -76,7 +76,7 @@ export function showCloseChatSessions (data) {
 export function fetchOpenSessions (data) {
   console.log('data for fetchOpenSessions', data)
   return (dispatch) => {
-    callApi('whatsAppChat/getOpenSessions', 'post', data)
+    callApi('whatsAppSessions/getOpenSessions', 'post', data)
       .then(res => {
         console.log('response from fetchSessions', res)
         dispatch(showOpenSessions(res.payload))
@@ -86,7 +86,7 @@ export function fetchOpenSessions (data) {
 export function fetchCloseSessions (data) {
   console.log('data for fetchCloseSessions', data)
   return (dispatch) => {
-    callApi('whatsAppChat/getClosedSessions', 'post', data)
+    callApi('whatsAppSessions/getClosedSessions', 'post', data)
       .then(res => {
         console.log('response from fetchSessions', res)
         dispatch(showCloseChatSessions(res.payload, data.first_page))
@@ -94,7 +94,7 @@ export function fetchCloseSessions (data) {
   }
 }
 
-export function fetchChat (id, data,searchMessageId,handleScroll) {
+export function fetchUserChats (id, data,searchMessageId,handleScroll) {
   console.log('data for fetchChat', data)
   return (dispatch) => {
     callApi(`whatsAppChat/getChat/${id}`, 'post', data)
@@ -116,7 +116,7 @@ export function fetchChat (id, data,searchMessageId,handleScroll) {
 
 export function markRead (sessionid) {
   return (dispatch) => {
-    callApi(`whatsAppChat/markread/${sessionid}`).then(res => {
+    callApi(`whatsAppSessions/markread/${sessionid}`).then(res => {
       console.log('Mark as read Response', res)
     })
   }
@@ -141,7 +141,7 @@ export function sendChatMessage (data) {
           number_of_records: 10,
         }
         dispatch(fetchOpenSessions(fetchData))
-        dispatch(fetchChat(data.contactId, {page: 'first', number: 25}))
+        dispatch(fetchUserChats(data.contactId, {page: 'first', number: 25}))
       })
   }
 }
@@ -161,7 +161,7 @@ export function sendAttachment (data, handleSendAttachment) {
         number_of_records: 10,
       }
       dispatch(fetchOpenSessions(fetchData))
-      dispatch(fetchChat(data.contactId, {page: 'first', number: 25}))
+      dispatch(fetchUserChats(data.contactId, {page: 'first', number: 25}))
     })
   }
 }
@@ -190,7 +190,7 @@ export function unSubscribe (id, data) {
 }
 export function assignToAgent (data) {
   return (dispatch) => {
-    callApi('whatsAppChat/assignAgent', 'post', data).then(res => {
+    callApi('whatsAppSessions/assignAgent', 'post', data).then(res => {
       console.log('assign to agent response', res)
       dispatch(updateSessions(data))
     })
@@ -200,7 +200,7 @@ export function assignToAgent (data) {
 export function assignToTeam (data) {
   console.log('data for assigned to team', data)
   return (dispatch) => {
-    callApi('whatsAppChat/assignTeam', 'post', data).then(res => {
+    callApi('whatsAppSessions/assignTeam', 'post', data).then(res => {
       console.log('assign to team response', res)
       dispatch(updateSessions(data))
     })
@@ -252,7 +252,7 @@ export function setCustomFieldValue (body, handleResponse) {
 }
 export function changeStatus (data, handleStatus) {
   return (dispatch) => {
-    callApi('whatsAppChat/changeStatus', 'post', data).then(res => {
+    callApi('whatsAppSessions/changeStatus', 'post', data).then(res => {
       handleStatus(res)
     })
   }
@@ -260,7 +260,7 @@ export function changeStatus (data, handleStatus) {
 
 export function updatePendingResponse (data, handlePendingResponse) {
   return (dispatch) => {
-    callApi(`whatsAppChat/updatePendingResponse`, 'post', data).then(res => {
+    callApi(`whatsAppSessions/updatePendingResponse`, 'post', data).then(res => {
       handlePendingResponse(res)
     })
   }
