@@ -38,14 +38,30 @@ export function loadTwilioNumbers () {
   }
 }
 
-export function sendBroadcast (data, clearFields) {
+export function sendBroadcast (data, clearFields, msg) {
   console.log('data for sendBroadcast', data)
   return (dispatch) => {
     callApi('smsBroadcasts/sendBroadcast', 'post', data)
       .then(res => {
         console.log('response from sendBroadcast', res)
         if (res.status === 'success') {
-          dispatch(clearFields())
+          msg.success(res.description)
+        } else {
+          msg.error(res.description)
+        }
+        dispatch(clearFields())
+      })
+  }
+}
+
+export function getCount (data, onGetCount) {
+  console.log('data for sendBroadcast', data)
+  return (dispatch) => {
+    callApi('smsBroadcasts/getCount', 'post', {'segmentation': data})
+      .then(res => {
+        console.log('response from getCount', res.payload)
+        if (onGetCount) {
+          onGetCount(res.payload)
         }
       })
   }

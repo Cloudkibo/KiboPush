@@ -23,7 +23,8 @@ class MessengerRefURL extends React.Component {
       deleteid: '',
       showVideo: false,
       pageSelected: {},
-      openVideo: false
+      openVideo: false,
+      pageName: ''
     }
     props.loadMyPagesList()
     props.fetchURLs()
@@ -57,7 +58,10 @@ class MessengerRefURL extends React.Component {
     this.refs.videoMessengerRef.click()
   }
   changePage (e) {
-    this.setState({pageSelected: e.target.value})
+    let pageName = this.props.pages.filter((page) => page._id === e.target.value)[0].pageName
+    console.log('pageName', pageName)
+    this.setState({pageSelected: e.target.value , pageName:pageName})
+
   }
   gotoCreate () {
     this.props.resetState()
@@ -65,13 +69,13 @@ class MessengerRefURL extends React.Component {
     console.log('pageId', pageId)
     this.props.history.push({
       pathname: `/createMessengerRefURL`,
-      state: {_id: this.state.pageSelected, pageId: pageId, module: 'createMessage'}
+      state: {_id: this.state.pageSelected, pageId: pageId, pageName:this.state.pageName, module: 'createMessage'}
     })
   }
   onEdit (messengerRefURL) {
     this.props.history.push({
       pathname: `/editMessengerRefURL`,
-      state: {module: 'edit', messengerRefURL: messengerRefURL}
+      state: {module: 'edit', messengerRefURL: messengerRefURL, pageName:messengerRefURL.pageId.pageName}
     })
   }
   showCreateDialog () {
@@ -115,7 +119,7 @@ class MessengerRefURL extends React.Component {
       this.setState({totalLength: nextProps.messengerRefURLs.length})
     }
     if (nextProps.pages) {
-      this.setState({pageSelected: nextProps.pages[0]._id})
+      this.setState({pageSelected: nextProps.pages[0]._id, pageName: nextProps.pages[0].pageName})
     }
   }
 

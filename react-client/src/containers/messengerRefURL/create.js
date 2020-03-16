@@ -17,6 +17,7 @@ class CreateURL extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
+      pageName: ''
     }
 
     if (props.location.state.module === 'createMessage') {
@@ -31,6 +32,7 @@ class CreateURL extends React.Component {
   }
 
   componentDidMount () {
+    this.setState({pageName:this.props.location.state.pageName})
     console.log('this.props.location.state.messengerRefURL', this.props.location.state.messengerRefURL)
     if (this.props.location.state.module && this.props.location.state.module === 'edit') {
       this.props.updateData('', '', '', {
@@ -129,9 +131,9 @@ class CreateURL extends React.Component {
                 </div>
                 <div className='m-portlet__body'>
                   <div className='row'>
-                    <Tabs history={this.props.history} location={this.props.location} module={this.props.location.state.module} messengerRefURL={this.props.location.state.messengerRefURL} />
+                    <Tabs history={this.props.history} location={this.props.location} module={this.props.location.state.module} messengerRefURL={this.props.location.state.messengerRefURL} pageName= {this.state.pageName}/>
                     {
-                      this.props.location.state.module === 'edit' ? <Preview history={this.props.history} location={this.props.location} selectedmessengerRefURL={this.props.location.state.messengerRefURL} /> : <Preview />
+                      this.props.location.state.module === 'edit' ? <Preview history={this.props.history} location={this.props.location} selectedmessengerRefURL={this.props.location.state.messengerRefURL} pageName= {this.state.pageName} /> : <Preview pageName= {this.state.pageName}/>
                     }
                   </div>
                 </div>

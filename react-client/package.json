@@ -26,6 +26,7 @@
     "jscodeshift": "^0.6.4",
     "json2csv": "^3.11.5",
     "loadash": "^1.0.0",
+    "mic-recorder-to-mp3": "^2.2.1",
     "moment": "^2.24.0",
     "moment-range": "^3.1.1",
     "nice-try": "^2.0.0",
@@ -97,7 +98,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
-  "proxy": "http://localhost:3022",
+  "proxy": "http://localhost:3021",
   "eslintConfig": {
     "extends": "react-app"
   },
