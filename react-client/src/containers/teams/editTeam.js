@@ -25,7 +25,9 @@ class EditTeam extends React.Component {
       showDropDown1: false,
       removedPages: [],
       removedAgents: [],
-      inCancel: true
+      inCancel: true,
+      module: '',
+      teamId: ''
     }
     this.createTeam = this.createTeam.bind(this)
     this.updateName = this.updateName.bind(this)
@@ -79,6 +81,7 @@ class EditTeam extends React.Component {
   componentDidMount () {
     this.scrollToTop()
     if (this.props.location.state) {
+      this.setState({module : this.props.location.state.module, teamId:this.props.location.state._id, name: this.props.location.state.name, description: this.props.location.state.description})
     //   var agents = []
     //   var pages = []
     //   console.log('this.props.location.state', this.props.location.state)
@@ -125,13 +128,13 @@ class EditTeam extends React.Component {
     if (nextProps.teamAgents && nextProps.teamAgents.length > 0) {
       var agents = []
       for (var i = 0; i < nextProps.teamAgents.length; i++) {
-        if (nextProps.teamAgents[i].teamId._id === this.props.location.state._id) {
+        if (nextProps.teamAgents[i].teamId._id === this.state.teamId) {
           if (this.existsValue(nextProps.teamAgents[i].agentId._id, agents) === false) {
             agents.push(nextProps.teamAgents[i].agentId)
           }
         }
       }
-      this.setState({ agentIds: agents, name: this.props.location.state.name, description: this.props.location.state.description })
+      this.setState({ agentIds: agents})
     }
     if (nextProps.teamPages && nextProps.teamPages.length > 0) {
       var pages = []
@@ -239,14 +242,14 @@ class EditTeam extends React.Component {
       let pageIds = []
       let pageNames = []
       for (var i = 0; i < this.state.agentIds.length; i++) {
-        this.props.addAgent({ teamId: this.props.location.state._id, agentId: this.state.agentIds[i]._id })
+        this.props.addAgent({ teamId: this.state.teamId, agentId: this.state.agentIds[i]._id })
       }
       for (var j = 0; j < this.state.pageIds.length; j++) {
-        this.props.addPage({ teamId: this.props.location.state._id, pageId: this.state.pageIds[j]._id })
+        this.props.addPage({ teamId:  this.state.teamId, pageId: this.state.pageIds[j]._id })
         pageIds.push(this.state.pageIds[j]._id)
         pageNames.push(this.state.pageIds[j].pageName)
       }
-      let updatePayload = {_id: this.props.location.state._id, name: this.state.name, description: this.state.description}
+      let updatePayload = {_id:  this.state.teamId, name: this.state.name, description: this.state.description}
       if (this.props.user.platform === 'messenger') {
         updatePayload.teamPages = pageNames
         updatePayload.teamPagesIds = pageIds
@@ -343,8 +346,8 @@ class EditTeam extends React.Component {
       temp.splice(index, 1)
     }
     this.setState({pageIds: temp})
-    this.props.removePage({ pageId: page._id, teamId: this.props.location.state._id })
-    this.props.fetchPages(this.props.location.state._id)
+    this.props.removePage({ pageId: page._id, teamId: this.state.teamId })
+    this.props.fetchPages(this.state.teamId)
     //  this.props.loadTeamsList()
   }
   exists (agent) {
@@ -380,7 +383,7 @@ class EditTeam extends React.Component {
         <div className='m-subheader '>
           <div className='d-flex align-items-center'>
             <div className='mr-auto'>
-              {this.props.location.state.module === 'edit'
+              {this.state.module === 'edit'
               ? <h3 className='m-subheader__title'>Edit Team</h3>
               : <h3 className='m-subheader__title'>View Team</h3>
               }
@@ -395,7 +398,7 @@ class EditTeam extends React.Component {
                   <div className='m-form'>
                     <div id='name' className='form-group m-form__group'>
                       <label className='control-label'>Team Name:</label>
-                      {this.props.location.state.module === 'edit'
+                      {this.state.module === 'edit'
                       ? <input className='form-control'
                         placeholder='Enter name here' value={this.state.name} onChange={(e) => this.updateName(e)}
                          />
@@ -406,7 +409,7 @@ class EditTeam extends React.Component {
                     </div>
                     <div id='description' className='form-group m-form__group'>
                       <label className='control-label'>Team Description:</label>
-                      {this.props.location.state.module === 'edit'
+                      {this.state.module === 'edit'
                       ? <textarea className='form-control'
                         placeholder='Enter description here' value={this.state.description} onChange={(e) => this.updateDescription(e)}
                          />
@@ -431,7 +434,7 @@ class EditTeam extends React.Component {
                                     onError={(e) => this.profilePicError(e, agent)}
                                     src={(agent.facebookInfo) ? agent.facebookInfo.profilePic : 'https://cdn.cloudkibo.com/public/icons/users.jpg'} />&nbsp;&nbsp;
                                   <span>{agent.name}</span>&nbsp;&nbsp;&nbsp;
-                                  {this.props.location.state.module === 'edit' &&
+                                  {this.state.module === 'edit' &&
                                   <i style={{cursor: 'pointer'}} className='fa fa-times' onClick={() => this.removeAgent(agent)} />
                                   }
                                 </span>
@@ -442,7 +445,7 @@ class EditTeam extends React.Component {
                         </div>
                       }
                       <br />
-                      {this.props.location.state.module === 'edit' &&
+                      {this.state.module === 'edit' &&
                       <div className='m-dropdown m-dropdown--inline m-dropdown--arrow' data-dropdown-toggle='click' aria-expanded='true' onClick={this.showDropDown}>
                         <a href='#/' className='m-dropdown__toggle btn btn-success dropdown-toggle'>
                         Add Agents
@@ -507,7 +510,7 @@ class EditTeam extends React.Component {
                                 <span>
                                   <img alt='pic' style={{height: '30px'}} src={(page.pagePic) ? page.pagePic : 'https://cdn.cloudkibo.com/public/icons/users.jpg'} />&nbsp;&nbsp;
                                   <span>{page.pageName}</span>&nbsp;&nbsp;&nbsp;
-                                  {this.props.location.state.module === 'edit' &&
+                                  {this.state.module === 'edit' &&
                                   <i style={{cursor: 'pointer'}} className='fa fa-times' onClick={() => this.removePage(page)} />
                                   }
                                 </span>
@@ -518,7 +521,7 @@ class EditTeam extends React.Component {
                         </div>
                       }
                       <br />
-                      {this.props.location.state.module === 'edit' &&
+                      {this.state.module === 'edit' &&
                       <div className='m-dropdown m-dropdown--inline m-dropdown--arrow' data-dropdown-toggle='click' aria-expanded='true' onClick={this.showDropDown1}>
                         <a href='#/' className='m-dropdown__toggle btn btn-success dropdown-toggle'>
                         Add Pages
@@ -575,7 +578,7 @@ class EditTeam extends React.Component {
                   </div>
                   <br /><br />
                   <div className='m-portlet__foot m-portlet__foot--fit' style={{'overflow': 'auto'}}>
-                    {this.props.location.state.module === 'edit'
+                    {this.state.module === 'edit'
                     ? <div className='m-form__actions' style={{'float': 'right', 'marginTop': '25px', 'marginRight': '20px'}}>
                       <button className='btn btn-primary' onClick={this.createTeam}> Save
                       </button>
