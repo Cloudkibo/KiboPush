@@ -120,15 +120,25 @@ class SessionItem extends React.Component {
               }
             </span>
             <br />
-            <span className={`m-widget4__sub ${(this.props.session.unreadCount && this.props.session.unreadCount > 0) && 'm--font-boldest'}`}>
-              <i className='fa fa-facebook-square' />&nbsp;&nbsp;
-              {(this.props.session.pageId.pageName.length > 10) ? this.props.session.pageId.pageName.slice(0, 10) + '...' : this.props.session.pageId.pageName}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-              <i className='fa fa-calendar' />&nbsp;&nbsp;
-              {
-                this.props.session.last_activity_time &&
-                moment(this.props.session.last_activity_time).fromNow()
-              }
-            </span>
+            {
+              this.props.showPageInfo ?
+              <span className={`m-widget4__sub ${(this.props.session.unreadCount && this.props.session.unreadCount > 0) && 'm--font-boldest'}`}>
+                <i className='fa fa-facebook-square' />&nbsp;&nbsp;
+                {(this.props.session.pageId.pageName.length > 10) ? this.props.session.pageId.pageName.slice(0, 10) + '...' : this.props.session.pageId.pageName}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <i className='fa fa-calendar' />&nbsp;&nbsp;
+                {
+                  this.props.session.last_activity_time &&
+                  moment(this.props.session.last_activity_time).fromNow()
+                }
+              </span>
+              : <span className={`m-widget4__sub ${(this.props.session.unreadCount && this.props.session.unreadCount > 0) && 'm--font-boldest'}`}>
+                <i className='fa fa-calendar' />&nbsp;&nbsp;
+                {
+                  this.props.session.last_activity_time &&
+                  moment(this.props.session.last_activity_time).fromNow()
+                }
+              </span>
+            }
             <br />
           </div>
         </div>
@@ -142,7 +152,8 @@ SessionItem.propTypes = {
   'activeSession': PropTypes.object.isRequired,
   'changeActiveSession': PropTypes.func.isRequired,
   'profilePicError': PropTypes.func.isRequired,
-  'changeStatus': PropTypes.func.isRequired
+  'changeStatus': PropTypes.func.isRequired,
+  'showPageInfo': PropTypes.bool.isRequired
 }
 
 export default SessionItem

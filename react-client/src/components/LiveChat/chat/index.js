@@ -120,7 +120,7 @@ class Chat extends React.Component {
         <CONFIRMATIONMODAL
           id='_remove-pending-response'
           title='Remove Pending Response'
-          description='Are you sure you want to mark this session as pending?'
+          description='Are you sure you want to remove the pending flag on this session?'
           onConfirm={() => {this.props.handlePendingResponse(this.props.activeSession, false)}}
         />
 
@@ -202,6 +202,13 @@ class Chat extends React.Component {
             deletefile={this.props.deletefile}
             fetchUrlMeta={this.props.fetchUrlMeta}
             updateChatAreaHeight={this.updateChatAreaHeight}
+            showUploadAttachment={this.props.showUploadAttachment}
+            showRecordAudio={this.props.showRecordAudio}
+            showSticker={this.props.showSticker}
+            showEmoji={this.props.showEmoji}
+            showGif={this.props.showGif}
+            showThumbsUp={this.props.showThumbsUp}
+            setMessageData={this.props.setMessageData}
           />
         }
 
@@ -237,15 +244,21 @@ Chat.propTypes = {
   'performAction': PropTypes.func.isRequired,
   'user': PropTypes.object.isRequired,
   'sendChatMessage': PropTypes.func.isRequired,
-  'uploadAttachment': PropTypes.func.isRequired,
-  'sendAttachment': PropTypes.func.isRequired,
-  'uploadRecording': PropTypes.func.isRequired,
+  'uploadAttachment': PropTypes.func,
+  'sendAttachment': PropTypes.func,
+  'uploadRecording': PropTypes.func,
   'loadingChat': PropTypes.bool.isRequired,
   'fetchUserChats': PropTypes.func.isRequired,
   'markRead': PropTypes.func.isRequired,
-  'deletefile': PropTypes.func.isRequired,
+  'deletefile': PropTypes.func,
   'fetchUrlMeta': PropTypes.func.isRequired,
-  'isSMPApproved': PropTypes.bool.isRequired
+  'isSMPApproved': PropTypes.bool.isRequired,
+  'showUploadAttachment': PropTypes.bool.isRequired,
+  'showRecordAudio': PropTypes.bool.isRequired,
+  'showSticker': PropTypes.bool.isRequired,
+  'showEmoji': PropTypes.bool.isRequired,
+  'showGif': PropTypes.bool.isRequired,
+  'showThumbsUp': PropTypes.bool.isRequired
 }
 
 export default Chat

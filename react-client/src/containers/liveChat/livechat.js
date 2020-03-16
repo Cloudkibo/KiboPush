@@ -112,6 +112,7 @@ class LiveChat extends React.Component {
     this.clearSearchResults = this.clearSearchResults.bind(this)
     this.handleSMPStatus = this.handleSMPStatus.bind(this)
     this.isSMPApproved = this.isSMPApproved.bind(this)
+    this.setMessageData = this.setMessageData.bind(this)
 
     this.fetchSessions(true, 'none', true)
     props.getSMPStatus(this.handleSMPStatus)
@@ -166,6 +167,27 @@ class LiveChat extends React.Component {
       {id: session._id, pendingResponse: value},
       (res) => this.updatePendingStatus(res, value, session._id)
     )
+  }
+
+  setMessageData(session, payload) {
+    const data = {
+      sender_id: session.pageId._id,
+      recipient_id: session._id,
+      sender_fb_id: session.pageId.pageId,
+      recipient_fb_id: session.senderId,
+      subscriber_id: session._id,
+      company_id: session.companyId,
+      payload: payload,
+      url_meta: this.state.urlmeta,
+      datetime: new Date().toString(),
+      status: 'unseen',
+      replied_by: {
+        type: 'agent',
+        id: this.props.user._id,
+        name: this.props.user.name
+      }
+    }
+    return data
   }
 
   handleAgents(teamAgents) {
@@ -242,8 +264,8 @@ class LiveChat extends React.Component {
     if (state.reducer) {
       const data = {
         userChat: state.userChat,
-        openSessions: this.state.tabValue === 'open' && state.sessions,
-        closeSessions: this.state.tabValue === 'close' && state.sessions
+        openSessions: this.state.tabValue === 'open' ? state.sessions : this.props.openSessions,
+        closeSessions: this.state.tabValue === 'close' ? state.sessions : this.props.closeSessions
       }
       this.props.updateLiveChatInfo(data)
     } else {
@@ -273,11 +295,13 @@ class LiveChat extends React.Component {
         isAllowed = false
         errorMsg = `Only assigned agent can ${errorMsg}`
       } else if (session.assigned_to.type === 'team') {
-        const agentIds = this.state.teamAgents.map((agent) => agent.agentId._id)
-        if (!agentIds.includes(this.props.user._id)) {
-          isAllowed = false
-          errorMsg = `Only agents who are part of assigned team can ${errorMsg}`
-        }
+        this.fetchTeamAgents(session._id, (teamAgents) => {
+          const agentIds = teamAgents.map((agent) => agent.agentId._id)
+          if (!agentIds.includes(this.props.user._id)) {
+            isAllowed = false
+            errorMsg = `Only agents who are part of assigned team can ${errorMsg}`
+          }
+        })
       }
     }
     errorMsg = `You can not perform this action. ${errorMsg}`
@@ -543,6 +567,13 @@ class LiveChat extends React.Component {
                     deletefile={this.props.deletefile}
                     fetchUrlMeta={this.props.urlMetaData}
                     isSMPApproved={this.isSMPApproved()}
+                    showUploadAttachment={true}
+                    showRecordAudio={true}
+                    showSticker={true}
+                    showEmoji={true}
+                    showGif={true}
+                    showThumbsUp={true}
+                    setMessageData={this.setMessageData}
                   />
                 }
                 {
@@ -570,6 +601,9 @@ class LiveChat extends React.Component {
                       createTag={this.props.createTag}
                       customFieldOptions={this.state.customFieldOptions}
                       setCustomFieldValue={this.saveCustomField}
+                      showTags={true}
+                      showCustomFields={true}
+                      showUnsubscribe={true}
                     />
                 }
                 {
