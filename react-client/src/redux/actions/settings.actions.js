@@ -406,7 +406,7 @@ export function updatePlatformSettings (data, msg, clearFields, platform) {
             dispatch(fetchValidCallerIds(data))
           }
         } else {
-          msg.error(JSON.stringify(res.description))
+          msg.error(res.description)
           if (clearFields) {
             dispatch(clearFields())
           }
