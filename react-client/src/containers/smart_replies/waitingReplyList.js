@@ -22,7 +22,6 @@ class WaitingReplyList extends React.Component {
     this.openChat = this.openChat.bind(this)
     this.onGenderChange = this.onGenderChange.bind(this)
     this.onSearchChange = this.onSearchChange.bind(this)
-    this.onPageChange = this.onPageChange.bind(this)
     this.backToIntents = this.backToIntents.bind(this)
 
     props.loadWaitingSubscribers({
@@ -47,21 +46,6 @@ class WaitingReplyList extends React.Component {
       searchValue: this.state.searchValue,
       genderValue: e.target.value,
       pageValue: this.state.filterByPage,
-      pagination: {
-        step: 'first',
-        currentPage: this.state.pageSelected
-      }
-    })
-  }
-
-  onPageChange (e) {
-    this.setState({filterByPage: e.target.value})
-    this.props.loadWaitingSubscribers({
-      botId: this.state.botId,
-      records: 10,
-      searchValue: this.state.searchValue,
-      genderValue: this.state.filterByGender,
-      pageValue: e.target.value,
       pagination: {
         step: 'first',
         currentPage: this.state.pageSelected
@@ -196,17 +180,6 @@ class WaitingReplyList extends React.Component {
                                   </select>
                                 </div>
                               </div>
-                              <div className='m-form__control'>
-                                <select className='custom-select' id='m_form_type' style={{width: '200px'}} tabIndex='-98' value={this.state.filterByPage} onChange={this.onPageChange}>
-                                  <option key='' value='' disabled>Filter by Page...</option>
-                                  <option key='' value=''>ALL</option>
-                                  {
-                                    this.props.pages.map((page, i) => (
-                                      <option key={i} value={page.pageId}>{page.pageName}</option>
-                                    ))
-                                  }
-                                </select>
-                              </div>
                             </div>
                           </div>
                         </div>
@@ -308,7 +281,6 @@ class WaitingReplyList extends React.Component {
                           pageCount={Math.ceil(this.props.waitingSubscribersCount / 10)}
                           marginPagesDisplayed={1}
                           pageRangeDisplayed={3}
-                          onPageChange={this.handlePageClick}
                           containerClassName={'pagination'}
                           subContainerClassName={'pages pagination'}
                           activeClassName={'active'}
