@@ -188,20 +188,26 @@ export function unSubscribe (id, data) {
     })
   }
 }
-export function assignToAgent (data) {
+export function assignToAgent (data, handleResponse) {
   return (dispatch) => {
     callApi('whatsAppSessions/assignAgent', 'post', data).then(res => {
       console.log('assign to agent response', res)
+      if (handleResponse) {
+        handleResponse(res)
+      }
       dispatch(updateSessions(data))
     })
   }
 }
 
-export function assignToTeam (data) {
+export function assignToTeam (data, handleResponse) {
   console.log('data for assigned to team', data)
   return (dispatch) => {
     callApi('whatsAppSessions/assignTeam', 'post', data).then(res => {
       console.log('assign to team response', res)
+      if (handleResponse) {
+        handleResponse(res)
+      }
       dispatch(updateSessions(data))
     })
   }

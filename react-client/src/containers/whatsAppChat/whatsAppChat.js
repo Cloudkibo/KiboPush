@@ -592,7 +592,6 @@ class WhatsAppChat extends React.Component {
 function mapStateToProps(state) {
   console.log('mapStateToProps in live chat', state)
   return {
-    updateSessionTimeStamp: (state.whatsAppChatInfo.updateSessionTimeStamp),
     openSessions: (state.whatsAppChatInfo.openSessions),
     openCount: (state.whatsAppChatInfo.openCount),
     closeCount: (state.whatsAppChatInfo.closeCount),
