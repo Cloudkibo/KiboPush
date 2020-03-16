@@ -108,13 +108,13 @@ class SessionsHeader extends React.Component {
                                 <DropdownItem
                                     selected={this.props.filterSort === 1}
                                     option='Oldest to Newest'
-                                    action={() => this.handleSort(1)} 
+                                    action={() => this.handleSort(1)}
                                 />
 
                                 <DropdownItem
                                     selected={this.props.filterSort === -1}
                                     option='Newest to Oldest'
-                                    action={() => this.handleSort(-1)} 
+                                    action={() => this.handleSort(-1)}
                                 />
 
                               <li className='m-nav__section m-nav__section--first'>
@@ -122,31 +122,31 @@ class SessionsHeader extends React.Component {
                                   Filter by:
                                 </span>
                               </li>
-                             
+
                                 <DropdownItem
                                     selected={this.props.filterUnread}
                                     option='Unread Messages'
-                                    action={() => this.handleUnreadFilter()} 
+                                    action={() => this.handleUnreadFilter()}
                                 />
 
                                 <DropdownItem
                                     selected={this.props.filterPending}
                                     option='Pending Sessions'
-                                    action={() => this.handlePendingFilter()} 
+                                    action={() => this.handlePendingFilter()}
                                 />
 
                               {
-                                this.props.pages.map((page, i) => (
+                                this.props.showPageInfo && this.props.pages.map((page, i) => (
                                     <DropdownItem
                                         selected={page._id === this.props.filterPage}
                                         option={page.pageName}
-                                        action={() => this.handlePageFilter(page._id)} 
+                                        action={() => this.handlePageFilter(page._id)}
                                     />
                                 ))
                               }
                             { (this.props.filterPage !== '' || this.props.filterUnread !== '' || this.props.filterPending !== '') &&
                             <li className='m-nav__item'>
-                              <span onClick={this.removeFilters} style={{borderColor: '#f4516c', color: '#f4516c'}} 
+                              <span onClick={this.removeFilters} style={{borderColor: '#f4516c', color: '#f4516c'}}
                                 className='btn btn-outline-danger m-btn m-btn--pill m-btn--wide btn-sm'>
                                     Remove Filters
                               </span>

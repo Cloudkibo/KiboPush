@@ -1,17 +1,20 @@
-export function handleSocketEvent (data, state, props, updateLiveChatInfo, user, clearSocketData) {
-  console.log('live chat socket event came', data)
+export function handleSocketEventSms (data, state, props, updateLiveChatInfo, user, clearSocketData) {
+  console.log('sms chat socket event came', data)
   switch (data.action) {
-    case 'new_chat':
+    case 'new_chat_sms':
       handleIncomingMessage(data.payload, state, props, updateLiveChatInfo, clearSocketData)
       break
-    case 'agent_replied':
+    case 'agent_replied_sms':
       handleAgentReply(data.payload, state, props, updateLiveChatInfo, clearSocketData, user)
       break
-    case 'session_pending_response':
+    case 'session_pending_response_sms':
       handlePendingResponse(data.payload, state, props, updateLiveChatInfo, clearSocketData, user)
       break
-    case 'unsubscribe':
+    case 'unsubscribe_sms':
       handleUnsubscribe(data.payload, state, props, updateLiveChatInfo, clearSocketData, user)
+      break
+    case 'session_status_sms':
+      handleStatus(data.payload, state, props, updateLiveChatInfo, clearSocketData, user)
       break
     default:
   }
@@ -20,6 +23,8 @@ export function handleSocketEvent (data, state, props, updateLiveChatInfo, user,
 const handleIncomingMessage = (payload, state, props, updateLiveChatInfo, clearSocketData) => {
   let sessions = state.sessions
   let session = payload.subscriber
+  session.profilePic = 'https://www.mastermindpromotion.com/wp-content/uploads/2015/02/facebook-default-no-profile-pic-300x300.jpg'
+  session.firstName = payload.subscriber.name
   let data = {}
   const index = sessions.findIndex((s) => s._id === payload.subscriber._id)
   if (state.activeSession._id === payload.subscriber._id) {
@@ -31,11 +36,11 @@ const handleIncomingMessage = (payload, state, props, updateLiveChatInfo, clearS
     session.last_activity_time = new Date()
     session.lastMessagedAt = new Date()
     session.pendingResponse = true
-    if (state.tabValue === 'open') sessions = [session, ...sessions]
     data = {
       userChat,
       chatCount: props.chatCount + 1,
-      openSessions: state.tabValue === 'open' ? sessions : props.openSessions,
+      openSessions: state.tabValue === 'open' ? [session, ...sessions] : [session, ...props.openSessions],
+      openCount: state.tabValue === 'close' ? props.openCount + 1 : props.openCount,
       closeSessions: state.tabValue === 'close' ? sessions : props.closeSessions,
       closeCount: state.tabValue === 'close' ? props.closeCount - 1 : props.closeCount
     }
@@ -47,14 +52,13 @@ const handleIncomingMessage = (payload, state, props, updateLiveChatInfo, clearS
     session.lastMessagedAt = new Date()
     session.pendingResponse = true
     session.status = 'new'
-    if (state.tabValue === 'open') sessions = [session, ...sessions]
     data = {
-      openSessions: state.tabValue === 'open' ? sessions : props.openSessions,
+      openSessions: state.tabValue === 'open' ? [session, ...sessions] : [session, ...props.openSessions],
+      openCount: state.tabValue === 'close' ? props.openCount + 1 : props.openCount,
       closeSessions: state.tabValue === 'close' ? sessions : props.closeSessions,
       closeCount: state.tabValue === 'close' ? props.closeCount - 1 : props.closeCount
     }
   } else if (index === -1 && state.tabValue === 'open') {
-    session.name = `${session.firstName} ${session.lastName}`
     session.lastPayload = payload.message.payload
     session.last_activity_time = new Date()
     session.lastMessagedAt = new Date()
@@ -144,4 +148,51 @@ const handlePendingResponse = (payload, state, props, updateLiveChatInfo, clearS
   } else {
     clearSocketData()
   }
+}
+const handleStatus = (payload, state, props, updateLiveChatInfo, clearSocketData, user) => {
+  let openCount = props.openCount
+  let closeCount = props.closeCount
+  let openSessions = props.openSessions
+  let closeSessions = props.closeSessions
+  let session = payload.session
+  session.profilePic = 'https://www.mastermindpromotion.com/wp-content/uploads/2015/02/facebook-default-no-profile-pic-300x300.jpg'
+  session.firstName = payload.session.name
+  let data = {}
+  const openIndex = openSessions.findIndex((s) => s._id === session._id)
+  const closeIndex = closeSessions.findIndex((s) => s._id === session._id)
+  if (payload.status === 'new') {
+    if (openIndex === -1) {
+      openSessions = [session, ...openSessions]
+      openCount = openCount + 1
+    }
+    if (closeIndex > -1) {
+      closeSessions.splice(closeIndex, 1)
+      closeCount = closeCount - 1
+    }
+  } else if (payload.status === 'resolved') {
+    if (openIndex > -1) {
+      openSessions.splice(openIndex, 1)
+      openCount = openCount - 1
+    }
+    if (closeIndex === -1) {
+      closeSessions = [session, ...closeSessions]
+      closeCount = closeCount + 1
+    }
+  }
+
+  openSessions = openSessions.sort(function (a, b) {
+    return new Date(b.last_activity_time) - new Date(a.last_activity_time)
+  })
+  closeSessions = closeSessions.sort(function (a, b) {
+    return new Date(b.last_activity_time) - new Date(a.last_activity_time)
+  })
+
+  data = {
+    openSessions: openSessions,
+    closeSessions: closeSessions,
+    openCount: openCount,
+    closeCount: closeCount
+  }
+  updateLiveChatInfo(data)
+  clearSocketData()
 }

@@ -401,6 +401,7 @@ export function updatePlatformSettings (data, msg, clearFields) {
         if (res.status === 'success') {
           dispatch(getAutomatedOptions())
           dispatch(getuserdetails())
+          dispatch(fetchValidCallerIds(data))
           msg.success('Saved Successfully')
         } else {
           msg.error(res.description)
@@ -408,6 +409,15 @@ export function updatePlatformSettings (data, msg, clearFields) {
             dispatch(clearFields())
           }
         }
+      })
+  }
+}
+export function fetchValidCallerIds(data) {
+  console.log('data for fetchValidCallerIds', data)
+  return (dispatch) => {
+    callApi('company/fetchValidCallerIds', 'post', data)
+      .then(res => {
+        console.log('response from fetchValidCallerIds', res)
       })
   }
 }

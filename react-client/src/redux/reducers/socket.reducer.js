@@ -17,6 +17,16 @@ export function socketInfo (state = initialState, action) {
         socketData: null
       })
 
+    case ActionTypes.SOCKET_EVENT_SMS:
+      return Object.assign({}, state, {
+        socketDataSms: action.data
+      })
+
+    case ActionTypes.CLEAR_SOCKET_DATA_SMS:
+      return Object.assign({}, state, {
+        socketDataSms: null
+      })
+
     default:
       return state
 
