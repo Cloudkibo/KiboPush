@@ -20,15 +20,19 @@ export function loadBroadcastsList (data) {
   }
 }
 
-export function sendBroadcast (data, clearFields) {
+export function sendBroadcast (data, clearFields, msg) {
   console.log('data for sendBroadcast', data)
   return (dispatch) => {
     callApi('whatsAppBroadcasts/sendBroadcast', 'post', data)
       .then(res => {
         console.log('response from sendBroadcast', res)
         if (res.status === 'success') {
-          clearFields()
+          msg.success(res.description)
         }
+        else {
+          msg.error(res.description)
+        }
+        clearFields()
       })
   }
 }
