@@ -4,7 +4,7 @@
 
 import React from 'react'
 import { connect } from 'react-redux'
-import { loadBroadcastsList, loadTwilioNumbers, sendBroadcast } from '../../redux/actions/smsBroadcasts.actions'
+import { loadBroadcastsList, loadTwilioNumbers, sendBroadcast, getCount } from '../../redux/actions/smsBroadcasts.actions'
 import { bindActionCreators } from 'redux'
 import { Popover, PopoverBody } from 'reactstrap'
 import { Picker } from 'emoji-mart'
@@ -20,7 +20,9 @@ class SmsBroadcast extends React.Component {
       message: '',
       fileColumns: [{'value': 'name', 'label': 'name'}, {'value': 'number', 'label': 'number'}],
       segmentationErrors: [],
-      title: ''
+      title: '',
+      subscribersCount: 0,
+      conditions: []
     }
     this.onTitleChange = this.onTitleChange.bind(this)
     this.onMessageChange = this.onMessageChange.bind(this)
@@ -29,8 +31,43 @@ class SmsBroadcast extends React.Component {
     this.validateSegmentation = this.validateSegmentation.bind(this)
     this.sendBroadcast = this.sendBroadcast.bind(this)
     this.clearFields = this.clearFields.bind(this)
-
+    this.onGetCount = this.onGetCount.bind(this)
+    this.debounce = this.debounce.bind(this)
+    this.updateConditions = this.updateConditions.bind(this)
     props.setDefaultCustomersInfo({filter: []})
+    props.getCount([], this.onGetCount)
+    
+  }
+  updateConditions (conditions, update) {
+    console.log('updating conditions', conditions)
+    this.setState({conditions})
+    if (update) {
+      if (this.validateConditions(conditions)) {
+        this.props.getCount(conditions, this.onGetCount)
+      } else {
+        this.setState({subscribersCount: 0})
+      }
+    }
+  }
+
+  validateConditions (conditions) {
+    let invalid = false
+    for (let i = 0; i < conditions.length; i++) {
+      if (conditions[i].condition === '' && conditions[i].criteria === '' && conditions[i].text === '') {
+        continue
+      } else if (conditions[i].condition === '' || conditions[i].criteria === '' || conditions[i].text === '') {
+       invalid = true
+      }
+    }
+    return !invalid
+  }
+  debounce () {
+    this.props.getCount(this.state.conditions, this.onGetCount)
+  }
+
+  onGetCount (data) {
+    console.log('recieved count', data)
+    this.setState({subscribersCount: data.subscribersCount})
   }
 
   onTitleChange (e) {
@@ -38,7 +75,7 @@ class SmsBroadcast extends React.Component {
   }
 
   clearFields () {
-    this.msg.success('Broadcast sent successfully')
+   // this.msg.success('Broadcast sent successfully')
     var conditions = [{condition: '', criteria: '', text: ''}]
     this.props.updateCurrentCustomersInfo(this.props.customersInfo, 'filter', conditions)
     this.setState({title: '', message: '', segmentationErrors: []})
@@ -108,7 +145,7 @@ class SmsBroadcast extends React.Component {
         platform: 'twilio',
         title: this.state.title,
         segmentation: this.props.customersInfo && this.props.customersInfo.filter ? this.props.customersInfo.filter : ''
-      }, this.clearFields)
+      }, this.clearFields, this.msg)
     }
   }
 
@@ -138,16 +175,17 @@ class SmsBroadcast extends React.Component {
                       </div>
                     </div>
                     <div className='m-portlet__head-tools'>
-                      <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' onClick={this.sendBroadcast}>
-                        <span>
-                          <i className='flaticon flaticon-paper-plane' />
-                          <span>Send</span>
-                        </span>
+                    <button disabled={this.state.subscribersCount === 0 || !this.validateConditions(this.state.conditions)} id='send' onClick={this.sendBroadcast} className='btn btn-primary'>
+                       Send
                       </button>
                     </div>
                   </div>
                   <div className='m-portlet__body'>
                     <div className='form-group m-form__group'>
+                    <span style={{marginLeft: '20px'}}>
+                      <i className='flaticon-exclamation m--font-brand' />
+                      <p style={{display: 'inline', fontSize: '1.1em'}}> {`This broadcast will be sent to ${this.state.subscribersCount} ${this.state.subscribersCount === 1 ? 'subscriber' : 'subscribers'}`}</p>
+                      </span>
                       <div className='col-3'>
                         <label className='col-form-label'>Push Message:</label>
                       </div>
@@ -190,7 +228,7 @@ class SmsBroadcast extends React.Component {
                       <div className='col-3'>
                         <label className='col-form-label'>Targeting:</label>
                       </div>
-                      <TargetCustomers fileColumns={this.state.fileColumns} segmentationErrors={this.state.segmentationErrors} resetErrors={() => { this.setState({segmentationErrors: []}) }} />
+                      <TargetCustomers fileColumns={this.state.fileColumns} updateConditions={this.updateConditions} debounce={this.debounce} segmentationErrors={this.state.segmentationErrors} resetErrors={() => { this.setState({segmentationErrors: []}) }} />
                     </div>
                   </div>
                 </div>
@@ -218,7 +256,8 @@ function mapDispatchToProps (dispatch) {
     loadTwilioNumbers,
     sendBroadcast,
     updateCurrentCustomersInfo,
-    setDefaultCustomersInfo
+    setDefaultCustomersInfo,
+    getCount
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(SmsBroadcast)

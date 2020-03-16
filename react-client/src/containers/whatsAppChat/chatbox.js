@@ -364,7 +364,9 @@ class ChatBox extends React.Component {
     }
   }
 
+
   UNSAFE_componentWillReceiveProps (nextProps) {
+    console.log('in UNSAFE_componentWillReceiveProps of chatbox', nextProps)
     if (nextProps.urlMeta) {
       if (!nextProps.urlMeta.type) {
         this.setState({displayUrlMeta: false})
@@ -376,21 +378,27 @@ class ChatBox extends React.Component {
   onEnter (e) {
     if (e.which === 13) {
       e.preventDefault()
-      var payload = {}
-      var session = this.props.activeSession
-      var data = {}
-      if (this.state.uploadedId !== '' && this.state.attachment) {
-        payload = this.setDataPayload('attachment')
-        data = this.setMessageData(session, payload)
-        this.props.onEnter(data, 'attachment', this.handleSendAttachment)
-      } else if (this.state.textAreaValue !== '') {
-        payload = this.setDataPayload('text')
-        data = this.setMessageData(session, payload)
-        this.props.onEnter(data, 'text')
-        this.setState({textAreaValue: ''})
-        this.setState({prevURL: ''})
+      if (this.props.disabledValue && this.props.activeSession.assigned_to.type === 'agent') {
+        this.msg.error('You can not send message. Only assigned agent can send messages.')
+      } else if (this.props.disabledValue && this.props.activeSession.assigned_to.type === 'team') {
+        this.msg.error('You can not send message. Only agents who are part of assigned team can send messages.')
+      } else {
+        var payload = {}
+        var session = this.props.activeSession
+        var data = {}
+        if (this.state.uploadedId !== '' && this.state.attachment) {
+          payload = this.setDataPayload('attachment')
+          data = this.setMessageData(session, payload)
+          this.props.onEnter(data, 'attachment', this.handleSendAttachment)
+        } else if (this.state.textAreaValue !== '') {
+          payload = this.setDataPayload('text')
+          data = this.setMessageData(session, payload)
+          this.props.onEnter(data, 'text')
+          this.setState({textAreaValue: ''})
+          this.setState({prevURL: ''})
+        }
+        this.newMessage = true
       }
-      this.newMessage = true
     }
   }
 

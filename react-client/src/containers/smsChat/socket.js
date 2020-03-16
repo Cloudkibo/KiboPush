@@ -24,11 +24,10 @@ const handleIncomingMessage = (payload, state, props, updateLiveChatInfo, clearS
   let sessions = state.sessions
   let session = payload.subscriber
   session.profilePic = 'https://www.mastermindpromotion.com/wp-content/uploads/2015/02/facebook-default-no-profile-pic-300x300.jpg'
+  session.firstName = payload.subscriber.name
   let data = {}
   const index = sessions.findIndex((s) => s._id === payload.subscriber._id)
-  console.log('index value', index)
   if (state.activeSession._id === payload.subscriber._id) {
-    console.log('in 1st if')
     let userChat = state.userChat
     userChat.push(payload.message)
     session = sessions.splice(index, 1)[0]
@@ -37,16 +36,15 @@ const handleIncomingMessage = (payload, state, props, updateLiveChatInfo, clearS
     session.last_activity_time = new Date()
     session.lastMessagedAt = new Date()
     session.pendingResponse = true
-    if (state.tabValue === 'open') sessions = [session, ...sessions]
     data = {
       userChat,
       chatCount: props.chatCount + 1,
-      openSessions: state.tabValue === 'open' ? sessions : props.openSessions ,
+      openSessions: state.tabValue === 'open' ? [session, ...sessions] : [session, ...props.openSessions],
+      openCount: state.tabValue === 'close' ? props.openCount + 1 : props.openCount,
       closeSessions: state.tabValue === 'close' ? sessions : props.closeSessions,
       closeCount: state.tabValue === 'close' ? props.closeCount - 1 : props.closeCount
     }
   } else if (index >= 0) {
-    console.log('in 2nd if')
     session = sessions.splice(index, 1)[0]
     session.unreadCount = session.unreadCount ? session.unreadCount + 1 : 1
     session.lastPayload = payload.message.payload
@@ -54,15 +52,13 @@ const handleIncomingMessage = (payload, state, props, updateLiveChatInfo, clearS
     session.lastMessagedAt = new Date()
     session.pendingResponse = true
     session.status = 'new'
-    if (state.tabValue === 'open') sessions = [session, ...sessions]
     data = {
-      openSessions: state.tabValue === 'open' ? sessions : props.openSessions,
+      openSessions: state.tabValue === 'open' ? [session, ...sessions] : [session, ...props.openSessions],
+      openCount: state.tabValue === 'close' ? props.openCount + 1 : props.openCount,
       closeSessions: state.tabValue === 'close' ? sessions : props.closeSessions,
       closeCount: state.tabValue === 'close' ? props.closeCount - 1 : props.closeCount
     }
   } else if (index === -1 && state.tabValue === 'open') {
-    console.log('in 3rd if')
-    session.name = `${session.firstName} ${session.lastName}`
     session.lastPayload = payload.message.payload
     session.last_activity_time = new Date()
     session.lastMessagedAt = new Date()
@@ -154,15 +150,13 @@ const handlePendingResponse = (payload, state, props, updateLiveChatInfo, clearS
   }
 }
 const handleStatus = (payload, state, props, updateLiveChatInfo, clearSocketData, user) => {
-  console.log('handleStatus payload', payload)
-  console.log('handleStatus state', state)
-  console.log('handleStatus props', props)
   let openCount = props.openCount
   let closeCount = props.closeCount
   let openSessions = props.openSessions
   let closeSessions = props.closeSessions
   let session = payload.session
   session.profilePic = 'https://www.mastermindpromotion.com/wp-content/uploads/2015/02/facebook-default-no-profile-pic-300x300.jpg'
+  session.firstName = payload.session.name
   let data = {}
   const openIndex = openSessions.findIndex((s) => s._id === session._id)
   const closeIndex = closeSessions.findIndex((s) => s._id === session._id)

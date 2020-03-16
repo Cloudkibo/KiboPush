@@ -264,8 +264,8 @@ class LiveChat extends React.Component {
     if (state.reducer) {
       const data = {
         userChat: state.userChat,
-        openSessions: this.state.tabValue === 'open' && state.sessions,
-        closeSessions: this.state.tabValue === 'close' && state.sessions
+        openSessions: this.state.tabValue === 'open' ? state.sessions : this.props.openSessions,
+        closeSessions: this.state.tabValue === 'close' ? state.sessions : this.props.closeSessions
       }
       this.props.updateLiveChatInfo(data)
     } else {
@@ -295,11 +295,13 @@ class LiveChat extends React.Component {
         isAllowed = false
         errorMsg = `Only assigned agent can ${errorMsg}`
       } else if (session.assigned_to.type === 'team') {
-        const agentIds = this.state.teamAgents.map((agent) => agent.agentId._id)
-        if (!agentIds.includes(this.props.user._id)) {
-          isAllowed = false
-          errorMsg = `Only agents who are part of assigned team can ${errorMsg}`
-        }
+        this.fetchTeamAgents(session._id, (teamAgents) => {
+          const agentIds = teamAgents.map((agent) => agent.agentId._id)
+          if (!agentIds.includes(this.props.user._id)) {
+            isAllowed = false
+            errorMsg = `Only agents who are part of assigned team can ${errorMsg}`
+          }
+        })
       }
     }
     errorMsg = `You can not perform this action. ${errorMsg}`

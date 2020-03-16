@@ -170,15 +170,7 @@ class SmsChat extends React.Component {
 
   getChatPreview (message, repliedBy, subscriberName) {
     let chatPreview = ''
-    if (message.componentType) {
-      // agent
-      chatPreview = (!repliedBy || (repliedBy.id === this.props.user._id)) ? `You` : `${repliedBy.name}`
-      if (message.componentType === 'text') {
-        chatPreview = `${chatPreview}: ${message.text}`
-      } else {
-        chatPreview = `${chatPreview} shared ${message.componentType}`
-      }
-    } else {
+    if (message.format === 'twilio') {
       // subscriber
       chatPreview = `${subscriberName}`
       if (message.attachments) {
@@ -198,6 +190,14 @@ class SmsChat extends React.Component {
       } else {
         chatPreview = `${chatPreview}: ${message.text}`
       }
+    } else {
+      // agent
+      chatPreview = (!repliedBy || (repliedBy.id === this.props.user._id)) ? `You` : `${repliedBy.name}`
+      if (message.componentType === 'text') {
+        chatPreview = `${chatPreview}: ${message.text}`
+      } else {
+        chatPreview = `${chatPreview} shared ${message.componentType}`
+      }
     }
     return chatPreview
   }
@@ -206,8 +206,8 @@ class SmsChat extends React.Component {
     if (state.reducer) {
       const data = {
         userChat: state.userChat,
-        openSessions: this.state.tabValue === 'open' && state.sessions,
-        closeSessions: this.state.tabValue === 'close' && state.sessions
+        openSessions: this.state.tabValue === 'open' ? state.sessions : this.props.openSessions,
+        closeSessions: this.state.tabValue === 'close' ? state.sessions : this.props.closeSessions
       }
       this.props.updateSmsChatInfo(data)
     } else {
@@ -237,11 +237,13 @@ class SmsChat extends React.Component {
         isAllowed = false
         errorMsg = `Only assigned agent can ${errorMsg}`
       } else if (session.assigned_to.type === 'team') {
-        const agentIds = this.state.teamAgents.map((agent) => agent.agentId._id)
-        if (!agentIds.includes(this.props.user._id)) {
-          isAllowed = false
-          errorMsg = `Only agents who are part of assigned team can ${errorMsg}`
-        }
+        this.fetchTeamAgents(session._id, (teamAgents) => {
+          const agentIds = teamAgents.map((agent) => agent.agentId._id)
+          if (!agentIds.includes(this.props.user._id)) {
+            isAllowed = false
+            errorMsg = `Only agents who are part of assigned team can ${errorMsg}`
+          }
+        })
       }
     }
     errorMsg = `You can not perform this action. ${errorMsg}`
@@ -515,7 +517,7 @@ class SmsChat extends React.Component {
                     showUploadAttachment={false}
                     showRecordAudio={false}
                     showSticker={false}
-                    showEmoji={false}
+                    showEmoji={true}
                     showGif={false}
                     showThumbsUp={false}
                     setMessageData={this.setMessageData}

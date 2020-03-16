@@ -1,10 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { ReactMic } from 'react-mic'
 import { getmetaurl } from '../../../containers/liveChat/utilities'
 
 // components
 import MODAL from '../../extras/modal'
+import AUDIORECORDER from '../../audioRecorder'
 import CARD from '../messages/horizontalCard'
 
 class Footer extends React.Component {
@@ -19,12 +19,10 @@ class Footer extends React.Component {
       urlmeta: {},
       uploadingFile: false,
       uploaded: false,
-      showAudioRecording: false,
-      recording: false,
       loading: false,
       loadingUrlMeta: false,
       currentUrl: '',
-      uploadAudio: true
+      showAudioRecording: false
     }
     this.onInputChange = this.onInputChange.bind(this)
     this.onEnter = this.onEnter.bind(this)
@@ -38,17 +36,15 @@ class Footer extends React.Component {
     this.removeAttachment = this.removeAttachment.bind(this)
     this.handleMessageResponse = this.handleMessageResponse.bind(this)
     this.getRecordAudioContent = this.getRecordAudioContent.bind(this)
-    this.startRecording = this.startRecording.bind(this)
-    this.stopRecording = this.stopRecording.bind(this)
-    this.onStopRecording = this.onStopRecording.bind(this)
+    this.onDoneRecording = this.onDoneRecording.bind(this)
     this.setEmoji = this.setEmoji.bind(this)
     this.sendSticker = this.sendSticker.bind(this)
     this.sendGif = this.sendGif.bind(this)
     this.updateChatData = this.updateChatData.bind(this)
     this.handleUrlMeta = this.handleUrlMeta.bind(this)
     this.removeUrlMeta = this.removeUrlMeta.bind(this)
-    this.closeRecording = this.closeRecording.bind(this)
     this.sendMessage = this.sendMessage.bind(this)
+    this.toggleAudioRecording = this.toggleAudioRecording.bind(this)
   }
 
   setEmoji (emoji) {
@@ -64,6 +60,7 @@ class Footer extends React.Component {
     session.lastPayload = payload
     session.lastRepliedBy = data.replied_by
     session.pendingResponse = false
+    session.last_activity_time = new Date()
     this.props.updateNewMessage(true)
     this.props.updateState({
       reducer: true,
@@ -132,7 +129,6 @@ class Footer extends React.Component {
     const text = e.target.value
     let state = {text}
     const url = getmetaurl(text)
-    console.log('meta url', url)
     if (url && url !== this.state.currentUrl) {
       state.loadingUrlMeta = true
       state.currentUrl = url
@@ -151,75 +147,40 @@ class Footer extends React.Component {
     })
   }
 
-  startRecording () {
-    this.setState({recording: true, showAudioRecording: true, uploadAudio: true})
+  toggleAudioRecording (value) {
+    this.setState({showAudioRecording: value})
   }
 
-  stopRecording () {
-    this.setState({recording: false, showAudioRecording: false})
-  }
-
-  closeRecording () {
-    this.setState({recording: false, showAudioRecording: false, uploadAudio: false})
-  }
-
-  onStopRecording (recordedBlob) {
-    if (this.state.uploadAudio) {
-      var file = new File([recordedBlob.blob], 'audio.mp3', { type: 'audio/mp3', lastModified: recordedBlob.stopTime})
-      if (file) {
-        this.setState({
-          uploadingFile: true,
-          attachment: file,
-          componentType: 'audio'
-        })
-        var fileData = new FormData()
-        fileData.append('file', file)
-        fileData.append('filename', file.name)
-        fileData.append('filetype', file.type)
-        fileData.append('filesize', file.size)
-        fileData.append('componentType', 'audio')
-        this.props.uploadRecording(fileData, this.onAttachmentUpload)
-      }
+  onDoneRecording (recordedBlob) {
+    console.log('recordedBlob object', recordedBlob)
+    const file = new File([recordedBlob.blob], 'recorded-audio.mp3', { type: recordedBlob.blob.type, lastModified: new Date()})
+    if (file) {
+      this.setState({
+        uploadingFile: true,
+        attachment: file,
+        componentType: 'audio'
+      })
+      const fileData = new FormData()
+      fileData.append('file', file)
+      fileData.append('filename', file.name)
+      fileData.append('filetype', file.type)
+      fileData.append('filesize', file.size)
+      fileData.append('componentType', 'audio')
+      this.props.uploadRecording(fileData, this.onAttachmentUpload)
     }
   }
 
   getRecordAudioContent () {
-    return (
-      <div>
-        <ReactMic style={{ width: '450px' }}
-          width='450'
-          record={this.state.showAudioRecording}
-          className='sound-wave'
-          onStop={this.onStopRecording}
-          strokeColor='#000000'
-          mimeType="audio/wav"
+    if (this.state.showAudioRecording) {
+      return (
+        <AUDIORECORDER
+          onDoneRecording={this.onDoneRecording}
+          closeModalOnStop={true}
         />
-        <br />
-        {
-          !this.state.recording
-          ? <div role='dialog' aria-label='Voice clip' style={{ fontSize: '14px', height: '178px', overflow: 'hidden', width: '220px' }}>
-            <div style={{ display: 'block', fontSize: '14px' }}>
-              <div style={{ height: '0px', width: '0px', backgroundColor: '#333', borderRadius: '50%', opacity: '.2', left: '50%', position: 'absolute', textAlign: 'center', top: '50%', transform: 'translate(-50%, -50%)' }} />
-              <a href='#/' role='button' title='Record' onClick={this.startRecording} style={{ color: '#365899', cursor: 'pointer', textDecoration: 'none' }}>
-                <div style={{ backgroundColor: '#f03d25', borderRadius: '72px', color: '#fff', height: '72px', transition: 'width .1s, height .1s', width: '72px', left: '50%', position: 'absolute', textAlign: 'center', top: '50%', transform: 'translate(-50%, -50%)' }}>
-                  <span style={{ left: '50%', position: 'absolute', top: '50%', transform: 'translate(-50%, -50%)', color: '#fff', textAlign: 'center', cursor: 'pointer', fontSize: '14px' }}>Record</span>
-                </div>
-              </a>
-            </div>
-          </div>
-          : <div data-dismiss='modal' role='dialog' aria-label='Voice clip' style={{ fontSize: '14px', height: '178px', overflow: 'hidden', width: '220px' }}>
-            <div style={{ display: 'block', fontSize: '14px' }}>
-              <div style={{ height: '90px', width: '90px', backgroundColor: '#333', borderRadius: '50%', opacity: '.2', left: '50%', position: 'absolute', textAlign: 'center', top: '50%', transform: 'translate(-50%, -50%)' }} />
-              <a href='#/' role='button' title='Record' onClick={this.stopRecording} style={{ color: '#365899', cursor: 'pointer', textDecoration: 'none' }}>
-                <div style={{ borderRadius: '54px', height: '54px', width: 54, backgroundColor: '#f03d25', color: '#fff', transition: 'width .1s, height .1s', left: '50%', position: 'absolute', textAlign: 'center', top: '50%', transform: 'translate(-50%, -50%)' }}>
-                  <span style={{ height: '14px', width: '14px', backgroundColor: '#fff', left: '50%', position: 'absolute', top: '50%', transform: 'translate(-50%, -50%)', color: '#fff', textAlign: 'center', cursor: 'pointer', fontSize: '14px' }} />
-                </div>
-              </a>
-            </div>
-          </div>
-        }
-      </div>
-    )
+      )
+    } else {
+      return (<div />)
+    }
   }
 
   getComponentType(type) {
@@ -427,7 +388,7 @@ class Footer extends React.Component {
           id='_record_audio'
           title='Record Audio'
           content={this.getRecordAudioContent()}
-          onClose={this.closeRecording}
+          onClose={() => {this.toggleAudioRecording(false)}}
         />
         <div className='m-messenger__form'>
           <div className='m-messenger__form-controls'>
@@ -466,7 +427,7 @@ class Footer extends React.Component {
             }
           </div>
           <div className='m-messenger__form-tools'>
-            <button style={{border: '1px solid #36a3f7'}} className='m-messenger__form-attachment' disabled={this.state.uploadingFile}>
+            <a href={this.state.downLink} download='record-audio.webm' style={{border: '1px solid #36a3f7'}} className='m-messenger__form-attachment' disabled={this.state.uploadingFile}>
               {
                 this.state.loading
                 ? <div className="m-loader" style={{width: "30px"}} />
@@ -480,7 +441,7 @@ class Footer extends React.Component {
                   <i style={{color: '#36a3f7'}} onClick={this.sendMessage} className='flaticon-paper-plane' />
                 )
               }
-            </button>
+            </a>
           </div>
         </div>
         {
@@ -515,7 +476,7 @@ class Footer extends React.Component {
         <div style={{color: '#575962'}}>
           {
             this.props.showUploadAttachment &&
-            <div>
+            <div style={{display: 'inline'}}>
               <input
                 ref='_upload_attachment'
                 style={{display: 'none'}}
@@ -540,6 +501,7 @@ class Footer extends React.Component {
               className='fa fa-microphone'
               data-target='#_record_audio'
               data-toggle='modal'
+              onClick={() => {this.toggleAudioRecording(true)}}
             />
           }
           {
