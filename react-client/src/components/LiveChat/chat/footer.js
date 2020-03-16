@@ -165,7 +165,7 @@ class Footer extends React.Component {
 
   onStopRecording (recordedBlob) {
     if (this.state.uploadAudio) {
-      var file = new File([recordedBlob.blob], 'audio.mp3', { type: 'audio/mp3', lastModified: recordedBlob.stopTime})
+      var file = new File([recordedBlob.blob], 'audioRecording.mp3')
       if (file) {
         this.setState({
           uploadingFile: true,
@@ -192,7 +192,7 @@ class Footer extends React.Component {
           className='sound-wave'
           onStop={this.onStopRecording}
           strokeColor='#000000'
-          mimeType="audio/wav"
+          audioBitsPerSecond={128000}
         />
         <br />
         {
