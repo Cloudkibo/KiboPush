@@ -65,8 +65,7 @@ export function whatsAppChatInfo (state = initialState, action) {
         name: action.data.teamName ? action.data.teamName : action.data.agentName
       }
       return Object.assign({}, state, {
-        openSessions: sessions,
-        updateSessionTimeStamp: new Date().toString()
+        openSessions: [...sessions]
     })
     case ActionTypes.SHOW_SEARCH_WHATSAPP:
       return Object.assign({}, state, {
