@@ -20,7 +20,7 @@ class FacebookIntegration extends React.Component {
       whatsAppSID: '',
       whatsAppToken: '',
       code: '',
-      sandboxNumber: ''
+      sandboxNumber: '+14155238886'
     }
     this.closeDialog = this.closeDialog.bind(this)
     this.showDialog = this.showDialog.bind(this)
@@ -55,8 +55,6 @@ class FacebookIntegration extends React.Component {
       this.setState({whatsAppToken: e.target.value})
     } else if (key === 'whatsAppSID') {
       this.setState({whatsAppSID: e.target.value})
-    } else if (key === 'sandboxNumber') {
-      this.setState({sandboxNumber: e.target.value})
     } else if (key === 'code') {
       this.setState({code: e.target.value})
     }
@@ -94,8 +92,6 @@ class FacebookIntegration extends React.Component {
       this.msg.error('Account SID cannot be empty')
     } else if (this.state.whatsAppToken === '') {
       this.msg.error('Auth Token cannot be empty')
-    } else if (!this.state.sandboxNumber.match(regex)) {
-      this.msg.error('Invalid Sandbox Number')
     } else if (this.state.code === '') {
       this.msg.error('Sandbox code cannot be empty')
     } else {
@@ -315,7 +311,7 @@ class FacebookIntegration extends React.Component {
                   </div>
                   <div id='question' className='form-group m-form__group'>
                     <label className='control-label'>WhatsApp Sandbox Number:</label>
-                    <input className='form-control' value={this.state.sandboxNumber} onChange={(e) => this.updateWhatsAppValues(e, 'sandboxNumber')} />
+                    <input className='form-control' value={this.state.sandboxNumber} disabled />
                   </div>
                   <div id='question' className='form-group m-form__group'>
                     <label className='control-label'>Sandbox Code:</label>

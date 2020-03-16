@@ -14,7 +14,7 @@ class Webhook extends React.Component {
       token: '',
       SIDWapp: '',
       tokenWapp: '',
-      number: '',
+      number: '+14155238886',
       code: '',
       type: ''
     }
@@ -23,7 +23,6 @@ class Webhook extends React.Component {
     this.updateTokenWapp = this.updateTokenWapp.bind(this)
     this.updateSIDWapp = this.updateSIDWapp.bind(this)
     this.updateCode = this.updateCode.bind(this)
-    this.updateNumber = this.updateNumber.bind(this)
     this.submit = this.submit.bind(this)
     this.submitWapp = this.submitWapp.bind(this)
     this.clearFields = this.clearFields.bind(this)
@@ -71,9 +70,6 @@ class Webhook extends React.Component {
     this.props.disconnect({type: this.state.type})
   }
 
-  updateNumber (e) {
-    this.setState({number: e.target.value})
-  }
 
   updateCode (e) {
     this.setState({code: e.target.value})
@@ -274,7 +270,7 @@ class Webhook extends React.Component {
                     </div>
                     <div id='question' className='form-group m-form__group'>
                       <label className='control-label'>WhatsApp Sandbox Number:</label>
-                      <input className='form-control' value={this.state.number} onChange={(e) => this.updateNumber(e)} />
+                      <input className='form-control' value={this.state.number} disabled />
                     </div>
                     <div id='question' className='form-group m-form__group'>
                       <label className='control-label'>Sandbox Code:</label>
