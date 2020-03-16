@@ -43,7 +43,6 @@ class Footer extends React.Component {
     this.updateChatData = this.updateChatData.bind(this)
     this.handleUrlMeta = this.handleUrlMeta.bind(this)
     this.removeUrlMeta = this.removeUrlMeta.bind(this)
-    this.closeRecording = this.closeRecording.bind(this)
     this.sendMessage = this.sendMessage.bind(this)
     this.toggleAudioRecording = this.toggleAudioRecording.bind(this)
   }
