@@ -6,16 +6,17 @@ const initialState = {
 }
 
 export function whatsAppChatInfo (state = initialState, action) {
+  console.log('whatsapp reducer', action)
   switch (action.type) {
     case ActionTypes.FETCH_WHATSAPP_OPEN_SESSIONS:
       return Object.assign({}, state, {
         openSessions: action.openSessions,
-        openCount: action.count
+        openCount: action.openCount
       })
     case ActionTypes.FETCH_WHATSAPP_CLOSE_SESSIONS:
       return Object.assign({}, state, {
         closeSessions: action.closeSessions,
-        closeCount: action.count
+        closeCount: action.closeCount
       })
     case ActionTypes.FETCH_WHATSAPP_CHAT_OVERWRITE:
       return Object.assign({}, state, {
