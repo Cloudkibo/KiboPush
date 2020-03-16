@@ -81,6 +81,7 @@ class Sessions extends React.Component {
               filterSearch={this.props.filterSearch}
               filterPending={this.props.filterPending}
               filterUnread={this.props.filterUnread}
+              showPageInfo={this.props.showPageInfo}
           />
           <div style={{padding: '0rem 2.2rem'}}>
             <ul className='nav nav-tabs m-tabs-line' role='tablist'>
@@ -168,6 +169,10 @@ Sessions.propTypes = {
   'changeTab': PropTypes.func.isRequired,
   'fetchSessions': PropTypes.func.isRequired,
   'getChatPreview': PropTypes.func.isRequired
+}
+
+Sessions.defaultProps = {
+  showPageInfo: true
 }
 
 export default Sessions
