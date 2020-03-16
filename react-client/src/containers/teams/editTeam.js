@@ -305,8 +305,8 @@ class EditTeam extends React.Component {
       temp.splice(index, 1)
     }
     this.setState({agentIds: temp})
-    this.props.removeAgent({ agentId: agent._id, teamId: this.props.location.state._id })
-    this.props.fetchAgents(this.props.location.state._id)
+    this.props.removeAgent({ agentId: agent._id, teamId: this.state.teamId })
+    this.props.fetchAgents(this.state.teamId)
   }
   changePage (page) {
     console.log('this.props.teamAgents.length', this.props.teamAgents.length)
