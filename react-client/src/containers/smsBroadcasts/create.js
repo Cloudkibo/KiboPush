@@ -228,7 +228,7 @@ class SmsBroadcast extends React.Component {
                       <div className='col-3'>
                         <label className='col-form-label'>Targeting:</label>
                       </div>
-                      <TargetCustomers fileColumns={this.state.fileColumns} updateConditions={this.updateConditions} debounce={this.debounce} segmentationErrors={this.state.segmentationErrors} resetErrors={() => { this.setState({segmentationErrors: []}) }} />
+                      <TargetCustomers msg = {this.msg} fileColumns={this.state.fileColumns} updateConditions={this.updateConditions} debounce={this.debounce} segmentationErrors={this.state.segmentationErrors} resetErrors={() => { this.setState({segmentationErrors: []}) }} />
                     </div>
                   </div>
                 </div>
