@@ -81,6 +81,7 @@ class Sessions extends React.Component {
               filterSearch={this.props.filterSearch}
               filterPending={this.props.filterPending}
               filterUnread={this.props.filterUnread}
+              showPageInfo={this.props.showPageInfo}
           />
           <div style={{padding: '0rem 2.2rem'}}>
             <ul className='nav nav-tabs m-tabs-line' role='tablist'>
@@ -121,6 +122,7 @@ class Sessions extends React.Component {
                           profilePicError={this.props.profilePicError}
                           changeStatus={this.props.changeStatus}
                           getChatPreview={this.props.getChatPreview}
+                          showPageInfo={this.props.showPageInfo}
                         />
                       ))
                       : <p style={{marginLeft: '30px'}}>No data to display</p>
@@ -168,6 +170,10 @@ Sessions.propTypes = {
   'changeTab': PropTypes.func.isRequired,
   'fetchSessions': PropTypes.func.isRequired,
   'getChatPreview': PropTypes.func.isRequired
+}
+
+Sessions.defaultProps = {
+  showPageInfo: true
 }
 
 export default Sessions

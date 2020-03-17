@@ -7,33 +7,78 @@ const initialState = {
 
 export function smsChatInfo (state = initialState, action) {
   switch (action.type) {
-    case ActionTypes.FETCH_SESSIONS:
+    case ActionTypes.UPDATE_SESSIONS_SMS:
+      let sessions = [...state.openSessions]
+      let ids = sessions.map(s => s._id)
+      let index = ids.indexOf(action.data.subscriberId)
+      sessions[index].is_assigned = action.data.isAssigned
+      sessions[index].assigned_to = {
+        type: action.data.teamId ? 'team' : 'agent',
+        id: action.data.teamId ? action.data.teamId : action.data.agentId,
+        name: action.data.teamName ? action.data.teamName : action.data.agentName
+      }
       return Object.assign({}, state, {
-        sessions: action.sessions,
-        count: action.count
+        openSessions: sessions,
+        updateSessionTimeStamp: new Date().toString()
       })
-    // case ActionTypes.FETCH_CHAT:
-    //   return Object.assign({}, state, {
-    //     chat: action.chat,
-    //     chatCount: action.count
-    //   })
-    case ActionTypes.UPDATE_SESSION:
+    case ActionTypes.UPDATE_UNREAD_COUNT:
+      let openSessions = [...state.openSessions]
+      let openIds = openSessions.map(s => s._id)
+      let openIndex = openIds.indexOf(action.data)
+      openSessions[openIndex].unreadCount = 0
       return Object.assign({}, state, {
-        sessions: action.sessions
+        openSessions: openSessions,
+        updateSessionTimeStamp: new Date().toString()
       })
-    case ActionTypes.FETCH_CHAT_OVERWRITE:
+    case ActionTypes.CLEAR_SEARCH_RESULT_SMS:
       return Object.assign({}, state, {
-        chat: action.chat,
-        chatCount: action.count
+        searchChat: undefined
       })
-    case ActionTypes.FETCH_CHAT:
-      let chat = [...state.chat, ...action.chat]
+    case ActionTypes.SHOW_SEARCH_CHAT_SMS:
+      return Object.assign({}, state, {
+        searchChat: action.data
+      })
+    case ActionTypes.SHOW_SMS_OPEN_CHAT_SESSIONS_OVERWRITE:
+      return Object.assign({}, state, {
+        openSessions: action.openSessions,
+        openCount: action.count
+      })
+    case ActionTypes.SHOW_SMS_OPEN_CHAT_SESSIONS:
+      return Object.assign({}, state, {
+        openSessions: [...state.openSessions, ...action.openSessions],
+        openCount: action.count
+      })
+    case ActionTypes.SHOW_SMS_CLOSE_CHAT_SESSIONS_OVERWRITE:
+      return Object.assign({}, state, {
+        closeSessions: action.closeSessions,
+        closeCount: action.count
+      })
+    case ActionTypes.SHOW_SMS_CLOSE_CHAT_SESSIONS:
+      return Object.assign({}, state, {
+        closeSessions: [...state.closeSessions, ...action.closeSessions],
+        closeCount: action.count
+      })
+    case ActionTypes.SHOW_SMS_USER_CHAT_OVERWRITE:
+      return Object.assign({}, state, {
+        userChat: action.userChat,
+        chatCount: action.chatCount,
+        changedStatus: ''
+      })
+    case ActionTypes.SHOW_SMS_USER_CHAT:
+      let chat = [...state.userChat, ...action.userChat]
       let orderedChat = chat.sort(function (a, b) {
         return new Date(a.datetime) - new Date(b.datetime)
       })
       return Object.assign({}, state, {
-        chat: orderedChat,
-        chatCount: action.count
+        userChat: orderedChat,
+        chatCount: action.chatCount,
+        changedStatus: ''
+      })
+    case ActionTypes.UPDATE_SMSCHAT_INFO:
+      return Object.assign({}, state, action, action.data)
+    case ActionTypes.UPDATE_SESSION:
+      return Object.assign({}, state, {
+        sessions: action.sessions
       })
     case ActionTypes.SOCKET_UPDATE_SMS:
       let newchat = state.chat
@@ -46,3 +91,4 @@ export function smsChatInfo (state = initialState, action) {
       return state
   }
 }
+

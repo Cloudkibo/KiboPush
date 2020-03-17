@@ -45,6 +45,21 @@ export function uploadNumbers (data, msg, clearFields) {
   }
 }
 
+export function syncContacts (data, msg) {
+  console.log('data for fetchValidCallerIds', data)
+  return (dispatch) => {
+    callApi('company/fetchValidCallerIds', 'post', data)
+      .then(res => {
+        if (res.status === 'success') {
+          msg.success('Contacts synced successfully')
+          dispatch(loadContactsList({last_id: 'none', number_of_records: 10, first_page: 'first'}))
+        } else {
+          msg.error('Unable to fetch contacts from Twilio')
+        } 
+      })
+  }
+}
+
 export function loadContactsList (data) {
   console.log('data for loadContactsList', data)
   return (dispatch) => {

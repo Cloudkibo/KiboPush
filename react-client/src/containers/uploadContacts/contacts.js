@@ -4,7 +4,7 @@
 
 import React from 'react'
 import { connect } from 'react-redux'
-import { loadContactsList, loadWhatsAppContactsList, editSubscriber } from '../../redux/actions/uploadContacts.actions'
+import { loadContactsList, loadWhatsAppContactsList, editSubscriber, syncContacts } from '../../redux/actions/uploadContacts.actions'
 import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
 import AlertContainer from 'react-alert'
@@ -37,8 +37,15 @@ class Contact extends React.Component {
     this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
     this.getUserGuideLink = this.getUserGuideLink.bind(this)
+    this.syncContacts = this.syncContacts.bind(this)
   }
-
+  
+  syncContacts () {
+    this.props.syncContacts({twilio: {
+      accountSID: this.props.automated_options.twilio.accountSID,
+      authToken: this.props.automated_options.twilio.authToken
+    }}, this.msg)
+  }
   getUserGuideLink () {
     let link = 'https://kibopush.com'
     if (this.props.user.platform === 'sms') {
@@ -264,6 +271,18 @@ class Contact extends React.Component {
                         </h3>
                       </div>
                     </div>
+                    { this.props.user.platform === 'sms' &&
+                    <div className='m-portlet__head-tools'>
+                    <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' onClick={this.syncContacts}>
+                        <span>
+                          <i className='la la-refresh' />
+                          <span>
+                            Sync contacts with Twilio
+                          </span>
+                        </span>
+                      </button>
+                    </div>
+                    }
                   </div>
                   <div className='m-portlet__body'>
                     { this.state.contactsData && this.state.contactsData.length > 0
@@ -356,7 +375,8 @@ function mapStateToProps (state) {
   return {
     contacts: (state.contactsInfo.contacts),
     count: (state.contactsInfo.count),
-    user: (state.basicInfo.user)
+    user: (state.basicInfo.user),
+    automated_options: (state.basicInfo.automated_options),
   }
 }
 
@@ -364,7 +384,8 @@ function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     loadContactsList,
     loadWhatsAppContactsList,
-    editSubscriber
+    editSubscriber,
+    syncContacts
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Contact)
