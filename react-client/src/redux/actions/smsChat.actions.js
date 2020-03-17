@@ -21,6 +21,12 @@ export function updateSmsChatInfo (data) {
     data
   }
 }
+export function UpdateUnreadCount (data) {
+  return {
+    type: ActionTypes.UPDATE_UNREAD_COUNT,
+    data
+  }
+}
 export function updateSessions (data) {
   return {
     type: ActionTypes.UPDATE_SESSIONS_SMS,
@@ -187,6 +193,7 @@ export function markRead (sessionid) {
   return (dispatch) => {
     callApi(`smsSessions/markread/${sessionid}`).then(res => {
       console.log('Mark as read Response', res)
+      dispatch(UpdateUnreadCount(sessionid))
     })
   }
 }

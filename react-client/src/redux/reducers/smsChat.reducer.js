@@ -21,6 +21,15 @@ export function smsChatInfo (state = initialState, action) {
         openSessions: sessions,
         updateSessionTimeStamp: new Date().toString()
       })
+    case ActionTypes.UPDATE_UNREAD_COUNT:
+      let openSessions = [...state.openSessions]
+      let openIds = openSessions.map(s => s._id)
+      let openIndex = openIds.indexOf(action.data)
+      openSessions[openIndex].unreadCount = 0
+      return Object.assign({}, state, {
+        openSessions: openSessions,
+        updateSessionTimeStamp: new Date().toString()
+      })
     case ActionTypes.CLEAR_SEARCH_RESULT_SMS:
       return Object.assign({}, state, {
         searchChat: undefined

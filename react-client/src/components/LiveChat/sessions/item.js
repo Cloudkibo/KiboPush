@@ -44,6 +44,7 @@ class SessionItem extends React.Component {
   }
 
   render () {
+    console.log('this.props.showPageInfo', this.props.showPageInfo)
     return (
       <div key={this.props.session._id}>
         <div

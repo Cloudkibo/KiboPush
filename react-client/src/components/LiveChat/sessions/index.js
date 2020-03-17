@@ -122,6 +122,7 @@ class Sessions extends React.Component {
                           profilePicError={this.props.profilePicError}
                           changeStatus={this.props.changeStatus}
                           getChatPreview={this.props.getChatPreview}
+                          showPageInfo={this.props.showPageInfo}
                         />
                       ))
                       : <p style={{marginLeft: '30px'}}>No data to display</p>
