@@ -361,7 +361,7 @@ class Footer extends React.Component {
 
   openPicker (type) {
     const popoverOptions = {
-      placement: 'left',
+      placement: 'top',
       target: `_${type}_picker`
     }
     const otherOptions = {
@@ -415,15 +415,37 @@ class Footer extends React.Component {
                   </span>
                 </span>
               </div>
-              : <input
-                autoFocus
-                type='text'
-                placeholder='Type here...'
-                onChange={this.onInputChange}
-                value={this.state.text}
-                onKeyPress={this.onEnter}
-                className='m-messenger__form-input'
-              />
+              : 
+              <div className='m-input-icon m-input-icon--right'>
+                <input
+                  autoFocus
+                  type='text'
+                  placeholder='Type here...'
+                  onChange={this.onInputChange}
+                  value={this.state.text}
+                  onKeyPress={this.onEnter}
+                  className='m-messenger__form-input'
+                />
+                <span onClick={() => this.openPicker('emoji')} style={{cursor: 'pointer'}} className='m-input-icon__icon m-input-icon__icon--right'>
+                  <span>
+                      {
+                        this.props.showEmoji &&
+                        <i
+                          style={{
+                            cursor: this.state.uploaded ? 'not-allowed' : 'pointer',
+                            fontSize: '20px',
+                            margin: '0px 5px',
+                            pointerEvents: this.state.uploaded && 'none',
+                            opacity: this.state.uploaded && '0.5'
+                          }}
+                          data-tip='Emoticons'
+                          className='fa fa-smile-o'
+                          id='_emoji_picker'
+                        />
+                      }   
+                  </span>
+                </span>
+              </div>
             }
           </div>
           <div className='m-messenger__form-tools'>
@@ -504,23 +526,6 @@ class Footer extends React.Component {
               onClick={() => {this.toggleAudioRecording(true)}}
             />
           }
-          {
-            this.props.showEmoji &&
-            <i
-              style={{
-                cursor: this.state.uploaded ? 'not-allowed' : 'pointer',
-                fontSize: '20px',
-                margin: '0px 5px',
-                pointerEvents: this.state.uploaded && 'none',
-                opacity: this.state.uploaded && '0.5'
-              }}
-              data-tip='Emoticons'
-              className='fa fa-smile-o'
-              id='_emoji_picker'
-              onClick={() => this.openPicker('emoji')}
-            />
-          }
-
           {
             this.props.showSticker &&
             <i

@@ -59,6 +59,7 @@ const handleIncomingMessage = (payload, state, props, updateLiveChatInfo, clearS
       closeCount: state.tabValue === 'close' ? props.closeCount - 1 : props.closeCount
     }
   } else if (index === -1 && state.tabValue === 'open') {
+    session.unreadCount = session.unreadCount ? session.unreadCount + 1 : 1
     session.lastPayload = payload.message.payload
     session.last_activity_time = new Date()
     session.lastMessagedAt = new Date()
@@ -88,7 +89,7 @@ const handleAgentReply = (payload, state, props, updateLiveChatInfo, clearSocket
       session.lastPayload = payload.message.payload
       session.last_activity_time = new Date()
       session.pendingResponse = false
-      session.lastRepliedBy = payload.message.replied_by
+      session.lastRepliedBy = payload.message.repliedBy
       if (state.tabValue === 'open') sessions = [session, ...sessions]
       data = {
         userChat,
@@ -102,7 +103,7 @@ const handleAgentReply = (payload, state, props, updateLiveChatInfo, clearSocket
       session.lastPayload = payload.message.payload
       session.last_activity_time = new Date()
       session.pendingResponse = false
-      session.lastRepliedBy = payload.message.replied_by
+      session.lastRepliedBy = payload.message.repliedBy
       if (state.tabValue === 'open') sessions = [session, ...sessions]
       data = {
         openSessions: state.tabValue === 'open' ? sessions : props.openSessions,
@@ -136,12 +137,19 @@ const handleUnsubscribe = (payload, state, props, updateLiveChatInfo, clearSocke
 
 const handlePendingResponse = (payload, state, props, updateLiveChatInfo, clearSocketData, user) => {
   if (user._id !== payload.user_id) {
-    let sessions = state.sessions
-    const index = sessions.findIndex((s) => s._id === payload.session_id)
-    sessions[index].pendingResponse = payload.pendingResponse
+    let openSessions = props.openSessions
+    let closeSessions = props.closeSessions
+    const openIndex = props.openSessions.findIndex((s) => s._id === payload.session_id)
+    const closeIndex = props.closeSessions.findIndex((s) => s._id === payload.session_id)
+    if (openIndex > -1) {
+      openSessions[openIndex].pendingResponse = payload.pendingResponse
+    }
+    if (closeIndex > -1) {
+      closeSessions[closeIndex].pendingResponse = payload.pendingResponse
+    }
     const data = {
-      openSessions: state.tabValue === 'open' ? sessions : props.openSessions,
-      closeSessions: state.tabValue === 'close' ? sessions : props.closeSessions
+      openSessions: openSessions,
+      closeSessions: closeSessions
     }
     updateLiveChatInfo(data)
     clearSocketData()

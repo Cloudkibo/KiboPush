@@ -95,7 +95,7 @@ class Webhook extends React.Component {
     this.props.updatePlatformSettings({twilio: {
       accountSID: this.state.SID,
       authToken: this.state.token
-    }}, this.msg, this.clearFields)
+    }}, this.msg, this.clearFields, 'sms')
   }
 
   submitWapp () {

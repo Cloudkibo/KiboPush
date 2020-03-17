@@ -16,20 +16,23 @@ import GALLERY from '../messages/gallery'
 class RightChatItem extends React.Component {
   constructor(props, context) {
     super(props, context)
-    this.state = {}
+    this.state = {
+      repliedBy: this.props.message.replied_by || this.props.message.repliedBy
+    }
     this.getRepliedByMsg = this.getRepliedByMsg.bind(this)
     this.getMessage = this.getMessage.bind(this)
   }
 
   getRepliedByMsg () {
+    console.log('this.state.repliedBy', this.state.repliedBy)
     let message = ''
     if (
-      !this.props.activeSession.replied_by ||
-      this.props.activeSession.replied_by.id === this.props.user._id
+      !this.state.repliedBy ||
+      this.state.repliedBy.id === this.props.user._id
     ) {
       message = 'You replied:'
     } else {
-      message = `${this.props.activeSession.replied_by.name} replied:`
+      message = `${this.state.repliedBy.name} replied:`
     }
     return message
   }
