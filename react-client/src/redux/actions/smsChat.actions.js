@@ -34,6 +34,24 @@ export function updateSessions (data) {
   }
 }
 
+export function showTwilioNumbers (data) {
+  console.log('data in showTwilioNumbers', data)
+  return {
+    type: ActionTypes.LOAD_TWILIO_NUMBERS,
+    twilioNumbers: data
+  }
+}
+
+export function loadTwilioNumbers () {
+  return (dispatch) => {
+    callApi('smsChat/getTwilioNumbers')
+      .then(res => {
+        console.log('response from loadTwilioNumbers', res)
+        dispatch(showTwilioNumbers(res.payload))
+      })
+  }
+}
+
 export function searchChat (data) {
   return (dispatch) => {
     callApi('smsChat/search', 'post', data).then(res => {

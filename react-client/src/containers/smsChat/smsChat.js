@@ -22,6 +22,7 @@ import {
   assignToTeam,
   fetchTeamAgents,
   sendChatMessage,
+  loadTwilioNumbers
 } from '../../redux/actions/smsChat.actions'
 import { updatePicture } from '../../redux/actions/subscribers.actions'
 import { loadTeamsList } from '../../redux/actions/teams.actions'
@@ -92,6 +93,7 @@ class SmsChat extends React.Component {
     this.clearSearchResults = this.clearSearchResults.bind(this)
     this.setMessageData = this.setMessageData.bind(this)
 
+    props.loadTwilioNumbers()
     this.fetchSessions(true, 'none', true)
     if (props.user.currentPlan.unique_ID === 'plan_C' || props.user.currentPlan.unique_ID === 'plan_D') {
       props.loadMembersList()
@@ -295,8 +297,8 @@ class SmsChat extends React.Component {
 
   setMessageData(session, payload) {
     const data = {
-      senderNumber: this.props.userChat[0].recipientNumber,
-      recipientNumber: this.props.userChat[0].senderNumber,
+      senderNumber: this.props.activeSession.number,
+      recipientNumber: this.props.twilioNumbers[0],
       contactId: session._id,
       payload,
       datetime: new Date().toString(),
@@ -598,7 +600,8 @@ function mapStateToProps(state) {
     customFieldValues: (state.customFieldInfo.customFieldSubscriber),
     customFields: (state.customFieldInfo.customFields),
     searchChatMsgs: (state.smsChatInfo.searchChat),
-    socketData: (state.socketInfo.socketDataSms)
+    socketData: (state.socketInfo.socketDataSms),
+    twilioNumbers: (state.smsBroadcastsInfo.twilioNumbers),
   }
 }
 
@@ -623,6 +626,7 @@ function mapDispatchToProps(dispatch) {
     updateSmsChatInfo,
     clearSearchResult,
     urlMetaData,
+    loadTwilioNumbers
   }, dispatch)
 }
 
