@@ -35,9 +35,9 @@ const handleIncomingMessage = (payload, state, props, updateLiveChatInfo, clearS
     data = {
       userChat,
       chatCount: props.chatCount + 1,
-      openSessions: state.tabValue === 'open' && sessions,
-      closeSessions: state.tabValue === 'close' && sessions,
-      closeCount: state.tabValue === 'close' && props.closeCount - 1
+      openSessions: state.tabValue === 'open' ? sessions : props.openSessions,
+      closeSessions: state.tabValue === 'close' ? sessions : props.closeSessions,
+      closeCount: state.tabValue === 'close' ? props.closeCount - 1 : props.closeCount
     }
   } else if (index >= 0) {
     session = sessions.splice(index, 1)[0]
@@ -49,9 +49,9 @@ const handleIncomingMessage = (payload, state, props, updateLiveChatInfo, clearS
     session.status = 'new'
     if (state.tabValue === 'open') sessions = [session, ...sessions]
     data = {
-      openSessions: state.tabValue === 'open' && sessions,
-      closeSessions: state.tabValue === 'close' && sessions,
-      closeCount: state.tabValue === 'close' && props.closeCount - 1
+      openSessions: state.tabValue === 'open' ? sessions : props.openSessions,
+      closeSessions: state.tabValue === 'close' ? sessions : props.closeSessions,
+      closeCount: state.tabValue === 'close' ? props.closeCount - 1 : props.closeCount
     }
   } else if (index === -1 && state.tabValue === 'open') {
     session.name = `${session.firstName} ${session.lastName}`
@@ -89,9 +89,9 @@ const handleAgentReply = (payload, state, props, updateLiveChatInfo, clearSocket
       data = {
         userChat,
         chatCount: props.chatCount + 1,
-        openSessions: state.tabValue === 'open' && sessions,
-        closeSessions: state.tabValue === 'close' && sessions,
-        closeCount: state.tabValue === 'close' && props.closeCount - 1
+        openSessions: state.tabValue === 'open' ? sessions : props.openSessions,
+        closeSessions: state.tabValue === 'close' ? sessions : props.closeSessions,
+        closeCount: state.tabValue === 'close' ? props.closeCount - 1 : props.closeCount
       }
     } else if (index >= 0) {
       session = sessions.splice(index, 1)[0]
@@ -101,9 +101,9 @@ const handleAgentReply = (payload, state, props, updateLiveChatInfo, clearSocket
       session.lastRepliedBy = payload.message.replied_by
       if (state.tabValue === 'open') sessions = [session, ...sessions]
       data = {
-        openSessions: state.tabValue === 'open' && sessions,
-        closeSessions: state.tabValue === 'close' && sessions,
-        closeCount: state.tabValue === 'close' && props.closeCount - 1
+        openSessions: state.tabValue === 'open' ? sessions : props.openSessions,
+        closeSessions: state.tabValue === 'close' ? sessions : props.closeSessions,
+        closeCount: state.tabValue === 'close' ? props.closeCount - 1 : props.closeCount
       }
     }
     updateLiveChatInfo(data)
@@ -120,10 +120,10 @@ const handleUnsubscribe = (payload, state, props, updateLiveChatInfo, clearSocke
   if (index >= 0) {
     sessions.splice(index, 1)
     data = {
-      openSessions: state.tabValue === 'open' && sessions,
-      openCount: state.tabValue === 'open' && props.openCount - 1,
-      closeSessions: state.tabValue === 'close' && sessions,
-      closeCount: state.tabValue === 'close' && props.closeCount - 1
+      openSessions: state.tabValue === 'open' ? sessions : props.openSessions,
+      openCount: state.tabValue === 'open' ? props.openCount - 1 : props.openCount,
+      closeSessions: state.tabValue === 'close' ? sessions : props.closeSessions,
+      closeCount: state.tabValue === 'close' ? props.closeCount - 1 : props.closeCount
     }
     updateLiveChatInfo(data)
   }
@@ -136,8 +136,8 @@ const handlePendingResponse = (payload, state, props, updateLiveChatInfo, clearS
     const index = sessions.findIndex((s) => s._id === payload.session_id)
     sessions[index].pendingResponse = payload.pendingResponse
     const data = {
-      openSessions: state.tabValue === 'open' && sessions,
-      closeSessions: state.tabValue === 'close' && sessions
+      openSessions: state.tabValue === 'open' ? sessions : props.openSessions,
+      closeSessions: state.tabValue === 'close' ? sessions : props.closeSessions
     }
     updateLiveChatInfo(data)
     clearSocketData()
