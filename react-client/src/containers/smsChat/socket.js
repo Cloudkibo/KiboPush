@@ -89,7 +89,7 @@ const handleAgentReply = (payload, state, props, updateLiveChatInfo, clearSocket
       session.lastPayload = payload.message.payload
       session.last_activity_time = new Date()
       session.pendingResponse = false
-      session.lastRepliedBy = payload.message.replied_by
+      session.lastRepliedBy = payload.message.repliedBy
       if (state.tabValue === 'open') sessions = [session, ...sessions]
       data = {
         userChat,
@@ -103,7 +103,7 @@ const handleAgentReply = (payload, state, props, updateLiveChatInfo, clearSocket
       session.lastPayload = payload.message.payload
       session.last_activity_time = new Date()
       session.pendingResponse = false
-      session.lastRepliedBy = payload.message.replied_by
+      session.lastRepliedBy = payload.message.repliedBy
       if (state.tabValue === 'open') sessions = [session, ...sessions]
       data = {
         openSessions: state.tabValue === 'open' ? sessions : props.openSessions,
