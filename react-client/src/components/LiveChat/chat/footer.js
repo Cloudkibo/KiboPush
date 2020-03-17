@@ -150,7 +150,6 @@ class Footer extends React.Component {
   toggleAudioRecording (value) {
     this.setState({showAudioRecording: value})
   }
-
   onDoneRecording (recordedBlob) {
     console.log('recordedBlob object', recordedBlob)
     const file = new File([recordedBlob.blob], 'recorded-audio.mp3', { type: recordedBlob.blob.type, lastModified: new Date()})
