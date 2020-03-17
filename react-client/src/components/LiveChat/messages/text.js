@@ -30,7 +30,7 @@ class Text extends React.Component {
           </a>
         </div>
       )
-    } else if (text.split(' ').length === 1 && isEmoji(text)) {
+    } else if (text.length === 2 && isEmoji(text)) {
       return (
         <div style={{fontSize: '30px'}}>
           {text}
