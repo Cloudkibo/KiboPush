@@ -297,8 +297,8 @@ class SmsChat extends React.Component {
 
   setMessageData(session, payload) {
     const data = {
-      senderNumber: this.props.activeSession.number,
-      recipientNumber: this.props.twilioNumbers[0],
+      senderNumber: this.props.twilioNumbers[0],
+      recipientNumber: this.state.activeSession.number,
       contactId: session._id,
       payload,
       datetime: new Date().toString(),
@@ -470,8 +470,8 @@ class SmsChat extends React.Component {
                 </div>
               }
             <HELPWIDGET
-              documentation={{link: 'http://kibopush.com/livechat/'}}
-              videoTutorial={{videoId: 'bLotpQLvsfE'}}
+              documentation={{visibility: true, link: 'https://kibopush.com/twilio/'}}
+              videoTutorial={{visibility: false}}
             />
               <div className='row'>
                 <SESSIONS

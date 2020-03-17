@@ -44,7 +44,7 @@ export function showTwilioNumbers (data) {
 
 export function loadTwilioNumbers () {
   return (dispatch) => {
-    callApi('smsChat/getTwilioNumbers')
+    callApi('smsSessions/getTwilioNumbers')
       .then(res => {
         console.log('response from loadTwilioNumbers', res)
         dispatch(showTwilioNumbers(res.payload))
