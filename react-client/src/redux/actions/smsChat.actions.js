@@ -87,7 +87,7 @@ export function showUserChats (payload, originalData) {
     }
   } else {
     return {
-      type: ActionTypes.SHOW_SMS_USER_CHAT_OVERWRITE,
+      type: ActionTypes.SHOW_SMS_USER_CHAT,
       userChat: payload.chat,
       chatCount: payload.count
     }
@@ -117,7 +117,7 @@ export function showCloseChatSessions (sessions, firstPage) {
     }
   }
   return {
-    type: ActionTypes.SHOW_SMS_CLOSE_CHAT_SESSIONS_OVERWRITE,
+    type: ActionTypes.SHOW_SMS_CLOSE_CHAT_SESSIONS,
     closeSessions: subscribers,
     count: sessions.count
   }
@@ -142,7 +142,7 @@ export function showOpenChatSessions (sessions, data) {
     }
   } else {
     return {
-      type: ActionTypes.SHOW_SMS_OPEN_CHAT_SESSIONS_OVERWRITE,
+      type: ActionTypes.SHOW_SMS_OPEN_CHAT_SESSIONS,
       openSessions: subscribers,
       count: sessions.count
     }
