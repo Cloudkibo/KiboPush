@@ -60,7 +60,7 @@ class ViewMessage extends React.Component {
               <h6 style={{color: '#007aff'}}><i className='fa fa-chevron-left' />Back</h6>
             </div>
             <div style={{display: 'inline-block', margin: '5px'}}>
-              <h7>KiboPush</h7>
+              <h7>{this.props.pageName}</h7>
               <p style={{color: '#ccc'}}>Typically replies instantly</p>
             </div>
             <div style={{display: 'inline-block', margin: '5px'}}>
@@ -81,9 +81,12 @@ class ViewMessage extends React.Component {
                             </div>
                             <div style={{maxWidth: '250px', minWidth: '235px'}} className='m-messenger__message-body'>
                               <div className='m-messenger__message-arrow' />
-                              <div className='m-messenger__message-content' style={{width: '200px'}}>
                                 {
                                   this.state.payload && this.state.payload.map((b, index) => (
+                                    <div>
+                                    <br/>
+                                  <div className='m-messenger__message-content' style={{width: '200px'}}>
+                                  {
                                     b.componentType === 'video'
                                     ? <div key={index}>
                                       <ReactPlayer
@@ -247,6 +250,9 @@ class ViewMessage extends React.Component {
                                         ))
                                         }
                                       </div>
+                                  } 
+                                    </div>
+                                    </div>
                                   ))
                                 }
                                 {
@@ -305,7 +311,6 @@ class ViewMessage extends React.Component {
                                     }
                                   })
                                 }
-                              </div>
                             </div>
                           </div>
                         </div>
@@ -320,6 +325,9 @@ class ViewMessage extends React.Component {
       </div>
     )
   }
+}
+ViewMessage.defaultProps = {
+  pageName: 'KiboPush',
 }
 
 export default ViewMessage

@@ -292,7 +292,7 @@ class ProfileArea extends React.Component {
 
   UNSAFE_componentWillReceiveProps(nextProps) {
     console.log('UNSAFE_componentWillReceiveProps profileArea.js', nextProps)
-    if (nextProps.activeSession.is_assigned) {
+    if (nextProps.activeSession.is_assigned && nextProps.activeSession.assigned_to ) {
       if (nextProps.activeSession.assigned_to.type === 'agent') {
         this.setState({
           assignedAgent: nextProps.activeSession.assigned_to.name,
@@ -419,10 +419,10 @@ class ProfileArea extends React.Component {
                       <div style={{ marginBottom: '20px' }}>
                         <span className='m--font-bolder'>Team:</span>
                         <span> {
-                          this.state.role === 'team' ? this.state.assignedTeam : 'Not Assigned'}</span>
+                          this.state.role === 'team' && this.props.activeSession.assigned_to ? this.props.activeSession.assigned_to.name : 'Not Assigned'}</span>
                         <br />
                         <span className='m--font-bolder'>Agent:</span>
-                        <span> {this.state.role === 'agent' ? this.state.assignedAgent : 'Not Assigned'}</span>
+                        <span> {this.state.role === 'agent' && this.props.activeSession.assigned_to ? this.props.activeSession.assigned_to.name : 'Not Assigned'}</span>
                       </div>
                     }
                     {

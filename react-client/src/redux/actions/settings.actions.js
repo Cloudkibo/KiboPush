@@ -392,7 +392,7 @@ export function deleteDomain (payload, msg, handleDelete) {
   }
 }
 
-export function updatePlatformSettings (data, msg, clearFields) {
+export function updatePlatformSettings (data, msg, clearFields, platform) {
   console.log('data for updatePlatformSettings', data)
   return (dispatch) => {
     callApi('company/updatePlatform', 'post', data)
@@ -400,14 +400,26 @@ export function updatePlatformSettings (data, msg, clearFields) {
         console.log('response from updatePlatformSettings', res)
         if (res.status === 'success') {
           dispatch(getAutomatedOptions())
-          dispatch(getuserdetails())
+          dispatch(getuserdetails())     
           msg.success('Saved Successfully')
+          if (platform && platform === 'sms') {
+            dispatch(fetchValidCallerIds(data))
+          }
         } else {
           msg.error(res.description)
           if (clearFields) {
             dispatch(clearFields())
           }
         }
+      })
+  }
+}
+export function fetchValidCallerIds(data) {
+  console.log('data for fetchValidCallerIds', data)
+  return (dispatch) => {
+    callApi('company/fetchValidCallerIds', 'post', data)
+      .then(res => {
+        console.log('response from fetchValidCallerIds', res)
       })
   }
 }

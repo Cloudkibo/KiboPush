@@ -135,7 +135,6 @@ class CreateWhatsAppBroadcast extends React.Component {
   }
 
   clearFields () {
-    this.msg.success('Broadcast sent successfully')
     this.initTab()
     this.reset(false)
     this.targeting.getWrappedInstance().resetCondition()
@@ -208,7 +207,8 @@ class CreateWhatsAppBroadcast extends React.Component {
         platform: 'Twilio WhatsApp',
         title: this.state.convoTitle,
         segmentation: this.props.customersInfo && this.props.customersInfo.filter ? this.props.customersInfo.filter : ''
-      }, this.clearFields)
+      }, this.clearFields, this.msg)
+      this.msg.info(`Sending broadcast it may take ${this.state.broadcast.length * this.state.subscribersCount} Sec... You will be notified when it is sent.`)
     }
   }
 
@@ -303,7 +303,7 @@ class CreateWhatsAppBroadcast extends React.Component {
                               <i className='flaticon-exclamation m--font-brand' />
                               <p style={{display: 'inline', fontSize: '1.1em'}}> {`This broadcast will be sent to ${this.state.subscribersCount} ${this.state.subscribersCount === 1 ? 'subscriber' : 'subscribers'}`}</p>
                             </span>
-                            <TargetCustomers ref={instance => { this.targeting = instance; }} debounce={this.debounce} updateConditions={this.updateConditions} style={{marginTop: '20px'}} fileColumns={this.state.fileColumns} segmentationErrors={this.state.segmentationErrors} resetErrors={() => { this.setState({segmentationErrors: []}) }} />
+                            <TargetCustomers msg = {this.msg} ref={instance => { this.targeting = instance; }} debounce={this.debounce} updateConditions={this.updateConditions} style={{marginTop: '20px'}} fileColumns={this.state.fileColumns} segmentationErrors={this.state.segmentationErrors} resetErrors={() => { this.setState({segmentationErrors: []}) }} />
                           </div>
                         </div>
                       </div>
