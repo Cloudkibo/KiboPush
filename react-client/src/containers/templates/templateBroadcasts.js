@@ -112,7 +112,6 @@ class TemplateBroadcasts extends React.Component {
   }
 
   UNSAFE_componentWillReceiveProps (nextProps) {
-    console.log('nextProps', nextProps)
     if (nextProps.broadcasts && nextProps.count) {
       this.displayData(0, nextProps.broadcasts)
       this.setState({ totalLength: nextProps.count })
@@ -192,6 +191,7 @@ class TemplateBroadcasts extends React.Component {
   }
 
   render () {
+    console.log('this.state.broadcastsData', this.state.broadcastsData)
     var alertOptions = {
       offset: 14,
       position: 'top right',

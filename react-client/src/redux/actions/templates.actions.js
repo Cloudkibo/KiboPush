@@ -336,7 +336,7 @@ export function createBroadcast (data, msg) {
         console.log('response for createBroadcast', res)
         if (res.status === 'success') {
           msg.success('Broadcast created successfully')
-          dispatch(addConvoTemplate(res, msg))
+          // dispatch(addConvoTemplate(res, msg))
         } else {
           msg.error(res.description)
         }
