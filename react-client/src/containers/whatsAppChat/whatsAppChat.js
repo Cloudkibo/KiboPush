@@ -296,8 +296,8 @@ class WhatsAppChat extends React.Component {
 
   setMessageData(session, payload) {
     const data = {
-      senderNumber: this.props.userChat[0].recipientNumber,
-      recipientNumber: this.props.userChat[0].senderNumber,
+      senderNumber: this.props.automated_options.twilioWhatsApp.sandboxNumber,
+      recipientNumber: this.state.activeSession.number,
       contactId: session._id,
       payload,
       datetime: new Date().toString(),
@@ -596,7 +596,8 @@ function mapStateToProps(state) {
     members: (state.membersInfo.members),
     teams: (state.teamsInfo.teams),
     searchChatMsgs: (state.whatsAppChatInfo.searchChat),
-    socketData: (state.socketInfo.socketDataWhatsapp)
+    socketData: (state.socketInfo.socketDataWhatsapp),
+    automated_options: (state.basicInfo.automated_options)
   }
 }
 
