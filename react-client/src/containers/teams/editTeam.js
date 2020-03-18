@@ -125,7 +125,7 @@ class EditTeam extends React.Component {
   UNSAFE_componentWillReceiveProps (nextProps) {
     console.log('nextProps', nextProps)
     console.log('this.props.location.state', this.props.location.state)
-    if (nextProps.teamAgents && nextProps.teamAgents.length > 0) {
+    if (nextProps.teamAgents !== this.props.teamAgents && nextProps.teamAgents && nextProps.teamAgents.length > 0) {
       var agents = []
       for (var i = 0; i < nextProps.teamAgents.length; i++) {
         if (nextProps.teamAgents[i].teamId._id === this.state.teamId) {
