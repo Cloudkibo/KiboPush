@@ -191,7 +191,6 @@ class TemplateBroadcasts extends React.Component {
   }
 
   render () {
-    console.log('this.state.broadcastsData', this.state.broadcastsData)
     var alertOptions = {
       offset: 14,
       position: 'top right',
