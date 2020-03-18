@@ -6,22 +6,9 @@ import { RingLoader } from 'halogenium'
 
 // actions
 import {
-  // fetchOpenSessions,
-  // fetchCloseSessions,
-  // fetchUserChats,
   searchChat,
-  // clearSearchResult,
-  // markRead,
-  // changeStatus,
-  // updatePendingResponse,
-  updateSmsChatInfo,
-  // assignToAgent,
-  // assignToTeam,
-  // fetchTeamAgents,
-  sendChatMessage,
-} from '../../redux/actions/smsChat.actions'
-import {
   updateWhatsappChatInfo,
+  sendChatMessage,
   fetchOpenSessions,
   fetchCloseSessions,
   fetchUserChats,
@@ -109,7 +96,7 @@ class WhatsAppChat extends React.Component {
     this.fetchSessions(true, 'none', true)
     if (props.user.currentPlan.unique_ID === 'plan_C' || props.user.currentPlan.unique_ID === 'plan_D') {
       props.loadMembersList()
-      props.loadTeamsList({platform: 'sms'})
+      props.loadTeamsList({platform: 'whatsapp'})
     }
   }
 
@@ -223,7 +210,7 @@ class WhatsAppChat extends React.Component {
         openSessions: this.state.tabValue === 'open' && state.sessions,
         closeSessions: this.state.tabValue === 'close' && state.sessions
       }
-      this.props.updateSmsChatInfo(data)
+      this.props.updateWhatsappChatInfo(data)
     } else {
       this.setState(state, () => {
         if (callback) callback()
@@ -597,18 +584,18 @@ class WhatsAppChat extends React.Component {
 }
 
 function mapStateToProps(state) {
-  console.log('mapStateToProps in live chat', state)
+  console.log('mapStateToProps in whatsapp chat', state)
   return {
     openSessions: (state.whatsAppChatInfo.openSessions),
     openCount: (state.whatsAppChatInfo.openCount),
     closeCount: (state.whatsAppChatInfo.closeCount),
     closeSessions: (state.whatsAppChatInfo.closeSessions),
     userChat: (state.whatsAppChatInfo.chat),
-    chatCount: (state.smsChatInfo.chatCount),
+    chatCount: (state.whatsAppChatInfo.chatCount),
     user: (state.basicInfo.user),
     members: (state.membersInfo.members),
     teams: (state.teamsInfo.teams),
-    searchChatMsgs: (state.smsChatInfo.searchChat),
+    searchChatMsgs: (state.whatsAppChatInfo.searchChat),
     socketData: (state.socketInfo.socketDataWhatsapp)
   }
 }
@@ -632,7 +619,6 @@ function mapDispatchToProps(dispatch) {
     markRead,
     updateWhatsappChatInfo,
     clearSocketDataWhatsapp,
-    updateSmsChatInfo,
     clearSearchResult,
     urlMetaData,
     uploadAttachment,
