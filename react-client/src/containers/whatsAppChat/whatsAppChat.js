@@ -32,6 +32,9 @@ import {
   clearSearchResult,
   fetchTeamAgents,
   assignToTeam,
+  uploadAttachment,
+  sendAttachment,
+  deletefile
 } from '../../redux/actions/whatsAppChat.actions'
 import { updatePicture } from '../../redux/actions/subscribers.actions'
 import { loadTeamsList } from '../../redux/actions/teams.actions'
@@ -524,13 +527,16 @@ class WhatsAppChat extends React.Component {
                     markRead={this.props.markRead}
                     fetchUrlMeta={this.props.urlMetaData}
                     isSMPApproved={true}
-                    showUploadAttachment={false}
+                    showUploadAttachment={true}
                     showRecordAudio={false}
                     showSticker={false}
                     showEmoji={true}
                     showGif={false}
                     showThumbsUp={false}
                     setMessageData={this.setMessageData}
+                    uploadAttachment ={this.props.uploadAttachment}
+                    sendAttachment={this.props.sendAttachment}
+                    deletefile={this.props.deletefile}
                   />
                 }
                 {
@@ -627,6 +633,9 @@ function mapDispatchToProps(dispatch) {
     updateSmsChatInfo,
     clearSearchResult,
     urlMetaData,
+    uploadAttachment,
+    sendAttachment,
+    deletefile
   }, dispatch)
 }
 

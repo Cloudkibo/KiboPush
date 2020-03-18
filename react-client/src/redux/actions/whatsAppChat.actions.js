@@ -1,5 +1,7 @@
 import callApi from '../../utility/api.caller.service'
 import * as ActionTypes from '../constants/constants'
+import auth from '../../utility/auth.service'
+export const API_URL = '/api'
 
 export function showChat (data, originalData) {
   if (originalData.page === 'first') {
@@ -268,6 +270,32 @@ export function updatePendingResponse (data, handlePendingResponse) {
   return (dispatch) => {
     callApi(`whatsAppSessions/updatePendingResponse`, 'post', data).then(res => {
       handlePendingResponse(res)
+    })
+  }
+}
+
+export function deletefile (data, handleRemove) {
+  return (dispatch) => {
+    callApi(`broadcasts/delete/${data}`)
+      .then(res => {
+        handleRemove(res)
+      })
+  }
+}
+
+export function uploadAttachment (fileData, handleUpload) {
+  return (dispatch) => {
+    // eslint-disable-next-line no-undef
+    fetch(`${API_URL}/broadcasts/upload`, {
+      method: 'post',
+      body: fileData,
+      // eslint-disable-next-line no-undef
+      headers: new Headers({
+        'Authorization': `Bearer ${auth.getToken()}`
+      })
+    }).then((res) => res.json()).then((res) => res).then(res => {
+      console.log('respone', res)
+      handleUpload(res)
     })
   }
 }
