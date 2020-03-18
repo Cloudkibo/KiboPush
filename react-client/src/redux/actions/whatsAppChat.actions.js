@@ -254,7 +254,7 @@ export function sendNotifications (data) {
   }
 }
 
-export function searchWhatsAppChat(data) {
+export function searchChat(data) {
   return (dispatch) => {
     callApi('whatsAppChat/search', 'post', data).then(res => {
       if (res.status === 'success') {
