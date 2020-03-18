@@ -21,6 +21,7 @@ import {
   sendChatMessage,
 } from '../../redux/actions/smsChat.actions'
 import {
+  updateWhatsappChatInfo,
   fetchOpenSessions,
   fetchCloseSessions,
   fetchUserChats,
@@ -40,8 +41,8 @@ import { updatePicture } from '../../redux/actions/subscribers.actions'
 import { loadTeamsList } from '../../redux/actions/teams.actions'
 import { loadMembersList } from '../../redux/actions/members.actions'
 import { urlMetaData } from '../../redux/actions/convos.actions'
-import { handleSocketEventSms } from '../smsChat/socket'
-import { clearSocketDataSms } from '../../redux/actions/socket.actions'
+import { handleSocketEventWhatsapp } from './socket'
+import { clearSocketDataWhatsapp } from '../../redux/actions/socket.actions'
 
 // components
 import HELPWIDGET from '../../components/extras/helpWidget'
@@ -439,13 +440,13 @@ class WhatsAppChat extends React.Component {
     })
 
     if (nextProps.socketData) {
-      handleSocketEventSms(
+      handleSocketEventWhatsapp(
         nextProps.socketData,
         this.state,
         this.props,
-        this.props.updateSmsChatInfo,
+        this.props.updateWhatsappChatInfo,
         this.props.user,
-        this.props.clearSocketDataSms
+        this.props.clearSocketDataWhatsapp
       )
     }
   }
@@ -608,7 +609,7 @@ function mapStateToProps(state) {
     members: (state.membersInfo.members),
     teams: (state.teamsInfo.teams),
     searchChatMsgs: (state.smsChatInfo.searchChat),
-    socketData: (state.socketInfo.socketDataSms)
+    socketData: (state.socketInfo.socketDataWhatsapp)
   }
 }
 
@@ -629,7 +630,8 @@ function mapDispatchToProps(dispatch) {
     searchChat,
     fetchUserChats,
     markRead,
-    clearSocketDataSms,
+    updateWhatsappChatInfo,
+    clearSocketDataWhatsapp,
     updateSmsChatInfo,
     clearSearchResult,
     urlMetaData,

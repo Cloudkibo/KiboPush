@@ -75,6 +75,8 @@ export function whatsAppChatInfo (state = initialState, action) {
       return Object.assign({}, state, {
         searchChat: []
       })
+    case ActionTypes.UPDATE_WHATSAPPCHAT_INFO:
+      return Object.assign({}, state, action, action.data)
     default:
       return state
   }

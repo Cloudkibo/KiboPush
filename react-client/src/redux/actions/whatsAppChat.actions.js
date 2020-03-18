@@ -48,6 +48,14 @@ export function resetSocket (data) {
     data: null
   }
 }
+
+export function updateWhatsappChatInfo (data) {
+  return {
+    type: ActionTypes.UPDATE_WHATSAPPCHAT_INFO,
+    data
+  }
+}
+
 export function updateChat (chat, newChat) {
   let chatData = []
   chatData = chat
@@ -61,16 +69,30 @@ export function updateChat (chat, newChat) {
 }
 
 export function showOpenSessions (data) {
+  let openSessions = data.openSessions.map((s) => {
+    let name = s.name.split(' ')
+    s.firstName = name[0]
+    s.lastName = name[1]
+    s.profilePic = 'https://www.mastermindpromotion.com/wp-content/uploads/2015/02/facebook-default-no-profile-pic-300x300.jpg'
+    return s
+  })
   return {
     type: ActionTypes.FETCH_WHATSAPP_OPEN_SESSIONS,
-    openSessions: data.openSessions,
+    openSessions,
     openCount: data.count
   }
 }
 export function showCloseChatSessions (data) {
+  let closeSessions = data.closedSessions.map((s) => {
+    let name = s.name.split(' ')
+    s.firstName = name[0]
+    s.lastName = name[1]
+    s.profilePic = 'https://www.mastermindpromotion.com/wp-content/uploads/2015/02/facebook-default-no-profile-pic-300x300.jpg'
+    return s
+  })
   return {
     type: ActionTypes.FETCH_WHATSAPP_CLOSE_SESSIONS,
-    closeSessions: data.closedSessions,
+    closeSessions,
     closeCount: data.count
   }
 }
