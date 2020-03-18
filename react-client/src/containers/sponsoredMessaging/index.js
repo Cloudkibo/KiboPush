@@ -485,7 +485,7 @@ class SponsoredMessaging extends React.Component {
                           Please reconnect your facebook account to grant KiboPush permission to your ad accounts.
 											  </div>
                         <div className="m-alert__actions" style={{width: "220px"}}>
-                          <a href='/reauth/sponsoredmessages'
+                          <a href='/auth/facebook/reauth/sponsoredmessages'
                             className="btn btn-focus m-btn m-btn--pill m-btn--custom m-btn--air"
                             data-dismiss="alert1"
                             aria-label="Close">
