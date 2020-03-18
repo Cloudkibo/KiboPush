@@ -158,6 +158,9 @@ import CustomFields from './containers/customFields/customFields'
 import Tags from './containers/tags/tags'
 import successMessage from './containers/integerationScreen/successMessage'
 import ErrorMessage from './containers/integerationScreen/ErrorMessage'
+import SmsDashboard from './containers/smsWhatsAppDashboard/smsDashboard'
+import WhatsAppDashboard from './containers/smsWhatsAppDashboard/whatsAppDashboard'
+import messengerDashboard from './containers/dashboard/dashboard'
 
 const Subscriber = asyncComponent(() => import("./containers/subscriber/subscriber"))
 const OperationalDashboard = asyncComponent(() => import("./containers/operationalDashboard/operationalDashboard"))
@@ -206,6 +209,9 @@ const Routes = () => (
     <Route path='/signup' component={Signup} />
     <Route path='/addfbpages' component={ConnectFBPages} onEnter={requireAuth} />
     <Route path='/dashboard' component={Home} onEnter={requireAuth} />
+    <Route path='/SmsDashboard' component={SmsDashboard} onEnter={requireAuth} />
+    <Route path='/WhatsAppDashboard' component={WhatsAppDashboard} onEnter={requireAuth} />
+    <Route path='/messengerDashboard' component={messengerDashboard} onEnter={requireAuth} />
     <Route path='/resendVerificationEmail' component={ResendVerificationEmail} />
     <Route path='/forgotPassword' component={ForgotPassword} />
     <Route path='/resetPassword' component={ForgotPassword} />
