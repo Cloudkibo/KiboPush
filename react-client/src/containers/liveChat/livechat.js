@@ -518,8 +518,8 @@ class LiveChat extends React.Component {
                 </div>
               }
             <HELPWIDGET
-              documentation={{link: 'http://kibopush.com/livechat/'}}
-              videoTutorial={{videoId: 'bLotpQLvsfE'}}
+              documentation={{visibility: true, link: 'http://kibopush.com/livechat/'}}
+              videoTutorial={{visibility: true, videoId: 'bLotpQLvsfE'}}
             />
               <div className='row'>
                 <SESSIONS

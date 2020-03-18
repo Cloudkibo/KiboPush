@@ -17,13 +17,13 @@ class HelpWidget extends React.Component {
     this.openVideoTutorial = this.openVideoTutorial.bind(this)
 
     this.documentation = {
-      visibility: this.props.documentation.visibility || true,
+      visibility: this.props.documentation.visibility,
       title: this.props.documentation.title || 'Documentation',
       link: this.props.documentation.link,
       iconClass: this.props.documentation.iconClass || 'la la-info-circle'
     }
     this.videoTutorial = {
-      visibility: this.props.videoTutorial.visibility || true,
+      visibility: this.props.videoTutorial.visibility,
       title: this.props.videoTutorial.title || 'Video Tutorial',
       videoId: this.props.videoTutorial.videoId,
       iconClass: this.props.videoTutorial.iconClass || 'la la-play-circle'
@@ -119,14 +119,14 @@ class HelpWidget extends React.Component {
 
 HelpWidget.propTypes = {
   'documentation': PropTypes.exact({
-    'visibility': PropTypes.bool,
-    'link': PropTypes.string.isRequired,
+    'visibility': PropTypes.bool.isRequired,
+    'link': PropTypes.string,
     'title': PropTypes.string,
     'iconClass': PropTypes.string
   }).isRequired,
   'videoTutorial': PropTypes.exact({
-    'visibility': PropTypes.bool,
-    'videoId': PropTypes.string.isRequired,
+    'visibility': PropTypes.bool.isRequired,
+    'videoId': PropTypes.string,
     'title': PropTypes.string,
     'iconClass': PropTypes.string
   }).isRequired

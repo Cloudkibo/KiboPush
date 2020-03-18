@@ -127,19 +127,20 @@ class CreateTeam extends React.Component {
     var temp = this.state.agentIds
     if (agent === 'All') {
       for (var i = 0; i < this.props.members.length; i++) {
-        if (this.exists(this.props.members[i].userId.name) === false) {
+        if (this.exists(this.props.members[i].userId._id) === false) {
           temp.push(this.props.members[i])
         }
       }
     } else {
       for (var j = 0; j < this.props.members.length; j++) {
         if (agent === this.props.members[j].userId.name) {
-          if (this.exists(this.props.members[j].userId.name) === false) {
+          if (this.exists(this.props.members[j].userId._id) === false) {
             temp.push(this.props.members[j])
           }
         }
       }
     }
+    console.log('temp', temp)
     this.setState({agentIds: temp})
   }
   removeAgent (agent) {
@@ -191,7 +192,7 @@ class CreateTeam extends React.Component {
   }
   exists (agent) {
     for (var i = 0; i < this.state.agentIds.length; i++) {
-      if (this.state.agentIds[i].userId.name === agent) {
+      if (this.state.agentIds[i].userId._id === agent) {
         return true
       }
     }
@@ -290,7 +291,7 @@ class CreateTeam extends React.Component {
                                         this.props.members.map((member, i) => (
                                           <li className='m-nav__item'>
                                             <a href='#/' onClick={() => this.changeAgent(member.userId.name)} className='m-nav__link' style={{cursor: 'pointer'}}>
-                                              { this.exists(member.userId.name) === true
+                                              { this.exists(member.userId._id) === true
                                               ? <span style={{fontWeight: 600}} className='m-nav__link-text'>
                                                 <i className='la la-check' /> {member.userId.name}
                                               </span>
