@@ -26,7 +26,7 @@ export function socketInfo (state = initialState, action) {
       return Object.assign({}, state, {
         socketDataSms: null
       })
-    case ActionTypes.CLEAR_SOCKET_DATA_SMS:
+    case ActionTypes.CLEAR_SOCKET_DATA_WHATSAPP:
       return Object.assign({}, state, {
         socketDataWhatsapp: null
       })
