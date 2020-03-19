@@ -639,46 +639,46 @@ class Settings extends React.Component {
             </div>
             }
             { this.state.openTab === 'resetPassword' &&
-              <ResetPassword />
+              <ResetPassword history= {this.props.history}/>
             }
             { this.state.openTab === 'permissions' &&
-              <ShowPermissions />
+              <ShowPermissions history= {this.props.history}/>
             }
             { this.state.openTab === 'greetingMessage' &&
-              <GreetingMessage user={this.props.user} />
+              <GreetingMessage user={this.props.user} history= {this.props.history}/>
             }
             { this.state.openTab === 'welcomeMessage' &&
-              <WelcomeMessage />
+              <WelcomeMessage history= {this.props.history}/>
             }
             { this.state.openTab === 'connectFb' &&
-              <ConnectFb />
+              <ConnectFb history= {this.props.history}/>
             }
             { this.state.openTab === 'uploadCustomerInformation' &&
-              <UploadCustomerInformation />
+              <UploadCustomerInformation history= {this.props.history}/>
             }
             { this.state.openTab === 'billing' &&
-              <Billing showPaymentMethods={this.setPayementMethods} pro={this.state.pro} />
+              <Billing showPaymentMethods={this.setPayementMethods} pro={this.state.pro} history= {this.props.history}/>
             }
             { this.state.openTab === 'paymentMethods' &&
-              <PaymentMethods />
+              <PaymentMethods history= {this.props.history}/>
             }
             { this.state.openTab === 'responseMethods' &&
-              <ResponseMethods />
+              <ResponseMethods history= {this.props.history}/>
             }
             { this.state.openTab === 'deleteUserData' &&
-              <DeleteUserData />
+              <DeleteUserData history= {this.props.history}/>
             }
             { this.state.openTab === 'webhook' &&
-              <Webhook />
+              <Webhook history= {this.props.history}/>
             }
             { this.state.openTab === 'whitelistDomains' &&
-              <WhiteListDomains />
+              <WhiteListDomains history= {this.props.history}/>
             }
             { this.state.openTab === 'configuration' &&
-              <Configuration />
+              <Configuration  history= {this.props.history} />
             }
             { this.state.openTab === 'integrations' &&
-              <Integrations />
+              <Integrations history= {this.props.history}/>
             }
           </div>
         </div>
