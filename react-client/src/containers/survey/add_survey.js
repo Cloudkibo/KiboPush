@@ -240,11 +240,18 @@ class AddSurvey extends React.Component {
 
       })
     }
-    if (this.props.currentSurvey && nextProps.questions) {
-      this.setState({surveyQuestions: nextProps.questions})
-    }
-
+    if (this.props.currentSurvey && nextProps.questions !== this.props.questions) {
+      console.log('component will receive called multiple times')
+      let questions = nextProps.questions
+      for(let i= 0 ;i <questions.length ; i++) {
+        for(let j= 0 ;j <questions[i].options.length ; j++) {
+            let option = { option: questions[i].options[j], sequenceId: '', action: '' }
+            questions[i].options[j] = option
+          }
+      }
+    this.setState({surveyQuestions: questions})
   }
+}
   updateDescription (e) {
     this.setState({description: e.target.value, alertType: '', alertMessage: ''})
   }

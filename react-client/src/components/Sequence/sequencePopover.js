@@ -10,8 +10,8 @@ class SequencePopover extends React.Component {
         this.state = {
             optionNumber: this.props.optionNumber,
             isSubscribe : false,
-            sequenceValue:'',
-            sequenceValueUnsub:'',
+            sequenceValue: {value: '', label: ''},
+            sequenceValueUnsub: {value: '', label: ''},
             showModal: false,
             sequenceOptions: [],
             mappedSequence: false,
@@ -50,11 +50,13 @@ componentDidMount() {
  }
 
  handleSubscribeSequence(obj){
-     this.setState({sequenceValue: obj.value, sequenceValueUnsub:'' })
+     let seqValue ={value: '', label: ''}
+     this.setState({sequenceValue: obj, sequenceValueUnsub: seqValue})
  }
 
  handleUnsubscribeSequence(obj){
-    this.setState({sequenceValueUnsub: obj.value, sequenceValue:''})
+    let seqValue ={value: '', label: ''}
+    this.setState({sequenceValueUnsub: obj, sequenceValue: seqValue})
  }
 
  toggleAttachSubscribe () {
@@ -168,25 +170,25 @@ componentDidMount() {
                     onClick={() => {
                         if(this.props.questionNumber !== undefined){ //survey
                             if(this.state.isSubscribe){
-                                if(this.state.sequenceValue !== ''){
-                                    this.props.onSave(this.state.sequenceValue,'subscribe',this.props.questionNumber, this.state.optionNumber)
+                                if(this.state.sequenceValue.value !== ''){
+                                    this.props.onSave(this.state.sequenceValue.value,'subscribe',this.props.questionNumber, this.state.optionNumber)
                                     this.setState({showModal:false, isActionSaved:true})
                                 }
                             }else{
                                 if(this.state.sequenceValueUnsub !== ''){
-                                    this.props.onSave(this.state.sequenceValueUnsub,'unsubscribe',this.props.questionNumber, this.state.optionNumber)
+                                    this.props.onSave(this.state.sequenceValueUnsub.value,'unsubscribe',this.props.questionNumber, this.state.optionNumber)
                                     this.setState({showModal:false, isActionSaved:true})
                                 }
                             }
                         }else{                   //polls
                         if(this.state.isSubscribe){
-                            if(this.state.sequenceValue !== ''){
-                                this.props.onSave(this.state.sequenceValue,'subscribe', this.state.optionNumber)
+                            if(this.state.sequenceValue.value !== ''){
+                                this.props.onSave(this.state.sequenceValue.value,'subscribe', this.state.optionNumber)
                                 this.setState({showModal:false, isActionSaved:true})
                             }
                         }else{
-                            if(this.state.sequenceValueUnsub !== ''){
-                                this.props.onSave(this.state.sequenceValueUnsub,'unsubscribe', this.state.optionNumber)
+                            if(this.state.sequenceValueUnsub.value !== ''){
+                                this.props.onSave(this.state.sequenceValueUnsub.value,'unsubscribe', this.state.optionNumber)
                                 this.setState({showModal:false, isActionSaved:true})
                             }
                         }
