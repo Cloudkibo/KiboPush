@@ -19,6 +19,13 @@ export function showChat (data, originalData) {
   }
 }
 
+export function UpdateUnreadCount (data) {
+  return {
+    type: ActionTypes.UPDATE_UNREAD_COUNT_WHATSAPP,
+    data
+  }
+}
+
 export function showSearchChat (data) {
   return {
     type: ActionTypes.SHOW_SEARCH_WHATSAPP,
@@ -142,6 +149,7 @@ export function markRead (sessionid) {
   return (dispatch) => {
     callApi(`whatsAppSessions/markread/${sessionid}`).then(res => {
       console.log('Mark as read Response', res)
+      dispatch(UpdateUnreadCount(sessionid))
     })
   }
 }
