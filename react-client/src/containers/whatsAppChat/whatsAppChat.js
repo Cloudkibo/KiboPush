@@ -514,7 +514,7 @@ class WhatsAppChat extends React.Component {
                     fetchUserChats={this.props.fetchUserChats}
                     markRead={this.props.markRead}
                     fetchUrlMeta={this.props.urlMetaData}
-                    isSMPApproved={true}
+                    isSMPApproved={false}
                     showUploadAttachment={true}
                     showRecordAudio={false}
                     showSticker={false}
@@ -525,6 +525,7 @@ class WhatsAppChat extends React.Component {
                     uploadAttachment ={this.props.uploadAttachment}
                     sendAttachment={this.props.sendAttachment}
                     deletefile={this.props.deletefile}
+                    showTemplates={true}
                   />
                 }
                 {

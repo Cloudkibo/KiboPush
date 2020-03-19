@@ -32,6 +32,15 @@ export function whatsAppChatInfo (state = initialState, action) {
         chat: orderedChat,
         chatCount: action.count
       })
+    case ActionTypes.UPDATE_UNREAD_COUNT_WHATSAPP:
+      let openSessions = [...state.openSessions]
+      let openIds = openSessions.map(s => s._id)
+      let openIndex = openIds.indexOf(action.data)
+      openSessions[openIndex].unreadCount = 0
+      return Object.assign({}, state, {
+        openSessions: openSessions,
+        updateSessionTimeStamp: new Date().toString()
+      })
     case ActionTypes.UPDATE_WHATSAPP_SESSION:
       return Object.assign({}, state, {
         sessions: action.sessions
