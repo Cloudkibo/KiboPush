@@ -19,7 +19,7 @@ export function handleSocketEventWhatsapp (data, state, props, updateLiveChatInf
       default:
     }
   }
-  
+
   const handleIncomingMessage = (payload, state, props, updateLiveChatInfo, clearSocketData) => {
     let sessions = state.sessions
     let session = payload.subscriber
@@ -74,7 +74,7 @@ export function handleSocketEventWhatsapp (data, state, props, updateLiveChatInf
     updateLiveChatInfo(data)
     clearSocketData()
   }
-  
+
   const handleAgentReply = (payload, state, props, updateLiveChatInfo, clearSocketData, user) => {
     if (user._id !== payload.user_id) {
       let data = {}
@@ -117,7 +117,7 @@ export function handleSocketEventWhatsapp (data, state, props, updateLiveChatInf
       clearSocketData()
     }
   }
-  
+
   const handleUnsubscribe = (payload, state, props, updateLiveChatInfo, clearSocketData, user) => {
     let data = {}
     let sessions = state.sessions
@@ -134,7 +134,7 @@ export function handleSocketEventWhatsapp (data, state, props, updateLiveChatInf
     }
     clearSocketData()
   }
-  
+
   const handlePendingResponse = (payload, state, props, updateLiveChatInfo, clearSocketData, user) => {
     if (user._id !== payload.user_id) {
       let openSessions = props.openSessions
@@ -187,14 +187,14 @@ export function handleSocketEventWhatsapp (data, state, props, updateLiveChatInf
         closeCount = closeCount + 1
       }
     }
-  
+
     openSessions = openSessions.sort(function (a, b) {
       return new Date(b.last_activity_time) - new Date(a.last_activity_time)
     })
     closeSessions = closeSessions.sort(function (a, b) {
       return new Date(b.last_activity_time) - new Date(a.last_activity_time)
     })
-  
+
     data = {
       openSessions: openSessions,
       closeSessions: closeSessions,
@@ -204,4 +204,3 @@ export function handleSocketEventWhatsapp (data, state, props, updateLiveChatInf
     updateLiveChatInfo(data)
     clearSocketData()
   }
-  
