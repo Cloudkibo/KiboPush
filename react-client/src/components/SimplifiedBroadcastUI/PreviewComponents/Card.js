@@ -130,7 +130,7 @@ class Card extends React.Component {
       size: this.state.size,
     }]
     if (this.props.links) {
-      this.props.editComponent('link', {
+      this.props.editComponent(this.props.youtubeLink ? 'video' : 'link', {
         componentName:this.props.componentName,
         elementLimit: this.props.elementLimit,
         header:this.props.header,
@@ -143,6 +143,15 @@ class Card extends React.Component {
         links: this.props.links,
         id: this.props.id,
         cards: [].concat(cards),
+        buttonActions: this.props.buttonActions,
+      })
+    } else if (this.props.youtubeLink) {
+      this.props.editComponent('video', {
+        componentName:this.props.componentName,
+        youtubeLink: this.props.youtubeLink,
+        id: this.props.id,
+        card: this.props.card,
+        fileSizeExceeded: this.props.fileSizeExceeded,
         buttonActions: this.props.buttonActions,
       })
     } else {

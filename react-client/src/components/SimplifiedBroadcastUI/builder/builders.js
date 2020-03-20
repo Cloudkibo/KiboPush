@@ -6,7 +6,6 @@ import AlertContainer from 'react-alert'
 import PropTypes from 'prop-types'
 import { uploadTemplate } from '../../../redux/actions/convos.actions'
 import { RingLoader } from 'halogenium'
-import {validateYoutubeURL} from '../../../utility/utils'
 
 import { loadTags } from '../../../redux/actions/tags.actions'
 import { fetchAllSequence } from '../../../redux/actions/sequence.action'
@@ -32,6 +31,7 @@ import LinkCarousel from '../LinkCarousel'
 import QuickReplies from '../QuickReplies'
 import UserInputModal from '../UserInputModal'
 import UserInput from '../PreviewComponents/UserInput'
+import YoutubeVideoModal from '../YoutubeVideoModal'
 
 import CustomFields from '../../customFields/customfields'
 
@@ -1393,30 +1393,22 @@ class Builders extends React.Component {
         toggleGSModal={this.toggleGSModal}
         closeGSModal={this.closeGSModal}
         addComponent={this.addComponent} />),
-      'video': (<LinkCarousel
-        elementLimit={1}
-        componentName={'YouTube video'}
-        header={'YouTube video'}
-        defaultErrorMsg={'Please enter a valid YouTube link'}
-        invalidMsg={'Invalid YouTube link'}
-        validMsg={'YouTube link is valid'}
-        retrievingMsg={'Retrieving YouTube video metadata'}
-        buttonTitle={'Watch on YouTube'}
-        validateUrl={(url) => validateYoutubeURL(url)}
-        buttons={[]}
-        noButtons={this.props.noButtons}
-        module = {this.props.module}
-        edit={this.state.editData ? true : false}
-        {...this.state.editData}
-        buttonActions={this.props.buttonActions}
-        pages={this.props.pages}
-        replyWithMessage={this.props.replyWithMessage}
-        pageId={this.props.pageId.pageId}
-        showCloseModalAlertDialog={this.showCloseModalAlertDialog}
-        closeModal={this.closeAddComponentModal}
-        toggleGSModal={this.toggleGSModal}
-        closeGSModal={this.closeGSModal}
-        addComponent={this.addComponent} />),
+      'video': (<YoutubeVideoModal
+          buttons={[]}
+          noButtons={this.props.noButtons}
+          module = {this.props.module}
+          edit={this.state.editData ? true : false}
+          {...this.state.editData}
+          editData={this.state.editData}
+          buttonActions={this.props.buttonActions}
+          pages={this.props.pages}
+          replyWithMessage={this.props.replyWithMessage}
+          pageId={this.props.pageId}
+          showCloseModalAlertDialog={this.showCloseModalAlertDialog}
+          closeModal={this.closeAddComponentModal}
+          toggleGSModal={this.toggleGSModal}
+          closeGSModal={this.closeGSModal}
+          addComponent={this.addComponent} />),
       'link': (<LinkCarousel
         buttons={[]}
         module = {this.props.module}
@@ -1510,15 +1502,10 @@ class Builders extends React.Component {
       'card': {
         component: (<Card
           id={componentId}
-          elementLimit={broadcast.elementLimit}
+          card={broadcast.card}
+          youtubeLink={broadcast.youtubeLink}
+          fileSizeExceeded={broadcast.fileSizeExceeded}
           componentName={broadcast.componentName}
-          header={broadcast.header}
-          defaultErrorMsg={broadcast.defaultErrorMsg}
-          invalidMsg={broadcast.invalidMsg}
-          validMsg={broadcast.validMsg}
-          retrievingMsg={broadcast.retrievingMsg}
-          buttonTitle={broadcast.buttonTitle}
-          validateUrl={broadcast.validateUrl}
           links={broadcast.links}
           fileurl={broadcast.fileurl}
           image_url={broadcast.image_url}
