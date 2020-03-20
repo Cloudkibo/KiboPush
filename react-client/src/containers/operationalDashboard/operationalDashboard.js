@@ -1,46 +1,130 @@
+/**
+ * Created by sojharo on 20/07/2017.
+ */
+
 import React from 'react'
-import ReactPaginate from 'react-paginate'
-import { loadPageSubscribersList, allLocales, downloadSubscribersData, updatePicture } from '../../redux/actions/backdoor.actions'
+import PlatformStats from './platformStats'
+import SurveysByDays from './surveysByDays'
+import BroadcastsByDays from './broadcastsByDays'
+import PollsByDays from './pollsByDays'
+import Top10pages from './top10pages'
+import UniquePages from './uniquePages'
+import Reports from './reports'
+import AutopostingSummary from '../dashboard/autopostingSummary'
+import IntegrationsSummary from '../dashboard/integrationsSummary'
+import CompanyInfo from './companyInfo'
+//  import ListItem from './ListItem'
+import moment from 'moment'
+import Popover from 'react-simple-popover'
+import {
+  loadUsersList,
+  downloadFile,
+  loadBroadcastsGraphData,
+  loadPollsGraphData,
+  loadSurveysGraphData,
+  loadSessionsGraphData,
+  sendEmail,
+  allLocales,
+  fetchPlatformStats,
+  fetchPlatformStatsDateWise,
+  fetchUserStats,
+  fetchUserStatsDateWise,
+  fetchOneUserStats,
+  fetchOneUserStatsDateWise,
+  fetchPageStats,
+  fetchPageStatsDateWise,
+  fetchOnePageStats,
+  fetchOnePageStatsDateWise,
+  fetchTopPages,
+  fetchAutopostingPlatformWise,
+  fetchAutopostingPlatformWiseDateWise,
+  fetchAutopostingUserWise,
+  fetchAutopostingUserWiseDateWise,
+  fetchPlatformStatsMonthly,
+  fetchPlatformStatsWeekly
+} from '../../redux/actions/backdoor.actions'
+import { saveUserInformation } from '../../redux/dispatchers/backdoor.dispatcher'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import Select from 'react-select'
+import AlertContainer from 'react-alert'
+import auth from '../../utility/auth.service'
 import {localeCodeToEnglish} from '../../utility/utils'
 
-class PageSubscribers extends React.Component {
+class OperationalDashboard extends React.Component {
   constructor (props, context) {
     super(props, context)
-    // const pageId = this.props.params.pageId
-    let pageName = ''
-    if (this.props.currentPage) {
-      props.allLocales(this.props.currentPage._id)
-      pageName = this.props.currentPage.pageName
-      const id = this.props.currentPage._id
-      props.loadPageSubscribersList(id, {last_id: 'none', number_of_records: 10, first_page: 'first', filter_criteria: {search_value: '', gender_value: '', locale_value: ''}})
-    }
     this.state = {
-      pageName: pageName,
-      pageSubscribersData: [],
-      pageSubscribersDataAll: [],
+      usersData: [],
+      usersDataAll: [],
+      objectsData: [],
+      objects: {},
       totalLength: 0,
-      localeOptions: [],
+      objectsLength: 0,
+      options: [
+        { value: 10, label: '10 days' },
+        { value: 30, label: '30 days' }],
       genders: [
         { value: 'male', label: 'Male' },
         { value: 'female', label: 'Female' },
         { value: 'other', label: 'Other' }],
-      genderValue: {value: '' , label: ''},
-      localeValue: {value: '' , label: ''},
+      genderValue: '',
+      localeValue: '',
       searchValue: '',
-      pageNumber: 0
+      selectedValue: 0,
+      showTopTenPages: false,
+      showReports: false,
+      showUsers: false,
+      chartData: [],
+      selectedDays: 10,
+      openPopover: false,
+      filter: false,
+      showBroadcasts: false,
+      showDropDown: false
     }
+
+    props.allLocales()
+    props.loadUsersList({last_id: 'none', number_of_records: 10, first_page: true, filter: false, filter_criteria: {search_value: '', gender_value: '', locale_value: ''}})
+    // props.loadBroadcastsGraphData(0)
+    // props.loadPollsGraphData(0)
+    // props.loadSurveysGraphData(0)
+    // props.loadSessionsGraphData(0)
+    props.fetchPlatformStats()
+    // props.fetchAutopostingPlatformWise()
+    props.fetchPlatformStatsMonthly()
+    props.fetchPlatformStatsWeekly()
+    props.fetchTopPages(10)
+
     this.displayData = this.displayData.bind(this)
-    this.handlePageClick = this.handlePageClick.bind(this)
-    this.searchSubscribers = this.searchSubscribers.bind(this)
-    this.backToUserDetails = this.backToUserDetails.bind(this)
+    this.displayObjects = this.displayObjects.bind(this)
+    this.searchUser = this.searchUser.bind(this)
+    this.getFile = this.getFile.bind(this)
     this.onFilterByGender = this.onFilterByGender.bind(this)
     this.onFilterByLocale = this.onFilterByLocale.bind(this)
-    this.profilePicError = this.profilePicError.bind(this)
+    this.handleDate = this.handleDate.bind(this)
+    this.prepareLineChartData = this.prepareLineChartData.bind(this)
+    this.onDaysChange = this.onDaysChange.bind(this)
+    this.includeZeroCounts = this.includeZeroCounts.bind(this)
+    this.handleClick = this.handleClick.bind(this)
+    this.handleClose = this.handleClose.bind(this)
+    this.sendEmail = this.sendEmail.bind(this)
+    this.loadMore = this.loadMore.bind(this)
+    this.debounce = this.debounce.bind(this)
+    this.setUsersView = this.setUsersView.bind(this)
   }
 
+  setUsersView (user) {
+    auth.putActingAsUser(user.domain_email, user.name)
+    this.props.history.push({
+      pathname: `/dashboard`
+    })
+  }
+
+  loadMore () {
+    this.props.loadUsersList({last_id: this.state.usersData.length > 0 ? this.state.usersData[this.state.usersData.length - 1]._id : 'none', number_of_records: 10, first_page: false, filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.genderValue, locale_value: this.state.localeValue}})
+  }
+  scrollToTop () {
+    this.top.scrollIntoView({behavior: 'instant'})
+  }
   componentDidMount () {
     const hostname = window.location.hostname
     let title = ''
@@ -50,413 +134,550 @@ class PageSubscribers extends React.Component {
       title = 'KiboChat'
     }
 
-    document.title = `${title} | Page Subscribers`
+    document.title = `${title} | Operational Dashboard`
+    this.scrollToTop()
+    var typingTimer
+    var doneTypingInterval = 300
+    var self = this
+    let myInput = document.getElementById('users_search')
+    myInput.addEventListener('keyup', () => {
+      clearTimeout(typingTimer)
+      typingTimer = setTimeout(self.debounce, doneTypingInterval)
+    })
+  }
+  handleClick (e) {
+    this.setState({openPopover: !this.state.openPopover})
   }
 
-  displayData (n, pageSubscribers) {
-    let offset = n * 10
-    let data = []
-    let limit
-    let index = 0
-    if ((offset + 10) > pageSubscribers.length) {
-      limit = pageSubscribers.length
-    } else {
-      limit = offset + 10
-    }
-    for (var i = offset; i < limit; i++) {
-      data[index] = pageSubscribers[i]
-      index++
-    }
-    this.setState({pageSubscribersData: data, pageSubscribersDataAll: pageSubscribers})
+  handleClose (e) {
+    this.setState({openPopover: false})
+  }
+  displayData (n, users) {
+    this.setState({usersData: users, usersDataAll: users})
   }
 
-  handlePageClick (data) {
-    if (this.props.currentPage) {
-      if (data.selected === 0) {
-        this.props.loadPageSubscribersList(this.props.currentPage._id, {last_id: 'none', number_of_records: 10, first_page: 'first', filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.genderValue.value, locale_value: this.state.localeValue.value}})
-      } else if (this.state.pageNumber < data.selected) {
-        this.props.loadPageSubscribersList(this.props.currentPage._id, {current_page: this.state.pageNumber, requested_page: data.selected, last_id: this.props.pageSubscribers.length > 0 ? this.props.pageSubscribers[this.props.pageSubscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'next', filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.genderValue.value, locale_value: this.state.localeValue.value}})
-      } else {
-        this.props.loadPageSubscribersList(this.props.currentPage._id, {current_page: this.state.pageNumber, requested_page: data.selected, last_id: this.props.pageSubscribers.length > 0 ? this.props.pageSubscribers[0]._id : 'none', number_of_records: 10, first_page: 'previous', filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.genderValue.value, locale_value: this.state.localeValue.value}})
+  displayObjects (n, users) {
+    var temp = []
+    temp.push(users)
+    this.setState({objects: users})
+    this.setState({objectsLength: 1})
+  }
+
+  handleDate (d) {
+    if (d) {
+      let c = new Date(d)
+      return c.toDateString()
+    }
+  }
+
+  onDaysChange (e) {
+    var defaultVal = 10
+    var value = e.target.value
+    this.setState({selectedDays: value})
+    if (value && value !== '') {
+      if (value.indexOf('.') !== -1) {
+        value = Math.floor(value)
       }
+      this.props.loadBroadcastsGraphData(value)
+      this.props.loadPollsGraphData(value)
+      this.props.loadSurveysGraphData(value)
+    } else if (value === '') {
+      this.setState({selectedDays: ''})
+      this.props.loadBroadcastsGraphData(defaultVal)
+      this.props.loadPollsGraphData(defaultVal)
+      this.props.loadSurveysGraphData(defaultVal)
     }
-    this.setState({pageNumber: data.selected})
-    this.displayData(data.selected, this.state.pageSubscribersDataAll)
   }
-
   UNSAFE_componentWillReceiveProps (nextProps) {
-    if (nextProps.pageSubscribers && nextProps.count) {
-      this.displayData(0, nextProps.pageSubscribers)
+    console.log('UNSAFE_componentWillReceiveProps in backdoor', nextProps)
+    if (nextProps.users && nextProps.count) {
+      console.log('in nextProps.users')
+      this.displayData(0, nextProps.users)
       this.setState({ totalLength: nextProps.count })
     } else {
-      this.setState({pageSubscribersData: [], pageSubscribersDataAll: [], totalLength: 0})
+      this.setState({usersData: [], usersDataAll: []})
     }
-    var localeOptions = []
-    if (nextProps.locales) {
-      for (let i = 0; i < nextProps.locales.length; i++) {
-        localeOptions.push({value: nextProps.locales[i].value, label: nextProps.locales[i].text})
-      }
-      this.setState({localeOptions: localeOptions})
+    if (nextProps.dataobjects && nextProps.dataobjects !== null) {
+      this.displayObjects(0, nextProps.dataobjects)
     }
-  }
-  searchSubscribers (event) {
-    this.setState({searchValue: event.target.value.toLowerCase(), pageNumber: 0})
-    if (this.props.currentPage) {
-      this.props.loadPageSubscribersList(this.props.currentPage._id, {last_id: this.props.pageSubscribers.length > 0 ? this.props.pageSubscribers[this.props.pageSubscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter_criteria: {search_value: event.target.value.toLowerCase(), gender_value: this.state.genderValue.value, locale_value: this.state.localeValue.value}})
+    if (nextProps.toppages) {
     }
-    // var filtered = []
-    // for (let i = 0; i < this.props.pageSubscribers.length; i++) {
-    //   if (this.props.pageSubscribers[i].firstName.toLowerCase().includes(event.target.value.toLowerCase()) || this.props.pageSubscribers[i].lastName.toLowerCase().includes(event.target.value.toLowerCase())) {
-    //     filtered.push(this.props.pageSubscribers[i])
-    //   }
-    // }
-    // this.displayData(0, filtered)
-    // this.setState({ totalLength: this.state.pageSubscribersData.length })
-  }
-
-  onFilterByGender (data) {
-    if (data) {
-      this.setState({genderValue: data, pageNumber: 0})
-      if (this.props.currentPage) {
-        this.props.loadPageSubscribersList(this.props.currentPage._id, {last_id: this.props.pageSubscribers.length > 0 ? this.props.pageSubscribers[this.props.pageSubscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter_criteria: {search_value: this.state.searchValue, gender_value: data.value, locale_value: this.state.localeValue.value}})
-      }
-    } else {
-      let genderValue = { value: '', label: '' }
-      this.setState({genderValue: genderValue})
-      this.props.loadPageSubscribersList(this.props.currentPage._id, {last_id: this.props.pageSubscribers.length > 0 ? this.props.pageSubscribers[this.props.pageSubscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter_criteria: {search_value: this.state.searchValue, gender_value: '', locale_value: this.state.localeValue.value}})
-    }
-    // var filtered = []
-    // if (!data) {
-    //   if (this.state.localeValue !== '') {
-    //     for (var a = 0; a < this.props.pageSubscribers.length; a++) {
-    //       if (this.props.pageSubscribers[a].locale === this.state.localeValue) {
-    //         filtered.push(this.props.pageSubscribers[a])
-    //       }
-    //     }
-    //   } else {
-    //     filtered = this.props.pageSubscribers
-    //   }
-    //   this.setState({genderValue: ''})
-    // } else {
-    //   if (this.state.localeValue !== '') {
-    //     for (var i = 0; i < this.props.pageSubscribers.length; i++) {
-    //       if (this.props.pageSubscribers[i].gender === data.value && this.props.pageSubscribers[i].locale === this.state.localeValue) {
-    //         filtered.push(this.props.pageSubscribers[i])
-    //       }
-    //     }
-    //   } else {
-    //     for (var j = 0; j < this.props.pageSubscribers.length; j++) {
-    //       if (this.props.pageSubscribers[j].gender === data.value) {
-    //         filtered.push(this.props.pageSubscribers[j])
-    //       }
-    //     }
-    //   }
-    //   this.setState({genderValue: data.value})
-    // }
-    // this.displayData(0, filtered)
-    // this.setState({ totalLength: filtered.length })
-  }
-
-  onFilterByLocale (data) {
-    console.log('data', data)
-    if (data) {
-      this.setState({localeValue: data, pageNumber: 0})
-      if (this.props.currentPage) {
-        this.props.loadPageSubscribersList(this.props.currentPage._id, {last_id: this.props.pageSubscribers.length > 0 ? this.props.pageSubscribers[this.props.pageSubscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.genderValue.value, locale_value: data.value}})
-      }
-    } else {
-      let localeValue = { value: '', label: '' }
-      this.setState({localeValue: localeValue})
-      this.props.loadPageSubscribersList(this.props.currentPage._id, {last_id: this.props.pageSubscribers.length > 0 ? this.props.pageSubscribers[this.props.pageSubscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.genderValue.value, locale_value: ''}})
-    }
-    // var filtered = []
-    // if (!data) {
-    //   if (this.state.genderValue !== '') {
-    //     for (var a = 0; a < this.props.pageSubscribers.length; a++) {
-    //       if (this.props.pageSubscribers[a].gender === this.state.genderValue) {
-    //         filtered.push(this.props.pageSubscribers[a])
-    //       }
-    //     }
-    //   } else {
-    //     filtered = this.props.pageSubscribers
-    //   }
-    //   this.setState({localeValue: ''})
-    // } else {
-    //   if (this.state.genderValue !== '') {
-    //     for (var i = 0; i < this.props.pageSubscribers.length; i++) {
-    //       if (this.props.pageSubscribers[i].gender === this.state.genderValue && this.props.pageSubscribers[i].locale === data.value) {
-    //         filtered.push(this.props.pageSubscribers[i])
-    //       }
-    //     }
-    //   } else {
-    //     for (var j = 0; j < this.props.pageSubscribers.length; j++) {
-    //       if (this.props.pageSubscribers[j].locale === data.value) {
-    //         filtered.push(this.props.pageSubscribers[j])
-    //       }
-    //     }
-    //   }
-    //   this.setState({localeValue: data.value})
-    // }
-    // this.displayData(0, filtered)
-    // this.setState({ totalLength: filtered.length })
-  }
-
-  backToUserDetails () {
-    if (this.props.location.state && this.props.location.state.module === 'top10pages') {
-      this.props.history.push({
-        pathname: `/operationalDashboard`
-      })
-    } else {
-      const user = this.props.currentUser
-      this.props.history.push({
-        pathname: `/userDetails`,
-        state: user
-      })
-    }
-  }
-
-  downloadData () {
-    if (this.props.currentPage && this.props.currentPage._id) {
-      downloadSubscribersData(this.props.currentPage._id)
-    }
-  }
-
-  profilePicError (e, subscriber) {
-    console.log('profile picture error', subscriber)
-    if (subscriber.gender === 'female') {
-      e.target.src = 'https://i.pinimg.com/236x/50/28/b5/5028b59b7c35b9ea1d12496c0cfe9e4d.jpg'
-    } else {
-      e.target.src = 'https://www.mastermindpromotion.com/wp-content/uploads/2015/02/facebook-default-no-profile-pic-300x300.jpg'
-    }
-    // e.target.src = 'https://emblemsbf.com/img/27447.jpg'
-
-    let fetchData = {
-      last_id: 'none',
-      number_of_records: 10,
-      first_page: 'first',
-      current_page: this.state.pageNumber,
-      filter: this.state.filter,
-      filter_criteria: {
-        search_value: this.state.searchValue,
-        gender_value: this.state.filterByGender,
-        locale_value: this.state.filterByLocale
+    if (nextProps.broadcastsGraphData) {
+      var graphInfoBroadcast = nextProps.broadcastsGraphData.broadcastsGraphInfo
+      if (graphInfoBroadcast && graphInfoBroadcast.broadcastsgraphdata && graphInfoBroadcast.broadcastsgraphdata.length > 0) {
+        var broadcastData = graphInfoBroadcast.broadcastsgraphdata
+        broadcastData = this.includeZeroCounts(broadcastData)
       }
     }
-    this.props.updatePicture(this.props.currentPage._id, {subscriber}, fetchData)
+    if (nextProps.pollsGraphData) {
+      var graphInfoPolls = nextProps.pollsGraphData.pollsGraphInfo
+      if (graphInfoPolls && graphInfoPolls.pollsgraphdata && graphInfoPolls.pollsgraphdata.length > 0) {
+        var pollsData = graphInfoPolls.pollsgraphdata
+        pollsData = this.includeZeroCounts(pollsData)
+      }
+    }
+    if (nextProps.surveysGraphData) {
+      var graphInfoSurveys = nextProps.surveysGraphData.surveysGraphInfo
+      if (graphInfoSurveys && graphInfoSurveys.surveysgraphdata && graphInfoSurveys.surveysgraphdata.length > 0) {
+        var surveysData = graphInfoSurveys.surveysgraphdata
+        surveysData = this.includeZeroCounts(surveysData)
+      }
+    }
+    if (nextProps.sessionsGraphData) {
+      var graphInfoSessions = nextProps.sessionsGraphData.sessionsGraphInfo
+      if (graphInfoSessions && graphInfoSessions.sessionsgraphdata && graphInfoSessions.sessionsgraphdata.length > 0) {
+        var sessionsData = graphInfoSessions.sessionsgraphdata
+        sessionsData = this.includeZeroCounts(sessionsData)
+      }
+    }
+    var dataChart = this.prepareLineChartData(surveysData, pollsData, broadcastData, sessionsData)
+    this.setState({chartData: dataChart})
+  }
+  includeZeroCounts (data) {
+    var dataArray = []
+    var days = this.state.selectedDays !== '' ? this.state.selectedDays : '10'
+    var index = 0
+    var varDate = moment()
+    for (var i = 0; i < days; i++) {
+      for (var j = 0; j < data.length; j++) {
+        var recordId = data[j]._id
+        var date = `${recordId.year}-${recordId.month}-${recordId.day}`
+        var loopDate = moment(varDate).format('YYYY-MM-DD')
+        if (moment(date).isSame(loopDate, 'day')) {
+          var d = {}
+          d.date = loopDate
+          d.count = data[j].count
+          dataArray.push(d)
+          varDate = moment(varDate).subtract(1, 'days')
+          index = 0
+          break
+        }
+        index++
+      }
+      if (index === data.length) {
+        var obj = {}
+        obj.date = varDate.format('YYYY-MM-DD')
+        obj.count = 0
+        dataArray.push(obj)
+        varDate = moment(varDate).subtract(1, 'days')
+        index = 0
+      }
+    }
+    return dataArray.reverse()
+  }
+  prepareLineChartData (surveys, polls, broadcasts, sessions) {
+    var dataChart = []
+    if (surveys && surveys.length > 0) {
+      for (var i = 0; i < surveys.length; i++) {
+        var record = {}
+        record.date = surveys[i].date
+        if (broadcasts && broadcasts.length > 0) {
+          record.broadcastscount = broadcasts[i].count
+        } else {
+          record.broadcastscount = 0
+        }
+        if (polls && polls.length > 0) {
+          record.pollscount = polls[i].count
+        } else {
+          record.pollscount = 0
+        }
+        if (sessions && sessions.length > 0) {
+          record.sessionscount = sessions[i].count
+        } else {
+          record.sessionscount = 0
+        }
+        record.surveyscount = surveys[i].count
+        dataChart.push(record)
+      }
+    } else if (broadcasts && broadcasts.length > 0) {
+      for (var j = 0; j < broadcasts.length; j++) {
+        var record1 = {}
+        record1.date = broadcasts[j].date
+        if (surveys && surveys.length > 0) {
+          record1.surveyscount = surveys[j].count
+        } else {
+          record1.surveyscount = 0
+        }
+        if (polls && polls.length > 0) {
+          record1.pollscount = polls[j].count
+        } else {
+          record1.pollscount = 0
+        }
+        if (sessions && sessions.length > 0) {
+          record1.sessionscount = sessions[j].count
+        } else {
+          record1.sessionscount = 0
+        }
+        record1.broadcastscount = broadcasts[j].count
+        dataChart.push(record1)
+      }
+    } else if (polls && polls.length > 0) {
+      for (var k = 0; k < polls.length; k++) {
+        var record2 = {}
+        record2.date = polls[k].date
+        if (surveys && surveys.length > 0) {
+          record2.surveyscount = surveys[k].count
+        } else {
+          record2.surveyscount = 0
+        }
+        if (broadcasts && broadcasts.length > 0) {
+          record2.broadcastscount = broadcasts[k].count
+        } else {
+          record2.pollscount = 0
+        }
+        if (sessions && sessions.length > 0) {
+          record2.sessionscount = sessions[k].count
+        } else {
+          record2.sessionscount = 0
+        }
+        record2.pollscount = polls[k].count
+        dataChart.push(record2)
+      }
+    } else if (sessions && sessions.length > 0) {
+      for (var l = 0; l < sessions.length; l++) {
+        var record3 = {}
+        record3.date = sessions[l].date
+        if (surveys && surveys.length > 0) {
+          record3.surveyscount = surveys[l].count
+        } else {
+          record3.surveyscount = 0
+        }
+        if (broadcasts && broadcasts.length > 0) {
+          record3.broadcastscount = broadcasts[l].count
+        } else {
+          record3.pollscount = 0
+        }
+        if (polls && polls.length > 0) {
+          record3.pollscount = polls[l].count
+        } else {
+          record3.pollscount = 0
+        }
+        record3.sessionscount = sessions[l].count
+        dataChart.push(record3)
+      }
+    }
+    return dataChart
   }
 
+  goToBroadcasts (user) {
+    this.props.saveUserInformation(user)
+    this.props.history.push({
+      pathname: `/userDetails`,
+      state: user
+    })
+  }
+   debounce () {
+     console.log('debounce function called')
+     var value = document.getElementById('users_search').value
+     console.log('value', value)
+     this.setState({searchValue: value})
+     if (value !== '') {
+       this.setState({filter: true})
+       this.props.loadUsersList({last_id: this.props.users.length > 0 ? this.props.users[this.props.users.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter: true, filter_criteria: {search_value: value.toLowerCase(), gender_value: this.state.genderValue, locale_value: this.state.localeValue}})
+     } else {
+       this.props.loadUsersList({last_id: this.props.users.length > 0 ? this.props.users[this.props.users.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter: true, filter_criteria: {search_value: '', gender_value: this.state.genderValue, locale_value: this.state.localeValue}})
+     }
+   }
+
+  searchUser (event) {
+  }
+
+  getFile () {
+    console.log('getFile')
+    this.props.downloadFile()
+  }
+
+  onFilterByGender (e) {
+    //  var filtered = []
+    this.setState({genderValue: e.target.value})
+    if (e.target.value !== '' && e.target.value !== 'all') {
+      this.setState({filter: true})
+      this.props.loadUsersList({last_id: this.props.users.length > 0 ? this.props.users[this.props.users.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter: true, filter_criteria: {search_value: this.state.searchValue, gender_value: e.target.value, locale_value: this.state.localeValue}})
+    } else {
+      this.props.loadUsersList({last_id: this.props.users.length > 0 ? this.props.users[this.props.users.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter: true, filter_criteria: {search_value: this.state.searchValue, gender_value: '', locale_value: this.state.localeValue}})
+    }
+  }
+
+  onFilterByLocale (e) {
+    this.setState({localeValue: e.target.value})
+    if (e.target.value !== '' && e.target.value !== 'all') {
+      this.setState({filter: true})
+      this.props.loadUsersList({last_id: this.props.users.length > 0 ? this.props.users[this.props.users.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter: true, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.genderValue, locale_value: e.target.value}})
+    } else {
+      this.props.loadUsersList({last_id: this.props.users.length > 0 ? this.props.users[this.props.users.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter: true, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.genderValue, locale_value: ''}})
+    }
+  }
+  sendEmail () {
+    this.props.sendEmail(this.msg)
+  }
   render () {
+    let alertOptions = {
+      offset: 14,
+      position: 'top right',
+      theme: 'dark',
+      time: 5000,
+      transition: 'scale'
+    }
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
-        <div className='m-subheader '>
-          <div className='d-flex align-items-center'>
-            <div className='mr-auto'>
-              <h3 className='m-subheader__title'>{this.state.pageName}</h3>
-            </div>
-          </div>
-        </div>
+        <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
+        <div style={{float: 'left', clear: 'both'}}
+          ref={(el) => { this.top = el }} />
         <div className='m-content'>
+          { this.props.platformStats &&
+            <PlatformStats platformStats={this.props.platformStats} monthlyPlatformStats={this.props.platformStatsMonthly} weeklyPlatformStats={this.props.platformStatsWeekly} history={this.props.history} location={this.props.location} />
+          }
           <div className='row'>
-            <div
-              className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
-              <div className='m-portlet m-portlet--mobile'>
+            <AutopostingSummary backdoor={true} history={this.props.history} location={this.props.location} />
+          </div>
+          <div className='row'>
+            <IntegrationsSummary backdoor={true} history={this.props.history} location={this.props.location} />
+          </div>
+          <div className='row'>
+            <Reports
+              history={this.props.history}
+              location={this.props.location}
+              iconClassName={'fa fa-line-chart'}
+              title={'Reports'}
+              lineChartData={this.state.chartData}
+              onDaysChange={this.onDaysChange}
+              selectedDays={this.state.selectedDays}
+              week={this.props.platformStatsWeekly}
+              month={this.props.platformStatsMonthly}
+              />
+          </div>
+          <div className='row'>
+            <Top10pages pagesData={this.props.toppages} history={this.props.history} location={this.props.location} />
+            <div className='col-xl-12'>
+              <div className='m-portlet m-portlet--full-height '>
                 <div className='m-portlet__head'>
                   <div className='m-portlet__head-caption'>
                     <div className='m-portlet__head-title'>
-                      <h3 className='m-portlet__head-text'>
-                        Subscribers
-                      </h3>
-                      {
-                        this.state.pageSubscribersData && this.state.pageSubscribersData.length > 0  &&
-                        <button className='btn btn-primary' style={{margin: 18 + 'px', marginLeft: 600 + '%'}} onClick={this.downloadData.bind(this)}>Download</button>
-                      }
+                      <h3 className='m-portlet__head-text'>Users</h3>
                     </div>
+                  </div>
+                  <div className='m-portlet__head-tools'>
+                    <ul className='nav nav-pills nav-pills--brand m-nav-pills--align-right m-nav-pills--btn-pill m-nav-pills--btn-sm' role='tablist'>
+                      <li className='nav-item m-tabs__item' style={{marginTop: '15px'}}>
+                        <div className='m-input-icon m-input-icon--left'>
+                          <input name='users_search' id='users_search' type='text' placeholder='Search Users...' className='form-control m-input m-input--solid' onChange={this.searchUser} />
+                          <span className='m-input-icon__icon m-input-icon__icon--left'>
+                            <span><i className='la la-search' /></span>
+                          </span>
+                        </div>
+                      </li>
+                      <li className=' nav-item m-tabs__item m-portlet__nav-item m-dropdown m-dropdown--inline m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push' data-dropdown-toggle='click' aria-expanded='true'>
+                        <div id='target' ref={(b) => { this.target = b }} style={{marginTop: '18px', marginLeft: '10px', zIndex: 6}} className='align-center'>
+                          <div onClick={this.handleClick} style={{padding: 0 + 'px', cursor:'pointer'}}> <i className='flaticon flaticon-more' /> </div>
+                          <Popover
+                            style={{boxShadow: '0 8px 16px 0 rgba(0,0,0,0.2)', borderRadius: '5px', zIndex: 25, width:'auto', marginLeft:'-50px'}}
+                            placement='bottom'
+                            target={this.target}
+                            show={this.state.openPopover}
+                            onHide={this.handleClose} >
+                            <div>
+                              <div>
+                                <label style={{color: '#716aca'}}>Filters:</label>
+                                <br/>
+                                <select className='custom-select' id='m_form_status' tabIndex='-98' value={this.state.genderValue} onChange={this.onFilterByGender}>
+                                  <option key='Gender' value='' disabled>Filter by gender...</option>
+                                  <option key='GenderALL' value='all'>All</option>
+                                  {
+                                  this.state.genders.map((gender, i) => (
+                                    <option key={'Gender' + i} value={gender.value}>{gender.label}</option>
+                                  ))
+                                }
+                                </select>
+                                <br />
+                                <select className='custom-select' id='m_form_type' tabIndex='-98' value={this.state.localeValue} onChange={this.onFilterByLocale} style={{marginTop: '10px', width: '155px'}}>
+                                  <option key='' value='' disabled>Filter by Locale...</option>
+                                  <option key='ALL' value='all'>ALL</option>
+                                  {
+                                  this.props.locales && this.props.locales.map((locale, i) => (
+                                    <option key={i} value={locale.value}>{locale.text}</option>
+                                  ))
+                                }
+                                </select>
+                              </div>
+                              <br />
+                              <div>
+                                <label style={{color: '#716aca'}}>Actions:</label>
+                                <br />
+                                <i className='la la-download' />&nbsp;<a href='#/' onClick={this.getFile} className='m-card-profile__email m-link' style={{cursor: 'pointer'}}>
+                                Download Data
+                              </a>
+                                <br />
+                                <i className='la la-envelope-o' />&nbsp;<a href='#/' onClick={this.sendEmail} className='m-card-profile__email m-link' style={{cursor: 'pointer', marginTop: '5px'}}>
+                                Send Weekly Email
+                              </a>
+                                <br />
+                              </div>
+                            </div>
+                          </Popover>
+                        </div>
+                      </li>
+                    </ul>
                   </div>
                 </div>
                 <div className='m-portlet__body'>
-                  <div className='row align-items-center'>
-                    <div className='col-lg-12 col-md-12'>
-                      <div className='m-form m-form--label-align-right m--margin-top-20 m--margin-bottom-30'>
-                        <div className='row align-items-center'>
-                          <div className='col-xl-12 order-2 order-xl-1'>
-                            <div
-                              className='form-group m-form__group row align-items-center'>
-                              <div className='col-md-4'>
-                                <div
-                                  className='m-form__group m-form__group--inline'>
-                                  <div className='m-input-icon m-input-icon--left'>
-                                    <input type='text' placeholder='Search Subscribers...' className='form-control m-input m-input--solid' onChange={this.searchSubscribers} />
-                                    <span className='m-input-icon__icon m-input-icon__icon--left'>
-                                      <span>
-                                        <i className='la la-search' />
-                                      </span>
-                                    </span>
+                  <div className='tab-content'>
+                    <div className='tab-pane active m-scrollable' role='tabpanel'>
+                      <div className='m-messenger m-messenger--message-arrow m-messenger--skin-light'>
+                        <div style={{height: '393px', position: 'relative', overflow: 'visible', touchAction: 'pinch-zoom'}} className='m-messenger__messages'>
+                          <div style={{position: 'relative', overflowY: 'scroll', height: '100%', maxWidth: '100%', maxHeight: 'none', outline: 0, direction: 'ltr'}}>
+                            <div style={{position: 'relative', top: 0, left: 0, overflow: 'hidden', width: 'auto', height: 'auto'}} >
+                              <div className='tab-pane active' id='m_widget5_tab1_content' aria-expanded='true'>
+                                {
+                                  this.state.usersData && this.state.usersData.length > 0
+                                  ? <div className='m-widget5'>
+                                    { this.state.usersData.map((user, i) => (
+                                      <div className='m-widget5__item' key={i} style={{borderBottom: '.07rem dashed #ebedf2'}}>
+                                        <div className='m-widget5__pic'>
+                                          <img className='m-widget7__img' alt='pic' src={(user.facebookInfo) ? user.facebookInfo.profilePic : 'https://cdn.cloudkibo.com/public/icons/users.jpg'} style={{height: '100px', borderRadius: '50%', width: '7rem'}} />
+                                        </div>
+                                        <div className='m-widget5__content'>
+                                          <h4 className='m-widget5__title'>
+                                            {user.name}
+                                          </h4>
+                                          {user.email &&
+                                          <span className='m-widget5__desc'>
+                                            <b>Email:</b> {user.email}
+                                          </span>
+                                          }
+                                          <br />
+                                          <span className='m-widget5__desc'>
+                                            <b>Created At:</b> {this.handleDate(user.createdAt)}
+                                          </span>
+                                          <div className='m-widget5__info'>
+                                            <span className='m-widget5__author'>
+                                              Gender:&nbsp;
+                                            </span>
+                                            <span className='m-widget5__info-author m--font-info'>
+                                              {user.facebookInfo ? user.facebookInfo.gender : ''}
+                                            </span>
+                                            <span className='m-widget5__info-label'>
+                                            Locale:&nbsp;
+                                            </span>
+                                            <span className='m-widget5__info-author m--font-info'>
+                                              {user.facebookInfo && user.facebookInfo.locale ? localeCodeToEnglish(user.facebookInfo.locale) : ''}
+                                            </span>
+                                          </div>
+                                        </div>
+                                        <div className='m-widget5__stats1'>
+                                          <span className='m-widget5__number'>
+                                            {user.pages}
+                                          </span>
+                                          <br />
+                                          <span className='m-widget5__sales'>
+                                            Connected Pages
+                                          </span>
+                                        </div>
+                                        <div className='m-widget5__stats2'>
+                                          <span className='m-widget5__number'>
+                                            {user.subscribers}
+                                          </span>
+                                          <br />
+                                          <span className='m-widget5__votes'>
+                                            Total Subscribers
+                                          </span>
+                                        </div>
+                                        <div className='m-widget5__stats2'>
+                                          <br />
+                                          <span className='m-widget5__votes'>
+                                            <button onClick={() => this.goToBroadcasts(user)} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary'>
+                                             See more
+                                           </button>
+                                          </span>
+                                        </div>
+                                        <div className='m-widget5__stats2'>
+                                          <br />
+                                          <span className='m-widget5__votes'>
+                                            <button onClick={() => this.setUsersView(user)} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary'>
+                                             User's View
+                                           </button>
+                                          </span>
+                                        </div>
+                                      </div>
+                                        ))}
                                   </div>
-                                </div>
-                                <div
-                                  className='d-md-none m--margin-bottom-10' />
-                              </div>
-                              <div className='col-md-4'>
-                                <div
-                                  className='m-form__group m-form__group--inline'>
-                                  <div className='m-form__label'>
-                                    <label>
-                                      Gender:
-                                    </label>
-                                  </div>
-                                  <div className='m-form__control'>
-                                    <Select
-                                      name='form-field-name'
-                                      options={this.state.genders}
-                                      onChange={this.onFilterByGender}
-                                      placeholder='Filter by gender...'
-                                      value={this.state.genderValue}
-                                    />
-                                  </div>
-                                </div>
-                                <div
-                                  className='d-md-none m--margin-bottom-10' />
-                              </div>
-                              <div className='col-md-4'>
-                                <div
-                                  className='m-form__group m-form__group--inline'>
-                                  <div className='m-form__label'>
-                                    <label>
-                                      Locale:
-                                    </label>
-                                  </div>
-                                  <div className='m-form__control'>
-                                    <Select
-                                      name='form-field-name'
-                                      options={this.state.localeOptions}
-                                      onChange={this.onFilterByLocale}
-                                      placeholder='Filter by locale...'
-                                      value={this.state.localeValue}
-                                    />
-                                  </div>
-                                </div>
-                                <div
-                                  className='d-md-none m--margin-bottom-10' />
+                                    : <div>No Data to display</div>
+                                    }
+                                {this.state.usersData.length < this.props.count &&
+                                <center>
+                                  <i className='fa fa-refresh' style={{color: '#716aca'}} />&nbsp;
+                                  <a href='#/' id='assignTag' className='m-link' style={{color: '#716aca', cursor: 'pointer', marginTop: '20px'}} onClick={this.loadMore}>Load More</a>
+                                </center>
+                                }
                               </div>
                             </div>
                           </div>
                         </div>
                       </div>
-                      {
-                        this.state.pageSubscribersData && this.state.pageSubscribersData.length > 0
-                          ? <div className='m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
-                            <table className='m-datatable__table'
-                              id='m-datatable--27866229129' style={{
-                                display: 'block',
-                                height: 'auto',
-                                overflowX: 'auto'
-                              }}>
-                              <thead className='m-datatable__head'>
-                                <tr className='m-datatable__row'
-                                  style={{height: '53px'}}>
-                                  <th data-field='pages'
-                                    className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                    <span style={{width: '150px'}}>Profile Pic</span>
-                                  </th>
-                                  <th data-field='likes'
-                                    className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                    <span style={{width: '150px'}}>Subscriber Name</span>
-                                  </th>
-                                  <th data-field='subscribers'
-                                    className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                    <span style={{width: '150px'}}>Gender</span>
-                                  </th>
-                                  <th data-field='connected'
-                                    className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                    <span style={{width: '150px'}}>Locale</span>
-                                  </th>
-                                </tr>
-                              </thead>
-                              <tbody className='m-datatable__body' style={{textAlign: 'center'}}>
-                                {
-                                  this.state.pageSubscribersData.map((subscriber, i) => (
-                                    <tr data-row={i}
-                                      className='m-datatable__row m-datatable__row--even'
-                                      style={{height: '55px'}} key={i}>
-                                      <td data-field='pages'
-                                        className='m-datatable__cell'>
-                                        <span
-                                          style={{width: '150px'}}>
-                                          <img alt='pic'
-                                            src={(subscriber.profilePic) ? subscriber.profilePic : ''}
-                                            onError={(e) => this.profilePicError(e, subscriber)}
-                                            className='m--img-rounded m--marginless m--img-centered' width='60' height='60'
-                                        />
-                                        </span>
-                                      </td>
-                                      <td data-field='likes'
-                                        className='m-datatable__cell'>
-                                        <span
-                                          style={{width: '150px'}}>{subscriber.firstName}{' '}{subscriber.lastName}</span>
-                                      </td>
-                                      <td data-field='subscribers'
-                                        className='m-datatable__cell'>
-                                        <span
-                                          style={{width: '150px'}}>{subscriber.gender}</span>
-                                      </td>
-                                      <td data-field='connected'
-                                        className='m-datatable__cell'>
-                                        <span
-                                          style={{width: '150px'}}>{localeCodeToEnglish(subscriber.locale)}</span>
-                                      </td>
-                                    </tr>
-                              ))
-                            }
-                              </tbody>
-                            </table>
-                            <ReactPaginate previousLabel={'previous'}
-                              nextLabel={'next'}
-                              breakLabel={<a href='#/'>...</a>}
-                              breakClassName={'break-me'}
-                              pageCount={Math.ceil(this.state.totalLength / 10)}
-                              marginPagesDisplayed={2}
-                              pageRangeDisplayed={3}
-                              onPageChange={this.handlePageClick}
-                              containerClassName={'pagination'}
-                              subContainerClassName={'pages pagination'}
-                              activeClassName={'active'}
-                              forcePage={this.state.pageNumber} />
-                          </div>
-                          : <p> No data to display </p>
-                      }
                     </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-          <div style={{'overflow': 'auto'}}>
-            <button className='btn btn-primary btn-sm' onClick={() => this.backToUserDetails()} style={{ float: 'right', margin: '20px' }}>Back
-            </button>
-          </div>
+          <CompanyInfo history={this.props.history} location={this.props.location} />
+          <BroadcastsByDays history={this.props.history} location={this.props.location} />
+          <SurveysByDays history={this.props.history} location={this.props.location} />
+          <PollsByDays history={this.props.history} location={this.props.location} />
+          <UniquePages history={this.props.history} location={this.props.location} />
         </div>
       </div>
     )
   }
 }
-
 function mapStateToProps (state) {
-  console.log('in mapStateToProps for pageSubscribers', state)
+  console.log('in mapStateToProps', state)
   return {
-    pageSubscribers: (state.backdoorInfo.pageSubscribers),
-    count: (state.backdoorInfo.subscribersCount),
+    users: (state.backdoorInfo.users),
+    count: (state.backdoorInfo.count),
     locales: (state.backdoorInfo.locales),
     currentUser: (state.backdoorInfo.currentUser),
-    currentPage: (state.backdoorInfo.currentPage)
+    dataobjects: (state.backdoorInfo.dataobjects),
+    toppages: state.backdoorInfo.kiboTopPages,
+    broadcastsGraphData: (state.backdoorInfo),
+    pollsGraphData: (state.backdoorInfo),
+    surveysGraphData: (state.backdoorInfo),
+    sessionsGraphData: (state.backdoorInfo),
+    platformStats: state.backdoorInfo.platformStatsInfo,
+    autopostingStats: state.backdoorInfo.autopostingStatsInfo,
+    platformStatsWeekly: state.backdoorInfo.weeklyPlatformStats,
+    platformStatsMonthly: state.backdoorInfo.monthlyPlatformStats
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-    loadPageSubscribersList: loadPageSubscribersList,
-    allLocales: allLocales,
-    updatePicture: updatePicture
+    loadUsersList,
+    saveUserInformation,
+    downloadFile,
+    loadBroadcastsGraphData,
+    loadSurveysGraphData,
+    loadPollsGraphData,
+    loadSessionsGraphData,
+    sendEmail,
+    allLocales,
+    fetchPlatformStats,
+    fetchPlatformStatsDateWise,
+    fetchUserStats,
+    fetchUserStatsDateWise,
+    fetchOneUserStats,
+    fetchOneUserStatsDateWise,
+    fetchPageStats,
+    fetchPageStatsDateWise,
+    fetchOnePageStats,
+    fetchOnePageStatsDateWise,
+    fetchTopPages,
+    fetchAutopostingPlatformWise,
+    fetchAutopostingPlatformWiseDateWise,
+    fetchAutopostingUserWise,
+    fetchAutopostingUserWiseDateWise,
+    fetchPlatformStatsMonthly,
+    fetchPlatformStatsWeekly
   },
     dispatch)
 }
-export default connect(mapStateToProps, mapDispatchToProps)(PageSubscribers)
+export default connect(mapStateToProps, mapDispatchToProps)(OperationalDashboard)
