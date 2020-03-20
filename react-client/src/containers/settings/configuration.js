@@ -5,7 +5,7 @@ import { getAutomatedOptions, disconnectFacebook } from '../../redux/actions/bas
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import AlertContainer from 'react-alert'
-import WhatsAppDeleteModal from '../../components/extras/whatsAppDeleteModal'
+import WhatsAppDeleteModal from '../../components/extras/deleteWithPassword'
 
 class Webhook extends React.Component {
   constructor (props, context) {
@@ -48,16 +48,16 @@ class Webhook extends React.Component {
     })
   }
 
-  deleteWhatsApp (type, password) {
-    if (type === 'Disconnect') {
-      this.props.deleteWhatsApp({type: type, password: password}, this.handleDeleteWhatsAppResponse)
+  deleteWhatsApp (password) {
+    if (this.state.type === 'Disconnect') {
+      this.props.deleteWhatsApp({type: this.state.deleteType, password: password}, this.handleDeleteWhatsAppResponse)
     } else {
       let data = {
         accountSID: this.state.SIDWapp,
         authToken: this.state.tokenWapp,
         sandboxNumber: this.state.number,
         sandboxCode: this.state.code,
-        type: type,
+        type: this.state.deleteType,
         password: password
       }
       this.props.deleteWhatsApp(data, this.handleDeleteWhatsAppResponse)
@@ -211,8 +211,10 @@ class Webhook extends React.Component {
                       </span>
         </button>
         <WhatsAppDeleteModal
-          type={this.state.deleteType}
-          deleteWhatsApp={this.deleteWhatsApp}
+          id='disconnectWhatsApp'
+          title={`${this.state.type} WhatsApp Twilio Account`}
+          content={`Are you sure you want to ${this.state.type} your WhatsApp Twilio Account? Doing so will be remove all of your subscribers, their chat history and the broadcasts you have created.`}
+          deleteWithPassword={this.deleteWhatsApp}
         />
         <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="disconnect" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">

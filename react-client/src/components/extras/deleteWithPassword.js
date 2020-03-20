@@ -1,11 +1,7 @@
-/* eslint-disable no-return-assign */
-/**
- * Created by imran on 26/12/2017.
- */
-
 import React from 'react'
+import PropTypes from 'prop-types'
 
-class WhatsAppDeleteModal extends React.Component {
+class DeleteWithPassword extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
@@ -21,12 +17,12 @@ class WhatsAppDeleteModal extends React.Component {
   }
   render () {
     return (
-      <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="disconnectWhatsApp" ref='disconnectWhatsApp' tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id={this.props.id} ref='disconnectWhatsApp' tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
           <div className="modal-content">
             <div style={{ display: 'block' }} className="modal-header">
               <h5 className="modal-title" id="exampleModalLabel">
-                {this.props.type} WhatsApp Twilio Account
+                {this.props.title}
               </h5>
               <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">
@@ -35,7 +31,7 @@ class WhatsAppDeleteModal extends React.Component {
               </button>
             </div>
             <div style={{ color: 'black' }} className="modal-body">
-              <p>Are you sure you want to {this.props.type} your WhatsApp Twilio Account? Doing so will be remove all of your subscribers, their chat history and the broadcasts you have created.</p>
+              <p>{this.props.content}</p>
               <br />
               <div id='question' className='form-group m-form__group'>
                 <span className='control-label'>If you wish to proceed, please enter your password below:</span>
@@ -46,7 +42,7 @@ class WhatsAppDeleteModal extends React.Component {
                 className='btn btn-primary btn-sm'
                 disabled={this.state.password === ''}
                 onClick={() => {
-                  this.props.deleteWhatsApp(this.props.type, this.state.password)
+                  this.props.deleteWithPassword(this.state.password)
                 }}>Confirm
               </button>
             </div>
@@ -56,5 +52,10 @@ class WhatsAppDeleteModal extends React.Component {
     )
   }
 }
-
-export default WhatsAppDeleteModal
+DeleteWithPassword.propTypes = {
+  'id': PropTypes.string.isRequired,
+  'title': PropTypes.string.isRequired,
+  'content': PropTypes.string.isRequired,
+  'deleteWithPassword': PropTypes.func.isRequired
+}
+export default DeleteWithPassword
