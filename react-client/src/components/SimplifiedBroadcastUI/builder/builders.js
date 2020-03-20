@@ -1399,7 +1399,6 @@ class Builders extends React.Component {
           module = {this.props.module}
           edit={this.state.editData ? true : false}
           {...this.state.editData}
-          editData={this.state.editData}
           buttonActions={this.props.buttonActions}
           pages={this.props.pages}
           replyWithMessage={this.props.replyWithMessage}
