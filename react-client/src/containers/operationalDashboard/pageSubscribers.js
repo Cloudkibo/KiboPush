@@ -11,8 +11,8 @@ class PageSubscribers extends React.Component {
     super(props, context)
     // const pageId = this.props.params.pageId
     let pageName = ''
-    props.allLocales()
     if (this.props.currentPage) {
+      props.allLocales(this.props.currentPage._id)
       pageName = this.props.currentPage.pageName
       const id = this.props.currentPage._id
       props.loadPageSubscribersList(id, {last_id: 'none', number_of_records: 10, first_page: 'first', filter_criteria: {search_value: '', gender_value: '', locale_value: ''}})
@@ -27,8 +27,8 @@ class PageSubscribers extends React.Component {
         { value: 'male', label: 'Male' },
         { value: 'female', label: 'Female' },
         { value: 'other', label: 'Other' }],
-      genderValue: '',
-      localeValue: '',
+      genderValue: {value: '' , label: ''},
+      localeValue: {value: '' , label: ''},
       searchValue: '',
       pageNumber: 0
     }
@@ -102,7 +102,7 @@ class PageSubscribers extends React.Component {
   searchSubscribers (event) {
     this.setState({searchValue: event.target.value.toLowerCase(), pageNumber: 0})
     if (this.props.currentPage) {
-      this.props.loadPageSubscribersList(this.props.currentPage._id, {last_id: this.props.pageSubscribers.length > 0 ? this.props.pageSubscribers[this.props.pageSubscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter_criteria: {search_value: event.target.value.toLowerCase(), gender_value: this.state.genderValue, locale_value: this.state.localeValue}})
+      this.props.loadPageSubscribersList(this.props.currentPage._id, {last_id: this.props.pageSubscribers.length > 0 ? this.props.pageSubscribers[this.props.pageSubscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter_criteria: {search_value: event.target.value.toLowerCase(), gender_value: this.state.genderValue.value, locale_value: this.state.localeValue.value}})
     }
     // var filtered = []
     // for (let i = 0; i < this.props.pageSubscribers.length; i++) {
@@ -116,13 +116,14 @@ class PageSubscribers extends React.Component {
 
   onFilterByGender (data) {
     if (data) {
-      this.setState({genderValue: data.value, pageNumber: 0})
+      this.setState({genderValue: data, pageNumber: 0})
       if (this.props.currentPage) {
-        this.props.loadPageSubscribersList(this.props.currentPage._id, {last_id: this.props.pageSubscribers.length > 0 ? this.props.pageSubscribers[this.props.pageSubscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter_criteria: {search_value: this.state.searchValue, gender_value: data.value, locale_value: this.state.localeValue}})
+        this.props.loadPageSubscribersList(this.props.currentPage._id, {last_id: this.props.pageSubscribers.length > 0 ? this.props.pageSubscribers[this.props.pageSubscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter_criteria: {search_value: this.state.searchValue, gender_value: data.value, locale_value: this.state.localeValue.value}})
       }
     } else {
-      this.setState({genderValue: ''})
-      this.props.loadPageSubscribersList(this.props.currentPage._id, {last_id: this.props.pageSubscribers.length > 0 ? this.props.pageSubscribers[this.props.pageSubscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter_criteria: {search_value: this.state.searchValue, gender_value: '', locale_value: this.state.localeValue}})
+      let genderValue = { value: '', label: '' }
+      this.setState({genderValue: genderValue})
+      this.props.loadPageSubscribersList(this.props.currentPage._id, {last_id: this.props.pageSubscribers.length > 0 ? this.props.pageSubscribers[this.props.pageSubscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter_criteria: {search_value: this.state.searchValue, gender_value: '', locale_value: this.state.localeValue.value}})
     }
     // var filtered = []
     // if (!data) {
@@ -159,13 +160,14 @@ class PageSubscribers extends React.Component {
   onFilterByLocale (data) {
     console.log('data', data)
     if (data) {
-      this.setState({localeValue: data.value, pageNumber: 0})
+      this.setState({localeValue: data, pageNumber: 0})
       if (this.props.currentPage) {
-        this.props.loadPageSubscribersList(this.props.currentPage._id, {last_id: this.props.pageSubscribers.length > 0 ? this.props.pageSubscribers[this.props.pageSubscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.genderValue, locale_value: data.value}})
+        this.props.loadPageSubscribersList(this.props.currentPage._id, {last_id: this.props.pageSubscribers.length > 0 ? this.props.pageSubscribers[this.props.pageSubscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.genderValue.value, locale_value: data.value}})
       }
     } else {
-      this.setState({localeValue: ''})
-      this.props.loadPageSubscribersList(this.props.currentPage._id, {last_id: this.props.pageSubscribers.length > 0 ? this.props.pageSubscribers[this.props.pageSubscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.genderValue, locale_value: ''}})
+      let localeValue = { value: '', label: '' }
+      this.setState({localeValue: localeValue})
+      this.props.loadPageSubscribersList(this.props.currentPage._id, {last_id: this.props.pageSubscribers.length > 0 ? this.props.pageSubscribers[this.props.pageSubscribers.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.genderValue.value, locale_value: ''}})
     }
     // var filtered = []
     // if (!data) {
