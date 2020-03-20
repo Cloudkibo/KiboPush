@@ -27,6 +27,8 @@ class YoutubeVideoModal extends React.Component {
       videoDescription: this.props.videoDescription ? this.props.videoDescription : '',
       loading: false,
       videoId: this.props.videoId ? this.props.videoId : null,
+      card: this.props.card,
+      fileSizeExceeded: this.props.fileSizeExceeded
     }
     console.log('YoutubeVideoModal state', this.state)
     console.log('YoutubeVideoModal module', this.props.module)
@@ -43,13 +45,13 @@ class YoutubeVideoModal extends React.Component {
 
   handleLinkChange(e) {
     console.log('changing link', e.target.value)
-    this.setState({ buttons: [], disabled: true, link: e.target.value, videoId: null, videoTitle: null, videoDescription: null }, () => {
+    this.setState({ fileSizeExceeded: false, buttons: [], disabled: true, link: e.target.value, videoId: null, videoTitle: null, videoDescription: null, file: null, card: null }, () => {
       this.validateYoutubeUrl()
     })
   }
 
   handleDone() {
-    if (this.props.noButtons) {
+    if (this.props.noButtons || this.state.card) {
       this.addComponent([])
     } else {
       this.AddButton.handleDone()
@@ -69,19 +71,35 @@ class YoutubeVideoModal extends React.Component {
         buttons
       }, this.props.edit)
     } else {
-      this.props.addComponent({
-        id: this.props.id,
-        youtubeLink: this.state.link,
-        videoLink: this.state.videoLink,
-        componentType: 'media',
-        fileurl: this.state.file.fileurl,
-        fileName: this.state.file.fileName,
-        image_url: '',
-        size: this.state.file.size,
-        type: this.state.file.type,
-        mediaType: 'video',
-        buttons
-      })
+      if (this.state.fileSizeExceeded) {
+        this.props.addComponent({
+          id: this.props.id,
+          fileSizeExceeded: this.state.fileSizeExceeded,
+          componentName:  'YouTube video',
+          youtubeLink: this.state.link,
+          componentType: 'card',
+          image_url: this.state.card.image_url ? this.state.card.image_url : '',
+          title: this.state.card.title,
+          description: this.state.card.subtitle,
+          buttons: this.state.card.buttons,
+          card: this.state.card
+        }, this.props.edit)
+      } else {
+        this.props.addComponent({
+          id: this.props.id,
+          componentName:  'YouTube video',
+          youtubeLink: this.state.link,
+          videoLink: this.state.videoLink,
+          componentType: 'media',
+          fileurl: this.state.file.fileurl,
+          fileName: this.state.file.fileName,
+          image_url: '',
+          size: this.state.file.size,
+          type: this.state.file.type,
+          mediaType: 'video',
+          buttons
+        }, this.props.edit)
+      }
     }
   }
 
@@ -92,11 +110,12 @@ class YoutubeVideoModal extends React.Component {
 
   updateFile(file) {
     if (file === 'ERR_LIMIT_REACHED') {
-      this.setState({ fileSizeExceeded: true, disabled: true, loading: false })
+      this.setState({ fileSizeExceeded: true, disabled: false, loading: false })
+      this.props.urlMetaData(this.state.link, (data) => this.handleUrlMetaData(data))
       return
     }
     console.log('updating YouTube file', file)
-    if (this.props.module !== 'jsonads') {
+    if (this.props.pages) {
       this.uploadTemplate(file)
     } else {
       this.setState({
@@ -183,7 +202,28 @@ class YoutubeVideoModal extends React.Component {
   }
 
   handleUrlMetaData(data) {
-    this.setState({ videoTitle: data.title, videoDescription: data.description })
+    let description
+    if (data.ogDescription) {
+      description = data.ogDescription.length > 80 ? data.ogDescription.substring(0, 80) + '...' : data.ogDescription
+    } else {
+      description = this.props.connectedPages.filter(page => page.pageId === this.props.pageId)[0].pageName
+    }
+    if (data.ogImage && data.ogImage.url && data.ogImage.url.startsWith('/')) {
+        data.ogImage.url = this.state.link + data.ogImage.url
+    }
+    let card = {
+      title: data.ogTitle.length > 80 ? data.ogTitle.substring(0, 80) + '...' : data.ogTitle,
+      subtitle: description,
+      image_url: data.ogImage && data.ogImage.url ? data.ogImage.url : this.defaultImage,
+      buttons: [
+          {
+              title: 'Watch on YouTube',
+              type: 'web_url',
+              url: this.state.link
+          }
+      ]
+    }
+    this.setState({card})
   }
 
   closeModal() {
@@ -199,25 +239,6 @@ class YoutubeVideoModal extends React.Component {
     this.props.closeModal()
   }
 
-  // UNSAFE_componentWillReceiveProps(nextProps) {
-  //   console.log('componentWillRecieveProps YoutubeVideoModal')
-  //   this.setState({
-  //     buttons: nextProps.buttons.map(button => { return { visible: true, title: button.title } }),
-  //     numOfCurrentButtons: 0,
-  //     disabled: nextProps.edit ? false : true,
-  //     buttonDisabled: false,
-  //     buttonLimit: 3,
-  //     buttonActions: nextProps.buttonActions ? nextProps.buttonActions : ['open website', 'open webview'],
-  //     file: nextProps.file ? this.props.file : '',
-  //     link: nextProps.youtubeLink ? nextProps.youtubeLink : '',
-  //     videoLink: nextProps.videoLink ? nextProps.videoLink : '',
-  //     videoTitle: nextProps.videoTitle ? nextProps.videoTitle : '',
-  //     videoDescription: nextProps.videoDescription ? nextProps.videoDescription : '',
-  //     loading: false,
-  //     videoId: nextProps.videoId ? nextProps.videoId : null,
-  //   })
-  // }
-
   render() {
     console.log('video link', this.state.link)
     console.log('YoutubeVideoModal props in render', this.props)
@@ -226,20 +247,19 @@ class YoutubeVideoModal extends React.Component {
       <div className="modal-content" style={{width: '72vw'}}>
         <div style={{ display: 'block' }} className="modal-header">
           <h5 className="modal-title" id="exampleModalLabel">
-            Add Video from YouTube
-									</h5>
+            YouTube Video
+          </h5>
           <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" onClick={this.closeModal} aria-label="Close">
             <span aria-hidden="true">
               &times;
-											</span>
+            </span>
           </button>
         </div>
         <div style={{ color: 'black' }} className="modal-body">
           <div className='row'>
             <div className='col-6' style={{ maxHeight: '65vh', overflowY: 'scroll' }}>
-              <h4>YouTube Link:</h4>
               <input value={this.state.link} style={{ maxWidth: '100%', borderColor: this.state.disabled && !this.state.loading ? 'red' : (this.state.loading || !this.state.disabled) ? 'green' : '' }} onChange={this.handleLinkChange} className='form-control' />
-              <div style={{ color: 'red' }}>{this.state.fileSizeExceeded ? '*The size of this YouTube video exceeds the 25 Mb limit imposed by Facebook. Please try another video.' : ''}</div>
+              <div style={{ color: 'green' }}>{this.state.fileSizeExceeded ? '*The size of this YouTube video exceeds the 25 Mb limit imposed by Facebook, so it will be sent as a card.' : ''}</div>
               <div style={{ color: 'red' }}>{!this.state.fileSizeExceeded && this.state.disabled && !this.state.loading ? '*Please enter a valid YouTube link.' : ''}</div>
               <div style={{ marginBottom: '30px', color: 'green' }}>{this.state.loading ? '*Please wait for the YouTube video to download.' : ''}</div>
               {
@@ -265,10 +285,33 @@ class YoutubeVideoModal extends React.Component {
             <div className='col-5'>
               <h4 style={{ marginLeft: '-50px' }}>Preview:</h4>
               <div className='ui-block' style={{ overflowY: 'auto', border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', minHeight: '68vh', maxHeight: '68vh', marginLeft: '-50px' }} >
-                <div className='ui-block' style={{ border: !this.state.disabled ? '1px solid rgba(0,0,0,.1)' : '', borderRadius: '10px', maxWidth: '80%', margin: 'auto', marginTop: '80px' }} >
+                <div className='ui-block' style={{ border: !this.state.disabled && !this.state.fileSizeExceeded ? '1px solid rgba(0,0,0,.1)' : '', borderRadius: '10px', maxWidth: '80%', margin: 'auto', marginTop: '80px' }} >
                   {
                     this.state.loading && <div className='align-center' style={{ padding: '50px' }}>
                       <center><RingLoader color='#FF5E3A' /></center>
+                    </div>
+                  }
+                  {
+                    this.state.fileSizeExceeded && this.state.card &&
+                      <div style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px', minHeight: '200px', maxWidth: '250px', margin: 'auto', marginTop: '-10px'}} className="carousel-item active">
+                        {
+                            this.state.card.image_url &&
+                            <img alt='' src={this.state.card.image_url} style={{objectFit: 'cover', minHeight: '170px', maxHeight: '170px', maxWidth: '300px', paddingBottom: '11px', paddingTop: '29px', margin: '-25px', width: '100%', height: '100%' }} />
+                        }
+                        <hr style={{marginTop: this.state.card.image_url ? '' : '100px', marginBottom: '5px'}} />
+                        <h6 style={{textAlign: 'left', marginLeft: '10px', marginTop: '10px', fontSize: '16px'}}>{this.state.card.title}</h6>
+                        <p style={{textAlign: 'left', marginLeft: '10px', marginTop: '5px', fontSize: '13px'}}>{this.state.card.subtitle ? this.state.card.subtitle : this.state.card.description}</p>
+                        <p style={{textAlign: 'left', marginLeft: '10px', fontSize: '13px'}}>{this.state.card.default_action && this.state.card.default_action.url}</p>
+                        {
+                            this.state.card.buttons && this.state.card.buttons.map((button, index) => (
+                            (button.visible || button.type) && (
+                              <div>
+                                  <hr style={{marginTop: !this.state.card.title && !this.state.card.subtitle && index === 0 ? '50px' : ''}}/>
+                                  <h5 style={{color: '#0782FF'}}>{button.title}</h5>
+                              </div>
+                            )
+                          ))
+                        }
                     </div>
                   }
 
@@ -302,7 +345,7 @@ class YoutubeVideoModal extends React.Component {
                     </div>
                   }
                   {
-                    (this.props.module !== 'whatsapp' && !this.state.disabled && !this.state.loading) &&
+                    (this.props.module !== 'whatsapp' && !this.state.disabled && !this.state.loading && !this.state.fileSizeExceeded) &&
                     <video ref="video" controls style={{ width: '100%', borderRadius: '10px', marginTop: '-10px', borderBottomLeftRadius: '0px', borderBottomRightRadius: '0px' }} name='media' id='youtube_player'>
                       <source src={this.state.videoLink} type='audio/mpeg' />
                     </video>
