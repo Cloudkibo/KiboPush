@@ -19,7 +19,7 @@ class LeftChatItem extends React.Component {
   }
 
   getType () {
-    let type = this.props.message.payload.type
+    let type = this.props.message.payload.type || this.props.message.payload.componentType
     if (
       this.props.message.payload.attachments &&
       this.props.message.payload.attachments.length > 0
@@ -40,7 +40,7 @@ class LeftChatItem extends React.Component {
       )
     } else if (type === 'video') {
       const video = {
-        fileurl: { url: message.attachments[0].payload.url }
+        fileurl: { url: message.attachments ? message.attachments[0].payload.url : message.fileurl.url }
       }
       return (
         <VIDEO
@@ -49,7 +49,7 @@ class LeftChatItem extends React.Component {
       )
     } else if (type === 'audio') {
       const audio = {
-        fileurl: { url: message.attachments[0].payload.url }
+        fileurl: { url: message.attachments ? message.attachments[0].payload.url : message.fileurl.url  }
       }
       return (
         <AUDIO
@@ -58,7 +58,7 @@ class LeftChatItem extends React.Component {
       )
     } else if (type === 'image') {
       const image = {
-        fileurl: message.attachments[0].payload.url
+        fileurl: message.attachments ? message.attachments[0].payload.url : message.fileurl.url
       }
       return (
         <IMAGE
@@ -66,7 +66,7 @@ class LeftChatItem extends React.Component {
         />
       )
     } else if (type === 'file') {
-      const url = message.attachments[0].payload.url
+      const url = message.attachments ? message.attachments[0].payload.url : message.fileurl.url
       const name = url.split('?')[0].split('/').pop()
       return (
         <FILE
