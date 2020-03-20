@@ -35,7 +35,7 @@ class WhatsAppDeleteModal extends React.Component {
               </button>
             </div>
             <div style={{ color: 'black' }} className="modal-body">
-              <p>Are you sure you want to change your WhatsApp Twilio Account? Doing so will be remove all of your subscribers, their chat history and the broadcasts you have created.</p>
+              <p>Are you sure you want to {this.props.type} your WhatsApp Twilio Account? Doing so will be remove all of your subscribers, their chat history and the broadcasts you have created.</p>
               <br />
               <div id='question' className='form-group m-form__group'>
                 <span className='control-label'>If you wish to proceed, please enter your password below:</span>
