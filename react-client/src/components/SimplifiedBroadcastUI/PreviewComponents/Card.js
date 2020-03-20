@@ -130,7 +130,7 @@ class Card extends React.Component {
       size: this.state.size,
     }]
     if (this.props.links) {
-      this.props.editComponent(this.props.youtubeLink ? 'video' : 'link', {
+      this.props.editComponent('link', {
         componentName:this.props.componentName,
         elementLimit: this.props.elementLimit,
         header:this.props.header,
