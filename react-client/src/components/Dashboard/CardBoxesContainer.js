@@ -25,7 +25,7 @@ class CardBoxesContainer extends React.Component {
           <UncontrolledTooltip style={{minWidth: '100px', opacity: '1.0'}} target='totalPages'>
             <span>Number of Facebook pages you are admin of</span>
           </UncontrolledTooltip>
-          <div className='col-sm-6 col-md-6 col-lg-6'>
+          <div className= {url.includes('kibolite.cloudkibo.com') ? 'col-sm-6 col-md-6 col-lg-6':'col-sm-3 col-md-3 col-lg-3'}>
             <Link to='/addPages' >
               <CardBox
                 style='brand'
@@ -38,7 +38,7 @@ class CardBoxesContainer extends React.Component {
           <UncontrolledTooltip style={{minWidth: '100px', opacity: '1.0'}} target='connectedPages'>
             <span>Number of Facebook pages connected with our app</span>
           </UncontrolledTooltip>
-          <div className='col-sm-6 col-md-6 col-lg-6'>
+          <div className= {url.includes('kibolite.cloudkibo.com') ? 'col-sm-6 col-md-6 col-lg-6':'col-sm-3 col-md-3 col-lg-3'}>
             <Link to='/pages' >
               <CardBox
                 style='success'
