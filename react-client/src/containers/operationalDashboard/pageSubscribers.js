@@ -18,6 +18,7 @@ class PageSubscribers extends React.Component {
       props.loadPageSubscribersList(id, {last_id: 'none', number_of_records: 10, first_page: 'first', filter_criteria: {search_value: '', gender_value: '', locale_value: ''}})
     }
     this.state = {
+      location: this.props.location.state ? this.props.location.state.module: '',
       pageName: pageName,
       pageSubscribersData: [],
       pageSubscribersDataAll: [],
@@ -85,6 +86,7 @@ class PageSubscribers extends React.Component {
   }
 
   UNSAFE_componentWillReceiveProps (nextProps) {
+    console.log('called component will receive', nextProps)
     if (nextProps.pageSubscribers && nextProps.count) {
       this.displayData(0, nextProps.pageSubscribers)
       this.setState({ totalLength: nextProps.count })
@@ -200,7 +202,7 @@ class PageSubscribers extends React.Component {
   }
 
   backToUserDetails () {
-    if (this.props.location.state && this.props.location.state.module === 'top10pages') {
+    if (this.state.location === 'top10pages') {
       this.props.history.push({
         pathname: `/operationalDashboard`
       })
