@@ -502,7 +502,7 @@ class Footer extends React.Component {
                 ref='_upload_attachment'
                 style={{display: 'none'}}
                 type='file'
-                accept='image/*, audio/*, video/*, application/*, text/*'
+                accept={this.props.filesAccepted}
                 onChange={this.onFileChange}
                 onClick={(e) => {e.target.value = ''}}
               />
@@ -573,7 +573,8 @@ Footer.propTypes = {
   'showSticker': PropTypes.bool.isRequired,
   'showEmoji': PropTypes.bool.isRequired,
   'showGif': PropTypes.bool.isRequired,
-  'showThumbsUp': PropTypes.bool.isRequired
+  'showThumbsUp': PropTypes.bool.isRequired,
+  'filesAccepted': PropTypes.string
 }
 
 export default Footer
