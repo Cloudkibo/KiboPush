@@ -400,7 +400,7 @@ export function updatePlatformSettings (data, msg, clearFields, platform) {
         console.log('response from updatePlatformSettings', res)
         if (res.status === 'success') {
           dispatch(getAutomatedOptions())
-          dispatch(getuserdetails())     
+          dispatch(getuserdetails())
           msg.success('Saved Successfully')
           if (platform && platform === 'sms') {
             dispatch(fetchValidCallerIds(data))
@@ -436,20 +436,40 @@ export function disconnect (data) {
       })
   }
 }
-export function updatePlatformWhatsApp (data, msg, clearFields) {
+export function deleteWhatsApp (data, handleResponse) {
+  console.log('data for deleteWhatsApp', data)
+  return (dispatch) => {
+    callApi('company/deleteWhatsAppInfo', 'post', data)
+      .then(res => {
+        if (res.status === 'success') {
+          dispatch(getAutomatedOptions())
+          dispatch(getuserdetails())
+        }
+        console.log('response from deleteWhatsApp', res)
+        handleResponse(res)
+      })
+  }
+}
+export function updatePlatformWhatsApp (data, msg, clearFields, handleResponse) {
   console.log('data for updatePlatformWhatsApp', data)
   return (dispatch) => {
     callApi('company/updatePlatformWhatsApp', 'post', data)
       .then(res => {
         console.log('response from updatePlatformWhatsApp', res)
         if (res.status === 'success') {
-          dispatch(getAutomatedOptions())
-          dispatch(getuserdetails())
-          msg.success('Saved Successfully')
+          if (!data.changeWhatsAppTwilio) {
+            dispatch(getAutomatedOptions())
+            dispatch(getuserdetails())
+          }
+          if (handleResponse) {
+            handleResponse(res.payload)
+          } else {
+            msg.success('Saved Successfully')
+          }
         } else {
-          msg.error(res.description)
+          msg.error(res.payload)
           if (clearFields) {
-            dispatch(clearFields())
+            clearFields()
           }
         }
       })

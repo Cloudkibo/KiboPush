@@ -41,6 +41,7 @@ class Header extends React.Component {
     this.updatePlatformValue = this.updatePlatformValue.bind(this)
     this.removeActingAsUser = this.removeActingAsUser.bind(this)
     this.showViewingAsDropDown = this.showViewingAsDropDown.bind(this)
+    this.redirectToDashboard = this.redirectToDashboard.bind(this)
   }
 
   removeActingAsUser () {
@@ -67,10 +68,31 @@ class Header extends React.Component {
           state: 'messenger'
         })
       } else {
+        this.redirectToDashboard(value)
         this.props.updatePlatform({platform: value})
       }
     } else {
+      this.redirectToDashboard(value)
       this.props.updatePlatform({platform: value})
+    }
+  }
+
+  redirectToDashboard (value) {
+    if (value === 'sms') {
+      this.props.history.push({
+        pathname: '/SmsDashboard',
+        state: 'sms'
+      })
+    } else if (value === 'whatsApp') {
+      this.props.history.push({
+        pathname: '/WhatsAppDashboard',
+        state: 'whatsApp'
+      })
+    } else if (value === 'messenger') {
+      this.props.history.push({
+        pathname: '/messengerDashboard',
+        state: 'messenger'
+      })
     }
   }
 

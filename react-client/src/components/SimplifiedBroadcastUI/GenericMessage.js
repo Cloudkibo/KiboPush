@@ -6,7 +6,6 @@ import { bindActionCreators } from 'redux'
 import { loadTags } from '../../redux/actions/tags.actions'
 import { fetchAllSequence } from '../../redux/actions/sequence.action'
 import { loadCustomFields } from '../../redux/actions/customFields.actions'
-import {validateYoutubeURL} from '../../utility/utils'
 
 // import Image from './PreviewComponents/Image'
 import Audio from './PreviewComponents/Audio'
@@ -27,6 +26,7 @@ import AudioModal from './AudioModal'
 import MediaModal from './MediaModal'
 import LinkCarousel from './LinkCarousel';
 import QuickReplies from './QuickReplies'
+import YoutubeVideoModal from './YoutubeVideoModal'
 
 class GenericMessage extends React.Component {
   constructor (props, context) {
@@ -555,16 +555,7 @@ class GenericMessage extends React.Component {
         toggleGSModal={this.toggleGSModal}
         closeGSModal={this.closeGSModal}
         addComponent={this.addComponent} />),
-      'video': (<LinkCarousel
-        elementLimit={1}
-        componentName={'YouTube video'}
-        header={'YouTube video'}
-        defaultErrorMsg={'Please enter a valid YouTube link'}
-        invalidMsg={'Invalid YouTube link'}
-        validMsg={'YouTube link is valid'}
-        retrievingMsg={'Retrieving YouTube video metadata'}
-        buttonTitle={'Watch on YouTube'}
-        validateUrl={(url) => validateYoutubeURL(url)}
+      'video': (<YoutubeVideoModal
         buttons={[]}
         noButtons={this.props.noButtons}
         module = {this.props.module}
@@ -573,6 +564,7 @@ class GenericMessage extends React.Component {
         buttonActions={this.props.buttonActions}
         pages={this.props.pages}
         replyWithMessage={this.props.replyWithMessage}
+        pageId={this.props.pageId}
         showCloseModalAlertDialog={this.showCloseModalAlertDialog}
         closeModal={this.closeAddComponentModal}
         toggleGSModal={this.toggleGSModal}
@@ -653,6 +645,9 @@ class GenericMessage extends React.Component {
       'card': {
         component: (<Card
           id={componentId}
+          card={broadcast.card}
+          youtubeLink={broadcast.youtubeLink}
+          fileSizeExceeded={broadcast.fileSizeExceeded}
           elementLimit={broadcast.elementLimit}
           componentName={broadcast.componentName}
           header={broadcast.header}
