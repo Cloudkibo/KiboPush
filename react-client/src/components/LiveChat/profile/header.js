@@ -41,7 +41,7 @@ class ProfileHeader extends React.Component {
             {this.props.activeSession.name}
           </span>
           {
-            this.props.user && (this.props.user.role === 'admin' || this.props.user.role === 'buyer') &&
+            this.props.showUnsubscribe && this.props.user && (this.props.user.role === 'admin' || this.props.user.role === 'buyer') &&
             <span className='m-card-profile__email m-link' data-toggle="modal" data-target="#_unsubscribe" style={{ color: '#716aca', cursor: 'pointer' }}>
               (Unsubscribe)
             </span>
@@ -81,11 +81,12 @@ class ProfileHeader extends React.Component {
 }
 
 ProfileHeader.propTypes = {
-  'unSubscribe': PropTypes.func.isRequired,
+  'unSubscribe': PropTypes.func,
   'activeSession': PropTypes.object.isRequired,
   'user': PropTypes.object.isRequired,
   'profilePicError': PropTypes.func.isRequired,
-  'updateState': PropTypes.func.isRequired
+  'updateState': PropTypes.func.isRequired,
+  'showUnsubscribe': PropTypes.bool.isRequired
 }
 
 export default ProfileHeader

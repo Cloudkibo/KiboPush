@@ -110,7 +110,7 @@ class MessageUs extends React.Component {
                 <h5 className="modal-title" id="exampleModalLabel">
                   Message Us Widget Video Tutorial
 									</h5>
-                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" 
+                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal"
                 aria-label="Close"
                 onClick={() => {
                   this.setState({
@@ -213,16 +213,17 @@ class MessageUs extends React.Component {
                       need to put this line inside &lt;body&gt; tag of HTML of your
                       website&#39;s each page.
                       <br /><br />
-                      <center>
-                        <code className='codeBox'>
-                          &lt;a class='btn'
+                        <center style={{background: 'white', padding: '10px'}}>
+                          <code style={{background: 'white'}}>
+                          &lt;a
                           href="https://m.me/{this.state.pageid}"
-                          style='{'background:' + this.state.buttonColor +
+                          style='{'background: ' + this.state.buttonColor +
                             ';color: ' + this.state.fontColor +
-                            '; border-color: white;'}' &gt;&lt;i class="fa
-                          fa-facebook
-                          fa-lg" &gt; &lt;/i&gt;{this.state.buttonText} &lt;
-                          /a&gt;
+                            ';border-color: white;padding: 6px 12px;'+
+                            'text-align: center;' +
+                            'text-decoration: none;' +
+                            'border-radius: 4px;'}'&gt;
+                          &lt;i class="fa fa-facebook" style='{'margin-right: 5px'}'&gt;&lt;/i&gt;{this.state.buttonText}&lt;/a&gt;
                         </code>
                       </center>
                       <br />
@@ -268,12 +269,17 @@ class MessageUs extends React.Component {
                           }}>
                             <label htmlFor='textbtn'> Button Preview</label>
                             <br />
-                            <a className='btn' href='#/' style={{
+                            <a href='#/' style={{
                               'backgroundColor': this.state.buttonColor,
                               'color': this.state.fontColor,
-                              'borderColor': this.state.fontColor
+                              'borderColor': this.state.fontColor,
+                              'padding': '6px 12px',
+                              'textAlign': 'center',
+                              'textDecoration': 'none',
+                              'borderRadius': '4px',
+                              'marginRight': '2px'
                             }}>
-                              <i className='fa fa-facebook fa-lg' /> {this.state.buttonText}
+                              <i className='fa fa-facebook fa-lg' style={{marginRight: '5px'}}/> {this.state.buttonText}
                             </a>
                           </div>
                         </div>

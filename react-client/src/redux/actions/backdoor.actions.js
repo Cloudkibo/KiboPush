@@ -268,9 +268,9 @@ export function sendEmail (msg) {
       })
   }
 }
-export function allLocales () {
+export function allLocales (id) {
   return (dispatch) => {
-    callApi('backdoor/allLocales').then(res => dispatch(updateAllLocales(res.payload)))
+    callApi(`backdoor/allLocales/${id}`).then(res => dispatch(updateAllLocales(res.payload)))
   }
 }
 export function deleteAccount (id, msg) {

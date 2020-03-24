@@ -17,7 +17,13 @@ export function showWhiteListDomains (data) {
   }
 }
 
-
+export function showAdvancedSettings (data) {
+  console.log(data)
+  return {
+    type: ActionTypes.GET_ADVANCED_SETTINGS,
+    data
+  }
+}
 
 export function getResponseMethod (data) {
   return {
@@ -392,7 +398,7 @@ export function deleteDomain (payload, msg, handleDelete) {
   }
 }
 
-export function updatePlatformSettings (data, msg, clearFields) {
+export function updatePlatformSettings (data, msg, clearFields, platform) {
   console.log('data for updatePlatformSettings', data)
   return (dispatch) => {
     callApi('company/updatePlatform', 'post', data)
@@ -402,12 +408,24 @@ export function updatePlatformSettings (data, msg, clearFields) {
           dispatch(getAutomatedOptions())
           dispatch(getuserdetails())
           msg.success('Saved Successfully')
+          if (platform && platform === 'sms') {
+            dispatch(fetchValidCallerIds(data))
+          }
         } else {
           msg.error(res.description)
           if (clearFields) {
             dispatch(clearFields())
           }
         }
+      })
+  }
+}
+export function fetchValidCallerIds(data) {
+  console.log('data for fetchValidCallerIds', data)
+  return (dispatch) => {
+    callApi('company/fetchValidCallerIds', 'post', data)
+      .then(res => {
+        console.log('response from fetchValidCallerIds', res)
       })
   }
 }
@@ -424,20 +442,40 @@ export function disconnect (data) {
       })
   }
 }
-export function updatePlatformWhatsApp (data, msg, clearFields) {
+export function deleteWhatsApp (data, handleResponse) {
+  console.log('data for deleteWhatsApp', data)
+  return (dispatch) => {
+    callApi('company/deleteWhatsAppInfo', 'post', data)
+      .then(res => {
+        if (res.status === 'success') {
+          dispatch(getAutomatedOptions())
+          dispatch(getuserdetails())
+        }
+        console.log('response from deleteWhatsApp', res)
+        handleResponse(res)
+      })
+  }
+}
+export function updatePlatformWhatsApp (data, msg, clearFields, handleResponse) {
   console.log('data for updatePlatformWhatsApp', data)
   return (dispatch) => {
     callApi('company/updatePlatformWhatsApp', 'post', data)
       .then(res => {
         console.log('response from updatePlatformWhatsApp', res)
         if (res.status === 'success') {
-          dispatch(getAutomatedOptions())
-          dispatch(getuserdetails())
-          msg.success('Saved Successfully')
+          if (!data.changeWhatsAppTwilio) {
+            dispatch(getAutomatedOptions())
+            dispatch(getuserdetails())
+          }
+          if (handleResponse) {
+            handleResponse(res.payload)
+          } else {
+            msg.success('Saved Successfully')
+          }
         } else {
-          msg.error(res.description)
+          msg.error(res.payload)
           if (clearFields) {
-            dispatch(clearFields())
+            clearFields()
           }
         }
       })
@@ -467,5 +505,31 @@ export function updateIntegration (id, body) {
           dispatch(getIntegrations())
         }
       })
+  }
+}
+
+export function updateAdvancedSettings (data, msg) {
+  return (dispatch) => {
+    callApi('company/updateAdvancedSettings', 'post', data)
+    .then(res => 
+      {
+        if (res.status === 'success') {
+          dispatch(getAdvancedSettings(res.payload))
+        } else {
+          msg.error('Unable to update advanced settings')
+        }
+      }
+    )
+  }
+}
+
+export function getAdvancedSettings () {
+  return (dispatch) => {
+    callApi('company/getAdvancedSettings')
+    .then(res => 
+      {
+        dispatch(showAdvancedSettings(res.payload))
+      }
+    )
   }
 }

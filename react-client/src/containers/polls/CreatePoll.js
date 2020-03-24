@@ -136,6 +136,7 @@ class CreatePoll extends React.Component {
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
+    console.log('nextprops.pollDetails', nextProps.pollDetails)
     if (nextProps.warning) {
       this.msg.error(nextProps.warning)
     } else if (nextProps.pollCreated) {
@@ -143,12 +144,22 @@ class CreatePoll extends React.Component {
         pathname: '/poll'
       })
     }
+    if (nextProps.pollDetails) {
+      let option1 = { option: nextProps.pollDetails.options[0], sequenceId: '', action: '' }
+      let option2 = { option: nextProps.pollDetails.options[1], sequenceId: '', action: '' }
+      let option3 = { option: nextProps.pollDetails.options[2], sequenceId: '', action: '' }
+      this.setState({ title: nextProps.pollDetails.title, statement: nextProps.pollDetails.statement, option1: option1, option2: option2, option3: option3, categoryValue: nextProps.pollDetails.category })
+    }
   }
 
   closeGuideLinesDialog() {
     this.setState({ isShowingModalGuideLines: false })
   }
   componentDidMount() {
+    if (this.props.currentPoll) {
+      const id = this.props.currentPoll._id
+      this.props.loadPollDetails(id)
+    }
     const hostname = window.location.hostname
     let title = ''
     if (hostname.includes('kiboengage.cloudkibo.com')) {

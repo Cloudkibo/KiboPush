@@ -21,6 +21,7 @@ import AlertContainer from 'react-alert'
 import UploadCustomerInformation from './uploadCustomerInformation'
 import WhiteListDomains from './whitelistDomains'
 import Integrations from './integrations'
+import AdvancedSetting from './advancedSettings'
 
 class Settings extends React.Component {
   constructor (props, context) {
@@ -58,6 +59,7 @@ class Settings extends React.Component {
     this.setResetPass = this.setResetPass.bind(this)
     this.setConfiguration = this.setConfiguration.bind(this)
     this.setIntegrations = this.setIntegrations.bind(this)
+    this.setAdvancedSettings = this.setAdvancedSettings.bind(this)
     this.setNGP = this.setNGP.bind(this)
     this.setConnectFb = this.setConnectFb.bind(this)
     this.setGreetingMessage = this.setGreetingMessage.bind(this)
@@ -174,6 +176,11 @@ class Settings extends React.Component {
   setIntegrations () {
     this.setState({
       openTab: 'integrations'
+    })
+  }
+  setAdvancedSettings () {
+    this.setState({
+      openTab: 'advancedSettings'
     })
   }
   setPermissions () {
@@ -462,7 +469,7 @@ class Settings extends React.Component {
                     </li>
                     <li className='m-nav__item'>
                       <a href='#/' className='m-nav__link' onClick={this.setConfiguration} style={{cursor: 'pointer'}} >
-                        <i className='m-nav__link-icon flaticon-settings' />
+                        <i className='m-nav__link-icon 	flaticon-interface-6' />
                         <span className='m-nav__link-text'>Configuration</span>
                       </a>
                     </li>
@@ -568,6 +575,12 @@ class Settings extends React.Component {
                         <span className='m-nav__link-text'>Whitelist Domains</span>
                       </a>
                     </li>
+                    <li className='m-nav__item'>
+                      <a href='#/' className='m-nav__link' onClick={this.setAdvancedSettings} style={{cursor: 'pointer'}}>
+                        <i className='m-nav__link-icon fa flaticon-settings' />
+                        <span className='m-nav__link-text'>Advanced Settings</span>
+                      </a>
+                    </li>
                   </ul>
                 </div>
               </div>
@@ -639,46 +652,49 @@ class Settings extends React.Component {
             </div>
             }
             { this.state.openTab === 'resetPassword' &&
-              <ResetPassword />
+              <ResetPassword history= {this.props.history}/>
             }
             { this.state.openTab === 'permissions' &&
-              <ShowPermissions />
+              <ShowPermissions history= {this.props.history}/>
             }
             { this.state.openTab === 'greetingMessage' &&
-              <GreetingMessage user={this.props.user} />
+              <GreetingMessage user={this.props.user} history= {this.props.history}/>
             }
             { this.state.openTab === 'welcomeMessage' &&
-              <WelcomeMessage />
+              <WelcomeMessage history= {this.props.history}/>
             }
             { this.state.openTab === 'connectFb' &&
-              <ConnectFb />
+              <ConnectFb history= {this.props.history}/>
             }
             { this.state.openTab === 'uploadCustomerInformation' &&
-              <UploadCustomerInformation />
+              <UploadCustomerInformation history= {this.props.history}/>
             }
             { this.state.openTab === 'billing' &&
-              <Billing showPaymentMethods={this.setPayementMethods} pro={this.state.pro} />
+              <Billing showPaymentMethods={this.setPayementMethods} pro={this.state.pro} history= {this.props.history}/>
             }
             { this.state.openTab === 'paymentMethods' &&
-              <PaymentMethods />
+              <PaymentMethods history= {this.props.history}/>
             }
             { this.state.openTab === 'responseMethods' &&
-              <ResponseMethods />
+              <ResponseMethods history= {this.props.history}/>
             }
             { this.state.openTab === 'deleteUserData' &&
-              <DeleteUserData />
+              <DeleteUserData history= {this.props.history}/>
             }
             { this.state.openTab === 'webhook' &&
-              <Webhook />
+              <Webhook history= {this.props.history}/>
             }
             { this.state.openTab === 'whitelistDomains' &&
-              <WhiteListDomains />
+              <WhiteListDomains history= {this.props.history}/>
             }
             { this.state.openTab === 'configuration' &&
-              <Configuration />
+              <Configuration  history= {this.props.history} />
             }
             { this.state.openTab === 'integrations' &&
-              <Integrations />
+              <Integrations history= {this.props.history}/>
+            }
+            { this.state.openTab === 'advancedSettings' &&
+              <AdvancedSetting />
             }
           </div>
         </div>

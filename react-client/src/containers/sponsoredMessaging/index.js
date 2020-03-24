@@ -480,13 +480,13 @@ class SponsoredMessaging extends React.Component {
                   }
                     {
                       this.props.reconnectFbRequired &&
-                      <div className="m-alert m-alert--icon alert alert-danger" role="alert">
+                      <div className="m-alert m-alert--icon alert alert-info" role="alert">
                         <div className="m-alert__text">
                           Please reconnect your facebook account to grant KiboPush permission to your ad accounts.
 											  </div>
                         <div className="m-alert__actions" style={{width: "220px"}}>
-                          <a href='/auth/facebook/'
-                            className="btn btn-outline-light btn-sm m-btn m-btn--hover-primary"
+                          <a href='/auth/facebook/reauth/sponsoredmessages'
+                            className="btn btn-focus m-btn m-btn--pill m-btn--custom m-btn--air"
                             data-dismiss="alert1"
                             aria-label="Close">
 													  Reconnect Facebook

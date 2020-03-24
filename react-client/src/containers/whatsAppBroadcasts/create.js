@@ -303,7 +303,7 @@ class CreateWhatsAppBroadcast extends React.Component {
                               <i className='flaticon-exclamation m--font-brand' />
                               <p style={{display: 'inline', fontSize: '1.1em'}}> {`This broadcast will be sent to ${this.state.subscribersCount} ${this.state.subscribersCount === 1 ? 'subscriber' : 'subscribers'}`}</p>
                             </span>
-                            <TargetCustomers ref={instance => { this.targeting = instance; }} debounce={this.debounce} updateConditions={this.updateConditions} style={{marginTop: '20px'}} fileColumns={this.state.fileColumns} segmentationErrors={this.state.segmentationErrors} resetErrors={() => { this.setState({segmentationErrors: []}) }} />
+                            <TargetCustomers msg = {this.msg} ref={instance => { this.targeting = instance; }} debounce={this.debounce} updateConditions={this.updateConditions} style={{marginTop: '20px'}} fileColumns={this.state.fileColumns} segmentationErrors={this.state.segmentationErrors} resetErrors={() => { this.setState({segmentationErrors: []}) }} />
                           </div>
                         </div>
                       </div>

@@ -1,10 +1,11 @@
 /* eslint-disable no-useless-constructor */
 import React from 'react'
-import { updatePlatformSettings, updatePlatformWhatsApp, disconnect } from '../../redux/actions/settings.actions'
+import { updatePlatformSettings, updatePlatformWhatsApp, disconnect, deleteWhatsApp } from '../../redux/actions/settings.actions'
 import { getAutomatedOptions, disconnectFacebook } from '../../redux/actions/basicinfo.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import AlertContainer from 'react-alert'
+import WhatsAppDeleteModal from '../../components/extras/deleteWithPassword'
 
 class Webhook extends React.Component {
   constructor (props, context) {
@@ -14,23 +15,62 @@ class Webhook extends React.Component {
       token: '',
       SIDWapp: '',
       tokenWapp: '',
-      number: '',
+      number: '+14155238886',
       code: '',
-      type: ''
+      type: '',
+      deleteType: ''
     }
     this.updateToken = this.updateToken.bind(this)
     this.updateSID = this.updateSID.bind(this)
     this.updateTokenWapp = this.updateTokenWapp.bind(this)
     this.updateSIDWapp = this.updateSIDWapp.bind(this)
     this.updateCode = this.updateCode.bind(this)
-    this.updateNumber = this.updateNumber.bind(this)
     this.submit = this.submit.bind(this)
     this.submitWapp = this.submitWapp.bind(this)
     this.clearFields = this.clearFields.bind(this)
+    this.clearFieldsWapp = this.clearFieldsWapp.bind(this)
     this.disconnect = this.disconnect.bind(this)
     this.showDialogDisconnect = this.showDialogDisconnect.bind(this)
-
+    this.handleResponse = this.handleResponse.bind(this)
+    this.deleteWhatsApp = this.deleteWhatsApp.bind(this)
+    this.handleDeleteWhatsAppResponse = this.handleDeleteWhatsAppResponse.bind(this)
+    this.setType = this.setType.bind(this)
     props.getAutomatedOptions()
+  }
+
+  setType (type) {
+    this.setState({deleteType: type}, () => {
+      if (type === 'Disconnect') {
+        this.refs.disconnectWhatsApp.click()
+      } else {
+        this.refs.connectWapp.click()
+      }
+    })
+  }
+
+  deleteWhatsApp (password) {
+    if (this.state.type === 'Disconnect') {
+      this.props.deleteWhatsApp({type: this.state.deleteType, password: password}, this.handleDeleteWhatsAppResponse)
+    } else {
+      let data = {
+        accountSID: this.state.SIDWapp,
+        authToken: this.state.tokenWapp,
+        sandboxNumber: this.state.number,
+        sandboxCode: this.state.code,
+        type: this.state.deleteType,
+        password: password
+      }
+      this.props.deleteWhatsApp(data, this.handleDeleteWhatsAppResponse)
+    }
+  }
+
+  handleDeleteWhatsAppResponse (res) {
+    if (res.status === 'success') {
+      this.refs.disconnectWhatsApp.click()
+      this.msg.success(res.payload)
+    } else {
+      this.msg.error(res.payload)
+    }
   }
 
   showDialogDisconnect (type) {
@@ -71,9 +111,6 @@ class Webhook extends React.Component {
     this.props.disconnect({type: this.state.type})
   }
 
-  updateNumber (e) {
-    this.setState({number: e.target.value})
-  }
 
   updateCode (e) {
     this.setState({code: e.target.value})
@@ -99,7 +136,16 @@ class Webhook extends React.Component {
     this.props.updatePlatformSettings({twilio: {
       accountSID: this.state.SID,
       authToken: this.state.token
-    }}, this.msg, this.clearFields)
+    }}, this.msg, this.clearFields, 'sms')
+  }
+
+  handleResponse (payload) {
+    this.refs.connectWapp.click()
+    if (payload.showModal) {
+      this.refs.disconnectWhatsApp.click()
+    } else {
+      this.msg.success('Saved Successfully')
+    }
   }
 
   submitWapp () {
@@ -113,17 +159,18 @@ class Webhook extends React.Component {
     } else if (this.state.code === '') {
       this.msg.error('Sandbox code cannot be empty')
     } else {
-      this.props.updatePlatformWhatsApp({
+      let data = {
+        changeWhatsAppTwilio: this.props.automated_options.twilioWhatsApp ? true : false,
         accountSID: this.state.SIDWapp,
         authToken: this.state.tokenWapp,
         sandboxNumber: this.state.number,
         sandboxCode: this.state.code
-      }, this.msg, this.clearFieldsWapp)
+      }
+      this.props.updatePlatformWhatsApp(data, this.msg, this.clearFieldsWapp, this.handleResponse)
     }
   }
 
   clearFields () {
-    console.log('in clearFields')
     if (this.props.automated_options && this.props.automated_options.twilio) {
       this.setState({SID: this.props.automated_options.twilio.accountSID, token: this.props.automated_options.twilio.authToken})
     } else {
@@ -132,7 +179,7 @@ class Webhook extends React.Component {
   }
 
   clearFieldsWapp () {
-    if (this.props.automated_options && this.props.propsProps.automated_options.twilioWhatsApp) {
+    if (this.props.automated_options && this.props.automated_options.twilioWhatsApp) {
       this.setState({SIDWapp: this.props.automated_options.twilioWhatsApp.accountSID,
         tokenWapp: this.props.automated_options.twilioWhatsApp.authToken,
         number: this.props.automated_options.twilioWhatsApp.sandboxNumber,
@@ -151,9 +198,24 @@ class Webhook extends React.Component {
       time: 5000,
       transition: 'scale'
     }
-    console.log('this.state.SID', this.state.SID)
     return (
       <div className='col-lg-8 col-md-8 col-sm-8 col-xs-12'>
+        <button ref='disconnectWhatsApp' style={{ marginTop: '-10px', opacity: '0.5', color: 'black', display: 'none'}} type="button" className="close" data-toggle="modal" data-target="#disconnectWhatsApp" aria-label="Close">
+          <span aria-hidden="true">
+            &times;
+                      </span>
+        </button>
+        <button ref='connectWapp' style={{ marginTop: '-10px', opacity: '0.5', color: 'black', display: 'none' }} type="button" className="close" data-toggle="modal" data-target="#connectWapp" aria-label="Close">
+          <span aria-hidden="true">
+            &times;
+                      </span>
+        </button>
+        <WhatsAppDeleteModal
+          id='disconnectWhatsApp'
+          title={`${this.state.deleteType} WhatsApp Twilio Account`}
+          content={`Are you sure you want to ${this.state.deleteType} your WhatsApp Twilio Account? Doing so will remove all of your subscribers, their chat history and the broadcasts you have created.`}
+          deleteWithPassword={this.deleteWhatsApp}
+        />
         <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="disconnect" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
             <div className="modal-content">
@@ -274,7 +336,7 @@ class Webhook extends React.Component {
                     </div>
                     <div id='question' className='form-group m-form__group'>
                       <label className='control-label'>WhatsApp Sandbox Number:</label>
-                      <input className='form-control' value={this.state.number} onChange={(e) => this.updateNumber(e)} />
+                      <input className='form-control' value={this.state.number} disabled />
                     </div>
                     <div id='question' className='form-group m-form__group'>
                       <label className='control-label'>Sandbox Code:</label>
@@ -285,7 +347,7 @@ class Webhook extends React.Component {
                   <div className='m-portlet__foot m-portlet__foot--fit' style={{ 'overflow': 'auto' }}>
                     <div className='m-form__actions' style={{ 'float': 'right' }}>
                       <button className='btn btn-primary'
-                        onClick={this.submitWapp} data-dismiss='modal'> Submit
+                        onClick={this.submitWapp}> Submit
                   </button>
                     </div>
                   </div>
@@ -380,13 +442,17 @@ class Webhook extends React.Component {
                                         <br />
                                       </div>
                                       <div className='m-widget4__ext'>
-                                        <button className='m-btn m-btn--pill m-btn--hover-success btn btn-success' style={{borderColor: '#34bfa3', color: '#34bfa3', marginRight: '10px'}} data-toggle="modal" data-target="#connectWapp">
+                                        <button className='m-btn m-btn--pill m-btn--hover-success btn btn-success'
+                                          style={{borderColor: '#34bfa3', color: '#34bfa3', marginRight: '10px'}}
+                                          onClick={() => this.setType('Change')}>
                                           {this.props.automated_options && this.props.automated_options.twilioWhatsApp ? 'Edit' : 'Connect'}
                                         </button>
                                       </div>
                                       {this.props.automated_options && this.props.automated_options.twilioWhatsApp &&
                                       <div className='m-widget4__ext'>
-                                        <button className='m-btn m-btn--pill m-btn--hover-danger btn btn-danger' style={{borderColor: '#d9534f', color: '#d9534f', marginRight: '10px'}} data-toggle="modal" data-target="#disconnect" onClick={() => {this.showDialogDisconnect('whatsApp')}}>
+                                        <button className='m-btn m-btn--pill m-btn--hover-danger btn btn-danger'
+                                          style={{borderColor: '#d9534f', color: '#d9534f', marginRight: '10px'}}
+                                          onClick={() => this.setType('Disconnect')}>
                                           Disconnect
                                         </button>
                                       </div>
@@ -424,7 +490,8 @@ function mapDispatchToProps (dispatch) {
     getAutomatedOptions: getAutomatedOptions,
     updatePlatformWhatsApp: updatePlatformWhatsApp,
     disconnect: disconnect,
-    disconnectFacebook: disconnectFacebook
+    disconnectFacebook: disconnectFacebook,
+    deleteWhatsApp: deleteWhatsApp
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Webhook)
