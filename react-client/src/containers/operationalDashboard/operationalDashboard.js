@@ -82,7 +82,7 @@ class OperationalDashboard extends React.Component {
       showDropDown: false
     }
 
-    props.allLocales()
+    //props.allLocales()
     props.loadUsersList({last_id: 'none', number_of_records: 10, first_page: true, filter: false, filter_criteria: {search_value: '', gender_value: '', locale_value: ''}})
     // props.loadBroadcastsGraphData(0)
     // props.loadPollsGraphData(0)
