@@ -51,11 +51,12 @@ class CardBoxesContainer extends React.Component {
           { 
             url.includes('kibolite.cloudkibo.com') ? null
            :
-           <div>
+           <div className='col-sm-6 col-md-6 col-lg-6'>
+          <div className='row m-row--full-height'>
           <UncontrolledTooltip style={{minWidth: '100px', opacity: '1.0'}} target='subscribers'>
             <span>Number of subscribers</span>
           </UncontrolledTooltip>
-          <div className='col-sm-3 col-md-3 col-lg-3'>
+          <div className='col-sm-6 col-md-6 col-lg-6'>
             <Link to='/subscribers' >
               <CardBox
                 style='danger'
@@ -71,7 +72,7 @@ class CardBoxesContainer extends React.Component {
               : <span>Nunmber of sequences created</span>
             }
           </UncontrolledTooltip>
-          <div className='col-sm-3 col-md-3 col-lg-3'>
+          <div className='col-sm-6 col-md-6 col-lg-6'>
             <Link to={url.includes('kibochat.cloudkibo.com') ? '/liveChat' : 'sequenceMessaging'} >
               <CardBox
                 style='accent'
@@ -80,6 +81,7 @@ class CardBoxesContainer extends React.Component {
                 id='properties'
               />
             </Link>
+          </div>
           </div>
           </div>
           }
