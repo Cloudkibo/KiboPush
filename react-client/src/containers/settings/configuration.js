@@ -212,8 +212,8 @@ class Webhook extends React.Component {
         </button>
         <WhatsAppDeleteModal
           id='disconnectWhatsApp'
-          title={`${this.state.type} WhatsApp Twilio Account`}
-          content={`Are you sure you want to ${this.state.type} your WhatsApp Twilio Account? Doing so will be remove all of your subscribers, their chat history and the broadcasts you have created.`}
+          title={`${this.state.deleteType} WhatsApp Twilio Account`}
+          content={`Are you sure you want to ${this.state.deleteType} your WhatsApp Twilio Account? Doing so will remove all of your subscribers, their chat history and the broadcasts you have created.`}
           deleteWithPassword={this.deleteWhatsApp}
         />
         <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="disconnect" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
