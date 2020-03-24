@@ -144,6 +144,10 @@ class CreateSponsoredMessage extends React.Component {
                   sendDisabled = {this.state.sendDisabled}
                   onSave = {this.onSave}
                   loading={this.state.loading}
+                  showPublish={this.state.currentStep === 'ad'}
+                  showSave={this.state.currentStep === 'ad'}
+                  showSchedule={this.state.currentStep === 'ad'}
+                  openScheduleModal={this.openScheduleModal}
                 />
                 <div className='m-portlet__body'>
                   <StepsBar currentStep={this.state.currentStep}
