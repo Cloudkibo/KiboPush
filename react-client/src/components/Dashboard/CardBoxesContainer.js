@@ -18,13 +18,14 @@ import { UncontrolledTooltip } from 'reactstrap'
 class CardBoxesContainer extends React.Component {
   render () {
     const url = window.location.hostname
+    console.log('url', )
     return (
       <div className='col-xl-12'>
         <div className='row m-row--full-height'>
           <UncontrolledTooltip style={{minWidth: '100px', opacity: '1.0'}} target='totalPages'>
             <span>Number of Facebook pages you are admin of</span>
           </UncontrolledTooltip>
-          <div className='col-sm-3 col-md-3 col-lg-3'>
+          <div className= {url.includes('kibolite.cloudkibo.com') ? 'col-sm-6 col-md-6 col-lg-6':'col-sm-3 col-md-3 col-lg-3'}>
             <Link to='/addPages' >
               <CardBox
                 style='brand'
@@ -37,7 +38,7 @@ class CardBoxesContainer extends React.Component {
           <UncontrolledTooltip style={{minWidth: '100px', opacity: '1.0'}} target='connectedPages'>
             <span>Number of Facebook pages connected with our app</span>
           </UncontrolledTooltip>
-          <div className='col-sm-3 col-md-3 col-lg-3'>
+          <div className= {url.includes('kibolite.cloudkibo.com') ? 'col-sm-6 col-md-6 col-lg-6':'col-sm-3 col-md-3 col-lg-3'}>
             <Link to='/pages' >
               <CardBox
                 style='success'
@@ -47,10 +48,15 @@ class CardBoxesContainer extends React.Component {
               />
             </Link>
           </div>
+          { 
+            url.includes('kibolite.cloudkibo.com') ? null
+           :
+           <div className='col-sm-6 col-md-6 col-lg-6'>
+          <div className='row m-row--full-height'>
           <UncontrolledTooltip style={{minWidth: '100px', opacity: '1.0'}} target='subscribers'>
             <span>Number of subscribers</span>
           </UncontrolledTooltip>
-          <div className='col-sm-3 col-md-3 col-lg-3'>
+          <div className='col-sm-6 col-md-6 col-lg-6'>
             <Link to='/subscribers' >
               <CardBox
                 style='danger'
@@ -66,7 +72,7 @@ class CardBoxesContainer extends React.Component {
               : <span>Nunmber of sequences created</span>
             }
           </UncontrolledTooltip>
-          <div className='col-sm-3 col-md-3 col-lg-3'>
+          <div className='col-sm-6 col-md-6 col-lg-6'>
             <Link to={url.includes('kibochat.cloudkibo.com') ? '/liveChat' : 'sequenceMessaging'} >
               <CardBox
                 style='accent'
@@ -76,6 +82,9 @@ class CardBoxesContainer extends React.Component {
               />
             </Link>
           </div>
+          </div>
+          </div>
+          }
         </div>
       </div>
     )
