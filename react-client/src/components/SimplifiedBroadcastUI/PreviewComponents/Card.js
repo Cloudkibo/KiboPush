@@ -211,7 +211,7 @@ class Card extends React.Component {
             <hr style={{marginTop: this.state.imgSrc ? '' : '100px', marginBottom: '5px'}} />
             <h6 style={{textAlign: 'left', marginLeft: '10px', marginTop: '10px', fontSize: '16px'}}>{this.state.title}</h6>
             <p style={{textAlign: 'left', marginLeft: '10px', marginTop: '5px', fontSize: '13px'}}>{this.state.subtitle}</p>
-            <p style={{textAlign: 'left', marginLeft: '10px', fontSize: '13px'}}>{this.state.default_action && this.state.default_action.url}</p>
+            {/* <p style={{textAlign: 'left', marginLeft: '10px', fontSize: '13px'}}>{this.state.default_action && this.state.default_action.url}</p> */}
           </div>
           {
             this.state.buttons.map(button => {

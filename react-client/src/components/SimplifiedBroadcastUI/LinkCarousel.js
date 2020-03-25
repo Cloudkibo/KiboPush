@@ -25,7 +25,8 @@ class LinkCarouselModal extends React.Component {
                         component: {
                             title: '',
                             subtitle: '',
-                            buttons: []
+                            buttons: [],
+                            default_action: ''
                         }
                     })
                 }
@@ -151,7 +152,8 @@ class LinkCarouselModal extends React.Component {
                 image_url: card.image_url ? card.image_url : '',
                 title: card.title,
                 description: card.subtitle,
-                buttons: card.buttons
+                buttons: card.buttons,
+                default_action: card.default_action
             }, this.props.edit)
         } else if (this.state.cards.length > 1) {
             let cards = this.state.cards.map((card, index) => {
@@ -160,7 +162,8 @@ class LinkCarouselModal extends React.Component {
                     image_url: card.component.image_url ? card.component.image_url : '',
                     title: card.component.title,
                     subtitle: card.component.subtitle ? card.component.subtitle : card.component.description,
-                    buttons: card.component.buttons
+                    buttons: card.component.buttons,
+                    default_action: card.component.default_action
                 }
             })
             this.props.addComponent({
@@ -217,7 +220,8 @@ class LinkCarouselModal extends React.Component {
                 component: {
                     title: '',
                     subtitle: '',
-                    buttons: []
+                    buttons: [],
+                    default_action: ''
                 }
             }
             this.setState({ links, cards })
@@ -243,7 +247,11 @@ class LinkCarouselModal extends React.Component {
                             type: 'web_url',
                             url: links[index].url
                         }
-                    ]
+                    ],
+                    default_action: {
+                        type: 'web_url',
+                        url: links[index].url
+                    }
                 }
             }
             links[index] = Object.assign(links[index], { loading: false, valid: true, errorMsg: '' })
@@ -383,7 +391,6 @@ class LinkCarouselModal extends React.Component {
                                     <hr style={{marginTop: card.component.image_url ? '' : '100px', marginBottom: '5px'}} />
                                     <h6 style={{textAlign: 'left', marginLeft: '10px', marginTop: '10px', fontSize: '16px'}}>{card.component.title}</h6>
                                     <p style={{textAlign: 'left', marginLeft: '10px', marginTop: '5px', fontSize: '13px'}}>{card.component.subtitle ? card.component.subtitle : card.component.description}</p>
-                                    <p style={{textAlign: 'left', marginLeft: '10px', fontSize: '13px'}}>{card.component.default_action && card.component.default_action.url}</p>
                                     {
                                         card.component.buttons && card.component.buttons.map((button, index) => (
                                         (button.visible || button.type) && (
