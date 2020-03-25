@@ -76,7 +76,7 @@ const handleIncomingMessage = (payload, state, props, updateLiveChatInfo, clearS
     data = {
       openSessions: sessions,
       closeSessions,
-      closeCount: closeCount,
+      closeCount,
       openCount: props.openCount + 1
     }
   }

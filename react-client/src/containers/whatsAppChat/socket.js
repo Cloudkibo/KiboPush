@@ -21,7 +21,6 @@ export function handleSocketEventWhatsapp (data, state, props, updateLiveChatInf
   }
 
   const handleIncomingMessage = (payload, state, props, updateLiveChatInfo, clearSocketData) => {
-    debugger;
     let sessions = state.sessions
     let session = payload.subscriber
     session.profilePic = 'https://www.mastermindpromotion.com/wp-content/uploads/2015/02/facebook-default-no-profile-pic-300x300.jpg'
