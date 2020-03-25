@@ -142,7 +142,8 @@ class SurveysInfo extends React.Component {
   onSurveyClick (e, survey) {
     this.props.saveSurveyInformation(survey)
     this.props.history.push({
-      pathname: '/surveyDetails'
+      pathname: '/surveyDetails',
+      state: {_id: survey._id, data: survey}
     })
   }
 
