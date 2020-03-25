@@ -15,8 +15,7 @@ import {updateCustomFieldValue, addCustomField, removeCustomField} from './../re
 import { addTag, removeTag, updateTag, assignTag, unassignTag } from './../redux/actions/tags.actions'
 import { loadAllSubscribersListNew, updateCustomFieldForSubscriber } from './../redux/actions/subscribers.actions'
 import { fetchNotifications } from './../redux/actions/notifications.actions'
-import { handleSocketEvent } from '../redux/actions/socket.actions'
-import { handleSocketEventSms } from '../redux/actions/socket.actions'
+import { handleSocketEvent, handleSocketEventSms, handleSocketEventWhatsapp } from '../redux/actions/socket.actions'
 import { addToSponsoredMessages, updateSponsoredMessagesListItemStatus } from './../redux/actions/sponsoredMessaging.actions'
 const whatsAppActions = require('./../redux/actions/whatsAppChat.actions')
 const smsActions = require('./../redux/actions/smsChat.actions')
@@ -84,10 +83,12 @@ socket.on('message', (data) => {
     if (data.action === 'new_chat_sms') data.showNotification = true
     store.dispatch(handleSocketEventSms(data))
   }
-  if (data.action === 'new_chat_whatsapp') {
-    console.log('new message received from customer whatsApp')
-    store.dispatch(whatsAppActions.socketUpdateWhatsApp(data.payload))
-  } else if (data.action === 'whatsapp_message_seen') {
+  if (['new_chat_whatsapp', 'agent_replied_whatsapp', 'session_pending_response_whatsapp', 'unsubscribe_whatsapp', 'session_status_whatsapp'].includes(data.action)) {
+    if (data.action === 'new_chat_whatsapp') data.showNotification = true
+    store.dispatch(handleSocketEventWhatsapp(data))
+  }
+  
+  if (data.action === 'whatsapp_message_seen') {
     store.dispatch(whatsAppActions.socketUpdateWhatsAppSeen(data.payload))
   } else if (data.action === 'message_seen') {
     store.dispatch(socketUpdateSeen(data.payload))

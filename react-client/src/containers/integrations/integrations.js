@@ -20,7 +20,7 @@ class FacebookIntegration extends React.Component {
       whatsAppSID: '',
       whatsAppToken: '',
       code: '',
-      sandboxNumber: ''
+      sandboxNumber: '+14155238886'
     }
     this.closeDialog = this.closeDialog.bind(this)
     this.showDialog = this.showDialog.bind(this)
@@ -55,8 +55,6 @@ class FacebookIntegration extends React.Component {
       this.setState({whatsAppToken: e.target.value})
     } else if (key === 'whatsAppSID') {
       this.setState({whatsAppSID: e.target.value})
-    } else if (key === 'sandboxNumber') {
-      this.setState({sandboxNumber: e.target.value})
     } else if (key === 'code') {
       this.setState({code: e.target.value})
     }
@@ -89,13 +87,11 @@ class FacebookIntegration extends React.Component {
     }}, this.msg)
   }
   submitWapp () {
-    const regex = /\+(9[976]\d|8[987530]\d|6[987]\d|5[90]\d|42\d|3[875]\d|2[98654321]\d|9[8543210]|8[6421]|6[6543210]|5[87654321]|4[987654310]|3[9643210]|2[70]|7|1)\W*\d\W*\d\W*\d\W*\d\W*\d\W*\d\W*\d\W*\d\W*(\d{1,14})$/g
+    //const regex = /\+(9[976]\d|8[987530]\d|6[987]\d|5[90]\d|42\d|3[875]\d|2[98654321]\d|9[8543210]|8[6421]|6[6543210]|5[87654321]|4[987654310]|3[9643210]|2[70]|7|1)\W*\d\W*\d\W*\d\W*\d\W*\d\W*\d\W*\d\W*\d\W*(\d{1,14})$/g
     if (this.state.whatsAppSID === '') {
       this.msg.error('Account SID cannot be empty')
     } else if (this.state.whatsAppToken === '') {
       this.msg.error('Auth Token cannot be empty')
-    } else if (!this.state.sandboxNumber.match(regex)) {
-      this.msg.error('Invalid Sandbox Number')
     } else if (this.state.code === '') {
       this.msg.error('Sandbox code cannot be empty')
     } else {
@@ -315,7 +311,7 @@ class FacebookIntegration extends React.Component {
                   </div>
                   <div id='question' className='form-group m-form__group'>
                     <label className='control-label'>WhatsApp Sandbox Number:</label>
-                    <input className='form-control' value={this.state.sandboxNumber} onChange={(e) => this.updateWhatsAppValues(e, 'sandboxNumber')} />
+                    <input className='form-control' value={this.state.sandboxNumber} disabled />
                   </div>
                   <div id='question' className='form-group m-form__group'>
                     <label className='control-label'>Sandbox Code:</label>
