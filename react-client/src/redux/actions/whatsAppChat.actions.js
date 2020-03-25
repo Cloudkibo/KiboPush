@@ -1,5 +1,7 @@
 import callApi from '../../utility/api.caller.service'
 import * as ActionTypes from '../constants/constants'
+import auth from '../../utility/auth.service'
+export const API_URL = '/api'
 
 export function showChat (data, originalData) {
   if (originalData.page === 'first') {
@@ -14,6 +16,13 @@ export function showChat (data, originalData) {
       chat: data.chat,
       count: data.count
     }
+  }
+}
+
+export function UpdateUnreadCount (data) {
+  return {
+    type: ActionTypes.UPDATE_UNREAD_COUNT_WHATSAPP,
+    data
   }
 }
 
@@ -46,6 +55,14 @@ export function resetSocket (data) {
     data: null
   }
 }
+
+export function updateWhatsappChatInfo (data) {
+  return {
+    type: ActionTypes.UPDATE_WHATSAPPCHAT_INFO,
+    data
+  }
+}
+
 export function updateChat (chat, newChat) {
   let chatData = []
   chatData = chat
@@ -59,16 +76,30 @@ export function updateChat (chat, newChat) {
 }
 
 export function showOpenSessions (data) {
+  let openSessions = data.openSessions.map((s) => {
+    let name = s.name.split(' ')
+    s.firstName = name[0]
+    s.lastName = name[1]
+    s.profilePic = 'https://www.mastermindpromotion.com/wp-content/uploads/2015/02/facebook-default-no-profile-pic-300x300.jpg'
+    return s
+  })
   return {
     type: ActionTypes.FETCH_WHATSAPP_OPEN_SESSIONS,
-    openSessions: data.openSessions,
+    openSessions,
     openCount: data.count
   }
 }
 export function showCloseChatSessions (data) {
+  let closeSessions = data.closedSessions.map((s) => {
+    let name = s.name.split(' ')
+    s.firstName = name[0]
+    s.lastName = name[1]
+    s.profilePic = 'https://www.mastermindpromotion.com/wp-content/uploads/2015/02/facebook-default-no-profile-pic-300x300.jpg'
+    return s
+  })
   return {
     type: ActionTypes.FETCH_WHATSAPP_CLOSE_SESSIONS,
-    closeSessions: data.closedSessions,
+    closeSessions,
     closeCount: data.count
   }
 }
@@ -76,7 +107,7 @@ export function showCloseChatSessions (data) {
 export function fetchOpenSessions (data) {
   console.log('data for fetchOpenSessions', data)
   return (dispatch) => {
-    callApi('whatsAppChat/getOpenSessions', 'post', data)
+    callApi('whatsAppSessions/getOpenSessions', 'post', data)
       .then(res => {
         console.log('response from fetchSessions', res)
         dispatch(showOpenSessions(res.payload))
@@ -86,7 +117,7 @@ export function fetchOpenSessions (data) {
 export function fetchCloseSessions (data) {
   console.log('data for fetchCloseSessions', data)
   return (dispatch) => {
-    callApi('whatsAppChat/getClosedSessions', 'post', data)
+    callApi('whatsAppSessions/getClosedSessions', 'post', data)
       .then(res => {
         console.log('response from fetchSessions', res)
         dispatch(showCloseChatSessions(res.payload, data.first_page))
@@ -94,7 +125,7 @@ export function fetchCloseSessions (data) {
   }
 }
 
-export function fetchChat (id, data,searchMessageId,handleScroll) {
+export function fetchUserChats (id, data,searchMessageId,handleScroll) {
   console.log('data for fetchChat', data)
   return (dispatch) => {
     callApi(`whatsAppChat/getChat/${id}`, 'post', data)
@@ -116,8 +147,9 @@ export function fetchChat (id, data,searchMessageId,handleScroll) {
 
 export function markRead (sessionid) {
   return (dispatch) => {
-    callApi(`whatsAppChat/markread/${sessionid}`).then(res => {
+    callApi(`whatsAppSessions/markread/${sessionid}`).then(res => {
       console.log('Mark as read Response', res)
+      dispatch(UpdateUnreadCount(sessionid))
     })
   }
 }
@@ -141,7 +173,7 @@ export function sendChatMessage (data) {
           number_of_records: 10,
         }
         dispatch(fetchOpenSessions(fetchData))
-        dispatch(fetchChat(data.contactId, {page: 'first', number: 25}))
+        dispatch(fetchUserChats(data.contactId, {page: 'first', number: 25}))
       })
   }
 }
@@ -161,7 +193,7 @@ export function sendAttachment (data, handleSendAttachment) {
         number_of_records: 10,
       }
       dispatch(fetchOpenSessions(fetchData))
-      dispatch(fetchChat(data.contactId, {page: 'first', number: 25}))
+      dispatch(fetchUserChats(data.contactId, {page: 'first', number: 25}))
     })
   }
 }
@@ -188,20 +220,26 @@ export function unSubscribe (id, data) {
     })
   }
 }
-export function assignToAgent (data) {
+export function assignToAgent (data, handleResponse) {
   return (dispatch) => {
-    callApi('whatsAppChat/assignAgent', 'post', data).then(res => {
+    callApi('whatsAppSessions/assignAgent', 'post', data).then(res => {
       console.log('assign to agent response', res)
+      if (handleResponse) {
+        handleResponse(res)
+      }
       dispatch(updateSessions(data))
     })
   }
 }
 
-export function assignToTeam (data) {
+export function assignToTeam (data, handleResponse) {
   console.log('data for assigned to team', data)
   return (dispatch) => {
-    callApi('whatsAppChat/assignTeam', 'post', data).then(res => {
+    callApi('whatsAppSessions/assignTeam', 'post', data).then(res => {
       console.log('assign to team response', res)
+      if (handleResponse) {
+        handleResponse(res)
+      }
       dispatch(updateSessions(data))
     })
   }
@@ -224,7 +262,7 @@ export function sendNotifications (data) {
   }
 }
 
-export function searchWhatsAppChat(data) {
+export function searchChat(data) {
   return (dispatch) => {
     callApi('whatsAppChat/search', 'post', data).then(res => {
       if (res.status === 'success') {
@@ -252,7 +290,7 @@ export function setCustomFieldValue (body, handleResponse) {
 }
 export function changeStatus (data, handleStatus) {
   return (dispatch) => {
-    callApi('whatsAppChat/changeStatus', 'post', data).then(res => {
+    callApi('whatsAppSessions/changeStatus', 'post', data).then(res => {
       handleStatus(res)
     })
   }
@@ -260,8 +298,34 @@ export function changeStatus (data, handleStatus) {
 
 export function updatePendingResponse (data, handlePendingResponse) {
   return (dispatch) => {
-    callApi(`whatsAppChat/updatePendingResponse`, 'post', data).then(res => {
+    callApi(`whatsAppSessions/updatePendingResponse`, 'post', data).then(res => {
       handlePendingResponse(res)
+    })
+  }
+}
+
+export function deletefile (data, handleRemove) {
+  return (dispatch) => {
+    callApi(`broadcasts/delete/${data}`)
+      .then(res => {
+        handleRemove(res)
+      })
+  }
+}
+
+export function uploadAttachment (fileData, handleUpload) {
+  return (dispatch) => {
+    // eslint-disable-next-line no-undef
+    fetch(`${API_URL}/broadcasts/upload`, {
+      method: 'post',
+      body: fileData,
+      // eslint-disable-next-line no-undef
+      headers: new Headers({
+        'Authorization': `Bearer ${auth.getToken()}`
+      })
+    }).then((res) => res.json()).then((res) => res).then(res => {
+      console.log('respone', res)
+      handleUpload(res)
     })
   }
 }
