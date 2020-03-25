@@ -82,6 +82,7 @@ class YoutubeVideoModal extends React.Component {
           title: this.state.card.title,
           description: this.state.card.subtitle,
           buttons: this.state.card.buttons,
+          default_action: this.state.card.default_action,
           card: this.state.card
         }, this.props.edit)
       } else {
@@ -110,14 +111,14 @@ class YoutubeVideoModal extends React.Component {
 
   updateFile(file) {
     if (file === 'ERR_LIMIT_REACHED') {
-      this.setState({ fileSizeExceeded: true, disabled: false, loading: false })
+      this.setState({ fileSizeExceeded: true, disabled: true, loading: false })
       this.props.urlMetaData(this.state.link, (data) => this.handleUrlMetaData(data))
       return
     }
     console.log('updating YouTube file', file)
     if (this.props.pages) {
       this.uploadTemplate(file)
-    } else {
+    } else { 
       this.setState({
         loading: false,
         file: file,
@@ -221,9 +222,13 @@ class YoutubeVideoModal extends React.Component {
               type: 'web_url',
               url: this.state.link
           }
-      ]
+      ],
+      default_action: {
+          type: 'web_url',
+          url: this.state.link
+      }
     }
-    this.setState({card})
+    this.setState({card, disabled: false})
   }
 
   closeModal() {
@@ -258,7 +263,7 @@ class YoutubeVideoModal extends React.Component {
         <div style={{ color: 'black' }} className="modal-body">
           <div className='row'>
             <div className='col-6' style={{ maxHeight: '65vh', overflowY: 'scroll' }}>
-              <input value={this.state.link} style={{ maxWidth: '100%', borderColor: this.state.disabled && !this.state.loading ? 'red' : (this.state.loading || !this.state.disabled) ? 'green' : '' }} onChange={this.handleLinkChange} className='form-control' />
+              <input value={this.state.link} style={{ maxWidth: '100%', borderColor: this.state.disabled && !this.state.loading && !this.state.fileSizeExceeded ? 'red' : (this.state.loading || !this.state.disabled || this.state.fileSizeExceeded) ? 'green' : '' }} onChange={this.handleLinkChange} className='form-control' />
               <div style={{ color: 'green' }}>{this.state.fileSizeExceeded ? '*The size of this YouTube video exceeds the 25 Mb limit imposed by Facebook, so it will be sent as a card.' : ''}</div>
               <div style={{ color: 'red' }}>{!this.state.fileSizeExceeded && this.state.disabled && !this.state.loading ? '*Please enter a valid YouTube link.' : ''}</div>
               <div style={{ marginBottom: '30px', color: 'green' }}>{this.state.loading ? '*Please wait for the YouTube video to download.' : ''}</div>
@@ -301,7 +306,7 @@ class YoutubeVideoModal extends React.Component {
                         <hr style={{marginTop: this.state.card.image_url ? '' : '100px', marginBottom: '5px'}} />
                         <h6 style={{textAlign: 'left', marginLeft: '10px', marginTop: '10px', fontSize: '16px'}}>{this.state.card.title}</h6>
                         <p style={{textAlign: 'left', marginLeft: '10px', marginTop: '5px', fontSize: '13px'}}>{this.state.card.subtitle ? this.state.card.subtitle : this.state.card.description}</p>
-                        <p style={{textAlign: 'left', marginLeft: '10px', fontSize: '13px'}}>{this.state.card.default_action && this.state.card.default_action.url}</p>
+                        {/* <p style={{textAlign: 'left', marginLeft: '10px', fontSize: '13px'}}>{this.state.card.default_action && this.state.card.default_action.url}</p> */}
                         {
                             this.state.card.buttons && this.state.card.buttons.map((button, index) => (
                             (button.visible || button.type) && (
