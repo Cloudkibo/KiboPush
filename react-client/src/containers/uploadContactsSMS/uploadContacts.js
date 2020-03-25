@@ -323,7 +323,7 @@ class UploadContacts extends React.Component {
           id='_reset_modal'
           title='Reset Data'
           description='Are you sure you want to reset data?'
-          onConfirm={this.props.deleteAllContacts}
+          onConfirm={this.onReset}
         />
 
         {
