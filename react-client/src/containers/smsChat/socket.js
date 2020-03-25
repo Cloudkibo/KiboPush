@@ -59,6 +59,13 @@ const handleIncomingMessage = (payload, state, props, updateLiveChatInfo, clearS
       closeCount: state.tabValue === 'close' ? props.closeCount - 1 : props.closeCount
     }
   } else if (index === -1 && state.tabValue === 'open') {
+    let closeSessions = props.closeSessions
+    let closeCount = props.closeCount
+    let sessionIndex = closeSessions.findIndex((s) => s._id === session._id)
+    if (sessionIndex > -1) {
+      closeSessions.splice(sessionIndex, 1)
+      closeCount -= 1
+    }
     session.unreadCount = session.unreadCount ? session.unreadCount + 1 : 1
     session.lastPayload = payload.message.payload
     session.last_activity_time = new Date()
@@ -68,6 +75,8 @@ const handleIncomingMessage = (payload, state, props, updateLiveChatInfo, clearS
     sessions = [session, ...sessions]
     data = {
       openSessions: sessions,
+      closeSessions,
+      closeCount,
       openCount: props.openCount + 1
     }
   }
