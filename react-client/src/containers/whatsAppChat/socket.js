@@ -21,6 +21,7 @@ export function handleSocketEventWhatsapp (data, state, props, updateLiveChatInf
   }
 
   const handleIncomingMessage = (payload, state, props, updateLiveChatInfo, clearSocketData) => {
+    debugger;
     let sessions = state.sessions
     let session = payload.subscriber
     session.profilePic = 'https://www.mastermindpromotion.com/wp-content/uploads/2015/02/facebook-default-no-profile-pic-300x300.jpg'
@@ -59,6 +60,13 @@ export function handleSocketEventWhatsapp (data, state, props, updateLiveChatInf
         closeCount: state.tabValue === 'close' ? props.closeCount - 1 : props.closeCount
       }
     } else if (index === -1 && state.tabValue === 'open') {
+      let closeSessions = props.closeSessions
+      let closeCount = props.closeCount
+      let sessionIndex = closeSessions.findIndex((s) => s._id === session._id)
+      if (sessionIndex > -1) {
+        closeSessions.splice(sessionIndex, 1)
+        closeCount -= 1
+      }
       session.unreadCount = session.unreadCount ? session.unreadCount + 1 : 1
       session.lastPayload = payload.message.payload
       session.last_activity_time = new Date()
@@ -68,6 +76,8 @@ export function handleSocketEventWhatsapp (data, state, props, updateLiveChatInf
       sessions = [session, ...sessions]
       data = {
         openSessions: sessions,
+        closeSessions,
+        closeCount,
         openCount: props.openCount + 1
       }
     }
