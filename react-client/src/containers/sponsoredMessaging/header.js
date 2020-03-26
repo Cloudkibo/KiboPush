@@ -26,7 +26,7 @@ class Header extends React.Component {
           </button>
           {this.props.showSchedule &&
             <button style={{marginLeft: '5px'}}
-              onClick={this.props.onSend}
+              onClick={this.props.openScheduleModal}
               className='addLink btn btn-primary m-btn m-btn--custom m-btn--air m-btn--pill m-btn--icon'>
               <span>
                 Schedule
