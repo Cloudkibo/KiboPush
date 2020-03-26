@@ -67,7 +67,7 @@ class LeftChatItem extends React.Component {
       )
     } else if (type === 'file') {
       const url = message.attachments ? message.attachments[0].payload.url : message.fileurl.url
-      const name = url.split('?')[0].split('/').pop()
+      const name = message.fileName || url.split('?')[0].split('/').pop()
       return (
         <FILE
           file={{fileurl: {url}, fileName: name}}
