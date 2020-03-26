@@ -11,6 +11,7 @@ import {deleteSponsoredMessage, createSponsoredMessage, fetchSponsoredMessages, 
 import AlertContainer from 'react-alert'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
 import YouTube from 'react-youtube'
+import ScheduleModal from './scheduleModal'
 
 class SponsoredMessaging extends React.Component {
   constructor (props, context) {
@@ -52,7 +53,18 @@ class SponsoredMessaging extends React.Component {
    this.publish = this.publish.bind(this)
    this.handlePublishResponse = this.handlePublishResponse.bind(this)
    this.openVideoTutorial = this.openVideoTutorial.bind(this)
+   this.openScheduleModal = this.openScheduleModal.bind(this)
+   this.saveSchedule = this.saveSchedule.bind(this)
   }
+
+  saveSchedule () {
+
+  }
+
+  openScheduleModal () {
+    this.refs.sponsoredMessage.click()
+  }
+
   openVideoTutorial () {
     this.setState({
       openVideo: true
@@ -85,6 +97,8 @@ class SponsoredMessaging extends React.Component {
       statusValue = 'Active'
     } else if (status.toLowerCase() === 'rejected') {
       statusValue = 'Rejected'
+    } else if (status.toLowerCase() === 'scheduled') {
+      statusValue = 'Scheduled'
     }
     return statusValue
   }
@@ -301,6 +315,13 @@ class SponsoredMessaging extends React.Component {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
+          <button ref='sponsoredMessage' style={{display: 'none'}} data-toggle="modal" data-target="#sponsoredMessage"></button>
+          <ScheduleModal
+            id='sponsoredMessage'
+            title='Schedule Broadcast'
+            content='Send this broadcast at:'
+            saveSchedule={this.saveSchedule}
+          />
         <a href='#/' style={{ display: 'none' }} ref='videoSponsored' data-toggle='modal' data-backdrop='static' data-keyboard='false' data-target="#videoSponsored">videoSponsored</a>
             <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="videoSponsored" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog modal-lg" role="document">
@@ -309,7 +330,7 @@ class SponsoredMessaging extends React.Component {
                   <h5 className="modal-title" id="exampleModalLabel">
                     Sponsored Broadcast Video Tutorial
                   </h5>
-                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" 
+                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal"
                   aria-label="Close"
                   onClick={() => {
                     this.setState({
@@ -335,7 +356,7 @@ class SponsoredMessaging extends React.Component {
                 </div>
               </div>
             </div>
-          </div>  
+          </div>
           <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="create" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
               <div className="modal-content">
@@ -472,6 +493,7 @@ class SponsoredMessaging extends React.Component {
                           <option value='draft'>Draft</option>
                           <option value='sent_to_fb'>Sent to Facebook</option>
                           <option value='pending_review'>Pending Review</option>
+                          <option value='scheduled'>Scheduled</option>
                           <option value='active'>Active</option>
                           <option value='rejected'>Rejected</option>
                         </select>
@@ -575,6 +597,11 @@ class SponsoredMessaging extends React.Component {
                                     <button className='btn btn-primary btn-sm' style={{margin: 2}} data-toggle="modal" data-target="#delete" onClick={() => this.showDialogDelete(sponsoredMessage._id)}>
                                       Delete
                                   </button>
+                                  }
+                                  {sponsoredMessage.adSetId && sponsoredMessage.payload && sponsoredMessage.payload.length > 0 && sponsoredMessage.status === 'draft' &&
+                                    <button className='btn btn-primary btn-sm' style={{margin: 2}} onClick={() => this.openScheduleModal(sponsoredMessage)}>
+                                      Schedule
+                                    </button>
                                   }
                                   {sponsoredMessage.adSetId && sponsoredMessage.payload && sponsoredMessage.payload.length > 0 && sponsoredMessage.status === 'draft' &&
                                     <button className='btn btn-primary btn-sm' style={{margin: 2}} onClick={() => this.publish(sponsoredMessage)}>
