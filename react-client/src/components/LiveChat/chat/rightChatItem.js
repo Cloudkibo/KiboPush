@@ -69,6 +69,7 @@ class RightChatItem extends React.Component {
     } else if (type === 'file') {
       return (
         <FILE
+          textColor='white'
           file={message}
         />
       )
