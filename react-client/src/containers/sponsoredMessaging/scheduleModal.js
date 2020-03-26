@@ -12,11 +12,24 @@ class ScheduleModal extends React.Component {
     this.changeTime = this.changeTime.bind(this)
     this.getMinDate = this.getMinDate.bind(this)
   }
+  UNSAFE_componentWillReceiveProps (nextProps) {
+    if (nextProps.dateTime && nextProps.dateTime !== '') {
+      // "2020-03-26T06:42:29.928Z"
+      let dateTime = new Date(nextProps.dateTime)
+      let month = ('0' + (dateTime.getMonth() + 1)).slice(-2);
+      let day = ('0' + dateTime.getDate()).slice(-2)
+      let date = `${dateTime.getFullYear()}-${month}-${day}`
+      let time = `${dateTime.getHours()}:${dateTime.getMinutes()}`
+      this.setState({date: date, time: time})
+    } else {
+      this.setState({date: '', time: ''})
+    }
+  }
   changeDate (e) {
-    console.log('changeDate', e.target.value)
+    this.setState({date: e.target.value})
   }
   changeTime (e) {
-    console.log('changeTime', e.target.value)
+    this.setState({time: e.target.value})
   }
   getMinDate () {
     let date = new Date()
@@ -46,17 +59,19 @@ class ScheduleModal extends React.Component {
                   className="form-control m-input"
                   min={this.getMinDate()}
                   onChange={this.changeDate}
-                  style={{display: 'inline', width: '40%'}} />
+                  style={{display: 'inline', width: '40%'}}
+                  value={this.state.date} />
                 <span style={{marginLeft: '10px'}}>on</span>
                 <input type='time'
                   className="form-control m-input"
                   onChange={this.changeTime}
-                  style={{display: 'inline', width: '30%', marginLeft: '10px'}} />
+                  style={{display: 'inline', width: '30%', marginLeft: '10px'}}
+                  value={this.state.time} />
               </div>
               <br />
               <button style={{ float: 'right' }}
                 className='btn btn-primary btn-sm'
-                onClick={() => {this.props.saveSchedule()}}
+                onClick={() => this.props.saveSchedule(this.state.date, this.state.time)}
                 disabled={this.state.date === '' || this.state.time === ''}>Save
               </button>
             </div>
