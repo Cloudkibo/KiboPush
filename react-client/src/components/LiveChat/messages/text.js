@@ -24,7 +24,7 @@ class Text extends React.Component {
   getText (text) {
     if (validURL(text)) {
       return (
-        <div style={{wordBreak: 'break-all', display: 'block', overflow: 'hidden', width: '200px'}}>
+        <div style={{wordBreak: 'break-all', display: 'block', overflow: 'hidden'}}>
           <a style={{color: this.props.color}} href={text} target='_blank' rel='noopener noreferrer'>
             {text}
           </a>
@@ -38,7 +38,7 @@ class Text extends React.Component {
       )
     } else {
       return (
-        <div style={{wordBreak: 'break-all', display: 'block', overflow: 'hidden', width: '200px'}}>
+        <div style={{wordBreak: 'break-all', display: 'block', overflow: 'hidden'}}>
           {text}
         </div>
       )
