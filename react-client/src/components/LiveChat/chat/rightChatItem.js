@@ -120,7 +120,7 @@ class RightChatItem extends React.Component {
             {this.props.displayDate(this.props.message.datetime)}
           </div>
         }
-        <div id={this.props.message._id} style={{minWidth: '200px', maxWidth: '250px'}} className='m-messenger__message m-messenger__message--out'>
+        <div id={this.props.message._id} className='m-messenger__message m-messenger__message--out'>
           <div className='m-messenger__message-body'>
             <div className='m-messenger__message-arrow' />
             <div style={{maxWidth: '250px'}} className='m-messenger__message-content'>

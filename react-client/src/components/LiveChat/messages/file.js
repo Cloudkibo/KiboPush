@@ -15,7 +15,7 @@ class File extends React.Component {
         rel='noopener noreferrer'
         href={this.props.file.fileurl.url}
       >
-        <h6 style={{color: 'white'}}>
+        <h6 style={{wordBreak: 'break-all'}}>
           <i className='fa fa-file-text-o' /> {this.props.file.fileName}
         </h6>
       </a>
