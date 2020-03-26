@@ -21,6 +21,7 @@ import AlertContainer from 'react-alert'
 import UploadCustomerInformation from './uploadCustomerInformation'
 import WhiteListDomains from './whitelistDomains'
 import Integrations from './integrations'
+import AdvancedSetting from './advancedSettings'
 
 class Settings extends React.Component {
   constructor (props, context) {
@@ -58,6 +59,7 @@ class Settings extends React.Component {
     this.setResetPass = this.setResetPass.bind(this)
     this.setConfiguration = this.setConfiguration.bind(this)
     this.setIntegrations = this.setIntegrations.bind(this)
+    this.setAdvancedSettings = this.setAdvancedSettings.bind(this)
     this.setNGP = this.setNGP.bind(this)
     this.setConnectFb = this.setConnectFb.bind(this)
     this.setGreetingMessage = this.setGreetingMessage.bind(this)
@@ -174,6 +176,11 @@ class Settings extends React.Component {
   setIntegrations () {
     this.setState({
       openTab: 'integrations'
+    })
+  }
+  setAdvancedSettings () {
+    this.setState({
+      openTab: 'advancedSettings'
     })
   }
   setPermissions () {
@@ -462,7 +469,7 @@ class Settings extends React.Component {
                     </li>
                     <li className='m-nav__item'>
                       <a href='#/' className='m-nav__link' onClick={this.setConfiguration} style={{cursor: 'pointer'}} >
-                        <i className='m-nav__link-icon flaticon-settings' />
+                        <i className='m-nav__link-icon 	flaticon-interface-6' />
                         <span className='m-nav__link-text'>Configuration</span>
                       </a>
                     </li>
@@ -566,6 +573,12 @@ class Settings extends React.Component {
                       <a href='#/' className='m-nav__link' onClick={this.setWhiteListDomains} style={{cursor: 'pointer'}}>
                         <i className='m-nav__link-icon la la-list' />
                         <span className='m-nav__link-text'>Whitelist Domains</span>
+                      </a>
+                    </li>
+                    <li className='m-nav__item'>
+                      <a href='#/' className='m-nav__link' onClick={this.setAdvancedSettings} style={{cursor: 'pointer'}}>
+                        <i className='m-nav__link-icon fa flaticon-settings' />
+                        <span className='m-nav__link-text'>Advanced Settings</span>
                       </a>
                     </li>
                   </ul>
@@ -679,6 +692,9 @@ class Settings extends React.Component {
             }
             { this.state.openTab === 'integrations' &&
               <Integrations history= {this.props.history}/>
+            }
+            { this.state.openTab === 'advancedSettings' &&
+              <AdvancedSetting />
             }
           </div>
         </div>
