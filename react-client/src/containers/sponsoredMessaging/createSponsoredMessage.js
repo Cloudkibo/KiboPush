@@ -174,7 +174,6 @@ class CreateSponsoredMessage extends React.Component {
       time: 5000,
       transition: 'scale'
     }
-    console.log('this.props.sponsoredMessage', this.props.sponsoredMessage)
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
@@ -182,7 +181,7 @@ class CreateSponsoredMessage extends React.Component {
           <ScheduleModal
             id='sponsoredMessage'
             title='Schedule Broadcast'
-            content='Send this broadcast at:'
+            content='Send this broadcast on:'
             saveSchedule={this.saveSchedule}
             dateTime={this.props.sponsoredMessage.scheduleDateTime}
           />
