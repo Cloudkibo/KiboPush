@@ -59,7 +59,6 @@ class Ad extends React.Component {
   }
 
   render () {
-    console.log('this.props.sponsoredMessage', this.props.sponsoredMessage)
     return (
       <div>
         <h5>Step 04:</h5>

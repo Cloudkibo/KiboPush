@@ -6,7 +6,7 @@ class ScheduleModal extends React.Component {
     super(props, context)
     this.state = {
       date: '',
-      time: ''
+      time: '00:00'
     }
     this.changeDate = this.changeDate.bind(this)
     this.changeTime = this.changeTime.bind(this)
@@ -16,13 +16,15 @@ class ScheduleModal extends React.Component {
     if (nextProps.dateTime && nextProps.dateTime !== '') {
       // "2020-03-26T06:42:29.928Z"
       let dateTime = new Date(nextProps.dateTime)
-      let month = ('0' + (dateTime.getMonth() + 1)).slice(-2);
+      let month = ('0' + (dateTime.getMonth() + 1)).slice(-2)
       let day = ('0' + dateTime.getDate()).slice(-2)
       let date = `${dateTime.getFullYear()}-${month}-${day}`
-      let time = `${dateTime.getHours()}:${dateTime.getMinutes()}`
+      let hour = ('0' + (dateTime.getHours())).slice(-2)
+      let minute = ('0' + (dateTime.getMinutes())).slice(-2)
+      let time = `${hour}:${minute}`
       this.setState({date: date, time: time})
     } else {
-      this.setState({date: '', time: ''})
+      this.setState({date: '', time: '00:00'})
     }
   }
   changeDate (e) {
@@ -61,7 +63,7 @@ class ScheduleModal extends React.Component {
                   onChange={this.changeDate}
                   style={{display: 'inline', width: '40%'}}
                   value={this.state.date} />
-                <span style={{marginLeft: '10px'}}>on</span>
+                <span style={{marginLeft: '10px'}}>at</span>
                 <input type='time'
                   className="form-control m-input"
                   onChange={this.changeTime}
