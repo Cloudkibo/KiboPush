@@ -15,7 +15,7 @@ class File extends React.Component {
         rel='noopener noreferrer'
         href={this.props.file.fileurl.url}
       >
-        <h6 style={{wordBreak: 'break-all'}}>
+        <h6 style={{wordBreak: 'break-all', color: this.props.textColor}}>
           <i className='fa fa-file-text-o' /> {this.props.file.fileName}
         </h6>
       </a>
@@ -24,7 +24,8 @@ class File extends React.Component {
 }
 
 File.propTypes = {
-  'file': PropTypes.object.isRequired
+  'file': PropTypes.object.isRequired,
+  'textColor': PropTypes.string
 }
 
 export default File
