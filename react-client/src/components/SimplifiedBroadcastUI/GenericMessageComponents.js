@@ -41,20 +41,20 @@ const outerColumnStyle = {
   padding: 0
 }
 
-const tooltipText = 'You can only add upto 3 components per message.'
 
 class GenericMessageComponents extends React.Component {
 
   render () {
-    let componentStyle = (this.props.addedComponents === 3) ? disabledStyle : activeStyle
-    let cursorStyle = (this.props.addedComponents === 3) ? disabledCursor : activeCursor
+    const tooltipText = `You can only add upto ${this.props.componentLimit} components per message.`
+    let componentStyle = (this.props.addedComponents === this.props.componentLimit) ? disabledStyle : activeStyle
+    let cursorStyle = (this.props.addedComponents === this.props.componentLimit) ? disabledCursor : activeCursor
     return (
       <div className='row' style={{overflowX: 'hidden'}}>
         <ReactTooltip
           place='right'
           type='info'
           multiline={true}
-          disable={!(this.props.addedComponents === 3)}
+          disable={!(this.props.addedComponents === this.props.componentLimit)}
         />
         <div data-tip={tooltipText} style={{...cursorStyle, ...outerColumnStyle}} className='col-6' hidden={this.props.hiddenComponents.indexOf('text') > -1 ? true : null}>
           <div style={componentStyle} className='ui-block hoverbordercomponent' id='text' onClick={() => { this.props.addComponent('text') }}>
@@ -143,7 +143,7 @@ class GenericMessageComponents extends React.Component {
                   <img src='https://cdn.cloudkibo.com/public/icons/video.png' alt='Video' style={{maxHeight: '20px', margin: '10px', marginLeft: '20px'}} />
                   YouTube Video
                 </h5>
-                <p style={descriptionStyle}>Enter a YouTube video link to send it as a card</p>
+                <p style={descriptionStyle}>Enter a YouTube link to send it as a playable video or card</p>
               </div>
             </div>
           </div>
