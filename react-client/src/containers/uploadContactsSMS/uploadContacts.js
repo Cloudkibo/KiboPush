@@ -343,7 +343,7 @@ class UploadContacts extends React.Component {
                     </div>
                   </div>
                   <div className='m-portlet__head-tools'>
-                    <button onClick={() => {this.refs.resetModal.click()}} className='btn btn-secondary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
+                    <button onClick={() => { this.refs.resetModal.click() }} className='btn btn-secondary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
                       Reset
                     </button>
                     <button onClick={this.onSubmit} style={{marginLeft: '10px'}} className={`btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill ${this.state.loading && 'm-loader m-loader--light m-loader--left'}`} disabled={this.state.records.length === 0}>
