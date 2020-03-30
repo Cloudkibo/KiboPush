@@ -481,7 +481,7 @@ class Webhook extends React.Component {
                                 <div className='form-group m-form__group'>
                                   <label className='control-label'>Page:&nbsp;&nbsp;&nbsp;</label>
                                   <span>
-                                    <img alt='pic' style={{ height: '30px' }} src={(this.state.pageEdit.pagePic) ? this.state.pageEdit.pagePic : 'http://cdn.cloudkibo.com/public/icons/users.jpg'} />&nbsp;&nbsp;
+                                    <img alt='pic' style={{ height: '30px' }} src={(this.state.pageEdit.pagePic) ? this.state.pageEdit.pagePic : 'https://cdn.cloudkibo.com/public/icons/users.jpg'} />&nbsp;&nbsp;
                                   <span>{this.state.pageEdit.pageName}</span>
                                   </span>
                                   <div id='question' className='form-group m-form__group'>

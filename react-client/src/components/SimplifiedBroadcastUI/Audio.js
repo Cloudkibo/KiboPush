@@ -148,7 +148,7 @@ class Audio extends React.Component {
               clickable
             >
               <div className='align-center'>
-                <img src='http://cdn.cloudkibo.com/public/icons/speaker.png' alt='Text' style={{pointerEvents: 'none', zIndex: -1, maxHeight: 40}} />
+                <img src='https://cdn.cloudkibo.com/public/icons/speaker.png' alt='Text' style={{pointerEvents: 'none', zIndex: -1, maxHeight: 40}} />
                 <h4 style={{pointerEvents: 'none', zIndex: -1, marginLeft: '10px', display: 'inline'}}>{this.state.file !== '' ? this.state.file.name : 'Audio'}</h4>
               </div>
             </Files>
