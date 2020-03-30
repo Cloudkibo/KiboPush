@@ -47,6 +47,7 @@ class PushMessage extends React.Component {
           pageId={this.props.page.pageId}
           broadcast={this.props.defaultMessage}
           handleChange={this.handleChange}
+          showQuickRelplies = {false}
           convoTitle={this.state.convoTitle}
           hideUserOptions
           buttonActions={this.state.buttonActions} />
