@@ -2,12 +2,6 @@
 
 import React from 'react'
 import { connect } from 'react-redux'
-import {
-  addBroadcast,
-  clearAlertMessage,
-  loadBroadcastsList,
-  sendbroadcast
-} from '../../../redux/actions/broadcast.actions'
 import { uploadFile, uploadTemplate } from '../../../redux/actions/convos.actions'
 import { bindActionCreators } from 'redux'
 
@@ -81,10 +75,6 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-    loadBroadcastsList: loadBroadcastsList,
-    addBroadcast: addBroadcast,
-    sendbroadcast: sendbroadcast,
-    clearAlertMessage: clearAlertMessage,
     uploadFile: uploadFile,
     uploadTemplate: uploadTemplate
   }, dispatch)

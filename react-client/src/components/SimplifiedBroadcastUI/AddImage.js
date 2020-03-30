@@ -2,13 +2,6 @@
 
 import React from 'react'
 import { connect } from 'react-redux'
-import {
-  addBroadcast,
-  clearAlertMessage,
-  loadBroadcastsList,
-  sendbroadcast,
-  uploadRequest
-} from '../../redux/actions/broadcast.actions'
 import { RingLoader } from 'halogenium'
 import { uploadImage, uploadTemplate } from '../../redux/actions/convos.actions'
 import { bindActionCreators } from 'redux'
@@ -180,11 +173,6 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-    loadBroadcastsList: loadBroadcastsList,
-    addBroadcast: addBroadcast,
-    sendbroadcast: sendbroadcast,
-    clearAlertMessage: clearAlertMessage,
-    uploadRequest: uploadRequest,
     uploadImage: uploadImage,
     uploadTemplate: uploadTemplate
   }, dispatch)
