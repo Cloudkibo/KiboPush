@@ -111,7 +111,7 @@ class CompanyInfo extends React.Component {
                                 { this.state.companyInfo.map((company, i) => (
                                     <div className='m-widget5__item' key={i} style={{borderBottom: '.07rem dashed #ebedf2'}}>
                                     <div className='m-widget5__pic'>
-                                        <img className='m-widget7__img' alt='pic' src={(company.owner && company.owner.facebookInfo) ? company.owner.facebookInfo.profilePic : 'https://cdn.cloudkibo.com/public/icons/users.jpg'} style={{height: '100px', borderRadius: '50%', width: '7rem'}} />
+                                        <img className='m-widget7__img' alt='pic' src={(company.owner && company.owner.facebookInfo) ? company.owner.facebookInfo.profilePic : 'http://cdn.cloudkibo.com/public/icons/users.jpg'} style={{height: '100px', borderRadius: '50%', width: '7rem'}} />
                                     </div>
                                     <div className='m-widget5__content'>
                                         <h4 className='m-widget5__title'>

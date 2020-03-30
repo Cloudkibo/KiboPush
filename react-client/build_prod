@@ -2,11 +2,11 @@ for file in build/static/js/*
 do
     #whatever you need with "$file"
     echo "Uploading $file"
-    curl -F 'bundle=@'$file https://cdn.cloudkibo.com/uploadSplitBundle
+    curl -F 'bundle=@'$file http://cdn.cloudkibo.com/uploadSplitBundle
     echo ""
 done
 
-curl --data '' https://cdn.cloudkibo.com/completedBundleUpload
+curl --data '' http://cdn.cloudkibo.com/completedBundleUpload
 echo ""
 
 echo "Uploading Html to KiboEngage"

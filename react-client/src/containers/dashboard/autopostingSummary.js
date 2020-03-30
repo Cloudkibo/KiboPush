@@ -300,7 +300,7 @@ class AutopostingSummary extends React.Component {
             <br />
             <div className='m-widget5'>
               <LISTWIDGET
-                imageUrl='https://cdn.cloudkibo.com/public/img/tweetsmoderation.png'
+                imageUrl='http://cdn.cloudkibo.com/public/img/tweetsmoderation.png'
                 title='Tweets Moderation'
                 description='Analytics about tweets you moderated'
                 stats={[
@@ -310,7 +310,7 @@ class AutopostingSummary extends React.Component {
                 ]}
               />
               <LISTWIDGET
-                imageUrl='https://cdn.cloudkibo.com/public/img/twittertofacebook.png'
+                imageUrl='http://cdn.cloudkibo.com/public/img/twittertofacebook.png'
                 title='Tweets Published on Facebook'
                 description='Analytics about tweets you autopost on Facebook page(s)'
                 stats={[

@@ -64,7 +64,7 @@ class ChatArea extends React.Component {
     } else if (component === 'thumbsUp') {
       payload = {
         componentType: 'thumbsUp',
-        fileurl: 'https://cdn.cloudkibo.com/public/img/thumbsup.png'
+        fileurl: 'http://cdn.cloudkibo.com/public/img/thumbsup.png'
       }
     }
     return payload

@@ -40,7 +40,7 @@ class Response extends React.Component {
   constructor (props, context) {
     super(props, context)
     var addScript = document.createElement('script')
-    addScript.setAttribute('src', 'https://cdn.cloudkibo.com/public/js/Chart.min.js')
+    addScript.setAttribute('src', 'http://cdn.cloudkibo.com/public/js/Chart.min.js')
     document.body.appendChild(addScript)
 
     this.openPopover = this.openPopover.bind(this)

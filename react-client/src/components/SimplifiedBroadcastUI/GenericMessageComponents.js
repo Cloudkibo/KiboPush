@@ -61,7 +61,7 @@ class GenericMessageComponents extends React.Component {
             <div className='row'>
               <div className='col-12' style={innerColumnStyle}>
                 <h5 style={headerStyle}>
-                  <img src='https://cdn.cloudkibo.com/public/icons/text.png' alt='Text' style={{maxHeight: '20px', margin: '10px', marginLeft: '20px'}} />
+                  <img src='http://cdn.cloudkibo.com/public/icons/text.png' alt='Text' style={{maxHeight: '20px', margin: '10px', marginLeft: '20px'}} />
                   Text
                 </h5>
                 <p style={descriptionStyle}>
@@ -76,7 +76,7 @@ class GenericMessageComponents extends React.Component {
             <div className='row'>
               <div className='col-12' style={innerColumnStyle}>
                 <h5 style={headerStyle}>
-                  <img src='https://cdn.cloudkibo.com/public/icons/media.png' alt='Media' style={{maxHeight: '20px', margin: '10px', marginLeft: '20px'}} />
+                  <img src='http://cdn.cloudkibo.com/public/icons/media.png' alt='Media' style={{maxHeight: '20px', margin: '10px', marginLeft: '20px'}} />
                   Media
                 </h5>
                 {this.props.module && this.props.module === 'whatsapp' ?
@@ -93,7 +93,7 @@ class GenericMessageComponents extends React.Component {
             <div className='row'>
               <div className='col-12' style={innerColumnStyle}>
                 <h5 style={headerStyle}>
-                  <img src='https://cdn.cloudkibo.com/public/icons/card.png' alt='Card' style={{maxHeight: '20px', margin: '10px', marginLeft: '20px'}} />
+                  <img src='http://cdn.cloudkibo.com/public/icons/card.png' alt='Card' style={{maxHeight: '20px', margin: '10px', marginLeft: '20px'}} />
                   Gallery
                 </h5>
                 <p style={descriptionStyle}>Create a photo carousel by uploading up to 10 images</p>
@@ -106,7 +106,7 @@ class GenericMessageComponents extends React.Component {
             <div className='row'>
               <div className='col-12' style={innerColumnStyle}>
                 <h5 style={headerStyle}>
-                  <img src='https://cdn.cloudkibo.com/public/icons/speaker.png' alt='Audio' style={{maxHeight: '20px', margin: '10px', marginLeft: '20px'}} />
+                  <img src='http://cdn.cloudkibo.com/public/icons/speaker.png' alt='Audio' style={{maxHeight: '20px', margin: '10px', marginLeft: '20px'}} />
                   Audio
                 </h5>
                 {this.props.module && this.props.module === 'whatsapp' ?
@@ -123,7 +123,7 @@ class GenericMessageComponents extends React.Component {
             <div className='row'>
               <div className='col-12' style={innerColumnStyle}>
                 <h5 style={headerStyle}>
-                  <img src='https://cdn.cloudkibo.com/public/icons/file.png' alt='File' style={{maxHeight: '20px', margin: '10px', marginLeft: '20px'}} />
+                  <img src='http://cdn.cloudkibo.com/public/icons/file.png' alt='File' style={{maxHeight: '20px', margin: '10px', marginLeft: '20px'}} />
                   File
                 </h5>
                 {this.props.module && this.props.module === 'whatsapp' ?
@@ -140,7 +140,7 @@ class GenericMessageComponents extends React.Component {
             <div className='row'>
               <div className='col-12' style={innerColumnStyle}>
                 <h5 style={headerStyle}>
-                  <img src='https://cdn.cloudkibo.com/public/icons/video.png' alt='Video' style={{maxHeight: '20px', margin: '10px', marginLeft: '20px'}} />
+                  <img src='http://cdn.cloudkibo.com/public/icons/video.png' alt='Video' style={{maxHeight: '20px', margin: '10px', marginLeft: '20px'}} />
                   YouTube Video
                 </h5>
                 <p style={descriptionStyle}>Enter a YouTube link to send it as a playable video or card</p>
@@ -153,7 +153,7 @@ class GenericMessageComponents extends React.Component {
             <div className='row'>
               <div className='col-12' style={innerColumnStyle}>
                 <h5 style={headerStyle}>
-                  <img src='https://cdn.cloudkibo.com/public/icons/layout.png' alt='Link' style={{maxHeight: '20px', margin: '10px', marginLeft: '20px'}} />
+                  <img src='http://cdn.cloudkibo.com/public/icons/layout.png' alt='Link' style={{maxHeight: '20px', margin: '10px', marginLeft: '20px'}} />
                   Link Carousel
                 </h5>
                 <p style={descriptionStyle}>Enter up to 10 links to create a photo carousel</p>
@@ -169,7 +169,7 @@ class GenericMessageComponents extends React.Component {
             <div className='row'>
               <div className='col-12' style={innerColumnStyle}>
                 <h5 style={headerStyle}>
-                  <img src='https://cdn.cloudkibo.com/public/icons/text.png' alt='Text' style={{maxHeight: '20px', margin: '10px', marginLeft: '20px'}} />
+                  <img src='http://cdn.cloudkibo.com/public/icons/text.png' alt='Text' style={{maxHeight: '20px', margin: '10px', marginLeft: '20px'}} />
                   User Input
                 </h5>
                 <p style={descriptionStyle}>

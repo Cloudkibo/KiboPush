@@ -730,7 +730,7 @@ class Header extends React.Component {
                         <a href='#/' className='m-nav__link m-dropdown__toggle'>
                           <span className='m-topbar__userpic'>
                             <div style={{ display: 'inline-block', marginRight: '5px' }}>
-                              <img onError={this.profilePicError} src={(this.props.user && this.props.user.facebookInfo && this.props.user.facebookInfo.profilePic) ? this.props.user.facebookInfo.profilePic : 'https://cdn.cloudkibo.com/public/icons/users.jpg'} className='m--img-rounded m--marginless m--img-centered' alt='' />
+                              <img onError={this.profilePicError} src={(this.props.user && this.props.user.facebookInfo && this.props.user.facebookInfo.profilePic) ? this.props.user.facebookInfo.profilePic : 'http://cdn.cloudkibo.com/public/icons/users.jpg'} className='m--img-rounded m--marginless m--img-centered' alt='' />
                             </div>
                             <div style={{ display: 'inline-block', height: '41px' }}>
                               <span className='m-nav__link-text' style={{ lineHeight: '41px', verticalAlign: 'middle', textAlign: 'center' }}>{(this.props.user) ? this.props.user.name : ''} <i className='fa fa-chevron-down' />
@@ -747,7 +747,7 @@ class Header extends React.Component {
                             <div className='m-dropdown__header m--align-center'>
                               <div className='m-card-user m-card-user--skin-dark'>
                                 <div className='m-card-user__pic'>
-                                  <img src={(this.props.user && this.props.user.facebookInfo && this.props.user.facebookInfo.profilePic) ? this.props.user.facebookInfo.profilePic : 'https://cdn.cloudkibo.com/public/icons/users.jpg'} className='m--img-rounded m--marginless' alt='' />
+                                  <img src={(this.props.user && this.props.user.facebookInfo && this.props.user.facebookInfo.profilePic) ? this.props.user.facebookInfo.profilePic : 'http://cdn.cloudkibo.com/public/icons/users.jpg'} className='m--img-rounded m--marginless' alt='' />
                                 </div>
                                 <div className='m-card-user__details'>
                                   <span className='m-card-user__name m--font-weight-500'>

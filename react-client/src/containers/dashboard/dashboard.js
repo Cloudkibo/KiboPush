@@ -439,10 +439,10 @@ class Dashboard extends React.Component {
       // TODO We need to correct this in future.
       window.location.reload()
       // let addScript = document.createElement('script')
-      // addScript.setAttribute('src', 'https://cdn.cloudkibo.com/public/assets/vendors/base/vendors.bundle.js')
+      // addScript.setAttribute('src', 'http://cdn.cloudkibo.com/public/assets/vendors/base/vendors.bundle.js')
       // document.body.appendChild(addScript)
       // let addScript1 = document.createElement('script')
-      // addScript1.setAttribute('src', 'https://cdn.cloudkibo.com/public/assets/demo/default/base/scripts.bundle.js')
+      // addScript1.setAttribute('src', 'http://cdn.cloudkibo.com/public/assets/demo/default/base/scripts.bundle.js')
       // document.body.appendChild(addScript1)
     }
     // if (this.props.currentPage) {
