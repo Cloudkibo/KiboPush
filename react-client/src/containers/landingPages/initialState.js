@@ -230,7 +230,7 @@ class InitialState extends React.Component {
                     {
                       this.props.initialState.mediaLink === ''
                       ? <div className='align-center'>
-                        <img src='http://cdn.cloudkibo.com/public/icons/picture.png' style={{pointerEvents: 'none', zIndex: -1, maxHeight: 40}} alt='Text' />
+                        <img src='https://cdn.cloudkibo.com/public/icons/picture.png' style={{pointerEvents: 'none', zIndex: -1, maxHeight: 40}} alt='Text' />
                         <h4 style={{pointerEvents: 'none', zIndex: -1}}> Upload Image </h4>
                       </div>
                       : <span>

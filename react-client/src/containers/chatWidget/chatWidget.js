@@ -11,7 +11,7 @@ class ChatWidget extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      scriptLine: '<script type="text/javascript">\n window.__kibo_company_id = "5b59739612fa1c04af1f96be";\n document.addEventListener("DOMContentLoaded", function() {\n  var wa = document.createElement("script");\n  wa.type = "text/javascript";\n  wa.async = true;\n  wa.src ="http://cdn.cloudkibo.com/public/scripts/widgetAppSrc.js";\n  var s = document.getElementsByTagName("script")[0];\n  s.parentNode.insertBefore(wa, s);\n });\n</script>'
+      scriptLine: '<script type="text/javascript">\n window.__kibo_company_id = "5b59739612fa1c04af1f96be";\n document.addEventListener("DOMContentLoaded", function() {\n  var wa = document.createElement("script");\n  wa.type = "text/javascript";\n  wa.async = true;\n  wa.src ="https://cdn.cloudkibo.com/public/scripts/widgetAppSrc.js";\n  var s = document.getElementsByTagName("script")[0];\n  s.parentNode.insertBefore(wa, s);\n });\n</script>'
     }
     this.save = this.save.bind(this)
     this.goToWhitelistDomain = this.goToWhitelistDomain.bind(this)
@@ -82,7 +82,7 @@ class ChatWidget extends React.Component {
                           <br />
                           <span>{'wa.async = true;'}</span>
                           <br />
-                          <span>{'wa.src ="http://cdn.cloudkibo.com/public/scripts/widgetAppSrc.js";'}</span>
+                          <span>{'wa.src ="https://cdn.cloudkibo.com/public/scripts/widgetAppSrc.js";'}</span>
                           <br />
                           <span>{'var s = document.getElementsByTagName("script")[0];'}</span>
                           <br />

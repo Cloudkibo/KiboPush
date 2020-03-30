@@ -313,7 +313,7 @@ class Media extends React.Component {
               {
                 (!this.state.showPreview && this.state.fileName === '') &&
                 <div className='align-center' style={{marginTop: '50px'}}>
-                  <img style={{maxHeight: 40, margin: 'auto'}} src='http://cdn.cloudkibo.com/public/icons/media.png' alt='Text' />
+                  <img style={{maxHeight: 40, margin: 'auto'}} src='https://cdn.cloudkibo.com/public/icons/media.png' alt='Text' />
                   <h4 style={{pointerEvents: 'none', zIndex: -1}}> Media </h4>
                 </div>
               }
@@ -325,7 +325,7 @@ class Media extends React.Component {
                   }
                     { this.state.mediaType === 'video' &&
                     <div style={{marginTop: '50px'}}>
-                      <img src='http://cdn.cloudkibo.com/public/icons/video.png' alt='Text' style={{maxHeight: 40}} />
+                      <img src='https://cdn.cloudkibo.com/public/icons/video.png' alt='Text' style={{maxHeight: 40}} />
                       <h4 style={{wordBreak: 'break-word'}}>{this.state.fileName !== '' ? this.state.fileName : 'Video'}</h4>
                     </div>
                   }
