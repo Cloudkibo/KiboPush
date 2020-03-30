@@ -299,7 +299,7 @@ class Footer extends React.Component {
       case 'thumbsUp':
         payload = {
           componentType: 'thumbsUp',
-          fileurl: 'http://cdn.cloudkibo.com/public/img/thumbsup.png'
+          fileurl: 'https://cdn.cloudkibo.com/public/img/thumbsup.png'
         }
         break
       default:
@@ -541,7 +541,7 @@ class Footer extends React.Component {
               style={{cursor: 'pointer', height: '20px', margin: '-5px 5px 0px 5px'}}
               data-tip='Gifs'
               alt='Gifs'
-              src='http://cdn.cloudkibo.com/public/img/gif-icon.png'
+              src='https://cdn.cloudkibo.com/public/img/gif-icon.png'
               id='_gif_picker'
               onClick={() => this.openPicker('gif')}
             />

@@ -106,7 +106,7 @@ class ViewBroadcastTemplate extends React.Component {
                                 <div style={{position: 'relative', top: 0, left: 0, overflow: 'hidden', width: 'auto', height: 'auto'}} >
                                   <div className='m-messenger__message m-messenger__message--in'>
                                     <div className='m-messenger__message-pic'>
-                                      <img src='http://cdn.cloudkibo.com/public/icons/user.png' alt='' />
+                                      <img src='https://cdn.cloudkibo.com/public/icons/user.png' alt='' />
                                     </div>
                                     <div style={{maxWidth: '235px'}} className='m-messenger__message-body'>
                                       <div className='m-messenger__message-arrow' />

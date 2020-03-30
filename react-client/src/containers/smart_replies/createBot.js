@@ -261,7 +261,7 @@ class CreateBot extends React.Component {
                     <label>Assigned to Page:</label>&nbsp;&nbsp;
                     {this.props.createdBot && this.props.createdBot.pageId &&
                     <span>
-                      <img alt='pic' style={{height: '30px'}} src={(this.state.pagePic) ? this.state.pagePic : 'http://cdn.cloudkibo.com/public/icons/users.jpg'} />&nbsp;&nbsp;
+                      <img alt='pic' style={{height: '30px'}} src={(this.state.pagePic) ? this.state.pagePic : 'https://cdn.cloudkibo.com/public/icons/users.jpg'} />&nbsp;&nbsp;
                       <span>{this.state.page}</span>
                     </span>
                   }
