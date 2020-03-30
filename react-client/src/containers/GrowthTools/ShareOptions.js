@@ -83,8 +83,8 @@ class ShareOptions extends React.Component {
   }
 
   componentDidMount () {
-    // require('https://cdn.cloudkibo.com/public/js/jquery-3.2.0.min.js')
-    // require('https://cdn.cloudkibo.com/public/js/jquery.min.js')
+    // require('http://cdn.cloudkibo.com/public/js/jquery-3.2.0.min.js')
+    // require('http://cdn.cloudkibo.com/public/js/jquery.min.js')
     if (this.props.pages && this.props.pages.length > 0) {
       if (this.props.pages[0].pageUserName) {
         this.setState({

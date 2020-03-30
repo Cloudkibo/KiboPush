@@ -564,7 +564,7 @@ class Card extends React.Component {
               onChange={this._onChange} style={{position: 'absolute', cursor: 'pointer', display: 'none'}} />
             {
             (this.state.imgSrc === '')
-            ? <img style={{maxHeight: 40, margin: 'auto'}} src='https://cdn.cloudkibo.com/public/icons/picture.png' alt='Text' />
+            ? <img style={{maxHeight: 40, margin: 'auto'}} src='http://cdn.cloudkibo.com/public/icons/picture.png' alt='Text' />
             : <img alt='' onLoad={this.onImgLoad} style={{maxWidth: 235, maxHeight: 135, padding: 15}} src={this.state.imgSrc} />
            }
           </div>

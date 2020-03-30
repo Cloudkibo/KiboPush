@@ -251,7 +251,7 @@ class EditBot extends React.Component {
                     <label>Assigned to Page:</label>&nbsp;&nbsp;
                     {this.props.showBotDetails && this.props.showBotDetails.pageId &&
                     <span>
-                      <img alt='pic' style={{height: '30px'}} src={(this.props.showBotDetails.pageId.pagePic) ? this.props.showBotDetails.pageId.pagePic : 'https://cdn.cloudkibo.com/public/icons/users.jpg'} />&nbsp;&nbsp;
+                      <img alt='pic' style={{height: '30px'}} src={(this.props.showBotDetails.pageId.pagePic) ? this.props.showBotDetails.pageId.pagePic : 'http://cdn.cloudkibo.com/public/icons/users.jpg'} />&nbsp;&nbsp;
                       <span>{this.props.showBotDetails.pageId.pageName}</span>
                     </span>
                   }

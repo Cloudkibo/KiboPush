@@ -533,7 +533,7 @@ class OperationalDashboard extends React.Component {
                                     { this.state.usersData.map((user, i) => (
                                       <div className='m-widget5__item' key={i} style={{borderBottom: '.07rem dashed #ebedf2'}}>
                                         <div className='m-widget5__pic'>
-                                          <img className='m-widget7__img' alt='pic' src={(user.facebookInfo) ? user.facebookInfo.profilePic : 'https://cdn.cloudkibo.com/public/icons/users.jpg'} style={{height: '100px', borderRadius: '50%', width: '7rem'}} />
+                                          <img className='m-widget7__img' alt='pic' src={(user.facebookInfo) ? user.facebookInfo.profilePic : 'http://cdn.cloudkibo.com/public/icons/users.jpg'} style={{height: '100px', borderRadius: '50%', width: '7rem'}} />
                                         </div>
                                         <div className='m-widget5__content'>
                                           <h4 className='m-widget5__title'>

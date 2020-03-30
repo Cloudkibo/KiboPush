@@ -102,7 +102,7 @@ class Login extends React.Component {
                 <div className='m-login__wrapper'>
                   <div className='m-login__logo'>
                     <a href='#/'>
-                      <img alt='' src='https://cdn.cloudkibo.com/public/img/logo.png' style={{maxWidth: 250}} />
+                      <img alt='' src='http://cdn.cloudkibo.com/public/img/logo.png' style={{maxWidth: 250}} />
                     </a>
                   </div>
                   <div className='m-login__signin'>
@@ -191,7 +191,7 @@ class Login extends React.Component {
               </div>
             </div>
           </div>
-          <div className='m-grid__item m-grid__item--fluid m-grid m-grid--center m-grid--hor m-grid__item--order-tablet-and-mobile-1 m-login__content' style={{backgroundImage: "url('https://cdn.cloudkibo.com/public/assets/app/media/img//bg/bg-4.jpg')"}}>
+          <div className='m-grid__item m-grid__item--fluid m-grid m-grid--center m-grid--hor m-grid__item--order-tablet-and-mobile-1 m-login__content' style={{backgroundImage: "url('http://cdn.cloudkibo.com/public/assets/app/media/img//bg/bg-4.jpg')"}}>
             <div className='m-grid__item m-grid__item--middle'>
               <Link to='' className='m-login__welcome'>Join KiboPush</Link>
               <p className='m-login__msg'>Get connected with your facebook audience through push messages.

@@ -39,7 +39,7 @@ class ViewScreen extends React.Component {
                 <div className='m-widget4__item'>
                   <div className='col-12'>
                     <div className='m-widget4__img m-widget4__img--pic'>
-                      <img alt='pic' src={(this.props.page.pagePic) ? this.props.page.pagePic : 'https://cdn.cloudkibo.com/public/icons/users.jpg'} />
+                      <img alt='pic' src={(this.props.page.pagePic) ? this.props.page.pagePic : 'http://cdn.cloudkibo.com/public/icons/users.jpg'} />
                     </div>
                   </div>
                   <div className='col-12'>
