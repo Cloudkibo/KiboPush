@@ -233,7 +233,7 @@ class UploadCustomerInfo extends React.Component {
                             </h3>
                           </div>
                           : <div className='m-dropzone__msg dz-message needsclick'>
-                            <img src='https://cdn.cloudkibo.com/public/icons/file.png' alt='File' style={{maxHeight: 25}} />
+                            <img src='http://cdn.cloudkibo.com/public/icons/file.png' alt='File' style={{maxHeight: 25}} />
                             <h3 className='m-dropzone__msg-title'>
                               {this.state.file.name}
                             </h3>

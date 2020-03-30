@@ -874,7 +874,7 @@ class FacebookPosts extends React.Component {
                                           </div>
                                           }
                                           { attachment.componentType === 'video' && <div className='align-center' style={{height: '60px'}}>
-                                            <img src='https://cdn.cloudkibo.com/public/icons/video.png' alt='Video' style={{maxHeight: '50px', marginLeft: '15px'}} />
+                                            <img src='http://cdn.cloudkibo.com/public/icons/video.png' alt='Video' style={{maxHeight: '50px', marginLeft: '15px'}} />
                                           </div>
                                           }
                                         </div>
@@ -989,7 +989,7 @@ class FacebookPosts extends React.Component {
                                       </div>
                                       }
                                       { attachment.componentType === 'video' && <div className='align-center' style={{height: '60px'}}>
-                                        <img src='https://cdn.cloudkibo.com/public/icons/video.png' alt='Video' style={{maxHeight: '50px', marginLeft: '15px'}} />
+                                        <img src='http://cdn.cloudkibo.com/public/icons/video.png' alt='Video' style={{maxHeight: '50px', marginLeft: '15px'}} />
                                       </div>
                                       }
                                     </div>

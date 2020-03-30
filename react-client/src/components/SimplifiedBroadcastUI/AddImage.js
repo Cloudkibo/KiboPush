@@ -146,7 +146,7 @@ class Image extends React.Component {
             {
               (this.state.imgSrc === '')
               ? <div className='align-center' style={{padding: '5px', marginTop: '-5px'}}>
-                <img src='https://cdn.cloudkibo.com/public/icons/picture.png' style={{pointerEvents: 'none', zIndex: -1, maxHeight: 40}} alt='Text' />
+                <img src='http://cdn.cloudkibo.com/public/icons/picture.png' style={{pointerEvents: 'none', zIndex: -1, maxHeight: 40}} alt='Text' />
                 <h6 style={{pointerEvents: 'none', zIndex: -1, marginLeft: '10px', display: 'inline'}}> Upload Image </h6>
               </div>
               : <div className='align-center' style={{padding: '5px'}}>
