@@ -629,9 +629,14 @@ class Dashboard extends React.Component {
                 <CardBoxesContainer data={this.props.dashboard} />
               }
             </div>
+            {
+              (url.includes('kibochat.cloudkibo.com') || url.includes('kiboengage.cloudkibo.com')) &&
             <div className='row'>
               <SubscriberSummary includeZeroCounts={this.includeZeroCounts} />
             </div>
+            }
+            {
+              (url.includes('kibochat.cloudkibo.com') || url.includes('kiboengage.cloudkibo.com')) &&
             <div className='row'>
               {
               this.props.pages && this.props.sentseendata && (url.includes('kiboengage.cloudkibo.com'))
@@ -657,6 +662,7 @@ class Dashboard extends React.Component {
                 onKeyDown={this.onKeyDown} />
             }
             </div>
+            }
             {(url.includes('kiboengage.cloudkibo.com') || url.includes('localhost')) &&
               <div className='row'>
                 <AutopostingSummary />
