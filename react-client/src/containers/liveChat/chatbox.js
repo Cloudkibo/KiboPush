@@ -391,7 +391,7 @@ class ChatBox extends React.Component {
     })
     var payload = {
       componentType: 'thumbsUp',
-      fileurl: 'https://cdn.cloudkibo.com/public/img/thumbsup.png'
+      fileurl: 'http://cdn.cloudkibo.com/public/img/thumbsup.png'
     }
     var session = this.props.currentSession
     var data = this.setMessageData(session, payload)

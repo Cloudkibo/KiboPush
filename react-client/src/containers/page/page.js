@@ -87,16 +87,16 @@ class Page extends React.Component {
   }
 
   componentDidMount() {
-    // require('https://cdn.cloudkibo.com/public/js/jquery-3.2.0.min.js')
-    // require('https://cdn.cloudkibo.com/public/js/jquery.min.js')
+    // require('http://cdn.cloudkibo.com/public/js/jquery-3.2.0.min.js')
+    // require('http://cdn.cloudkibo.com/public/js/jquery.min.js')
     // var addScript = document.createElement('script')
-    // addScript.setAttribute('src', 'https://cdn.cloudkibo.com/public/js/theme-plugins.js')
+    // addScript.setAttribute('src', 'http://cdn.cloudkibo.com/public/js/theme-plugins.js')
     // document.body.appendChild(addScript)
     // addScript = document.createElement('script')
-    // addScript.setAttribute('src', 'https://cdn.cloudkibo.com/public/assets/demo/default/base/scripts.bundle.js')
+    // addScript.setAttribute('src', 'http://cdn.cloudkibo.com/public/assets/demo/default/base/scripts.bundle.js')
     // document.body.appendChild(addScript)
     // addScript = document.createElement('script')
-    // addScript.setAttribute('src', 'https://cdn.cloudkibo.com/public/assets/vendors/base/vendors.bundle.js')
+    // addScript.setAttribute('src', 'http://cdn.cloudkibo.com/public/assets/vendors/base/vendors.bundle.js')
     // document.body.appendChild(addScript)
     const hostname = window.location.hostname;
     let title = '';
