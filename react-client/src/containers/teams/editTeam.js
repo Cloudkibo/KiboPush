@@ -442,7 +442,7 @@ class EditTeam extends React.Component {
                                 <span>
                                   <img alt='pic' style={{height: '30px'}}
                                     onError={(e) => this.profilePicError(e, agent)}
-                                    src={(agent.facebookInfo) ? agent.facebookInfo.profilePic : 'http://cdn.cloudkibo.com/public/icons/users.jpg'} />&nbsp;&nbsp;
+                                    src={(agent.facebookInfo) ? agent.facebookInfo.profilePic : 'https://cdn.cloudkibo.com/public/icons/users.jpg'} />&nbsp;&nbsp;
                                   <span>{agent.name}</span>&nbsp;&nbsp;&nbsp;
                                   {this.state.module === 'edit' &&
                                   <i style={{cursor: 'pointer'}} className='fa fa-times' onClick={() => this.removeAgent(agent)} />
@@ -518,7 +518,7 @@ class EditTeam extends React.Component {
                             this.state.pageIds.map((page, i) => (
                               <li className='m-nav__item'>
                                 <span>
-                                  <img alt='pic' style={{height: '30px'}} src={(page.pagePic) ? page.pagePic : 'http://cdn.cloudkibo.com/public/icons/users.jpg'} />&nbsp;&nbsp;
+                                  <img alt='pic' style={{height: '30px'}} src={(page.pagePic) ? page.pagePic : 'https://cdn.cloudkibo.com/public/icons/users.jpg'} />&nbsp;&nbsp;
                                   <span>{page.pageName}</span>&nbsp;&nbsp;&nbsp;
                                   {this.state.module === 'edit' &&
                                   <i style={{cursor: 'pointer'}} className='fa fa-times' onClick={() => this.removePage(page)} />

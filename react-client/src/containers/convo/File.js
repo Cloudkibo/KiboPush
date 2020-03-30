@@ -144,7 +144,7 @@ class File extends React.Component {
               clickable
           >
               <div className='align-center'>
-                <img src='http://cdn.cloudkibo.com/public/icons/file.png' alt='Text' style={{maxHeight: 40}} />
+                <img src='https://cdn.cloudkibo.com/public/icons/file.png' alt='Text' style={{maxHeight: 40}} />
                 <h4 style={{wordBreak: 'break-word', overflowWrap: 'break-word'}}>{this.state.file !== '' ? this.state.file.name : 'File'}</h4>
               </div>
             </Files>

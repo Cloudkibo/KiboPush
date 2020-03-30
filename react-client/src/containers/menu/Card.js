@@ -218,7 +218,7 @@ class Card extends React.Component {
 
             {
           (this.state.imgSrc === '')
-          ? <img style={{maxHeight: 40, margin: 'auto'}} src='http://cdn.cloudkibo.com/public/icons/picture.png' alt='Text' />
+          ? <img style={{maxHeight: 40, margin: 'auto'}} src='https://cdn.cloudkibo.com/public/icons/picture.png' alt='Text' />
           : <img style={{maxWidth: 300, maxHeight: 300, padding: 25}} src={this.state.imgSrc} />
          }
 
