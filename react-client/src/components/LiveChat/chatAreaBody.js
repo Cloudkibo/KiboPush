@@ -166,7 +166,7 @@ class ChatAreaBody extends React.Component {
     })
     var payload = {
       componentType: 'thumbsUp',
-      fileurl: 'http://cdn.cloudkibo.com/public/img/thumbsup.png'
+      fileurl: 'https://cdn.cloudkibo.com/public/img/thumbsup.png'
     }
     var session = this.props.activeSession
     var data = this.props.setMessageData(session, payload)
