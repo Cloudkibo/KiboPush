@@ -16,6 +16,7 @@ import Ad from './ad'
 import ScheduleModal from './scheduleModal'
 import {updateSponsoredMessage, saveDraft, send } from '../../redux/actions/sponsoredMessaging.actions'
 import {checkValidations} from './utility'
+import { getTimeZone } from './../../utility/utils'
 import ConfirmationModal from '../../components/extras/confirmationModal'
 
 class CreateSponsoredMessage extends React.Component {
@@ -55,6 +56,7 @@ class CreateSponsoredMessage extends React.Component {
     } else {
       let sponsoredMessage = this.props.sponsoredMessage
       sponsoredMessage.scheduleDateTime = combinedDateTime
+      sponsoredMessage.scheduleTimeZone = getTimeZone()
       sponsoredMessage.status = 'scheduled'
       this.props.updateSponsoredMessage(this.props.sponsoredMessage, '', '', {scheduleDateTime: combinedDateTime, status: 'scheduled'})
       this.props.saveDraft(this.props.sponsoredMessage._id, sponsoredMessage, this.msg, this.handleSaveSchedule)
