@@ -126,7 +126,7 @@ class Video extends React.Component {
               clickable
             >
               <div className='align-center'>
-                <img src='http://cdn.cloudkibo.com/public/icons/video.png' alt='Text' style={{maxHeight: 40}} />
+                <img src='https://cdn.cloudkibo.com/public/icons/video.png' alt='Text' style={{maxHeight: 40}} />
                 <h4 style={{wordBreak: 'break-word'}}>{this.state.file !== '' ? this.state.file.name : 'Video'}</h4>
               </div>
             </Files>
