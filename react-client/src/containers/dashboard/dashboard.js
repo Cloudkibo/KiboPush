@@ -75,17 +75,7 @@ class Dashboard extends React.Component {
   }
 
   getNewsPages (permissions) {
-    var newsPages = []
-    for (var i = 0 ; i < this.props.pages.length; i++) {
-      if (this.props.pages[i].connected) {
-        for (var j=0; j < permissions.length; j++) {
-          if (this.props.pages[i]._id === permissions[j].pageId && permissions[j].smpStatus === 'approved') {
-            newsPages.push(this.props.pages[i])
-            break
-          }
-        }
-      }
-    }
+    var newsPages =  this.props.permissions.filter(permission => permission.smpStatus === 'approved')
     return newsPages
   }
 
