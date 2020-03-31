@@ -76,8 +76,6 @@ class Header extends React.Component {
         this.msg.error('SMS Twilio is not connected. Please ask your account buyer to connect it.')
       } else if (value === 'whatsApp' && this.props.automated_options && !this.props.automated_options.twilioWhatsApp) {
         this.msg.error('WhatsApp Twilio is not connected. Please ask your account buyer to connect it.')
-      } else if (value === 'messenger' && this.props.user && !this.props.user.facebookInfo) {
-        this.msg.error('Facebook Account is not connected. Please ask your account buyer to connect it.')
       } else {
         this.redirectToDashboard(value)
         this.props.updatePlatform({platform: value})
