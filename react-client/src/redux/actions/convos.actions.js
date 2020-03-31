@@ -6,11 +6,9 @@ export const API_URL = '/api'
 
 export function uploadFile (filedata, fileInfo, handleFunction, setLoading) {
   return (dispatch) => {
-    // eslint-disable-next-line no-undef
     fetch(`${getAccountsUrl()}/uploadFile`, {
       method: 'post',
       body: filedata,
-      // eslint-disable-next-line no-undef
       headers: new Headers({
         'Authorization': `Bearer ${auth.getToken()}`
       })
@@ -26,6 +24,23 @@ export function uploadFile (filedata, fileInfo, handleFunction, setLoading) {
         console.log(res.description)
       }
     })
+  }
+}
+
+export function deleteFile (serverPath, handleResponse) {
+  return (dispatch) => {
+    fetch(`${getAccountsUrl()}/deleteFile/${serverPath}`, {
+      method: 'delete',
+      headers: new Headers({
+        'Authorization': `Bearer ${auth.getToken()}`
+      })
+    }).then((res) => {
+        console.log('deleteFile response', res)
+        if (handleResponse) {
+          handleResponse(res)
+        }
+      }
+    )
   }
 }
 

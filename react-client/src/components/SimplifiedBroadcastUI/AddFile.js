@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { connect } from 'react-redux'
-import { uploadFile, uploadTemplate } from '../../redux/actions/convos.actions'
+import { uploadFile, uploadTemplate, deleteFile } from '../../redux/actions/convos.actions'
 import { bindActionCreators } from 'redux'
 import Files from 'react-files'
 import { RingLoader } from 'halogenium'
@@ -65,6 +65,9 @@ class File extends React.Component {
 
   onFilesChange (files) {
     if (files.length > 0) {
+      if (this.state.file && this.state.file.id) {
+        this.props.deleteFile(this.state.file.id)
+      }
       var file = files[files.length - 1]
       console.log('file', file)
     //   this.props.updateFile(file)
@@ -174,8 +177,9 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-    uploadFile: uploadFile,
-    uploadTemplate: uploadTemplate
+    uploadFile,
+    uploadTemplate,
+    deleteFile
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(File)

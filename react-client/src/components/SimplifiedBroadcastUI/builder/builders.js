@@ -64,7 +64,8 @@ class Builders extends React.Component {
       editingFlowBuilder: false,
       showGSModal: false,
       loading: this.props.linkedMessages && this.props.linkedMessages.length > 0,
-      fileError: ''
+      fileError: '',
+      currentFile: null
     }
     this.defaultTitle = this.props.convoTitle
     this.reset = this.reset.bind(this)
@@ -115,6 +116,7 @@ class Builders extends React.Component {
     this.updateFileUrl = this.updateFileUrl.bind(this)
     this.onFilesError = this.onFilesError.bind(this)
     this.confirmDeleteModal = this.confirmDeleteModal.bind(this)
+    this.setCurrentFile = this.setCurrentFile.bind(this)
     this.GSModalContent = null
 
     if (props.setReset) {
@@ -138,6 +140,10 @@ class Builders extends React.Component {
     this.props.fetchAllSequence()
     this.props.loadCustomFields()
     console.log('builders props in constructor', this.props)
+  }
+
+  setCurrentFile (file) {
+    this.setState({currentFile: file})
   }
 
   titleChange (e) {
@@ -704,6 +710,9 @@ class Builders extends React.Component {
     if (!editData && this.props.componentLimit && this.state.lists[this.state.currentId].length === this.props.componentLimit) {
       this.msg.info(`You can only add ${this.props.componentLimit} components in this message`)
     } else {
+      if (this.state.currentFile) {
+        console.log('deleting file', this.state.currentFile)
+      }
       this.setState({isShowingAddComponentModal: true, componentType, editData})
       this.refs.singleModal.click()
       // $(document).on('hide.bs.modal','#singleModal', function () {
@@ -712,7 +721,10 @@ class Builders extends React.Component {
     }
   }
 
-  closeAddComponentModal () {
+  closeAddComponentModal (saving) {
+    if (!saving && this.state.currentFile) {
+      console.log('deleting file', this.state.currentFile)
+    }
     this.setState({isShowingAddComponentModal: false, editData: null})
     this.refs.singleModal.click()
   }
@@ -1297,7 +1309,7 @@ class Builders extends React.Component {
     }
     this.updateList(component)
     component.handler()
-    this.closeAddComponentModal()
+    this.closeAddComponentModal(true)
   }
 
   updateList (component) {
@@ -1336,6 +1348,7 @@ class Builders extends React.Component {
         hideUserOptions={this.props.hideUserOptions} />),
       'card': (<CardModal
         buttons={[]}
+        setCurrentFile={this.setCurrentFile}
         module = {this.props.module}
         edit={this.state.editData ? true : false}
         {...this.state.editData}
@@ -1350,6 +1363,7 @@ class Builders extends React.Component {
         addComponent={this.addComponent} />),
       'image': (<ImageModal
         edit={this.state.editData ? true : false}
+        setCurrentFile={this.setCurrentFile}
         module = {this.props.module}
         {...this.state.editData}
         replyWithMessage={this.props.replyWithMessage}
@@ -1360,6 +1374,7 @@ class Builders extends React.Component {
         addComponent={this.addComponent} />),
       'file': (<FileModal
         edit={this.state.editData ? true : false}
+        setCurrentFile={this.setCurrentFile}
         module = {this.props.module}
         {...this.state.editData}
         replyWithMessage={this.props.replyWithMessage}
@@ -1370,6 +1385,7 @@ class Builders extends React.Component {
         addComponent={this.addComponent} />),
       'audio': (<AudioModal
         edit={this.state.editData ? true : false}
+        setCurrentFile={this.setCurrentFile}
         module = {this.props.module}
         {...this.state.editData}
         replyWithMessage={this.props.replyWithMessage}
@@ -1379,6 +1395,7 @@ class Builders extends React.Component {
         addComponent={this.addComponent} />),
       'media': (<MediaModal
         buttons={[]}
+        setCurrentFile={this.setCurrentFile}
         module = {this.props.module}
         edit={this.state.editData ? true : false}
         {...this.state.editData}
@@ -1395,6 +1412,7 @@ class Builders extends React.Component {
         addComponent={this.addComponent} />),
       'video': (<YoutubeVideoModal
           buttons={[]}
+          setCurrentFile={this.setCurrentFile}
           noButtons={this.props.noButtons}
           module = {this.props.module}
           edit={this.state.editData ? true : false}
@@ -1422,22 +1440,22 @@ class Builders extends React.Component {
         toggleGSModal={this.toggleGSModal}
         closeGSModal={this.closeGSModal}
         addComponent={this.addComponent} />),
-        'userInput': (<UserInputModal
-          buttons={[]}
-          customFields={this.props.customFields}
-          module = {this.props.module}
-          edit={this.state.editData ? true : false}
-          {...this.state.editData}
-          noButtons={this.props.noButtons}
-          pages={this.props.pages}
-          buttonActions={this.props.buttonActions}
-          replyWithMessage={this.props.replyWithMessage}
-          pageId={this.props.pageId.pageId}
-          showCloseModalAlertDialog={this.showCloseModalAlertDialog}
-          closeModal={this.closeAddComponentModal}
-          addComponent={this.addComponent}
-          toggleGSModal={this.toggleGSModal}
-          closeGSModal={this.closeGSModal}
+      'userInput': (<UserInputModal
+        buttons={[]}
+        customFields={this.props.customFields}
+        module = {this.props.module}
+        edit={this.state.editData ? true : false}
+        {...this.state.editData}
+        noButtons={this.props.noButtons}
+        pages={this.props.pages}
+        buttonActions={this.props.buttonActions}
+        replyWithMessage={this.props.replyWithMessage}
+        pageId={this.props.pageId.pageId}
+        showCloseModalAlertDialog={this.showCloseModalAlertDialog}
+        closeModal={this.closeAddComponentModal}
+        addComponent={this.addComponent}
+        toggleGSModal={this.toggleGSModal}
+        closeGSModal={this.closeGSModal}
           hideUserOptions={this.props.hideUserOptions} />)
     }
     return modals[this.state.componentType]
@@ -1949,7 +1967,7 @@ class Builders extends React.Component {
                 className='btn btn-primary btn-sm'
                 onClick={() => {
                   this.closeModalAlertDialog()
-                  this.closeAddComponentModal()
+                  this.closeAddComponentModal(false)
                 }} data-dismiss='modal'>Yes
             </button>
               <button style={{ float: 'right' }}
