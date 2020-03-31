@@ -37,7 +37,7 @@ class FileModal extends React.Component {
   }
 
   updateFile(file) {
-    this.props.setCurrentFile(file)
+    this.props.setCurrentFiles([file.fileurl.id])
     this.setState({ file, edited: true })
   }
 

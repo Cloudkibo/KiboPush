@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { RingLoader } from 'halogenium'
 import AddButton from './AddButton'
-import { downloadYouTubeVideo, uploadTemplate, urlMetaData } from '../../redux/actions/convos.actions'
+import { downloadYouTubeVideo, uploadTemplate, urlMetaData, deleteFile } from '../../redux/actions/convos.actions'
 import { getVideoId } from '../../utility/utils'
 import YouTube from 'react-youtube'
 
@@ -45,6 +45,10 @@ class YoutubeVideoModal extends React.Component {
 
   handleLinkChange(e) {
     console.log('changing link', e.target.value)
+    if (this.state.file) {
+      console.log('deleting file', this.state.file)
+      this.props.deleteFile(this.state.file.fileurl.id)
+    }
     this.setState({ fileSizeExceeded: false, buttons: [], disabled: true, link: e.target.value, videoId: null, videoTitle: null, videoDescription: null, file: null, card: null }, () => {
       this.validateYoutubeUrl()
     })
@@ -115,6 +119,7 @@ class YoutubeVideoModal extends React.Component {
       this.props.urlMetaData(this.state.link, (data) => this.handleUrlMetaData(data))
       return
     }
+    this.props.setCurrentFiles([file.fileurl.id])
     console.log('updating YouTube file', file)
     if (this.props.pages) {
       this.uploadTemplate(file)
@@ -405,7 +410,8 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators({
     uploadTemplate,
     downloadYouTubeVideo,
-    urlMetaData
+    urlMetaData,
+    deleteFile
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(YoutubeVideoModal)

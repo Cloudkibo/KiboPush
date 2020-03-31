@@ -4,7 +4,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { RingLoader } from 'halogenium'
-import { uploadImage, uploadFile, uploadTemplate } from '../../redux/actions/convos.actions'
+import { uploadImage, uploadFile, uploadTemplate, deleteFile } from '../../redux/actions/convos.actions'
 
 class Media extends React.Component {
   constructor (props, context) {
@@ -50,6 +50,10 @@ class Media extends React.Component {
   }
 
   _onChange () {
+    if (this.state.fileurl && this.state.fileurl.id) {
+      console.log('deleting file', this.state.fileurl)
+      this.props.deleteFile(this.state.fileurl.id)
+    }
     this.props.updateImage('')
     var file = this.refs.file.files[0]
     var video = file.type.match('video.*')
@@ -298,9 +302,10 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-    uploadImage: uploadImage,
-    uploadFile: uploadFile,
-    uploadTemplate: uploadTemplate
+    uploadImage,
+    uploadFile,
+    uploadTemplate,
+    deleteFile
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Media)

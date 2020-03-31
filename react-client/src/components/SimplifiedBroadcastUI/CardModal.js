@@ -459,6 +459,7 @@ class CardModal extends React.Component {
                             <div className="panel-body">
                               <AddCard
                                 edit={this.props.edit}
+                                setCurrentFiles={this.props.setCurrentFiles}
                                 buttonActions={this.state.buttonActions}
                                 buttonLimit={this.buttonLimit}
                                 index={card.id - 1}

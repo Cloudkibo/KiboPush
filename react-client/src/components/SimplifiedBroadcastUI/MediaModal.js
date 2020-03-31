@@ -110,6 +110,7 @@ class MediaModal extends React.Component {
 
   updateFile(file) {
     console.log('updating file MediaModal', file)
+    this.props.setCurrentFiles([file.fileurl.id])
     this.setState({ file, edited: true, disabled: false }, () => {
       if (this.refs.video) {
         this.refs.video.pause();

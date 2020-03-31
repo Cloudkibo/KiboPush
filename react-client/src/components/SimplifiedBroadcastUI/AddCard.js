@@ -85,6 +85,7 @@ class AddCard extends React.Component {
         type: this.state.file ? this.state.file.type : '',
         size: this.state.file ? this.state.file.size : ''
       }
+      this.props.setCurrentFiles([data.fileurl.id])
       if (this.state.title === '' || this.state.subtitle === '' ||
         (this.props.onlyCard && !this.state.file)) {
           data.disabled = true

@@ -3,7 +3,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import AlertContainer from 'react-alert'
-import { uploadFile, uploadTemplate } from '../../redux/actions/convos.actions'
+import { uploadFile, uploadTemplate, deleteFile } from '../../redux/actions/convos.actions'
 import { bindActionCreators } from 'redux'
 import Files from 'react-files'
 import { RingLoader } from 'halogenium'
@@ -74,6 +74,10 @@ class Audio extends React.Component {
 
   onFilesChange (files) {
     if (files.length > 0) {
+      if (this.state.file && this.state.file.id) {
+        console.log('deleting file', this.state.file)
+        this.props.deleteFile(this.state.file.id)
+      }
       var file = files[files.length - 1]
       if (file.size > 10000000) {
         this.msg.error('Files greater than 25MB not allowed')
@@ -185,8 +189,9 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-    uploadTemplate: uploadTemplate,
-    uploadFile: uploadFile
+    uploadTemplate,
+    uploadFile,
+    deleteFile
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Audio)

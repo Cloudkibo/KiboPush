@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import AlertContainer from 'react-alert'
 import PropTypes from 'prop-types'
-import { uploadTemplate } from '../../../redux/actions/convos.actions'
+import { uploadTemplate, deleteFile } from '../../../redux/actions/convos.actions'
 import { RingLoader } from 'halogenium'
 
 import { loadTags } from '../../../redux/actions/tags.actions'
@@ -65,7 +65,7 @@ class Builders extends React.Component {
       showGSModal: false,
       loading: this.props.linkedMessages && this.props.linkedMessages.length > 0,
       fileError: '',
-      currentFile: null
+      currentFiles: []
     }
     this.defaultTitle = this.props.convoTitle
     this.reset = this.reset.bind(this)
@@ -116,7 +116,7 @@ class Builders extends React.Component {
     this.updateFileUrl = this.updateFileUrl.bind(this)
     this.onFilesError = this.onFilesError.bind(this)
     this.confirmDeleteModal = this.confirmDeleteModal.bind(this)
-    this.setCurrentFile = this.setCurrentFile.bind(this)
+    this.setCurrentFiles = this.setCurrentFiles.bind(this)
     this.GSModalContent = null
 
     if (props.setReset) {
@@ -142,8 +142,10 @@ class Builders extends React.Component {
     console.log('builders props in constructor', this.props)
   }
 
-  setCurrentFile (file) {
-    this.setState({currentFile: file})
+  setCurrentFiles (files) {
+    let currentFiles = this.state.currentFiles
+    currentFiles = currentFiles.concat(files)
+    this.setState({currentFiles})
   }
 
   titleChange (e) {
@@ -710,8 +712,12 @@ class Builders extends React.Component {
     if (!editData && this.props.componentLimit && this.state.lists[this.state.currentId].length === this.props.componentLimit) {
       this.msg.info(`You can only add ${this.props.componentLimit} components in this message`)
     } else {
-      if (this.state.currentFile) {
-        console.log('deleting file', this.state.currentFile)
+      if (this.state.currentFiles.length > 0 && this.state.componentType !== componentType) {
+        for (let i = 0; i < this.state.currentFiles.length; i++) {
+          console.log('deleting file', this.state.currentFiles[i])
+          this.props.deleteFile(this.state.currentFiles[i])
+        }
+        this.setState({currentFiles: []})
       }
       this.setState({isShowingAddComponentModal: true, componentType, editData})
       this.refs.singleModal.click()
@@ -722,10 +728,13 @@ class Builders extends React.Component {
   }
 
   closeAddComponentModal (saving) {
-    if (!saving && this.state.currentFile) {
-      console.log('deleting file', this.state.currentFile)
+    if (!saving && this.state.currentFiles.length > 0) {
+      for (let i = 0; i < this.state.currentFiles.length; i++) {
+        console.log('deleting file', this.state.currentFiles[i])
+        this.props.deleteFile(this.state.currentFiles[i])
+      }
     }
-    this.setState({isShowingAddComponentModal: false, editData: null})
+    this.setState({isShowingAddComponentModal: false, editData: null, currentFiles: []})
     this.refs.singleModal.click()
   }
 
@@ -1025,8 +1034,22 @@ class Builders extends React.Component {
 
   removeComponent (obj) {
     console.log('obj in removeComponent', obj)
-    var temp = this.state.lists[this.state.currentId].filter((component) => { return (component.content.props.id !== obj.id) })
-    var temp2 = this.getCurrentMessage().messageContent.filter((component) => { return (component.id !== obj.id) })
+    let currentMessage = this.getCurrentMessage()
+    let temp = this.state.lists[this.state.currentId].filter((component) => { return (component.content.props.id !== obj.id) })
+    let temp2 = currentMessage.messageContent.filter((component) => { return (component.id !== obj.id) })
+    let component = currentMessage.messageContent.find((component) => { return (component.id === obj.id) })
+    if (component.file && component.file.fileurl && component.file.fileurl.id) {
+      console.log('deleting file', component.file)
+      this.props.deleteFile(component.file.fileurl.id)
+    } else if (component.fileurl && component.fileurl.id) {
+      console.log('deleting file', component.fileurl)
+      this.props.deleteFile(component.fileurl.id)
+    } else if (component.cards) {
+      for (let i = 0; i < component.cards.length; i++) {
+        console.log('deleting file', component.cards[i].fileurl)
+        this.props.deleteFile(component.cards[i].fileurl.id)
+      }
+    }
     console.log('temp', temp)
     console.log('temp2', temp2)
     if (temp2.length === 0) {
@@ -1348,7 +1371,7 @@ class Builders extends React.Component {
         hideUserOptions={this.props.hideUserOptions} />),
       'card': (<CardModal
         buttons={[]}
-        setCurrentFile={this.setCurrentFile}
+        setCurrentFiles={this.setCurrentFiles}
         module = {this.props.module}
         edit={this.state.editData ? true : false}
         {...this.state.editData}
@@ -1363,7 +1386,7 @@ class Builders extends React.Component {
         addComponent={this.addComponent} />),
       'image': (<ImageModal
         edit={this.state.editData ? true : false}
-        setCurrentFile={this.setCurrentFile}
+        setCurrentFiles={this.setCurrentFiles}
         module = {this.props.module}
         {...this.state.editData}
         replyWithMessage={this.props.replyWithMessage}
@@ -1374,7 +1397,7 @@ class Builders extends React.Component {
         addComponent={this.addComponent} />),
       'file': (<FileModal
         edit={this.state.editData ? true : false}
-        setCurrentFile={this.setCurrentFile}
+        setCurrentFiles={this.setCurrentFiles}
         module = {this.props.module}
         {...this.state.editData}
         replyWithMessage={this.props.replyWithMessage}
@@ -1385,7 +1408,7 @@ class Builders extends React.Component {
         addComponent={this.addComponent} />),
       'audio': (<AudioModal
         edit={this.state.editData ? true : false}
-        setCurrentFile={this.setCurrentFile}
+        setCurrentFiles={this.setCurrentFiles}
         module = {this.props.module}
         {...this.state.editData}
         replyWithMessage={this.props.replyWithMessage}
@@ -1395,7 +1418,7 @@ class Builders extends React.Component {
         addComponent={this.addComponent} />),
       'media': (<MediaModal
         buttons={[]}
-        setCurrentFile={this.setCurrentFile}
+        setCurrentFiles={this.setCurrentFiles}
         module = {this.props.module}
         edit={this.state.editData ? true : false}
         {...this.state.editData}
@@ -1412,7 +1435,7 @@ class Builders extends React.Component {
         addComponent={this.addComponent} />),
       'video': (<YoutubeVideoModal
           buttons={[]}
-          setCurrentFile={this.setCurrentFile}
+          setCurrentFiles={this.setCurrentFiles}
           noButtons={this.props.noButtons}
           module = {this.props.module}
           edit={this.state.editData ? true : false}
@@ -2148,7 +2171,8 @@ function mapDispatchToProps (dispatch) {
       fetchAllSequence,
       loadTags,
       loadCustomFields,
-      uploadTemplate
+      uploadTemplate,
+      deleteFile
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps, null, { withRef: true })(Builders)

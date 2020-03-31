@@ -6,6 +6,7 @@ import { bindActionCreators } from 'redux'
 import { loadTags } from '../../redux/actions/tags.actions'
 import { fetchAllSequence } from '../../redux/actions/sequence.action'
 import { loadCustomFields } from '../../redux/actions/customFields.actions'
+import { deleteFile } from '../../redux/actions/convos.actions'
 
 // import Image from './PreviewComponents/Image'
 import Audio from './PreviewComponents/Audio'
@@ -42,7 +43,8 @@ class GenericMessage extends React.Component {
       hiddenComponents: hiddenComponents,
       componentType: '',
       showGSModal: false,
-      quickRepliesComponent: null
+      quickRepliesComponent: null,
+      currentFiles: []
     }
     this.defaultTitle = this.props.convoTitle
     this.reset = this.reset.bind(this)
@@ -72,6 +74,7 @@ class GenericMessage extends React.Component {
     this.getItems = this.getItems.bind(this)
     this.toggleGSModal = this.toggleGSModal.bind(this)
     this.closeGSModal = this.closeGSModal.bind(this)
+    this.setCurrentFiles = this.setCurrentFiles.bind(this)
     this.GSModalContent = null
 
     if (props.setReset) {
@@ -81,6 +84,13 @@ class GenericMessage extends React.Component {
     this.props.loadTags()
     this.props.fetchAllSequence()
     console.log('genericMessage props in constructor', this.props)
+  }
+
+
+  setCurrentFiles (files) {
+    let currentFiles = this.state.currentFiles
+    currentFiles = currentFiles.concat(files)
+    this.setState({currentFiles})
   }
 
   toggleGSModal (value, content) {
@@ -192,6 +202,13 @@ class GenericMessage extends React.Component {
     if (!editData && this.props.componentLimit && this.state.list.length === this.props.componentLimit) {
       this.msg.info(`You can only add ${this.props.componentLimit} components in this message`)
     } else {
+      if (this.state.currentFiles.length > 0 && this.state.componentType !== componentType) {
+        console.log('deleting file', this.state.currentFile)
+        for (let i = 0; i < this.state.currentFiles.length; i++) {
+          this.props.deleteFile(this.state.currentFiles[i])
+        }
+        this.setState({currentFiles: []})
+      }
       this.setState({isShowingAddComponentModal: true, componentType, editData})
       this.refs.singleModal.click()
       // $(document).on('hide.bs.modal','#singleModal', function () {
@@ -200,7 +217,14 @@ class GenericMessage extends React.Component {
     }
   }
 
-  closeAddComponentModal () {
+  closeAddComponentModal (saving) {
+    if (!saving && this.state.currentFiles.length > 0) {
+      console.log('deleting file', this.state.currentFiles)
+      for (let i = 0; i < this.state.currentFiles.length; i++) {
+        this.props.deleteFile(this.state.currentFiles[i])
+      }
+      this.setState({currentFiles: []})
+    }
     this.setState({isShowingAddComponentModal: false, editData: null})
     this.refs.singleModal.click()
   }
@@ -460,7 +484,7 @@ class GenericMessage extends React.Component {
     }
     this.updateList(component)
     component.handler()
-    this.closeAddComponentModal()
+    this.closeAddComponentModal(true)
   }
 
   updateList (component) {
@@ -982,7 +1006,7 @@ class GenericMessage extends React.Component {
                               className='btn btn-primary btn-sm'
                               onClick={() => {
                                 this.closeModalAlertDialog()
-                                this.closeAddComponentModal()
+                                this.closeAddComponentModal(false)
                               }} data-dismiss='modal'>Yes
                           </button>
                             <button style={{ float: 'right' }}
@@ -1079,9 +1103,10 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-      loadCustomFields: loadCustomFields,
-      fetchAllSequence: fetchAllSequence,
-      loadTags: loadTags
+      loadCustomFields,
+      fetchAllSequence,
+      loadTags,
+      deleteFile
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps, null, { withRef: true })(GenericMessage)

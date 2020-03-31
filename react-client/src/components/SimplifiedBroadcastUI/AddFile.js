@@ -66,6 +66,7 @@ class File extends React.Component {
   onFilesChange (files) {
     if (files.length > 0) {
       if (this.state.file && this.state.file.id) {
+        console.log('deleting file', this.state.file)
         this.props.deleteFile(this.state.file.id)
       }
       var file = files[files.length - 1]
