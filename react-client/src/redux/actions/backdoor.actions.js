@@ -26,9 +26,11 @@ import {
   updateSubscribersWithTags,
   updatePageAdmins,
   updateCompanyInfo,
-  updateCurrentPageOwners
+  updateCurrentPageOwners,
+  updateLocales
     } from './../dispatchers/backdoor.dispatcher'
 import * as ActionTypes from '../constants/constants'
+import {LANGUAGE_BY_LOCALE} from '../../utility/utils'
 export const API_URL = '/api'
 
 export function loadUsersList (data) {
@@ -274,9 +276,11 @@ export function allLocales (id) {
   }
 }
 
+
+
 export function alUserslLocales () {
   return (dispatch) => {
-    callApi(`backdoor/alUserslLocales`).then(res => dispatch(updateAllLocales(res.payload))) 
+    dispatch(updateLocales(LANGUAGE_BY_LOCALE))
   }
 }
 export function deleteAccount (id, msg) {
