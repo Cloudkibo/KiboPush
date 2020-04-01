@@ -36,6 +36,7 @@ class EditTemplate extends React.Component {
     if (!validateFields(this.state.broadcast, this.msg)) {
       return
     }
+    this.setState({newFiles: []})
     let broadcast = this.state.broadcast
     if (broadcast[broadcast.length-1].quickReplies) {
       broadcast[broadcast.length-1].quickReplies = broadcast[broadcast.length-1].quickReplies.map((quickReply) => (
@@ -135,6 +136,7 @@ class EditTemplate extends React.Component {
                 </div>
                 <GenericMessage
                   pageId={this.state.pageId}
+                  newFiles={this.state.newFiles}
                   pages={this.props.pages.filter((page) => page._id === this.props.location.state.pages[0])}
                   broadcast={this.state.broadcast}
                   handleChange={this.handleChange}

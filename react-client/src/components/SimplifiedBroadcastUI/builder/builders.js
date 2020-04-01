@@ -1850,7 +1850,6 @@ class Builders extends React.Component {
   }
 
   componentWillUnmount () {
-    debugger
     if (this.state.tempFiles.length > 0) {
       for (let i = 0; i < this.state.tempFiles.length; i++) {
         deleteFile(this.state.tempFiles[i])
@@ -1860,11 +1859,6 @@ class Builders extends React.Component {
       for (let i = 0; i < this.state.newFiles.length; i++) {
         deleteFile(this.state.newFiles[i])
       }
-    }
-    let messages = this.state.linkedMessages.concat(this.state.unlinkedMessages)
-    for (let i = 0; i < messages.length; i++) {
-      let messageContent = messages[i].messageContent
-      deleteFiles(messageContent)
     }
   }
 

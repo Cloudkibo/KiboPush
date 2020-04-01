@@ -4,6 +4,7 @@
 
 import React from 'react'
 import Audio from './Audio'
+import { deleteFile } from '../../utility/utils'
 
 class AudioModal extends React.Component {
   constructor (props) {

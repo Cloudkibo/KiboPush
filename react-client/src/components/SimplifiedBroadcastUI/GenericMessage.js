@@ -934,6 +934,7 @@ class GenericMessage extends React.Component {
 
 
   componentWillUnmount () {
+    debugger
     if (this.state.tempFiles.length > 0) {
       for (let i = 0; i < this.state.tempFiles.length; i++) {
         deleteFile(this.state.tempFiles[i])
