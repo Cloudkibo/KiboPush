@@ -27,8 +27,6 @@ class Autoposting extends React.Component {
       alertType: '',
       deleteid: '',
       showWordPressGuide: false,
-      smpStatus: [],
-      anyApproved: false
     }
     props.loadAutopostingList()
     props.clearAlertMessages()
@@ -80,20 +78,6 @@ class Autoposting extends React.Component {
     } else if (nextProps.errorMessage) {
       this.msg.error(nextProps.errorMessage)
     }
-    if (nextProps.SMPStatus) {
-      for (let j = 0; j < nextProps.SMPStatus.length; j++) {
-        let pageIndex = nextProps.pages.findIndex((p) => p._id === nextProps.SMPStatus[j].pageId)
-        if (pageIndex > -1) {
-          if (nextProps.SMPStatus[j].smpStatus === 'approved') {
-            this.setState({ anyApproved: true })
-            break
-          }
-          nextProps.SMPStatus[j].pageName = nextProps.pages[pageIndex].pageName
-          nextProps.SMPStatus[j].pagePic = nextProps.pages[pageIndex].pagePic
-        }
-      }
-      this.setState({ smpStatus: nextProps.SMPStatus })
-    }
   }
 
   updateDeleteID(id) {
@@ -126,7 +110,6 @@ class Autoposting extends React.Component {
   }
 
   render() {
-    console.log('this.state.smpStatus', this.state.smpStatus)
     var alertOptions = {
       offset: 14,
       position: 'top right',
@@ -381,7 +364,6 @@ function mapStateToProps(state) {
     errorMessage: (state.autopostingInfo.errorMessageCreate),
     user: (state.basicInfo.user),
     pages: (state.pagesInfo.pages),
-    SMPStatus: (state.autopostingInfo.SMPStatus)
   }
 }
 

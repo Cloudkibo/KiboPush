@@ -19,11 +19,7 @@ class Autoposting extends React.Component {
     this.state = {
       showListItems: true,
       deleteid: '',
-      newsPageIndex: [],
-      smpStatus: [],
-      anyApproved: false,
       openVideo: false
-
     }
     props.loadAutopostingList()
     this.gotoSettings = this.gotoSettings.bind(this)
@@ -68,33 +64,13 @@ class Autoposting extends React.Component {
         compProp.loadAutopostingList()
       }
     })
-    if (this.props.pages) {
-      let pagesIndex = this.props.pages.filter((component) => { return (component.gotPageSubscriptionPermission) })
-      this.setState({ newsPageIndex: pagesIndex })
-    }
   }
 
   viewGuide() {
     this.refs.guide.click()
   }
   UNSAFE_componentWillReceiveProps(nextProps) {
-    if (nextProps.pages !== this.props.pages) {
-      this.setState({ newsPageIndex: nextProps.pages.filter((component) => { return (component.gotPageSubscriptionPermission) }) })
-    }
-    if (nextProps.SMPStatus) {
-      for (let j = 0; j < nextProps.SMPStatus.length; j++) {
-        let pageIndex = nextProps.pages.findIndex((p) => p._id === nextProps.SMPStatus[j].pageId)
-        if (pageIndex > -1) {
-          if ( nextProps.SMPStatus[j].smpStatus === 'approved') {
-            this.setState({anyApproved: true})
-            break
-          }
-          nextProps.SMPStatus[j].pageName = nextProps.pages[pageIndex].pageName
-          nextProps.SMPStatus[j].pagePic = nextProps.pages[pageIndex].pagePic
-        }
-      }
-      this.setState({ smpStatus: nextProps.SMPStatus })
-    }
+   
   }
 
   updateDeleteID(id) {
@@ -116,8 +92,6 @@ class Autoposting extends React.Component {
   }
 
   render() {
-    console.log('this.state.newsPageIndex.length', this.state.newsPageIndex.length)
-    console.log('this.state.smpStatus', this.state.smpStatus)
     var alertOptions = {
       offset: 75,
       position: 'top right',
@@ -381,7 +355,6 @@ function mapStateToProps(state) {
   return {
     autopostingData: (state.autopostingInfo.autopostingData),
     pages: (state.pagesInfo.pages),
-    SMPStatus: (state.autopostingInfo.SMPStatus)
   }
 }
 
