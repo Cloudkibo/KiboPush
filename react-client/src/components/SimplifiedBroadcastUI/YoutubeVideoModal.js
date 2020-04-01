@@ -244,11 +244,6 @@ class YoutubeVideoModal extends React.Component {
     }
   }
 
-
-  UNSAFE_componentWillUnmount() {
-    this.props.closeModal()
-  }
-
   render() {
     console.log('video link', this.state.link)
     console.log('YoutubeVideoModal props in render', this.props)

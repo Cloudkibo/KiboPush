@@ -255,8 +255,8 @@ class CreateSequence extends React.Component {
     }
   }
 
-  UNSAFE_componentWillUnmount () {
-    console.log('UNSAFE_componentWillUnmount called', this.addMessageFlag)
+  componentWillUnmount () {
+    console.log('componentWillUnmount called', this.addMessageFlag)
     if (this.props.messages.length === 0 && !this.addMessageFlag){
       this.props.deleteSequence(this.state.sequenceId)
     }

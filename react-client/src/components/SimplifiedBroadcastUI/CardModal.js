@@ -382,11 +382,7 @@ class CardModal extends React.Component {
       this.scrollToTop(`panel-heading${index + 1}`)
     })
   }
-
-  UNSAFE_componentWillUnmount() {
-    this.props.closeModal()
-  }
-
+  
   render() {
     let requirements = this.getRequirements().filter(req => !!req)
     console.log('requirements', requirements)

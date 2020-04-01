@@ -48,11 +48,7 @@ class FileModal extends React.Component {
       this.props.showCloseModalAlertDialog()
     }
   }
-
-  UNSAFE_componentWillUnmount() {
-    this.props.closeModal()
-  }
-
+  
   UNSAFE_componentWillReceiveProps(nextProps) {
     this.setState({
       disabled: false,

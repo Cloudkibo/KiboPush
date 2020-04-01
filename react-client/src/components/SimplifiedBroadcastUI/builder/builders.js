@@ -118,6 +118,7 @@ class Builders extends React.Component {
     this.onFilesError = this.onFilesError.bind(this)
     this.confirmDeleteModal = this.confirmDeleteModal.bind(this)
     this.setCurrentFiles = this.setCurrentFiles.bind(this)
+    this.clearCurrentFiles = this.clearCurrentFiles.bind(this)
     this.GSModalContent = null
 
     if (props.setReset) {
@@ -147,6 +148,10 @@ class Builders extends React.Component {
     let currentFiles = this.state.currentFiles
     currentFiles = currentFiles.concat(files)
     this.setState({currentFiles})
+  }
+
+  clearCurrentFiles () {
+    this.setState({currentFiles: []})
   }
 
   titleChange (e) {
@@ -718,7 +723,7 @@ class Builders extends React.Component {
           console.log('deleting file', this.state.currentFiles[i])
           deleteFile(this.state.currentFiles[i])
         }
-        this.setState({currentFiles: []})
+        this.clearCurrentFiles()
       }
       this.setState({isShowingAddComponentModal: true, componentType, editData})
       this.refs.singleModal.click()
@@ -735,7 +740,8 @@ class Builders extends React.Component {
         deleteFile(this.state.currentFiles[i])
       }
     }
-    this.setState({isShowingAddComponentModal: false, editData: null, currentFiles: []})
+    this.clearCurrentFiles()
+    this.setState({isShowingAddComponentModal: false, editData: null})
     this.refs.singleModal.click()
   }
 
@@ -1818,6 +1824,19 @@ class Builders extends React.Component {
       } else {
         return this.state.lists[id]
       }
+    }
+  }
+
+  componentWillUnmount () {
+    if (this.state.currentFiles.length > 0) {
+      for (let i = 0; i < this.state.currentFiles.length; i++) {
+        deleteFile(this.state.currentFiles[i])
+      }
+    }
+    let messages = this.state.linkedMessages.concat(this.state.unlinkedMessages)
+    for (let i = 0; i < messages.length; i++) {
+      let messageContent = messages[i].messageContent
+      deleteFiles(messageContent)
     }
   }
 

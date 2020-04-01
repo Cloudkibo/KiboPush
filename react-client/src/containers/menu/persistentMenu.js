@@ -8,7 +8,7 @@ import { checkWhitelistedDomains } from '../../redux/actions/broadcast.actions'
 import { Link } from 'react-router-dom'
 import AlertContainer from 'react-alert'
 import { registerAction } from '../../utility/socketio'
-import { isWebURL, isWebViewUrl } from './../../utility/utils'
+import { isWebURL, isWebViewUrl, deleteFiles } from './../../utility/utils'
 import { Popover, PopoverHeader, PopoverBody } from 'reactstrap'
 import ViewScreen from './viewScreen'
 import { RingLoader } from 'halogenium'
@@ -646,6 +646,7 @@ class Menu extends React.Component {
       switch (menu) {
         case 'item':
           if (temp[index[1]].payload) {
+            deleteFiles(JSON.parse(temp[index[1]].payload))
             delete temp[index[1]].payload
           }
           temp[index[1]].type = 'web_url'
@@ -660,6 +661,7 @@ class Menu extends React.Component {
           break
         case 'submenu':
           if (temp[index[1]].submenu[index[2]].payload) {
+            deleteFiles(JSON.parse(temp[index[1]].submenu[index[2]].payload))
             delete temp[index[1]].submenu[index[2]].payload
           }
           temp[index[1]].submenu[index[2]].type = 'web_url'
@@ -674,6 +676,7 @@ class Menu extends React.Component {
           break
         case 'nestedMenu':
           if (temp[index[1]].submenu[index[2]].submenu[index[3]].payload) {
+            deleteFiles(JSON.parse(temp[index[1]].submenu[index[2]].submenu[index[3]].payload))
             delete temp[index[1]].submenu[index[2]].submenu[index[3]].payload
           }
           temp[index[1]].submenu[index[2]].submenu[index[3]].type = 'web_url'
@@ -707,6 +710,7 @@ class Menu extends React.Component {
   }
   saveWebUrl (event) {
     let url = ''
+    debugger
     if (this.state.openWebsite && this.state.webUrl !== '') {
       url = this.state.webUrl
       this.saveMenuData(url)

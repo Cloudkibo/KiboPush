@@ -920,6 +920,16 @@ class GenericMessage extends React.Component {
     }
   }
 
+
+  componentWillUnmount () {
+    if (this.state.currentFiles.length > 0) {
+      for (let i = 0; i < this.state.currentFiles.length; i++) {
+        deleteFile(this.state.currentFiles[i])
+      }
+    }
+    deleteFiles(this.state.broadcast)
+  }
+
   render () {
     console.log('render in genericMessage')
     var alertOptions = {
