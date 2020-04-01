@@ -119,7 +119,7 @@ class YoutubeVideoModal extends React.Component {
       this.props.urlMetaData(this.state.link, (data) => this.handleUrlMetaData(data))
       return
     }
-    this.props.setCurrentFiles([file.fileurl.id])
+    this.props.setTempFiles([file.fileurl.id])
     console.log('updating YouTube file', file)
     if (this.props.pages) {
       this.uploadTemplate(file)

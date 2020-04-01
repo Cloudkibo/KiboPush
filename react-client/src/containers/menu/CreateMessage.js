@@ -169,13 +169,36 @@ class CreateMessage extends React.Component {
     var currentState
     var updatedMenuItem = this.setCreateMessage(this.props.currentMenuItem.clickedIndex, this.state.broadcast, saveMessage)
     if (updatedMenuItem !== '') {
-      currentState = { itemMenus: updatedMenuItem, clickedIndex: this.props.currentMenuItem.clickedIndex, currentPage: this.props.currentMenuItem.currentPage }
+      let newFiles = this.props.currentMenuItem.newFiles
+      if (newFiles) {
+        newFiles = newFiles.concat(this.state.newFiles)
+      } else {
+        newFiles = this.state.newFiles
+      }
+      currentState = { 
+        itemMenus: updatedMenuItem, 
+        clickedIndex: this.props.currentMenuItem.clickedIndex, 
+        currentPage: this.props.currentMenuItem.currentPage,
+        newFiles
+      }
       this.props.saveCurrentMenuItem(currentState)
       this.msg.success('Message Saved Successfully')
     } else {
-      currentState = { itemMenus: this.props.currentMenuItem.itemMenus, clickedIndex: this.props.currentMenuItem.clickedIndex, currentPage: this.props.currentMenuItem.currentPage }
+      let newFiles = this.props.currentMenuItem.newFiles
+      if (newFiles) {
+        newFiles = newFiles.concat(this.state.newFiles)
+      } else {
+        newFiles = this.state.newFiles
+      }
+      currentState = { 
+        itemMenus: this.props.currentMenuItem.itemMenus, 
+        clickedIndex: this.props.currentMenuItem.clickedIndex, 
+        currentPage: this.props.currentMenuItem.currentPage, 
+        newFiles
+      }
       this.props.saveCurrentMenuItem(currentState)
     }
+    this.setState({newFiles: []})
   }
 
   render () {
@@ -206,6 +229,7 @@ class CreateMessage extends React.Component {
         </div>
         <GenericMessage
           pageId={this.state.pageId}
+          newFiles={this.state.newFiles}
           pages={this.props.currentMenuItem ? this.props.currentMenuItem.currentPage : null}
           broadcast={this.state.broadcast}
           handleChange={this.handleChange}

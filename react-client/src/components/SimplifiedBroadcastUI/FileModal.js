@@ -37,7 +37,7 @@ class FileModal extends React.Component {
   }
 
   updateFile(file) {
-    this.props.setCurrentFiles([file.fileurl.id])
+    this.props.setTempFiles([file.fileurl.id])
     this.setState({ file, edited: true })
   }
 
@@ -48,7 +48,7 @@ class FileModal extends React.Component {
       this.props.showCloseModalAlertDialog()
     }
   }
-  
+
   UNSAFE_componentWillReceiveProps(nextProps) {
     this.setState({
       disabled: false,

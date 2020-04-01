@@ -38,7 +38,7 @@ class AudioModal extends React.Component {
   }
 
   updateFile (file) {
-    this.props.setCurrentFiles([file.fileurl.id])
+    this.props.setTempFiles([file.fileurl.id])
     this.setState({file, edited: true}, () => {
       this.refs.audio.pause();
       this.refs.audio.load();

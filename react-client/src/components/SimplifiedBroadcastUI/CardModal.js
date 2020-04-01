@@ -382,7 +382,7 @@ class CardModal extends React.Component {
       this.scrollToTop(`panel-heading${index + 1}`)
     })
   }
-  
+
   render() {
     let requirements = this.getRequirements().filter(req => !!req)
     console.log('requirements', requirements)
@@ -455,7 +455,7 @@ class CardModal extends React.Component {
                             <div className="panel-body">
                               <AddCard
                                 edit={this.props.edit}
-                                setCurrentFiles={this.props.setCurrentFiles}
+                                setTempFiles={this.props.setTempFiles}
                                 buttonActions={this.state.buttonActions}
                                 buttonLimit={this.buttonLimit}
                                 index={card.id - 1}

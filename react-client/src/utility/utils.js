@@ -190,7 +190,7 @@ export function deleteFile (serverPath, handleResponse) {
   )
 }
 
-export function deleteFiles (payload) {
+export function deleteFiles (payload, newFiles) {
   let files = []
   for (let i = 0; i < payload.length; i++) {
     let component = payload[i]
@@ -199,13 +199,21 @@ export function deleteFiles (payload) {
     } else if (component.fileurl && component.fileurl.id) {
       files.push(component.fileurl.id)
     } else if (component.cards) {
-      for (let i = 0; i < component.cards.length; i++) {
-        files.push(component.cards[i].fileurl.id)
+      for (let j = 0; j < component.cards.length; j++) {
+        files.push(component.cards[j].fileurl.id)
       }
     }
   }
   for (let i = 0; i < files.length; i++) {
+    if (newFiles) {
+      for (let j = newFiles.length-1; j >= 0; j--) {
+        if (files[i] === newFiles[j]) {
+          newFiles.splice(j, 1)
+        }
+      }
+    }
     console.log('deleting file', files[i])
     deleteFile(files[i])
   }
+  return newFiles
 }

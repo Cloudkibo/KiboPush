@@ -129,6 +129,7 @@ class CreateBroadcastTemplate extends React.Component {
       return
     }
     if (this.state.categoryValue.length > 0) {
+      this.setState({newFiles: []})
       var broadcastTemplate = {
         title: this.state.convoTitle,
         category: this.state.categoryValue,
@@ -251,6 +252,7 @@ class CreateBroadcastTemplate extends React.Component {
                 </div>
                 <GenericMessage
                   broadcast={this.state.broadcast}
+                  newFiles={this.state.newFiles}
                   handleChange={this.handleChange}
                   setReset={reset => { this.reset = reset }}
                   convoTitle={this.state.convoTitle}
