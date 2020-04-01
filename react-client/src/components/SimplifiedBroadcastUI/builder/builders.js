@@ -6,7 +6,7 @@ import AlertContainer from 'react-alert'
 import PropTypes from 'prop-types'
 import { uploadTemplate } from '../../../redux/actions/convos.actions'
 import { RingLoader } from 'halogenium'
-import { deleteFiles, deleteFile } from '../../../utility/utils'
+import { deleteFiles, deleteFile, getFileIds } from '../../../utility/utils'
 
 import { loadTags } from '../../../redux/actions/tags.actions'
 import { fetchAllSequence } from '../../../redux/actions/sequence.action'
@@ -159,9 +159,21 @@ class Builders extends React.Component {
 
   setNewFiles (files) {
     let newFiles = this.state.newFiles
+    let tempFiles = this.state.tempFiles
     newFiles = newFiles.concat(files)
+    for (let i = 0; i < newFiles.length; i++) {
+      for (let j = tempFiles.length - 1; j >= 0; j--) {
+        if (newFiles[i] === tempFiles[j]) {
+          tempFiles.splice(j,1)
+        }
+      }
+    }
+    for (let i = 0; i < tempFiles.length; i++) {
+      console.log('deleting file', tempFiles[i])
+      deleteFile(tempFiles[i])
+    }
     this.props.handleChange({newFiles})
-    this.setState({newFiles})
+    this.setState({newFiles, tempFiles: []})
   }
 
   titleChange (e) {
@@ -748,8 +760,6 @@ class Builders extends React.Component {
         console.log('deleting file', this.state.tempFiles[i])
         deleteFile(this.state.tempFiles[i])
       }
-    } else if (saving) {
-      this.setNewFiles(this.state.tempFiles)
     }
     this.setState({isShowingAddComponentModal: false, editData: null, tempFiles: []})
     this.refs.singleModal.click()
@@ -1336,6 +1346,8 @@ class Builders extends React.Component {
     } else {
         this.msg.info(`New ${componentDetails.componentName} component added`)
     }
+    let fileIds = getFileIds(componentDetails)
+    this.setNewFiles(fileIds)
     this.updateList(component)
     component.handler()
     this.closeAddComponentModal(true)

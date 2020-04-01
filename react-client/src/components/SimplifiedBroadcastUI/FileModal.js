@@ -4,12 +4,14 @@
 
 import React from 'react'
 import AddFile from './AddFile'
+import { deleteFile } from '../../utility/utils'
 
 class FileModal extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
       disabled: false,
+      initialFile: this.props.file ? {...this.props.file} : null,
       file: this.props.file ? this.props.file : ''
     }
     this.updateFile = this.updateFile.bind(this)
@@ -28,6 +30,10 @@ class FileModal extends React.Component {
 
   addComponent() {
     console.log('addComponent FileModal')
+    if (this.state.initialFile) {
+      console.log('deleting file', this.state.initialFile)
+      deleteFile(this.state.initialFile.fileurl.id)
+    }
     this.props.addComponent({
       id: this.props.id,
       componentType: 'file',
@@ -75,6 +81,7 @@ class FileModal extends React.Component {
               <h4>File:</h4>
               <AddFile 
                 required 
+                initialFile={this.state.initialFile}
                 file={this.state.file} 
                 updateFile={this.updateFile} 
                 module={this.props.module} 

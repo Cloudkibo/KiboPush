@@ -286,31 +286,6 @@ class Menu extends React.Component {
     }
   }
 
-  deletePayloadFiles () {
-    for (let i = 0; i < this.state.menuItems.length; i++) {
-      let menuItem = this.state.menuItems[i]
-      if (menuItem.payload) {
-        deleteFiles(JSON.parse(menuItem.payload))
-      }
-      if (menuItem.submenu) {
-        for (let j = 0; j < menuItem.submenu.length; j++) {
-          let subItem = menuItem.submenu[j]
-          if (subItem.payload) {
-            deleteFiles(JSON.parse(menuItem.payload))
-          }
-          if (subItem.submenu) {
-            for (let k = 0; k < subItem.submenu.length; k++) {
-              let nestedItem = subItem.submenu[k]
-              if (nestedItem.payload) {
-                deleteFiles(JSON.parse(nestedItem.payload))
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-
   removePayloadFiles () {
     for (let i = 0; i < this.state.menuItems.length; i++) {
       let menuItem = this.state.menuItems[i]
@@ -349,6 +324,7 @@ class Menu extends React.Component {
     data.jsonStructure = tempItemMenus
     var currentState = null
     this.props.saveCurrentMenuItem(currentState)
+    this.setState({newFiles: []})
     this.props.removeMenu(data, this.handleReset, this.msg)
   }
 
@@ -509,6 +485,9 @@ class Menu extends React.Component {
   }
   pageChange (event) {
     if (event.target.value !== -1) {
+      for (let i = 0; i < this.state.newFiles.length; i++) {
+        deleteFile(this.state.newFiles[i])
+      }
       let page
       for (let i = 0; i < this.props.pages.length; i++) {
         if (this.props.pages[i].pageId === event.target.value) {
@@ -518,7 +497,8 @@ class Menu extends React.Component {
       }
       if (page) {
         this.setState({
-          selectPage: page
+          selectPage: page,
+          newFiles: []
         })
       }
       var currentState = null
@@ -554,17 +534,18 @@ class Menu extends React.Component {
   }
   removeMenu (index) {
     var menuItems = []
+    let newFiles = this.state.newFiles
     if (this.state.menuItems[index].payload) {
-      deleteFiles(JSON.parse(this.state.menuItems[index].payload))
+      newFiles = deleteFiles(JSON.parse(this.state.menuItems[index].payload), newFiles)
     }
-    deleteFiles(this.state.menuItems[index])
     for (let i = 0; i < this.state.menuItems.length; i++) {
       if (index !== i) {
         menuItems.push(this.state.menuItems[i])
       }
     }
     this.setState({
-      menuItems: menuItems
+      menuItems: menuItems,
+      newFiles
     })
   }
   addSubMenu (index) {
@@ -594,8 +575,9 @@ class Menu extends React.Component {
   }
   removeSubMenu (index, subIndex) {
     var subItems = []
+    let newFiles = this.state.newFiles
     if (this.state.menuItems[index].submenu[subIndex].payload) {
-      deleteFiles(JSON.parse(this.state.menuItems[index].submenu[subIndex].payload))
+      newFiles = deleteFiles(JSON.parse(this.state.menuItems[index].submenu[subIndex].payload), newFiles)
     }
     for (let i = 0; i < this.state.menuItems[index].submenu.length; i++) {
       if (subIndex !== i) {
@@ -609,7 +591,8 @@ class Menu extends React.Component {
       menuItems[index].type = ''
     }
     this.setState({
-      menuItems: menuItems
+      menuItems: menuItems,
+      newFiles
     })
   }
   addNestedMenu (index, subIndex) {
@@ -638,8 +621,9 @@ class Menu extends React.Component {
   }
   removeNestedMenu (index, subIndex, nestedIndex) {
     var nestedItems = []
+    let newFiles = this.state.newFiles
     if (this.state.menuItems[index].submenu[subIndex].submenu[nestedIndex].payload) {
-      deleteFiles(JSON.parse(this.state.menuItems[index].submenu[subIndex].submenu[nestedIndex].payload))
+      newFiles = deleteFiles(JSON.parse(this.state.menuItems[index].submenu[subIndex].submenu[nestedIndex].payload), newFiles)
     }
     for (let i = 0; i < this.state.menuItems[index].submenu[subIndex].submenu.length; i++) {
       if (nestedIndex !== i) {
@@ -653,7 +637,8 @@ class Menu extends React.Component {
       menuItems[index].submenu[subIndex].type = ''
     }
     this.setState({
-      menuItems: menuItems
+      menuItems: menuItems,
+      newFiles
     })
   }
   getMenuHierarchy (indexVal) {
@@ -708,12 +693,13 @@ class Menu extends React.Component {
   saveMenuData (url) {
     var temp = this.state.menuItems
     var index = this.state.selectedIndex.split('-')
+    let newFiles = this.state.newFiles
     if (index && index.length > 1) {
       var menu = this.getMenuHierarchy(this.state.selectedIndex)
       switch (menu) {
         case 'item':
           if (temp[index[1]].payload) {
-            deleteFiles(JSON.parse(temp[index[1]].payload))
+            newFiles = deleteFiles(JSON.parse(temp[index[1]].payload), newFiles)
             delete temp[index[1]].payload
           }
           temp[index[1]].type = 'web_url'
@@ -728,7 +714,7 @@ class Menu extends React.Component {
           break
         case 'submenu':
           if (temp[index[1]].submenu[index[2]].payload) {
-            deleteFiles(JSON.parse(temp[index[1]].submenu[index[2]].payload))
+            newFiles = deleteFiles(JSON.parse(temp[index[1]].submenu[index[2]].payload), newFiles)
             delete temp[index[1]].submenu[index[2]].payload
           }
           temp[index[1]].submenu[index[2]].type = 'web_url'
@@ -743,7 +729,7 @@ class Menu extends React.Component {
           break
         case 'nestedMenu':
           if (temp[index[1]].submenu[index[2]].submenu[index[3]].payload) {
-            deleteFiles(JSON.parse(temp[index[1]].submenu[index[2]].submenu[index[3]].payload))
+            newFiles = deleteFiles(JSON.parse(temp[index[1]].submenu[index[2]].submenu[index[3]].payload), newFiles)
             delete temp[index[1]].submenu[index[2]].submenu[index[3]].payload
           }
           temp[index[1]].submenu[index[2]].submenu[index[3]].type = 'web_url'

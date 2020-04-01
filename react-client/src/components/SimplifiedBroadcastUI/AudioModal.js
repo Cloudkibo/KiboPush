@@ -10,7 +10,8 @@ class AudioModal extends React.Component {
     super(props)
     this.state = {
       disabled: false,
-      file: this.props.file ? this.props.file : null
+      file: this.props.file ? this.props.file : null,
+      initialFile: this.props.file ? {...this.props.file} : null
     }
     this.updateFile = this.updateFile.bind(this)
     this.handleDone = this.handleDone.bind(this)
@@ -29,6 +30,10 @@ class AudioModal extends React.Component {
   }
 
   addComponent () {
+    if (this.state.initialFile) {
+      console.log('deleting file', this.state.initialFile)
+      deleteFile(this.state.initialFile.fileurl.id)
+    }
     console.log('addComponent AudioModal')
     this.props.addComponent({
       id: this.props.id,
@@ -71,7 +76,7 @@ class AudioModal extends React.Component {
               <div className='row'>
                 <div className='col-6'>
                   <h4>Audio:</h4>
-                  <Audio required file={this.state.file} updateFile={this.updateFile} />
+                  <Audio required file={this.state.file} initialFile={this.state.initialFile} updateFile={this.updateFile} />
                 </div>
                 <div className='col-1'>
                   <div style={{ minHeight: '100%', width: '1px', borderLeft: '1px solid rgba(0,0,0,.1)' }} />

@@ -5,6 +5,7 @@
 import React from 'react'
 import Media from './AddMedia'
 import AddButton from './AddButton'
+import { deleteFile } from '../../utility/utils'
 
 class MediaModal extends React.Component {
   constructor(props) {
@@ -18,6 +19,7 @@ class MediaModal extends React.Component {
       buttonActions: this.props.buttonActions ? this.props.buttonActions : ['open website', 'open webview'],
       imgSrc: props.imgSrc ? props.imgSrc : '',
       file: props.file ? props.file : null,
+      initialFile: props.file ? {...props.file} : null,
       edited: false,
       buttonPayloads: this.props.buttons.map((button) => button.payload).filter(button => !!button)
     }
@@ -39,6 +41,10 @@ class MediaModal extends React.Component {
 
   addComponent(buttons) {
     console.log('addComponent MediaModal', this.state)
+    if (this.state.initialFile) {
+      console.log('deleting file', this.state.initialFile)
+      deleteFile(this.state.initialFile.fileurl.id)
+    }
     let deletePayload = []
     if (this.state.buttonPayloads.length > 0) {
       for (let i = 0; i < this.state.buttonPayloads.length; i++) {
@@ -150,6 +156,7 @@ class MediaModal extends React.Component {
                 updateImage={this.updateImage}
                 updateFile={this.updateFile}
                 onFilesError={this.props.onFilesError}
+                initialFile={this.state.initialFile}
                 fileurl={this.state.file ? this.state.file.fileurl : ''}
                 fileName={this.state.file ? this.state.file.fileName : ''}
                 image_url={this.state.file && this.state.file.image_url ? this.state.file.image_url : ''}

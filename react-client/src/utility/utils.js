@@ -194,15 +194,7 @@ export function deleteFiles (payload, newFiles) {
   let files = []
   for (let i = 0; i < payload.length; i++) {
     let component = payload[i]
-    if (component.file && component.file.fileurl && component.file.fileurl.id) {
-      files.push(component.file.fileurl.id)
-    } else if (component.fileurl && component.fileurl.id) {
-      files.push(component.fileurl.id)
-    } else if (component.cards) {
-      for (let j = 0; j < component.cards.length; j++) {
-        files.push(component.cards[j].fileurl.id)
-      }
-    }
+    files = files.concat(getFileIds(component))
   }
   for (let i = 0; i < files.length; i++) {
     if (newFiles) {
@@ -216,4 +208,18 @@ export function deleteFiles (payload, newFiles) {
     deleteFile(files[i])
   }
   return newFiles
+}
+
+export function getFileIds (component) {
+  let files = []
+  if (component.file && component.file.fileurl && component.file.fileurl.id) {
+    files.push(component.file.fileurl.id)
+  } else if (component.fileurl && component.fileurl.id) {
+    files.push(component.fileurl.id)
+  } else if (component.cards) {
+    for (let j = 0; j < component.cards.length; j++) {
+      files.push(component.cards[j].fileurl.id)
+    }
+  }
+  return files
 }

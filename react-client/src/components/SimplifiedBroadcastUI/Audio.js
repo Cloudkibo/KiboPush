@@ -15,6 +15,7 @@ class Audio extends React.Component {
     super(props, context)
     this.state = {
       file: this.props.file ? this.props.file : '',
+      initialFile: this.props.initialFile,
       errorMsg: '',
       showErrorDialogue: false,
       loading: false,
@@ -76,8 +77,10 @@ class Audio extends React.Component {
   onFilesChange (files) {
     if (files.length > 0) {
       if (this.state.file && this.state.file.id) {
-        console.log('deleting file', this.state.file)
-        deleteFile(this.state.file.id)
+        if (!this.state.initialFile || this.state.initialFile.id !== this.state.file.id) {
+          console.log('deleting file', this.state.file)
+          deleteFile(this.state.file.id)
+        }
       }
       var file = files[files.length - 1]
       if (file.size > 10000000) {

@@ -31,6 +31,7 @@ class Media extends React.Component {
       image_url: props.image_url ? props.image_url : '',
       loading: false,
       showPreview: false,
+      initialFile: props.initialFile,
       file: props.file ? props.file : '',
       previewUrl: '',
       mediaType: this.props.mediaType ? this.props.mediaType : '',
@@ -52,8 +53,10 @@ class Media extends React.Component {
 
   _onChange () {
     if (this.state.fileurl && this.state.fileurl.id) {
-      console.log('deleting file', this.state.fileurl)
-      deleteFile(this.state.fileurl.id)
+      if (!this.state.initialFile || this.state.initialFile.fileurl.id !==this.state.fileurl.id) {
+        console.log('deleting file', this.state.file)
+        deleteFile(this.state.fileurl.id)
+      }
     }
     this.props.updateImage('')
     var file = this.refs.file.files[0]

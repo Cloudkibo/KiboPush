@@ -21,6 +21,7 @@ class YoutubeVideoModal extends React.Component {
       buttonLimit: 3,
       buttonActions: this.props.buttonActions ? this.props.buttonActions : ['open website', 'open webview'],
       file: this.props.file ? this.props.file : '',
+      initialFile: this.props.file ? {...this.props.file} : null,
       link: this.props.youtubeLink ? this.props.youtubeLink : '',
       videoLink: this.props.videoLink ? this.props.videoLink : '',
       videoTitle: this.props.videoTitle ? this.props.videoTitle : '',
@@ -46,6 +47,7 @@ class YoutubeVideoModal extends React.Component {
   handleLinkChange(e) {
     console.log('changing link', e.target.value)
     if (this.state.file) {
+      if (!this.state.initialFile || this.state.initialFile.fileurl.id !== this.state.file.fileurl.id)
       console.log('deleting file', this.state.file)
       deleteFile(this.state.file.fileurl.id)
     }
@@ -64,6 +66,10 @@ class YoutubeVideoModal extends React.Component {
 
   addComponent(buttons) {
     console.log('addComponent YoutubeVideoModal', this.state)
+    if (this.state.initialFile) {
+      console.log('deleting file', this.state.initialFile)
+      deleteFile(this.state.initialFile.fileurl.id)
+    }
     if (this.props.module === 'whatsapp') {
       this.props.addComponent({
         id: this.props.id >= 0 ? this.props.id : null,
