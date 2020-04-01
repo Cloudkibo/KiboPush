@@ -3,9 +3,10 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { RingLoader } from 'halogenium'
-import { uploadImage, uploadTemplate, deleteFile } from '../../redux/actions/convos.actions'
+import { uploadImage, uploadTemplate } from '../../redux/actions/convos.actions'
 import { bindActionCreators } from 'redux'
 import AlertContainer from 'react-alert'
+import { deleteFile } from '../../utility/utils'
 
 class Image extends React.Component {
   // eslint-disable-next-line no-useless-constructor
@@ -70,7 +71,7 @@ class Image extends React.Component {
     console.log('in _onChange')
     if (this.state.file && this.state.file.fileurl && this.state.file.fileurl.id) {
       console.log('deleting file', this.state.file)
-      this.props.deleteFile(this.state.file.fileurl.id)
+      deleteFile(this.state.file.fileurl.id)
     }
     if (this.props.onSelect) {
       this.props.onSelect(images)
@@ -178,8 +179,7 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     uploadImage,
-    uploadTemplate,
-    deleteFile
+    uploadTemplate
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Image)

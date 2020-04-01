@@ -1,4 +1,5 @@
 import cookie from 'react-cookie'
+import auth from './auth.service'
 
 export function formatAMPM (date) {
   let hours = date.getHours()
@@ -172,4 +173,39 @@ export function getVideoId (url) {
   /* eslint-enable */
   r = url.match(rx)
   return r ? r[1] : false
+}
+
+export function deleteFile (serverPath, handleResponse) {
+  fetch(`${getAccountsUrl()}/deleteFile/${serverPath}`, {
+    method: 'delete',
+    headers: new Headers({
+      'Authorization': `Bearer ${auth.getToken()}`
+    })
+  }).then((res) => {
+      console.log('deleteFile response', res)
+      if (handleResponse) {
+        handleResponse(res)
+      }
+    }
+  )
+}
+
+export function deleteFiles (payload) {
+  let files = []
+  for (let i = 0; i < payload.length; i++) {
+    let component = payload[i]
+    if (component.file && component.file.fileurl && component.file.fileurl.id) {
+      files.push(component.file.fileurl.id)
+    } else if (component.fileurl && component.fileurl.id) {
+      files.push(component.fileurl.id)
+    } else if (component.cards) {
+      for (let i = 0; i < component.cards.length; i++) {
+        files.push(component.cards[i].fileurl.id)
+      }
+    }
+  }
+  for (let i = 0; i < files.length; i++) {
+    console.log('deleting file', files[i])
+    deleteFile(files[i])
+  }
 }

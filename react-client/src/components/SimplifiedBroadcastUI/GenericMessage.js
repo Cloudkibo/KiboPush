@@ -2,11 +2,11 @@ import React from 'react'
 
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
+import { deleteFiles, deleteFile } from '../../utility/utils'
 
 import { loadTags } from '../../redux/actions/tags.actions'
 import { fetchAllSequence } from '../../redux/actions/sequence.action'
 import { loadCustomFields } from '../../redux/actions/customFields.actions'
-import { deleteFile } from '../../redux/actions/convos.actions'
 
 // import Image from './PreviewComponents/Image'
 import Audio from './PreviewComponents/Audio'
@@ -205,7 +205,7 @@ class GenericMessage extends React.Component {
       if (this.state.currentFiles.length > 0 && this.state.componentType !== componentType) {
         console.log('deleting file', this.state.currentFile)
         for (let i = 0; i < this.state.currentFiles.length; i++) {
-          this.props.deleteFile(this.state.currentFiles[i])
+          deleteFile(this.state.currentFiles[i])
         }
         this.setState({currentFiles: []})
       }
@@ -221,7 +221,7 @@ class GenericMessage extends React.Component {
     if (!saving && this.state.currentFiles.length > 0) {
       console.log('deleting file', this.state.currentFiles)
       for (let i = 0; i < this.state.currentFiles.length; i++) {
-        this.props.deleteFile(this.state.currentFiles[i])
+        deleteFile(this.state.currentFiles[i])
       }
       this.setState({currentFiles: []})
     }
@@ -449,6 +449,8 @@ class GenericMessage extends React.Component {
     console.log('obj in removeComponent', obj)
     var temp = this.state.list.filter((component) => { return (component.content.props.id !== obj.id) })
     var temp2 = this.state.broadcast.filter((component) => { return (component.id !== obj.id) })
+    let component = this.state.broadcast.find((component) => { return (component.id === obj.id) })
+    deleteFiles([component])
     console.log('temp', temp)
     console.log('temp2', temp2)
     if (temp2.length === 0) {
@@ -537,6 +539,7 @@ class GenericMessage extends React.Component {
         addComponent={this.addComponent} />),
       'image': (<ImageModal
         edit={this.state.editData ? true : false}
+        setCurrentFiles={this.setCurrentFiles}
         module = {this.props.module}
         {...this.state.editData}
         replyWithMessage={this.props.replyWithMessage}
@@ -547,6 +550,7 @@ class GenericMessage extends React.Component {
         addComponent={this.addComponent} />),
       'file': (<FileModal
         edit={this.state.editData ? true : false}
+        setCurrentFiles={this.setCurrentFiles}
         module = {this.props.module}
         {...this.state.editData}
         replyWithMessage={this.props.replyWithMessage}
@@ -557,6 +561,7 @@ class GenericMessage extends React.Component {
         addComponent={this.addComponent} />),
       'audio': (<AudioModal
         edit={this.state.editData ? true : false}
+        setCurrentFiles={this.setCurrentFiles}
         module = {this.props.module}
         {...this.state.editData}
         replyWithMessage={this.props.replyWithMessage}
@@ -566,6 +571,7 @@ class GenericMessage extends React.Component {
         addComponent={this.addComponent} />),
       'media': (<MediaModal
         buttons={[]}
+        setCurrentFiles={this.setCurrentFiles}
         module = {this.props.module}
         edit={this.state.editData ? true : false}
         {...this.state.editData}
@@ -581,6 +587,7 @@ class GenericMessage extends React.Component {
         addComponent={this.addComponent} />),
       'video': (<YoutubeVideoModal
         buttons={[]}
+        setCurrentFiles={this.setCurrentFiles}
         noButtons={this.props.noButtons}
         module = {this.props.module}
         edit={this.state.editData ? true : false}
@@ -1105,8 +1112,7 @@ function mapDispatchToProps (dispatch) {
   return bindActionCreators({
       loadCustomFields,
       fetchAllSequence,
-      loadTags,
-      deleteFile
+      loadTags
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps, null, { withRef: true })(GenericMessage)
