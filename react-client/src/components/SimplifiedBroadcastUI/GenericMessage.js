@@ -865,7 +865,7 @@ class GenericMessage extends React.Component {
   }
 
   getItems () {
-    if (this.state.list.length > 0) {
+    if (this.state.list.length > 0 && this.props.showQuickRelplies) {
       console.log('quick reply', this.state.list[this.state.list.length - 1])
       if (!this.state.quickRepliesComponent) {
         this.setState({quickRepliesComponent: {
@@ -923,7 +923,7 @@ class GenericMessage extends React.Component {
                         </div>
                       </div>
                     }
-                    <GenericMessageComponents hiddenComponents={this.state.hiddenComponents} addComponent={this.showAddComponentModal} addedComponents={this.state.list.length} module= {this.props.module}/>
+                    <GenericMessageComponents hiddenComponents={this.state.hiddenComponents} addComponent={this.showAddComponentModal} addedComponents={this.state.list.length} module= {this.props.module} componentLimit = {this.props.componentLimit}/>
                   </div>
                   <div className='col-lg-6 col-md-6 col-sm-12 col-xs-12'>
                     <a href='#/' style={{ display: 'none' }} ref='rename' data-toggle="modal" data-target="#rename">lossData</a>
@@ -1064,7 +1064,9 @@ GenericMessage.defaultProps = {
   'convoTitle': 'Title',
   'hiddenComponents': [],
   'titleEditable': false,
-  'broadcast': []
+  'broadcast': [],
+  'componentLimit': 3,
+  'showQuickRelplies' : true
 }
 
 function mapStateToProps (state) {

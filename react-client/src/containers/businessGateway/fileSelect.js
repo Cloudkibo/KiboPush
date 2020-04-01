@@ -267,7 +267,7 @@ class FileSelect extends React.Component {
             showFileColumns: true,
             fileContent: results.data
           })
-          this.refs.file.click()
+          self.refs.file.click()
         }
         console.log('columnsArray:', columnsArray)
         console.log('fileContent:', results.data)

@@ -123,7 +123,7 @@ class UploadContacts extends React.Component {
   onSubmit () {
     const invalidRecords = this.props.uploadedContacts.filter((item) => item.status === 'Invalid')
     if (invalidRecords.length === 0) {
-      this.setState({loading: true})
+      this.setState({loading: true, name: '', number: ''})
       let rows = [['name', 'number']]
       for (let i = 0; i < this.props.uploadedContacts.length; i++) {
         let contact = this.props.uploadedContacts[i]
@@ -152,7 +152,8 @@ class UploadContacts extends React.Component {
   }
 
   onReset () {
-    this.refs.resetModal.click()
+    this.setState({name: '', number: ''})
+    this.props.deleteAllContacts()
   }
 
   parseCSV (self, file) {
@@ -253,7 +254,7 @@ class UploadContacts extends React.Component {
     for (let i = 1; i < data.length; i++) {
       // eslint-disable-next-line
       const regexp = /\+(9[976]\d|8[987530]\d|6[987]\d|5[90]\d|42\d|3[875]\d|2[98654321]\d|9[8543210]|8[6421]|6[6543210]|5[87654321]|4[987654310]|3[9643210]|2[70]|7|1)\W*\d\W*\d\W*\d\W*\d\W*\d\W*\d\W*\d\W*\d\W*(\d{1,14})$/g
-      if (regexp.test(this.state.number)) {
+      if (regexp.test(data[i][numberIndex])) {
         contacts.push({
           name: data[i][nameIndex],
           number: data[i][numberIndex],
@@ -322,7 +323,7 @@ class UploadContacts extends React.Component {
           id='_reset_modal'
           title='Reset Data'
           description='Are you sure you want to reset data?'
-          onConfirm={this.props.deleteAllContacts}
+          onConfirm={this.onReset}
         />
 
         {
@@ -342,7 +343,7 @@ class UploadContacts extends React.Component {
                     </div>
                   </div>
                   <div className='m-portlet__head-tools'>
-                    <button onClick={this.onReset} className='btn btn-secondary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' disabled={this.state.records.length === 0}>
+                    <button onClick={() => { this.refs.resetModal.click() }} className='btn btn-secondary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
                       Reset
                     </button>
                     <button onClick={this.onSubmit} style={{marginLeft: '10px'}} className={`btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill ${this.state.loading && 'm-loader m-loader--light m-loader--left'}`} disabled={this.state.records.length === 0}>

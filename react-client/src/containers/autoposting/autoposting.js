@@ -19,11 +19,7 @@ class Autoposting extends React.Component {
     this.state = {
       showListItems: true,
       deleteid: '',
-      newsPageIndex: [],
-      smpStatus: [],
-      anyApproved: false,
       openVideo: false
-
     }
     props.loadAutopostingList()
     this.gotoSettings = this.gotoSettings.bind(this)
@@ -68,33 +64,13 @@ class Autoposting extends React.Component {
         compProp.loadAutopostingList()
       }
     })
-    if (this.props.pages) {
-      let pagesIndex = this.props.pages.filter((component) => { return (component.gotPageSubscriptionPermission) })
-      this.setState({ newsPageIndex: pagesIndex })
-    }
   }
 
   viewGuide() {
     this.refs.guide.click()
   }
   UNSAFE_componentWillReceiveProps(nextProps) {
-    if (nextProps.pages !== this.props.pages) {
-      this.setState({ newsPageIndex: nextProps.pages.filter((component) => { return (component.gotPageSubscriptionPermission) }) })
-    }
-    if (nextProps.SMPStatus) {
-      for (let j = 0; j < nextProps.SMPStatus.length; j++) {
-        let pageIndex = nextProps.pages.findIndex((p) => p._id === nextProps.SMPStatus[j].pageId)
-        if (pageIndex > -1) {
-          if ( nextProps.SMPStatus[j].smpStatus === 'approved') {
-            this.setState({anyApproved: true})
-            break
-          }
-          nextProps.SMPStatus[j].pageName = nextProps.pages[pageIndex].pageName
-          nextProps.SMPStatus[j].pagePic = nextProps.pages[pageIndex].pagePic
-        }
-      }
-      this.setState({ smpStatus: nextProps.SMPStatus })
-    }
+   
   }
 
   updateDeleteID(id) {
@@ -116,8 +92,6 @@ class Autoposting extends React.Component {
   }
 
   render() {
-    console.log('this.state.newsPageIndex.length', this.state.newsPageIndex.length)
-    console.log('this.state.smpStatus', this.state.smpStatus)
     var alertOptions = {
       offset: 75,
       position: 'top right',
@@ -302,7 +276,6 @@ class Autoposting extends React.Component {
           </div>
         </div>
         <div className='m-content'>
-          {this.state.newsPageIndex.length > 0 &&
             <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
               <div className='m-alert__icon'>
                 <i className='flaticon-technology m--font-accent' />
@@ -312,8 +285,6 @@ class Autoposting extends React.Component {
               Or check out this <a href='#/' onClick={this.openVideoTutorial}>video tutorial</a>
               </div>
             </div>
-          }
-          {this.state.newsPageIndex.length > 0 &&
             <div
               className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30'
               role='alert'>
@@ -321,54 +292,11 @@ class Autoposting extends React.Component {
                 <i className='flaticon-exclamation m--font-brand' />
               </div>
               <div className='m-alert__text'>
-                Connect several feeds and information sources to send
-                updates to your subscribers
+              Connect several feeds and information sources to send updates to your subscribers. Your page must have Facebook's News Page Index (NPI) permission to successfully reach all subscribers. otherwise, only those subscribers will receive updates who has an active conversation with you in last 24 hours.              <br/>
+              To register for NPI follow the link: <a href='https://www.facebook.com/help/publisher/377680816096171' target='_blank' rel='noopener noreferrer'>Register to News Page Index</a>.
             </div>
             </div>
-          }
-          {this.state.newsPageIndex.length === 0 &&
-            <div
-              className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30'
-              role='alert'>
-              <div className='m-alert__icon'>
-                <i className='flaticon-exclamation m--font-brand' />
-              </div>
-              <div className='m-alert__text'>
-                Autoposting is available for pages registered with Facebook's News Page Index (NPI) only. To register for NPI follow the link: <a href='https://www.facebook.com/help/publisher/377680816096171' target='_blank' rel='noopener noreferrer'>Register to News Page Index</a>.
-              Click here to review <a href='https://developers.facebook.com/docs/messenger-platform/policy/page-subscription-messaging' target='_blank' rel='noopener noreferrer'>Facebook's Subcription Messaging Policy</a>
-              </div>
-            </div>
-          }
-          {
-            this.state.newsPageIndex.length === 0 && !this.state.anyApproved
-              ?
-              <div className='m-portlet m-portlet--mobile'>
-                <div className='m-portlet__head'>
-                  <div className='m-portlet__head-caption'>
-                    <div className='m-portlet__head-title'>
-                      <h5 className='m-portlet__head-text'>
-                        You do not have page level subscription permission on any of your connected pages.
-            </h5>
-                    </div>
-                  </div>
-                </div>
-                <div className='m-portlet__body'>
-                  <p></p>
-                  {this.state.smpStatus.map((item, i) => (
-                    <span key={i}>
-                      <span>
-                        <img alt='pic' src={item.pagePic} />&nbsp;&nbsp;
-                    <span>{item.pageName}</span>&nbsp;&nbsp;&nbsp;
-                    <span className='m-badge m-badge--wide m-badge--danger'> {item.smpStatus}</span>
-                      </span>
-                      <br /><br />
-                    </span>
-                  ))
-                  }
-                  <p>You will not be able to send subscription messages to subscribers of those pages that have not been granted this permission. Please click <a href='https://kibopush.com/2019/12/24/facebook-subscription-messaging-policy/' target='_blank' rel='noopener noreferrer' onClick={this.closeModal}>Here</a> to know how you can apply for this permission.</p>
-                </div>
-              </div>
-              : <div className='m-portlet m-portlet--mobile'>
+            <div className='m-portlet m-portlet--mobile'>
                 <div className='m-portlet__head'>
                   <div className='m-portlet__head-caption'>
                     <div className='m-portlet__head-title'>
@@ -378,31 +306,17 @@ class Autoposting extends React.Component {
                     </div>
                   </div>
                   <div className='m-portlet__head-tools'>
-                    {
-                      this.state.newsPageIndex.length > 0 ?
-                        <Link data-toggle="modal" data-target="#addFeed">
-                          <button
-                            className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
-                            <span>
-                              <i className='la la-plus' />
-                              <span>
-                                Add Feed
-                              </span>
-                            </span>
-                          </button>
-                        </Link>
-                        : <Link>
-                          <button
-                            className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' disabled={(this.state.newsPageIndex.length === 0)}>
-                            <span>
-                              <i className='la la-plus' />
-                              <span>
-                                Add Feed
-                              </span>
-                            </span>
-                          </button>
-                        </Link>
-                    }
+                    <Link data-toggle="modal" data-target="#addFeed">
+                      <button
+                        className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
+                        <span>
+                          <i className='la la-plus' />
+                          <span>
+                            Add Feed
+                          </span>
+                        </span>
+                      </button>
+                    </Link>       
                   </div>
                 </div>
                 <div className='m-portlet__body'>
@@ -430,7 +344,6 @@ class Autoposting extends React.Component {
                   }
                 </div>
               </div>
-          }
         </div>
       </div>
     )
@@ -442,7 +355,6 @@ function mapStateToProps(state) {
   return {
     autopostingData: (state.autopostingInfo.autopostingData),
     pages: (state.pagesInfo.pages),
-    SMPStatus: (state.autopostingInfo.SMPStatus)
   }
 }
 

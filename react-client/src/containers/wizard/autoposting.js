@@ -27,8 +27,6 @@ class Autoposting extends React.Component {
       alertType: '',
       deleteid: '',
       showWordPressGuide: false,
-      smpStatus: [],
-      anyApproved: false
     }
     props.loadAutopostingList()
     props.clearAlertMessages()
@@ -80,20 +78,6 @@ class Autoposting extends React.Component {
     } else if (nextProps.errorMessage) {
       this.msg.error(nextProps.errorMessage)
     }
-    if (nextProps.SMPStatus) {
-      for (let j = 0; j < nextProps.SMPStatus.length; j++) {
-        let pageIndex = nextProps.pages.findIndex((p) => p._id === nextProps.SMPStatus[j].pageId)
-        if (pageIndex > -1) {
-          if (nextProps.SMPStatus[j].smpStatus === 'approved') {
-            this.setState({ anyApproved: true })
-            break
-          }
-          nextProps.SMPStatus[j].pageName = nextProps.pages[pageIndex].pageName
-          nextProps.SMPStatus[j].pagePic = nextProps.pages[pageIndex].pagePic
-        }
-      }
-      this.setState({ smpStatus: nextProps.SMPStatus })
-    }
   }
 
   updateDeleteID(id) {
@@ -126,7 +110,6 @@ class Autoposting extends React.Component {
   }
 
   render() {
-    console.log('this.state.smpStatus', this.state.smpStatus)
     var alertOptions = {
       offset: 14,
       position: 'top right',
@@ -288,26 +271,11 @@ class Autoposting extends React.Component {
                         </div>
                       </div>
                       {
-                        !this.state.anyApproved ?
-                        <div className='m-portlet__body'>
-                          <p>You do not have page level subscription permission on any of your connected pages.</p>
-                          {this.state.smpStatus.map((item, i) => (
-                            <span key={i}>
-                              <span>
-                                <img alt='pic' src={item.pagePic} />&nbsp;&nbsp;
-                              <span>{item.pageName}</span>&nbsp;&nbsp;&nbsp;
-                              <span className='m-badge m-badge--wide m-badge--danger'> {item.smpStatus}</span>
-                              </span>
-                              <br /><br />
-                            </span>
-                          ))
-                          }
-                          <p>You will not be able to send subscription messages to subscribers of those pages that have not been granted this permission. Please click <a href='https://kibopush.com/2019/12/24/facebook-subscription-messaging-policy/' target='_blank' rel='noopener noreferrer' onClick={this.closeModal}>Here</a> to know how you can apply for this permission.</p>
-                        </div>
-                        : <div className='m-portlet__body' style={{ height: 'auto' }}>
+                        <div className='m-portlet__body' style={{ height: 'auto' }}>
                           <br />
                           <div className='form-group m-form__group row'>
-                            <label style={{ fontWeight: 'normal' }}>This page will help you setup autoposting feeds. You can connect your Facebook pages and twitter accounts and send updates to your subscribers automatically. Click on Add Feeds to start adding them.</label>
+                            <label style={{ fontWeight: 'normal' }}>Connect several feeds and information sources to send updates to your subscribers. Your page must have Facebook's News Page Index (NPI) permission to successfully reach all subscribers. otherwise, only those subscribers will receive updates who has an active conversation with you in last 24 hours.              <br/>
+                             To register for NPI follow the link: <a href='https://www.facebook.com/help/publisher/377680816096171' target='_blank' rel='noopener noreferrer'>Register to News Page Index</a>.</label>
                           </div>
                           <div className='row align-items-center'>
                             <div className='col-xl-8 order-2 order-xl-1' />
@@ -396,7 +364,6 @@ function mapStateToProps(state) {
     errorMessage: (state.autopostingInfo.errorMessageCreate),
     user: (state.basicInfo.user),
     pages: (state.pagesInfo.pages),
-    SMPStatus: (state.autopostingInfo.SMPStatus)
   }
 }
 
