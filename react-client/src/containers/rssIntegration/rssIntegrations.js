@@ -481,7 +481,6 @@ class RssIntegrations extends React.Component {
                 </div>
                 <div className='m-alert__text'>
                   RssFeeds Integration is available for pages registered with Facebook's News Page Index (NPI) only. To register for NPI follow the link: <a href='https://www.facebook.com/help/publisher/377680816096171' target='_blank' rel='noopener noreferrer'>Register to News Page Index</a>.
-                  Click here to review <a href='https://developers.facebook.com/docs/messenger-platform/policy/page-subscription-messaging' target='_blank' rel='noopener noreferrer'>Facebook's Subcription Messaging Policy</a>
                 </div>
               </div>
             }
