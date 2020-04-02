@@ -166,9 +166,7 @@ class CreateSponsoredMessage extends React.Component {
                   {this.state.currentStep === 'adSet' &&
                     <AdSet changeCurrentStep={this.changeCurrentStep} msg={this.msg} />
                   }
-                  {this.state.currentStep === 'ad' &&
-                    <Ad changeCurrentStep={this.changeCurrentStep} initialFiles={this.state.initialFiles} msg={this.msg} />
-                  }
+                  <Ad currentStep={this.state.currentStep} changeCurrentStep={this.changeCurrentStep} initialFiles={this.state.initialFiles} msg={this.msg} />
                 </div>
               </div>
             </div>

@@ -39,13 +39,12 @@ class Ad extends React.Component {
 
   render () {
     return (
-      <div>
+      <div style={{display: this.props.currentStep === 'ad' ? 'block' : 'none'}}>
         <h5>Step 04:</h5>
         <br />
           <span style={{fontWeight: 'normal', marginLeft: '20px'}}>Ad Name:</span>
           <input type='text' className='form-control m-input' placeholder='Enter Ad Name...' onChange={this.changeAdName} value={this.state.adName} style={{borderRadius: '20px', width: '30%', display: 'inline-block', marginLeft: '15px'}} />
           <GenericMessage
-            keepNewFiles={true}
             newFiles={this.props.sponsoredMessage.newFiles}
             initialFiles={this.props.initialFiles}
             module = 'sponsorMessaging'
