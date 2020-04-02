@@ -15,7 +15,7 @@ import AdSet from './adSet'
 import Ad from './ad'
 import {updateSponsoredMessage, saveDraft, send } from '../../redux/actions/sponsoredMessaging.actions'
 import {checkValidations } from './utility'
-import {getFileIdsOfBroadcast, deleteFile} from '../../utility/utils'
+import {getFileIdsOfBroadcast, deleteInitialFiles} from '../../utility/utils'
 
 
 class CreateSponsoredMessage extends React.Component {
