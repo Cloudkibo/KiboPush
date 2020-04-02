@@ -12,12 +12,14 @@ import AlertContainer from 'react-alert'
 import Tabs from './tabs'
 import Preview from './preview'
 import { fetchAllSequence } from '../../redux/actions/sequence.action'
+import {getFileIdsOfBroadcast, deleteInitialFiles} from '../../utility/utils'
 
 class CreateURL extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      pageName: ''
+      pageName: '',
+      initialFiles: this.props.messengerRefURL ? getFileIdsOfBroadcast(this.props.messengerRefURL.reply) : []
     }
 
     if (props.location.state.module === 'createMessage') {
@@ -79,6 +81,9 @@ class CreateURL extends React.Component {
     }
     console.log('this.props.location.state', this.props.location.state)
     console.log('this.props.location.state.messengerRefURL', this.props.location.state.messengerRefURL)
+    let initialFiles = this.state.initialFiles
+    let currentFiles = getFileIdsOfBroadcast(this.props.messengerRefURL.reply)
+    deleteInitialFiles(initialFiles, currentFiles)
     if (this.props.location.state && this.props.location.state.messengerRefURL && this.props.location.state.module === 'edit') {
       this.props.editURL({
         _id: this.props.location.state.messengerRefURL._id,

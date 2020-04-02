@@ -70,6 +70,7 @@ class MessengerRefURLMessage extends React.Component {
     if (!validateFields(this.state.broadcast, this.msg)) {
       return
     }
+    this.setState({newFiles: []})
     if (this.props.location.state.module === 'edit') {
       var edit = {
         pageId: this.props.messengerRefURL.pageId,
@@ -115,6 +116,7 @@ class MessengerRefURLMessage extends React.Component {
           </div>
         </div>
         <GenericMessage
+          newFiles={this.state.newFiles}
           pageId={this.props.messengerRefURL.pageId}
           pages={[this.state.pageId]}
           broadcast={this.state.broadcast}

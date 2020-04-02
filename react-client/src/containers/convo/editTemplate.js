@@ -40,7 +40,7 @@ class EditTemplate extends React.Component {
       return
     }
     let initialFiles = this.state.initialFiles
-    let currentFiles = getFileIdsOfBroadcast(this.state.broadcast.payload)
+    let currentFiles = getFileIdsOfBroadcast(this.state.broadcast)
     deleteInitialFiles(initialFiles, currentFiles)
     this.setState({newFiles: []})
     let broadcast = this.state.broadcast
