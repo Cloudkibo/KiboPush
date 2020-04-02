@@ -53,8 +53,18 @@ class Media extends React.Component {
 
   _onChange () {
     if (this.state.fileurl && this.state.fileurl.id) {
-      if (!this.state.initialFile || this.state.initialFile.fileurl.id !==this.state.fileurl.id) {
-        console.log('deleting file', this.state.file)
+      let canBeDeleted = true
+      for (let i = 0; i < this.props.initialFiles.length; i++) {
+        if (this.state.fileurl.id === this.props.initialFiles[i]) {
+          canBeDeleted = false
+          break
+        }
+      }
+      if (this.state.file.id === this.props.initialFile) {
+        canBeDeleted = false
+      }
+      if (canBeDeleted) {
+        console.log('deleting file', this.state.fileurl)
         deleteFile(this.state.fileurl.id)
       }
     }

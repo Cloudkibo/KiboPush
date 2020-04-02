@@ -16,6 +16,7 @@ class Image extends React.Component {
     this.setLoading = this.setLoading.bind(this)
     this.state = {
       file: this.props.file ? this.props.file : null,
+      initialFile: this.props.initialFile,
       imgSrc: this.props.imgSrc ? this.props.imgSrc : '',
       showPreview: false,
       loading: false,
@@ -70,8 +71,23 @@ class Image extends React.Component {
   // Assuming only image
     console.log('in _onChange')
     if (this.state.file && this.state.file.fileurl && this.state.file.fileurl.id) {
-      console.log('deleting file', this.state.file)
-      deleteFile(this.state.file.fileurl.id)
+      let canBeDeleted = true
+      for (let i = 0; i < this.props.initialFiles.length; i++) {
+        if (this.state.file.fileurl.id === this.props.initialFiles[i]) {
+          canBeDeleted = false
+          break
+        }
+      }
+      for (let i = 0; i < this.props.initialModalFiles.length; i++) {
+        if (this.state.file.fileurl.id === this.props.initialModalFiles[i]) {
+          canBeDeleted = false
+          break
+        }
+      }
+      if (canBeDeleted) {
+        console.log('deleting file', this.state.file)
+        deleteFile(this.state.file.fileurl.id)
+      }
     }
     if (this.props.onSelect) {
       this.props.onSelect(images)

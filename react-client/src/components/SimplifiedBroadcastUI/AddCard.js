@@ -193,6 +193,8 @@ class AddCard extends React.Component {
           <h5 style={{textAlign: 'left', marginLeft: '5px', marginBottom: '10px'}} id={this.imageId}>Image:</h5>
           <Image
             imageId={this.imageId}
+            initialModalFiles={this.props.initialModalFiles}
+            initialFiles={this.props.initialFiles}
             onSelect={(e) => this.inputSelected(e, this.imageId)}
             edit={this.props.edit}
             required={this.props.onlyCard}

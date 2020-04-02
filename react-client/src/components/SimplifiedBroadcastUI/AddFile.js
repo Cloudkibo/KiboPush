@@ -14,7 +14,6 @@ class File extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      initialFile: this.props.initialFile,
       file: this.props.file ? this.props.file : '',
       errorMsg: '',
       showErrorDialogue: false,
@@ -68,7 +67,16 @@ class File extends React.Component {
   onFilesChange (files) {
     if (files.length > 0) {
       if (this.state.file && this.state.file.id) {
-        if (!this.state.initialFile || this.state.initialFile.id !== this.state.file.id) {
+        let canBeDeleted = true
+        for (let i = 0; i < this.props.initialFiles.length; i++) {
+          if (this.state.file.id === this.props.initialFiles[i]) {
+            canBeDeleted = false
+          }
+          if (this.state.file.id === this.props.initialFile) {
+            canBeDeleted = false
+          }
+        }
+        if (canBeDeleted) {
           console.log('deleting file', this.state.file)
           deleteFile(this.state.file.id)
         }

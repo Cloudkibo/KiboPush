@@ -2,7 +2,7 @@ import React from 'react'
 
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { deleteFiles, deleteFile } from '../../utility/utils'
+import { deleteFiles, deleteFile, getFileIdsOfBroadcast, getFileIdsOfComponent } from '../../utility/utils'
 
 import { loadTags } from '../../redux/actions/tags.actions'
 import { fetchAllSequence } from '../../redux/actions/sequence.action'
@@ -33,10 +33,17 @@ class GenericMessage extends React.Component {
   constructor (props, context) {
     super(props, context)
     let hiddenComponents = this.props.hiddenComponents.map(component => component.toLowerCase())
+    let initialFiles = []
+    if (this.props.initialFiles) {
+      initialFiles = this.props.initialFiles
+    } else if (this.props.broadcast) {
+      initialFiles = getFileIdsOfBroadcast(this.props.broadcast)
+    }
     this.state = {
       list: [],
       quickReplies: this.props.broadcast && this.props.broadcast.length > 0 ? this.props.broadcast[this.props.broadcast.length-1].quickReplies : [],
       broadcast: this.props.broadcast.slice(),
+      initialFiles,
       isShowingModal: false,
       convoTitle: this.props.convoTitle,
       pageId: this.props.pageId,
@@ -159,7 +166,6 @@ class GenericMessage extends React.Component {
       this.setState({quickRepliesComponent: null})
     }
     if (nextProps.newFiles && this.state.newFiles.length !== nextProps.newFiles.length) {
-      debugger
       this.setState({newFiles: nextProps.newFiles})
     }
   }
@@ -463,7 +469,7 @@ class GenericMessage extends React.Component {
     var temp = this.state.list.filter((component) => { return (component.content.props.id !== obj.id) })
     var temp2 = this.state.broadcast.filter((component) => { return (component.id !== obj.id) })
     let component = this.state.broadcast.find((component) => { return (component.id === obj.id) })
-    let newFiles = deleteFiles([component], this.state.newFiles)
+    let newFiles = deleteFiles([component], this.state.newFiles, this.state.initialFiles)
     console.log('temp', temp)
     console.log('temp2', temp2)
     if (temp2.length === 0) {
@@ -540,6 +546,7 @@ class GenericMessage extends React.Component {
         buttons={[]}
         module = {this.props.module}
         setTempFiles={this.setTempFiles}
+        initialFiles={this.state.initialFiles}
         edit={this.state.editData ? true : false}
         {...this.state.editData}
         pages={this.props.pages}
@@ -554,6 +561,7 @@ class GenericMessage extends React.Component {
       'image': (<ImageModal
         edit={this.state.editData ? true : false}
         setTempFiles={this.setTempFiles}
+        initialFiles={this.state.initialFiles}
         module = {this.props.module}
         {...this.state.editData}
         replyWithMessage={this.props.replyWithMessage}
@@ -565,6 +573,7 @@ class GenericMessage extends React.Component {
       'file': (<FileModal
         edit={this.state.editData ? true : false}
         setTempFiles={this.setTempFiles}
+        initialFiles={this.state.initialFiles}
         module = {this.props.module}
         {...this.state.editData}
         replyWithMessage={this.props.replyWithMessage}
@@ -576,6 +585,7 @@ class GenericMessage extends React.Component {
       'audio': (<AudioModal
         edit={this.state.editData ? true : false}
         setTempFiles={this.setTempFiles}
+        initialFiles={this.state.initialFiles}
         module = {this.props.module}
         {...this.state.editData}
         replyWithMessage={this.props.replyWithMessage}
@@ -586,6 +596,7 @@ class GenericMessage extends React.Component {
       'media': (<MediaModal
         buttons={[]}
         setTempFiles={this.setTempFiles}
+        initialFiles={this.state.initialFiles}
         module = {this.props.module}
         edit={this.state.editData ? true : false}
         {...this.state.editData}
@@ -602,6 +613,7 @@ class GenericMessage extends React.Component {
       'video': (<YoutubeVideoModal
         buttons={[]}
         setTempFiles={this.setTempFiles}
+        initialFiles={this.state.initialFiles}
         noButtons={this.props.noButtons}
         module = {this.props.module}
         edit={this.state.editData ? true : false}

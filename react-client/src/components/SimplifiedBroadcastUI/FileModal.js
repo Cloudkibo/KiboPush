@@ -11,8 +11,8 @@ class FileModal extends React.Component {
     super(props)
     this.state = {
       disabled: false,
-      initialFile: this.props.file ? {...this.props.file} : null,
-      file: this.props.file ? this.props.file : ''
+      file: this.props.file ? this.props.file : '',
+      initialFile: this.props.file ? this.props.file.id : null
     }
     this.updateFile = this.updateFile.bind(this)
     this.handleDone = this.handleDone.bind(this)
@@ -29,11 +29,21 @@ class FileModal extends React.Component {
   //   },
 
   addComponent() {
-    console.log('addComponent FileModal')
     if (this.state.initialFile) {
-      console.log('deleting file', this.state.initialFile)
-      deleteFile(this.state.initialFile.fileurl.id)
+      let canBeDeleted = true
+      for (let i = 0; i < this.props.initialFiles.length; i++) {
+        if (this.state.initialFile === this.props.initialFiles[i]) {
+          canBeDeleted = false
+          break
+        }
+      } 
+      if (canBeDeleted) {
+        if (this.state.file.id !== this.state.initialFile) {
+          deleteFile(this.state.initialFile)
+        }
+      }
     }
+    console.log('addComponent FileModal')
     this.props.addComponent({
       id: this.props.id,
       componentType: 'file',
@@ -82,6 +92,7 @@ class FileModal extends React.Component {
               <AddFile 
                 required 
                 initialFile={this.state.initialFile}
+                initialFiles={this.props.initialFiles}
                 file={this.state.file} 
                 updateFile={this.updateFile} 
                 module={this.props.module} 

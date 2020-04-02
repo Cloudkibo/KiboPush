@@ -77,7 +77,17 @@ class Audio extends React.Component {
   onFilesChange (files) {
     if (files.length > 0) {
       if (this.state.file && this.state.file.id) {
-        if (!this.state.initialFile || this.state.initialFile.id !== this.state.file.id) {
+        let canBeDeleted = true
+        for (let i = 0; i < this.props.initialFiles.length; i++) {
+          if (this.state.file.id === this.props.initialFiles[i]) {
+            canBeDeleted = false
+            break
+          }
+        }
+        if (this.state.file.id === this.props.initialFile) {
+          canBeDeleted = false
+        }
+        if (canBeDeleted) {
           console.log('deleting file', this.state.file)
           deleteFile(this.state.file.id)
         }

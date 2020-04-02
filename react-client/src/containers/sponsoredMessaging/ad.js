@@ -25,7 +25,7 @@ class Ad extends React.Component {
 
   handleChange (broadcast) {
       console.log('handleChange ad', broadcast)
-      if (broadcast.newFiles) {
+      if (broadcast.newFiles || broadcast.initialFiles) {
         this.props.updateSponsoredMessage(this.props.sponsoredMessage, null, null, broadcast)
       } else {
         this.props.updateSponsoredMessage(this.props.sponsoredMessage, 'payload', broadcast)
@@ -46,6 +46,7 @@ class Ad extends React.Component {
           <input type='text' className='form-control m-input' placeholder='Enter Ad Name...' onChange={this.changeAdName} value={this.state.adName} style={{borderRadius: '20px', width: '30%', display: 'inline-block', marginLeft: '15px'}} />
           <GenericMessage
             newFiles={this.props.sponsoredMessage.newFiles}
+            initialFiles={this.props.initialFiles}
             module = 'sponsorMessaging'
             hiddenComponents={['media','audio','file','video']}
             broadcast={this.state.broadcast}

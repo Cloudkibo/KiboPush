@@ -6,7 +6,7 @@ import AlertContainer from 'react-alert'
 import PropTypes from 'prop-types'
 import { uploadTemplate } from '../../../redux/actions/convos.actions'
 import { RingLoader } from 'halogenium'
-import { deleteFiles, deleteFile, getFileIds } from '../../../utility/utils'
+import { deleteFiles, deleteFile, getFileIdsOfComponent } from '../../../utility/utils'
 
 import { loadTags } from '../../../redux/actions/tags.actions'
 import { fetchAllSequence } from '../../../redux/actions/sequence.action'
@@ -1346,7 +1346,7 @@ class Builders extends React.Component {
     } else {
         this.msg.info(`New ${componentDetails.componentName} component added`)
     }
-    let fileIds = getFileIds(componentDetails)
+    let fileIds = getFileIdsOfComponent(componentDetails)
     this.setNewFiles(fileIds)
     this.updateList(component)
     component.handler()

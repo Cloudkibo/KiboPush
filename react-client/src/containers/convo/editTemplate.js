@@ -12,11 +12,14 @@ import { validateFields } from '../convo/utility'
 import {
   loadMyPagesList
 } from '../../redux/actions/pages.actions'
+import {getFileIdsOfBroadcast, deleteInitialFiles} from '../../utility/utils'
+
 class EditTemplate extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
       broadcast: [],
+      initialFiles: this.props.location && this.props.location.state ? getFileIdsOfBroadcast(this.props.location.state.payload) : [],
       selectedPage: [],
       convoTitle: 'Welcome Message',
       buttonActions: ['open website', 'open webview'],
@@ -36,6 +39,9 @@ class EditTemplate extends React.Component {
     if (!validateFields(this.state.broadcast, this.msg)) {
       return
     }
+    let initialFiles = this.state.initialFiles
+    let currentFiles = getFileIdsOfBroadcast(this.state.broadcast.payload)
+    deleteInitialFiles(initialFiles, currentFiles)
     this.setState({newFiles: []})
     let broadcast = this.state.broadcast
     if (broadcast[broadcast.length-1].quickReplies) {
@@ -137,6 +143,7 @@ class EditTemplate extends React.Component {
                 <GenericMessage
                   pageId={this.state.pageId}
                   newFiles={this.state.newFiles}
+                  initialFiles={this.state.initialFiles}
                   pages={this.props.pages.filter((page) => page._id === this.props.location.state.pages[0])}
                   broadcast={this.state.broadcast}
                   handleChange={this.handleChange}

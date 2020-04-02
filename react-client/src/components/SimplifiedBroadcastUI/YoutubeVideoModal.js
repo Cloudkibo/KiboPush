@@ -21,7 +21,6 @@ class YoutubeVideoModal extends React.Component {
       buttonLimit: 3,
       buttonActions: this.props.buttonActions ? this.props.buttonActions : ['open website', 'open webview'],
       file: this.props.file ? this.props.file : '',
-      initialFile: this.props.file ? {...this.props.file} : null,
       link: this.props.youtubeLink ? this.props.youtubeLink : '',
       videoLink: this.props.videoLink ? this.props.videoLink : '',
       videoTitle: this.props.videoTitle ? this.props.videoTitle : '',
@@ -29,7 +28,8 @@ class YoutubeVideoModal extends React.Component {
       loading: false,
       videoId: this.props.videoId ? this.props.videoId : null,
       card: this.props.card,
-      fileSizeExceeded: this.props.fileSizeExceeded
+      fileSizeExceeded: this.props.fileSizeExceeded,
+      initialFile: this.props.file ? this.props.file.fileurl.id : null
     }
     console.log('YoutubeVideoModal state', this.state)
     console.log('YoutubeVideoModal module', this.props.module)
@@ -47,9 +47,20 @@ class YoutubeVideoModal extends React.Component {
   handleLinkChange(e) {
     console.log('changing link', e.target.value)
     if (this.state.file) {
-      if (!this.state.initialFile || this.state.initialFile.fileurl.id !== this.state.file.fileurl.id)
-      console.log('deleting file', this.state.file)
-      deleteFile(this.state.file.fileurl.id)
+      let canBeDeleted = true
+      for (let i = 0; i < this.props.initialFiles.length; i++) {
+        if (this.state.file.fileurl.id === this.props.initialFiles[i]) {
+          canBeDeleted = false
+          break
+        }
+      }
+      if (this.state.initialFile === this.state.file.fileurl.id) {
+        canBeDeleted = false
+      }
+      if (canBeDeleted) {
+        console.log('deleting file', this.state.file)
+        deleteFile(this.state.file.fileurl.id)
+      }
     }
     this.setState({ fileSizeExceeded: false, buttons: [], disabled: true, link: e.target.value, videoId: null, videoTitle: null, videoDescription: null, file: null, card: null }, () => {
       this.validateYoutubeUrl()
@@ -66,10 +77,6 @@ class YoutubeVideoModal extends React.Component {
 
   addComponent(buttons) {
     console.log('addComponent YoutubeVideoModal', this.state)
-    if (this.state.initialFile) {
-      console.log('deleting file', this.state.initialFile)
-      deleteFile(this.state.initialFile.fileurl.id)
-    }
     if (this.props.module === 'whatsapp') {
       this.props.addComponent({
         id: this.props.id >= 0 ? this.props.id : null,
@@ -96,6 +103,20 @@ class YoutubeVideoModal extends React.Component {
           card: this.state.card
         }, this.props.edit)
       } else {
+        if (this.state.initialFile) {
+          let canBeDeleted = true
+          for (let i = 0; i < this.props.initialFiles.length; i++) {
+            if (this.state.initialFile === this.props.initialFiles[i]) {
+              canBeDeleted = false
+              break
+            }
+          } 
+          if (canBeDeleted) {
+            if (this.state.file.fileurl.id !== this.state.initialFile) {
+              deleteFile(this.state.initialFile)
+            }
+          }
+        }
         this.props.addComponent({
           id: this.props.id,
           componentName:  'YouTube video',

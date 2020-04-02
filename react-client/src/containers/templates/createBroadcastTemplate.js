@@ -8,8 +8,8 @@ import { createBroadcast, editBroadcast, loadCategoriesList, addCategory, delete
 import { bindActionCreators } from 'redux'
 import { validateFields } from '../convo/utility'
 import AlertContainer from 'react-alert'
-import { Link } from 'react-router-dom'
 import GenericMessage from '../../components/SimplifiedBroadcastUI/GenericMessage'
+import {getFileIdsOfBroadcast, deleteInitialFiles} from '../../utility/utils'
 
 class CreateBroadcastTemplate extends React.Component {
   constructor (props, context) {
@@ -18,6 +18,7 @@ class CreateBroadcastTemplate extends React.Component {
     this.state = {
       buttonActions: ['open website', 'google sheets'],
       broadcast: this.props.template ? this.props.template.payload : [],
+      initialFiles: this.props.template? getFileIdsOfBroadcast(this.props.template.payload) : [],
       isShowingModal: false,
       convoTitle: props.template ? props.template.title : 'Broadcast Title',
       showAddCategoryDialog: false,
@@ -129,6 +130,9 @@ class CreateBroadcastTemplate extends React.Component {
       return
     }
     if (this.state.categoryValue.length > 0) {
+      let initialFiles = this.state.initialFiles
+      let currentFiles = getFileIdsOfBroadcast(this.state.broadcast.payload)
+      deleteInitialFiles(initialFiles, currentFiles)
       this.setState({newFiles: []})
       var broadcastTemplate = {
         title: this.state.convoTitle,
@@ -251,6 +255,7 @@ class CreateBroadcastTemplate extends React.Component {
                   </div>
                 </div>
                 <GenericMessage
+                  initialFiles={this.state.initialFiles}
                   broadcast={this.state.broadcast}
                   newFiles={this.state.newFiles}
                   handleChange={this.handleChange}

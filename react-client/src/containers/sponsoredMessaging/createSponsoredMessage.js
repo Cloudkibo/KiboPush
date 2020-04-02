@@ -15,6 +15,7 @@ import AdSet from './adSet'
 import Ad from './ad'
 import {updateSponsoredMessage, saveDraft, send } from '../../redux/actions/sponsoredMessaging.actions'
 import {checkValidations } from './utility'
+import {getFileIdsOfBroadcast, deleteFile} from '../../utility/utils'
 
 
 class CreateSponsoredMessage extends React.Component {
@@ -28,7 +29,8 @@ class CreateSponsoredMessage extends React.Component {
       : props.sponsoredMessage.campaignId && props.sponsoredMessage.campaignId !== '' ? 'adSet'
       : props.sponsoredMessage.adAccountId && props.sponsoredMessage.adAccountId !== '' ? 'campaign'
       : 'adAccount',
-      loading: false
+      loading: false,
+      initialFiles: props.sponsoredMessage && props.sponsoredMessage.payload ? getFileIdsOfBroadcast(props.sponsoredMessage.payload) : []
     }
     if(this.props.location.state && this.props.location.state.module === 'edit'  && this.props.location.state.sponsoredMessage) {
       this.props.updateSponsoredMessage(this.props.location.state.sponsoredMessage)
@@ -56,11 +58,9 @@ class CreateSponsoredMessage extends React.Component {
   }
 
   handleSaveResponse () {
-    setTimeout(() => {
-      this.props.history.push({
-        pathname: '/sponsoredMessaging'
-      })
-    }, 100)
+    this.props.history.push({
+      pathname: '/sponsoredMessaging'
+    })
   }
 
   handleResponse (res) {
@@ -121,6 +121,9 @@ class CreateSponsoredMessage extends React.Component {
   }
   onSave () {
     if (checkValidations(this.props.sponsoredMessage)) {
+      let initialFiles = this.state.initialFiles
+      let currentFiles = getFileIdsOfBroadcast(this.props.sponsoredMessage.payload)
+      deleteInitialFiles(initialFiles, currentFiles)
       this.props.updateSponsoredMessage(this.props.sponsoredMessage, null, null, {newFiles: []})
       this.props.saveDraft(this.props.sponsoredMessage._id, this.props.sponsoredMessage, this.msg, this.handleSaveResponse)
     } else {
@@ -164,7 +167,7 @@ class CreateSponsoredMessage extends React.Component {
                     <AdSet changeCurrentStep={this.changeCurrentStep} msg={this.msg} />
                   }
                   {this.state.currentStep === 'ad' &&
-                    <Ad changeCurrentStep={this.changeCurrentStep} msg={this.msg} />
+                    <Ad changeCurrentStep={this.changeCurrentStep} initialFiles={this.state.initialFiles} msg={this.msg} />
                   }
                 </div>
               </div>
