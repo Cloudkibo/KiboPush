@@ -274,7 +274,7 @@ class CreateMessage extends React.Component {
         }
       }
     }
-    this.setState({jsonMessages: jsonMessages})
+    this.setState({jsonMessages: jsonMessages, newFiles: []})
     this.props.updateCurrentJsonAd(this.props.messengerAd, 'jsonAdMessages', jsonMessages)
     this.msg.success('Message saved successfully')
   }
@@ -344,6 +344,7 @@ class CreateMessage extends React.Component {
                           }
                         </ul>
                         <GenericMessage
+                          newFiles={this.state.newFiles}
                           hiddenComponents={['video']}
                           module="jsonads"
                           hideUserOptions
