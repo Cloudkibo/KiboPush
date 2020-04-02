@@ -17,7 +17,13 @@ export function showWhiteListDomains (data) {
   }
 }
 
-
+export function showAdvancedSettings (data) {
+  console.log(data)
+  return {
+    type: ActionTypes.GET_ADVANCED_SETTINGS,
+    data
+  }
+}
 
 export function getResponseMethod (data) {
   return {
@@ -498,6 +504,28 @@ export function updateIntegration (id, body) {
         if (res.status === 'success') {
           dispatch(getIntegrations())
         }
+      })
+  }
+}
+
+export function updateAdvancedSettings (data, advancedSettings, msg) {
+  return (dispatch) => {
+    callApi('company/updateAdvancedSettings', 'post', data)
+      .then(res => {
+        if (res.status === 'success') {
+          dispatch(showAdvancedSettings(advancedSettings))
+        } else {
+          msg.error('Unable to update advanced settings')
+        }
+      })
+  }
+}
+
+export function getAdvancedSettings () {
+  return (dispatch) => {
+    callApi('company/getAdvancedSettings')
+      .then(res => {
+        dispatch(showAdvancedSettings(res.payload))
       })
   }
 }

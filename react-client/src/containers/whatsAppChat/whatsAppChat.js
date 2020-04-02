@@ -174,20 +174,8 @@ class WhatsAppChat extends React.Component {
     if (message.format === 'twilio') {
       // subscriber
       chatPreview = `${subscriberName}`
-      if (message.attachments) {
-        if (message.attachments[0].type === 'template' &&
-          message.attachments[0].payload.template_type === 'generic'
-        ) {
-          chatPreview = message.attachments[0].payload.elements.length > 1 ? `${chatPreview} sent a gallery` : `${chatPreview} sent a card`
-        } else if (message.attachments[0].type === 'template' &&
-          message.attachments[0].payload.template_type === 'media'
-        ) {
-          chatPreview = `${chatPreview} sent a media`
-        } else if (['image', 'audio', 'location', 'video', 'file'].includes(message.attachments[0].type)) {
-          chatPreview = `${chatPreview} shared ${message.attachments[0].type}`
-        } else {
-          chatPreview = `${chatPreview}: ${message.text}`
-        }
+      if (message.componentType !== 'text') {
+        chatPreview = `${chatPreview} shared ${message.componentType}`
       } else {
         chatPreview = `${chatPreview}: ${message.text}`
       }
@@ -469,8 +457,8 @@ class WhatsAppChat extends React.Component {
                 </div>
               }
             <HELPWIDGET
-              documentation={{link: 'http://kibopush.com/livechat/'}}
-              videoTutorial={{videoId: 'bLotpQLvsfE'}}
+              documentation={{visibility: true, link: 'https://kibopush.com/whatsapp-twilio/'}}
+              videoTutorial={{visibility: false}}
             />
               <div className='row'>
                 <SESSIONS
@@ -517,7 +505,7 @@ class WhatsAppChat extends React.Component {
                     isSMPApproved={false}
                     showUploadAttachment={true}
                     showRecordAudio={false}
-                    showSticker={false}
+                    showSticker={true}
                     showEmoji={true}
                     showGif={false}
                     showThumbsUp={false}
@@ -526,6 +514,7 @@ class WhatsAppChat extends React.Component {
                     sendAttachment={this.props.sendAttachment}
                     deletefile={this.props.deletefile}
                     showTemplates={true}
+                    filesAccepted={'image/*, audio/*, video/*, application/pdf'}
                   />
                 }
                 {

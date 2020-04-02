@@ -143,7 +143,7 @@ class NewsSummary extends React.Component {
             <div className='row'>
               <div className='col-3'>
                 <IconStack
-                  path='/'
+                  path='/newsIntegration'
                   icon='fa fa-newspaper-o'
                   title={this.props.newsSummary.newsSections}
                   subtitle='News Sections'
@@ -153,7 +153,7 @@ class NewsSummary extends React.Component {
               </div>
               <div className='col-3'>
                 <IconStack
-                  path='/'
+                  path='/newsIntegration'
                   icon='fa fa-send'
                   title={this.props.newsSummary.storiesSent}
                   subtitle='Stories Sent'
@@ -163,7 +163,7 @@ class NewsSummary extends React.Component {
               </div>
               <div className='col-3'>
                 <IconStack
-                  path='/'
+                  path='/newsIntegration'
                   icon='fa fa-eye'
                   title={this.props.newsSummary.storiesSeen}
                   subtitle='Stories Seen'
@@ -173,7 +173,7 @@ class NewsSummary extends React.Component {
               </div>
               <div className='col-3'>
                 <IconStack
-                  path='/'
+                  path='/newsIntegration'
                   icon='fa fa-hand-pointer-o'
                   title={this.props.newsSummary.storiesClicked}
                   subtitle='Stories Clicked'

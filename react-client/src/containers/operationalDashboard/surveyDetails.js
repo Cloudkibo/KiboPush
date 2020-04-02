@@ -9,6 +9,8 @@ class SurveyDetails extends React.Component {
     super(props, context)
     this.state = {
       surveyDetailsData: [],
+      totalSent: 0,
+      Surveyresponses: 0,
       totalLength: 0,
       subscribersData: [],
       subscribersDataAll: [],
@@ -22,6 +24,11 @@ class SurveyDetails extends React.Component {
     this.handlePageClick = this.handlePageClick.bind(this)
   }
 
+  UNSAFE_componentWillReceiveProps (nextProps) {
+    if (nextProps.survey) {
+      this.setState({totalSent: nextProps.survey[0].Sent, Surveyresponses: nextProps.responses.length})
+    }
+  }
   searchSubscriber (event) {
     this.setState({searchValue: event.target.value})
     var filtered = []
@@ -114,7 +121,7 @@ class SurveyDetails extends React.Component {
                   <div className='col-xl-6 col-lg-6 col-md-6 col-sm-12 col-xs-12' style={{'textAlign': 'center', 'fontSize': 'x-large'}}>
                     <div className='m-widget26'>
                       <div className='m-widget26__number'>
-                        { this.props.location.state.data.sent}
+                        { this.state.totalSent}
                         <h5>
                           Survey Sent So Far
                         </h5>
@@ -124,7 +131,7 @@ class SurveyDetails extends React.Component {
                   <div className='col-xl-6 col-lg-6 col-md-6 col-sm-12 col-xs-12' style={{'textAlign': 'center'}}>
                     <div className='m-widget26'>
                       <div className='m-widget26__number'>
-                        {this.props.location.state.data.responded}
+                        {this.state.Surveyresponses}
                         <h5>
                           Survey Respones
                         </h5>

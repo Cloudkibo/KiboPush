@@ -603,6 +603,7 @@ class Targeting extends React.Component {
         } */}
         <div className='col-12' style={{paddingLeft: '20px', paddingBottom: '0px', paddingTop:'20px'}}>
         {
+          this.props.page.tasks && this.props.page.tasks.includes('MANAGE') &&
           <span
             className={this.props.subscriberCount === 0 ? 'm--font-boldest m--font-danger' : 'm--font-boldest m--font-success'}
             style={{marginLeft: '10px'}}

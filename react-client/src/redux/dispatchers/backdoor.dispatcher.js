@@ -43,6 +43,17 @@ export function updateUsersList (data, originalData) {
   }
 }
 
+export function updateLocales (dict) {
+  let convertedData = []
+  for (var key in dict){
+    console.log( key, dict[key] );
+    convertedData.push({value: key, text: dict[key]})
+  }
+  return {
+    type: ActionTypes.LOAD_LOCALES_LIST_BACKDOOR,
+    data: convertedData
+  }
+}
 export function updateAllLocales (data) {
   console.log('Data Fetched From backdoor', data)
   let convertedData = []

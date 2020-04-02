@@ -233,11 +233,12 @@ class Footer extends React.Component {
   }
 
   onFileChange (e) {
+    // debugger
     if (e.target.files.length > 0) {
       const file = e.target.files[0]
       if (file.size > 25000000) {
         this.props.alertMsg.error('Attachment exceeds the limit of 25MB')
-      } if (file.type === 'text/javascript' || file.type === 'text/exe') {
+      } else if (file.type === 'text/javascript' || file.type === 'text/exe') {
         this.props.alertMsg.error('Cannot add js or exe files. Please select another file')
       } else {
         const data = this.props.performAction('send attachments', this.props.activeSession)
@@ -502,7 +503,7 @@ class Footer extends React.Component {
                 ref='_upload_attachment'
                 style={{display: 'none'}}
                 type='file'
-                accept='image/*, audio/*, video/*, application/*, text/*'
+                accept={this.props.filesAccepted}
                 onChange={this.onFileChange}
                 onClick={(e) => {e.target.value = ''}}
               />
@@ -573,7 +574,8 @@ Footer.propTypes = {
   'showSticker': PropTypes.bool.isRequired,
   'showEmoji': PropTypes.bool.isRequired,
   'showGif': PropTypes.bool.isRequired,
-  'showThumbsUp': PropTypes.bool.isRequired
+  'showThumbsUp': PropTypes.bool.isRequired,
+  'filesAccepted': PropTypes.string
 }
 
 export default Footer

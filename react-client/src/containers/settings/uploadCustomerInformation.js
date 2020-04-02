@@ -9,7 +9,7 @@ import AlertContainer from 'react-alert'
 import Papa from 'papaparse'
 import { uploadCustomerInfoFile } from '../../redux/actions/settings.actions'
 
-class ResetPassword extends React.Component {
+class UploadCustomerInfo extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
@@ -118,7 +118,6 @@ class ResetPassword extends React.Component {
 
   uploadFile (e) {
     e.preventDefault()
-    this.closeDialog()
     this.setState({file: ''})
     let temp = this.state.fileData
     for (let i = 0; i < this.state.mappedColumns.length; i++) {
@@ -160,7 +159,7 @@ class ResetPassword extends React.Component {
                 </div>
                 <div className='form-group m-form__group'>
                   <select className='custom-select' style={{ width: '100%' }} value={this.state.customerId} onChange={this.onSelectCustomerId} >
-                    <option value='' disabled>Select cloum for Customer ID...</option>
+                    <option value='' disabled>Select column for Customer ID...</option>
                     {
                       this.state.columns.map(column => (
                         <option value={column} disabled={this.state.selectedColumns.indexOf(column) !== -1}>{column}</option>
@@ -170,7 +169,7 @@ class ResetPassword extends React.Component {
                 </div>
                 <div className='form-group m-form__group'>
                   <select className='custom-select' style={{ width: '100%' }} value={this.state.customerFirstName} onChange={this.onSelectCustomerFirstName} >
-                    <option value='' disabled>Select cloum for Customer First Name...</option>
+                    <option value='' disabled>Select column for Customer First Name...</option>
                     {
                       this.state.columns.map(column => (
                         <option value={column} disabled={this.state.selectedColumns.indexOf(column) !== -1}>{column}</option>
@@ -180,7 +179,7 @@ class ResetPassword extends React.Component {
                 </div>
                 <div className='form-group m-form__group'>
                   <select className='custom-select' style={{ width: '100%' }} value={this.state.customerLastName} onChange={this.onSelectCustomerLastName} >
-                    <option value='' disabled>Select cloum for Customer Last Name...</option>
+                    <option value='' disabled>Select column for Customer Last Name...</option>
                     {
                       this.state.columns.map(column => (
                         <option value={column} disabled={this.state.selectedColumns.indexOf(column) !== -1}>{column}</option>
@@ -213,7 +212,7 @@ class ResetPassword extends React.Component {
           </div>
           <div className='tab-content'>
             <div className='tab-pane active' id='m_user_profile_tab_1'>
-              <form className='m-form m-form--fit m-form--label-align-right'>
+              <div className='m-form m-form--fit m-form--label-align-right'>
                 <div className='m-portlet__body'>
                   <div className='form-group m-form__group'>
                     <div className='alert m-alert m-alert--default' role='alert'>
@@ -249,13 +248,14 @@ class ResetPassword extends React.Component {
                       style={{float: 'right'}}
                       className='btn btn-primary btn-sm'
                       disabled={this.state.file === ''}
-                      data-toggle="modal" data-target="#uploadCustomerInfo"
+                      data-toggle="modal" 
+                      data-target="#uploadCustomerInfo"
                     >
                       Upload
                     </button>
                   </div>
                 </div>
-              </form>
+              </div>
             </div>
           </div>
         </div>
@@ -272,4 +272,4 @@ function mapDispatchToProps (dispatch) {
     uploadCustomerInfoFile: uploadCustomerInfoFile
   }, dispatch)
 }
-export default connect(mapStateToProps, mapDispatchToProps)(ResetPassword)
+export default connect(mapStateToProps, mapDispatchToProps)(UploadCustomerInfo)

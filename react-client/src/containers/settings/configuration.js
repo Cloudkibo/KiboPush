@@ -198,6 +198,7 @@ class Webhook extends React.Component {
       time: 5000,
       transition: 'scale'
     }
+    const url = window.location.hostname
     return (
       <div className='col-lg-8 col-md-8 col-sm-8 col-xs-12'>
         <button ref='disconnectWhatsApp' style={{ marginTop: '-10px', opacity: '0.5', color: 'black', display: 'none'}} type="button" className="close" data-toggle="modal" data-target="#disconnectWhatsApp" aria-label="Close">
@@ -212,8 +213,8 @@ class Webhook extends React.Component {
         </button>
         <WhatsAppDeleteModal
           id='disconnectWhatsApp'
-          title={`${this.state.type} WhatsApp Twilio Account`}
-          content={`Are you sure you want to ${this.state.type} your WhatsApp Twilio Account? Doing so will be remove all of your subscribers, their chat history and the broadcasts you have created.`}
+          title={`${this.state.deleteType} WhatsApp Twilio Account`}
+          content={`Are you sure you want to ${this.state.deleteType} your WhatsApp Twilio Account? Doing so will remove all of your subscribers, their chat history and the broadcasts you have created.`}
           deleteWithPassword={this.deleteWhatsApp}
         />
         <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="disconnect" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -408,6 +409,7 @@ class Webhook extends React.Component {
                                         </div>
                                       </div>
                                     }
+                                    { (url.includes('kiboengage.cloudkibo.com') || url.includes('kibochat.cloudkibo.com') ) &&
                                     <div className='m-widget4__item'>
                                       <div className='m-widget4__info'>
                                         <span className='m-widget4__title'>
@@ -431,6 +433,8 @@ class Webhook extends React.Component {
                                       </div>
                                     }
                                     </div>
+                                    }
+                                    { (url.includes('kiboengage.cloudkibo.com') || url.includes('kibochat.cloudkibo.com') ) &&
                                     <div className='m-widget4__item'>
                                       <div className='m-widget4__info'>
                                         <span className='m-widget4__title'>
@@ -458,6 +462,7 @@ class Webhook extends React.Component {
                                       </div>
                                     }
                                     </div>
+                                    }
                                   </div>
                                   </div>
                                 </div>
