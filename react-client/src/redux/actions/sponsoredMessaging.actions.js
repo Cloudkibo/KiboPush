@@ -114,22 +114,16 @@ export function updateSponsoredMessage(sponsoredMessage, key, value, edit) {
         maxAge: edit.targeting.maxAge
       }
     }
-    return (dispatch) => {
-      dispatch(showUpdatedData(temp))
-    }
+    return showUpdatedData(temp)
   } else if (key) {
     let temp = sponsoredMessage
     if(key === 'payload') {
       value = value.broadcast
     }
-    return (dispatch) => {
-      temp[key] = value
-        dispatch(showUpdatedData(temp))
-    }
+    temp[key] = value
+    return showUpdatedData(temp)
   } else {
-    return (dispatch) => {
-      dispatch(showUpdatedData(sponsoredMessage))
-    }
+    return showUpdatedData(sponsoredMessage)
   }
 }
 

@@ -191,6 +191,7 @@ export function deleteFile (serverPath, handleResponse) {
 }
 
 export function deleteFiles (payload, newFiles) {
+  debugger
   let files = []
   for (let i = 0; i < payload.length; i++) {
     let component = payload[i]

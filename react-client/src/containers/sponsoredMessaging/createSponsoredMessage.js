@@ -56,9 +56,11 @@ class CreateSponsoredMessage extends React.Component {
   }
 
   handleSaveResponse () {
-    this.props.history.push({
-      pathname: '/sponsoredMessaging'
-    })
+    setTimeout(() => {
+      this.props.history.push({
+        pathname: '/sponsoredMessaging'
+      })
+    }, 100)
   }
 
   handleResponse (res) {
@@ -107,6 +109,7 @@ class CreateSponsoredMessage extends React.Component {
   }
   onSend () {
     if (checkValidations(this.props.sponsoredMessage)) {
+      this.props.updateSponsoredMessage(this.props.sponsoredMessage, null, null, {newFiles: []})
       this.setState({loading: true})
       let pageId = this.props.pages && this.props.pages.filter(p => p._id === this.props.sponsoredMessage.pageId)[0].pageId
       let sponsoredMessage = JSON.parse(JSON.stringify(this.props.sponsoredMessage))
@@ -118,6 +121,7 @@ class CreateSponsoredMessage extends React.Component {
   }
   onSave () {
     if (checkValidations(this.props.sponsoredMessage)) {
+      this.props.updateSponsoredMessage(this.props.sponsoredMessage, null, null, {newFiles: []})
       this.props.saveDraft(this.props.sponsoredMessage._id, this.props.sponsoredMessage, this.msg, this.handleSaveResponse)
     } else {
       this.msg.error('Please complete all the steps')

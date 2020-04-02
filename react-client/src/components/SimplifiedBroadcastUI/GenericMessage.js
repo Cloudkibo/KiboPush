@@ -159,6 +159,7 @@ class GenericMessage extends React.Component {
       this.setState({quickRepliesComponent: null})
     }
     if (nextProps.newFiles && this.state.newFiles.length !== nextProps.newFiles.length) {
+      debugger
       this.setState({newFiles: nextProps.newFiles})
     }
   }
@@ -538,6 +539,7 @@ class GenericMessage extends React.Component {
       'card': (<CardModal
         buttons={[]}
         module = {this.props.module}
+        setTempFiles={this.setTempFiles}
         edit={this.state.editData ? true : false}
         {...this.state.editData}
         pages={this.props.pages}
