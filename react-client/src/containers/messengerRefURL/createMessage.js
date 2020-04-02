@@ -51,6 +51,7 @@ class MessengerRefURLMessage extends React.Component {
     if (this.props.location.state.module === 'edit') {
       var newMessengerRefURL = this.props.location.state.messengerRefSelectedURL
       newMessengerRefURL['reply'] = this.props.messengerRefURL.reply
+      newMessengerRefURL['initialFiles'] = this.props.location.state.initialFiles
       this.props.history.push({
         pathname: `/editMessengerRefURL`,
         state: {pageId: this.props.pageId, _id: this.props.pages[0], module: 'edit', messengerRefURL: newMessengerRefURL, pageName: this.props.location.state.pageName}
@@ -70,18 +71,20 @@ class MessengerRefURLMessage extends React.Component {
     if (!validateFields(this.state.broadcast, this.msg)) {
       return
     }
-    this.setState({newFiles: []})
     if (this.props.location.state.module === 'edit') {
       var edit = {
         pageId: this.props.messengerRefURL.pageId,
         ref_parameter: this.props.messengerRefURL.ref_parameter,
         reply: this.state.broadcast,
-        sequenceId: this.props.messengerRefURL.sequenceId
+        sequenceId: this.props.messengerRefURL.sequenceId,
+        newFiles: this.state.newFiles
       }
       this.props.updateData(this.props.messengerRefURL, 'reply', this.state.broadcast, edit)
     } else {
       this.props.updateData(this.props.messengerRefURL, 'reply', this.state.broadcast)
+      this.props.updateData(this.props.messengerRefURL, 'newFiles', this.state.newFiles)
     }
+    this.setState({newFiles: []})
     this.msg.success('Message has been saved.')
   }
 
@@ -117,6 +120,7 @@ class MessengerRefURLMessage extends React.Component {
         </div>
         <GenericMessage
           newFiles={this.state.newFiles}
+          initialFiles={this.props.location.state.initialFiles}
           pageId={this.props.messengerRefURL.pageId}
           pages={[this.state.pageId]}
           broadcast={this.state.broadcast}

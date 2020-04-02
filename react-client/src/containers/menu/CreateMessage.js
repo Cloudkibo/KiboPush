@@ -34,7 +34,7 @@ class CreateMessage extends React.Component {
   gotoMenu () {
     this.props.history.push({
       pathname: `/menu`,
-      state: {action: 'replyWithMessage'}
+      state: {action: 'replyWithMessage', initialFiles: this.props.location.state.initialFiles}
     })
     // this.props.history.push(`/pollResult/${poll._id}`)
   }
@@ -229,6 +229,7 @@ class CreateMessage extends React.Component {
         </div>
         <GenericMessage
           pageId={this.state.pageId}
+          initialFiles={this.props.location.state.initialFiles}
           newFiles={this.state.newFiles}
           pages={this.props.currentMenuItem ? this.props.currentMenuItem.currentPage : null}
           broadcast={this.state.broadcast}

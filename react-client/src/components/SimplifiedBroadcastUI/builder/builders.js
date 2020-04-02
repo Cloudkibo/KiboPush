@@ -67,7 +67,8 @@ class Builders extends React.Component {
       loading: this.props.linkedMessages && this.props.linkedMessages.length > 0,
       fileError: '',
       tempFiles: [],
-      newFiles: []
+      newFiles: [],
+      initialFiles: []
     }
     this.defaultTitle = this.props.convoTitle
     this.reset = this.reset.bind(this)
@@ -1390,6 +1391,7 @@ class Builders extends React.Component {
       'card': (<CardModal
         buttons={[]}
         setTempFiles={this.setTempFiles}
+        initialFiles={this.state.initialFiles}
         module = {this.props.module}
         edit={this.state.editData ? true : false}
         {...this.state.editData}
@@ -1405,6 +1407,7 @@ class Builders extends React.Component {
       'image': (<ImageModal
         edit={this.state.editData ? true : false}
         setTempFiles={this.setTempFiles}
+        initialFiles={this.state.initialFiles}
         module = {this.props.module}
         {...this.state.editData}
         replyWithMessage={this.props.replyWithMessage}
@@ -1416,6 +1419,7 @@ class Builders extends React.Component {
       'file': (<FileModal
         edit={this.state.editData ? true : false}
         setTempFiles={this.setTempFiles}
+        initialFiles={this.state.initialFiles}
         module = {this.props.module}
         {...this.state.editData}
         replyWithMessage={this.props.replyWithMessage}
@@ -1427,6 +1431,7 @@ class Builders extends React.Component {
       'audio': (<AudioModal
         edit={this.state.editData ? true : false}
         setTempFiles={this.setTempFiles}
+        initialFiles={this.state.initialFiles}
         module = {this.props.module}
         {...this.state.editData}
         replyWithMessage={this.props.replyWithMessage}
@@ -1437,6 +1442,7 @@ class Builders extends React.Component {
       'media': (<MediaModal
         buttons={[]}
         setTempFiles={this.setTempFiles}
+        initialFiles={this.state.initialFiles}
         module = {this.props.module}
         edit={this.state.editData ? true : false}
         {...this.state.editData}
@@ -1454,6 +1460,7 @@ class Builders extends React.Component {
       'video': (<YoutubeVideoModal
           buttons={[]}
           setTempFiles={this.setTempFiles}
+          initialFiles={this.state.initialFiles}
           noButtons={this.props.noButtons}
           module = {this.props.module}
           edit={this.state.editData ? true : false}

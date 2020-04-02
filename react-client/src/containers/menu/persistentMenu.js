@@ -138,9 +138,8 @@ class Menu extends React.Component {
           break
       }
 
-      let initialFiles = getFileIdsOfMenu(menuReturned)
       this.setState({
-        initialFiles,
+        initialFiles: this.props.location.state.initialFiles,
         newFiles: this.props.currentMenuItem.newFiles,
         menuItems: menuReturned,
         selectedIndex: this.props.currentMenuItem.clickedIndex
@@ -269,6 +268,7 @@ class Menu extends React.Component {
     this.props.saveCurrentMenuItem(currentState)
     this.props.history.push({
       pathname: `/createMessage`,
+      state: {initialFiles: this.state.initialFiles}
     })
 
   }
@@ -277,7 +277,10 @@ class Menu extends React.Component {
   }
   handleIndexByPage (res) {
     if (res.status === 'success' && res.payload && res.payload.length > 0) {
+      debugger
+      let initialFiles = getFileIdsOfMenu(res.payload[0].jsonStructure)
       this.setState({
+        initialFiles,
         menuItems: res.payload[0].jsonStructure
       })
       for (var i = 0; i < this.props.pages.length; i++) {
@@ -328,7 +331,7 @@ class Menu extends React.Component {
     data.jsonStructure = tempItemMenus
     var currentState = null
     this.props.saveCurrentMenuItem(currentState)
-    this.setState({newFiles: []})
+    this.setState({newFiles: [], initialFiles: []})
     this.props.removeMenu(data, this.handleReset, this.msg)
   }
 
@@ -807,7 +810,8 @@ class Menu extends React.Component {
         data.jsonStructure = this.state.menuItems
         this.setState({
           loading: true,
-          newFiles: []
+          newFiles: [],
+          initialFiles: currentFiles
         })
         this.editing = true
         this.props.saveMenu(data, this.handleSaveMenu, this.msg)
