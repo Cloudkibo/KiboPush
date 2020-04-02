@@ -7,10 +7,17 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
-import {deleteSponsoredMessage, createSponsoredMessage, fetchSponsoredMessages, showUpdatedData, send} from '../../redux/actions/sponsoredMessaging.actions'
+import {deleteSponsoredMessage,
+  createSponsoredMessage,
+  fetchSponsoredMessages,
+  showUpdatedData,
+  send,
+  saveDraft} from '../../redux/actions/sponsoredMessaging.actions'
 import AlertContainer from 'react-alert'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
 import YouTube from 'react-youtube'
+import ConfirmationModal from '../../components/extras/confirmationModal'
+import { formatAMPM } from '../../utility/utils'
 
 class SponsoredMessaging extends React.Component {
   constructor (props, context) {
@@ -26,7 +33,8 @@ class SponsoredMessaging extends React.Component {
       pageNumber: 0,
       page_value: '',
       filter: false,
-      openVideo: false
+      openVideo: false,
+      selectedSponsoredMessage: ''
     }
    props.loadMyPagesList()
    props.fetchSponsoredMessages({last_id: 'none',
@@ -52,14 +60,46 @@ class SponsoredMessaging extends React.Component {
    this.publish = this.publish.bind(this)
    this.handlePublishResponse = this.handlePublishResponse.bind(this)
    this.openVideoTutorial = this.openVideoTutorial.bind(this)
+   this.openPublishModal = this.openPublishModal.bind(this)
+   this.saveSchedule = this.saveSchedule.bind(this)
+   this.handleSaveResponse = this.handleSaveResponse.bind(this)
   }
+
+  saveSchedule (date, time) {
+    let combinedDateTime = new Date(date + ' ' + time)
+    let currentDate = new Date()
+    if (combinedDateTime < currentDate) {
+      this.msg.error('Sheduled Date and Time cannot be less than the current Date and Time')
+    } else {
+      let sponsoredMessage = this.state.selectedSponsoredMessage
+      sponsoredMessage.scheduleDateTime = combinedDateTime
+      this.props.saveDraft(this.state.selectedSponsoredMessage._id, sponsoredMessage, this.msg, this.handleSaveResponse)
+    }
+  }
+
+  handleSaveResponse () {
+    this.refs.sponsoredMessage.click()
+  }
+
+  openPublishModal (sponsoredMessage) {
+    this.setState({selectedSponsoredMessage: sponsoredMessage}, () => {
+      if (sponsoredMessage.status === 'scheduled') {
+        this.refs.confirmPublish.click()
+      } else {
+        this.publish()
+      }
+    })
+  }
+
   openVideoTutorial () {
     this.setState({
       openVideo: true
     })
     this.refs.videoSponsored.click()
   }
-  publish (sponsoredMessage) {
+
+  publish () {
+    let sponsoredMessage = this.state.selectedSponsoredMessage
     let pageId = this.props.pages && this.props.pages.filter(p => p._id === sponsoredMessage.pageId)[0].pageId
     sponsoredMessage.pageId = pageId
     this.props.send(sponsoredMessage, this.handlePublishResponse)
@@ -73,7 +113,7 @@ class SponsoredMessaging extends React.Component {
     }
   }
 
-  getStatusValue (status) {
+  getStatusValue (status, datetime) {
     let statusValue = ''
     if (status.toLowerCase() === 'draft') {
       statusValue = 'Draft'
@@ -85,6 +125,9 @@ class SponsoredMessaging extends React.Component {
       statusValue = 'Active'
     } else if (status.toLowerCase() === 'rejected') {
       statusValue = 'Rejected'
+    } else if (status.toLowerCase() === 'scheduled') {
+      let date = new Date(datetime)
+      statusValue = `Scheduled on ${date.toDateString()} at ${formatAMPM(date)}`
     }
     return statusValue
   }
@@ -297,10 +340,16 @@ class SponsoredMessaging extends React.Component {
       time: 5000,
       transition: 'scale'
     }
-    console.log('this.state.sponsoredMessages', this.state.sponsoredMessages)
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
+          <button ref='confirmPublish' style={{display: 'none'}} data-toggle="modal" data-target="#confirmPublish"></button>
+          <ConfirmationModal
+            id='confirmPublish'
+            title='Publish Sponsored Message'
+            description='This will immediately send your Sheduled Sponsored Message and will remove the sheduling done for later. Are you sure you want to continue?'
+            onConfirm={this.publish}
+          />
         <a href='#/' style={{ display: 'none' }} ref='videoSponsored' data-toggle='modal' data-backdrop='static' data-keyboard='false' data-target="#videoSponsored">videoSponsored</a>
             <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="videoSponsored" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog modal-lg" role="document">
@@ -309,7 +358,7 @@ class SponsoredMessaging extends React.Component {
                   <h5 className="modal-title" id="exampleModalLabel">
                     Sponsored Broadcast Video Tutorial
                   </h5>
-                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" 
+                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal"
                   aria-label="Close"
                   onClick={() => {
                     this.setState({
@@ -335,7 +384,7 @@ class SponsoredMessaging extends React.Component {
                 </div>
               </div>
             </div>
-          </div>  
+          </div>
           <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="create" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
               <div className="modal-content">
@@ -472,6 +521,7 @@ class SponsoredMessaging extends React.Component {
                           <option value='draft'>Draft</option>
                           <option value='sent_to_fb'>Sent to Facebook</option>
                           <option value='pending_review'>Pending Review</option>
+                          <option value='scheduled'>Scheduled</option>
                           <option value='active'>Active</option>
                           <option value='rejected'>Rejected</option>
                         </select>
@@ -541,7 +591,7 @@ class SponsoredMessaging extends React.Component {
                             </th>
                             <th data-field='actions'
                               className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                              <span style={{width: '230px'}}>Actions</span>
+                              <span style={{width: '300px'}}>Actions</span>
                             </th>
                           </tr>
                         </thead>
@@ -557,28 +607,28 @@ class SponsoredMessaging extends React.Component {
                                 <span style={{width: '150px'}}>{this.props.pages.filter((page) => page._id === sponsoredMessage.pageId)[0] ? this.props.pages.filter((page) => page._id === sponsoredMessage.pageId)[0].pageName : '-'}</span>
                               </td>
                               <td data-field='status' className='m-datatable__cell--center m-datatable__cell'>
-                                <span style={{width: '150px'}}>{this.getStatusValue(sponsoredMessage.status)}</span>
+                                <span style={{width: '150px'}}>{this.getStatusValue(sponsoredMessage.status, sponsoredMessage.scheduleDateTime)}</span>
                               </td>
                               <td data-field='actions' className='m-datatable__cell--center m-datatable__cell'>
-                                <span style={{width: '230px'}}>
+                                <span style={{width: '300px'}}>
                                   {sponsoredMessage.status.toLowerCase() === 'active' &&
                                     <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2, marginLeft: '40px'}} onClick={() => this.onInsights(sponsoredMessage)}>
                                         Insights
                                     </button>
                                   }
-                                  {sponsoredMessage.status.toLowerCase() === 'draft' &&
+                                  {(sponsoredMessage.status === 'draft' || sponsoredMessage.status === 'scheduled') &&
                                     <button className='btn btn-primary btn-sm' style={{margin: 2}} onClick={() => this.onEdit(sponsoredMessage)}>
                                       Edit
                                     </button>
                                   }
-                                  {sponsoredMessage.status.toLowerCase() === 'draft' &&
+                                  {(sponsoredMessage.status === 'draft' || sponsoredMessage.status === 'scheduled') &&
                                     <button className='btn btn-primary btn-sm' style={{margin: 2}} data-toggle="modal" data-target="#delete" onClick={() => this.showDialogDelete(sponsoredMessage._id)}>
                                       Delete
                                   </button>
                                   }
-                                  {sponsoredMessage.adSetId && sponsoredMessage.payload && sponsoredMessage.payload.length > 0 && sponsoredMessage.status === 'draft' &&
-                                    <button className='btn btn-primary btn-sm' style={{margin: 2}} onClick={() => this.publish(sponsoredMessage)}>
-                                      Publish
+                                  {sponsoredMessage.adSetId && sponsoredMessage.payload && sponsoredMessage.payload.length > 0 && (sponsoredMessage.status === 'draft' || sponsoredMessage.status === 'scheduled') &&
+                                    <button className='btn btn-primary btn-sm' style={{margin: 2}} onClick={() => this.openPublishModal(sponsoredMessage)}>
+                                      {sponsoredMessage.status === 'draft' ? 'Publish' : 'Publish Now'}
                                     </button>
                                   }
                                 </span>
@@ -639,7 +689,8 @@ function mapDispatchToProps (dispatch) {
     deleteSponsoredMessage: deleteSponsoredMessage,
     loadMyPagesList: loadMyPagesList,
     showUpdatedData: showUpdatedData,
-    send: send
+    send: send,
+    saveDraft: saveDraft
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(SponsoredMessaging)

@@ -176,6 +176,10 @@ export function getVideoId (url) {
   return r ? r[1] : false
 }
 
+export function getTimeZone() {
+  var offset = new Date().getTimezoneOffset(), o = Math.abs(offset);
+  return (offset < 0 ? "+" : "-") + ("00" + Math.floor(o / 60)).slice(-2) + ":" + ("00" + (o % 60)).slice(-2);
+}
 
 export var LANGUAGE_BY_LOCALE = {
   af_NA: "Afrikaans (Namibia)",
