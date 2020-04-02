@@ -2,7 +2,7 @@ import React from 'react'
 
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { deleteFiles, deleteFile, getFileIdsOfBroadcast, getFileIdsOfComponent } from '../../utility/utils'
+import { deleteFiles, deleteFile, getFileIdsOfBroadcast } from '../../utility/utils'
 
 import { loadTags } from '../../redux/actions/tags.actions'
 import { fetchAllSequence } from '../../redux/actions/sequence.action'
@@ -954,10 +954,12 @@ class GenericMessage extends React.Component {
         deleteFile(this.state.tempFiles[i])
       }
     }
-    if (this.state.newFiles.length > 0) {
-      for (let i = 0; i < this.state.newFiles.length; i++) {
-        deleteFile(this.state.newFiles[i])
-      }
+    if (!this.props.keepNewFiles) {
+      if (this.state.newFiles.length > 0) {
+        for (let i = 0; i < this.state.newFiles.length; i++) {
+          deleteFile(this.state.newFiles[i])
+        }
+      } 
     }
   }
 

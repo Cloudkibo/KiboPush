@@ -750,7 +750,7 @@ class Menu extends React.Component {
           break
       }
     }
-    this.setState({menuItems: temp})
+    this.setState({menuItems: temp, newFiles})
 
   }
   handleWebView (resp, url) {
