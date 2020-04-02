@@ -21,7 +21,6 @@ class Menu extends React.Component {
     props.loadMyPagesList()
     this.state = {
       openPopover: false,
-      initialFiles: getFileIdsOfMenu(this.props.currentMenuItem.itemMenus),
       menuItems: [{
         title: 'Menu Item',
         submenu: []
@@ -138,7 +137,10 @@ class Menu extends React.Component {
         default:
           break
       }
+
+      let initialFiles = getFileIdsOfMenu(menuReturned)
       this.setState({
+        initialFiles,
         newFiles: this.props.currentMenuItem.newFiles,
         menuItems: menuReturned,
         selectedIndex: this.props.currentMenuItem.clickedIndex
