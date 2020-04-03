@@ -46,13 +46,15 @@ class CreateSponsoredMessage extends React.Component {
     this.cancelSchedule = this.cancelSchedule.bind(this)
     this.handleSaveSchedule = this.handleSaveSchedule.bind(this)
     this.handleCancelSchedule = this.handleCancelSchedule.bind(this)
+    this.sendToFacebook = this.sendToFacebook.bind(this)
+    this.publishNow = this.publishNow.bind(this)
   }
 
   saveSchedule (date, time) {
     let combinedDateTime = new Date(date + ' ' + time)
     let currentDate = new Date()
     if (combinedDateTime < currentDate) {
-      this.msg.error('Sheduled Date and Time cannot be less than the current Date and Time')
+      this.msg.error('Scheduled Date and Time cannot be less than the current Date and Time')
     } else {
       let sponsoredMessage = this.props.sponsoredMessage
       sponsoredMessage.scheduleDateTime = combinedDateTime
@@ -150,16 +152,27 @@ class CreateSponsoredMessage extends React.Component {
       this.props.saveDraft(this.props.sponsoredMessage._id, sponsoredMessage, this.msg)
     }
   }
+  publishNow () {
+    this.refs.confirmPublish.click()
+    this.sendToFacebook()
+  }
   onSend () {
     if (checkValidations(this.props.sponsoredMessage)) {
-      this.setState({loading: true})
-      let pageId = this.props.pages && this.props.pages.filter(p => p._id === this.props.sponsoredMessage.pageId)[0].pageId
-      let sponsoredMessage = JSON.parse(JSON.stringify(this.props.sponsoredMessage))
-      sponsoredMessage.pageFbId = pageId
-      this.props.send(sponsoredMessage, this.handleResponse)
+      if (this.props.sponsoredMessage.scheduleDateTime) {
+        this.refs.confirmPublish.click()
+      } else {
+        this.sendToFacebook()
+      }
     } else {
       this.msg.error('Please complete all the steps')
     }
+  }
+  sendToFacebook () {
+    this.setState({loading: true})
+    let pageId = this.props.pages && this.props.pages.filter(p => p._id === this.props.sponsoredMessage.pageId)[0].pageId
+    let sponsoredMessage = JSON.parse(JSON.stringify(this.props.sponsoredMessage))
+    sponsoredMessage.pageFbId = pageId
+    this.props.send(sponsoredMessage, this.handleResponse)
   }
   onSave () {
     if (checkValidations(this.props.sponsoredMessage)) {
@@ -194,6 +207,13 @@ class CreateSponsoredMessage extends React.Component {
             description='Are you sure you want to cancel scheduling of this Sponsored Message?'
             onConfirm={this.cancelSchedule}
           />
+          <button ref='confirmPublish' style={{display: 'none'}} data-toggle="modal" data-target="#confirmPublish"></button>
+          <ConfirmationModal
+            id='confirmPublish'
+            title='Publish Sponsored Message'
+            description='This will immediately send your Sheduled Sponsored Message and will remove the sheduling done for later. Are you sure you want to continue?'
+            onConfirm={this.publishNow}
+          />
         <div className='m-content'>
           <div className='row'>
             <div className='col-xl-12'>
@@ -208,6 +228,7 @@ class CreateSponsoredMessage extends React.Component {
                   showSave={this.state.currentStep === 'ad'}
                   showSchedule={this.state.currentStep === 'ad' && (!this.props.sponsoredMessage.scheduleDateTime || this.props.sponsoredMessage.scheduleDateTime === '')}
                   openScheduleModal={this.openScheduleModal}
+                  publishButtonText={this.props.sponsoredMessage.scheduleDateTime ? 'Publish Now' : 'Publish'}
                 />
                 <div className='m-portlet__body'>
                   <StepsBar currentStep={this.state.currentStep}

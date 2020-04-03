@@ -101,7 +101,7 @@ class SponsoredMessaging extends React.Component {
   publish () {
     let sponsoredMessage = this.state.selectedSponsoredMessage
     let pageId = this.props.pages && this.props.pages.filter(p => p._id === sponsoredMessage.pageId)[0].pageId
-    sponsoredMessage.pageId = pageId
+    sponsoredMessage.pageFbId = pageId
     this.props.send(sponsoredMessage, this.handlePublishResponse)
   }
 

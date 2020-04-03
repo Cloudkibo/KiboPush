@@ -37,7 +37,7 @@ class Header extends React.Component {
             onClick={this.props.onSend}
             className={this.props.loading ? 'addLink btn btn-primary m-btn m-btn--custom m-btn--air m-btn--pill m-loader m-loader--light m-loader--right' : 'addLink btn btn-primary m-btn m-btn--custom m-btn--air m-btn--pill m-btn--icon'}>
             <span>
-              Publish
+              {this.props.publishButtonText}
               {!this.props.loading &&
                 <span>
                   <i className='la la-paper-plane-o' />
