@@ -20,7 +20,6 @@ class CreateMessengerAd extends React.Component {
       adTitle: '',
       setupState: props.location.state && props.location.state.module === 'edit' ? 'true' : 'false'
     }
-    debugger
     this.changeTitle = this.changeTitle.bind(this)
     this.onSave = this.onSave.bind(this)
     this.updatePreview = this.updatePreview.bind(this)
@@ -32,9 +31,7 @@ class CreateMessengerAd extends React.Component {
     if (props.location.state) {
       if (props.location.state.module && props.location.state.module === 'edit') {
         if (!this.props.messengerAd) {
-          props.fetchMessengerAd(props.location.state.jsonAdId, this.updatePreview, () => {
-            this.updatePreview()
-          })
+          props.fetchMessengerAd(props.location.state.jsonAdId, this.updatePreview)
         }
       }
     }
@@ -58,7 +55,6 @@ class CreateMessengerAd extends React.Component {
     })
   }
   updatePreview () {
-    debugger
     let initialFiles = []
     if (this.props.location.state.initialFiles) {
       initialFiles = this.props.location.state.initialFiles

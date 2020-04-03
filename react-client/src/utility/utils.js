@@ -176,6 +176,7 @@ export function getVideoId (url) {
 }
 
 export function deleteFile (serverPath, handleResponse) {
+  console.log('deleting file', serverPath)
   debugger
   fetch(`${getAccountsUrl()}/deleteFile/${serverPath}`, {
     method: 'delete',
@@ -192,8 +193,7 @@ export function deleteFile (serverPath, handleResponse) {
 }
 
 export function deleteFiles (payload, newFiles, filesToKeep) {
-  debugger
-  let files = getFileIdsOfBroadcast
+  let files = getFileIdsOfBroadcast(payload)
   for (let i = 0; i < files.length; i++) {
     let canBeDeleted = true
     if (filesToKeep) {
