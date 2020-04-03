@@ -38,6 +38,7 @@ class Menu extends React.Component {
       subMenuEnable: false,
       openVideo: false,
       newFiles: [],
+      initialFiles: []
     }
 
     this.pageChange = this.pageChange.bind(this)
@@ -266,18 +267,20 @@ class Menu extends React.Component {
     this.editing = true
     var currentState = { itemMenus: this.state.menuItems, clickedIndex: this.state.selectedIndex, currentPage: [this.state.selectPage._id], newFiles: this.state.newFiles }
     this.props.saveCurrentMenuItem(currentState)
+    let initialFiles = this.state.initialFiles
+    if (this.state.initialFiles && this.state.newFiles) {
+      initialFiles = initialFiles.concat(this.state.newFiles)
+    }
     this.props.history.push({
       pathname: `/createMessage`,
-      state: {initialFiles: this.state.initialFiles}
+      state: {realInitialFiles: this.state.initialFiles, initialFiles: initialFiles, newFiles: this.state.newFiles}
     })
-
   }
   handleReset () {
     this.props.getIndexBypage(this.state.selectPage.pageId, this.handleIndexByPage)
   }
   handleIndexByPage (res) {
     if (res.status === 'success' && res.payload && res.payload.length > 0) {
-      debugger
       let initialFiles = getFileIdsOfMenu(res.payload[0].jsonStructure)
       this.setState({
         initialFiles,
@@ -770,7 +773,6 @@ class Menu extends React.Component {
   }
   saveWebUrl (event) {
     let url = ''
-    debugger
     if (this.state.openWebsite && this.state.webUrl !== '') {
       url = this.state.webUrl
       this.saveMenuData(url)
@@ -839,7 +841,6 @@ class Menu extends React.Component {
   }
 
   componentWillUnmount () {
-    debugger
     if (!this.editing) {
       if (this.state.newFiles) {
         for (let i = 0; i < this.state.newFiles.length; i++) {

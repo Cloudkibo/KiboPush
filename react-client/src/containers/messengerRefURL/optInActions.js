@@ -38,9 +38,13 @@ class OptInActions extends React.Component {
     if (this.props.onEditMessage) {
       this.props.onEditMessage() 
     }
+    let initialFiles = this.props.initialFiles
+    if (this.props.newFiles) {
+      initialFiles = initialFiles.concat(this.props.newFiles)
+    }
     this.props.history.push({
       pathname: `/editMessengerRefURLMessage`,
-      state: {module: this.props.module, initialFiles: this.props.initialFiles, messengerRefSelectedURL: this.props.messengerRefSelectedURL, pageName :this.props.pageName}
+      state: {module: this.props.module, newFiles: this.props.newFiles, realInitialFiles: this.props.initialFiles, initialFiles: initialFiles, messengerRefSelectedURL: this.props.messengerRefSelectedURL, pageName :this.props.pageName}
     })
   }
   render () {

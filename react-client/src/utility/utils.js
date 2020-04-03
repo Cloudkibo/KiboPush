@@ -271,7 +271,7 @@ export function getFileIdsOfMenu (menuItems) {
 }
 
 export function deleteInitialFiles (initialFiles, currentFiles) {
-  for (let i = 0; i < initialFiles.length; i++) {
+  for (let i = initialFiles.length - 1; i >= 0; i--) {
     let foundFile = false
     for (let j = 0; j < currentFiles.length; j++) {
       if (initialFiles[i] === currentFiles[j]) {
@@ -281,6 +281,8 @@ export function deleteInitialFiles (initialFiles, currentFiles) {
     }
     if (!foundFile) {
       deleteFile(initialFiles[i])
+      initialFiles.splice(i, 1)
     }
   }
+  return initialFiles
 }

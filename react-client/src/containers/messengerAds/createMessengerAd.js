@@ -10,6 +10,7 @@ import { updateCurrentJsonAd, saveJsonAd, fetchMessengerAd, editJsonAd } from '.
 import AlertContainer from 'react-alert'
 import Tabs from './tabs'
 import Preview from './preview'
+import {deleteInitialFiles} from '../../utility/utils'
 
 class CreateMessengerAd extends React.Component {
   constructor (props, context) {
@@ -19,6 +20,7 @@ class CreateMessengerAd extends React.Component {
       adTitle: '',
       setupState: props.location.state && props.location.state.module === 'edit' ? 'true' : 'false'
     }
+    debugger
     this.changeTitle = this.changeTitle.bind(this)
     this.onSave = this.onSave.bind(this)
     this.updatePreview = this.updatePreview.bind(this)

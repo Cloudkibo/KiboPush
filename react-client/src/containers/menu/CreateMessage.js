@@ -9,6 +9,7 @@ import { validateFields } from '../convo/utility'
 import AlertContainer from 'react-alert'
 import { saveCurrentMenuItem } from '../../redux/actions/menu.actions'
 import GenericMessage from '../../components/SimplifiedBroadcastUI/GenericMessage'
+import {deleteInitialFiles, getFileIdsOfBroadcast} from '../../utility/utils'
 
 class CreateMessage extends React.Component {
   constructor (props, context) {
@@ -34,7 +35,7 @@ class CreateMessage extends React.Component {
   gotoMenu () {
     this.props.history.push({
       pathname: `/menu`,
-      state: {action: 'replyWithMessage', initialFiles: this.props.location.state.initialFiles}
+      state: {action: 'replyWithMessage', initialFiles: this.props.location.state.realInitialFiles}
     })
     // this.props.history.push(`/pollResult/${poll._id}`)
   }
@@ -168,13 +169,14 @@ class CreateMessage extends React.Component {
     var saveMessage = true
     var currentState
     var updatedMenuItem = this.setCreateMessage(this.props.currentMenuItem.clickedIndex, this.state.broadcast, saveMessage)
+    let newFiles = this.props.location.state.newFiles
+    if (newFiles) {
+      newFiles = newFiles.concat(this.state.newFiles)
+    } else {
+      newFiles = this.state.newFiles
+    }
+    newFiles = deleteInitialFiles(newFiles, getFileIdsOfBroadcast(this.state.broadcast))
     if (updatedMenuItem !== '') {
-      let newFiles = this.props.currentMenuItem.newFiles
-      if (newFiles) {
-        newFiles = newFiles.concat(this.state.newFiles)
-      } else {
-        newFiles = this.state.newFiles
-      }
       currentState = { 
         itemMenus: updatedMenuItem, 
         clickedIndex: this.props.currentMenuItem.clickedIndex, 
@@ -184,12 +186,6 @@ class CreateMessage extends React.Component {
       this.props.saveCurrentMenuItem(currentState)
       this.msg.success('Message Saved Successfully')
     } else {
-      let newFiles = this.props.currentMenuItem.newFiles
-      if (newFiles) {
-        newFiles = newFiles.concat(this.state.newFiles)
-      } else {
-        newFiles = this.state.newFiles
-      }
       currentState = { 
         itemMenus: this.props.currentMenuItem.itemMenus, 
         clickedIndex: this.props.currentMenuItem.clickedIndex, 

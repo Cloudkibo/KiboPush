@@ -10,6 +10,7 @@ import GenericMessage from '../../components/SimplifiedBroadcastUI/GenericMessag
 import AlertContainer from 'react-alert'
 import { validateFields } from '../../containers/convo/utility'
 import { updateData } from '../../redux/actions/messengerRefURL.actions'
+import { deleteInitialFiles, getFileIdsOfBroadcast } from '../../utility/utils'
 
 class MessengerRefURLMessage extends React.Component {
   constructor (props, context) {
@@ -51,7 +52,7 @@ class MessengerRefURLMessage extends React.Component {
     if (this.props.location.state.module === 'edit') {
       var newMessengerRefURL = this.props.location.state.messengerRefSelectedURL
       newMessengerRefURL['reply'] = this.props.messengerRefURL.reply
-      newMessengerRefURL['initialFiles'] = this.props.location.state.initialFiles
+      newMessengerRefURL['initialFiles'] = this.props.location.state.realInitialFiles
       this.props.history.push({
         pathname: `/editMessengerRefURL`,
         state: {pageId: this.props.pageId, _id: this.props.pages[0], module: 'edit', messengerRefURL: newMessengerRefURL, pageName: this.props.location.state.pageName}
@@ -71,18 +72,25 @@ class MessengerRefURLMessage extends React.Component {
     if (!validateFields(this.state.broadcast, this.msg)) {
       return
     }
+    let newFiles = this.props.location.state.newFiles
+    if (newFiles) {
+      newFiles = newFiles.concat(this.state.newFiles)
+    } else {
+      newFiles = this.state.newFiles
+    }
+    newFiles = deleteInitialFiles(newFiles, getFileIdsOfBroadcast(this.state.broadcast))
     if (this.props.location.state.module === 'edit') {
       var edit = {
         pageId: this.props.messengerRefURL.pageId,
         ref_parameter: this.props.messengerRefURL.ref_parameter,
         reply: this.state.broadcast,
         sequenceId: this.props.messengerRefURL.sequenceId,
-        newFiles: this.state.newFiles
+        newFiles: newFiles
       }
       this.props.updateData(this.props.messengerRefURL, 'reply', this.state.broadcast, edit)
     } else {
       this.props.updateData(this.props.messengerRefURL, 'reply', this.state.broadcast)
-      this.props.updateData(this.props.messengerRefURL, 'newFiles', this.state.newFiles)
+      this.props.updateData(this.props.messengerRefURL, 'newFiles', newFiles)
     }
     this.setState({newFiles: []})
     this.msg.success('Message has been saved.')

@@ -116,7 +116,6 @@ class CreateURL extends React.Component {
   }
 
   componentWillUnmount () {
-    debugger
     if (!this.editing) {
       if (this.state.newFiles) {
         for (let i = 0; i < this.state.newFiles.length; i++) {
@@ -161,7 +160,7 @@ class CreateURL extends React.Component {
                 </div>
                 <div className='m-portlet__body'>
                   <div className='row'>
-                    <Tabs initialFiles={this.state.initialFiles} onEditMessage={this.onEditMessage} history={this.props.history} location={this.props.location} module={this.props.location.state.module} messengerRefURL={this.props.location.state.messengerRefURL} pageName= {this.state.pageName}/>
+                    <Tabs newFiles={this.state.newFiles} initialFiles={this.state.initialFiles} onEditMessage={this.onEditMessage} history={this.props.history} location={this.props.location} module={this.props.location.state.module} messengerRefURL={this.props.location.state.messengerRefURL} pageName= {this.state.pageName}/>
                     {
                       this.props.location.state.module === 'edit' ? <Preview history={this.props.history} location={this.props.location} selectedmessengerRefURL={this.props.location.state.messengerRefURL} pageName= {this.state.pageName} /> : <Preview pageName= {this.state.pageName}/>
                     }

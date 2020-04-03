@@ -101,29 +101,31 @@ export function saveDraft(id, data, msg, cb) {
 
 export function updateSponsoredMessage(sponsoredMessage, key, value, edit) {
   console.log('value in updateSponoredmessage',value)
-  if (edit) {
-    let temp = sponsoredMessage
-    let fields = Object.keys(edit)
-    for (let i = 0; i < fields.length; i++ ) {
-      temp[fields[i]] = edit[fields[i]]
-    }
-    if (edit.targeting) {
-      temp.targeting = {
-        gender: edit.targeting.gender,
-        minAge: edit.targeting.minAge,
-        maxAge: edit.targeting.maxAge
+  return (dispatch) => {
+    if (edit) {
+      let temp = sponsoredMessage
+      let fields = Object.keys(edit)
+      for (let i = 0; i < fields.length; i++ ) {
+        temp[fields[i]] = edit[fields[i]]
       }
+      if (edit.targeting) {
+        temp.targeting = {
+          gender: edit.targeting.gender,
+          minAge: edit.targeting.minAge,
+          maxAge: edit.targeting.maxAge
+        }
+      }
+      return showUpdatedData(temp)
+    } else if (key) {
+      let temp = sponsoredMessage
+      if(key === 'payload') {
+        value = value.broadcast
+      }
+      temp[key] = value
+      dispatch(showUpdatedData(temp))
+    } else {
+      dispatch(showUpdatedData(sponsoredMessage))
     }
-    return showUpdatedData(temp)
-  } else if (key) {
-    let temp = sponsoredMessage
-    if(key === 'payload') {
-      value = value.broadcast
-    }
-    temp[key] = value
-    return showUpdatedData(temp)
-  } else {
-    return showUpdatedData(sponsoredMessage)
   }
 }
 

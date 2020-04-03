@@ -12,7 +12,7 @@ class FileModal extends React.Component {
     this.state = {
       disabled: false,
       file: this.props.file ? this.props.file : '',
-      initialFile: this.props.file ? this.props.file.id : null
+      initialFile: this.props.file ? this.props.file.fileurl.id : null
     }
     this.updateFile = this.updateFile.bind(this)
     this.handleDone = this.handleDone.bind(this)

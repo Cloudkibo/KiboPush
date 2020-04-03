@@ -274,8 +274,10 @@ class CreateMessage extends React.Component {
         }
       }
     }
-    this.setState({jsonMessages: jsonMessages, newFiles: []})
     this.props.updateCurrentJsonAd(this.props.messengerAd, 'jsonAdMessages', jsonMessages)
+    this.props.updateCurrentJsonAd(this.props.messengerAd, 'newFiles', this.state.newFiles)
+    this.props.updateCurrentJsonAd(this.props.messengerAd, 'initialFiles', this.props.location.state.initialFiles)
+    this.setState({jsonMessages: jsonMessages, newFiles: []})
     this.msg.success('Message saved successfully')
   }
 
