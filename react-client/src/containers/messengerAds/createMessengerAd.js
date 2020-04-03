@@ -10,7 +10,7 @@ import { updateCurrentJsonAd, saveJsonAd, fetchMessengerAd, editJsonAd } from '.
 import AlertContainer from 'react-alert'
 import Tabs from './tabs'
 import Preview from './preview'
-import {deleteInitialFiles} from '../../utility/utils'
+import {deleteInitialFiles, getFileIdsOfBroadcast} from '../../utility/utils'
 
 class CreateMessengerAd extends React.Component {
   constructor (props, context) {
@@ -26,6 +26,7 @@ class CreateMessengerAd extends React.Component {
     this.updatePreview = this.updatePreview.bind(this)
     this.handleSave = this.handleSave.bind(this)
     this.switchSetupState = this.switchSetupState.bind(this)
+    this.onEditMessage = this.onEditMessage.bind(this)
     console.log(props.location.state)
     console.log(this.props.messengerAd)
     if (props.location.state) {
@@ -38,15 +39,35 @@ class CreateMessengerAd extends React.Component {
       }
     }
   }
+
+  onEditMessage () {
+    this.editing = true
+  }
+
   handleSave () {
+    let currentFiles = []
+    for (let i = 0; i < this.props.messengerAd.jsonAdMessages.length; i++) {
+      currentFiles = currentFiles.concat(getFileIdsOfBroadcast(this.props.messengerAd.jsonAdMessages[i].messageContent))
+    }
+    deleteInitialFiles(this.state.initialFiles, currentFiles)
     this.setState({
       setupState: 'true',
-      adTitle: this.props.messengerAd.title
+      adTitle: this.props.messengerAd.title,
+      newFiles: [],
+      initialFiles: currentFiles
     })
   }
   updatePreview () {
+    debugger
+    let initialFiles = []
+    if (this.props.location.state.initialFiles) {
+      initialFiles = this.props.location.state.initialFiles
+    } 
     if (this.props.messengerAd) {
-      for (var i = 0; i < this.props.messengerAd.jsonAdMessages.length; i++) {
+      for (let i = 0; i < this.props.messengerAd.jsonAdMessages.length; i++) {
+        if (!this.props.location.state.initialFiles) {
+          initialFiles = initialFiles.concat(getFileIdsOfBroadcast(this.props.messengerAd.jsonAdMessages[i].messageContent))
+        }
         if (!this.props.messengerAd.jsonAdMessages[i].jsonAdMessageParentId) {
           this.setState({
             previewOptInMessage: this.props.messengerAd.jsonAdMessages[i].messageContent,
@@ -54,6 +75,7 @@ class CreateMessengerAd extends React.Component {
           })
         }
       }
+      this.setState({ initialFiles, newFiles: this.props.messengerAd.newFiles })
     }
   }
   switchSetupState (value) {
@@ -96,6 +118,16 @@ class CreateMessengerAd extends React.Component {
     } else {
       payload = {title: this.state.adTitle, jsonAdMessages: this.props.messengerAd.jsonAdMessages}
       this.props.saveJsonAd(payload, this.msg, this.handleSave)
+    }
+  }
+
+  componentWillUnmount () {
+    if (!this.editing) {
+      if (this.state.newFiles) {
+        for (let i = 0; i < this.state.newFiles.length; i++) {
+          deleteFile(this.state.newFiles[i])
+        }
+      }
     }
   }
 
@@ -146,7 +178,7 @@ class CreateMessengerAd extends React.Component {
                     />
                   </div>
                   <div className='row'>
-                    <Tabs history={this.props.history} location={this.props.location} setupState={this.state.setupState} switchSetupState={this.switchSetupState} jsonAdId={this.props.location.state ? this.props.location.state.jsonAdId : null} />
+                    <Tabs onEditMessage={this.onEditMessage} initialFiles={this.state.initialFiles} newFiles={this.state.newFiles} history={this.props.history} location={this.props.location} setupState={this.state.setupState} switchSetupState={this.switchSetupState} jsonAdId={this.props.location.state ? this.props.location.state.jsonAdId : null} />
                     { (this.props.location.state && this.props.location.state.module === 'edit' && this.state.previewOptInMessage && this.state.previewOptInMessage.length !== 0) ? <Preview previewOptInMessage={this.state.previewOptInMessage} />
                        :<Preview history={this.props.history} location={this.props.location} />
                     }
