@@ -128,7 +128,7 @@ class Tab extends React.Component {
             <SubmittedState history={this.props.history} location={this.props.location} handleNext={this.handleNext} handleBack={this.handleBack} />
           </div>
           <div className='tab-pane' id='tab_3'>
-            <OptInActions history={this.props.history} location={this.props.location} optInMessage={this.props.optInMessage} handleNext={this.handleNext} handleBack={this.handleBack} module={this.props.module} />
+            <OptInActions initialFiles={this.props.initialFiles} newFiles={this.props.newFiles} onEditMessage={this.props.onEditMessage} history={this.props.history} location={this.props.location} optInMessage={this.props.optInMessage} handleNext={this.handleNext} handleBack={this.handleBack} module={this.props.module} />
           </div>
           { this.props.module === 'edit' &&
           <div className='tab-pane' id='tab_4'>

@@ -11,6 +11,7 @@ import CopyToClipboard from 'react-copy-to-clipboard'
 import {fetchLandingPages, deleteLandingPage, setInitialState, editLandingPage} from '../../redux/actions/landingPages.actions'
 import AlertContainer from 'react-alert'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
+import {deleteFiles} from '../../utility/utils'
 import YouTube from 'react-youtube'
 
 class LandingPage extends React.Component {
@@ -232,6 +233,8 @@ class LandingPage extends React.Component {
               <button style={{float: 'right'}}
                 className='btn btn-primary btn-sm'
                 onClick={() => {
+                  let landingPageMessage = this.state.landingPagesData.find(m => m._id === this.state.deleteid).optInMessage
+                  deleteFiles(landingPageMessage)
                   this.props.deleteLandingPage(this.state.deleteid, this.msg)
                   this.closeDialogDelete()
                 }} data-dismiss='modal'>Delete
@@ -410,7 +413,7 @@ class LandingPage extends React.Component {
                                 </button>
                                 {landingPage.isActive &&
                                 <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}} onClick={() => this.perviewLink(landingPage._id)}>
-                                    Perview
+                                    Preview
                                 </button>
                                 }
                                 {landingPage.isActive &&

@@ -12,6 +12,7 @@ import { Link } from 'react-router-dom'
 import AlertContainer from 'react-alert'
 import YouTube from 'react-youtube'
 import ReactPaginate from 'react-paginate'
+import {deleteFiles} from '../../utility/utils'
 
 
 class MessengerCode extends React.Component {
@@ -234,6 +235,8 @@ class MessengerCode extends React.Component {
                 <button style={{ float: 'right' }}
                   className='btn btn-primary btn-sm'
                   onClick={() => {
+                    let message = this.state.messengerCodesData.find(m => m._id === this.state.codetoDelete).optInMessage
+                    deleteFiles(message)
                     this.props.deleteCode(this.state.codetoDelete, this.msg)
                     this.closeDialogDelete()
                   }} data-dismiss='modal'>Delete

@@ -10,6 +10,7 @@
   import { updateLandingPageData } from '../../redux/actions/landingPages.actions'
   import AlertContainer from 'react-alert'
   import { validateFields } from '../../containers/convo/utility'
+  import {getFileIdsOfBroadcast, deleteInitialFiles} from '../../utility/utils'
 
   class LandingPageMessage extends React.Component {
     constructor (props, context) {
@@ -47,7 +48,16 @@
       if (!validateFields(this.state.broadcast, this.msg)) {
         return
       }
+      let newFiles = this.props.location.state.newFiles
+      if (newFiles) {
+        newFiles = newFiles.concat(this.state.newFiles)
+      } else {
+        newFiles = this.state.newFiles
+      }
+      newFiles = deleteInitialFiles(newFiles, getFileIdsOfBroadcast(this.state.broadcast))
+      this.props.landingPage.newFiles = newFiles
       this.props.updateLandingPageData(this.props.landingPage, this.props.landingPage.currentTab, 'optInMessage', this.state.broadcast)
+      this.setState({newFiles: []})
       this.msg.success('Message has been saved.')
     }
 
@@ -60,12 +70,12 @@
         this.props.landingPage.currentTab = 'optInActions'
         this.props.history.push({
           pathname: `/editLandingPage`,
-          state: {module: 'edit', landingPage: this.props.landingPage, _id: this.state.pageId}
+          state: {module: 'edit', landingPage: this.props.landingPage, _id: this.state.pageId, initialFiles: this.props.location.state.realInitialFiles}
         })
       } else {
         this.props.history.push({
           pathname: `/createLandingPage`,
-          state: {pageId: this.props.landingPage.pageId.pageId, _id: this.state.pageId}
+          state: {pageId: this.props.landingPage.pageId.pageId, _id: this.state.pageId, initialFiles: this.props.location.state.realInitialFiles}
         })
       }
     }
@@ -97,6 +107,8 @@
             </div>
           </div>
           <GenericMessage
+            newFiles={this.state.newFiles}
+            initialFiles={this.props.location.state.initialFiles}
             pageId={this.props.landingPage.pageId}
             broadcast={this.state.broadcast}
             handleChange={this.handleChange}
