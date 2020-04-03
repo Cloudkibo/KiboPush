@@ -31,10 +31,8 @@ class AddChannel extends React.Component {
     let options = []
     let selectedPageIds = []
     for (let i = 0; i < this.props.pages.length; i++) {
-      if (this.props.pages[i].gotPageSubscriptionPermission) {
         options.push({text: this.props.pages[i].pageName, id: this.props.pages[i].pageId})
         selectedPageIds.push(this.props.pages[i].pageId)
-      }
     }
     this.setState({page: {options: options}})
     this.setState({selectedPages: selectedPageIds, defaultPages: selectedPageIds})

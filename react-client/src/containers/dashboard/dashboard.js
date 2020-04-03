@@ -21,6 +21,7 @@ import { loadSubscribersCount } from '../../redux/actions/subscribers.actions'
 import {
   createbroadcast
 } from '../../redux/actions/broadcast.actions'
+import {checkSubscriptionPermissions} from '../../redux/actions/rssIntegration.actions'
 import AlertContainer from 'react-alert'
 import YouTube from 'react-youtube'
 import { RingLoader } from 'halogenium'
@@ -50,7 +51,8 @@ class Dashboard extends React.Component {
       days: '30',
       pageId: 'all',
       selectedPage: {},
-      openVideo: false
+      openVideo: false,
+      newsPages: [],
     }
     this.onDaysChange = this.onDaysChange.bind(this)
     this.prepareLineChartData = this.prepareLineChartData.bind(this)
@@ -67,6 +69,21 @@ class Dashboard extends React.Component {
     this.changeDays = this.changeDays.bind(this)
     this.onKeyDown = this.onKeyDown.bind(this)
     this.openVideoTutorial = this.openVideoTutorial.bind(this)
+    this.getNewsPages = this.getNewsPages.bind(this)
+    this.handlePermissions = this.handlePermissions.bind(this)
+    this.props.checkSubscriptionPermissions(this.handlePermissions)
+  }
+
+  getNewsPages (permissions) {
+    var newsPages =  this.props.permissions.filter(permission => permission.smpStatus === 'approved')
+    return newsPages
+  }
+
+  handlePermissions (permissions) {
+    var newsPages = this.getNewsPages(permissions)
+    this.setState({
+      newsPages: newsPages
+    })
   }
   openVideoTutorial () {
     this.setState({
@@ -629,9 +646,14 @@ class Dashboard extends React.Component {
                 <CardBoxesContainer data={this.props.dashboard} />
               }
             </div>
+            {
+              (url.includes('kibochat.cloudkibo.com') || url.includes('kiboengage.cloudkibo.com')) &&
             <div className='row'>
               <SubscriberSummary includeZeroCounts={this.includeZeroCounts} />
             </div>
+            }
+            {
+              (url.includes('kibochat.cloudkibo.com') || url.includes('kiboengage.cloudkibo.com')) &&
             <div className='row'>
               {
               this.props.pages && this.props.sentseendata && (url.includes('kiboengage.cloudkibo.com'))
@@ -657,17 +679,18 @@ class Dashboard extends React.Component {
                 onKeyDown={this.onKeyDown} />
             }
             </div>
+            }
             {(url.includes('kiboengage.cloudkibo.com') || url.includes('localhost')) &&
               <div className='row'>
                 <AutopostingSummary />
               </div>
             }
-            {(url.includes('kiboengage.cloudkibo.com') || url.includes('localhost')) &&
+            {(url.includes('kiboengage.cloudkibo.com') || url.includes('localhost')) && this.state.newsPages.length > 0 &&
               <div className='row'>
                 <NewsIntegrationsSummary />
               </div>
             }
-            {(url.includes('kiboengage.cloudkibo.com') || url.includes('localhost')) &&
+            {(url.includes('kiboengage.cloudkibo.com') || url.includes('localhost')) && this.state.newsPages.length > 0  &&
               <div className='row'>
                 <IntegrationsSummary />
               </div>
@@ -741,6 +764,7 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return bindActionCreators(
     {
+      checkSubscriptionPermissions: checkSubscriptionPermissions,
       updateCurrentPage: updateCurrentPage,
       loadDashboardData: loadDashboardData,
       updateSubscriptionPermission: updateSubscriptionPermission,

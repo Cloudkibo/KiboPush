@@ -41,7 +41,8 @@ import {
   fetchAutopostingUserWise,
   fetchAutopostingUserWiseDateWise,
   fetchPlatformStatsMonthly,
-  fetchPlatformStatsWeekly
+  fetchPlatformStatsWeekly,
+  alUserslLocales
 } from '../../redux/actions/backdoor.actions'
 import { saveUserInformation } from '../../redux/dispatchers/backdoor.dispatcher'
 import { bindActionCreators } from 'redux'
@@ -82,7 +83,7 @@ class OperationalDashboard extends React.Component {
       showDropDown: false
     }
 
-    //props.allLocales()
+    props.alUserslLocales()
     props.loadUsersList({last_id: 'none', number_of_records: 10, first_page: true, filter: false, filter_criteria: {search_value: '', gender_value: '', locale_value: ''}})
     // props.loadBroadcastsGraphData(0)
     // props.loadPollsGraphData(0)
@@ -605,7 +606,7 @@ class OperationalDashboard extends React.Component {
                                 {this.state.usersData.length < this.props.count &&
                                 <center>
                                   <i className='fa fa-refresh' style={{color: '#716aca'}} />&nbsp;
-                                  <a href='#/' id='assignTag' className='m-link' style={{color: '#716aca', cursor: 'pointer', marginTop: '20px'}} onClick={this.loadMore}>Load More</a>
+                                  <div id='assignTag' className='m-link' style={{color: '#716aca', cursor: 'pointer', marginTop: '20px'}} onClick={this.loadMore}>Load More</div>
                                 </center>
                                 }
                               </div>
@@ -676,7 +677,8 @@ function mapDispatchToProps (dispatch) {
     fetchAutopostingUserWise,
     fetchAutopostingUserWiseDateWise,
     fetchPlatformStatsMonthly,
-    fetchPlatformStatsWeekly
+    fetchPlatformStatsWeekly,
+    alUserslLocales
   },
     dispatch)
 }

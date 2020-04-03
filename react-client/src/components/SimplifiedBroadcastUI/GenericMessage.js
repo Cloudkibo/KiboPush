@@ -923,7 +923,7 @@ class GenericMessage extends React.Component {
   }
 
   getItems () {
-    if (this.state.list.length > 0) {
+    if (this.state.list.length > 0 && this.props.showQuickRelplies) {
       console.log('quick reply', this.state.list[this.state.list.length - 1])
       if (!this.state.quickRepliesComponent) {
         this.setState({quickRepliesComponent: {
@@ -1137,7 +1137,8 @@ GenericMessage.defaultProps = {
   'hiddenComponents': [],
   'titleEditable': false,
   'broadcast': [],
-  'componentLimit': 3
+  'componentLimit': 3,
+  'showQuickRelplies' : true
 }
 
 function mapStateToProps (state) {

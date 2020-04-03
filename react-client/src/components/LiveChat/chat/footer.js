@@ -236,6 +236,7 @@ class Footer extends React.Component {
   }
 
   onFileChange (e) {
+    // debugger
     if (e.target.files.length > 0) {
       const file = e.target.files[0]
       if (file.size > 25000000) {

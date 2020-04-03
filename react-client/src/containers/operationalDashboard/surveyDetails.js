@@ -10,7 +10,7 @@ class SurveyDetails extends React.Component {
     this.state = {
       surveyDetailsData: [],
       totalSent: 0,
-      Pollresponses: 0,
+      Surveyresponses: 0,
       totalLength: 0,
       subscribersData: [],
       subscribersDataAll: [],
@@ -26,7 +26,7 @@ class SurveyDetails extends React.Component {
 
   UNSAFE_componentWillReceiveProps (nextProps) {
     if (nextProps.survey) {
-      this.setState({totalSent: nextProps.survey[0].Sent, Pollresponses: nextProps.responses.length})
+      this.setState({totalSent: nextProps.survey[0].Sent, Surveyresponses: nextProps.responses.length})
     }
   }
   searchSubscriber (event) {
@@ -131,7 +131,7 @@ class SurveyDetails extends React.Component {
                   <div className='col-xl-6 col-lg-6 col-md-6 col-sm-12 col-xs-12' style={{'textAlign': 'center'}}>
                     <div className='m-widget26'>
                       <div className='m-widget26__number'>
-                        {this.state.Pollresponses}
+                        {this.state.Surveyresponses}
                         <h5>
                           Survey Respones
                         </h5>
