@@ -77,7 +77,7 @@ class CreateSponsoredMessage extends React.Component {
   }
 
   handleCancelSchedule () {
-    this.refs.cancelScheduleModal.click()
+    // this.refs.cancelScheduleModal.click()
   }
 
   openScheduleModal () {
