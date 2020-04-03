@@ -128,6 +128,8 @@ class SponsoredMessaging extends React.Component {
     } else if (status.toLowerCase() === 'scheduled') {
       let date = new Date(datetime)
       statusValue = `Scheduled on ${date.toDateString()} at ${formatAMPM(date)}`
+    } else if (status.toLowerCase() === 'failed') {
+      statusValue = 'Failed'
     }
     return statusValue
   }
@@ -524,6 +526,7 @@ class SponsoredMessaging extends React.Component {
                           <option value='scheduled'>Scheduled</option>
                           <option value='active'>Active</option>
                           <option value='rejected'>Rejected</option>
+                          <option value='failed'>Failed</option>
                         </select>
                       </div>
                     </div>
@@ -616,19 +619,19 @@ class SponsoredMessaging extends React.Component {
                                         Insights
                                     </button>
                                   }
-                                  {(sponsoredMessage.status === 'draft' || sponsoredMessage.status === 'scheduled') &&
+                                  {(sponsoredMessage.status === 'draft' || sponsoredMessage.status === 'scheduled' || sponsoredMessage.status === 'failed') &&
                                     <button className='btn btn-primary btn-sm' style={{margin: 2}} onClick={() => this.onEdit(sponsoredMessage)}>
                                       Edit
                                     </button>
                                   }
-                                  {(sponsoredMessage.status === 'draft' || sponsoredMessage.status === 'scheduled') &&
+                                  {(sponsoredMessage.status === 'draft' || sponsoredMessage.status === 'scheduled' || sponsoredMessage.status === 'failed') &&
                                     <button className='btn btn-primary btn-sm' style={{margin: 2}} data-toggle="modal" data-target="#delete" onClick={() => this.showDialogDelete(sponsoredMessage._id)}>
                                       Delete
                                   </button>
                                   }
-                                  {sponsoredMessage.adSetId && sponsoredMessage.payload && sponsoredMessage.payload.length > 0 && (sponsoredMessage.status === 'draft' || sponsoredMessage.status === 'scheduled') &&
+                                  {sponsoredMessage.adSetId && sponsoredMessage.payload && sponsoredMessage.payload.length > 0 && (sponsoredMessage.status === 'draft' || sponsoredMessage.status === 'scheduled' || sponsoredMessage.status === 'failed') &&
                                     <button className='btn btn-primary btn-sm' style={{margin: 2}} onClick={() => this.openPublishModal(sponsoredMessage)}>
-                                      {sponsoredMessage.status === 'draft' ? 'Publish' : 'Publish Now'}
+                                      {sponsoredMessage.status === 'scheduled' ? 'Publish Now' : 'Publish'}
                                     </button>
                                   }
                                 </span>
