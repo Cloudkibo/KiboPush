@@ -10,6 +10,7 @@ import GenericMessage from '../../components/SimplifiedBroadcastUI/GenericMessag
 import AlertContainer from 'react-alert'
 import { validateFields } from '../../containers/convo/utility'
 import { updateData } from '../../redux/actions/messengerCode.actions'
+import {deleteInitialFiles, getFileIdsOfBroadcast} from '../../utility/utils'
 
 class messengerCodeMessage extends React.Component {
   constructor (props, context) {
@@ -53,13 +54,13 @@ class messengerCodeMessage extends React.Component {
       console.log('find me i m here ',newmessengerCode)
       this.props.history.push({
         pathname: `/editMessengerCode`,
-        state: {module: 'edit', messengerCode: newmessengerCode}
+        state: {module: 'edit', messengerCode: newmessengerCode, initialFiles: this.props.location.state.realInitialFiles}
       })
     } else {
       console.log('go back page', this.props.messengerCode)
       this.props.history.push({
         pathname: `/createMessengerCode`,
-        state: {messengerCode: this.props.messengerCode, module: 'createMessage'}
+        state: {messengerCode: this.props.messengerCode, module: 'createMessage', initialFiles: this.props.location.state.realInitialFiles}
       })
     }
   }
@@ -72,13 +73,22 @@ class messengerCodeMessage extends React.Component {
     if (!validateFields(this.state.broadcast, this.msg)) {
       return
     } else {
+    let newFiles = this.props.location.state.newFiles
+    if (newFiles) {
+      newFiles = newFiles.concat(this.state.newFiles)
+    } else {
+      newFiles = this.state.newFiles
+    }
+    newFiles = deleteInitialFiles(newFiles, getFileIdsOfBroadcast(this.state.broadcast))
     var edit = {
       page_id: this.props.messengerCode.pageId,
       pageId: this.props.messengerCode.pageId,
       optInMessage: this.state.broadcast,
-      QRCode: this.props.messengerCode.QRCode
+      QRCode: this.props.messengerCode.QRCode,
+      newFiles
     }
     this.props.updateData(this.props.messengerCode, edit)
+    this.setState({newFiles: []})
     this.msg.success('Message has been saved.')
   }
 }
@@ -114,6 +124,8 @@ class messengerCodeMessage extends React.Component {
           </div>
         </div>
         <GenericMessage
+          newFiles={this.state.newFiles}
+          initialFiles={this.props.location.state.initialFiles}
           pageId={this.props.messengerCode.pageId}
           pages={[this.props.messengerCode.pageId]}
           broadcast={this.state.broadcast}

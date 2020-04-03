@@ -9,17 +9,29 @@ import { bindActionCreators } from 'redux'
 import { requestMessengerCode, resetState, createCode, updateData, editCode } from '../../redux/actions/messengerCode.actions'
 import AlertContainer from 'react-alert'
 import Tabs from '../messengerCode/tabs'
+import { getFileIdsOfBroadcast, deleteFile, deleteInitialFiles } from '../../utility/utils'
 
 class CreateURL extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
+      newFiles: [],
+      initialFiles: []
     }
 
     this.onSave = this.onSave.bind(this)
+    this.onEditMessage = this.onEditMessage.bind(this)
+  }
+
+  onEditMessage () {
+    this.editing = true
   }
 
   onSave () {
+    let initialFiles = this.state.initialFiles
+    let currentFiles = getFileIdsOfBroadcast(this.props.messengerCode.optInMessage)
+    deleteInitialFiles(initialFiles, currentFiles)
+    this.setState({newFiles: [], initialFiles: currentFiles})
     if (this.props.location.state.module && this.props.location.state.module === 'edit') {
       this.props.editCode(this.props.location.state.messengerCode, this.msg)
     }
@@ -45,6 +57,28 @@ class CreateURL extends React.Component {
 
     } else {
       document.title = `${title} | Create  Messenger Code`
+    }
+    if (this.props.location.state.messengerCode) {
+      let initialFiles = []
+      if (this.props.location.state.initialFiles) {
+        initialFiles = this.props.location.state.initialFiles
+      } else {
+        initialFiles = getFileIdsOfBroadcast(this.props.location.state.messengerCode.optInMessage)
+      }
+      this.setState({initialFiles})
+    }
+    if (this.props.messengerCode) {
+      this.setState({newFiles: this.props.messengerCode.newFiles})
+    }
+  }
+
+  componentWillUnmount () {
+    if (!this.editing) {
+      if (this.state.newFiles) {
+        for (let i = 0; i < this.state.newFiles.length; i++) {
+          deleteFile(this.state.newFiles[i])
+        }
+      }
     }
   }
 
@@ -82,7 +116,7 @@ class CreateURL extends React.Component {
                 </div>
                 <div className='m-portlet__body'>
                   <div className='row'>
-                    <Tabs history={this.props.history} location={this.props.location} module={this.props.location.state.module} selectedPage={this.props.location.state.messengerCode.pageId} />
+                    <Tabs initialFiles={this.state.initialFiles} newFiles={this.state.newFiles} onEditMessage={this.onEditMessage} history={this.props.history} location={this.props.location} module={this.props.location.state.module} selectedPage={this.props.location.state.messengerCode.pageId} />
                   </div>
                 </div>
               </div>
