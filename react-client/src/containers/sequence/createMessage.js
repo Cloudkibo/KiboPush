@@ -9,6 +9,7 @@ import { bindActionCreators } from 'redux'
 import { validateFields } from '../convo/utility'
 import AlertContainer from 'react-alert'
 import { Link } from 'react-router-dom'
+import {deleteInitialFiles, getFileIdsOfBroadcast} from '../../utility/utils'
 
 import GenericMessage from '../../components/SimplifiedBroadcastUI/GenericMessage'
 
@@ -59,17 +60,23 @@ class CreateMessage extends React.Component {
       return
     }
     console.log('edit Message', this.state)
+    let initialFiles = this.state.initialFiles
+    let currentFiles = getFileIdsOfBroadcast(this.state.broadcast)
+    deleteInitialFiles(initialFiles, currentFiles)
     if (this.props.location.state.action === 'create') {
       let payload = this.props.location.state.data
       payload.payload = this.state.broadcast
       payload.title = this.state.convoTitle
       payload.sequenceId = this.props.location.state.sequenceId
       this.props.createMessage(payload, this.props.history, this.msg, this.props.location.state.name)
+      this.setState({newFiles: []})
     } else if (this.props.location.state.action === 'edit') {
       this.props.editMessage({_id: this.props.location.state.messageId, title: this.state.convoTitle, payload: this.state.broadcast}, this.msg)
-      this.props.history.push({
-        pathname: `/viewMessage`,
-        state: {title: this.state.convoTitle, payload: this.state.broadcast, id: this.props.location.state.id, messageId: this.props.location.state.messageId}
+      this.setState({newFiles: []}, () => {
+        this.props.history.push({
+          pathname: `/viewMessage`,
+          state: {title: this.state.convoTitle, payload: this.state.broadcast, id: this.props.location.state.id, messageId: this.props.location.state.messageId}
+        })
       })
     }
   }
@@ -190,6 +197,7 @@ class CreateMessage extends React.Component {
                   </div>
                 </div>
                 <GenericMessage
+                  newFiles={this.state.newFiles}
                   pages={this.props.pages.map(page => page._id)}
                   broadcast={this.state.broadcast}
                   handleChange={this.handleChange}

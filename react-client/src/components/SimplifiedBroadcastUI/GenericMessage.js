@@ -38,6 +38,7 @@ class GenericMessage extends React.Component {
       initialFiles = this.props.initialFiles
     } else if (this.props.broadcast) {
       initialFiles = getFileIdsOfBroadcast(this.props.broadcast)
+      this.props.handleChange({initialFiles})
     }
     this.state = {
       list: [],
