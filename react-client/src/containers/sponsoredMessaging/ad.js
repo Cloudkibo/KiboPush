@@ -65,13 +65,21 @@ class Ad extends React.Component {
         {this.props.sponsoredMessage.status === 'scheduled' &&
         <div>
           <br />
-          <span><b>Note:</b> This sponsored Broadcast is scheduled to be sent for review on {this.showScheduledDateTime(this.props.sponsoredMessage.scheduleDateTime)}</span>
+          <span><b>Note:</b> This Sponsored Broadcast is scheduled to be sent for review on {this.showScheduledDateTime(this.props.sponsoredMessage.scheduleDateTime)}</span>
           <button className='btn btn-secondary btn-sm' style={{marginLeft: '10px'}} onClick={this.openCancelScheduleModal}>
-            Cancel Schedule
+            Cancel
           </button>
           <button className='btn btn-primary btn-sm' style={{marginLeft: '10px'}} onClick={this.openScheduleModal}>
-            Edit Schedule
+            Edit
           </button>
+        </div>
+        }
+        {this.props.sponsoredMessage.status === 'failed' && this.props.sponsoredMessage.errorMessage &&
+        <div>
+          <br />
+          <div className='alert alert-danger' role='alert'>
+  					{this.props.sponsoredMessage.errorMessage}
+  				</div>
         </div>
         }
         <br />

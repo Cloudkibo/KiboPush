@@ -226,9 +226,9 @@ class CreateSponsoredMessage extends React.Component {
                   loading={this.state.loading}
                   showPublish={this.state.currentStep === 'ad'}
                   showSave={this.state.currentStep === 'ad'}
-                  showSchedule={this.state.currentStep === 'ad' && (!this.props.sponsoredMessage.scheduleDateTime || this.props.sponsoredMessage.scheduleDateTime === '')}
+                  showSchedule={this.state.currentStep === 'ad' && this.props.sponsoredMessage.status !== 'scheduled'}
                   openScheduleModal={this.openScheduleModal}
-                  publishButtonText={this.props.sponsoredMessage.scheduleDateTime ? 'Publish Now' : 'Publish'}
+                  publishButtonText={this.props.sponsoredMessage.status === 'scheduled' ? 'Publish Now' : 'Publish'}
                 />
                 <div className='m-portlet__body'>
                   <StepsBar currentStep={this.state.currentStep}
