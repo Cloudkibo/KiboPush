@@ -508,28 +508,24 @@ export function updateIntegration (id, body) {
   }
 }
 
-export function updateAdvancedSettings (data, msg) {
+export function updateAdvancedSettings (data, advancedSettings, msg) {
   return (dispatch) => {
     callApi('company/updateAdvancedSettings', 'post', data)
-    .then(res => 
-      {
+      .then(res => {
         if (res.status === 'success') {
-          dispatch(getAdvancedSettings(res.payload))
+          dispatch(showAdvancedSettings(advancedSettings))
         } else {
           msg.error('Unable to update advanced settings')
         }
-      }
-    )
+      })
   }
 }
 
 export function getAdvancedSettings () {
   return (dispatch) => {
     callApi('company/getAdvancedSettings')
-    .then(res => 
-      {
+      .then(res => {
         dispatch(showAdvancedSettings(res.payload))
-      }
-    )
+      })
   }
 }

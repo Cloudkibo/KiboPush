@@ -8,18 +8,32 @@ import AlertContainer from 'react-alert'
 class AdvancedSettings extends React.Component {
   constructor (props, context) {
     super(props, context)
-    this.state = {}
-    props.getAdvancedSettings()
-    this.onChangeSaveSetting = this.onChangeSaveSetting.bind(this)
-  }
-  onChangeSaveSetting (e) {
-    var data = {
-      updatedObject: {
-        saveBroadcastInChat: e.target.checked
-      }
+    this.state = {
+      saveAutomationMessages: false
     }
-    this.props.updateAdvancedSettings(data, this.msg)
+    this.onChangeSaveSetting = this.onChangeSaveSetting.bind(this)
+
+    props.getAdvancedSettings()
   }
+
+  onChangeSaveSetting (e) {
+    const data = {
+      saveAutomationMessages: e.target.checked
+    }
+    let advancedSettings = this.props.advancedSettings
+    advancedSettings.saveAutomationMessages = e.target.checked
+    this.setState({saveAutomationMessages: e.target.checked})
+    this.props.updateAdvancedSettings(data, advancedSettings, this.msg)
+  }
+
+  UNSAFE_componentWillReceiveProps (nextProps) {
+    if (nextProps.advancedSettings) {
+      this.setState({
+        saveAutomationMessages: nextProps.advancedSettings.saveAutomationMessages
+      })
+    }
+  }
+
   render () {
     var alertOptions = {
       offset: 75,
@@ -49,14 +63,14 @@ class AdvancedSettings extends React.Component {
               <div className='row'>
                 <div className='col-xl-12 col-md-12 col-sm-12'>
                   <span className='m-widget4__sub'>
-                    <div className= 'm-form__group form-group row'>
-                      <div className='col-6'>
-                        Save broadcast messages in user chat
-                      </div>
+                    <div className='m-form__group form-group row'>
+                      <span className='col-9 col-form-label'>
+                        Save automation messages (broadcast, poll, survey, etc) in live chat
+                      </span>
                       <div className='col-3'>
                         <span className='m-switch m-switch--outline m-switch--icon m-switch--success'>
                           <label>
-                            <input type='checkbox' data-switch='true' checked={this.props.advancedSettings && this.props.advancedSettings.saveBroadcastInChat ? this.props.advancedSettings.saveBroadcastInChat: false} onChange={(e) => {this.onChangeSaveSetting(e)}} />
+                            <input type='checkbox' data-switch='true' checked={this.state.saveAutomationMessages} onChange={(e) => {this.onChangeSaveSetting(e)}} />
                             <span></span>
                           </label>
                         </span>

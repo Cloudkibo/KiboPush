@@ -101,7 +101,7 @@ class LeftChatItem extends React.Component {
             {this.props.displayDate(this.props.message.datetime)}
           </div>
         }
-        <div id={this.props.message._id} style={{minWidth: '200px', maxWidth: '200px'}} className='m-messenger__message m-messenger__message--in'>
+        <div id={this.props.message._id} className='m-messenger__message m-messenger__message--in'>
           <div className='m-messenger__message-pic'>
             <img src={this.props.activeSession.profilePic} alt='' />
           </div>

@@ -1,7 +1,6 @@
 /**
  * Created by sojharo on 20/07/2017.
  */
-
 import React from 'react'
 import auth from '../../utility/auth.service'
 import { connect } from 'react-redux'
@@ -17,6 +16,7 @@ import { resetSocket } from '../../redux/actions/livechat.actions'
 import { bindActionCreators } from 'redux'
 import { Link } from 'react-router-dom'
 import cookie from 'react-cookie'
+import AlertContainer from 'react-alert'
 
 class Header extends React.Component {
   constructor (props, context) {
@@ -72,8 +72,14 @@ class Header extends React.Component {
         this.props.updatePlatform({platform: value})
       }
     } else {
-      this.redirectToDashboard(value)
-      this.props.updatePlatform({platform: value})
+      if (value === 'sms' && this.props.automated_options && !this.props.automated_options.twilio) {
+        this.msg.error('SMS Twilio is not connected. Please ask your account buyer to connect it.')
+      } else if (value === 'whatsApp' && this.props.automated_options && !this.props.automated_options.twilioWhatsApp) {
+        this.msg.error('WhatsApp Twilio is not connected. Please ask your account buyer to connect it.')
+      } else {
+        this.redirectToDashboard(value)
+        this.props.updatePlatform({platform: value})
+      }
     }
   }
 
@@ -270,10 +276,16 @@ class Header extends React.Component {
     } else if (hostname === 'kiboengage.cloudkibo.com') {
       liveChatLink = 'https://kibochat.cloudkibo.com/liveChat'
     }
-
+    var alertOptions = {
+      offset: 14,
+      position: 'top right',
+      theme: 'dark',
+      time: 5000,
+      transition: 'scale'
+    }
     return (
       <header id='headerDiv' className='m-grid__item m-header ' data-minimize-offset='200' data-minimize-mobile-offset='200' >
-
+        <AlertContainer ref={a => this.msg = a} {...alertOptions} />
         <div className='fb-customerchat'
           data-page_id='151990922046256'
           data-minimized='true'
