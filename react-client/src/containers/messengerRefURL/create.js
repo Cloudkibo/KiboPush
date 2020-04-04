@@ -98,6 +98,7 @@ class CreateURL extends React.Component {
     let currentFiles = getFileIdsOfBroadcast(this.props.messengerRefURL.reply)
     deleteInitialFiles(initialFiles, currentFiles)
     this.setState({newFiles: [], initialFiles: currentFiles})
+    this.props.updateData(this.props.messengerRefURL, 'newFiles', [])
     if (this.props.location.state && this.props.location.state.messengerRefURL && this.props.location.state.module === 'edit') {
       this.props.editURL({
         _id: this.props.location.state.messengerRefURL._id,
@@ -160,7 +161,15 @@ class CreateURL extends React.Component {
                 </div>
                 <div className='m-portlet__body'>
                   <div className='row'>
-                    <Tabs newFiles={this.state.newFiles} initialFiles={this.state.initialFiles} onEditMessage={this.onEditMessage} history={this.props.history} location={this.props.location} module={this.props.location.state.module} messengerRefURL={this.props.location.state.messengerRefURL} pageName= {this.state.pageName}/>
+                    <Tabs 
+                      newFiles={this.state.newFiles} 
+                      initialFiles={this.state.initialFiles} 
+                      onEditMessage={this.onEditMessage} 
+                      history={this.props.history} 
+                      location={this.props.location} 
+                      module={this.props.location.state.module} 
+                      messengerRefURL={this.props.location.state.messengerRefURL} 
+                      pageName= {this.state.pageName}/>
                     {
                       this.props.location.state.module === 'edit' ? <Preview history={this.props.history} location={this.props.location} selectedmessengerRefURL={this.props.location.state.messengerRefURL} pageName= {this.state.pageName} /> : <Preview pageName= {this.state.pageName}/>
                     }

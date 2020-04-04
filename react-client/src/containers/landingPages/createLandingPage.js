@@ -81,6 +81,7 @@ class CreateLandingPage extends React.Component {
     let currentFiles = getFileIdsOfBroadcast(this.props.landingPage.optInMessage)
     deleteInitialFiles(initialFiles, currentFiles)
     this.setState({newFiles: [], initialFiles: currentFiles})
+    this.props.updateLandingPageData(this.props.landingPage, this.props.landingPage.currentTab, 'newFiles', [])
     this.props.editLandingPage(this.state.landingPageId, {
       initialState: this.props.landingPage.initialState,
       submittedState: this.props.landingPage.submittedState,

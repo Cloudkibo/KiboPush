@@ -32,6 +32,7 @@ class CreateURL extends React.Component {
     let currentFiles = getFileIdsOfBroadcast(this.props.messengerCode.optInMessage)
     deleteInitialFiles(initialFiles, currentFiles)
     this.setState({newFiles: [], initialFiles: currentFiles})
+    this.props.updateData(this.props.messengerCode, 'newFiles', [])
     if (this.props.location.state.module && this.props.location.state.module === 'edit') {
       this.props.editCode(this.props.location.state.messengerCode, this.msg)
     }
@@ -116,7 +117,14 @@ class CreateURL extends React.Component {
                 </div>
                 <div className='m-portlet__body'>
                   <div className='row'>
-                    <Tabs initialFiles={this.state.initialFiles} newFiles={this.state.newFiles} onEditMessage={this.onEditMessage} history={this.props.history} location={this.props.location} module={this.props.location.state.module} selectedPage={this.props.location.state.messengerCode.pageId} />
+                    <Tabs 
+                      initialFiles={this.state.initialFiles} 
+                      newFiles={this.state.newFiles} 
+                      onEditMessage={this.onEditMessage} 
+                      history={this.props.history} 
+                      location={this.props.location} 
+                      module={this.props.location.state.module} 
+                      selectedPage={this.props.location.state.messengerCode.pageId} />
                   </div>
                 </div>
               </div>

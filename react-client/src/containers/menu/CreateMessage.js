@@ -9,7 +9,7 @@ import { validateFields } from '../convo/utility'
 import AlertContainer from 'react-alert'
 import { saveCurrentMenuItem } from '../../redux/actions/menu.actions'
 import GenericMessage from '../../components/SimplifiedBroadcastUI/GenericMessage'
-import {deleteInitialFiles, getFileIdsOfBroadcast} from '../../utility/utils'
+import {deleteInitialFiles, getFileIdsOfBroadcast, deleteFile} from '../../utility/utils'
 
 class CreateMessage extends React.Component {
   constructor (props, context) {
@@ -19,7 +19,8 @@ class CreateMessage extends React.Component {
       broadcast: [],
       convoTitle: 'Message',
       itemMenus: [],
-      pageId: this.props.pages.filter((page) => page._id === this.props.currentMenuItem.currentPage[0])[0].pageId
+      pageId: this.props.pages.filter((page) => page._id === this.props.currentMenuItem.currentPage[0])[0].pageId,
+      initialFiles: this.props.location.state.initialFiles
     }
     this.saveMessage = this.saveMessage.bind(this)
     this.setCreateMessage = this.setCreateMessage.bind(this)
@@ -33,6 +34,7 @@ class CreateMessage extends React.Component {
   }
 
   gotoMenu () {
+    this.editing = true
     this.props.history.push({
       pathname: `/menu`,
       state: {action: 'replyWithMessage', initialFiles: this.props.location.state.realInitialFiles}
@@ -175,7 +177,8 @@ class CreateMessage extends React.Component {
     } else {
       newFiles = this.state.newFiles
     }
-    newFiles = deleteInitialFiles(newFiles, getFileIdsOfBroadcast(this.state.broadcast))
+    let currentFiles = getFileIdsOfBroadcast(this.state.broadcast)
+    newFiles = deleteInitialFiles(newFiles, currentFiles)
     if (updatedMenuItem !== '') {
       currentState = { 
         itemMenus: updatedMenuItem, 
@@ -194,7 +197,23 @@ class CreateMessage extends React.Component {
       }
       this.props.saveCurrentMenuItem(currentState)
     }
-    this.setState({newFiles: []})
+    let initialFiles = this.state.initialFiles.concat(newFiles)
+    this.setState({newFiles: [], initialFiles})
+  }
+
+  componentWillUnmount () {
+    if (!this.editing) {
+      if (this.state.newFiles) {
+        for (let i = 0; i < this.state.newFiles.length; i++) {
+          deleteFile(this.state.newFiles[i])
+        }
+      }
+      if (this.props.currentMenuItem.newFiles) {
+        for (let i = 0; i < this.props.currentMenuItem.newFiles.length; i++) {
+          deleteFile(this.props.currentMenuItem.newFiles[i])
+        }
+      }
+    }
   }
 
   render () {
@@ -225,7 +244,7 @@ class CreateMessage extends React.Component {
         </div>
         <GenericMessage
           pageId={this.state.pageId}
-          initialFiles={this.props.location.state.initialFiles}
+          initialFiles={this.state.initialFiles}
           newFiles={this.state.newFiles}
           pages={this.props.currentMenuItem ? this.props.currentMenuItem.currentPage : null}
           broadcast={this.state.broadcast}

@@ -174,7 +174,15 @@ class CreateMessengerAd extends React.Component {
                     />
                   </div>
                   <div className='row'>
-                    <Tabs onEditMessage={this.onEditMessage} initialFiles={this.state.initialFiles} newFiles={this.state.newFiles} history={this.props.history} location={this.props.location} setupState={this.state.setupState} switchSetupState={this.switchSetupState} jsonAdId={this.props.location.state ? this.props.location.state.jsonAdId : null} />
+                    <Tabs 
+                      onEditMessage={this.onEditMessage} 
+                      initialFiles={this.state.initialFiles} 
+                      newFiles={this.state.newFiles} 
+                      history={this.props.history} 
+                      location={this.props.location} 
+                      setupState={this.state.setupState} 
+                      switchSetupState={this.switchSetupState} 
+                      jsonAdId={this.props.location.state ? this.props.location.state.jsonAdId : null} />
                     { (this.props.location.state && this.props.location.state.module === 'edit' && this.state.previewOptInMessage && this.state.previewOptInMessage.length !== 0) ? <Preview previewOptInMessage={this.state.previewOptInMessage} />
                        :<Preview history={this.props.history} location={this.props.location} />
                     }

@@ -10,19 +10,19 @@ import GenericMessage from '../../components/SimplifiedBroadcastUI/GenericMessag
 import AlertContainer from 'react-alert'
 import { validateFields } from '../../containers/convo/utility'
 import { updateData } from '../../redux/actions/messengerRefURL.actions'
-import { deleteInitialFiles, getFileIdsOfBroadcast } from '../../utility/utils'
+import { deleteInitialFiles, getFileIdsOfBroadcast, deleteFile } from '../../utility/utils'
 
 class MessengerRefURLMessage extends React.Component {
   constructor (props, context) {
     super(props, context)
     console.log('props.messengerRefURL.pageId in MessengerRefURLMessage', props.messengerRefURL.pageId)
     console.log('props.pages', props.pages)
-
     this.state = {
       buttonActions: ['open website', 'open webview'],
       broadcast: props.messengerRefURL.reply ? props.messengerRefURL.reply : [],
       pageId: props.pages.filter((page) => page.pageId === props.messengerRefURL.pageId)[0]._id,
-      convoTitle: 'Opt-In Message'
+      convoTitle: 'Opt-In Message',
+      initialFiles: this.props.location.state.initialFiles
     }
     this.saveMessage = this.saveMessage.bind(this)
     this.goBack = this.goBack.bind(this)
@@ -49,6 +49,7 @@ class MessengerRefURLMessage extends React.Component {
   }
 
   goBack () {
+    this.editing = true
     if (this.props.location.state.module === 'edit') {
       var newMessengerRefURL = this.props.location.state.messengerRefSelectedURL
       newMessengerRefURL['reply'] = this.props.messengerRefURL.reply
@@ -60,7 +61,7 @@ class MessengerRefURLMessage extends React.Component {
     } else {
       this.props.history.push({
         pathname: `/createMessengerRefURL`,
-        state: {pageId: this.props.pageId, _id: this.state.pageId, pageName: this.props.location.state.pageName}
+        state: {pageId: this.props.pageId, _id: this.state.pageId, pageName: this.props.location.state.pageName,  messengerRefURL: this.props.messengerRefURL}
       })
     }
   }
@@ -89,12 +90,29 @@ class MessengerRefURLMessage extends React.Component {
       }
       this.props.updateData(this.props.messengerRefURL, 'reply', this.state.broadcast, edit)
     } else {
+      this.props.messengerRefURL.newFiles = newFiles
       this.props.updateData(this.props.messengerRefURL, 'reply', this.state.broadcast)
-      this.props.updateData(this.props.messengerRefURL, 'newFiles', newFiles)
     }
-    this.setState({newFiles: []})
+    let initialFiles = this.state.initialFiles.concat(newFiles)
+    this.setState({newFiles: [], initialFiles})
     this.msg.success('Message has been saved.')
   }
+
+  componentWillUnmount () {
+    if (!this.editing) {
+      if (this.state.newFiles) {
+        for (let i = 0; i < this.state.newFiles.length; i++) {
+          deleteFile(this.state.newFiles[i])
+        }
+      }
+      if (this.props.messengerRefURL.newFiles) {
+        for (let i = 0; i < this.props.messengerRefURL.newFiles.length; i++) {
+          deleteFile(this.props.messengerRefURL.newFiles[i])
+        }
+      }
+    }
+  }
+  
 
   render () {
     var alertOptions = {
@@ -128,7 +146,7 @@ class MessengerRefURLMessage extends React.Component {
         </div>
         <GenericMessage
           newFiles={this.state.newFiles}
-          initialFiles={this.props.location.state.initialFiles}
+          initialFiles={this.state.initialFiles}
           pageId={this.props.messengerRefURL.pageId}
           pages={[this.state.pageId]}
           broadcast={this.state.broadcast}

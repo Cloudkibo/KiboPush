@@ -169,6 +169,9 @@ class GenericMessage extends React.Component {
     if (nextProps.newFiles && this.state.newFiles.length !== nextProps.newFiles.length) {
       this.setState({newFiles: nextProps.newFiles})
     }
+    if (nextProps.initialFiles && nextProps.initialFiles.length !== this.state.initialFiles.length) {
+      this.setState({initialFiles: nextProps.initialFiles})
+    }
   }
 
   initializeList (broadcast) {

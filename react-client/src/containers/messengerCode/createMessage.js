@@ -10,7 +10,7 @@ import GenericMessage from '../../components/SimplifiedBroadcastUI/GenericMessag
 import AlertContainer from 'react-alert'
 import { validateFields } from '../../containers/convo/utility'
 import { updateData } from '../../redux/actions/messengerCode.actions'
-import {deleteInitialFiles, getFileIdsOfBroadcast} from '../../utility/utils'
+import {deleteInitialFiles, getFileIdsOfBroadcast, deleteFile} from '../../utility/utils'
 
 class messengerCodeMessage extends React.Component {
   constructor (props, context) {
@@ -21,7 +21,8 @@ class messengerCodeMessage extends React.Component {
     this.state = {
       buttonActions: ['open website', 'open webview'],
       broadcast: props.messengerCode.optInMessage ? props.messengerCode.optInMessage : [],
-      convoTitle: 'Opt-In Message'
+      convoTitle: 'Opt-In Message',
+      initialFiles: this.props.location.state.initialFiles
     }
     this.saveMessage = this.saveMessage.bind(this)
     this.goBack = this.goBack.bind(this)
@@ -48,6 +49,7 @@ class messengerCodeMessage extends React.Component {
   }
 
   goBack () {
+    this.editing = true
     if (this.props.location.state.module === 'edit') {
       var newmessengerCode = this.props.location.state.selectedMessengerCode
       newmessengerCode['optInMessage'] = this.props.messengerCode.optInMessage
@@ -79,7 +81,8 @@ class messengerCodeMessage extends React.Component {
     } else {
       newFiles = this.state.newFiles
     }
-    newFiles = deleteInitialFiles(newFiles, getFileIdsOfBroadcast(this.state.broadcast))
+    let currentFiles = getFileIdsOfBroadcast(this.state.broadcast)
+    newFiles = deleteInitialFiles(newFiles, currentFiles)
     var edit = {
       page_id: this.props.messengerCode.pageId,
       pageId: this.props.messengerCode.pageId,
@@ -88,8 +91,25 @@ class messengerCodeMessage extends React.Component {
       newFiles
     }
     this.props.updateData(this.props.messengerCode, edit)
-    this.setState({newFiles: []})
+    let initialFiles = this.state.initialFiles.concat(newFiles)
+    this.setState({newFiles: [], initialFiles})
     this.msg.success('Message has been saved.')
+  }
+}
+
+
+componentWillUnmount () {
+  if (!this.editing) {
+    if (this.state.newFiles) {
+      for (let i = 0; i < this.state.newFiles.length; i++) {
+        deleteFile(this.state.newFiles[i])
+      }
+    }
+    if (this.props.messengerCode.newFiles) {
+      for (let i = 0; i < this.props.messengerCode.newFiles.length; i++) {
+        deleteFile(this.props.messengerCode.newFiles[i])
+      }
+    }
   }
 }
 
@@ -125,7 +145,7 @@ class messengerCodeMessage extends React.Component {
         </div>
         <GenericMessage
           newFiles={this.state.newFiles}
-          initialFiles={this.props.location.state.initialFiles}
+          initialFiles={this.state.initialFiles}
           pageId={this.props.messengerCode.pageId}
           pages={[this.props.messengerCode.pageId]}
           broadcast={this.state.broadcast}
