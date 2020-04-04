@@ -105,9 +105,9 @@ componentWillUnmount () {
         deleteFile(this.state.newFiles[i])
       }
     }
-    if (this.props.messengerCode.newFiles) {
-      for (let i = 0; i < this.props.messengerCode.newFiles.length; i++) {
-        deleteFile(this.props.messengerCode.newFiles[i])
+    if (this.props.location.state.newFiles) {
+      for (let i = 0; i < this.props.location.state.newFiles.length; i++) {
+        deleteFile(this.props.location.state.newFiles[i])
       }
     }
   }

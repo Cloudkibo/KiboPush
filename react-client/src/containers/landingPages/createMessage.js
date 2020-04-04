@@ -91,8 +91,8 @@
             deleteFile(this.state.newFiles[i])
           }
         }
-        if (this.props.landingPage.newFiles) {
-          for (let i = 0; i < this.props.landingPage.newFiles.length; i++) {
+        if (this.props.location.state.newFiles) {
+          for (let i = 0; i < this.props.location.state.newFiles.length; i++) {
             deleteFile(this.props.landingPage.newFiles[i])
           }
         }

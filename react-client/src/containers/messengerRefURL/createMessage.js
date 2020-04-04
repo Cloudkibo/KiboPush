@@ -105,9 +105,9 @@ class MessengerRefURLMessage extends React.Component {
           deleteFile(this.state.newFiles[i])
         }
       }
-      if (this.props.messengerRefURL.newFiles) {
-        for (let i = 0; i < this.props.messengerRefURL.newFiles.length; i++) {
-          deleteFile(this.props.messengerRefURL.newFiles[i])
+      if (this.props.location.state.newFiles) {
+        for (let i = 0; i < this.props.location.state.newFiles.length; i++) {
+          deleteFile(this.props.location.state.newFiles[i])
         }
       }
     }

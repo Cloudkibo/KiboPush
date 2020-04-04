@@ -208,9 +208,9 @@ class CreateMessage extends React.Component {
           deleteFile(this.state.newFiles[i])
         }
       }
-      if (this.props.currentMenuItem.newFiles) {
-        for (let i = 0; i < this.props.currentMenuItem.newFiles.length; i++) {
-          deleteFile(this.props.currentMenuItem.newFiles[i])
+      if (this.props.location.state.newFiles) {
+        for (let i = 0; i < this.props.location.state.newFiles.length; i++) {
+          deleteFile(this.props.location.state.newFiles[i])
         }
       }
     }
