@@ -11,6 +11,7 @@ import { fetchAllSequence, createSequence, deleteSequence, updateTrigger } from 
 import { loadPollsList } from '../../redux/actions/poll.actions'
 import ReactPaginate from 'react-paginate'
 import AlertContainer from 'react-alert'
+import { deleteFiles } from '../../utility/utils'
 
 class Sequence extends React.Component {
   constructor (props, context) {
@@ -394,6 +395,10 @@ class Sequence extends React.Component {
               <button style={{ float: 'right' }}
                 className='btn btn-primary btn-sm'
                 onClick={() => {
+                  let sequence = this.state.sequencesData.find(s => s._id === this.state.deleteid)
+                  for (let i = 0; i < sequence.messages.length; i++) {
+                    deleteFiles(sequence.messages[i].payload)
+                  }
                   this.props.deleteSequence(this.state.deleteid, this.msg)
                 }} data-dismiss='modal'>Delete
               </button>
