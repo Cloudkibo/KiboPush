@@ -152,9 +152,20 @@ class Builders extends React.Component {
     }
   }
 
-  setTempFiles (files) {
+  setTempFiles (files, filesToRemove) {
     let tempFiles = this.state.tempFiles
-    tempFiles = tempFiles.concat(files)
+    if (files) {
+      tempFiles = tempFiles.concat(files)
+    }
+    if (filesToRemove) {
+      for (let i = tempFiles.length - 1; i >= 0; i--) {
+        for (let j = 0; j < filesToRemove.length; j++) {
+          if (tempFiles[i] === filesToRemove[j]) {
+            tempFiles.splice(i, 1)
+          }
+        }
+      }
+    }
     this.setState({tempFiles})
   }
 

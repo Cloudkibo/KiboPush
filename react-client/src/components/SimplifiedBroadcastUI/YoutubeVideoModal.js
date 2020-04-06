@@ -58,6 +58,7 @@ class YoutubeVideoModal extends React.Component {
         canBeDeleted = false
       }
       if (canBeDeleted) {
+        this.props.setTempFiles(null, [this.state.file.fileurl.id])
         deleteFile(this.state.file.fileurl.id)
       }
     }
