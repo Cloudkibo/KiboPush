@@ -22,6 +22,7 @@ import { Popover, PopoverBody, Dropdown, DropdownToggle, DropdownMenu, DropdownI
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
 import { loadTags } from '../../redux/actions/tags.actions'
 import { allLocales } from '../../redux/actions/subscribers.actions'
+import { deleteFiles } from '../../utility/utils'
 
 class CreateSequence extends React.Component {
   constructor (props, context) {
@@ -664,6 +665,8 @@ class CreateSequence extends React.Component {
                 <button style={{ float: 'right' }}
                   className='btn btn-primary btn-sm'
                   onClick={() => {
+                    let message = this.props.messages.find(m => m._id === this.state.deleteid)
+                    deleteFiles(message.payload)
                     this.props.deleteMessage(this.state.deleteid, this.msg, this.state.sequenceId)
                     this.closeDialogDelete()
                   }} data-dismiss='modal'>Delete
