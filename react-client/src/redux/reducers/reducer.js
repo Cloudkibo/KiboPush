@@ -1,109 +1,111 @@
 import { combineReducers } from 'redux'
 
-import {basicInfo} from './basicinfo.reducer'
-import {loginInfo} from './login.reducer.js'
-import {signupInfo} from './signup.reducer.js'
-import {settingsInfo} from './settings.reducer'
-import {pagesInfo} from './pages.reducer'
-import {subscribersInfo} from './subscribers.reducer'
-import {dashboardInfo} from './dashboard.reducer'
-import {broadcastsInfo} from './broadcast.reducer'
-import {pollsInfo} from './poll.reducer'
-import {surveysInfo} from './surveys.reducer.js'
+import {abandonedInfo} from './abandonedCarts.reducer'
 import {autopostingInfo} from './autoposting.reducer.js'
+import {backdoorInfo} from './backdoor.reducer'
+import {basicInfo} from './basicinfo.reducer'
+import {billingPricingInfo} from './billingPricing.reducer'
+import {botIntentsInfo} from './smat_replies_intnets.reducer'
+import {botsInfo} from './smart_replies.reducer'
+import {broadcastsInfo} from './broadcast.reducer'
+import {businessGatewayInfo} from './businessGateway.reducer'
+import {chatbotsInfo} from './chatbotAutomation.reducer'
+import {contactsInfo} from './contacts.reducer'
 import {convosInfo} from './convos.reducer.js'
+import {customFieldInfo} from './customFields.reducer'
+import {dashboardInfo} from './dashboard.reducer'
+import {demoSSAInfo} from './demoSSA.reducer'
+import {featuresInfo} from './features.reducer'
+import {feedsInfo} from './rssIntegration.reducer'
+import {googleSheetsInfo} from './googleSheets.reducer'
 import {growthToolsInfo} from './growthTools.reducer.js'
-import {liveChat} from './livechat.reducer.js'
-import {templatesInfo} from './templates.reducer.js'
-import {listsInfo} from './customerLists.reducer.js'
+import {hubSpotInfo} from './hubSpot.reducer'
 import {invitationsInfo} from './invitations.reducer.js'
+import {landingPagesInfo} from './landingPages.reducer'
+import {listsInfo} from './customerLists.reducer.js'
+import {liveChat} from './livechat.reducer.js'
+import {loginInfo} from './login.reducer.js'
 import {membersInfo} from './members.reducer.js'
 import {menuInfo} from './menu.reducer.js'
-import {backdoorInfo} from './backdoor.reducer'
-import {teamsInfo} from './teams.reducer'
-import {tagsInfo} from './tags.reducer'
-import {notificationsInfo} from './notifications.reducer'
-import {botsInfo} from './smart_replies.reducer'
-import {sequenceInfo} from './sequence.reducer'
-import {postsInfo} from './commentCapture.reducer'
-import {billingPricingInfo} from './billingPricing.reducer'
-import {permissionsInfo} from './permissions.reducer'
-import {featuresInfo} from './features.reducer'
-import {usageInfo} from './usage.reducer'
-import {abandonedInfo} from './abandonedCarts.reducer'
-import {messengerCodeInfo} from './messengerCode.reducer'
-import {landingPagesInfo} from './landingPages.reducer'
 import {messengerAdsInfo} from './messengerAds.reducer'
+import {messengerCodeInfo} from './messengerCode.reducer'
 import {messengerRefURLInfo} from './messengerRefURL.reducer'
-import {demoSSAInfo} from './demoSSA.reducer'
-import {customFieldInfo} from './customFields.reducer'
-import {businessGatewayInfo} from './businessGateway.reducer'
-import {contactsInfo} from './contacts.reducer'
+import {notificationsInfo} from './notifications.reducer'
+import {overlayWidgetsInfo} from './overlayWidgets.reducer'
+import {pagesInfo} from './pages.reducer'
+import {permissionsInfo} from './permissions.reducer'
+import {pollsInfo} from './poll.reducer'
+import {postsInfo} from './commentCapture.reducer'
+import {sequenceInfo} from './sequence.reducer'
+import {settingsInfo} from './settings.reducer'
+import {signupInfo} from './signup.reducer.js'
 import {smsBroadcastsInfo} from './smsBroadcasts.reducer'
 import {smsChatInfo} from './smsChat.reducer'
-import {whatsAppChatInfo} from './whatsAppChat.reducer'
-import {whatsAppBroadcastsInfo} from './whatsAppBroadcasts.reducer'
 import {smsWhatsAppDashboardInfo} from './smsWhatsAppDashboard.reducer'
-import {sponsoredMessagingInfo} from './sponsoredMessaging.reducer'
-import {googleSheetsInfo} from './googleSheets.reducer'
-import {botIntentsInfo} from './smat_replies_intnets.reducer'
-import {hubSpotInfo} from './hubSpot.reducer'
-import {feedsInfo} from './rssIntegration.reducer'
-import {overlayWidgetsInfo} from './overlayWidgets.reducer'
 import {socketInfo} from './socket.reducer'
+import {sponsoredMessagingInfo} from './sponsoredMessaging.reducer'
+import {subscribersInfo} from './subscribers.reducer'
+import {surveysInfo} from './surveys.reducer.js'
+import {tagsInfo} from './tags.reducer'
+import {teamsInfo} from './teams.reducer'
+import {templatesInfo} from './templates.reducer.js'
+import {usageInfo} from './usage.reducer'
+import {whatsAppBroadcastsInfo} from './whatsAppBroadcasts.reducer'
+import {whatsAppChatInfo} from './whatsAppChat.reducer'
 
 const appReducer = combineReducers({
-  basicInfo,
-  loginInfo,
-  signupInfo,
-  pagesInfo,
-  subscribersInfo,
-  surveysInfo,
-  backdoorInfo,
-  broadcastsInfo,
-  pollsInfo,
-  dashboardInfo,
-  autopostingInfo,
-  convosInfo,
-  growthToolsInfo,
-  liveChat,
-  socketInfo,
-  settingsInfo,
-  menuInfo,
-  templatesInfo,
-  invitationsInfo,
-  membersInfo,
-  listsInfo,
-  teamsInfo,
-  tagsInfo,
-  notificationsInfo,
-  botsInfo,
-  sequenceInfo,
-  postsInfo,
-  billingPricingInfo,
-  permissionsInfo,
-  featuresInfo,
-  usageInfo,
   abandonedInfo,
-  messengerCodeInfo,
-  landingPagesInfo,
-  messengerAdsInfo,
-  demoSSAInfo,
-  messengerRefURLInfo,
-  customFieldInfo,
+  autopostingInfo,
+  backdoorInfo,
+  basicInfo,
+  billingPricingInfo,
+  botIntentsInfo,
+  botsInfo,
+  broadcastsInfo,
   businessGatewayInfo,
+  chatbotsInfo,
   contactsInfo,
+  convosInfo,
+  customFieldInfo,
+  dashboardInfo,
+  demoSSAInfo,
+  featuresInfo,
+  feedsInfo,
+  googleSheetsInfo,
+  growthToolsInfo,
+  hubSpotInfo,
+  invitationsInfo,
+  landingPagesInfo,
+  listsInfo,
+  liveChat,
+  loginInfo,
+  membersInfo,
+  menuInfo,
+  messengerAdsInfo,
+  messengerCodeInfo,
+  messengerRefURLInfo,
+  notificationsInfo,
+  overlayWidgetsInfo,
+  pagesInfo,
+  permissionsInfo,
+  pollsInfo,
+  postsInfo,
+  sequenceInfo,
+  settingsInfo,
+  signupInfo,
   smsBroadcastsInfo,
   smsChatInfo,
-  whatsAppBroadcastsInfo,
-  whatsAppChatInfo,
   smsWhatsAppDashboardInfo,
+  socketInfo,
   sponsoredMessagingInfo,
-  botIntentsInfo,
-  hubSpotInfo,
-  googleSheetsInfo,
-  feedsInfo,
-  overlayWidgetsInfo
+  subscribersInfo,
+  surveysInfo,
+  tagsInfo,
+  teamsInfo,
+  templatesInfo,
+  usageInfo,
+  whatsAppBroadcastsInfo,
+  whatsAppChatInfo
 })
 
 export default appReducer
