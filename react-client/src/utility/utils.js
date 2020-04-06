@@ -179,7 +179,6 @@ export function getVideoId (url) {
 
 export function deleteFile (serverPath, handleResponse) {
   console.log('deleting file', serverPath)
-  debugger
   fetch(`${getAccountsUrl()}/deleteFile/${serverPath}`, {
     method: 'delete',
     headers: new Headers({

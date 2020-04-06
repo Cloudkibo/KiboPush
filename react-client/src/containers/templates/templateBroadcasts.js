@@ -220,7 +220,6 @@ class TemplateBroadcasts extends React.Component {
                 <button style={{ float: 'right' }}
                   className='btn btn-primary btn-sm'
                   onClick={() => {
-                    debugger
                     let payload = this.state.broadcastsData.find((broadcast) => broadcast._id === this.state.deleteid).payload
                     deleteFiles(payload)
                     this.props.deleteBroadcast(this.state.deleteid, this.msg, { last_id: 'none', number_of_records: 5, first_page: 'first', filter: false, filter_criteria: { search_value: '', category_value: '' } })
