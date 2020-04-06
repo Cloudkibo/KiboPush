@@ -37,7 +37,7 @@ class InitialState extends React.Component {
 
   handleImage (obj) {
     console.log('handleImage', obj)
-    this.setState({showImagePlacement: true, loading: false, file: obj})
+    this.setState({showImagePlacement: true, loading: false})
     if (this.props.landingPage.currentTab === 'initialState') {
       this.props.landingPage.initialState.newFile = obj.fileurl.id
       this.props.updateLandingPageData(this.props.landingPage, this.props.landingPage.currentTab, 'mediaLink', obj.image_url)
@@ -57,7 +57,7 @@ class InitialState extends React.Component {
       if (this.props.initialState.mediaLink) {
         let fileId = getFileIdFromUrl(this.props.initialState.mediaLink)
         if (this.props.landingPage.initialState.initialFile !== fileId) {
-          deleteFile(this.state.file.fileurl.id)
+          deleteFile(fileId)
         }
       }
       var reader = new FileReader()
@@ -83,11 +83,10 @@ class InitialState extends React.Component {
 
   removeImage () {
     console.log('clicked')
-    if (this.state.file && this.state.file.fileurl && this.state.file.fileurl.id) {
-      if (this.props.landingPage.initialState.initialFile) {
-        if (this.state.file.fileurl.id !== this.props.landingPage.initialState.initialFile) {
-          deleteFile(this.state.file.fileurl.id)
-        }
+    if (this.props.initialState.mediaLink) {
+      let fileId = getFileIdFromUrl(this.props.initialState.mediaLink)
+      if (this.props.landingPage.initialState.initialFile !== fileId) {
+        deleteFile(fileId)
       }
     }
     this.setState({showImagePlacement:false})
