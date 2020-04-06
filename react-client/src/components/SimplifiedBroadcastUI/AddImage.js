@@ -2,17 +2,11 @@
 
 import React from 'react'
 import { connect } from 'react-redux'
-import {
-  addBroadcast,
-  clearAlertMessage,
-  loadBroadcastsList,
-  sendbroadcast,
-  uploadRequest
-} from '../../redux/actions/broadcast.actions'
 import { RingLoader } from 'halogenium'
 import { uploadImage, uploadTemplate } from '../../redux/actions/convos.actions'
 import { bindActionCreators } from 'redux'
 import AlertContainer from 'react-alert'
+import { deleteFile } from '../../utility/utils'
 
 class Image extends React.Component {
   // eslint-disable-next-line no-useless-constructor
@@ -22,6 +16,7 @@ class Image extends React.Component {
     this.setLoading = this.setLoading.bind(this)
     this.state = {
       file: this.props.file ? this.props.file : null,
+      initialFile: this.props.initialFile,
       imgSrc: this.props.imgSrc ? this.props.imgSrc : '',
       showPreview: false,
       loading: false,
@@ -75,6 +70,25 @@ class Image extends React.Component {
   _onChange (images) {
   // Assuming only image
     console.log('in _onChange')
+    if (this.state.file && this.state.file.fileurl && this.state.file.fileurl.id) {
+      let canBeDeleted = true
+      for (let i = 0; i < this.props.initialFiles.length; i++) {
+        if (this.state.file.fileurl.id === this.props.initialFiles[i]) {
+          canBeDeleted = false
+          break
+        }
+      }
+      for (let i = 0; i < this.props.initialModalFiles.length; i++) {
+        if (this.state.file.fileurl.id === this.props.initialModalFiles[i]) {
+          canBeDeleted = false
+          break
+        }
+      }
+      if (canBeDeleted) {
+        console.log('deleting file', this.state.file)
+        deleteFile(this.state.file.fileurl.id)
+      }
+    }
     if (this.props.onSelect) {
       this.props.onSelect(images)
     }
@@ -180,13 +194,8 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-    loadBroadcastsList: loadBroadcastsList,
-    addBroadcast: addBroadcast,
-    sendbroadcast: sendbroadcast,
-    clearAlertMessage: clearAlertMessage,
-    uploadRequest: uploadRequest,
-    uploadImage: uploadImage,
-    uploadTemplate: uploadTemplate
+    uploadImage,
+    uploadTemplate
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Image)

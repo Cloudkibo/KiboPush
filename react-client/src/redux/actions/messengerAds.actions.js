@@ -69,7 +69,7 @@ export function fetchMessengerAd (jsonAdId, updatePreview) {
           jsonAdMessages: data.jsonAdMessages
         }
         dispatch(saveCurrentJsonAd(payload))
-        updatePreview()
+        updatePreview(res.payload)
       }
     })
   }

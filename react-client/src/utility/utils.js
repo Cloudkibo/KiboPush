@@ -1,4 +1,5 @@
 import cookie from 'react-cookie'
+import auth from './auth.service'
 
 export function formatAMPM (date) {
   let hours = date.getHours()
@@ -174,6 +175,117 @@ export function getVideoId (url) {
   /* eslint-enable */
   r = url.match(rx)
   return r ? r[1] : false
+}
+
+export function deleteFile (serverPath, handleResponse) {
+  console.log('deleting file', serverPath)
+  fetch(`${getAccountsUrl()}/deleteFile/${serverPath}`, {
+    method: 'delete',
+    headers: new Headers({
+      'Authorization': `Bearer ${auth.getToken()}`
+    })
+  }).then((res) => {
+      console.log('deleteFile response', res)
+      if (handleResponse) {
+        handleResponse(res)
+      }
+    }
+  )
+}
+
+export function deleteFiles (payload, newFiles, filesToKeep) {
+  let files = getFileIdsOfBroadcast(payload)
+  for (let i = 0; i < files.length; i++) {
+    let canBeDeleted = true
+    if (filesToKeep) {
+      for (let j = 0; j < filesToKeep.length; j++) {
+        if (files[i] === filesToKeep[j]) {
+          canBeDeleted = false
+          break
+        }
+      }
+    }
+    if (canBeDeleted) {
+      if (newFiles) {
+        for (let j = newFiles.length-1; j >= 0; j--) {
+          if (files[i] === newFiles[j]) {
+            newFiles.splice(j, 1)
+          }
+        }
+      }
+      console.log('deleting file', files[i])
+      deleteFile(files[i])
+    }
+  }
+  return newFiles
+}
+
+export function getFileIdsOfComponent (component) {
+  let files = []
+  if (component.file && component.file.fileurl && component.file.fileurl.id) {
+    files.push(component.file.fileurl.id)
+  } else if (component.fileurl && component.fileurl.id) {
+    files.push(component.fileurl.id)
+  } else if (component.cards) {
+    for (let j = 0; j < component.cards.length; j++) {
+      files.push(component.cards[j].fileurl.id)
+    }
+  }
+  return files
+}
+
+export function getFileIdsOfBroadcast (payload) {
+  let files = []
+  for (let i = 0; i < payload.length; i++) {
+    let component = payload[i]
+    files = files.concat(getFileIdsOfComponent(component))
+  }
+  return files
+}
+
+
+export function getFileIdsOfMenu (menuItems) {
+  let initialFiles = []
+  for (let i = 0; i < menuItems.length; i++) {
+    let menuItem = menuItems[i]
+    if (menuItem.payload) {
+      initialFiles = initialFiles.concat(getFileIdsOfBroadcast(JSON.parse(menuItem.payload)))
+    }
+    if (menuItem.submenu) {
+      for (let j = 0; j < menuItem.submenu.length; j++) {
+        let subItem = menuItem.submenu[j]
+        if (subItem.payload) {
+          initialFiles = initialFiles.concat(getFileIdsOfBroadcast(JSON.parse(subItem.payload)))
+        }
+        if (subItem.submenu) {
+          for (let k = 0; k < subItem.submenu.length; k++) {
+            let nestedItem = subItem.submenu[k]
+            if (nestedItem.payload) {
+              initialFiles = initialFiles.concat(getFileIdsOfBroadcast(JSON.parse(nestedItem.payload)))
+            }
+          }
+        }
+      }
+    }
+  }
+  return initialFiles
+}
+
+export function deleteInitialFiles (initialFiles, currentFiles) {
+  for (let i = initialFiles.length - 1; i >= 0; i--) {
+    let foundFile = false
+    for (let j = 0; j < currentFiles.length; j++) {
+      if (initialFiles[i] === currentFiles[j]) {
+        foundFile = true
+        break
+      }
+    }
+    if (!foundFile) {
+      deleteFile(initialFiles[i])
+      initialFiles.splice(i, 1)
+    }
+  }
+  return initialFiles
 }
 
 export function getTimeZone() {

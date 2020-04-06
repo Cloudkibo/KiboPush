@@ -12,12 +12,22 @@ import AlertContainer from 'react-alert'
 import Tabs from './tabs'
 import Preview from './preview'
 import { fetchAllSequence } from '../../redux/actions/sequence.action'
+import {getFileIdsOfBroadcast, deleteInitialFiles, deleteFile} from '../../utility/utils'
 
 class CreateURL extends React.Component {
   constructor (props, context) {
     super(props, context)
+    let initialFiles = []
+    if (this.props.location.state.messengerRefURL) {
+      if (this.props.location.state.messengerRefURL.initialFiles) {
+        initialFiles = this.props.location.state.messengerRefURL.initialFiles
+      } else if (this.props.location.state.messengerRefURL.reply) {
+        initialFiles = getFileIdsOfBroadcast(this.props.location.state.messengerRefURL.reply)
+      }
+    }
     this.state = {
-      pageName: ''
+      pageName: '',
+      initialFiles
     }
 
     if (props.location.state.module === 'createMessage') {
@@ -29,10 +39,15 @@ class CreateURL extends React.Component {
       props.fetchAllSequence()
     }
     this.onSave = this.onSave.bind(this)
+    this.onEditMessage = this.onEditMessage.bind(this)
+  }
+
+  onEditMessage () {  
+    this.editing = true
   }
 
   componentDidMount () {
-    this.setState({pageName:this.props.location.state.pageName})
+    this.setState({pageName:this.props.location.state.pageName, newFiles: this.props.messengerRefURL.newFiles})
     console.log('this.props.location.state.messengerRefURL', this.props.location.state.messengerRefURL)
     if (this.props.location.state.module && this.props.location.state.module === 'edit') {
       this.props.updateData('', '', '', {
@@ -79,6 +94,11 @@ class CreateURL extends React.Component {
     }
     console.log('this.props.location.state', this.props.location.state)
     console.log('this.props.location.state.messengerRefURL', this.props.location.state.messengerRefURL)
+    let initialFiles = this.state.initialFiles
+    let currentFiles = getFileIdsOfBroadcast(this.props.messengerRefURL.reply)
+    deleteInitialFiles(initialFiles, currentFiles)
+    this.setState({newFiles: [], initialFiles: currentFiles})
+    this.props.updateData(this.props.messengerRefURL, 'newFiles', [])
     if (this.props.location.state && this.props.location.state.messengerRefURL && this.props.location.state.module === 'edit') {
       this.props.editURL({
         _id: this.props.location.state.messengerRefURL._id,
@@ -93,6 +113,16 @@ class CreateURL extends React.Component {
         reply: this.props.messengerRefURL.reply,
         sequenceId: this.props.messengerRefURL.sequenceId
       }, this.msg)
+    }
+  }
+
+  componentWillUnmount () {
+    if (!this.editing) {
+      if (this.state.newFiles) {
+        for (let i = 0; i < this.state.newFiles.length; i++) {
+          deleteFile(this.state.newFiles[i])
+        }
+      }
     }
   }
 
@@ -131,7 +161,15 @@ class CreateURL extends React.Component {
                 </div>
                 <div className='m-portlet__body'>
                   <div className='row'>
-                    <Tabs history={this.props.history} location={this.props.location} module={this.props.location.state.module} messengerRefURL={this.props.location.state.messengerRefURL} pageName= {this.state.pageName}/>
+                    <Tabs 
+                      newFiles={this.state.newFiles} 
+                      initialFiles={this.state.initialFiles} 
+                      onEditMessage={this.onEditMessage} 
+                      history={this.props.history} 
+                      location={this.props.location} 
+                      module={this.props.location.state.module} 
+                      messengerRefURL={this.props.location.state.messengerRefURL} 
+                      pageName= {this.state.pageName}/>
                     {
                       this.props.location.state.module === 'edit' ? <Preview history={this.props.history} location={this.props.location} selectedmessengerRefURL={this.props.location.state.messengerRefURL} pageName= {this.state.pageName} /> : <Preview pageName= {this.state.pageName}/>
                     }

@@ -10,6 +10,7 @@ import GenericMessage from '../../components/SimplifiedBroadcastUI/GenericMessag
 import AlertContainer from 'react-alert'
 import { validateFields } from '../../containers/convo/utility'
 import { updateData } from '../../redux/actions/messengerCode.actions'
+import {deleteInitialFiles, getFileIdsOfBroadcast, deleteFile} from '../../utility/utils'
 
 class messengerCodeMessage extends React.Component {
   constructor (props, context) {
@@ -20,7 +21,8 @@ class messengerCodeMessage extends React.Component {
     this.state = {
       buttonActions: ['open website', 'open webview'],
       broadcast: props.messengerCode.optInMessage ? props.messengerCode.optInMessage : [],
-      convoTitle: 'Opt-In Message'
+      convoTitle: 'Opt-In Message',
+      initialFiles: this.props.location.state.initialFiles
     }
     this.saveMessage = this.saveMessage.bind(this)
     this.goBack = this.goBack.bind(this)
@@ -47,19 +49,20 @@ class messengerCodeMessage extends React.Component {
   }
 
   goBack () {
+    this.editing = true
     if (this.props.location.state.module === 'edit') {
       var newmessengerCode = this.props.location.state.selectedMessengerCode
       newmessengerCode['optInMessage'] = this.props.messengerCode.optInMessage
       console.log('find me i m here ',newmessengerCode)
       this.props.history.push({
         pathname: `/editMessengerCode`,
-        state: {module: 'edit', messengerCode: newmessengerCode}
+        state: {module: 'edit', messengerCode: newmessengerCode, initialFiles: this.props.location.state.realInitialFiles}
       })
     } else {
       console.log('go back page', this.props.messengerCode)
       this.props.history.push({
         pathname: `/createMessengerCode`,
-        state: {messengerCode: this.props.messengerCode, module: 'createMessage'}
+        state: {messengerCode: this.props.messengerCode, module: 'createMessage', initialFiles: this.props.location.state.realInitialFiles}
       })
     }
   }
@@ -72,14 +75,41 @@ class messengerCodeMessage extends React.Component {
     if (!validateFields(this.state.broadcast, this.msg)) {
       return
     } else {
+    let newFiles = this.props.location.state.newFiles
+    if (newFiles) {
+      newFiles = newFiles.concat(this.state.newFiles)
+    } else {
+      newFiles = this.state.newFiles
+    }
+    let currentFiles = getFileIdsOfBroadcast(this.state.broadcast)
+    newFiles = deleteInitialFiles(newFiles, currentFiles)
     var edit = {
       page_id: this.props.messengerCode.pageId,
       pageId: this.props.messengerCode.pageId,
       optInMessage: this.state.broadcast,
-      QRCode: this.props.messengerCode.QRCode
+      QRCode: this.props.messengerCode.QRCode,
+      newFiles
     }
     this.props.updateData(this.props.messengerCode, edit)
+    let initialFiles = this.state.initialFiles.concat(newFiles)
+    this.setState({newFiles: [], initialFiles})
     this.msg.success('Message has been saved.')
+  }
+}
+
+
+componentWillUnmount () {
+  if (!this.editing) {
+    if (this.state.newFiles) {
+      for (let i = 0; i < this.state.newFiles.length; i++) {
+        deleteFile(this.state.newFiles[i])
+      }
+    }
+    if (this.props.location.state.newFiles) {
+      for (let i = 0; i < this.props.location.state.newFiles.length; i++) {
+        deleteFile(this.props.location.state.newFiles[i])
+      }
+    }
   }
 }
 
@@ -114,6 +144,8 @@ class messengerCodeMessage extends React.Component {
           </div>
         </div>
         <GenericMessage
+          newFiles={this.state.newFiles}
+          initialFiles={this.state.initialFiles}
           pageId={this.props.messengerCode.pageId}
           pages={[this.props.messengerCode.pageId]}
           broadcast={this.state.broadcast}

@@ -4,13 +4,15 @@
 
 import React from 'react'
 import Audio from './Audio'
+import { deleteFile } from '../../utility/utils'
 
 class AudioModal extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
       disabled: false,
-      file: this.props.file ? this.props.file : null
+      file: this.props.file ? this.props.file : null,
+      initialFile: this.props.file ? this.props.file.fileurl.id : null
     }
     this.updateFile = this.updateFile.bind(this)
     this.handleDone = this.handleDone.bind(this)
@@ -29,6 +31,20 @@ class AudioModal extends React.Component {
   }
 
   addComponent () {
+    if (this.state.initialFile) {
+      let canBeDeleted = true
+      for (let i = 0; i < this.props.initialFiles.length; i++) {
+        if (this.state.initialFile === this.props.initialFiles[i]) {
+          canBeDeleted = false
+          break
+        }
+      } 
+      if (canBeDeleted) {
+        if (this.state.file.id !== this.state.initialFile) {
+          deleteFile(this.state.initialFile)
+        }
+      }
+    }
     console.log('addComponent AudioModal')
     this.props.addComponent({
       id: this.props.id,
@@ -38,6 +54,7 @@ class AudioModal extends React.Component {
   }
 
   updateFile (file) {
+    this.props.setTempFiles([file.fileurl.id])
     this.setState({file, edited: true}, () => {
       this.refs.audio.pause();
       this.refs.audio.load();
@@ -51,10 +68,6 @@ class AudioModal extends React.Component {
     } else {
       this.props.showCloseModalAlertDialog()
     }
-  }
-
-  UNSAFE_componentWillUnmount() {
-    this.props.closeModal()
   }
 
   render () {
@@ -74,7 +87,7 @@ class AudioModal extends React.Component {
               <div className='row'>
                 <div className='col-6'>
                   <h4>Audio:</h4>
-                  <Audio required file={this.state.file} updateFile={this.updateFile} />
+                  <Audio required file={this.state.file} initialFile={this.state.initialFile} initialFiles={this.props.initialFiles} updateFile={this.updateFile} />
                 </div>
                 <div className='col-1'>
                   <div style={{ minHeight: '100%', width: '1px', borderLeft: '1px solid rgba(0,0,0,.1)' }} />

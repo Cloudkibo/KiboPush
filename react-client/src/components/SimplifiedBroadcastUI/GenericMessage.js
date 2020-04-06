@@ -2,6 +2,7 @@ import React from 'react'
 
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
+import { deleteFiles, deleteFile, getFileIdsOfBroadcast } from '../../utility/utils'
 
 import { loadTags } from '../../redux/actions/tags.actions'
 import { fetchAllSequence } from '../../redux/actions/sequence.action'
@@ -32,17 +33,27 @@ class GenericMessage extends React.Component {
   constructor (props, context) {
     super(props, context)
     let hiddenComponents = this.props.hiddenComponents.map(component => component.toLowerCase())
+    let initialFiles = []
+    if (this.props.initialFiles) {
+      initialFiles = this.props.initialFiles
+    } else if (this.props.broadcast) {
+      initialFiles = getFileIdsOfBroadcast(this.props.broadcast)
+      this.props.handleChange({initialFiles})
+    }
     this.state = {
       list: [],
       quickReplies: this.props.broadcast && this.props.broadcast.length > 0 ? this.props.broadcast[this.props.broadcast.length-1].quickReplies : [],
       broadcast: this.props.broadcast.slice(),
+      initialFiles,
       isShowingModal: false,
       convoTitle: this.props.convoTitle,
       pageId: this.props.pageId,
       hiddenComponents: hiddenComponents,
       componentType: '',
       showGSModal: false,
-      quickRepliesComponent: null
+      quickRepliesComponent: null,
+      tempFiles: [],
+      newFiles: []
     }
     this.defaultTitle = this.props.convoTitle
     this.reset = this.reset.bind(this)
@@ -72,6 +83,8 @@ class GenericMessage extends React.Component {
     this.getItems = this.getItems.bind(this)
     this.toggleGSModal = this.toggleGSModal.bind(this)
     this.closeGSModal = this.closeGSModal.bind(this)
+    this.setTempFiles = this.setTempFiles.bind(this)
+    this.setNewFiles = this.setNewFiles.bind(this)
     this.GSModalContent = null
 
     if (props.setReset) {
@@ -81,6 +94,20 @@ class GenericMessage extends React.Component {
     this.props.loadTags()
     this.props.fetchAllSequence()
     console.log('genericMessage props in constructor', this.props)
+  }
+
+
+  setTempFiles (files) {
+    let tempFiles = this.state.tempFiles
+    tempFiles = tempFiles.concat(files)
+    this.setState({tempFiles})
+  }
+
+  setNewFiles (files) {
+    let newFiles = this.state.newFiles
+    newFiles = newFiles.concat(files)
+    this.props.handleChange({newFiles})
+    this.setState({newFiles})
   }
 
   toggleGSModal (value, content) {
@@ -139,6 +166,12 @@ class GenericMessage extends React.Component {
     if (!this.props.customFields && nextProps.customFields) {
       this.setState({quickRepliesComponent: null})
     }
+    if (nextProps.newFiles && this.state.newFiles.length !== nextProps.newFiles.length) {
+      this.setState({newFiles: nextProps.newFiles})
+    }
+    if (nextProps.initialFiles && nextProps.initialFiles.length !== this.state.initialFiles.length) {
+      this.setState({initialFiles: nextProps.initialFiles})
+    }
   }
 
   initializeList (broadcast) {
@@ -192,7 +225,13 @@ class GenericMessage extends React.Component {
     if (!editData && this.props.componentLimit && this.state.list.length === this.props.componentLimit) {
       this.msg.info(`You can only add ${this.props.componentLimit} components in this message`)
     } else {
-      this.setState({isShowingAddComponentModal: true, componentType, editData})
+      if (this.state.tempFiles.length > 0 && this.state.componentType !== componentType) {
+        console.log('deleting file', this.state.currentFile)
+        for (let i = 0; i < this.state.tempFiles.length; i++) {
+          deleteFile(this.state.tempFiles[i])
+        }
+      }
+      this.setState({isShowingAddComponentModal: true, componentType, editData, tempFiles: []})
       this.refs.singleModal.click()
       // $(document).on('hide.bs.modal','#singleModal', function () {
       //   alert('hi');
@@ -200,8 +239,16 @@ class GenericMessage extends React.Component {
     }
   }
 
-  closeAddComponentModal () {
-    this.setState({isShowingAddComponentModal: false, editData: null})
+  closeAddComponentModal (saving) {
+    if (!saving && this.state.tempFiles.length > 0) {
+      console.log('deleting file', this.state.tempFiles)
+      for (let i = 0; i < this.state.tempFiles.length; i++) {
+        deleteFile(this.state.tempFiles[i])
+      }
+    } else if (saving) {
+      this.setNewFiles(this.state.tempFiles)
+    }
+    this.setState({isShowingAddComponentModal: false, editData: null, tempFiles: []})
     this.refs.singleModal.click()
   }
 
@@ -425,13 +472,15 @@ class GenericMessage extends React.Component {
     console.log('obj in removeComponent', obj)
     var temp = this.state.list.filter((component) => { return (component.content.props.id !== obj.id) })
     var temp2 = this.state.broadcast.filter((component) => { return (component.id !== obj.id) })
+    let component = this.state.broadcast.find((component) => { return (component.id === obj.id) })
+    let newFiles = deleteFiles([component], this.state.newFiles, this.state.initialFiles)
     console.log('temp', temp)
     console.log('temp2', temp2)
     if (temp2.length === 0) {
       this.setState({quickReplies: []})
     }
-    this.setState({list: temp, broadcast: temp2})
-    this.props.handleChange({broadcast: temp2}, obj)
+    this.setState({list: temp, broadcast: temp2, newFiles})
+    this.props.handleChange({broadcast: temp2, newFiles}, obj)
   }
 
   newConvo () {
@@ -460,7 +509,7 @@ class GenericMessage extends React.Component {
     }
     this.updateList(component)
     component.handler()
-    this.closeAddComponentModal()
+    this.closeAddComponentModal(true)
   }
 
   updateList (component) {
@@ -500,6 +549,8 @@ class GenericMessage extends React.Component {
       'card': (<CardModal
         buttons={[]}
         module = {this.props.module}
+        setTempFiles={this.setTempFiles}
+        initialFiles={this.state.initialFiles}
         edit={this.state.editData ? true : false}
         {...this.state.editData}
         pages={this.props.pages}
@@ -513,6 +564,8 @@ class GenericMessage extends React.Component {
         addComponent={this.addComponent} />),
       'image': (<ImageModal
         edit={this.state.editData ? true : false}
+        setTempFiles={this.setTempFiles}
+        initialFiles={this.state.initialFiles}
         module = {this.props.module}
         {...this.state.editData}
         replyWithMessage={this.props.replyWithMessage}
@@ -523,6 +576,8 @@ class GenericMessage extends React.Component {
         addComponent={this.addComponent} />),
       'file': (<FileModal
         edit={this.state.editData ? true : false}
+        setTempFiles={this.setTempFiles}
+        initialFiles={this.state.initialFiles}
         module = {this.props.module}
         {...this.state.editData}
         replyWithMessage={this.props.replyWithMessage}
@@ -533,6 +588,8 @@ class GenericMessage extends React.Component {
         addComponent={this.addComponent} />),
       'audio': (<AudioModal
         edit={this.state.editData ? true : false}
+        setTempFiles={this.setTempFiles}
+        initialFiles={this.state.initialFiles}
         module = {this.props.module}
         {...this.state.editData}
         replyWithMessage={this.props.replyWithMessage}
@@ -542,6 +599,8 @@ class GenericMessage extends React.Component {
         addComponent={this.addComponent} />),
       'media': (<MediaModal
         buttons={[]}
+        setTempFiles={this.setTempFiles}
+        initialFiles={this.state.initialFiles}
         module = {this.props.module}
         edit={this.state.editData ? true : false}
         {...this.state.editData}
@@ -557,6 +616,8 @@ class GenericMessage extends React.Component {
         addComponent={this.addComponent} />),
       'video': (<YoutubeVideoModal
         buttons={[]}
+        setTempFiles={this.setTempFiles}
+        initialFiles={this.state.initialFiles}
         noButtons={this.props.noButtons}
         module = {this.props.module}
         edit={this.state.editData ? true : false}
@@ -889,6 +950,20 @@ class GenericMessage extends React.Component {
     }
   }
 
+
+  componentWillUnmount () {
+    if (this.state.tempFiles.length > 0) {
+      for (let i = 0; i < this.state.tempFiles.length; i++) {
+        deleteFile(this.state.tempFiles[i])
+      }
+    }
+    if (this.state.newFiles.length > 0) {
+      for (let i = 0; i < this.state.newFiles.length; i++) {
+        deleteFile(this.state.newFiles[i])
+      }
+    } 
+  }
+
   render () {
     console.log('render in genericMessage')
     var alertOptions = {
@@ -982,7 +1057,7 @@ class GenericMessage extends React.Component {
                               className='btn btn-primary btn-sm'
                               onClick={() => {
                                 this.closeModalAlertDialog()
-                                this.closeAddComponentModal()
+                                this.closeAddComponentModal(false)
                               }} data-dismiss='modal'>Yes
                           </button>
                             <button style={{ float: 'right' }}
@@ -1080,9 +1155,9 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-      loadCustomFields: loadCustomFields,
-      fetchAllSequence: fetchAllSequence,
-      loadTags: loadTags
+      loadCustomFields,
+      fetchAllSequence,
+      loadTags
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps, null, { withRef: true })(GenericMessage)

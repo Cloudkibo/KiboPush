@@ -2,17 +2,12 @@
 
 import React from 'react'
 import { connect } from 'react-redux'
-import {
-  addBroadcast,
-  clearAlertMessage,
-  loadBroadcastsList,
-  sendbroadcast
-} from '../../redux/actions/broadcast.actions'
 import AlertContainer from 'react-alert'
 import { uploadFile, uploadTemplate } from '../../redux/actions/convos.actions'
 import { bindActionCreators } from 'redux'
 import Files from 'react-files'
 import { RingLoader } from 'halogenium'
+import { deleteFile } from '../../utility/utils'
 
 class Audio extends React.Component {
   // eslint-disable-next-line no-useless-constructor
@@ -20,6 +15,7 @@ class Audio extends React.Component {
     super(props, context)
     this.state = {
       file: this.props.file ? this.props.file : '',
+      initialFile: this.props.initialFile,
       errorMsg: '',
       showErrorDialogue: false,
       loading: false,
@@ -80,6 +76,22 @@ class Audio extends React.Component {
 
   onFilesChange (files) {
     if (files.length > 0) {
+      if (this.state.file && this.state.file.id) {
+        let canBeDeleted = true
+        for (let i = 0; i < this.props.initialFiles.length; i++) {
+          if (this.state.file.id === this.props.initialFiles[i]) {
+            canBeDeleted = false
+            break
+          }
+        }
+        if (this.state.file.id === this.props.initialFile) {
+          canBeDeleted = false
+        }
+        if (canBeDeleted) {
+          console.log('deleting file', this.state.file)
+          deleteFile(this.state.file.id)
+        }
+      }
       var file = files[files.length - 1]
       if (file.size > 10000000) {
         this.msg.error('Files greater than 25MB not allowed')
@@ -191,12 +203,8 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-    loadBroadcastsList: loadBroadcastsList,
-    addBroadcast: addBroadcast,
-    sendbroadcast: sendbroadcast,
-    clearAlertMessage: clearAlertMessage,
-    uploadTemplate: uploadTemplate,
-    uploadFile: uploadFile
+    uploadTemplate,
+    uploadFile
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Audio)

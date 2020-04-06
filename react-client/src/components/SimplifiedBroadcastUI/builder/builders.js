@@ -6,6 +6,7 @@ import AlertContainer from 'react-alert'
 import PropTypes from 'prop-types'
 import { uploadTemplate } from '../../../redux/actions/convos.actions'
 import { RingLoader } from 'halogenium'
+import { deleteFiles, deleteFile, getFileIdsOfComponent } from '../../../utility/utils'
 
 import { loadTags } from '../../../redux/actions/tags.actions'
 import { fetchAllSequence } from '../../../redux/actions/sequence.action'
@@ -64,7 +65,10 @@ class Builders extends React.Component {
       editingFlowBuilder: false,
       showGSModal: false,
       loading: this.props.linkedMessages && this.props.linkedMessages.length > 0,
-      fileError: ''
+      fileError: '',
+      tempFiles: [],
+      newFiles: [],
+      initialFiles: []
     }
     this.defaultTitle = this.props.convoTitle
     this.reset = this.reset.bind(this)
@@ -115,6 +119,8 @@ class Builders extends React.Component {
     this.updateFileUrl = this.updateFileUrl.bind(this)
     this.onFilesError = this.onFilesError.bind(this)
     this.confirmDeleteModal = this.confirmDeleteModal.bind(this)
+    this.setTempFiles = this.setTempFiles.bind(this)
+    this.setNewFiles = this.setNewFiles.bind(this)
     this.GSModalContent = null
 
     if (props.setReset) {
@@ -138,6 +144,37 @@ class Builders extends React.Component {
     this.props.fetchAllSequence()
     this.props.loadCustomFields()
     console.log('builders props in constructor', this.props)
+  }
+
+  UNSAFE_componentWillReceiveProps (nextProps) {
+    if (nextProps.newFiles && this.state.newFiles.length !== nextProps.newFiles.length) {
+      this.setState({newFiles: nextProps.newFiles})
+    }
+  }
+
+  setTempFiles (files) {
+    let tempFiles = this.state.tempFiles
+    tempFiles = tempFiles.concat(files)
+    this.setState({tempFiles})
+  }
+
+  setNewFiles (files) {
+    let newFiles = this.state.newFiles
+    let tempFiles = this.state.tempFiles
+    newFiles = newFiles.concat(files)
+    for (let i = 0; i < newFiles.length; i++) {
+      for (let j = tempFiles.length - 1; j >= 0; j--) {
+        if (newFiles[i] === tempFiles[j]) {
+          tempFiles.splice(j,1)
+        }
+      }
+    }
+    for (let i = 0; i < tempFiles.length; i++) {
+      console.log('deleting file', tempFiles[i])
+      deleteFile(tempFiles[i])
+    }
+    this.props.handleChange({newFiles})
+    this.setState({newFiles, tempFiles: []})
   }
 
   titleChange (e) {
@@ -704,7 +741,13 @@ class Builders extends React.Component {
     if (!editData && this.props.componentLimit && this.state.lists[this.state.currentId].length === this.props.componentLimit) {
       this.msg.info(`You can only add ${this.props.componentLimit} components in this message`)
     } else {
-      this.setState({isShowingAddComponentModal: true, componentType, editData})
+      if (this.state.tempFiles.length > 0 && this.state.componentType !== componentType) {
+        for (let i = 0; i < this.state.tempFiles.length; i++) {
+          console.log('deleting file', this.state.tempFiles[i])
+          deleteFile(this.state.tempFiles[i])
+        }
+      }
+      this.setState({isShowingAddComponentModal: true, componentType, editData, tempFiles: []})
       this.refs.singleModal.click()
       // $(document).on('hide.bs.modal','#singleModal', function () {
       //   alert('hi');
@@ -712,8 +755,14 @@ class Builders extends React.Component {
     }
   }
 
-  closeAddComponentModal () {
-    this.setState({isShowingAddComponentModal: false, editData: null})
+  closeAddComponentModal (saving) {
+    if (!saving && this.state.tempFiles.length > 0) {
+      for (let i = 0; i < this.state.tempFiles.length; i++) {
+        console.log('deleting file', this.state.tempFiles[i])
+        deleteFile(this.state.tempFiles[i])
+      }
+    }
+    this.setState({isShowingAddComponentModal: false, editData: null, tempFiles: []})
     this.refs.singleModal.click()
   }
 
@@ -1013,8 +1062,11 @@ class Builders extends React.Component {
 
   removeComponent (obj) {
     console.log('obj in removeComponent', obj)
-    var temp = this.state.lists[this.state.currentId].filter((component) => { return (component.content.props.id !== obj.id) })
-    var temp2 = this.getCurrentMessage().messageContent.filter((component) => { return (component.id !== obj.id) })
+    let currentMessage = this.getCurrentMessage()
+    let temp = this.state.lists[this.state.currentId].filter((component) => { return (component.content.props.id !== obj.id) })
+    let temp2 = currentMessage.messageContent.filter((component) => { return (component.id !== obj.id) })
+    let component = currentMessage.messageContent.find((component) => { return (component.id === obj.id) })
+    let newFiles = deleteFiles([component], this.state.newFiles)
     console.log('temp', temp)
     console.log('temp2', temp2)
     if (temp2.length === 0) {
@@ -1024,8 +1076,8 @@ class Builders extends React.Component {
     }
     let lists = this.state.lists
     lists[this.state.currentId] = temp
-    this.setState({lists})
-    this.handleChange({broadcast: temp2}, obj)
+    this.setState({lists, newFiles})
+    this.handleChange({broadcast: temp2, newFiles}, obj)
   }
 
   newConvo (render) {
@@ -1295,9 +1347,11 @@ class Builders extends React.Component {
     } else {
         this.msg.info(`New ${componentDetails.componentName} component added`)
     }
+    let fileIds = getFileIdsOfComponent(componentDetails)
+    this.setNewFiles(fileIds)
     this.updateList(component)
     component.handler()
-    this.closeAddComponentModal()
+    this.closeAddComponentModal(true)
   }
 
   updateList (component) {
@@ -1336,6 +1390,8 @@ class Builders extends React.Component {
         hideUserOptions={this.props.hideUserOptions} />),
       'card': (<CardModal
         buttons={[]}
+        setTempFiles={this.setTempFiles}
+        initialFiles={this.state.initialFiles}
         module = {this.props.module}
         edit={this.state.editData ? true : false}
         {...this.state.editData}
@@ -1350,6 +1406,8 @@ class Builders extends React.Component {
         addComponent={this.addComponent} />),
       'image': (<ImageModal
         edit={this.state.editData ? true : false}
+        setTempFiles={this.setTempFiles}
+        initialFiles={this.state.initialFiles}
         module = {this.props.module}
         {...this.state.editData}
         replyWithMessage={this.props.replyWithMessage}
@@ -1360,6 +1418,8 @@ class Builders extends React.Component {
         addComponent={this.addComponent} />),
       'file': (<FileModal
         edit={this.state.editData ? true : false}
+        setTempFiles={this.setTempFiles}
+        initialFiles={this.state.initialFiles}
         module = {this.props.module}
         {...this.state.editData}
         replyWithMessage={this.props.replyWithMessage}
@@ -1370,6 +1430,8 @@ class Builders extends React.Component {
         addComponent={this.addComponent} />),
       'audio': (<AudioModal
         edit={this.state.editData ? true : false}
+        setTempFiles={this.setTempFiles}
+        initialFiles={this.state.initialFiles}
         module = {this.props.module}
         {...this.state.editData}
         replyWithMessage={this.props.replyWithMessage}
@@ -1379,6 +1441,8 @@ class Builders extends React.Component {
         addComponent={this.addComponent} />),
       'media': (<MediaModal
         buttons={[]}
+        setTempFiles={this.setTempFiles}
+        initialFiles={this.state.initialFiles}
         module = {this.props.module}
         edit={this.state.editData ? true : false}
         {...this.state.editData}
@@ -1395,6 +1459,8 @@ class Builders extends React.Component {
         addComponent={this.addComponent} />),
       'video': (<YoutubeVideoModal
           buttons={[]}
+          setTempFiles={this.setTempFiles}
+          initialFiles={this.state.initialFiles}
           noButtons={this.props.noButtons}
           module = {this.props.module}
           edit={this.state.editData ? true : false}
@@ -1422,22 +1488,22 @@ class Builders extends React.Component {
         toggleGSModal={this.toggleGSModal}
         closeGSModal={this.closeGSModal}
         addComponent={this.addComponent} />),
-        'userInput': (<UserInputModal
-          buttons={[]}
-          customFields={this.props.customFields}
-          module = {this.props.module}
-          edit={this.state.editData ? true : false}
-          {...this.state.editData}
-          noButtons={this.props.noButtons}
-          pages={this.props.pages}
-          buttonActions={this.props.buttonActions}
-          replyWithMessage={this.props.replyWithMessage}
-          pageId={this.props.pageId.pageId}
-          showCloseModalAlertDialog={this.showCloseModalAlertDialog}
-          closeModal={this.closeAddComponentModal}
-          addComponent={this.addComponent}
-          toggleGSModal={this.toggleGSModal}
-          closeGSModal={this.closeGSModal}
+      'userInput': (<UserInputModal
+        buttons={[]}
+        customFields={this.props.customFields}
+        module = {this.props.module}
+        edit={this.state.editData ? true : false}
+        {...this.state.editData}
+        noButtons={this.props.noButtons}
+        pages={this.props.pages}
+        buttonActions={this.props.buttonActions}
+        replyWithMessage={this.props.replyWithMessage}
+        pageId={this.props.pageId.pageId}
+        showCloseModalAlertDialog={this.showCloseModalAlertDialog}
+        closeModal={this.closeAddComponentModal}
+        addComponent={this.addComponent}
+        toggleGSModal={this.toggleGSModal}
+        closeGSModal={this.closeGSModal}
           hideUserOptions={this.props.hideUserOptions} />)
     }
     return modals[this.state.componentType]
@@ -1790,6 +1856,19 @@ class Builders extends React.Component {
     }
   }
 
+  componentWillUnmount () {
+    if (this.state.tempFiles.length > 0) {
+      for (let i = 0; i < this.state.tempFiles.length; i++) {
+        deleteFile(this.state.tempFiles[i])
+      }
+    }
+    if (this.state.newFiles.length > 0) {
+      for (let i = 0; i < this.state.newFiles.length; i++) {
+        deleteFile(this.state.newFiles[i])
+      }
+    }
+  }
+
   render () {
     var alertOptions = {
       offset: 75,
@@ -1949,7 +2028,7 @@ class Builders extends React.Component {
                 className='btn btn-primary btn-sm'
                 onClick={() => {
                   this.closeModalAlertDialog()
-                  this.closeAddComponentModal()
+                  this.closeAddComponentModal(false)
                 }} data-dismiss='modal'>Yes
             </button>
               <button style={{ float: 'right' }}

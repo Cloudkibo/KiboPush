@@ -125,7 +125,8 @@ export function updateLandingPageData (landingPageData, tabValue, updateKey, upd
       submittedState: landingPageData.submittedState,
       pageId: landingPageData.pageId,
       optInMessage: landingPageData.optInMessage ? landingPageData.optInMessage : [],
-      currentTab: landingPageData.currentTab
+      currentTab: landingPageData.currentTab,
+      newFiles: landingPageData.newFiles
     }
     if (editLandingPage) {
       landingPage = {
@@ -165,7 +166,7 @@ export function updateLandingPageData (landingPageData, tabValue, updateKey, upd
       console.log('inside state action', landingPageData)
       landingPage[tabValue][updateKey][stateKey] = updateValue
       console.log('landingPage in action', landingPage)
-    } else if (updateKey === 'currentTab' || updateKey === 'pageId' || updateKey === 'optInMessage' || updateKey === 'isActive') {
+    } else if (updateKey === 'currentTab' || updateKey === 'pageId' || updateKey === 'optInMessage' || updateKey === 'isActive' || updateKey === 'newFiles') {
       landingPage[updateKey] = updateValue
     } else {
       landingPage[tabValue][updateKey] = updateValue

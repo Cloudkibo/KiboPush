@@ -1,6 +1,7 @@
 /* eslint-disable no-undef */
 import React from 'react'
 import AddCard from './AddCard'
+import {deleteFile} from '../../utility/utils'
 
 class CardModal extends React.Component {
   constructor(props) {
@@ -8,9 +9,11 @@ class CardModal extends React.Component {
     this.elementLimit = 10
     this.buttonLimit = 3
     let cards = []
+    let initialModalFiles = []
     for (let i = 0; i < this.elementLimit; i++) {
       if (props.cards && props.cards[i]) {
         cards.push({ component: props.cards[i], disabled: false, id: i + 1 })
+        initialModalFiles.push(props.cards[i].fileurl.id)
       } else {
         if (i === 0) {
           cards.push({
@@ -39,6 +42,7 @@ class CardModal extends React.Component {
     this.cardComponents = new Array(10)
     this.state = {
       cards,
+      initialModalFiles,
       selectedIndex: 0,
       currentCollapsed: false,
       disabled: props.edit ? false : true,
@@ -145,6 +149,23 @@ class CardModal extends React.Component {
     let buttons = []
     if (this.state.cards.length === 1) {
       let card = this.state.cards[0].component
+      if (this.state.initialModalFiles.length > 0) {
+        let canBeDeleted = true
+        for (let i = 0; i < this.state.initialModalFiles.length; i++) {
+          for (let j = 0; j < this.props.initialFiles.length; j++) {
+            if (this.state.initialModalFiles[i] === this.props.initialFiles[j]) {
+              canBeDeleted = false
+              break
+            }
+          }
+          if (canBeDeleted) {
+            if (card.fileurl.id !== this.state.initialModalFiles[i]) {
+              deleteFile(this.state.initialModalFiles[i])
+              break
+            }
+          }
+        } 
+      }
       deletePayload = this.getDeletePayload(this.finalCards[0] ? this.finalCards[0].buttons : card.buttons)
       console.log('deletePayload for card', deletePayload)
       this.props.addComponent({
@@ -166,7 +187,25 @@ class CardModal extends React.Component {
         buttons: this.finalCards[0] ? this.finalCards[0].buttons : card.buttons
       }, this.props.edit)
     } else if (this.state.cards.length > 1) {
+      let filesToDelete = this.state.initialModalFiles
       let cards = this.state.cards.map((card, index) => {
+        if (filesToDelete.length > 0) {
+          let canBeDeleted = true
+          for (let i = filesToDelete.length - 1; i >= 0; i--) {
+            for (let j = 0; j < this.props.initialFiles.length; j++) {
+              if (filesToDelete[i] === this.props.initialFiles[j]) {
+                canBeDeleted = false
+                break
+              }
+            }
+            if (canBeDeleted) {
+              if (card.component.fileurl.id === filesToDelete[i]) {
+                filesToDelete.splice(i, 1)
+                break
+              }
+            }
+          } 
+        }
         let finalCard = this.finalCards.find(x => card.id === x.id)
         buttons = buttons.concat(finalCard ? finalCard.buttons : card.component.buttons)
         console.log('deletePayload for gallery', deletePayload)
@@ -187,6 +226,10 @@ class CardModal extends React.Component {
           buttons: finalCard ? finalCard.buttons : card.component.buttons
         }
       })
+      for (let i = 0; i < filesToDelete.length; i++) {
+        console.log('deleting file', filesToDelete[i])
+        deleteFile(filesToDelete[i])
+      }
       console.log('final buttons for gallery', buttons)
       deletePayload = this.getDeletePayload(buttons)
       console.log('final deletePayload for gallery', deletePayload)
@@ -326,6 +369,24 @@ class CardModal extends React.Component {
   closeCard(id) {
     console.log('closing card', id)
     let cards = this.state.cards
+    let card = cards[id-1].component
+    if (this.state.initialModalFiles.length > 0) {
+      let canBeDeleted = true
+      for (let i = 0; i < this.state.initialModalFiles.length; i++) {
+        for (let j = 0; j < this.props.initialFiles.length; j++) {
+          if (this.state.initialModalFiles[i] === this.props.initialFiles[j]) {
+            canBeDeleted = false
+            break
+          }
+        }
+        if (canBeDeleted) {
+          if (card.fileurl.id !== this.state.initialModalFiles[i]) {
+            deleteFile(card.fileurl.id)
+            break
+          }
+        }
+      } 
+    }
     if (this.state.numOfElements <= 1) {
       console.log('At least one card is required')
       cards[id - 1].invalid = true
@@ -381,10 +442,6 @@ class CardModal extends React.Component {
     this.setState({ selectedIndex: index }, () => {
       this.scrollToTop(`panel-heading${index + 1}`)
     })
-  }
-
-  UNSAFE_componentWillUnmount() {
-    this.props.closeModal()
   }
 
   render() {
@@ -458,7 +515,10 @@ class CardModal extends React.Component {
                           <div id={`collapse${index + 1}`} className={"panel-collapse " + (this.state.selectedIndex === index ? "show" : "collapse")}>
                             <div className="panel-body">
                               <AddCard
+                                initialFiles={this.props.initialFiles}
+                                initialModalFiles={this.state.initialModalFiles}
                                 edit={this.props.edit}
+                                setTempFiles={this.props.setTempFiles}
                                 buttonActions={this.state.buttonActions}
                                 buttonLimit={this.buttonLimit}
                                 index={card.id - 1}

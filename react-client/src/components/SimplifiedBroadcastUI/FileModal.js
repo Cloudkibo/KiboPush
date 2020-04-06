@@ -4,13 +4,15 @@
 
 import React from 'react'
 import AddFile from './AddFile'
+import { deleteFile } from '../../utility/utils'
 
 class FileModal extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
       disabled: false,
-      file: this.props.file ? this.props.file : ''
+      file: this.props.file ? this.props.file : '',
+      initialFile: this.props.file ? this.props.file.fileurl.id : null
     }
     this.updateFile = this.updateFile.bind(this)
     this.handleDone = this.handleDone.bind(this)
@@ -27,6 +29,20 @@ class FileModal extends React.Component {
   //   },
 
   addComponent() {
+    if (this.state.initialFile) {
+      let canBeDeleted = true
+      for (let i = 0; i < this.props.initialFiles.length; i++) {
+        if (this.state.initialFile === this.props.initialFiles[i]) {
+          canBeDeleted = false
+          break
+        }
+      } 
+      if (canBeDeleted) {
+        if (this.state.file.id !== this.state.initialFile) {
+          deleteFile(this.state.initialFile)
+        }
+      }
+    }
     console.log('addComponent FileModal')
     this.props.addComponent({
       id: this.props.id,
@@ -37,6 +53,7 @@ class FileModal extends React.Component {
   }
 
   updateFile(file) {
+    this.props.setTempFiles([file.fileurl.id])
     this.setState({ file, edited: true })
   }
 
@@ -46,10 +63,6 @@ class FileModal extends React.Component {
     } else {
       this.props.showCloseModalAlertDialog()
     }
-  }
-
-  UNSAFE_componentWillUnmount() {
-    this.props.closeModal()
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
@@ -76,7 +89,14 @@ class FileModal extends React.Component {
           <div className='row'>
             <div className='col-6'>
               <h4>File:</h4>
-              <AddFile required file={this.state.file} updateFile={this.updateFile} module={this.props.module} />
+              <AddFile 
+                required 
+                initialFile={this.state.initialFile}
+                initialFiles={this.props.initialFiles}
+                file={this.state.file} 
+                updateFile={this.updateFile} 
+                module={this.props.module} 
+              />
             </div>
             <div className='col-1'>
               <div style={{ minHeight: '100%', width: '1px', borderLeft: '1px solid rgba(0,0,0,.1)' }} />
