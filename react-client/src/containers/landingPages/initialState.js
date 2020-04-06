@@ -54,11 +54,10 @@ class InitialState extends React.Component {
         this.msg.error('Please select an image of type jpg, gif, bmp or png')
         return
       }
-      if (this.state.file && this.state.file.fileurl && this.state.file.fileurl.id) {
-        if (this.props.landingPage.initialState.initialFile) {
-          if (this.state.file.fileurl.id !== this.props.landingPage.initialState.initialFile) {
-            deleteFile(this.state.file.fileurl.id)
-          }
+      if (this.props.initialState.mediaLink) {
+        let fileId = getFileIdFromUrl(this.props.initialState.mediaLink)
+        if (this.props.landingPage.initialState.initialFile !== fileId) {
+          deleteFile(this.state.file.fileurl.id)
         }
       }
       var reader = new FileReader()
