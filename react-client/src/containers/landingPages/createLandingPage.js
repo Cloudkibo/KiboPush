@@ -121,7 +121,6 @@ class CreateLandingPage extends React.Component {
   }
 
   componentWillUnmount () {
-    debugger
     if (!this.editing) {
       if (this.state.newFiles) {
         for (let i = 0; i < this.state.newFiles.length; i++) {
