@@ -243,9 +243,10 @@ class CreateMessage extends React.Component {
         state: {module: 'edit', jsonAdId: this.props.location.state.jsonAdId, initialFiles: this.props.location.state.realInitialFiles}
       })
     } else {
+      console.log('on createAdmessage')
       this.props.history.push({
         pathname: `/createAdMessage`,
-        state: {module: 'create'}
+        state: {module: 'create', setupState: this.props.location.state.setupState}
       })
     }
   }

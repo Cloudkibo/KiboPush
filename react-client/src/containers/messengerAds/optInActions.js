@@ -27,7 +27,7 @@ class OptInActions extends React.Component {
     }
     this.props.history.push({
       pathname: `/createMessengerAdMessage`,
-      state: {jsonAdId: this.props.jsonAdId, initialFiles, realInitialFiles: this.props.initialFiles, newFiles: this.props.newFiles}
+      state: {jsonAdId: this.props.jsonAdId, setupState: this.props.setupState, initialFiles, realInitialFiles: this.props.initialFiles, newFiles: this.props.newFiles}
     })
   }
 
