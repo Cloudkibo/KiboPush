@@ -72,12 +72,12 @@ class File extends React.Component {
           if (this.state.file.id === this.props.initialFiles[i]) {
             canBeDeleted = false
           }
-          if (this.state.file.id === this.props.initialFile) {
-            canBeDeleted = false
-          }
+        }
+        if (this.state.file.id === this.props.initialFile) {
+          canBeDeleted = false
         }
         if (canBeDeleted) {
-          console.log('deleting file', this.state.file)
+          this.props.setTempFiles(null, [this.state.file.id])
           deleteFile(this.state.file.id)
         }
       }

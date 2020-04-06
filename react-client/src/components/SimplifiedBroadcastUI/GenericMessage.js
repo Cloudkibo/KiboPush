@@ -97,9 +97,20 @@ class GenericMessage extends React.Component {
   }
 
 
-  setTempFiles (files) {
+  setTempFiles (files, filesToRemove) {
     let tempFiles = this.state.tempFiles
-    tempFiles = tempFiles.concat(files)
+    if (files) {
+      tempFiles = tempFiles.concat(files)
+    }
+    if (filesToRemove) {
+      for (let i = tempFiles.length - 1; i >= 0; i--) {
+        for (let j = 0; j < filesToRemove.length; j++) {
+          if (tempFiles[i] === filesToRemove[j]) {
+            tempFiles.splice(i, 1)
+          }
+        }
+      }
+    }
     this.setState({tempFiles})
   }
 
@@ -226,7 +237,6 @@ class GenericMessage extends React.Component {
       this.msg.info(`You can only add ${this.props.componentLimit} components in this message`)
     } else {
       if (this.state.tempFiles.length > 0 && this.state.componentType !== componentType) {
-        console.log('deleting file', this.state.currentFile)
         for (let i = 0; i < this.state.tempFiles.length; i++) {
           deleteFile(this.state.tempFiles[i])
         }
@@ -241,7 +251,6 @@ class GenericMessage extends React.Component {
 
   closeAddComponentModal (saving) {
     if (!saving && this.state.tempFiles.length > 0) {
-      console.log('deleting file', this.state.tempFiles)
       for (let i = 0; i < this.state.tempFiles.length; i++) {
         deleteFile(this.state.tempFiles[i])
       }

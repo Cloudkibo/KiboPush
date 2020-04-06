@@ -170,7 +170,6 @@ class Builders extends React.Component {
       }
     }
     for (let i = 0; i < tempFiles.length; i++) {
-      console.log('deleting file', tempFiles[i])
       deleteFile(tempFiles[i])
     }
     this.props.handleChange({newFiles})
@@ -743,7 +742,6 @@ class Builders extends React.Component {
     } else {
       if (this.state.tempFiles.length > 0 && this.state.componentType !== componentType) {
         for (let i = 0; i < this.state.tempFiles.length; i++) {
-          console.log('deleting file', this.state.tempFiles[i])
           deleteFile(this.state.tempFiles[i])
         }
       }
@@ -758,7 +756,6 @@ class Builders extends React.Component {
   closeAddComponentModal (saving) {
     if (!saving && this.state.tempFiles.length > 0) {
       for (let i = 0; i < this.state.tempFiles.length; i++) {
-        console.log('deleting file', this.state.tempFiles[i])
         deleteFile(this.state.tempFiles[i])
       }
     }

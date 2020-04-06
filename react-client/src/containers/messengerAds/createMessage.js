@@ -305,11 +305,6 @@ class CreateMessage extends React.Component {
 
   componentWillUnmount () {
     if (!this.editing) {
-      if (this.state.newFiles) {
-        for (let i = 0; i < this.state.newFiles.length; i++) {
-          deleteFile(this.state.newFiles[i])
-        }
-      }
       if (this.props.messengerAd.newFiles) {
         for (let i = 0; i < this.props.messengerAd.newFiles.length; i++) {
           deleteFile(this.props.messengerAd.newFiles[i])

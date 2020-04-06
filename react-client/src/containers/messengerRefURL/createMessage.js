@@ -100,11 +100,6 @@ class MessengerRefURLMessage extends React.Component {
 
   componentWillUnmount () {
     if (!this.editing) {
-      if (this.state.newFiles) {
-        for (let i = 0; i < this.state.newFiles.length; i++) {
-          deleteFile(this.state.newFiles[i])
-        }
-      }
       if (this.props.messengerRefURL.newFiles) {
         for (let i = 0; i < this.props.messengerRefURL.newFiles.length; i++) {
           deleteFile(this.props.messengerRefURL.newFiles[i])

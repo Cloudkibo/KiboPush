@@ -227,7 +227,6 @@ class CardModal extends React.Component {
         }
       })
       for (let i = 0; i < filesToDelete.length; i++) {
-        console.log('deleting file', filesToDelete[i])
         deleteFile(filesToDelete[i])
       }
       console.log('final buttons for gallery', buttons)

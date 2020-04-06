@@ -213,7 +213,6 @@ export function deleteFiles (payload, newFiles, filesToKeep) {
           }
         }
       }
-      console.log('deleting file', files[i])
       deleteFile(files[i])
     }
   }
@@ -291,6 +290,12 @@ export function deleteInitialFiles (initialFiles, currentFiles) {
 export function getTimeZone() {
   var offset = new Date().getTimezoneOffset(), o = Math.abs(offset);
   return (offset < 0 ? "+" : "-") + ("00" + Math.floor(o / 60)).slice(-2) + ":" + ("00" + (o % 60)).slice(-2);
+}
+
+export function getFileIdFromUrl (url) {
+  let index = url.lastIndexOf('/')
+  let fileId = url.substr(index+1, url.length)
+  return fileId
 }
 
 export var LANGUAGE_BY_LOCALE = {

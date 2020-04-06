@@ -11,7 +11,7 @@ import CopyToClipboard from 'react-copy-to-clipboard'
 import {fetchLandingPages, deleteLandingPage, setInitialState, editLandingPage} from '../../redux/actions/landingPages.actions'
 import AlertContainer from 'react-alert'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
-import {deleteFiles} from '../../utility/utils'
+import {deleteFiles, deleteFile, getFileIdFromUrl} from '../../utility/utils'
 import YouTube from 'react-youtube'
 
 class LandingPage extends React.Component {
@@ -47,8 +47,8 @@ class LandingPage extends React.Component {
     this.setupLandingPage = this.setupLandingPage.bind(this)
     this.closeDialogSetup = this.closeDialogSetup.bind(this)
     this.openVideoTutorial = this.openVideoTutorial.bind(this)
-
   }
+
   openVideoTutorial () {
     this.setState({
       openVideo: true
@@ -233,8 +233,12 @@ class LandingPage extends React.Component {
               <button style={{float: 'right'}}
                 className='btn btn-primary btn-sm'
                 onClick={() => {
-                  let landingPageMessage = this.state.landingPagesData.find(m => m._id === this.state.deleteid).optInMessage
-                  deleteFiles(landingPageMessage)
+                  let landingPage = this.state.landingPagesData.find(m => m._id === this.state.deleteid)
+                  if (landingPage.initialState && landingPage.initialState.mediaLink) {
+                    let fileId = getFileIdFromUrl(landingPage.initialState.mediaLink)
+                    deleteFile(fileId)
+                  }
+                  deleteFiles(landingPage.optInMessage)
                   this.props.deleteLandingPage(this.state.deleteid, this.msg)
                   this.closeDialogDelete()
                 }} data-dismiss='modal'>Delete

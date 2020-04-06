@@ -91,6 +91,7 @@ class FileModal extends React.Component {
               <h4>File:</h4>
               <AddFile 
                 required 
+                setTempFiles={this.props.setTempFiles}
                 initialFile={this.state.initialFile}
                 initialFiles={this.props.initialFiles}
                 file={this.state.file} 
