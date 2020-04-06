@@ -85,7 +85,7 @@ class Image extends React.Component {
         }
       }
       if (canBeDeleted) {
-        console.log('deleting file', this.state.file)
+        this.props.setTempFiles(null, [this.state.file.fileurl.id])
         deleteFile(this.state.file.fileurl.id)
       }
     }

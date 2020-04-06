@@ -88,7 +88,7 @@ class Audio extends React.Component {
           canBeDeleted = false
         }
         if (canBeDeleted) {
-          console.log('deleting file', this.state.file)
+          this.props.setTempFiles(null, [this.state.file.id])
           deleteFile(this.state.file.id)
         }
       }

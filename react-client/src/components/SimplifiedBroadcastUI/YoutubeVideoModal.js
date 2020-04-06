@@ -58,7 +58,6 @@ class YoutubeVideoModal extends React.Component {
         canBeDeleted = false
       }
       if (canBeDeleted) {
-        console.log('deleting file', this.state.file)
         deleteFile(this.state.file.fileurl.id)
       }
     }

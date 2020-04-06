@@ -64,7 +64,7 @@ class Media extends React.Component {
         canBeDeleted = false
       }
       if (canBeDeleted) {
-        console.log('deleting file', this.state.fileurl)
+        this.props.setTempFiles(null, [this.state.fileurl.id])
         deleteFile(this.state.fileurl.id)
       }
     }

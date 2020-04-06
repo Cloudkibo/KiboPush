@@ -80,7 +80,8 @@ class CreateLandingPage extends React.Component {
     let initialFiles = this.state.initialFiles
     let currentFiles = getFileIdsOfBroadcast(this.props.landingPage.optInMessage)
     deleteInitialFiles(initialFiles, currentFiles)
-    this.setState({newFiles: [], initialFiles: currentFiles})
+    this.setState({newFiles: [], initialFiles: currentFiles, newInitialStateFile: ''})
+    this.props.landingPage.initialState.newFile = ''
     this.props.updateLandingPageData(this.props.landingPage, this.props.landingPage.currentTab, 'newFiles', [])
     this.props.editLandingPage(this.state.landingPageId, {
       initialState: this.props.landingPage.initialState,
@@ -92,7 +93,7 @@ class CreateLandingPage extends React.Component {
     let initialFiles = this.state.initialFiles
     let currentFiles = getFileIdsOfBroadcast(this.props.landingPage.optInMessage)
     deleteInitialFiles(initialFiles, currentFiles)
-    this.setState({newFiles: [], initialFiles: currentFiles}, () => {
+    this.setState({newFiles: [], initialFiles: currentFiles, newInitialStateFile: ''}, () => {
       this.props.createLandingPage({initialState: this.props.landingPage.initialState,
         submittedState: this.props.landingPage.submittedState,
         pageId: this.props.location.state ? this.props.location.state._id : this.state.pageId,
@@ -113,12 +114,21 @@ class CreateLandingPage extends React.Component {
       isActive: value}, this.msg, value ? 'Landing Page Activated Successfully' : 'Landing Page Deactivated Successfully')
   }
 
+  UNSAFE_componentWillReceiveProps (nextProps) {
+    if (nextProps.landingPage.initialState.newFile !== this.state.newInitialStateFile) {
+      this.setState({newInitialStateFile: nextProps.landingPage.initialState.newFile})
+    }
+  }
+
   componentWillUnmount () {
     if (!this.editing) {
       if (this.state.newFiles) {
         for (let i = 0; i < this.state.newFiles.length; i++) {
           deleteFile(this.state.newFiles[i])
         }
+      }
+      if (this.state.newInitialStateFile) {
+        deleteFile(this.state.newInitialStateFile)
       }
     }
   }
@@ -154,13 +164,14 @@ class CreateLandingPage extends React.Component {
                             history={this.props.history} 
                             location={this.props.location} 
                             module={'edit'}
+                            onEditMessage={this.onEditMessage}
                             landing_page_id={this.state.landingPageId}
                             isActive={this.state.isActive}
                              />
                           : <Tabs 
                             initialFiles={this.state.initialFiles}
                             newFiles={this.state.newFiles}
-                            onEditMessage={this.props.onEditMessage}
+                            onEditMessage={this.onEditMessage}
                             history={this.props.history} 
                             location={this.props.location} 
                             />

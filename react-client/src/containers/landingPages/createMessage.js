@@ -86,11 +86,6 @@
 
     componentWillUnmount () {
       if (!this.editing) {
-        if (this.state.newFiles) {
-          for (let i = 0; i < this.state.newFiles.length; i++) {
-            deleteFile(this.state.newFiles[i])
-          }
-        }
         if (this.props.landingPage.newFiles) {
           for (let i = 0; i < this.props.landingPage.newFiles.length; i++) {
             deleteFile(this.props.landingPage.newFiles[i])
