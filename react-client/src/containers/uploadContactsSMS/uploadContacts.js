@@ -160,6 +160,11 @@ class UploadContacts extends React.Component {
       fileData.append('filesize', file.size)
       fileData.append('phoneColumn', 'number')
       fileData.append('nameColumn', 'name')
+      if (this.state.existingList) {
+        fileData.append('listId', this.state.existingList.value)
+      } else if (this.state.newList) {
+        fileData.append('newListName', this.state.newList)
+      }
       this.props.uploadFile(fileData, this.handleFileUpload)
     } else {
       this.msg.error('Please handle the invalid records first and then submit.')
@@ -274,7 +279,7 @@ class UploadContacts extends React.Component {
               style={{float: 'right', marginLeft: '10px'}}
               className='btn btn-primary btn-sm'
               onClick={this.onSubmit}
-              disabled={!this.state.existingList || this.state.newListError || !this.state.newList}
+              disabled={!this.state.existingList && (this.state.newListError || !this.state.newList)}
               data-dismiss='modal'>
             Confirm
           </button>
