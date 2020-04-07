@@ -29,3 +29,13 @@ export function createChatbot (data, callback) {
       })
   }
 }
+
+export function fetchChatbotDetails (id, callback) {
+  return (dispatch) => {
+    callApi(`chatbots/${id}/details`)
+      .then(res => {
+        console.log('response from fetchChatbotDetails', res)
+        callback(res)
+      })
+  }
+}

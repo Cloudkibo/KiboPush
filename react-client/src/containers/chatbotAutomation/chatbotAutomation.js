@@ -82,6 +82,7 @@ class ChatbotAutomation extends React.Component {
                         <input
                           type="radio"
                           onClick={this.onRadioClick}
+                          onChange={() => {}}
                           value='modify'
                           checked={this.state.selectedRadio === 'modify'}
                         />
@@ -95,9 +96,10 @@ class ChatbotAutomation extends React.Component {
                             this.props.chatbots.length > 0
                             ? this.props.chatbots.map((chatbot) => (
                               <CHATBOT
+                                key={chatbot._id}
                                 profilePic={chatbot.pageId.pagePic}
                                 name={chatbot.pageId.pageName}
-                                onItemClick={this.modifyChatbot}
+                                onItemClick={() => this.modifyChatbot(chatbot)}
                               />
                             ))
                             : <p>No data to display</p>
@@ -108,6 +110,7 @@ class ChatbotAutomation extends React.Component {
                         <input
                           type="radio"
                           onClick={this.onRadioClick}
+                          onChange={() => {}}
                           value='create'
                           checked={this.state.selectedRadio === 'create'}
                         />
