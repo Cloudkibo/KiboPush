@@ -11,6 +11,10 @@ export function contactsInfo (state = initialState, action) {
   const contacts = JSON.parse(JSON.stringify(state.uploadedContacts))
   let index = -1
   switch (action.type) {
+    case ActionTypes.FETCH_CONTACT_LISTS:
+      return Object.assign({}, state, {
+        contactLists: action.data,
+      })
     case ActionTypes.LOAD_CONTACTS_LIST:
       return Object.assign({}, state, {
         contacts: action.contacts,
