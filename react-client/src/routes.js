@@ -177,6 +177,7 @@ const SubmitSurvey = asyncComponent(() => import("./containers/survey/SubmitSurv
 const ViewSurveyDetail = asyncComponent(() => import("./containers/survey/ViewSurveyDetail"))
 const AddSurvey = asyncComponent(() => import("./containers/survey/add_survey"))
 const SurveyResult = asyncComponent(() => import("./containers/survey/SurveyResult"))
+const ConfigureChatbot = asyncComponent(() => import('./containers/chatbotAutomation/configureChatbot'))
 
 function requireAuth (nextState, replace) {
   if (!auth.loggedIn()) {
@@ -385,6 +386,7 @@ const Routes = () => (
     <Route path='/backdoorPageAdmins' component={BackdoorPageAdmins} onEnter={requireAuth} />
     <Route path='/customFields' component={CustomFields} onEnter={requireAuth} />
     <Route path='/chatbotAutomation' component={ChatbotAutomation} onEnter={requireAuth} />
+    <Route path='/configureChatbot' component={ConfigureChatbot} onEnter={requireAuth} />
     <Route path='/tags' component={Tags} onEnter={requireAuth} />
     <Route path='/successMessage' component={successMessage} onEnter={requireAuth} />
     <Route path='/ErrorMessage' component={ErrorMessage} onEnter={requireAuth} />

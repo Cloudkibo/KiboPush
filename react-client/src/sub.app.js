@@ -115,35 +115,24 @@ class App extends Component {
             }}
           />
         }
-        {
-          auth.loggedIn() && ['/addfbpages', '/facebookIntegration', '/integrations'].indexOf(this.state.path) === -1
-           ? <div>
-             <Header history={this.props.history} location={this.props.location} />
-             {
-               this.state.showContent &&
-               <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
-                 <Sidebar history={this.props.history} location={this.props.location} />
-                 { this.props.children }
-               </div>
-             }
-           </div>
-           : ['/addfbpages', '/facebookIntegration', '/integrations'].indexOf(this.state.path) > -1
-           ? <div>
-             <SimpleHeader history={this.props.history} location={this.props.location} />
-             {
-               this.state.showContent &&
-               <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
-                 { this.props.children }
-               </div>
-             }
-           </div>
-           : (
-             this.state.showContent &&
-             <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
-               { this.props.children }
-             </div>
-           )
-        }
+        <div>
+          {
+            auth.loggedIn() && ['/addfbpages', '/facebookIntegration', '/integrations', '/configureChatbot'].indexOf(this.state.path) === -1
+            ? <Header history={this.props.history} location={this.props.location} />
+            : ['/addfbpages', '/facebookIntegration', '/integrations', '/configureChatbot'].indexOf(this.state.path) > -1 &&
+            <SimpleHeader showTitle={['/configureChatbot'].indexOf(this.state.path) > -1} history={this.props.history} location={this.props.location} />
+          }
+          {
+            this.state.showContent &&
+            <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
+              {
+                auth.loggedIn() && ['/addfbpages', '/facebookIntegration', '/integrations', '/configureChatbot'].indexOf(this.state.path) === -1 &&
+                <Sidebar history={this.props.history} location={this.props.location} />
+              }
+              { this.props.children }
+            </div>
+          }
+        </div>
       </div>
     )
   }
