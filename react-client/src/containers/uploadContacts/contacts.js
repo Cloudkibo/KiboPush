@@ -4,10 +4,13 @@
 
 import React from 'react'
 import { connect } from 'react-redux'
-import { loadContactsList, loadWhatsAppContactsList, editSubscriber, syncContacts } from '../../redux/actions/uploadContacts.actions'
+
+import { fetchContactLists } from '../../redux/actions/contacts.actions'
+import { loadContactsList, loadWhatsAppContactsList, editSubscriber, editSubscriberSms, syncContacts } from '../../redux/actions/uploadContacts.actions'
 import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
 import AlertContainer from 'react-alert'
+import Select from 'react-select'
 
 class Contact extends React.Component {
   constructor (props, context) {
@@ -22,9 +25,13 @@ class Contact extends React.Component {
       subscriber_Lastid: 0,
       lastButtonClick:'none',
       current_page: 0,
-      requested_page: 0
+      requested_page: 0,
+      list: null,
+      status: null,
+      searchValue: ''
     }
     if (props.user.platform === 'sms') {
+      props.fetchContactLists()
       props.loadContactsList({last_id: 'none', number_of_records: 10, first_page: 'first'})
     } else {
       props.loadWhatsAppContactsList({last_id: 'none', number_of_records: 10, first_page: 'first'})
@@ -38,6 +45,46 @@ class Contact extends React.Component {
     this.handlePageClick = this.handlePageClick.bind(this)
     this.getUserGuideLink = this.getUserGuideLink.bind(this)
     this.syncContacts = this.syncContacts.bind(this)
+    this.getLists = this.getLists.bind(this)
+    this.searchSubscriber = this.searchSubscriber.bind(this)
+    this.handleFilterByList = this.handleFilterByList.bind(this)
+    this.handleFilterByStatus = this.handleFilterByStatus.bind(this)
+    this.loadContacts = this.loadContacts.bind(this)
+    this.searchTimer = null
+  }
+
+  loadContacts () {
+    this.props.loadContactsList({
+      last_id: 'none',
+      number_of_records: 10,
+      first_page: 'first',
+      search_value: this.state.searchValue,
+      status_value: this.state.status ? this.state.status.value : '',
+      list_value: this.state.list ? this.state.list.value : ''
+    })
+  }
+
+  searchSubscriber (e) {
+    if (this.searchTimer) {
+        clearTimeout(this.searchTimer)
+    }
+    this.setState({searchValue: e.target.value}, () => {
+      this.searchTimer = setTimeout(() => {
+        this.loadContacts()
+      }, 500)
+    })
+  }
+
+  handleFilterByStatus (status) {
+    this.setState({status}, () => {
+      this.loadContacts()
+    })
+  }
+
+  handleFilterByList (list) {
+    this.setState({list}, () => {
+      this.loadContacts()
+    })
   }
   
   syncContacts () {
@@ -46,6 +93,7 @@ class Contact extends React.Component {
       authToken: this.props.automated_options.twilio.authToken
     }}, this.msg)
   }
+
   getUserGuideLink () {
     let link = 'https://kibopush.com'
     if (this.props.user.platform === 'sms') {
@@ -64,13 +112,16 @@ class Contact extends React.Component {
     if (this.state.name === '') {
       this.msg.error('Subscriber name cannot be empty')
     } else {
-      this.props.editSubscriber(this.state.contact._id, {name: this.state.name}, this.loadSubscribers, this.msg)
+      if (this.props.user.platform === 'whatsApp') {
+        this.props.editSubscriber(this.state.contact._id, {name: this.state.name}, this.msg)
+      } else if (this.props.user.platform === 'sms') {
+        this.props.editSubscriberSms(this.state.contact._id, {name: this.state.name}, this.msg)
+      }
       this.closeEdit()
     }
   }
 
   loadSubscribers () {
-
     if(this.state.requested_page !== 0) {
       if(this.state.lastButtonClick === 'next') {
         this.props.loadWhatsAppContactsList({
@@ -95,8 +146,6 @@ class Contact extends React.Component {
     else {
       this.props.loadWhatsAppContactsList({last_id: 'none', number_of_records: 10, first_page: 'first'})
     }
-
-
   }
 
   showEdit (contact) {
@@ -128,7 +177,14 @@ class Contact extends React.Component {
     console.log('data.selected', data.selected)
     if (data.selected === 0) {
       if (this.props.user.platform === 'sms') {
-        this.props.loadContactsList({last_id: 'none', number_of_records: 10, first_page: 'first'})
+        this.props.loadContactsList({
+          last_id: 'none', 
+          number_of_records: 10, 
+          first_page: 'first',
+          search_value: this.state.searchValue,
+          status_value: this.state.status ? this.state.status.value : '',
+          list_value: this.state.list ? this.state.list.value : ''
+        })
       } else {
         this.setState({requested_page: data.selected})
         this.props.loadWhatsAppContactsList({last_id: 'none', number_of_records: 10, first_page: 'first'})
@@ -140,7 +196,10 @@ class Contact extends React.Component {
           requested_page: data.selected,
           last_id: this.props.contacts.length > 0 ? this.props.contacts[this.props.contacts.length - 1]._id : 'none',
           number_of_records: 10,
-          first_page: 'next'
+          first_page: 'next',
+          search_value: this.state.searchValue,
+          status_value: this.state.status ? this.state.status.value : '',
+          list_value: this.state.list ? this.state.list.value : ''
         })
       } else {
         this.setState({current_page: this.state.pageNumber, requested_page: data.selected, lastButtonClick: 'next', subscriber_Lastid: this.props.contacts[this.props.contacts.length - 1]._id})
@@ -159,7 +218,10 @@ class Contact extends React.Component {
           requested_page: data.selected,
           last_id: this.props.contacts.length > 0 ? this.props.contacts[0]._id : 'none',
           number_of_records: 10,
-          first_page: 'previous'
+          first_page: 'previous',
+          search_value: this.state.searchValue,
+          status_value: this.state.status ? this.state.status.value : '',
+          list_value: this.state.list ? this.state.list.value : ''
         })
       } else {
         this.setState({current_page: this.state.pageNumber, requested_page: data.selected, lastButtonClick: 'previous', subscriber_Lastid: this.props.contacts[0]._id})
@@ -194,6 +256,17 @@ class Contact extends React.Component {
     } else {
       this.setState({ contactsData: [], totalLength: 0 })
     }
+  }
+
+  getLists (subscriber) {
+    let lists = ['Master']
+    if (subscriber.listIds) {
+      for (let i = 0; i < subscriber.listIds.length; i++) {
+        let list = this.props.contactLists.find(l => l._id === subscriber.listIds[i])
+        lists.push(list.name)
+      }
+    }
+    return lists.join(', ')
   }
 
   render () {
@@ -285,7 +358,43 @@ class Contact extends React.Component {
                     }
                   </div>
                   <div className='m-portlet__body'>
-                    { this.state.contactsData && this.state.contactsData.length > 0
+                    {
+                      this.props.user.platform === 'sms' &&
+                      <div className='row filters' style={{ marginBottom: '25px', display: 'flex' }}>
+                        <div className='col-4'>
+                          <div className='m-input-icon m-input-icon--left'>
+                            <input type='text' className='form-control' value={this.state.searchValue} placeholder='Search...' id='generalSearch' onChange={this.searchSubscriber} />
+                            <span className='m-input-icon__icon m-input-icon__icon--left'>
+                              <span><i className='la la-search' /></span>
+                            </span>
+                          </div>
+                        </div>
+
+                        <div className='col-4'>
+                          <Select
+                              isClearable
+                              isSearchable
+                              options={this.props.contactLists ? this.props.contactLists.map(list => { return {value: list._id, label: list.name} }) : []}
+                              onChange={this.handleFilterByList}
+                              value={this.state.list}
+                              placeholder='Filter by List'
+                            />
+                        </div>
+
+                        <div className='col-4'>
+                          <Select
+                            isClearable
+                            isSearchable
+                            options={[{label: 'Subscribed', value: true}, {label: 'Unsubscribed', value: false}]}
+                            onChange={this.handleFilterByStatus}
+                            value={this.state.status}
+                            placeholder='Filter by Status'
+                          />
+                        </div>
+                      </div>
+                    }
+
+                  { this.state.contactsData && this.state.contactsData.length > 0
                   ? <div className='m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
                     <table className='m-datatable__table' style={{display: 'block', height: 'auto', overflowX: 'auto'}}>
                       <thead className='m-datatable__head'>
@@ -307,12 +416,14 @@ class Contact extends React.Component {
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
                             <span style={{width: '100px'}}>Status</span>
                           </th>
-                          {this.props.user.platform === 'whatsApp' &&
-                            <th data-field='edit'
-                              className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                              <span style={{width: '100px'}}>Actions</span>
-                            </th>
-                          }
+                          <th data-field='lists'
+                            className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                            <span style={{width: '100px'}}>Lists</span>
+                          </th>
+                          <th data-field='edit'
+                            className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                            <span style={{width: '100px'}}>Actions</span>
+                          </th>
                         </tr>
                       </thead>
                       <tbody className='m-datatable__body'>
@@ -324,15 +435,14 @@ class Contact extends React.Component {
                             <td data-field='name' className='m-datatable__cell--center m-datatable__cell'><span style={contact.isSubscribed ? subscribedStyle : unsubscribedStyle}>{contact.name}</span></td>
                             <td data-field='number' className='m-datatable__cell--center m-datatable__cell'><span style={contact.isSubscribed ? subscribedStyle : unsubscribedStyle}>{contact.number}</span></td>
                             <td data-field='status' className='m-datatable__cell--center m-datatable__cell'><span style={contact.isSubscribed ? subscribedStyle : unsubscribedStyle}>{contact.isSubscribed ? 'Subscribed' : 'Unsubscribed'}</span></td>
-                            {this.props.user.platform === 'whatsApp' &&
-                              <td data-field='actions' className='m-datatable__cell'>
-                                <span style={{width: '100px'}}>
-                                  <button className='btn btn-primary btn-sm' style={{marginLeft: '30px'}} data-toggle="modal" data-target="#editSubscriber" onClick={() => this.showEdit(contact)}>
-                                    Edit
-                                  </button>
-                                </span>
-                              </td>
-                            }
+                            <td data-field='lists' className='m-datatable__cell--center m-datatable__cell'><span style={contact.isSubscribed ? subscribedStyle : unsubscribedStyle}>{this.getLists(contact)}</span></td>
+                            <td data-field='actions' className='m-datatable__cell'>
+                              <span style={{width: '100px'}}>
+                                <button style={{border: 'none', marginLeft: '30px'}} data-toggle="modal" data-target="#editSubscriber" onClick={() => this.showEdit(contact)} className="m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill" title="Edit">
+                                  <i className="la la-edit" />
+                                </button>
+                              </span>
+                            </td>   
                           </tr>
                         ))
                       }
@@ -377,6 +487,7 @@ function mapStateToProps (state) {
     count: (state.contactsInfo.count),
     user: (state.basicInfo.user),
     automated_options: (state.basicInfo.automated_options),
+    contactLists: (state.contactsInfo.contactLists)
   }
 }
 
@@ -385,7 +496,9 @@ function mapDispatchToProps (dispatch) {
     loadContactsList,
     loadWhatsAppContactsList,
     editSubscriber,
-    syncContacts
+    editSubscriberSms,
+    syncContacts,
+    fetchContactLists
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Contact)
