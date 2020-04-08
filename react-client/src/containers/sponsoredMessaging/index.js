@@ -16,6 +16,7 @@ import {deleteSponsoredMessage,
 import AlertContainer from 'react-alert'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
 import YouTube from 'react-youtube'
+import {deleteFiles} from '../../utility/utils'
 import ConfirmationModal from '../../components/extras/confirmationModal'
 import { formatAMPM } from '../../utility/utils'
 
@@ -442,6 +443,8 @@ class SponsoredMessaging extends React.Component {
                 <button style={{ float: 'right' }}
                   className='btn btn-primary btn-sm'
                   onClick={() => {
+                    let messagePayload = this.state.sponsoredMessages.find(sm => sm._id === this.state.deleteid).payload
+                    deleteFiles(messagePayload)
                     this.props.deleteSponsoredMessage(this.state.deleteid, this.msg, this.state.searchValue, this.state.status, this.state.page_value)
                   }} data-dismiss='modal'>Delete
               </button>

@@ -142,7 +142,7 @@ class ViewBroadcastTemplate extends React.Component {
                                               />
                                             </a>
                                             : b.componentType === 'file'
-                                            ? <a href={b.fileurl.url} target='_blank' rel='noopener noreferrer'>
+                                            ? <a href={b.file.fileurl.url} target='_blank' rel='noopener noreferrer'>
                                               <h6 style={{marginTop: '10px'}}><i className='fa fa-file-text-o' /><strong>{b.fileName}</strong></h6>
                                             </a>
                                             : b.componentType === 'card'

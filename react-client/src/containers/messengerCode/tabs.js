@@ -45,7 +45,7 @@ class Tab extends React.Component {
           <div className='tab-pane fade active in' id='tab_1'>
             {this.state.currentTab === 'setup'
             ? <QRCode />
-            : <OptInActions history={this.props.history} location={this.props.location} module={this.props.module} selectedPage={this.props.selectedPage} />
+            : <OptInActions initialFiles={this.props.initialFiles} newFiles={this.props.newFiles} onEditMessage={this.props.onEditMessage} history={this.props.history} location={this.props.location} module={this.props.module} selectedPage={this.props.selectedPage} />
             }
           </div>
         </div>

@@ -10,18 +10,19 @@ import GenericMessage from '../../components/SimplifiedBroadcastUI/GenericMessag
 import AlertContainer from 'react-alert'
 import { validateFields } from '../../containers/convo/utility'
 import { updateData } from '../../redux/actions/messengerRefURL.actions'
+import { deleteInitialFiles, getFileIdsOfBroadcast, deleteFile } from '../../utility/utils'
 
 class MessengerRefURLMessage extends React.Component {
   constructor (props, context) {
     super(props, context)
     console.log('props.messengerRefURL.pageId in MessengerRefURLMessage', props.messengerRefURL.pageId)
     console.log('props.pages', props.pages)
-
     this.state = {
       buttonActions: ['open website', 'open webview'],
       broadcast: props.messengerRefURL.reply ? props.messengerRefURL.reply : [],
       pageId: props.pages.filter((page) => page.pageId === props.messengerRefURL.pageId)[0]._id,
-      convoTitle: 'Opt-In Message'
+      convoTitle: 'Opt-In Message',
+      initialFiles: this.props.location.state.initialFiles
     }
     this.saveMessage = this.saveMessage.bind(this)
     this.goBack = this.goBack.bind(this)
@@ -48,9 +49,11 @@ class MessengerRefURLMessage extends React.Component {
   }
 
   goBack () {
+    this.editing = true
     if (this.props.location.state.module === 'edit') {
       var newMessengerRefURL = this.props.location.state.messengerRefSelectedURL
       newMessengerRefURL['reply'] = this.props.messengerRefURL.reply
+      newMessengerRefURL['initialFiles'] = this.props.location.state.realInitialFiles
       this.props.history.push({
         pathname: `/editMessengerRefURL`,
         state: {pageId: this.props.pageId, _id: this.props.pages[0], module: 'edit', messengerRefURL: newMessengerRefURL, pageName: this.props.location.state.pageName}
@@ -58,7 +61,7 @@ class MessengerRefURLMessage extends React.Component {
     } else {
       this.props.history.push({
         pathname: `/createMessengerRefURL`,
-        state: {pageId: this.props.pageId, _id: this.state.pageId, pageName: this.props.location.state.pageName}
+        state: {pageId: this.props.pageId, _id: this.state.pageId, pageName: this.props.location.state.pageName,  messengerRefURL: this.props.messengerRefURL}
       })
     }
   }
@@ -70,19 +73,41 @@ class MessengerRefURLMessage extends React.Component {
     if (!validateFields(this.state.broadcast, this.msg)) {
       return
     }
+    let newFiles = this.props.location.state.newFiles
+    if (newFiles) {
+      newFiles = newFiles.concat(this.state.newFiles)
+    } else {
+      newFiles = this.state.newFiles
+    }
+    newFiles = deleteInitialFiles(newFiles, getFileIdsOfBroadcast(this.state.broadcast))
     if (this.props.location.state.module === 'edit') {
       var edit = {
         pageId: this.props.messengerRefURL.pageId,
         ref_parameter: this.props.messengerRefURL.ref_parameter,
         reply: this.state.broadcast,
-        sequenceId: this.props.messengerRefURL.sequenceId
+        sequenceId: this.props.messengerRefURL.sequenceId,
+        newFiles: newFiles
       }
       this.props.updateData(this.props.messengerRefURL, 'reply', this.state.broadcast, edit)
     } else {
+      this.props.messengerRefURL.newFiles = newFiles
       this.props.updateData(this.props.messengerRefURL, 'reply', this.state.broadcast)
     }
+    let initialFiles = this.state.initialFiles.concat(newFiles)
+    this.setState({newFiles: [], initialFiles})
     this.msg.success('Message has been saved.')
   }
+
+  componentWillUnmount () {
+    if (!this.editing) {
+      if (this.props.messengerRefURL.newFiles) {
+        for (let i = 0; i < this.props.messengerRefURL.newFiles.length; i++) {
+          deleteFile(this.props.messengerRefURL.newFiles[i])
+        }
+      }
+    }
+  }
+  
 
   render () {
     var alertOptions = {
@@ -115,6 +140,8 @@ class MessengerRefURLMessage extends React.Component {
           </div>
         </div>
         <GenericMessage
+          newFiles={this.state.newFiles}
+          initialFiles={this.state.initialFiles}
           pageId={this.props.messengerRefURL.pageId}
           pages={[this.state.pageId]}
           broadcast={this.state.broadcast}

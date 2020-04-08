@@ -118,7 +118,7 @@ class ViewMessage extends React.Component {
                                     </a>
                                     : b.componentType === 'file'
                                     ? <a key={index} href={b.file? b.file.fileurl.url : b.fileurl.url} target='_blank' rel='noopener noreferrer'>
-                                      <h6 style={{marginTop: '10px'}}><i className='fa fa-file-text-o' /><strong>{b.fileName}</strong></h6>
+                                      <h6 style={{marginTop: '10px'}}><i className='fa fa-file-text-o' /><strong>{b.file.fileName}</strong></h6>
                                     </a>
                                     : b.componentType === 'card'
                                     ? <div key={index}>

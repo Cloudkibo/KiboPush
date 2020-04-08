@@ -15,6 +15,7 @@ import AdSet from './adSet'
 import Ad from './ad'
 import ScheduleModal from './scheduleModal'
 import {updateSponsoredMessage, saveDraft, send } from '../../redux/actions/sponsoredMessaging.actions'
+import {getFileIdsOfBroadcast, deleteInitialFiles} from '../../utility/utils'
 import {checkValidations} from './utility'
 import { getTimeZone } from './../../utility/utils'
 import ConfirmationModal from '../../components/extras/confirmationModal'
@@ -30,7 +31,8 @@ class CreateSponsoredMessage extends React.Component {
       : props.sponsoredMessage.campaignId && props.sponsoredMessage.campaignId !== '' ? 'adSet'
       : props.sponsoredMessage.adAccountId && props.sponsoredMessage.adAccountId !== '' ? 'campaign'
       : 'adAccount',
-      loading: false
+      loading: false,
+      initialFiles: props.sponsoredMessage && props.sponsoredMessage.payload ? getFileIdsOfBroadcast(props.sponsoredMessage.payload) : []
     }
     if(this.props.location.state && this.props.location.state.module === 'edit'  && this.props.location.state.sponsoredMessage) {
       this.props.updateSponsoredMessage(this.props.location.state.sponsoredMessage)
@@ -167,15 +169,22 @@ class CreateSponsoredMessage extends React.Component {
       this.msg.error('Please complete all the steps')
     }
   }
+  
   sendToFacebook () {
-    this.setState({loading: true})
-    let pageId = this.props.pages && this.props.pages.filter(p => p._id === this.props.sponsoredMessage.pageId)[0].pageId
-    let sponsoredMessage = JSON.parse(JSON.stringify(this.props.sponsoredMessage))
-    sponsoredMessage.pageFbId = pageId
-    this.props.send(sponsoredMessage, this.handleResponse)
+      this.props.updateSponsoredMessage(this.props.sponsoredMessage, null, null, {newFiles: []})
+      this.setState({loading: true})
+      let pageId = this.props.pages && this.props.pages.filter(p => p._id === this.props.sponsoredMessage.pageId)[0].pageId
+      let sponsoredMessage = JSON.parse(JSON.stringify(this.props.sponsoredMessage))
+      sponsoredMessage.pageFbId = pageId
+      this.props.send(sponsoredMessage, this.handleResponse)
   }
+
   onSave () {
     if (checkValidations(this.props.sponsoredMessage)) {
+      let initialFiles = this.state.initialFiles
+      let currentFiles = getFileIdsOfBroadcast(this.props.sponsoredMessage.payload)
+      deleteInitialFiles(initialFiles, currentFiles)
+      this.props.updateSponsoredMessage(this.props.sponsoredMessage, null, null, {newFiles: []})
       this.props.saveDraft(this.props.sponsoredMessage._id, this.props.sponsoredMessage, this.msg, this.handleSaveResponse)
     } else {
       this.msg.error('Please complete all the steps')
@@ -244,13 +253,13 @@ class CreateSponsoredMessage extends React.Component {
                   {this.state.currentStep === 'adSet' &&
                     <AdSet changeCurrentStep={this.changeCurrentStep} msg={this.msg} />
                   }
-                  {this.state.currentStep === 'ad' &&
-                    <Ad
-                      changeCurrentStep={this.changeCurrentStep}
+                  <Ad currentStep={this.state.currentStep} 
+                      changeCurrentStep={this.changeCurrentStep} 
+                      initialFiles={this.state.initialFiles} 
                       msg={this.msg}
                       scheduleModal={this.refs.sponsoredMessage}
-                      cancelScheduleModal={this.refs.cancelScheduleModal} />
-                  }
+                      cancelScheduleModal={this.refs.cancelScheduleModal}
+                   />
                 </div>
               </div>
             </div>

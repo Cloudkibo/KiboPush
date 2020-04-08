@@ -85,6 +85,7 @@ class AddCard extends React.Component {
         type: this.state.file ? this.state.file.type : '',
         size: this.state.file ? this.state.file.size : ''
       }
+      this.props.setTempFiles([data.fileurl.id])
       if (this.state.title === '' || this.state.subtitle === '' ||
         (this.props.onlyCard && !this.state.file)) {
           data.disabled = true
@@ -192,6 +193,9 @@ class AddCard extends React.Component {
           <h5 style={{textAlign: 'left', marginLeft: '5px', marginBottom: '10px'}} id={this.imageId}>Image:</h5>
           <Image
             imageId={this.imageId}
+            setTempFiles={this.props.setTempFiles}
+            initialModalFiles={this.props.initialModalFiles}
+            initialFiles={this.props.initialFiles}
             onSelect={(e) => this.inputSelected(e, this.imageId)}
             edit={this.props.edit}
             required={this.props.onlyCard}

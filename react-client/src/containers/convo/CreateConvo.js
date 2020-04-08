@@ -362,6 +362,7 @@ class CreateConvo extends React.Component {
       //     }
       //   }
       // }
+      this.setState({newFiles: []})
       console.log('payload before', this.state.linkedMessages[0].messageContent)
       this.deleteButtonIds(this.state.linkedMessages)
       this.deleteQuickReplyIds(this.state.linkedMessages)
@@ -756,6 +757,7 @@ class CreateConvo extends React.Component {
         <BUILDER
           titleEditable
           module='broadcast'
+          newFiles={this.state.newFiles}
           rerenderFlowBuilder={this.rerenderFlowBuilder}
           convoTitle={this.state.convoTitle}
           handleChange={this.handleChange}

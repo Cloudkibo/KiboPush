@@ -7,9 +7,10 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
-import {fetchMessengerAds, deleteMessengerAd, setDefaultAdMessage, clearMessengerAd} from '../../redux/actions/messengerAds.actions'
+import {fetchMessengerAds, deleteMessengerAd, setDefaultAdMessage, clearMessengerAd, fetchMessengerAd} from '../../redux/actions/messengerAds.actions'
 import AlertContainer from 'react-alert'
 import YouTube from 'react-youtube'
+import { deleteFiles } from '../../utility/utils'
 
 class MessengerAds extends React.Component {
   constructor (props, context) {
@@ -166,8 +167,13 @@ class MessengerAds extends React.Component {
               <button style={{float: 'right'}}
                 className='btn btn-primary btn-sm'
                 onClick={() => {
-                  this.props.deleteMessengerAd(this.state.deleteid, this.msg)
-                  this.closeDialogDelete()
+                  this.props.fetchMessengerAd(this.state.deleteid, (messengerAd) => {
+                    for (let i = 0; i < messengerAd.jsonAdMessages.length; i++) {
+                      deleteFiles(messengerAd.jsonAdMessages[i].messageContent)
+                    }
+                    this.props.deleteMessengerAd(this.state.deleteid, this.msg)
+                    this.closeDialogDelete()
+                  })
                 }} data-dismiss='modal'>Delete
               </button>
                 </div>
@@ -324,10 +330,11 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-    fetchMessengerAds: fetchMessengerAds,
-    deleteMessengerAd: deleteMessengerAd,
-    setDefaultAdMessage: setDefaultAdMessage,
-    clearMessengerAd: clearMessengerAd
+    fetchMessengerAds,
+    deleteMessengerAd,
+    setDefaultAdMessage,
+    clearMessengerAd,
+    fetchMessengerAd
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(MessengerAds)

@@ -93,10 +93,6 @@ class TextModal extends React.Component {
     }
   }
 
-  UNSAFE_componentWillUnmount() {
-    this.props.closeModal()
-  }
-
   render() {
     console.log('text state', this.state)
     return (

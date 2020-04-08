@@ -13,6 +13,7 @@ import { validateFields } from '../convo/utility'
 import AlertContainer from 'react-alert'
 import GenericMessage from '../../components/SimplifiedBroadcastUI/GenericMessage'
 import { removeButtonOldurl } from './utility'
+import {deleteInitialFiles, getFileIdsOfBroadcast, deleteFile} from '../../utility/utils'
 
 class CreateMessage extends React.Component {
   constructor (props) {
@@ -24,7 +25,8 @@ class CreateMessage extends React.Component {
       selectedIndex: 1,
       jsonMessageProps: props.messengerAd.jsonAdMessages ? JSON.stringify(props.messengerAd.jsonAdMessages) : '',
       jsonMessages: [],
-      showOptInMessage: true
+      showOptInMessage: true,
+      initialFiles: this.props.location.state.initialFiles
     }
     this.saveMessage = this.saveMessage.bind(this)
     this.goBack = this.goBack.bind(this)
@@ -234,10 +236,11 @@ class CreateMessage extends React.Component {
     document.title = `${title} | Create Message`
   }
   goBack () {
+    this.editing = true
     if (this.props.location.state.jsonAdId && this.props.location.state.jsonAdId.length !== 0) {
       this.props.history.push({
         pathname: `/editAdMessage`,
-        state: {module: 'edit', jsonAdId: this.props.location.state.jsonAdId}
+        state: {module: 'edit', jsonAdId: this.props.location.state.jsonAdId, initialFiles: this.props.location.state.realInitialFiles}
       })
     } else {
       console.log('on createAdmessage')
@@ -275,8 +278,21 @@ class CreateMessage extends React.Component {
         }
       }
     }
-    this.setState({jsonMessages: jsonMessages})
+    let newFiles = this.props.location.state.newFiles
+    if (newFiles) {
+      newFiles = newFiles.concat(this.state.newFiles)
+    } else {
+      newFiles = this.state.newFiles
+    }
+    let currentFiles = []
+    for (let i = 0; i < this.state.jsonMessages.length; i++) {
+      currentFiles = currentFiles.concat(getFileIdsOfBroadcast(this.state.jsonMessages[i].messageContent))
+    }
+    newFiles = deleteInitialFiles(newFiles, currentFiles)
+    this.props.messengerAd.newFiles = newFiles
     this.props.updateCurrentJsonAd(this.props.messengerAd, 'jsonAdMessages', jsonMessages)
+    let initialFiles = this.state.initialFiles.concat(newFiles)
+    this.setState({jsonMessages: jsonMessages, newFiles: [], initialFiles})
     this.msg.success('Message saved successfully')
   }
 
@@ -285,6 +301,16 @@ class CreateMessage extends React.Component {
     this.setState({
       jsonMessages: resp.jsonAdMessages
     })
+  }
+
+  componentWillUnmount () {
+    if (!this.editing) {
+      if (this.props.messengerAd.newFiles) {
+        for (let i = 0; i < this.props.messengerAd.newFiles.length; i++) {
+          deleteFile(this.props.messengerAd.newFiles[i])
+        }
+      }
+    }
   }
 
   render () {
@@ -345,6 +371,8 @@ class CreateMessage extends React.Component {
                           }
                         </ul>
                         <GenericMessage
+                          newFiles={this.state.newFiles}
+                          initialFiles={this.state.initialFiles}
                           hiddenComponents={['video']}
                           module="jsonads"
                           hideUserOptions

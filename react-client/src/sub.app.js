@@ -64,7 +64,7 @@ class App extends Component {
     }
   }
 
-  UNSAFE_componentWillUnmount () {
+  componentWillUnmount () {
     this.unlisten()
   }
 

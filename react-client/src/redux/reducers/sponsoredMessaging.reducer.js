@@ -62,7 +62,7 @@ export function sponsoredMessagingInfo (state = initialState, action) {
           })
         case ActionTypes.UPDATE_SPONSORED_MESSAGE:
         return Object.assign({}, state, {
-          sponsoredMessage: action.data,
+          sponsoredMessage: {...action.data},
           updateSessionTimeStamp: new Date().toString()
         })
         case ActionTypes.SHOW_AD_ACCOUNTS:

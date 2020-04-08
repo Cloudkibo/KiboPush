@@ -50,12 +50,7 @@ class ImageModal extends React.Component {
       this.props.showCloseModalAlertDialog()
     }
   }
-
-
-  UNSAFE_componentWillUnmount() {
-    this.props.closeModal()
-  }
-
+  
   render() {
     return (
       <div className="modal-content" style={{ width: '72vw' }}>
