@@ -43,7 +43,7 @@ class SmsBroadcast extends React.Component {
     props.getCount({segmentation: [], listIds: []}, this.onGetCount)
     props.fetchContactLists()
   }
-  
+
   updateConditions (conditions, update) {
     console.log('updating conditions', conditions)
     this.setState({conditions})
@@ -84,7 +84,7 @@ class SmsBroadcast extends React.Component {
    // this.msg.success('Broadcast sent successfully')
     var conditions = [{condition: '', criteria: '', text: ''}]
     this.props.updateCurrentCustomersInfo(this.props.customersInfo, 'filter', conditions)
-    this.setState({title: '', message: '', segmentationErrors: []})
+    this.setState({title: '', message: '', segmentationErrors: [], conditions: [], lists: [], segmentationType: null})
   }
 
   validateSegmentation () {
@@ -158,6 +158,8 @@ class SmsBroadcast extends React.Component {
 
   handleSegmentationType (e) {
     this.props.getCount( {listIds: [], segmentation: []}, this.onGetCount)
+    let conditions = [{condition: '', criteria: '', text: ''}]
+    this.props.updateCurrentCustomersInfo(this.props.customersInfo, 'filter', conditions)
     this.setState({segmentationType: e.target.value, conditions: []})
   }
 
