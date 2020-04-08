@@ -24,7 +24,8 @@ class SmsBroadcast extends React.Component {
       segmentationErrors: [],
       title: '',
       subscribersCount: 0,
-      conditions: []
+      conditions: [],
+      lists: []
     }
     this.onTitleChange = this.onTitleChange.bind(this)
     this.onMessageChange = this.onMessageChange.bind(this)
@@ -39,15 +40,16 @@ class SmsBroadcast extends React.Component {
     this.handleListSelect = this.handleListSelect.bind(this)
     this.handleSegmentationType = this.handleSegmentationType.bind(this)
     props.setDefaultCustomersInfo({filter: []})
-    props.getCount([], this.onGetCount)
+    props.getCount({segmentation: [], listIds: []}, this.onGetCount)
     props.fetchContactLists()
   }
+  
   updateConditions (conditions, update) {
     console.log('updating conditions', conditions)
     this.setState({conditions})
     if (update) {
       if (this.validateConditions(conditions)) {
-        this.props.getCount(conditions, this.onGetCount)
+        this.props.getCount({segmentation: conditions}, this.onGetCount)
       } else {
         this.setState({subscribersCount: 0})
       }
@@ -66,7 +68,7 @@ class SmsBroadcast extends React.Component {
     return !invalid
   }
   debounce () {
-    this.props.getCount(this.state.conditions, this.onGetCount)
+    this.props.getCount( {segmentation: this.state.conditions}, this.onGetCount)
   }
 
   onGetCount (data) {
@@ -143,7 +145,7 @@ class SmsBroadcast extends React.Component {
       this.msg.error('Please enter the title of the broadcast')
     } else if (this.state.message === '') {
       this.msg.error('Please enter the message to send')
-    } else if (this.validateSegmentation()) {
+    } else if (this.state.listSegmentation !== 'basicSegmentation' || this.validateSegmentation()) {
       this.props.sendBroadcast({payload: [{componentType: 'text', text: this.state.message, id: 0}],
         phoneNumber: this.props.location.state.number,
         platform: 'twilio',
@@ -155,10 +157,17 @@ class SmsBroadcast extends React.Component {
   }
 
   handleSegmentationType (e) {
-    this.setState({segmentationType: e.target.value})
+    this.props.getCount( {listIds: [], segmentation: []}, this.onGetCount)
+    this.setState({segmentationType: e.target.value, conditions: []})
   }
 
   handleListSelect (lists) {
+    if (lists) {
+      this.props.getCount( {listIds: lists.map(l => l.value)}, this.onGetCount)
+    } else {
+      lists = []
+      this.props.getCount( {listIds: [], segmentation: []}, this.onGetCount)
+    }
     this.setState({lists})
   }
 
@@ -278,7 +287,7 @@ class SmsBroadcast extends React.Component {
                           <div className='col-lg-8'>
                             <Select
                               isMulti
-                              options={this.props.contactLists ? this.props.contactLists.map(list => { return {value: list._id, label: list.name} }) : []}
+                              options={this.props.contactLists ? this.props.contactLists.map(list => { return {value: list._id, label: list.name} }).filter(x => x.value !== 'master') : []}
                               onChange={this.handleListSelect}
                               value={this.state.lists}
                               placeholder='Select List'
