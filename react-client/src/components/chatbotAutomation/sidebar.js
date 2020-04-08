@@ -32,8 +32,8 @@ class Sidebar extends React.Component {
   render () {
     return (
       <div style={{border: '1px solid #ccc', backgroundColor: 'white', padding: '0px'}} className='col-md-3'>
-        <div className='m-portlet m-portlet-mobile'>
-          <div style={{height: '75vh'}} className='m-portlet__body'>
+        <div style={{margin: '0px'}} className='m-portlet m-portlet-mobile'>
+          <div style={{height: '80vh'}} className='m-portlet__body'>
             <TreeView
               defaultCollapseIcon={this.getCollapseIcon()}
               defaultExpandIcon={this.getExpandIcon()}

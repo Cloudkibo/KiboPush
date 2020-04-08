@@ -14,7 +14,8 @@ class ConfigureChatbot extends React.Component {
       loading: props.location.state ? true : false,
       chatbot: props.location.state || {},
       blocks: [],
-      sidebarItems: []
+      sidebarItems: [],
+      currentBlock: {}
     }
 
     this.handleChatbotDetails = this.handleChatbotDetails.bind(this)
@@ -75,7 +76,7 @@ class ConfigureChatbot extends React.Component {
         isParent: false
       }]
     }
-    this.setState({blocks, sidebarItems})
+    this.setState({blocks, sidebarItems, currentBlock: blocks[0]})
   }
 
   isItParent (data) {
@@ -129,7 +130,11 @@ class ConfigureChatbot extends React.Component {
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div style={{margin: '15px'}} className='row'>
           <SIDEBAR data={this.state.sidebarItems} />
-          <MESSAGEAREA data={[]} />
+          <MESSAGEAREA
+            block={this.state.currentBlock}
+            chatbot={this.state.chatbot}
+            alertMsg={this.msg}
+          />
         </div>
         <PROGRESS progress='65%' />
       </div>
