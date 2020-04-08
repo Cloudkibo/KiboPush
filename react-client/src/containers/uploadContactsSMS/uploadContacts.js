@@ -290,7 +290,7 @@ class UploadContacts extends React.Component {
   }
 
   handleListType (e) {
-    this.setState({listType: e.target.value})
+    this.setState({listType: e.target.value, existingList: null, newList: null})
   }
 
   getModalContent () {
