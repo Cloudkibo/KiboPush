@@ -17,7 +17,7 @@ class CreateMessengerAd extends React.Component {
     this.state = {
       previewOptInMessage: [],
       adTitle: '',
-      setupState: props.location.state && props.location.state.module === 'edit' ? 'true' : 'false'
+      setupState: props.location.state && (props.location.state.module === 'edit' || props.location.state.setupState === 'true') ? 'true' : 'false'
     }
     this.changeTitle = this.changeTitle.bind(this)
     this.onSave = this.onSave.bind(this)

@@ -53,7 +53,7 @@ class Tab extends React.Component {
           <div className='tab-pane fade active in' id='tab_1'>
             {this.state.currentTab === 'setup'
             ? <Setup history={this.props.history} location={this.props.location} />
-            : <OptInActions history={this.props.history} location={this.props.location} switchSetupState={this.switchSetupState} jsonAdId={this.props.jsonAdId} />
+            : <OptInActions history={this.props.history} location={this.props.location} switchSetupState={this.switchSetupState} setupState={this.props.setupState} jsonAdId={this.props.jsonAdId} />
             }
           </div>
         </div>
