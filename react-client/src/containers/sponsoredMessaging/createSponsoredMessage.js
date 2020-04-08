@@ -176,7 +176,10 @@ class CreateSponsoredMessage extends React.Component {
   
   sendToFacebook () {
       this.props.updateSponsoredMessage(this.props.sponsoredMessage, null, null, {newFiles: []})
-      this.setState({loading: true})
+      let initialFiles = this.state.initialFiles
+      let currentFiles = getFileIdsOfBroadcast(this.props.sponsoredMessage.payload)
+      deleteInitialFiles(initialFiles, currentFiles)
+      this.setState({loading: true, initialFiles: currentFiles})
       let pageId = this.props.pages && this.props.pages.filter(p => p._id === this.props.sponsoredMessage.pageId)[0].pageId
       let sponsoredMessage = JSON.parse(JSON.stringify(this.props.sponsoredMessage))
       sponsoredMessage.pageFbId = pageId
@@ -185,6 +188,7 @@ class CreateSponsoredMessage extends React.Component {
 
   onSave () {
     if (checkValidations(this.props.sponsoredMessage)) {
+      this.props.updateSponsoredMessage(this.props.sponsoredMessage, null, null, {newFiles: []})
       let initialFiles = this.state.initialFiles
       let currentFiles = getFileIdsOfBroadcast(this.props.sponsoredMessage.payload)
       deleteInitialFiles(initialFiles, currentFiles)
