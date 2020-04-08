@@ -56,6 +56,7 @@ class UploadContacts extends React.Component {
     this.handleListType = this.handleListType.bind(this)
     this.submitClick = this.submitClick.bind(this)
     this.onListNameChange = this.onListNameChange.bind(this)
+    this.handleExistingListSelect = this.handleExistingListSelect.bind(this)
 
     this.props.fetchContactLists()
   }
