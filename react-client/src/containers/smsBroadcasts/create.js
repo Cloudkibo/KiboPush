@@ -3,6 +3,7 @@
  */
 
 import React from 'react'
+import Select from 'react-select'
 import { connect } from 'react-redux'
 import { loadBroadcastsList, loadTwilioNumbers, sendBroadcast, getCount } from '../../redux/actions/smsBroadcasts.actions'
 import { bindActionCreators } from 'redux'
@@ -11,6 +12,7 @@ import { Picker } from 'emoji-mart'
 import TargetCustomers from '../businessGateway/targetCustomers'
 import AlertContainer from 'react-alert'
 import { updateCurrentCustomersInfo, setDefaultCustomersInfo } from '../../redux/actions/businessGateway.actions'
+import { fetchContactLists } from '../../redux/actions/contacts.actions'
 
 class SmsBroadcast extends React.Component {
   constructor (props) {
@@ -34,9 +36,11 @@ class SmsBroadcast extends React.Component {
     this.onGetCount = this.onGetCount.bind(this)
     this.debounce = this.debounce.bind(this)
     this.updateConditions = this.updateConditions.bind(this)
+    this.handleListSelect = this.handleListSelect.bind(this)
+    this.handleSegmentationType = this.handleSegmentationType.bind(this)
     props.setDefaultCustomersInfo({filter: []})
     props.getCount([], this.onGetCount)
-    
+    props.fetchContactLists()
   }
   updateConditions (conditions, update) {
     console.log('updating conditions', conditions)
@@ -149,6 +153,14 @@ class SmsBroadcast extends React.Component {
     }
   }
 
+  handleSegmentationType (e) {
+    this.setState({segmentationType: e.target.value})
+  }
+
+  handleListSelect (list) {
+    this.setState({list})
+  }
+
   render () {
     var alertOptions = {
       offset: 14,
@@ -226,9 +238,52 @@ class SmsBroadcast extends React.Component {
                     </div>
                     <div className='form-group m-form__group'>
                       <div className='col-3'>
-                        <label className='col-form-label'>Targeting:</label>
+                        <label className='col-form-label'>Select Segmentation:</label>
                       </div>
-                      <TargetCustomers msg = {this.msg} fileColumns={this.state.fileColumns} updateConditions={this.updateConditions} debounce={this.debounce} segmentationErrors={this.state.segmentationErrors} resetErrors={() => { this.setState({segmentationErrors: []}) }} />
+                      <div className='radio' style={{marginLeft: '35px'}}>
+                        <input 
+                          id='basicSegmentation'
+                          type='radio'
+                          value='basicSegmentation'
+                          name='basicSegmentation'
+                          onChange={this.handleSegmentationType}
+                          checked={this.state.segmentationType === 'basicSegmentation'} />
+                        <label>Apply Basic Segmentation</label>
+                      </div>
+                      {
+                        this.state.segmentationType === 'basicSegmentation' &&
+                          <TargetCustomers 
+                            msg = {this.msg} 
+                            fileColumns={this.state.fileColumns} 
+                            updateConditions={this.updateConditions} 
+                            debounce={this.debounce} 
+                            segmentationErrors={this.state.segmentationErrors} 
+                            resetErrors={() => { this.setState({segmentationErrors: []}) }} 
+                          />
+                      }
+                      <div className='radio' style={{marginLeft: '35px'}}>
+                        <input 
+                          id='listSegmentation'
+                          type='radio'
+                          value='listSegmentation'
+                          name='listSegmentation'
+                          onChange={this.handleSegmentationType}
+                          checked={this.state.segmentationType === 'listSegmentation'} />
+                        <label>Use Subscriber Lists</label>
+                      </div>
+                      {
+                        this.state.segmentationType === 'listSegmentation' &&
+                        <div style={{marginLeft: '1px'}} className='form-group m-form__group row'>
+                          <div className='col-lg-8'>
+                            <Select
+                              options={this.props.contactLists ? this.props.contactLists.map(list => { return {value: list._id, label: list.name} }) : []}
+                              onChange={this.handleListSelect}
+                              value={this.state.list}
+                              placeholder='Select List'
+                            />
+                          </div>
+                        </div>
+                      }
                     </div>
                   </div>
                 </div>
@@ -246,7 +301,8 @@ function mapStateToProps (state) {
     broadcasts: (state.smsBroadcastsInfo.broadcasts),
     count: (state.smsBroadcastsInfo.count),
     twilioNumbers: (state.smsBroadcastsInfo.count),
-    customersInfo: (state.businessGatewayInfo.customersInfo)
+    customersInfo: (state.businessGatewayInfo.customersInfo),
+    contactLists: (state.contactsInfo.contactLists)
   }
 }
 
@@ -257,7 +313,8 @@ function mapDispatchToProps (dispatch) {
     sendBroadcast,
     updateCurrentCustomersInfo,
     setDefaultCustomersInfo,
-    getCount
+    getCount,
+    fetchContactLists
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(SmsBroadcast)
