@@ -148,7 +148,8 @@ class SmsBroadcast extends React.Component {
         phoneNumber: this.props.location.state.number,
         platform: 'twilio',
         title: this.state.title,
-        segmentation: this.props.customersInfo && this.props.customersInfo.filter ? this.props.customersInfo.filter : ''
+        segmentation: this.state.segmentationType === 'basicSegmentation' && this.props.customersInfo && this.props.customersInfo.filter ? this.props.customersInfo.filter : '',
+        listIds: this.state.segmentationType === 'listSegmentation' ? this.state.listIds : []
       }, this.clearFields, this.msg)
     }
   }
@@ -170,7 +171,7 @@ class SmsBroadcast extends React.Component {
       transition: 'scale'
     }
     return (
-      <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+      <div style={{minHeight: '85vh', maxHeight: '100vh', marginBottom: '0', overflow: 'auto'}} className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div className='m-content'>
           <div className='row'>
@@ -276,6 +277,7 @@ class SmsBroadcast extends React.Component {
                         <div style={{marginLeft: '1px'}} className='form-group m-form__group row'>
                           <div className='col-lg-8'>
                             <Select
+                              isMulti
                               options={this.props.contactLists ? this.props.contactLists.map(list => { return {value: list._id, label: list.name} }) : []}
                               onChange={this.handleListSelect}
                               value={this.state.list}
