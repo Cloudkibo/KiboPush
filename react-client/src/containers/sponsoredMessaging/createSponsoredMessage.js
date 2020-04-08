@@ -62,6 +62,10 @@ class CreateSponsoredMessage extends React.Component {
       sponsoredMessage.scheduleDateTime = combinedDateTime
       sponsoredMessage.scheduleTimeZone = getTimeZone()
       sponsoredMessage.status = 'scheduled'
+      sponsoredMessage.newFiles = []
+      let initialFiles = this.state.initialFiles
+      let currentFiles = getFileIdsOfBroadcast(this.props.sponsoredMessage.payload)
+      deleteInitialFiles(initialFiles, currentFiles)
       this.props.updateSponsoredMessage(this.props.sponsoredMessage, '', '', {scheduleDateTime: combinedDateTime, status: 'scheduled'})
       this.props.saveDraft(this.props.sponsoredMessage._id, sponsoredMessage, this.msg, this.handleSaveSchedule)
     }
