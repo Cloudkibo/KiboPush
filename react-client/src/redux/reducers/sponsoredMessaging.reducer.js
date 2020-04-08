@@ -7,6 +7,7 @@ const initialState = {
     sponsoredMessage :{
       _id: '',
       adAccountId: '',
+      scheduleDateTime: '',
       pageId: '',
       statsFromUs: '',
       status: 'Draft',
@@ -48,8 +49,8 @@ export function sponsoredMessagingInfo (state = initialState, action) {
           refreshRequired: true
         })
       case ActionTypes.UPDATE_SPONSORED_MESSAGES_LIST_ITEM:
-        return { 
-          ...state, 
+        return {
+          ...state,
           sponsoredMessages: state.sponsoredMessages.map(
               (sponsoredMessage) => sponsoredMessage._id === action.sponsoredMessage._id ? {...sponsoredMessage, status: action.status}
                                       : sponsoredMessage
@@ -61,7 +62,8 @@ export function sponsoredMessagingInfo (state = initialState, action) {
           })
         case ActionTypes.UPDATE_SPONSORED_MESSAGE:
         return Object.assign({}, state, {
-          sponsoredMessage: action.data
+          sponsoredMessage: action.data,
+          updateSessionTimeStamp: new Date().toString()
         })
         case ActionTypes.SHOW_AD_ACCOUNTS:
           return Object.assign({}, state, {

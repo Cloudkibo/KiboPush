@@ -24,11 +24,20 @@ class Header extends React.Component {
           <button onClick={this.props.onSave} className='addLink btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
             Save
           </button>
+          {this.props.showSchedule &&
+            <button style={{marginLeft: '5px'}}
+              onClick={this.props.openScheduleModal}
+              className='addLink btn btn-primary m-btn m-btn--custom m-btn--air m-btn--pill m-btn--icon'>
+              <span>
+                Schedule
+              </span>
+            </button>
+          }
           <button style={{marginLeft: '5px'}}
             onClick={this.props.onSend}
             className={this.props.loading ? 'addLink btn btn-primary m-btn m-btn--custom m-btn--air m-btn--pill m-loader m-loader--light m-loader--right' : 'addLink btn btn-primary m-btn m-btn--custom m-btn--air m-btn--pill m-btn--icon'}>
             <span>
-              Publish
+              {this.props.publishButtonText}
               {!this.props.loading &&
                 <span>
                   <i className='la la-paper-plane-o' />
