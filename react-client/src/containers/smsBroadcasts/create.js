@@ -149,7 +149,7 @@ class SmsBroadcast extends React.Component {
         platform: 'twilio',
         title: this.state.title,
         segmentation: this.state.segmentationType === 'basicSegmentation' && this.props.customersInfo && this.props.customersInfo.filter ? this.props.customersInfo.filter : '',
-        listIds: this.state.segmentationType === 'listSegmentation' ? this.state.listIds : []
+        listIds: this.state.segmentationType === 'listSegmentation' ? this.state.lists.map(l => l.value) : []
       }, this.clearFields, this.msg)
     }
   }
@@ -158,8 +158,8 @@ class SmsBroadcast extends React.Component {
     this.setState({segmentationType: e.target.value})
   }
 
-  handleListSelect (list) {
-    this.setState({list})
+  handleListSelect (lists) {
+    this.setState({lists})
   }
 
   render () {
@@ -171,7 +171,7 @@ class SmsBroadcast extends React.Component {
       transition: 'scale'
     }
     return (
-      <div style={{minHeight: '85vh', maxHeight: '100vh', marginBottom: '0', overflow: 'auto'}} className='m-grid__item m-grid__item--fluid m-wrapper'>
+      <div style={{minHeight: '85vh', maxHeight: '100vh', marginBottom: '0', overflow: 'inherit'}} className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div className='m-content'>
           <div className='row'>
@@ -280,7 +280,7 @@ class SmsBroadcast extends React.Component {
                               isMulti
                               options={this.props.contactLists ? this.props.contactLists.map(list => { return {value: list._id, label: list.name} }) : []}
                               onChange={this.handleListSelect}
-                              value={this.state.list}
+                              value={this.state.lists}
                               placeholder='Select List'
                             />
                           </div>
