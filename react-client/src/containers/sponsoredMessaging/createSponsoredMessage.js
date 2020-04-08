@@ -62,6 +62,10 @@ class CreateSponsoredMessage extends React.Component {
       sponsoredMessage.scheduleDateTime = combinedDateTime
       sponsoredMessage.scheduleTimeZone = getTimeZone()
       sponsoredMessage.status = 'scheduled'
+      sponsoredMessage.newFiles = []
+      let initialFiles = this.state.initialFiles
+      let currentFiles = getFileIdsOfBroadcast(this.props.sponsoredMessage.payload)
+      deleteInitialFiles(initialFiles, currentFiles)
       this.props.updateSponsoredMessage(this.props.sponsoredMessage, '', '', {scheduleDateTime: combinedDateTime, status: 'scheduled'})
       this.props.saveDraft(this.props.sponsoredMessage._id, sponsoredMessage, this.msg, this.handleSaveSchedule)
     }
@@ -169,16 +173,22 @@ class CreateSponsoredMessage extends React.Component {
       this.msg.error('Please complete all the steps')
     }
   }
+  
   sendToFacebook () {
       this.props.updateSponsoredMessage(this.props.sponsoredMessage, null, null, {newFiles: []})
-      this.setState({loading: true})
+      let initialFiles = this.state.initialFiles
+      let currentFiles = getFileIdsOfBroadcast(this.props.sponsoredMessage.payload)
+      deleteInitialFiles(initialFiles, currentFiles)
+      this.setState({loading: true, initialFiles: currentFiles})
       let pageId = this.props.pages && this.props.pages.filter(p => p._id === this.props.sponsoredMessage.pageId)[0].pageId
       let sponsoredMessage = JSON.parse(JSON.stringify(this.props.sponsoredMessage))
       sponsoredMessage.pageFbId = pageId
       this.props.send(sponsoredMessage, this.handleResponse)
   }
+
   onSave () {
     if (checkValidations(this.props.sponsoredMessage)) {
+      this.props.updateSponsoredMessage(this.props.sponsoredMessage, null, null, {newFiles: []})
       let initialFiles = this.state.initialFiles
       let currentFiles = getFileIdsOfBroadcast(this.props.sponsoredMessage.payload)
       deleteInitialFiles(initialFiles, currentFiles)
