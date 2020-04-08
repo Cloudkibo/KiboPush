@@ -169,6 +169,7 @@ class CreateSponsoredMessage extends React.Component {
       this.msg.error('Please complete all the steps')
     }
   }
+  
   sendToFacebook () {
       this.props.updateSponsoredMessage(this.props.sponsoredMessage, null, null, {newFiles: []})
       this.setState({loading: true})
@@ -177,6 +178,7 @@ class CreateSponsoredMessage extends React.Component {
       sponsoredMessage.pageFbId = pageId
       this.props.send(sponsoredMessage, this.handleResponse)
   }
+
   onSave () {
     if (checkValidations(this.props.sponsoredMessage)) {
       let initialFiles = this.state.initialFiles
