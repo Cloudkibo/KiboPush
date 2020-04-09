@@ -227,7 +227,9 @@ export function getFileIdsOfComponent (component) {
     files.push(component.fileurl.id)
   } else if (component.cards) {
     for (let j = 0; j < component.cards.length; j++) {
-      files.push(component.cards[j].fileurl.id)
+      if (component.cards[j].fileurl) {
+        files.push(component.cards[j].fileurl.id)
+      }
     }
   }
   return files
