@@ -3,6 +3,7 @@
  */
 
 import React from 'react'
+import Select from 'react-select'
 import { connect } from 'react-redux'
 import { loadBroadcastsList, loadTwilioNumbers, sendBroadcast, getCount } from '../../redux/actions/smsBroadcasts.actions'
 import { bindActionCreators } from 'redux'
@@ -11,6 +12,7 @@ import { Picker } from 'emoji-mart'
 import TargetCustomers from '../businessGateway/targetCustomers'
 import AlertContainer from 'react-alert'
 import { updateCurrentCustomersInfo, setDefaultCustomersInfo } from '../../redux/actions/businessGateway.actions'
+import { fetchContactLists } from '../../redux/actions/contacts.actions'
 
 class SmsBroadcast extends React.Component {
   constructor (props) {
@@ -22,7 +24,8 @@ class SmsBroadcast extends React.Component {
       segmentationErrors: [],
       title: '',
       subscribersCount: 0,
-      conditions: []
+      conditions: [],
+      lists: []
     }
     this.onTitleChange = this.onTitleChange.bind(this)
     this.onMessageChange = this.onMessageChange.bind(this)
@@ -34,16 +37,19 @@ class SmsBroadcast extends React.Component {
     this.onGetCount = this.onGetCount.bind(this)
     this.debounce = this.debounce.bind(this)
     this.updateConditions = this.updateConditions.bind(this)
+    this.handleListSelect = this.handleListSelect.bind(this)
+    this.handleSegmentationType = this.handleSegmentationType.bind(this)
     props.setDefaultCustomersInfo({filter: []})
-    props.getCount([], this.onGetCount)
-    
+    props.getCount({segmentation: [], listIds: []}, this.onGetCount)
+    props.fetchContactLists()
   }
+
   updateConditions (conditions, update) {
     console.log('updating conditions', conditions)
     this.setState({conditions})
     if (update) {
       if (this.validateConditions(conditions)) {
-        this.props.getCount(conditions, this.onGetCount)
+        this.props.getCount({segmentation: conditions}, this.onGetCount)
       } else {
         this.setState({subscribersCount: 0})
       }
@@ -62,7 +68,7 @@ class SmsBroadcast extends React.Component {
     return !invalid
   }
   debounce () {
-    this.props.getCount(this.state.conditions, this.onGetCount)
+    this.props.getCount( {segmentation: this.state.conditions}, this.onGetCount)
   }
 
   onGetCount (data) {
@@ -78,7 +84,7 @@ class SmsBroadcast extends React.Component {
    // this.msg.success('Broadcast sent successfully')
     var conditions = [{condition: '', criteria: '', text: ''}]
     this.props.updateCurrentCustomersInfo(this.props.customersInfo, 'filter', conditions)
-    this.setState({title: '', message: '', segmentationErrors: []})
+    this.setState({title: '', message: '', segmentationErrors: [], conditions: [], lists: [], segmentationType: null})
   }
 
   validateSegmentation () {
@@ -139,14 +145,32 @@ class SmsBroadcast extends React.Component {
       this.msg.error('Please enter the title of the broadcast')
     } else if (this.state.message === '') {
       this.msg.error('Please enter the message to send')
-    } else if (this.validateSegmentation()) {
+    } else if (this.state.listSegmentation !== 'basicSegmentation' || this.validateSegmentation()) {
       this.props.sendBroadcast({payload: [{componentType: 'text', text: this.state.message, id: 0}],
         phoneNumber: this.props.location.state.number,
         platform: 'twilio',
         title: this.state.title,
-        segmentation: this.props.customersInfo && this.props.customersInfo.filter ? this.props.customersInfo.filter : ''
+        segmentation: this.state.segmentationType === 'basicSegmentation' && this.props.customersInfo && this.props.customersInfo.filter ? this.props.customersInfo.filter : '',
+        listIds: this.state.segmentationType === 'listSegmentation' ? this.state.lists.map(l => l.value) : []
       }, this.clearFields, this.msg)
     }
+  }
+
+  handleSegmentationType (e) {
+    this.props.getCount( {listIds: [], segmentation: []}, this.onGetCount)
+    let conditions = [{condition: '', criteria: '', text: ''}]
+    this.props.updateCurrentCustomersInfo(this.props.customersInfo, 'filter', conditions)
+    this.setState({segmentationType: e.target.value, conditions: []})
+  }
+
+  handleListSelect (lists) {
+    if (lists) {
+      this.props.getCount( {listIds: lists.map(l => l.value)}, this.onGetCount)
+    } else {
+      lists = []
+      this.props.getCount( {listIds: [], segmentation: []}, this.onGetCount)
+    }
+    this.setState({lists})
   }
 
   render () {
@@ -158,7 +182,7 @@ class SmsBroadcast extends React.Component {
       transition: 'scale'
     }
     return (
-      <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+      <div style={{minHeight: '85vh', maxHeight: '100vh', marginBottom: '0', overflow: 'inherit'}} className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div className='m-content'>
           <div className='row'>
@@ -226,9 +250,53 @@ class SmsBroadcast extends React.Component {
                     </div>
                     <div className='form-group m-form__group'>
                       <div className='col-3'>
-                        <label className='col-form-label'>Targeting:</label>
+                        <label className='col-form-label'>Select Segmentation:</label>
                       </div>
-                      <TargetCustomers msg = {this.msg} fileColumns={this.state.fileColumns} updateConditions={this.updateConditions} debounce={this.debounce} segmentationErrors={this.state.segmentationErrors} resetErrors={() => { this.setState({segmentationErrors: []}) }} />
+                      <div className='radio' style={{marginLeft: '35px'}}>
+                        <input 
+                          id='basicSegmentation'
+                          type='radio'
+                          value='basicSegmentation'
+                          name='basicSegmentation'
+                          onChange={this.handleSegmentationType}
+                          checked={this.state.segmentationType === 'basicSegmentation'} />
+                        <label>Apply Basic Segmentation</label>
+                      </div>
+                      {
+                        this.state.segmentationType === 'basicSegmentation' &&
+                          <TargetCustomers 
+                            msg = {this.msg} 
+                            fileColumns={this.state.fileColumns} 
+                            updateConditions={this.updateConditions} 
+                            debounce={this.debounce} 
+                            segmentationErrors={this.state.segmentationErrors} 
+                            resetErrors={() => { this.setState({segmentationErrors: []}) }} 
+                          />
+                      }
+                      <div className='radio' style={{marginLeft: '35px'}}>
+                        <input 
+                          id='listSegmentation'
+                          type='radio'
+                          value='listSegmentation'
+                          name='listSegmentation'
+                          onChange={this.handleSegmentationType}
+                          checked={this.state.segmentationType === 'listSegmentation'} />
+                        <label>Use Subscriber Lists</label>
+                      </div>
+                      {
+                        this.state.segmentationType === 'listSegmentation' &&
+                        <div style={{marginLeft: '1px'}} className='form-group m-form__group row'>
+                          <div className='col-lg-8'>
+                            <Select
+                              isMulti
+                              options={this.props.contactLists ? this.props.contactLists.map(list => { return {value: list._id, label: list.name} }).filter(x => x.value !== 'master') : []}
+                              onChange={this.handleListSelect}
+                              value={this.state.lists}
+                              placeholder='Select List'
+                            />
+                          </div>
+                        </div>
+                      }
                     </div>
                   </div>
                 </div>
@@ -246,7 +314,8 @@ function mapStateToProps (state) {
     broadcasts: (state.smsBroadcastsInfo.broadcasts),
     count: (state.smsBroadcastsInfo.count),
     twilioNumbers: (state.smsBroadcastsInfo.count),
-    customersInfo: (state.businessGatewayInfo.customersInfo)
+    customersInfo: (state.businessGatewayInfo.customersInfo),
+    contactLists: (state.contactsInfo.contactLists)
   }
 }
 
@@ -257,7 +326,8 @@ function mapDispatchToProps (dispatch) {
     sendBroadcast,
     updateCurrentCustomersInfo,
     setDefaultCustomersInfo,
-    getCount
+    getCount,
+    fetchContactLists
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(SmsBroadcast)

@@ -297,6 +297,9 @@ class UploadContacts extends React.Component {
     return (
       <div>
         <div className='form-group m-form__group row'>
+        <span className='col-lg-12 col-form-label'>
+            Select column for name
+          </span>
           <div className='col-lg-8'>
             <Select
               options={this.state.columns}
