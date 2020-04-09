@@ -24,6 +24,10 @@ class ChatbotAutomation extends React.Component {
     props.fetchChatbots()
   }
 
+  componentDidMount () {
+    document.title = 'KiboChat | ChatBot Automation'
+  }
+
   onRadioClick (e) {
     this.setState({selectedRadio: e.target.value})
   }
@@ -38,6 +42,7 @@ class ChatbotAutomation extends React.Component {
   }
 
   modifyChatbot (chatbot) {
+    chatbot.pageId = chatbot.pageId._id
     this.props.history.push({
       pathname: '/configureChatbot',
       state: chatbot
@@ -46,7 +51,10 @@ class ChatbotAutomation extends React.Component {
 
   handleOnCreate (res) {
     if (res.status === 'success') {
-      this.props.history.push({pathname: '/configureChatbot'})
+      this.props.history.push({
+        pathname: '/configureChatbot',
+        state: res.payload
+      })
     } else {
       this.msg.error(res.description)
     }
