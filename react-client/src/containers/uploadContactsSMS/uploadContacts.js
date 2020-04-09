@@ -11,7 +11,8 @@ import {
   saveContacts,
   deleteContact,
   deleteAllInvalidContacts,
-  deleteAllContacts
+  deleteAllContacts,
+  fetchContactLists
 } from '../../redux/actions/contacts.actions'
 import PREVIEW from './preview'
 import MODAL from '../../components/extras/modal'
@@ -51,6 +52,21 @@ class UploadContacts extends React.Component {
     this.handlePhoneColumn = this.handlePhoneColumn.bind(this)
     this.saveColumns = this.saveColumns.bind(this)
     this.processRow = this.processRow.bind(this)
+    this.getSubmitModalContent = this.getSubmitModalContent.bind(this)
+    this.handleListType = this.handleListType.bind(this)
+    this.submitClick = this.submitClick.bind(this)
+    this.onListNameChange = this.onListNameChange.bind(this)
+    this.handleExistingListSelect = this.handleExistingListSelect.bind(this)
+
+    this.props.fetchContactLists()
+  }
+
+  onListNameChange (e) {
+    if (e.target.value.length > 30) {
+      this.setState({newList: e.target.value, newListError: true})
+    } else {
+      this.setState({newList: e.target.value, newListError: false})
+    }
   }
 
   onNameChange (e) {
@@ -145,6 +161,11 @@ class UploadContacts extends React.Component {
       fileData.append('filesize', file.size)
       fileData.append('phoneColumn', 'number')
       fileData.append('nameColumn', 'name')
+      if (this.state.existingList) {
+        fileData.append('listId', this.state.existingList.value)
+      } else if (this.state.newList) {
+        fileData.append('newListName', this.state.newList)
+      }
       this.props.uploadFile(fileData, this.handleFileUpload)
     } else {
       this.msg.error('Please handle the invalid records first and then submit.')
@@ -190,11 +211,93 @@ class UploadContacts extends React.Component {
     })
   }
 
+  handleExistingListSelect(list) {
+    this.setState({existingList: list})
+  }
+
+  submitClick () {
+    this.refs.submitModal.click()
+  }
+
+  getSubmitModalContent () {
+    return (
+      <div>
+        <div className='radio' style={{marginLeft: '20px'}}>
+          <input 
+            id='mergeList'
+            type='radio'
+            value='mergeList'
+            name='mergeList'
+            onChange={this.handleListType}
+            checked={this.state.listType === 'mergeList'} />
+          <label>Merge these subscribers into an existing list</label>
+        </div>
+        {
+          this.state.listType === 'mergeList' &&
+          <div style={{marginLeft: '25px'}} className='form-group m-form__group row'>
+            <div className='col-lg-8'>
+              <Select
+                options={this.props.contactLists.map(list => { return {value: list._id, label: list.name} })}
+                onChange={this.handleExistingListSelect}
+                value={this.state.existingList}
+                placeholder='Select List'
+              />
+            </div>
+          </div>
+        }
+        <div className='radio' style={{marginLeft: '20px'}}>
+          <input 
+            id='newList'
+            type='radio'
+            value='newList'
+            name='newList'
+            onChange={this.handleListType}
+            checked={this.state.listType === 'newList'} />
+          <label>Create new list and save these subscribers in that list</label>
+        </div>
+        {
+          this.state.listType === 'newList' &&
+          <div style={{marginLeft: '25px'}} className="form-group m-form__group row">
+            <div className='col-lg-8'>
+              <input value={this.state.newList} 
+                onChange={this.onListNameChange} 
+                type="text" 
+                className="form-control m-input" 
+                placeholder="Enter List Name..." 
+              />
+              {
+                this.state.newListError &&
+                <span class="m-form__help m--font-danger">
+                  List Name can not be greater than 30 characters
+                </span>
+              }
+            </div>
+          </div>
+        }
+        <br />
+        <center>
+            <button
+              style={{float: 'right', marginLeft: '10px'}}
+              className='btn btn-primary btn-sm'
+              onClick={this.onSubmit}
+              disabled={!this.state.existingList && (this.state.newListError || !this.state.newList)}
+              data-dismiss='modal'>
+            Confirm
+          </button>
+        </center>
+      </div>
+    )
+  }
+
+  handleListType (e) {
+    this.setState({listType: e.target.value, existingList: null, newList: null})
+  }
+
   getModalContent () {
     return (
       <div>
         <div className='form-group m-form__group row'>
-          <span className='col-lg-12 col-form-label'>
+        <span className='col-lg-12 col-form-label'>
             Select column for name
           </span>
           <div className='col-lg-8'>
@@ -311,7 +414,14 @@ class UploadContacts extends React.Component {
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
 
-        <button href='#/' style={{ display: 'none' }} ref='fileInfo' data-toggle="modal" data-target="#_columns_mapping" />
+        <button style={{ display: 'none' }} ref='submitModal' data-toggle="modal" data-target="#_contact_lists" />
+        <MODAL
+          id='_contact_lists'
+          title='Save in List'
+          content={this.getSubmitModalContent()}
+        />
+
+        <button style={{ display: 'none' }} ref='fileInfo' data-toggle="modal" data-target="#_columns_mapping" />
         <MODAL
           id='_columns_mapping'
           title='File Information'
@@ -346,7 +456,7 @@ class UploadContacts extends React.Component {
                     <button onClick={() => { this.refs.resetModal.click() }} className='btn btn-secondary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
                       Reset
                     </button>
-                    <button onClick={this.onSubmit} style={{marginLeft: '10px'}} className={`btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill ${this.state.loading && 'm-loader m-loader--light m-loader--left'}`} disabled={this.state.records.length === 0}>
+                    <button onClick={this.submitClick} style={{marginLeft: '10px'}} className={`btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill ${this.state.loading && 'm-loader m-loader--light m-loader--left'}`} disabled={this.state.records.length === 0}>
                       Submit
                     </button>
                   </div>
@@ -424,7 +534,8 @@ function mapStateToProps (state) {
   return {
     uploadedContacts: (state.contactsInfo.uploadedContacts),
     validContactsCount: (state.contactsInfo.validContactsCount),
-    invalidContactsCount: (state.contactsInfo.invalidContactsCount)
+    invalidContactsCount: (state.contactsInfo.invalidContactsCount),
+    contactLists: (state.contactsInfo.contactLists)
   }
 }
 
@@ -436,7 +547,8 @@ function mapDispatchToProps (dispatch) {
     saveContacts,
     deleteContact,
     deleteAllInvalidContacts,
-    deleteAllContacts
+    deleteAllContacts,
+    fetchContactLists
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(UploadContacts)

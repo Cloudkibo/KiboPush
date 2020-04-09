@@ -11,6 +11,14 @@ export function showContacts (data) {
   }
 }
 
+export function updateContact (id, data) {
+  return {
+    type: ActionTypes.UPDATE_CONTACT,
+    id,
+    data
+  }
+}
+
 export function uploadFile (filedata, msg, clearFields) {
   return (dispatch) => {
     // eslint-disable-next-line no-undef
@@ -80,7 +88,23 @@ export function loadWhatsAppContactsList (data) {
       })
   }
 }
-export function editSubscriber (id, data, loadSubscribers,msg) {
+
+
+export function editSubscriberSms (id, data, msg) {
+  console.log('data for editSubscriberSms', data)
+  return (dispatch) => {
+    callApi(`contacts/update/${id}`, 'post', data)
+      .then(res => {
+        console.log('response from editSubscriberSms', res)
+        if (res.status === 'success') {
+          msg.success('Subscriber updated successfully')
+          dispatch(updateContact(id, data))
+        }
+      })
+  }
+} 
+
+export function editSubscriber (id, data,msg) {
   console.log('data for editSubscriber', data)
   return (dispatch) => {
     callApi(`whatsAppContacts/update/${id}`, 'post', data)
@@ -88,7 +112,8 @@ export function editSubscriber (id, data, loadSubscribers,msg) {
         console.log('response from editSubscriber', res)
         if (res.status === 'success') {
           msg.success('Subscriber updated successfully')
-          loadSubscribers()
+          dispatch(updateContact(id, data))
+          // loadSubscribers()
           //dispatch(loadWhatsAppContactsList({last_id: 'none', number_of_records: 10, first_page: 'first'}))
         }
       })

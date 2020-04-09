@@ -43,6 +43,13 @@ export function saveContacts (data) {
   }
 }
 
+function saveContactLists (data) {
+  return {
+    type: ActionTypes.FETCH_CONTACT_LISTS,
+    data
+  }
+}
+
 export function addContactManually (name, number, callback) {
   return (dispatch) => {
     callApi('twilio/verify', 'post', {number})
@@ -83,6 +90,23 @@ export function uploadFile (filedata, callback) {
     }).then((res) => res.json()).then((res) => res).then(res => {
       console.log('response from uploadFile', res)
       callback(res)
+    })
+  }
+}
+
+export function fetchContactLists (callback) {
+  return (dispatch) => {
+    fetch(`${API_URL}/contacts/fetchLists`, {
+      method: 'get',
+      headers: new Headers({
+        'Authorization': `Bearer ${auth.getToken()}`
+      })
+    }).then((res) => res.json()).then(res => {
+      console.log('response from getContactLists', res)
+      if (callback) {
+        callback(res)
+      }
+      dispatch(saveContactLists(res.payload))
     })
   }
 }
