@@ -1,6 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { isWebURL } from '../../utility/utils'
+import { Popover, PopoverBody} from 'reactstrap'
+import BUTTONACTION from './buttonAction'
 
 class AttachmentArea extends React.Component {
   constructor(props, context) {
@@ -14,7 +16,11 @@ class AttachmentArea extends React.Component {
       attachmentType: '',
       isUploaded: false,
       waitingForUrlData: false,
-      waitingForAttachment: false
+      waitingForAttachment: false,
+      buttons: [],
+      currentButton: {},
+      showPopover: false,
+      popoverTarget: '_action_in_chatbot'
     }
     this.onInputChange = this.onInputChange.bind(this)
     this.onFileChange = this.onFileChange.bind(this)
@@ -23,6 +29,10 @@ class AttachmentArea extends React.Component {
     this.removeAttachment = this.removeAttachment.bind(this)
     this.afterAttachmentUpload = this.afterAttachmentUpload.bind(this)
     this.onUrlResponse = this.onUrlResponse.bind(this)
+    this.showPopover = this.showPopover.bind(this)
+    this.togglePopover = this.togglePopover.bind(this)
+    this.onSaveAction = this.onSaveAction.bind(this)
+    this.onRemoveAction = this.onRemoveAction.bind(this)
   }
 
   componentDidMount () {
@@ -51,6 +61,27 @@ class AttachmentArea extends React.Component {
       }, doneTypingInterval)
     })
     input.addEventListener('keydown', () => {clearTimeout(typingTimer)})
+  }
+
+  showPopover () {
+    this.setState({
+      showPopover: true,
+      popoverTarget: '_attach_button_in_chatbot',
+      currentButton: this.state.buttons[0] || {title: '', url: ''}
+    })
+  }
+
+  togglePopover () {
+    this.setState({showPopover: !this.state.showPopover})
+  }
+
+  onSaveAction (data) {
+    data.type = 'web_url'
+    this.setState({buttons: [data], showPopover: false})
+  }
+
+  onRemoveAction () {
+    this.setState({buttons: [], showPopover: false})
   }
 
   onUrlResponse (res) {
@@ -89,7 +120,8 @@ class AttachmentArea extends React.Component {
       attachment: {},
       attachmentType: '',
       isUploaded: false,
-      waitingForUrlData: false
+      waitingForUrlData: false,
+      buttons: []
     })
   }
 
@@ -194,6 +226,55 @@ class AttachmentArea extends React.Component {
             <span className={`m-form__help m--font-${this.state.invalidUrl ? 'danger' : this.state.waitingForUrlData ? 'info' : 'success'}`}>
               {this.state.inputValue && this.state.helpMessage}
             </span>
+          </div>
+          {
+            this.state.buttons.length > 0 &&
+            <button
+              id='_attach_button_in_chatbot'
+              type="button"
+              style={{border: '1px solid #36a3f7'}}
+              className="btn btn-outline-info btn-sm"
+              onClick={this.showPopover}
+            >
+							{this.state.buttons[0].title}
+						</button>
+          }
+          {
+            ['image', 'video'].includes(this.state.attachmentType) &&
+            this.state.isUploaded && this.state.buttons.length === 0 &&
+            <button
+              id='_attach_button_in_chatbot'
+              type="button"
+              style={{border: '1px solid #36a3f7'}}
+              className="btn m-btn--pill btn-outline-info btn-sm"
+              onClick={this.showPopover}
+            >
+							+ Attach button
+						</button>
+          }
+          <div id='_action_in_chatbot'>
+            <Popover
+              placement='right'
+              isOpen={this.state.showPopover}
+              className='chatPopover _popover_max_width_400'
+              target={this.state.popoverTarget}
+              toggle={this.togglePopover}
+            >
+              <PopoverBody>
+                {
+                  this.state.showPopover &&
+                  <BUTTONACTION
+                    title={this.state.currentButton.title}
+                    url={this.state.currentButton.url}
+                    onCancel={this.togglePopover}
+                    onSave={this.onSaveAction}
+                    onRemove={this.onRemoveAction}
+                    showRemove={this.state.buttons.length > 0}
+                    alertMsg={this.props.alertMsg}
+                  />
+                }
+              </PopoverBody>
+            </Popover>
           </div>
         </div>
       </div>
