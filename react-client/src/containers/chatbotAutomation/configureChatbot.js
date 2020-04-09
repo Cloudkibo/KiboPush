@@ -1,7 +1,11 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { fetchChatbotDetails } from '../../redux/actions/chatbotAutomation.actions'
+import {
+  fetchChatbotDetails,
+  uploadAttachment,
+  handleAttachment
+} from '../../redux/actions/chatbotAutomation.actions'
 import AlertContainer from 'react-alert'
 import PROGRESS from '../../components/chatbotAutomation/progress'
 import SIDEBAR from '../../components/chatbotAutomation/sidebar'
@@ -11,8 +15,8 @@ class ConfigureChatbot extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      loading: props.location.state ? true : false,
-      chatbot: props.location.state || {},
+      loading: true,
+      chatbot: props.location.state,
       blocks: [],
       sidebarItems: [],
       currentBlock: {}
@@ -25,14 +29,9 @@ class ConfigureChatbot extends React.Component {
   }
 
   componentDidMount () {
-    if (this.props.location.state) {
-      // this.props.fetchChatbotDetails(this.props.location.state._id, this.handleChatbotDetails)
-      this.preparePayload([])
-    } else {
-      this.preparePayload([])
-    }
-
+    this.props.fetchChatbotDetails(this.props.location.state._id, this.handleChatbotDetails)
     document.getElementsByTagName('body')[0].className = 'm-page--fluid m--skin- m-content--skin-light2 m-header--fixed m-header--fixed-mobile m-footer--push'
+    document.title = 'KiboChat | Configure ChatBot'
   }
 
   handleChatbotDetails (res) {
@@ -127,13 +126,15 @@ class ConfigureChatbot extends React.Component {
     }
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
-        <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
+        <AlertContainer ref={(a) => { this.msg = a }} {...alertOptions} />
         <div style={{margin: '15px'}} className='row'>
           <SIDEBAR data={this.state.sidebarItems} />
           <MESSAGEAREA
             block={this.state.currentBlock}
             chatbot={this.state.chatbot}
             alertMsg={this.msg}
+            uploadAttachment={this.props.uploadAttachment}
+            handleAttachment={this.props.handleAttachment}
           />
         </div>
         <PROGRESS progress='65%' />
@@ -148,7 +149,9 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-    fetchChatbotDetails
+    fetchChatbotDetails,
+    uploadAttachment,
+    handleAttachment
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(ConfigureChatbot)

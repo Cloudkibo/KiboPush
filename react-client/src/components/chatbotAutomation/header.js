@@ -136,8 +136,7 @@ Header.propTypes = {
   'canPublish': PropTypes.bool.isRequired,
   'onPublish': PropTypes.func.isRequired,
   'onDisable': PropTypes.func.isRequired,
-  'isPublished': PropTypes.bool.isRequired,
-  'alertMsg': PropTypes.element.isRequired
+  'isPublished': PropTypes.bool.isRequired
 }
 
 export default Header
