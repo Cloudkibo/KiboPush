@@ -139,7 +139,7 @@ class UploadContacts extends React.Component {
   onSubmit () {
     const invalidRecords = this.props.uploadedContacts.filter((item) => item.status === 'Invalid')
     if (invalidRecords.length === 0) {
-      this.setState({loading: true, name: '', number: ''})
+      this.setState({loading: true, name: '', number: '', listType: null, existingList: null, newList: null })
       let rows = [['name', 'number']]
       for (let i = 0; i < this.props.uploadedContacts.length; i++) {
         let contact = this.props.uploadedContacts[i]

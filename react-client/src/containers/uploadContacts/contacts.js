@@ -259,14 +259,18 @@ class Contact extends React.Component {
   }
 
   getLists (subscriber) {
-    let lists = ['Master']
+    let lists = []
     if (subscriber.listIds) {
       for (let i = 0; i < subscriber.listIds.length; i++) {
         let list = this.props.contactLists.find(l => l._id === subscriber.listIds[i])
         lists.push(list.name)
       }
     }
-    return lists.join(', ')
+    if (lists.length >= 1) {
+      return lists.join(', ')
+    } else {
+      return '-'
+    }
   }
 
   render () {
@@ -374,7 +378,7 @@ class Contact extends React.Component {
                           <Select
                               isClearable
                               isSearchable
-                              options={this.props.contactLists ? this.props.contactLists.map(list => { return {value: list._id, label: list.name} }) : []}
+                              options={this.props.contactLists ? this.props.contactLists.map(list => { return {value: list._id, label: list.name} }).filter(x => x.value !== 'master') : []}
                               onChange={this.handleFilterByList}
                               value={this.state.list}
                               placeholder='Filter by List'
