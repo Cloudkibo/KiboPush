@@ -520,6 +520,10 @@ class CreateConvo extends React.Component {
           }
         }
       }
+      this.setState({newFiles: []})
+      console.log('payload before', this.state.linkedMessages[0].messageContent)
+      this.deleteButtonIds(this.state.linkedMessages)
+      this.deleteQuickReplyIds(this.state.linkedMessages)
       var data = {
         platform: 'facebook',
         self: true,
