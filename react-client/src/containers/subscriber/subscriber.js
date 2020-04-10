@@ -20,7 +20,7 @@ import EditTags from './editTags'
 import AlertMessage from '../../components/alertMessages/alertMessage'
 import moment from 'moment'
 import YouTube from 'react-youtube'
-import {localeCodeToEnglish} from '../../utility/utils'
+import {localeCodeToEnglish, handleDate} from '../../utility/utils'
 var json2csv = require('json2csv')
 
 class Subscriber extends React.Component {
@@ -162,9 +162,10 @@ class Subscriber extends React.Component {
     this.loadSubscribers = this.loadSubscribers.bind(this)
     this.setSelectedField = this.setSelectedField.bind(this)
     this.handleSelectedFieldValue = this.handleSelectedFieldValue.bind(this)
-    this.unselectAllSubscribers = this.unselectAllSubscribers.bind(this)    
+    this.unselectAllSubscribers = this.unselectAllSubscribers.bind(this)
     this.openVideoTutorial = this.openVideoTutorial.bind(this)
     this.getSubscriberSource = this.getSubscriberSource.bind(this)
+    this.getInputComponent = this.getInputComponent.bind(this)
   }
 
   getSubscriberSource () {
@@ -185,14 +186,14 @@ class Subscriber extends React.Component {
         return 'Direct Message'
     }
   }
-  
+
   openVideoTutorial () {
     this.setState({
       openVideo: true
     })
     this.refs.videosubscriber.click()
   }
-  
+
   saveSetCustomField() {
     var payload = this.createSetCustomFieldPayload()
     if (payload.subscriberIds.length > 0) {
@@ -1288,6 +1289,34 @@ class Subscriber extends React.Component {
     // this.setState({ totalLength: filteredData.length })
   }
 
+  getInputComponent (selectedField, handleSetCustomField) {
+    if (selectedField.type === 'text') {
+      return (
+        <input placeholder={'Enter custom field value...'} value={selectedField ? selectedField.value : ''} onChange={handleSetCustomField} className='form-control' />
+      )
+    } else if (selectedField.type === 'number') {
+      return (
+        <input type='number' placeholder={'Enter custom field value...'} value={selectedField ? selectedField.value : ''} onChange={handleSetCustomField} className='form-control' />
+      )
+    } else if (selectedField.type === 'date') {
+      return (
+        <input type='date' placeholder={'Enter custom field value...'} value={selectedField ? selectedField.value : ''} onChange={handleSetCustomField} className='form-control' />
+      )
+    } else if (selectedField.type === 'datetime') {
+      return (
+        <input type='datetime-local' placeholder={'Enter custom field value...'} value={selectedField ? selectedField.value : ''} onChange={handleSetCustomField} className='form-control' />
+      )
+    } else if (selectedField.type === 'true/false') {
+      return (
+        <select className='custom-select' value={selectedField ? selectedField.value : ''} style={{ width: '200px' }} id='m_form_type' tabIndex='-98' onChange={handleSetCustomField}>
+          <option key='' value='' diabled>Select Value...</option>
+          <option key='1' value='true'>True</option>
+          <option key='2' value='false'>False</option>
+        </select>
+      )
+    }
+  }
+
   render() {
     var hostname = window.location.hostname
     var hoverOn = {
@@ -1335,7 +1364,7 @@ class Subscriber extends React.Component {
                   <h5 className="modal-title" id="exampleModalLabel">
                     Subscriber Video Tutorial
 									</h5>
-                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" 
+                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal"
                   aria-label="Close"
                   onClick={() => {
                     this.setState({
@@ -1629,7 +1658,7 @@ class Subscriber extends React.Component {
                             {
                               (this.state.selectedBulkField && this.state.selectedBulkField._id) &&
                                 <div className='col-3'>
-                                  <input placeholder={'Enter custom field value...'} value={this.state.selectedBulkField ? this.state.selectedBulkField.value : ''} onChange={this.handleBulkSetCustomField} className='form-control' />
+                                  {this.getInputComponent(this.state.selectedBulkField, this.handleBulkSetCustomField)}
                                 </div>
                             }
                             {
@@ -1990,7 +2019,7 @@ class Subscriber extends React.Component {
                                                 style={field._id === this.state.hoverId ? hoverOn : hoverOff}>
                                                 <span style={{ marginLeft: '10px' }}>
                                                   <span style={{ fontWeight: '100' }}>{field.name} : </span>
-                                                  <span style={{ color: '#3c3c7b' }}>{field.value}</span>
+                                                  <span style={{ color: '#3c3c7b' }}>{field.type === 'datetime' ? handleDate(field.value) : field.value}</span>
                                                 </span>
                                               </div>
                                             </div>
@@ -2057,7 +2086,7 @@ class Subscriber extends React.Component {
                           {
                               (this.state.selectedField && this.state.selectedField._id) &&
                                 <div style={{marginLeft: '-12%'}} className='col-5'>
-                                  <input placeholder={'Enter field value...'} value={this.state.selectedField ? this.state.selectedField.value : ''} onChange={this.handleSelectedFieldValue} className='form-control' />
+                                  {this.getInputComponent(this.state.selectedField, this.handleSelectedFieldValue)}
                                 </div>
                             }
                             {
