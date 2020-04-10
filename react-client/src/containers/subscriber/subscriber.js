@@ -1310,8 +1310,8 @@ class Subscriber extends React.Component {
       return (
         <select className='custom-select' value={selectedField ? selectedField.value : ''} style={{ width: '200px' }} id='m_form_type' tabIndex='-98' onChange={handleSetCustomField}>
           <option key='' value='' diabled>Select Value...</option>
-          <option key='1' value='true'>Yes</option>
-          <option key='2' value='false'>No</option>
+          <option key='1' value='true'>True</option>
+          <option key='2' value='false'>False</option>
         </select>
       )
     }
