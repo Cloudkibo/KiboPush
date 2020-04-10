@@ -2055,7 +2055,7 @@ class Subscriber extends React.Component {
                             </div>
 
                             <div className="row" style={{ marginTop: '15px', marginLeft: '1px' }}>
-                              <div className='col-6'>
+                              <div className='col-5'>
                                 <div className='form-group m-form__group row align-items-center'>
                                   <div className='m-form__group m-form__group--inline'>
                                     <div className='m-form__control'>
@@ -2085,7 +2085,7 @@ class Subscriber extends React.Component {
                             </div>
                           {
                               (this.state.selectedField && this.state.selectedField._id) &&
-                                <div style={{marginLeft: '-12%'}} className='col-5'>
+                                <div style={{marginLeft: '-8%'}} className='col-6'>
                                   {this.getInputComponent(this.state.selectedField, this.handleSelectedFieldValue)}
                                 </div>
                             }
