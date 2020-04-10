@@ -6,7 +6,7 @@ import { bindActionCreators } from 'redux'
 import { RingLoader } from 'halogenium'
 import AddButton from './AddButton'
 import { downloadYouTubeVideo, uploadTemplate, urlMetaData } from '../../redux/actions/convos.actions'
-import { getVideoId } from '../../utility/utils'
+import { getVideoId, deleteFile } from '../../utility/utils'
 import YouTube from 'react-youtube'
 
 class YoutubeVideoModal extends React.Component {
@@ -28,7 +28,8 @@ class YoutubeVideoModal extends React.Component {
       loading: false,
       videoId: this.props.videoId ? this.props.videoId : null,
       card: this.props.card,
-      fileSizeExceeded: this.props.fileSizeExceeded
+      fileSizeExceeded: this.props.fileSizeExceeded,
+      initialFile: this.props.file ? this.props.file.fileurl.id : null
     }
     console.log('YoutubeVideoModal state', this.state)
     console.log('YoutubeVideoModal module', this.props.module)
@@ -45,6 +46,22 @@ class YoutubeVideoModal extends React.Component {
 
   handleLinkChange(e) {
     console.log('changing link', e.target.value)
+    if (this.state.file) {
+      let canBeDeleted = true
+      for (let i = 0; i < this.props.initialFiles.length; i++) {
+        if (this.state.file.fileurl.id === this.props.initialFiles[i]) {
+          canBeDeleted = false
+          break
+        }
+      }
+      if (this.state.initialFile === this.state.file.fileurl.id) {
+        canBeDeleted = false
+      }
+      if (canBeDeleted) {
+        this.props.setTempFiles(null, [this.state.file.fileurl.id])
+        deleteFile(this.state.file.fileurl.id)
+      }
+    }
     this.setState({ fileSizeExceeded: false, buttons: [], disabled: true, link: e.target.value, videoId: null, videoTitle: null, videoDescription: null, file: null, card: null }, () => {
       this.validateYoutubeUrl()
     })
@@ -86,6 +103,20 @@ class YoutubeVideoModal extends React.Component {
           card: this.state.card
         }, this.props.edit)
       } else {
+        if (this.state.initialFile) {
+          let canBeDeleted = true
+          for (let i = 0; i < this.props.initialFiles.length; i++) {
+            if (this.state.initialFile === this.props.initialFiles[i]) {
+              canBeDeleted = false
+              break
+            }
+          } 
+          if (canBeDeleted) {
+            if (this.state.file.fileurl.id !== this.state.initialFile) {
+              deleteFile(this.state.initialFile)
+            }
+          }
+        }
         this.props.addComponent({
           id: this.props.id,
           componentName:  'YouTube video',
@@ -115,6 +146,7 @@ class YoutubeVideoModal extends React.Component {
       this.props.urlMetaData(this.state.link, (data) => this.handleUrlMetaData(data))
       return
     }
+    this.props.setTempFiles([file.fileurl.id])
     console.log('updating YouTube file', file)
     if (this.props.pages) {
       this.uploadTemplate(file)
@@ -237,11 +269,6 @@ class YoutubeVideoModal extends React.Component {
     } else {
       this.props.showCloseModalAlertDialog()
     }
-  }
-
-
-  UNSAFE_componentWillUnmount() {
-    this.props.closeModal()
   }
 
   render() {

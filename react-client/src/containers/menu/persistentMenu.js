@@ -8,7 +8,7 @@ import { checkWhitelistedDomains } from '../../redux/actions/broadcast.actions'
 import { Link } from 'react-router-dom'
 import AlertContainer from 'react-alert'
 import { registerAction } from '../../utility/socketio'
-import { isWebURL, isWebViewUrl } from './../../utility/utils'
+import { isWebURL, isWebViewUrl, deleteFiles, deleteFile, getFileIdsOfMenu, deleteInitialFiles } from './../../utility/utils'
 import { Popover, PopoverHeader, PopoverBody } from 'reactstrap'
 import ViewScreen from './viewScreen'
 import { RingLoader } from 'halogenium'
@@ -36,7 +36,9 @@ class Menu extends React.Component {
       webviewsize: 'FULL',
       webviewsizes: ['COMPACT', 'TALL', 'FULL'],
       subMenuEnable: false,
-      openVideo: false
+      openVideo: false,
+      newFiles: [],
+      initialFiles: []
     }
 
     this.pageChange = this.pageChange.bind(this)
@@ -72,12 +74,14 @@ class Menu extends React.Component {
     this.handleWebView = this.handleWebView.bind(this)
     this.saveMenuData = this.saveMenuData.bind(this)
     this.openVideoTutorial = this.openVideoTutorial.bind(this)
+    this.removePayloadFiles = this.removePayloadFiles.bind(this)
     if (!this.props.currentMenuItem) {
       if (this.props.pages && this.props.pages.length > 0) {
         this.props.getIndexBypage(this.props.pages[0].pageId, this.handleIndexByPage)
       }
     }
   }
+
   openVideoTutorial () {
     this.setState({
       openVideo: true
@@ -134,7 +138,10 @@ class Menu extends React.Component {
         default:
           break
       }
+
       this.setState({
+        initialFiles: this.props.location.state.initialFiles,
+        newFiles: this.props.currentMenuItem.newFiles,
         menuItems: menuReturned,
         selectedIndex: this.props.currentMenuItem.clickedIndex
       })
@@ -257,19 +264,26 @@ class Menu extends React.Component {
     }
 
     this.setState({menuItems: temp})
-    var currentState = { itemMenus: this.state.menuItems, clickedIndex: this.state.selectedIndex, currentPage: [this.state.selectPage._id] }
+    this.editing = true
+    var currentState = { itemMenus: this.state.menuItems, clickedIndex: this.state.selectedIndex, currentPage: [this.state.selectPage._id], newFiles: this.state.newFiles }
     this.props.saveCurrentMenuItem(currentState)
+    let initialFiles = this.state.initialFiles
+    if (this.state.initialFiles && this.state.newFiles) {
+      initialFiles = initialFiles.concat(this.state.newFiles)
+    }
     this.props.history.push({
       pathname: `/createMessage`,
+      state: {realInitialFiles: this.state.initialFiles, initialFiles: initialFiles, newFiles: this.state.newFiles}
     })
-
   }
   handleReset () {
     this.props.getIndexBypage(this.state.selectPage.pageId, this.handleIndexByPage)
   }
   handleIndexByPage (res) {
     if (res.status === 'success' && res.payload && res.payload.length > 0) {
+      let initialFiles = getFileIdsOfMenu(res.payload[0].jsonStructure)
       this.setState({
+        initialFiles,
         menuItems: res.payload[0].jsonStructure
       })
       for (var i = 0; i < this.props.pages.length; i++) {
@@ -281,7 +295,34 @@ class Menu extends React.Component {
       this.initializeMenuItems()
     }
   }
+
+  removePayloadFiles () {
+    for (let i = 0; i < this.state.menuItems.length; i++) {
+      let menuItem = this.state.menuItems[i]
+      if (menuItem.payload) {
+        deleteFiles(JSON.parse(menuItem.payload))
+      }
+      if (menuItem.submenu) {
+        for (let j = 0; j < menuItem.submenu.length; j++) {
+          let subItem = menuItem.submenu[j]
+          if (subItem.payload) {
+            deleteFiles(JSON.parse(subItem.payload))
+          }
+          if (subItem.submenu) {
+            for (let k = 0; k < subItem.submenu.length; k++) {
+              let nestedItem = subItem.submenu[k]
+              if (nestedItem.payload) {
+                deleteFiles(JSON.parse(nestedItem.payload))
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
   removeMainMenu () {
+    this.removePayloadFiles()
     var data = {}
     data.payload = removeMenuPayload()
     data.pageId = this.state.selectPage.pageId
@@ -293,8 +334,10 @@ class Menu extends React.Component {
     data.jsonStructure = tempItemMenus
     var currentState = null
     this.props.saveCurrentMenuItem(currentState)
+    this.setState({newFiles: [], initialFiles: []})
     this.props.removeMenu(data, this.handleReset, this.msg)
   }
+
   validateMenu () {
     var errorMessage = ''
     var menuItems = this.state.menuItems
@@ -452,6 +495,9 @@ class Menu extends React.Component {
   }
   pageChange (event) {
     if (event.target.value !== -1) {
+      for (let i = 0; i < this.state.newFiles.length; i++) {
+        deleteFile(this.state.newFiles[i])
+      }
       let page
       for (let i = 0; i < this.props.pages.length; i++) {
         if (this.props.pages[i].pageId === event.target.value) {
@@ -461,7 +507,8 @@ class Menu extends React.Component {
       }
       if (page) {
         this.setState({
-          selectPage: page
+          selectPage: page,
+          newFiles: []
         })
       }
       var currentState = null
@@ -497,13 +544,18 @@ class Menu extends React.Component {
   }
   removeMenu (index) {
     var menuItems = []
+    let newFiles = this.state.newFiles
+    if (this.state.menuItems[index].payload) {
+      newFiles = deleteFiles(JSON.parse(this.state.menuItems[index].payload), newFiles, this.state.initialFiles)
+    }
     for (let i = 0; i < this.state.menuItems.length; i++) {
       if (index !== i) {
         menuItems.push(this.state.menuItems[i])
       }
     }
     this.setState({
-      menuItems: menuItems
+      menuItems: menuItems,
+      newFiles
     })
   }
   addSubMenu (index) {
@@ -533,6 +585,10 @@ class Menu extends React.Component {
   }
   removeSubMenu (index, subIndex) {
     var subItems = []
+    let newFiles = this.state.newFiles
+    if (this.state.menuItems[index].submenu[subIndex].payload) {
+      newFiles = deleteFiles(JSON.parse(this.state.menuItems[index].submenu[subIndex].payload), newFiles, this.state.initialFiles)
+    }
     for (let i = 0; i < this.state.menuItems[index].submenu.length; i++) {
       if (subIndex !== i) {
         subItems.push(this.state.menuItems[index].submenu[i])
@@ -545,7 +601,8 @@ class Menu extends React.Component {
       menuItems[index].type = ''
     }
     this.setState({
-      menuItems: menuItems
+      menuItems: menuItems,
+      newFiles
     })
   }
   addNestedMenu (index, subIndex) {
@@ -574,6 +631,10 @@ class Menu extends React.Component {
   }
   removeNestedMenu (index, subIndex, nestedIndex) {
     var nestedItems = []
+    let newFiles = this.state.newFiles
+    if (this.state.menuItems[index].submenu[subIndex].submenu[nestedIndex].payload) {
+      newFiles = deleteFiles(JSON.parse(this.state.menuItems[index].submenu[subIndex].submenu[nestedIndex].payload), newFiles, this.state.initialFiles)
+    }
     for (let i = 0; i < this.state.menuItems[index].submenu[subIndex].submenu.length; i++) {
       if (nestedIndex !== i) {
         nestedItems.push(this.state.menuItems[index].submenu[subIndex].submenu[i])
@@ -586,7 +647,8 @@ class Menu extends React.Component {
       menuItems[index].submenu[subIndex].type = ''
     }
     this.setState({
-      menuItems: menuItems
+      menuItems: menuItems,
+      newFiles
     })
   }
   getMenuHierarchy (indexVal) {
@@ -641,11 +703,13 @@ class Menu extends React.Component {
   saveMenuData (url) {
     var temp = this.state.menuItems
     var index = this.state.selectedIndex.split('-')
+    let newFiles = this.state.newFiles
     if (index && index.length > 1) {
       var menu = this.getMenuHierarchy(this.state.selectedIndex)
       switch (menu) {
         case 'item':
           if (temp[index[1]].payload) {
+            newFiles = deleteFiles(JSON.parse(temp[index[1]].payload), newFiles, this.state.initialFiles)
             delete temp[index[1]].payload
           }
           temp[index[1]].type = 'web_url'
@@ -660,6 +724,7 @@ class Menu extends React.Component {
           break
         case 'submenu':
           if (temp[index[1]].submenu[index[2]].payload) {
+            newFiles = deleteFiles(JSON.parse(temp[index[1]].submenu[index[2]].payload), newFiles, this.state.initialFiles)
             delete temp[index[1]].submenu[index[2]].payload
           }
           temp[index[1]].submenu[index[2]].type = 'web_url'
@@ -674,6 +739,7 @@ class Menu extends React.Component {
           break
         case 'nestedMenu':
           if (temp[index[1]].submenu[index[2]].submenu[index[3]].payload) {
+            newFiles = deleteFiles(JSON.parse(temp[index[1]].submenu[index[2]].submenu[index[3]].payload), newFiles, this.state.initialFiles)
             delete temp[index[1]].submenu[index[2]].submenu[index[3]].payload
           }
           temp[index[1]].submenu[index[2]].submenu[index[3]].type = 'web_url'
@@ -690,7 +756,7 @@ class Menu extends React.Component {
           break
       }
     }
-    this.setState({menuItems: temp})
+    this.setState({menuItems: temp, newFiles})
 
   }
   handleWebView (resp, url) {
@@ -725,7 +791,10 @@ class Menu extends React.Component {
     if (this.state.menuItems && this.state.menuItems.length > 0) {
       var errorMessage = this.validateMenu()
       if (errorMessage === '') {
-        var currentState = { itemMenus: this.state.menuItems, clickedIndex: this.state.selectedIndex, currentPage: this.state.selectPage.pageId }
+        let initialFiles = this.state.initialFiles
+        let currentFiles = getFileIdsOfMenu(this.state.menuItems)
+        deleteInitialFiles(initialFiles, currentFiles)
+        var currentState = { itemMenus: this.state.menuItems, clickedIndex: this.state.selectedIndex, currentPage: this.state.selectPage.pageId, newFiles: [] }
         this.props.saveCurrentMenuItem(currentState)
         var temp = []
         for (var k = 0; k < this.state.menuItems.length; k++) {
@@ -742,8 +811,11 @@ class Menu extends React.Component {
         data.userId = this.props.user._id
         data.jsonStructure = this.state.menuItems
         this.setState({
-          loading: true
+          loading: true,
+          newFiles: [],
+          initialFiles: currentFiles
         })
+        this.editing = true
         this.props.saveMenu(data, this.handleSaveMenu, this.msg)
       } else {
         this.msg.error(errorMessage)
@@ -767,6 +839,17 @@ class Menu extends React.Component {
     var currentState = null
     this.props.saveCurrentMenuItem(currentState)
   }
+
+  componentWillUnmount () {
+    if (!this.editing) {
+      if (this.state.newFiles) {
+        for (let i = 0; i < this.state.newFiles.length; i++) {
+          deleteFile(this.state.newFiles[i])
+        }
+      }
+    }
+  }
+
   render () {
     var alertOptions = {
       offset: 14,

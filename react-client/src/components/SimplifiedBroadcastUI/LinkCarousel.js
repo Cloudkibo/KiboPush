@@ -296,10 +296,6 @@ class LinkCarouselModal extends React.Component {
         }
     }
 
-    UNSAFE_componentWillUnmount() {
-        this.props.closeModal()
-    }
-
     render () {
         return (
             <div className="modal-content" style={{ width: '72vw' }}>

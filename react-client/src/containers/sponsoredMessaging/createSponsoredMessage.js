@@ -13,9 +13,12 @@ import Campaign from './campaign'
 import StepsBar from './stepsBar'
 import AdSet from './adSet'
 import Ad from './ad'
+import ScheduleModal from './scheduleModal'
 import {updateSponsoredMessage, saveDraft, send } from '../../redux/actions/sponsoredMessaging.actions'
-import {checkValidations } from './utility'
-
+import {getFileIdsOfBroadcast, deleteInitialFiles} from '../../utility/utils'
+import {checkValidations} from './utility'
+import { getTimeZone } from './../../utility/utils'
+import ConfirmationModal from '../../components/extras/confirmationModal'
 
 class CreateSponsoredMessage extends React.Component {
   constructor (props, context) {
@@ -28,7 +31,8 @@ class CreateSponsoredMessage extends React.Component {
       : props.sponsoredMessage.campaignId && props.sponsoredMessage.campaignId !== '' ? 'adSet'
       : props.sponsoredMessage.adAccountId && props.sponsoredMessage.adAccountId !== '' ? 'campaign'
       : 'adAccount',
-      loading: false
+      loading: false,
+      initialFiles: props.sponsoredMessage && props.sponsoredMessage.payload ? getFileIdsOfBroadcast(props.sponsoredMessage.payload) : []
     }
     if(this.props.location.state && this.props.location.state.module === 'edit'  && this.props.location.state.sponsoredMessage) {
       this.props.updateSponsoredMessage(this.props.location.state.sponsoredMessage)
@@ -39,6 +43,55 @@ class CreateSponsoredMessage extends React.Component {
     this.onSave = this.onSave.bind(this)
     this.handleResponse = this.handleResponse.bind(this)
     this.handleSaveResponse = this.handleSaveResponse.bind(this)
+    this.openScheduleModal = this.openScheduleModal.bind(this)
+    this.saveSchedule = this.saveSchedule.bind(this)
+    this.cancelSchedule = this.cancelSchedule.bind(this)
+    this.handleSaveSchedule = this.handleSaveSchedule.bind(this)
+    this.handleCancelSchedule = this.handleCancelSchedule.bind(this)
+    this.sendToFacebook = this.sendToFacebook.bind(this)
+    this.publishNow = this.publishNow.bind(this)
+  }
+
+  saveSchedule (date, time) {
+    let combinedDateTime = new Date(date + ' ' + time)
+    let currentDate = new Date()
+    if (combinedDateTime < currentDate) {
+      this.msg.error('Scheduled Date and Time cannot be less than the current Date and Time')
+    } else {
+      let sponsoredMessage = this.props.sponsoredMessage
+      sponsoredMessage.scheduleDateTime = combinedDateTime
+      sponsoredMessage.scheduleTimeZone = getTimeZone()
+      sponsoredMessage.status = 'scheduled'
+      sponsoredMessage.newFiles = []
+      let initialFiles = this.state.initialFiles
+      let currentFiles = getFileIdsOfBroadcast(this.props.sponsoredMessage.payload)
+      deleteInitialFiles(initialFiles, currentFiles)
+      this.props.updateSponsoredMessage(this.props.sponsoredMessage, '', '', {scheduleDateTime: combinedDateTime, status: 'scheduled'})
+      this.props.saveDraft(this.props.sponsoredMessage._id, sponsoredMessage, this.msg, this.handleSaveSchedule)
+    }
+  }
+
+  cancelSchedule () {
+    let sponsoredMessage = this.props.sponsoredMessage
+    sponsoredMessage.status = 'draft'
+    this.props.updateSponsoredMessage(this.props.sponsoredMessage, '', '', {scheduleDateTime: '', status: 'draft'})
+    this.props.saveDraft(this.props.sponsoredMessage._id, sponsoredMessage, this.msg, this.handleCancelSchedule)
+  }
+
+  handleSaveSchedule () {
+    this.refs.sponsoredMessage.click()
+  }
+
+  handleCancelSchedule () {
+    // this.refs.cancelScheduleModal.click()
+  }
+
+  openScheduleModal () {
+    if (checkValidations(this.props.sponsoredMessage)) {
+      this.refs.sponsoredMessage.click()
+    } else {
+      this.msg.error('Please complete all the steps')
+    }
   }
 
   UNSAFE_componentWillReceiveProps (nextProps) {
@@ -105,19 +158,41 @@ class CreateSponsoredMessage extends React.Component {
       this.props.saveDraft(this.props.sponsoredMessage._id, sponsoredMessage, this.msg)
     }
   }
+  publishNow () {
+    this.refs.confirmPublish.click()
+    this.sendToFacebook()
+  }
   onSend () {
     if (checkValidations(this.props.sponsoredMessage)) {
-      this.setState({loading: true})
-      let pageId = this.props.pages && this.props.pages.filter(p => p._id === this.props.sponsoredMessage.pageId)[0].pageId
-      let sponsoredMessage = JSON.parse(JSON.stringify(this.props.sponsoredMessage))
-      sponsoredMessage.pageFbId = pageId
-      this.props.send(sponsoredMessage, this.handleResponse)
+      if (this.props.sponsoredMessage.scheduleDateTime) {
+        this.refs.confirmPublish.click()
+      } else {
+        this.sendToFacebook()
+      }
     } else {
       this.msg.error('Please complete all the steps')
     }
   }
+  
+  sendToFacebook () {
+      this.props.updateSponsoredMessage(this.props.sponsoredMessage, null, null, {newFiles: []})
+      let initialFiles = this.state.initialFiles
+      let currentFiles = getFileIdsOfBroadcast(this.props.sponsoredMessage.payload)
+      deleteInitialFiles(initialFiles, currentFiles)
+      this.setState({loading: true, initialFiles: currentFiles})
+      let pageId = this.props.pages && this.props.pages.filter(p => p._id === this.props.sponsoredMessage.pageId)[0].pageId
+      let sponsoredMessage = JSON.parse(JSON.stringify(this.props.sponsoredMessage))
+      sponsoredMessage.pageFbId = pageId
+      this.props.send(sponsoredMessage, this.handleResponse)
+  }
+
   onSave () {
     if (checkValidations(this.props.sponsoredMessage)) {
+      this.props.updateSponsoredMessage(this.props.sponsoredMessage, null, null, {newFiles: []})
+      let initialFiles = this.state.initialFiles
+      let currentFiles = getFileIdsOfBroadcast(this.props.sponsoredMessage.payload)
+      deleteInitialFiles(initialFiles, currentFiles)
+      this.props.updateSponsoredMessage(this.props.sponsoredMessage, null, null, {newFiles: []})
       this.props.saveDraft(this.props.sponsoredMessage._id, this.props.sponsoredMessage, this.msg, this.handleSaveResponse)
     } else {
       this.msg.error('Please complete all the steps')
@@ -134,6 +209,28 @@ class CreateSponsoredMessage extends React.Component {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
+          <button ref='sponsoredMessage' style={{display: 'none'}} data-toggle="modal" data-target="#sponsoredMessage"></button>
+          <ScheduleModal
+            id='sponsoredMessage'
+            title='Schedule Broadcast'
+            content='Send this broadcast on:'
+            saveSchedule={this.saveSchedule}
+            dateTime={this.props.sponsoredMessage.scheduleDateTime}
+          />
+        <button ref='cancelScheduleModal' style={{display: 'none'}} data-toggle="modal" data-target="#cancelScheduleModal"></button>
+          <ConfirmationModal
+            id='cancelScheduleModal'
+            title='Cancel Schedule'
+            description='Are you sure you want to cancel scheduling of this Sponsored Message?'
+            onConfirm={this.cancelSchedule}
+          />
+          <button ref='confirmPublish' style={{display: 'none'}} data-toggle="modal" data-target="#confirmPublish"></button>
+          <ConfirmationModal
+            id='confirmPublish'
+            title='Publish Sponsored Message'
+            description='This will immediately send your Sheduled Sponsored Message and will remove the sheduling done for later. Are you sure you want to continue?'
+            onConfirm={this.publishNow}
+          />
         <div className='m-content'>
           <div className='row'>
             <div className='col-xl-12'>
@@ -144,6 +241,11 @@ class CreateSponsoredMessage extends React.Component {
                   sendDisabled = {this.state.sendDisabled}
                   onSave = {this.onSave}
                   loading={this.state.loading}
+                  showPublish={this.state.currentStep === 'ad'}
+                  showSave={this.state.currentStep === 'ad'}
+                  showSchedule={this.state.currentStep === 'ad' && this.props.sponsoredMessage.status !== 'scheduled'}
+                  openScheduleModal={this.openScheduleModal}
+                  publishButtonText={this.props.sponsoredMessage.status === 'scheduled' ? 'Publish Now' : 'Publish'}
                 />
                 <div className='m-portlet__body'>
                   <StepsBar currentStep={this.state.currentStep}
@@ -159,9 +261,13 @@ class CreateSponsoredMessage extends React.Component {
                   {this.state.currentStep === 'adSet' &&
                     <AdSet changeCurrentStep={this.changeCurrentStep} msg={this.msg} />
                   }
-                  {this.state.currentStep === 'ad' &&
-                    <Ad changeCurrentStep={this.changeCurrentStep} msg={this.msg} />
-                  }
+                  <Ad currentStep={this.state.currentStep} 
+                      changeCurrentStep={this.changeCurrentStep} 
+                      initialFiles={this.state.initialFiles} 
+                      msg={this.msg}
+                      scheduleModal={this.refs.sponsoredMessage}
+                      cancelScheduleModal={this.refs.cancelScheduleModal}
+                   />
                 </div>
               </div>
             </div>
@@ -176,7 +282,8 @@ function mapStateToProps (state) {
   console.log(state)
   return {
     sponsoredMessage: (state.sponsoredMessagingInfo.sponsoredMessage),
-    pages: state.pagesInfo.pages
+    pages: state.pagesInfo.pages,
+    updateSessionTimeStamp: state.sponsoredMessagingInfo.updateSessionTimeStamp
   }
 }
 

@@ -148,6 +148,7 @@ class Home extends React.Component {
     if (isValid) {
       this.props.sendPushMessage(this.getCustomersInfoPayload(), this.props.customersInfo.pushMessage, this.msg)
     }
+    this.msg.info('Sending broadcast.... You will be notified when it is sent.')
   }
   defaultPushMessage () {
     const defaultMessage = { pushMesage: {

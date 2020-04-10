@@ -11,6 +11,7 @@ import {fetchURLs, deleteURL, resetState} from '../../redux/actions/messengerRef
 import AlertContainer from 'react-alert'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
 import YouTube from 'react-youtube'
+import { deleteFiles } from '../../utility/utils'
 
 class MessengerRefURL extends React.Component {
   constructor (props, context) {
@@ -187,6 +188,8 @@ class MessengerRefURL extends React.Component {
               <button style={{float: 'right'}}
                 className='btn btn-primary btn-sm'
                 onClick={() => {
+                  let messengerRefURLReply = this.state.messengerRefURLsData.find(m => m._id === this.state.deleteid).reply
+                  deleteFiles(messengerRefURLReply)
                   this.props.deleteURL(this.state.deleteid, this.msg)
                   this.closeDialogDelete()
                 }} data-dismiss='modal'>Delete

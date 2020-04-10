@@ -335,7 +335,9 @@ export function deletefile (data, handleRemove) {
   return (dispatch) => {
     callApi(`broadcasts/delete/${data}`)
       .then(res => {
-        handleRemove(res)
+        if (handleRemove) {
+          handleRemove(res)
+        }
       })
   }
 }

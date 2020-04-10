@@ -12,14 +12,22 @@ class OptInActions extends React.Component {
     this.editMessage = this.editMessage.bind(this)
   }
   editMessage () {
+    if (this.props.onEditMessage) {
+      this.props.onEditMessage() 
+    }
+    let initialFiles = this.props.initialFiles
+    if (this.props.newFiles) {
+        initialFiles = initialFiles.concat(this.props.newFiles)
+    }
     if(this.props.module === 'edit'){
       this.props.history.push({
         pathname: `/createLandingPageMessage`,
-        state: {module: 'edit'}
+        state: {module: 'edit', realInitialFiles: this.props.initialFiles, initialFiles, newFiles: this.props.newFiles}
        })
     }else{
       this.props.history.push({
-       pathname: `/createLandingPageMessage`
+       pathname: `/createLandingPageMessage`,
+       state: {module: 'create', realInitialFiles: this.props.initialFiles, initialFiles, newFiles: this.props.newFiles}
       })
     }
   }

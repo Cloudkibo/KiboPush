@@ -6,7 +6,8 @@ import { bindActionCreators } from 'redux'
 import { handleDate } from '../../utility/utils'
 import { Link } from 'react-router-dom'
 import AlertContainer from 'react-alert'
-import NotificationBadge, {Effect} from 'react-notification-badge'
+import NotificationBadge, { Effect } from 'react-notification-badge'
+import { deleteFiles } from '../../utility/utils'
 
 class TemplateBroadcasts extends React.Component {
   constructor (props, context) {
@@ -219,6 +220,8 @@ class TemplateBroadcasts extends React.Component {
                 <button style={{ float: 'right' }}
                   className='btn btn-primary btn-sm'
                   onClick={() => {
+                    let payload = this.state.broadcastsData.find((broadcast) => broadcast._id === this.state.deleteid).payload
+                    deleteFiles(payload)
                     this.props.deleteBroadcast(this.state.deleteid, this.msg, { last_id: 'none', number_of_records: 5, first_page: 'first', filter: false, filter_criteria: { search_value: '', category_value: '' } })
                     this.closeDialogDelete()
                   }} data-dismiss='modal'>Delete

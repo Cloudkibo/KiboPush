@@ -46,6 +46,9 @@ export function deleteCode (id, msg) {
 
 export function createCode (data, msg) {
   return (dispatch) => {
+    if (data.newFiles) {
+      delete data.newFiles
+    }
     callApi('messenger_code', 'post', data)
     .then(res => {
        if (res.status === 'success') {
@@ -78,7 +81,8 @@ export function updateData (messengerCodeData, edit) {
         pageId: edit.page_id ? edit.page_id : edit.pageId._id ? edit.pageId._id : edit.pageId,
         optInMessage: edit.optInMessage,
         QRCode: edit.QRCode,
-        _id: edit._id && edit._id
+        _id: edit._id && edit._id,
+        newFiles: edit.newFiles
       }
     dispatch(showUpdatedData(messengerCodeData))
   }
@@ -86,6 +90,9 @@ export function updateData (messengerCodeData, edit) {
 
 export function editCode (data, msg) {
   return (dispatch) => {
+    if (data.newFiles) {
+      delete data.newFiles
+    }
     callApi('messenger_code/edit/'+data._id, 'post', data)
     .then(res => {
       if (res.status === 'success') {
