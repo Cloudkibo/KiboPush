@@ -2054,46 +2054,42 @@ class Subscriber extends React.Component {
                               }
                             </div>
 
-                            <div className="row" style={{ marginTop: '15px', marginLeft: '1px' }}>
-                              <div className='col-5'>
-                                <div className='form-group m-form__group row align-items-center'>
-                                  <div className='m-form__group m-form__group--inline'>
-                                    <div className='m-form__control'>
-                                      <select className='custom-select' value={(this.state.selectedField && this.state.selectedField._id) ? this.state.selectedField._id : ''} id='m_form_type' onChange={this.setSelectedField}>
-                                        <option key='' value='' disabled>Set Custom Field</option>
-                                        <optgroup label='Default Custom Fields'>
-                                          {
-                                            this.state.customFieldOptions.filter(cf => !!cf.default).map((cf, i) => (
-                                              <option key={i} value={cf._id}>{cf.label}</option>
-                                            ))
-                                          }
-                                        </optgroup>
-                                        {
-                                        this.state.customFieldOptions.filter(cf => !cf.default).length > 0 &&
-                                        <optgroup label='User Defined Custom Fields'>
-                                          {
-                                            this.state.customFieldOptions.filter(cf => !cf.default).map((cf, i) => (
-                                              <option key={i} value={cf._id}>{cf.label}</option>
-                                            ))
-                                          }
-                                        </optgroup>
-                                        }
-                                      </select>
-                                    </div>
-                                  </div>
-                              </div>
+                            <div className="row" style={{ marginTop: '15px', marginBottom: '15px' }}>
+                              <div className='col-md-5'>
+                                <div className='m-form__control'>
+                                  <select className='custom-select' value={(this.state.selectedField && this.state.selectedField._id) ? this.state.selectedField._id : ''} id='m_form_type' onChange={this.setSelectedField}>
+                                    <option key='' value='' disabled>Set Custom Field</option>
+                                    <optgroup label='Default Custom Fields'>
+                                      {
+                                        this.state.customFieldOptions.filter(cf => !!cf.default).map((cf, i) => (
+                                          <option key={i} value={cf._id}>{cf.label}</option>
+                                        ))
+                                      }
+                                    </optgroup>
+                                    {
+                                    this.state.customFieldOptions.filter(cf => !cf.default).length > 0 &&
+                                    <optgroup label='User Defined Custom Fields'>
+                                      {
+                                        this.state.customFieldOptions.filter(cf => !cf.default).map((cf, i) => (
+                                          <option key={i} value={cf._id}>{cf.label}</option>
+                                        ))
+                                      }
+                                    </optgroup>
+                                    }
+                                  </select>
+                                </div>
                             </div>
                           {
                               (this.state.selectedField && this.state.selectedField._id) &&
-                                <div style={{marginLeft: '-8%'}} className='col-6'>
+                                <div style={{paddingLeft: '0', marginLeft:'-6px'}} className='col-md-6'>
                                   {this.getInputComponent(this.state.selectedField, this.handleSelectedFieldValue)}
                                 </div>
                             }
                             {
                               (this.state.selectedField && this.state.selectedField._id) &&
-                              <div style={{marginLeft: '-3%'}}  className='col-1'>
-                                <button disabled={!this.state.selectedField.value ? true : false} onClick={() => this.saveCustomField()} className='btn btn-primary'>
-                                  Save
+                              <div style={{padding: '0'}}  className='col-md-1'>
+                                <button className="m-portlet__nav-link btn m-btn btn-success m-btn--icon m-btn--icon-only m-btn--pill" disabled={!this.state.selectedField.value ? true : false} onClick={() => this.saveCustomField()}>
+                                  <i className="la la-check"></i>
                                 </button>
                               </div>
                             }
