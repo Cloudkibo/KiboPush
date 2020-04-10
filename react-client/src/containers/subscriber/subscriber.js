@@ -20,7 +20,7 @@ import EditTags from './editTags'
 import AlertMessage from '../../components/alertMessages/alertMessage'
 import moment from 'moment'
 import YouTube from 'react-youtube'
-import {localeCodeToEnglish} from '../../utility/utils'
+import {localeCodeToEnglish, handleDate} from '../../utility/utils'
 var json2csv = require('json2csv')
 
 class Subscriber extends React.Component {
@@ -162,9 +162,10 @@ class Subscriber extends React.Component {
     this.loadSubscribers = this.loadSubscribers.bind(this)
     this.setSelectedField = this.setSelectedField.bind(this)
     this.handleSelectedFieldValue = this.handleSelectedFieldValue.bind(this)
-    this.unselectAllSubscribers = this.unselectAllSubscribers.bind(this)    
+    this.unselectAllSubscribers = this.unselectAllSubscribers.bind(this)
     this.openVideoTutorial = this.openVideoTutorial.bind(this)
     this.getSubscriberSource = this.getSubscriberSource.bind(this)
+    this.getInputComponent = this.getInputComponent.bind(this)
   }
 
   getSubscriberSource () {
@@ -185,14 +186,14 @@ class Subscriber extends React.Component {
         return 'Direct Message'
     }
   }
-  
+
   openVideoTutorial () {
     this.setState({
       openVideo: true
     })
     this.refs.videosubscriber.click()
   }
-  
+
   saveSetCustomField() {
     var payload = this.createSetCustomFieldPayload()
     if (payload.subscriberIds.length > 0) {
@@ -1288,6 +1289,34 @@ class Subscriber extends React.Component {
     // this.setState({ totalLength: filteredData.length })
   }
 
+  getInputComponent (selectedField, handleSetCustomField) {
+    if (selectedField.type === 'text') {
+      return (
+        <input placeholder={'Enter custom field value...'} value={selectedField ? selectedField.value : ''} onChange={handleSetCustomField} className='form-control' />
+      )
+    } else if (selectedField.type === 'number') {
+      return (
+        <input type='number' placeholder={'Enter custom field value...'} value={selectedField ? selectedField.value : ''} onChange={handleSetCustomField} className='form-control' />
+      )
+    } else if (selectedField.type === 'date') {
+      return (
+        <input type='date' placeholder={'Enter custom field value...'} value={selectedField ? selectedField.value : ''} onChange={handleSetCustomField} className='form-control' />
+      )
+    } else if (selectedField.type === 'datetime') {
+      return (
+        <input type='datetime-local' placeholder={'Enter custom field value...'} value={selectedField ? selectedField.value : ''} onChange={handleSetCustomField} className='form-control' />
+      )
+    } else if (selectedField.type === 'true/false') {
+      return (
+        <select className='custom-select' value={selectedField ? selectedField.value : ''} style={{ width: '200px' }} id='m_form_type' tabIndex='-98' onChange={handleSetCustomField}>
+          <option key='' value='' diabled>Select Value...</option>
+          <option key='1' value='true'>True</option>
+          <option key='2' value='false'>False</option>
+        </select>
+      )
+    }
+  }
+
   render() {
     var hostname = window.location.hostname
     var hoverOn = {
@@ -1335,7 +1364,7 @@ class Subscriber extends React.Component {
                   <h5 className="modal-title" id="exampleModalLabel">
                     Subscriber Video Tutorial
 									</h5>
-                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" 
+                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal"
                   aria-label="Close"
                   onClick={() => {
                     this.setState({
@@ -1629,7 +1658,7 @@ class Subscriber extends React.Component {
                             {
                               (this.state.selectedBulkField && this.state.selectedBulkField._id) &&
                                 <div className='col-3'>
-                                  <input placeholder={'Enter custom field value...'} value={this.state.selectedBulkField ? this.state.selectedBulkField.value : ''} onChange={this.handleBulkSetCustomField} className='form-control' />
+                                  {this.getInputComponent(this.state.selectedBulkField, this.handleBulkSetCustomField)}
                                 </div>
                             }
                             {
@@ -1990,7 +2019,7 @@ class Subscriber extends React.Component {
                                                 style={field._id === this.state.hoverId ? hoverOn : hoverOff}>
                                                 <span style={{ marginLeft: '10px' }}>
                                                   <span style={{ fontWeight: '100' }}>{field.name} : </span>
-                                                  <span style={{ color: '#3c3c7b' }}>{field.value}</span>
+                                                  <span style={{ color: '#3c3c7b' }}>{field.type === 'datetime' ? handleDate(field.value) : field.value}</span>
                                                 </span>
                                               </div>
                                             </div>
@@ -2025,46 +2054,42 @@ class Subscriber extends React.Component {
                               }
                             </div>
 
-                            <div className="row" style={{ marginTop: '15px', marginLeft: '1px' }}>
-                              <div className='col-6'>
-                                <div className='form-group m-form__group row align-items-center'>
-                                  <div className='m-form__group m-form__group--inline'>
-                                    <div className='m-form__control'>
-                                      <select className='custom-select' value={(this.state.selectedField && this.state.selectedField._id) ? this.state.selectedField._id : ''} id='m_form_type' onChange={this.setSelectedField}>
-                                        <option key='' value='' disabled>Set Custom Field</option>
-                                        <optgroup label='Default Custom Fields'>
-                                          {
-                                            this.state.customFieldOptions.filter(cf => !!cf.default).map((cf, i) => (
-                                              <option key={i} value={cf._id}>{cf.label}</option>
-                                            ))
-                                          }
-                                        </optgroup>
-                                        {
-                                        this.state.customFieldOptions.filter(cf => !cf.default).length > 0 &&
-                                        <optgroup label='User Defined Custom Fields'>
-                                          {
-                                            this.state.customFieldOptions.filter(cf => !cf.default).map((cf, i) => (
-                                              <option key={i} value={cf._id}>{cf.label}</option>
-                                            ))
-                                          }
-                                        </optgroup>
-                                        }
-                                      </select>
-                                    </div>
-                                  </div>
-                              </div>
+                            <div className="row" style={{ marginTop: '15px', marginBottom: '15px' }}>
+                              <div className='col-md-5'>
+                                <div className='m-form__control'>
+                                  <select className='custom-select' value={(this.state.selectedField && this.state.selectedField._id) ? this.state.selectedField._id : ''} id='m_form_type' onChange={this.setSelectedField}>
+                                    <option key='' value='' disabled>Set Custom Field</option>
+                                    <optgroup label='Default Custom Fields'>
+                                      {
+                                        this.state.customFieldOptions.filter(cf => !!cf.default).map((cf, i) => (
+                                          <option key={i} value={cf._id}>{cf.label}</option>
+                                        ))
+                                      }
+                                    </optgroup>
+                                    {
+                                    this.state.customFieldOptions.filter(cf => !cf.default).length > 0 &&
+                                    <optgroup label='User Defined Custom Fields'>
+                                      {
+                                        this.state.customFieldOptions.filter(cf => !cf.default).map((cf, i) => (
+                                          <option key={i} value={cf._id}>{cf.label}</option>
+                                        ))
+                                      }
+                                    </optgroup>
+                                    }
+                                  </select>
+                                </div>
                             </div>
                           {
                               (this.state.selectedField && this.state.selectedField._id) &&
-                                <div style={{marginLeft: '-12%'}} className='col-5'>
-                                  <input placeholder={'Enter field value...'} value={this.state.selectedField ? this.state.selectedField.value : ''} onChange={this.handleSelectedFieldValue} className='form-control' />
+                                <div style={{paddingLeft: '0', marginLeft:'-6px'}} className='col-md-6'>
+                                  {this.getInputComponent(this.state.selectedField, this.handleSelectedFieldValue)}
                                 </div>
                             }
                             {
                               (this.state.selectedField && this.state.selectedField._id) &&
-                              <div style={{marginLeft: '-3%'}}  className='col-1'>
-                                <button disabled={!this.state.selectedField.value ? true : false} onClick={() => this.saveCustomField()} className='btn btn-primary'>
-                                  Save
+                              <div style={{padding: '0'}}  className='col-md-1'>
+                                <button className="m-portlet__nav-link btn m-btn btn-success m-btn--icon m-btn--icon-only m-btn--pill" disabled={!this.state.selectedField.value ? true : false} onClick={() => this.saveCustomField()}>
+                                  <i className="la la-check"></i>
                                 </button>
                               </div>
                             }
