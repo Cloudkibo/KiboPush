@@ -260,10 +260,12 @@ class Contact extends React.Component {
 
   getLists (subscriber) {
     let lists = []
-    if (subscriber.listIds) {
+    if (subscriber.listIds && this.props.contactLists) {
       for (let i = 0; i < subscriber.listIds.length; i++) {
         let list = this.props.contactLists.find(l => l._id === subscriber.listIds[i])
-        lists.push(list.name)
+        if (list) {
+          lists.push(list.name)
+        }
       }
     }
     if (lists.length >= 1) {
