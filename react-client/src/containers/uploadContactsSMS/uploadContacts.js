@@ -139,7 +139,7 @@ class UploadContacts extends React.Component {
   onSubmit () {
     const invalidRecords = this.props.uploadedContacts.filter((item) => item.status === 'Invalid')
     if (invalidRecords.length === 0) {
-      this.setState({loading: true, name: '', number: ''})
+      this.setState({loading: true, name: '', number: '', listType: null, existingList: null, newList: null })
       let rows = [['name', 'number']]
       for (let i = 0; i < this.props.uploadedContacts.length; i++) {
         let contact = this.props.uploadedContacts[i]
@@ -230,11 +230,11 @@ class UploadContacts extends React.Component {
             name='mergeList'
             onChange={this.handleListType}
             checked={this.state.listType === 'mergeList'} />
-          <label>Merge these subscribers into an existing list</label>
+          <span>Merge these subscribers into an existing list</span>
         </div>
         {
           this.state.listType === 'mergeList' &&
-          <div style={{marginLeft: '25px'}} className='form-group m-form__group row'>
+          <div style={{marginLeft: '5px'}} className='form-group m-form__group row'>
             <div className='col-lg-8'>
               <Select
                 options={this.props.contactLists.map(list => { return {value: list._id, label: list.name} })}
@@ -253,11 +253,11 @@ class UploadContacts extends React.Component {
             name='newList'
             onChange={this.handleListType}
             checked={this.state.listType === 'newList'} />
-          <label>Create new list and save these subscribers in that list</label>
+          <span>Create new list and save these subscribers in that list</span>
         </div>
         {
           this.state.listType === 'newList' &&
-          <div style={{marginLeft: '25px'}} className="form-group m-form__group row">
+          <div style={{marginLeft: '5px'}} className="form-group m-form__group row">
             <div className='col-lg-8'>
               <input value={this.state.newList} 
                 onChange={this.onListNameChange} 

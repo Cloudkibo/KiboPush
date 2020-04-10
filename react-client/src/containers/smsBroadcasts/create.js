@@ -165,7 +165,12 @@ class SmsBroadcast extends React.Component {
 
   handleListSelect (lists) {
     if (lists) {
-      this.props.getCount( {listIds: lists.map(l => l.value)}, this.onGetCount)
+      if (lists.length > 3) {
+        this.msg.error('Maximum of 3 lists can be selected')
+        return
+      } else {
+        this.props.getCount( {listIds: lists.map(l => l.value)}, this.onGetCount)
+      }
     } else {
       lists = []
       this.props.getCount( {listIds: [], segmentation: []}, this.onGetCount)
