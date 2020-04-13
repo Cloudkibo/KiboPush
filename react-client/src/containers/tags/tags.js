@@ -88,7 +88,7 @@ class Tags extends React.Component {
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <a href='#/' style={{ display: 'none' }} ref='TagModal' data-toggle='modal' data-target='#create_modal'>TagModal</a>
         <a href='#/' style={{ display: 'none' }} ref='DeleteModal' data-toggle='modal' data-target='#delete_confirmation_modal'>DeleteModal</a>
-        <CreateTag tag={this.state.currentTag} />
+        <CreateTag tag={this.state.currentTag ? {...this.state.currentTag} : null} />
         <div style={{background: 'rgba(33, 37, 41, 0.6)', zIndex: 99991}} className='modal fade' id='delete_confirmation_modal' tabIndex='-1' role='dialog' aria-labelledby='exampleModalLabel' aria-hidden='true'>
           <div style={{ transform: 'translate(0, 0)', paddingLeft: '70px', marginTop: '150px' }} className='modal-dialog' role='document'>
             <div className='modal-content' style={{ width: '400px' }} >

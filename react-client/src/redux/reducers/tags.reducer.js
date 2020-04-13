@@ -4,26 +4,26 @@ export function tagsInfo (state = {}, action) {
   console.log('tags reducer', action)
   switch (action.type) {      
     case ActionTypes.ADD_TAG: {
-      let tags = [...state.tags]
+      let tags = state.tags
       tags.push(action.data)
       return Object.assign({}, state, {
-        tags
+        tags: [...tags]
       })
     }
     case ActionTypes.REMOVE_TAG: {
-      let tags = [...state.tags]
-      let indexToRemove = tags.findIndex(tag => tag._id === action.data._id)
+      let tags = state.tags
+      let indexToRemove = tags.findIndex(tag => tag._id === action.data.tag_id)
       tags.splice(indexToRemove, 1)
       return Object.assign({}, state, {
-        tags
+        tags: [...tags]
       })
     }
     case ActionTypes.UPDATE_TAG: {
-      let tags = [...state.tags]
-      let indexToRename = tags.findIndex(tag => tag._id === action.data._id)
-      tags[indexToRename].tag = action.data.tag
+      let tags = state.tags
+      let indexToRename = tags.findIndex(tag => tag._id === action.data.tag_id)
+      tags[indexToRename].tag = action.data.new_tag
       return Object.assign({}, state, {
-        tags
+        tags: [...tags]
       })
     }
     case ActionTypes.ASSIGN_TAG: {

@@ -23,7 +23,7 @@ class CreateTag extends React.Component {
       this.setState({ 
           name: nextProps.tag.tag
       })
-    } else if (this.props.tag) {
+    } else {
         this.setState({ 
             name: ''
         })
