@@ -22,6 +22,7 @@ class InviteMembers extends React.Component {
     this.changeName = this.changeName.bind(this)
     this.changeEmail = this.changeEmail.bind(this)
     this.changeRadio = this.changeRadio.bind(this)
+    this.handleResponse = this.handleResponse.bind(this)
     this.state = {
       name: '',
       email: '',
@@ -67,24 +68,15 @@ class InviteMembers extends React.Component {
   createNewInvitations (event) {
     event.preventDefault()
     if (this.state.name === '') {
-      this.setState({
-        alertMessage: 'Please fill the name field',
-        alertType: 'danger'
-      })
+      this.msg.error('Please fill the name field')
       return
     }
     if (this.state.email === '') {
-      this.setState({
-        alertMessage: 'Please fill the email field',
-        alertType: 'danger'
-      })
+      this.msg.error('Please fill the email field')
       return
     }
     if (this.state.role === '') {
-      this.setState({
-        alertMessage: 'Please select the role',
-        alertType: 'danger'
-      })
+      this.msg.error('Please select the role')
       return
     }
 
@@ -92,10 +84,20 @@ class InviteMembers extends React.Component {
       name: this.state.name,
       email: this.state.email,
       role: this.state.role
-    }, this.msg)
+    }, this.handleResponse)
     // this.props.history.push({
     //   pathname: '/workflows'
     // })
+  }
+
+  handleResponse (res) {
+    if (res.status === 'success') {
+      this.props.history.push({
+        pathname: `/inviteMembers`
+      })
+    } else {
+      this.msg.error(res.payload)
+    }
   }
 
   clearAlert () {

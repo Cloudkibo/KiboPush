@@ -46,21 +46,22 @@ export function loadInvitationsList () {
   }
 }
 
-export function addInvitation (data, msg) {
+export function addInvitation (data, handleResponse) {
   return (dispatch) => {
     callApi('company/invite', 'post', data)
     .then(res => {
       console.log('response from invitation', res)
-      if (res.status === 'success') {
-        msg.success('Invitation email sent')
-        dispatch(invitationSuccess('Invitation email sent.'))
-        dispatch(updateInvitation(res.payload))
-      } else {
-        console.log('In else condition')
-        console.log('res.payload', res.payload)
-        msg.error(res.payload)
-        dispatch(invitationFailure(res.payload))
-      }
+      handleResponse(res)
+      // if (res.status === 'success') {
+      //   msg.success('Invitation email sent')
+      //   dispatch(invitationSuccess('Invitation email sent.'))
+      //   dispatch(updateInvitation(res.payload))
+      // } else {
+      //   console.log('In else condition')
+      //   console.log('res.payload', res.payload)
+      //   msg.error(res.payload)
+      //   dispatch(invitationFailure(res.payload))
+      // }
     })
   }
 }
