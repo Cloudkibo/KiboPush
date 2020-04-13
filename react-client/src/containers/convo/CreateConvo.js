@@ -30,7 +30,7 @@ class CreateConvo extends React.Component {
     if (this.props.location.state && this.props.location.state.linkedMessages && this.props.location.state.linkedMessages.length > 0) {
       initialFiles = []
       for (let i = 0; i < this.props.location.state.linkedMessages.length; i++) {
-        initialFiles = initialFiles.concat(getFileIdsOfBroadcast( this.props.location.state.linkedMessages[0].messageContent))
+        initialFiles = initialFiles.concat(getFileIdsOfBroadcast( this.props.location.state.linkedMessages[i].messageContent))
       }
     }
     this.state = {
