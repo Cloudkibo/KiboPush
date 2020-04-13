@@ -10,7 +10,23 @@ const initialState = {
 export function contactsInfo (state = initialState, action) {
   const contacts = JSON.parse(JSON.stringify(state.uploadedContacts))
   let index = -1
+  console.log('concatcs reducer state', state)
+  console.log('concatcs reducer action', action)
   switch (action.type) {
+    case ActionTypes.FETCH_CONTACT_LISTS:
+      return Object.assign({}, state, {
+        contactLists: [{_id: 'master', 'name': 'Master'}].concat(action.data),
+      })
+    case ActionTypes.UPDATE_CONTACT:
+      let currentContacts = state.contacts
+      index = currentContacts.findIndex((contact) => contact._id === action.id)
+      let keys = Object.keys(action.data)
+      for (let i = 0; i < keys.length; i++) {
+        currentContacts[index][keys[i]] = action.data[keys[i]]
+      }
+      return Object.assign({}, state, {
+        contacts: [...currentContacts]
+      })
     case ActionTypes.LOAD_CONTACTS_LIST:
       return Object.assign({}, state, {
         contacts: action.contacts,
