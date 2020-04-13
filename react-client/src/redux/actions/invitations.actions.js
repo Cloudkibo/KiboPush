@@ -52,16 +52,6 @@ export function addInvitation (data, handleResponse) {
     .then(res => {
       console.log('response from invitation', res)
       handleResponse(res)
-      // if (res.status === 'success') {
-      //   msg.success('Invitation email sent')
-      //   dispatch(invitationSuccess('Invitation email sent.'))
-      //   dispatch(updateInvitation(res.payload))
-      // } else {
-      //   console.log('In else condition')
-      //   console.log('res.payload', res.payload)
-      //   msg.error(res.payload)
-      //   dispatch(invitationFailure(res.payload))
-      // }
     })
   }
 }
