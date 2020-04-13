@@ -196,7 +196,7 @@ class Media extends React.Component {
     var image = data.type.match('image.*')
     if (image) {
       console.log('image uploading template', data)
-      if (this.props.pages) {
+      if (this.props.pages && !data.fileurl.attachment_id) {
         this.props.uploadTemplate({pages: this.props.pages,
           url: data.fileurl.url,
           componentType: 'image',
@@ -221,7 +221,7 @@ class Media extends React.Component {
     var video = data.type.match('video.*')
     if (video) {
       console.log('video uploading template', data)
-      if (this.props.pages) {
+      if (this.props.pages && !data.fileurl.attachment_id) {
         this.props.uploadTemplate({pages: this.props.pages,
           url: data.fileurl.url,
           componentType: 'video',
