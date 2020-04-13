@@ -19,7 +19,9 @@ export function uploadFile (filedata, fileInfo, handleFunction, setLoading) {
         if (setLoading) {
           setLoading()
         }
-        handleFunction(fileInfo)
+        if (handleFunction) {
+          handleFunction(fileInfo)
+        }
       } else {
         console.log(res.description)
       }
@@ -110,7 +112,9 @@ export function uploadImage (file, pages, componentType, data, handleUpload, set
           setLoading()
         }
         console.log('handling upload')
-        handleUpload(data)
+        if (handleUpload) {
+          handleUpload(data)
+        }
       } else {
         console.log(res.description)
       }
