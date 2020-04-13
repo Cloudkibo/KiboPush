@@ -46,25 +46,6 @@ class InviteMembers extends React.Component {
     document.title = `${title} | Invite Member`;
   }
 
-  UNSAFE_componentWillReceiveProps (nextProps) {
-    // if (nextProps.successMessage) {
-    //   this.setState({
-    //     alertMessage: nextProps.successMessage,
-    //     alertType: 'success'
-    //   })
-    // } else if (nextProps.errorMessage) {
-    //   this.setState({
-    //     alertMessage: nextProps.errorMessage,
-    //     alertType: 'danger'
-    //   })
-    // } else {
-    //   this.setState({
-    //     alertMessage: '',
-    //     alertType: ''
-    //   })
-    // }
-  }
-
   createNewInvitations (event) {
     event.preventDefault()
     if (this.state.name === '') {
@@ -85,9 +66,6 @@ class InviteMembers extends React.Component {
       email: this.state.email,
       role: this.state.role
     }, this.handleResponse)
-    // this.props.history.push({
-    //   pathname: '/workflows'
-    // })
   }
 
   handleResponse (res) {
