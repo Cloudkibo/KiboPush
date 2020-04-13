@@ -385,7 +385,7 @@ class Sidebar extends Component {
               {this.showInviteUsingPhoneNumber()}
               {this.showInviteSubscribers()}
               {this.showMessengerCode()}
-              {this.showDiscoverTabs()}
+              {/* {this.showDiscoverTabs()} */}
               {this.showLandingPages()}
               {this.showMessengerAds()}
               {this.showMessengerRefURL()}
