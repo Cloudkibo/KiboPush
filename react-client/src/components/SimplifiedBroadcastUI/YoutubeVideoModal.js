@@ -29,7 +29,8 @@ class YoutubeVideoModal extends React.Component {
       videoId: this.props.videoId ? this.props.videoId : null,
       card: this.props.card,
       fileSizeExceeded: this.props.fileSizeExceeded,
-      initialFile: this.props.file ? this.props.file.fileurl.id : null
+      initialFile: this.props.file ? this.props.file.fileurl.id : null,
+      currentTab: 'youtube'
     }
     console.log('YoutubeVideoModal state', this.state)
     console.log('YoutubeVideoModal module', this.props.module)
@@ -42,7 +43,13 @@ class YoutubeVideoModal extends React.Component {
     this.setLoading = this.setLoading.bind(this)
     this.closeModal = this.closeModal.bind(this)
     this.handleUrlMetaData = this.handleUrlMetaData.bind(this)
+    this.changeTab = this.changeTab.bind(this)
   }
+
+  changeTab (value) {
+      this.setState({currentTab: value})
+  }
+
 
   handleLinkChange(e) {
     console.log('changing link', e.target.value)
@@ -110,7 +117,7 @@ class YoutubeVideoModal extends React.Component {
               canBeDeleted = false
               break
             }
-          } 
+          }
           if (canBeDeleted) {
             if (this.state.file.fileurl.id !== this.state.initialFile) {
               deleteFile(this.state.initialFile)
@@ -150,7 +157,7 @@ class YoutubeVideoModal extends React.Component {
     console.log('updating YouTube file', file)
     if (this.props.pages) {
       this.uploadTemplate(file)
-    } else { 
+    } else {
       this.setState({
         loading: false,
         file: file,
@@ -279,7 +286,7 @@ class YoutubeVideoModal extends React.Component {
       <div className="modal-content" style={{width: '72vw'}}>
         <div style={{ display: 'block' }} className="modal-header">
           <h5 className="modal-title" id="exampleModalLabel">
-            YouTube Video
+            Youtube/ Facebook Video
           </h5>
           <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" onClick={this.closeModal} aria-label="Close">
             <span aria-hidden="true">
@@ -290,10 +297,32 @@ class YoutubeVideoModal extends React.Component {
         <div style={{ color: 'black' }} className="modal-body">
           <div className='row'>
             <div className='col-6' style={{ maxHeight: '65vh', overflowY: 'scroll' }}>
-              <input value={this.state.link} style={{ maxWidth: '100%', borderColor: this.state.disabled && !this.state.loading && !this.state.fileSizeExceeded ? 'red' : (this.state.loading || !this.state.disabled || this.state.fileSizeExceeded) ? 'green' : '' }} onChange={this.handleLinkChange} className='form-control' />
-              <div style={{ color: 'green' }}>{this.state.fileSizeExceeded ? '*The size of this YouTube video exceeds the 25 Mb limit imposed by Facebook, so it will be sent as a card.' : ''}</div>
-              <div style={{ color: 'red' }}>{!this.state.fileSizeExceeded && this.state.disabled && !this.state.loading ? '*Please enter a valid YouTube link.' : ''}</div>
-              <div style={{ marginBottom: '30px', color: 'green' }}>{this.state.loading ? '*Please wait for the YouTube video to download.' : ''}</div>
+            <ul className='nav nav-tabs m-tabs-line m-tabs-line--right' role='tablist' style={{float: 'none'}}>
+              <li className='nav-item m-tabs__item'>
+                <a href='#/' className='nav-link m-tabs__link active' data-toggle='tab' role='tab' style={{cursor: 'pointer'}} onClick={() => this.changeTab('youtube')}>
+                  Youtube Link
+                </a>
+              </li>
+              <li className='nav-item m-tabs__item'>
+                <a href='#/' className='nav-link m-tabs__link' data-toggle='tab' role='tab' style={{cursor: 'pointer'}} onClick={() => this.changeTab('facebook')}>
+                  Facebook Link
+                </a>
+              </li>
+            </ul>
+            <div className='tab-content'>
+              <div className='tab-pane fade active in' id='tab_1'>
+              {this.state.currentTab === 'youtube'
+              ? <span>  <input value={this.state.link} style={{ maxWidth: '100%', borderColor: this.state.disabled && !this.state.loading && !this.state.fileSizeExceeded ? 'red' : (this.state.loading || !this.state.disabled || this.state.fileSizeExceeded) ? 'green' : '' }} onChange={this.handleLinkChange} className='form-control' />
+                <div style={{ color: 'green' }}>{this.state.fileSizeExceeded ? '*The size of this YouTube video exceeds the 25 Mb limit imposed by Facebook, so it will be sent as a card.' : ''}</div>
+                <div style={{ color: 'red' }}>{!this.state.fileSizeExceeded && this.state.disabled && !this.state.loading ? '*Please enter a valid YouTube link.' : ''}</div>
+                <div style={{ marginBottom: '30px', color: 'green' }}>{this.state.loading ? '*Please wait for the YouTube video to download.' : ''}</div></span>
+              :
+              <span>  <input value={this.state.link} style={{ maxWidth: '100%', borderColor: this.state.disabled && !this.state.loading && !this.state.fileSizeExceeded ? 'red' : (this.state.loading || !this.state.disabled || this.state.fileSizeExceeded) ? 'green' : '' }} onChange={this.handleLinkChange} className='form-control' />
+                <div style={{ color: 'red' }}>*Please enter a valid Facebook link.</div>
+              </span>
+            }
+              </div>
+              </div>
               {
                 this.state.file && this.props.module !== 'whatsapp' &&
                 <AddButton
@@ -314,6 +343,7 @@ class YoutubeVideoModal extends React.Component {
             <div className='col-1'>
               <div style={{ minHeight: '100%', width: '1px', borderLeft: '1px solid rgba(0,0,0,.1)' }} />
             </div>
+            {this.state.currentTab === 'youtube' ?
             <div className='col-5'>
               <h4 style={{ marginLeft: '-50px' }}>Preview:</h4>
               <div className='ui-block' style={{ overflowY: 'auto', border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', minHeight: '68vh', maxHeight: '68vh', marginLeft: '-50px' }} >
@@ -403,6 +433,13 @@ class YoutubeVideoModal extends React.Component {
                 </div>
               </div>
             </div>
+            :   <div className='col-5'>
+                <h4 style={{ marginLeft: '-50px' }}>Preview:</h4>
+                <div className='ui-block' style={{ overflowY: 'auto', border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', minHeight: '68vh', maxHeight: '68vh', marginLeft: '-50px' }} >
+                  <span>No Preview Availble for Facebook Link</span>
+                </div>
+                </div>
+          }
             <div className='col-6' style={{ marginTop: '-5vh' }}>
               <div className='pull-right'>
               <button onClick={this.closeModal} className='btn btn-primary' style={{ marginRight: '20px' }}
