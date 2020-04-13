@@ -11,7 +11,7 @@ import { loadDashboardData, sentVsSeen } from './../redux/actions/dashboard.acti
 // import { allBroadcasts } from './../redux/actions/broadcast.actions'
 import { loadPollsListNew } from './../redux/actions/poll.actions'
 import { loadSurveysListNew } from './../redux/actions/surveys.actions'
-import {updateCustomFieldValue, addCustomField, removeCustomField} from './../redux/actions/customFields.actions'
+import {updateCustomFieldValue, addCustomField, removeCustomField, updateSingleCustomField} from './../redux/actions/customFields.actions'
 import { addTag, removeTag, updateTag, assignTag, unassignTag } from './../redux/actions/tags.actions'
 import { loadAllSubscribersListNew, updateCustomFieldForSubscriber } from './../redux/actions/subscribers.actions'
 import { fetchNotifications } from './../redux/actions/notifications.actions'
@@ -163,6 +163,8 @@ socket.on('message', (data) => {
     store.dispatch(addCustomField(data.payload.newCustomField))
   } else if (data.action === 'custom_field_remove') {
     store.dispatch(removeCustomField(data.payload.customFieldId))
+  } else if (data.action === 'custom_field_update') {
+    store.dispatch(updateSingleCustomField(data.payload))
   } else if (data.action === 'sponsoredMessaging_newCreated') {
     console.log('created new sponsored by admin', data)
     store.dispatch(addToSponsoredMessages(data.payload))
