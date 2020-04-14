@@ -208,6 +208,7 @@ class Button extends React.Component {
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
+    console.log('nextProps.tempButton', nextProps.tempButton)
     let newState = {
       title: nextProps.tempButton
         ? nextProps.tempButton.title
@@ -217,7 +218,7 @@ class Button extends React.Component {
       sendSequenceMessageButton: nextProps.tempButton && nextProps.tempButton.sendSequenceMessageButton,
       openWebView: nextProps.tempButton && nextProps.tempButton.webviewurl ? true : false,
       webviewurl: nextProps.tempButton ? nextProps.tempButton.webviewurl : '',
-      webviewsize: nextProps.tempButton ? nextProps.tempButton.webviewsize : 'FULL',
+      webviewsize: (nextProps.tempButton && nextProps.tempButton.webviewsize) ? nextProps.tempButton.webviewsize : 'FULL',
       webviewsizes: ['COMPACT', 'TALL', 'FULL']
     }
     newState.openPopover = newState.openWebsite || newState.openWebView || newState.sendSequenceMessageButton
