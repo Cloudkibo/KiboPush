@@ -132,7 +132,7 @@ class CreateBroadcastTemplate extends React.Component {
     }
     if (this.state.categoryValue.length > 0) {
       let initialFiles = this.state.initialFiles
-      let currentFiles = getFileIdsOfBroadcast(this.state.broadcast.payload)
+      let currentFiles = getFileIdsOfBroadcast(this.state.broadcast)
       deleteInitialFiles(initialFiles, currentFiles)
       this.setState({newFiles: [], initialFiles: currentFiles})
       var broadcastTemplate = {

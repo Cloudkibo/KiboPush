@@ -68,7 +68,7 @@ class Builders extends React.Component {
       fileError: '',
       tempFiles: [],
       newFiles: [],
-      initialFiles: []
+      initialFiles: this.props.initialFiles ? this.props.initialFiles : []
     }
     this.defaultTitle = this.props.convoTitle
     this.reset = this.reset.bind(this)
