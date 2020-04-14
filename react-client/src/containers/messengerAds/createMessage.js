@@ -42,14 +42,20 @@ class CreateMessage extends React.Component {
 
   createJsonMessages (buttons, jsonMessages) {
     for (let j = 0; j < buttons.length; j++) {
-      if (buttons[j].type === 'postback' && !buttons[j].payload) {
-        buttons[j].payload = this.state.jsonMessages.length + 1
-        jsonMessages = this.setNewJsonMessage(buttons[j], jsonMessages)
-      } else {
-        let messageIndex = jsonMessages.findIndex(msg => msg.jsonAdMessageId === buttons[j].payload)
-        if (messageIndex > -1) {
-          jsonMessages[messageIndex].title = buttons[j].title
+      if (buttons[j].type === 'postback') {
+        let buttonPayload = JSON.parse(buttons[j].payload)
+        for (let k = 0; k < buttonPayload.length; k++) {
+          if (buttonPayload[k].action === 'send_message_block' && !buttonPayload[k].blockUniqueId) {
+            buttonPayload[k].blockUniqueId = this.state.jsonMessages.length + 1
+            jsonMessages = this.setNewJsonMessage(buttons[j], jsonMessages)
+          } else if (buttonPayload[k].blockUniqueId) {
+            let messageIndex = jsonMessages.findIndex(msg => msg.jsonAdMessageId === buttonPayload[k].blockUniqueId)
+            if (messageIndex > -1) {
+              jsonMessages[messageIndex].title = buttons[j].title
+            }
+          }
         }
+        buttons[j].payload = JSON.stringify(buttonPayload)
       }
     }
     return jsonMessages
@@ -116,56 +122,32 @@ class CreateMessage extends React.Component {
   }
   removePayloadMessages (tempJsonPayloads, jsonMessages, event) {
     //debugger;
-    var tempMessages = []
-    for (var l = 0; l < jsonMessages.length; l++) {
-      let removePayload = false
+    for (var l = jsonMessages.length-1; l >= 0; l--) {
       for (var m = 0; m < tempJsonPayloads.length; m++) {
-        if (''+tempJsonPayloads[m] === ''+jsonMessages[l].jsonAdMessageId) {
+        if (''+tempJsonPayloads[m].blockUniqueId === ''+jsonMessages[l].jsonAdMessageId) {
           for (let i = 0; i < jsonMessages[l].messageContent.length; i++) {
             let messageContent = jsonMessages[l].messageContent[i]
             if (messageContent.cards) {
               for (let j = 0; j < messageContent.cards.length; j++) {
                 for (let k = 0; k < messageContent.cards[j].buttons.length; k++) {
-                  if (messageContent.cards[j].buttons[k].payload) {
-                    tempJsonPayloads.push(messageContent.cards[j].buttons[k].payload)
+                  if (messageContent.cards[j].buttons[k].payload && messageContent.cards[j].buttons[k].type === 'postback') {
+                    tempJsonPayloads = tempJsonPayloads.concat(JSON.parse(messageContent.cards[j].buttons[k].payload))
                   }
                 }
               }
             } else if (messageContent.buttons) {
               for (let j = 0; j < messageContent.buttons.length; j++) {
-                if (messageContent.buttons[j].payload) {
-                  tempJsonPayloads.push(messageContent.buttons[j].payload)
+                if (messageContent.buttons[j].payload && messageContent.buttons[j].type === 'postback') {
+                  tempJsonPayloads = tempJsonPayloads.concat(JSON.parse(messageContent.buttons[j].payload))
                 }
               }
             }
           }
-          removePayload = true
+          jsonMessages.splice(l, 1)
         }
-      }
-      if (!removePayload) {
-        if (event.buttons) {
-          /* eslint-disable */
-          let buttonIndex = event.buttons.findIndex(btn => btn.payload === jsonMessages[l].jsonAdMessageId)
-          if (buttonIndex > -1) {
-             event.buttons[buttonIndex].payload = tempMessages.length + 1
-          }
-        } else if (event.cards) {
-          for (let i = 0; i < event.cards.length; i++) {
-              let buttonIndex = event.cards[i].buttons.findIndex(btn => btn.payload === jsonMessages[l].jsonAdMessageId)
-              /* eslint-enable */
-              if (buttonIndex > -1) {
-                  event.cards[i].buttons[buttonIndex].payload = tempMessages.length + 1
-              }
-          }
-        }
-        jsonMessages[l].jsonAdMessageId = tempMessages.length + 1
-        console.log('pushing to tempMessages', jsonMessages[l])
-        tempMessages.push(jsonMessages[l])
       }
     }
-    console.log('event after removing', event)
-    console.log('removePayloadMessages', tempMessages)
-    return tempMessages
+    return jsonMessages
   }
 
   setNewJsonMessage (data, jsonMessages) {
