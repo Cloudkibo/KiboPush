@@ -165,10 +165,13 @@ const prepareJsonPayload = (data, optinMessage) => {
       button = body.buttons[i]
       let jsonAdMessageId
       if (button.payload && button.type === 'postback') {
+        let buttonPayload = JSON.parse(button.payload)
         for (let j = 0; j < data.length; j++) {
-          if ((button.payload).toString() === (data[j].jsonAdMessageId).toString()) {
-            jsonAdMessageId = data[j]._id
-            break
+          for (let k = 0; k < buttonPayload.length; k++) {
+            if ((buttonPayload[k].blockUniqueId).toString() === (data[j].jsonAdMessageId).toString()) {
+              jsonAdMessageId = data[j]._id
+              break
+            }
           }
         }
         button.payload = 'JSONAD-' + jsonAdMessageId
