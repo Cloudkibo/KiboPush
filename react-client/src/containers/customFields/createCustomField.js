@@ -30,7 +30,7 @@ class CreateCustomField extends React.Component {
           type: nextProps.customField.type,
           description: nextProps.customField.description
       })
-    } else if (this.props.customField) {
+    } else {
         this.setState({
             customField: null,
             name: '',

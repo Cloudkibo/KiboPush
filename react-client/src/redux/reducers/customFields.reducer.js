@@ -28,11 +28,11 @@ export function customFieldInfo (state = {}, action) {
     case ActionTypes.UPDATE_CUSTOM_FIELD: {
       let customFields = state.customFields
       let customFieldsIndex = customFields.findIndex(cf => cf._id === action.data.customFieldId)
-      customFields[customFieldsIndex] = Object.assign(customFields[customFieldsIndex], action.data.updatedField)
+      customFields[customFieldsIndex] = Object.assign(customFields[customFieldsIndex], action.data.updated)
       let customFieldSubscriber = state.customFieldSubscriber
       if (customFieldSubscriber) {
         let customFieldSubscriberIndex = customFieldSubscriber.customFields.findIndex(cf => cf.customFieldId._id === action.data.customFieldId)
-        customFieldSubscriber.customFields[customFieldSubscriberIndex].customFieldId = Object.assign(customFieldSubscriber.customFields[customFieldSubscriberIndex], action.data.updatedField)
+        customFieldSubscriber.customFields[customFieldSubscriberIndex].customFieldId = Object.assign(customFieldSubscriber.customFields[customFieldSubscriberIndex], action.data.updated)
       }
       return Object.assign({}, state, {
          customFields: [...customFields],

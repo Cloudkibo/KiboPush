@@ -178,7 +178,9 @@ export function renameTag (payload, handleEdit,loadsubscriberData) {
   return (dispatch) => {
     callApi('tags/rename/', 'post', payload)
       .then(res => {
-        handleEdit(res)
+        if (handleEdit) {
+          handleEdit(res)
+        }
         console.log('renameTag response', res)
         if (res.status === 'success' && res.payload) {
           if (loadsubscriberData) {
