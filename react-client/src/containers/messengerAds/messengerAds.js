@@ -304,7 +304,7 @@ function defaultAdMessage () {
         buttons: [{
           type: 'postback',
           title: 'Sure I do!',
-          payload: 2
+          payload: JSON.stringify([{action: 'send_message_block', blockUniqueId: 2}])
         }]
       }]
     },
