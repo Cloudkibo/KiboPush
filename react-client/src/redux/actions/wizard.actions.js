@@ -1,10 +1,10 @@
 import callApi from '../../utility/api.caller.service'
-export const API_URL = '/api'
+import {getuserdetails} from './basicinfo.actions'
 
 export function updateChecks (data) {
   return (dispatch) => {
     callApi(`users/updateChecks`, 'post', data).then(res => {
-        // dispatch(editBroadcast(res.payload));
+        dispatch(getuserdetails())
     })
   }
 }
