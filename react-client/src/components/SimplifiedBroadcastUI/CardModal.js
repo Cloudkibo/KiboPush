@@ -517,6 +517,7 @@ class CardModal extends React.Component {
                                 initialFiles={this.props.initialFiles}
                                 initialModalFiles={this.state.initialModalFiles}
                                 edit={this.props.edit}
+                                pageId={this.props.pageId}
                                 setTempFiles={this.props.setTempFiles}
                                 buttonActions={this.state.buttonActions}
                                 buttonLimit={this.buttonLimit}
