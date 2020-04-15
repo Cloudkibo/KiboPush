@@ -22,6 +22,10 @@ const handleIncomingMessage = (payload, state, props, updateLiveChatInfo, clearS
   let session = payload.subscriber
   let data = {}
   const index = sessions.findIndex((s) => s._id === payload.subscriber._id)
+  console.log('handleIncomingMessage index', index)
+  console.log('handleIncomingMessage state', state)
+  console.log('handleIncomingMessage payload', payload)
+  console.log('handleIncomingMessage props', props)
   if (state.activeSession._id === payload.subscriber._id) {
     let userChat = state.userChat
     userChat.push(payload.message)
@@ -49,7 +53,7 @@ const handleIncomingMessage = (payload, state, props, updateLiveChatInfo, clearS
     session.status = 'new'
     if (state.tabValue === 'open') sessions = [session, ...sessions]
     data = {
-      openSessions: state.tabValue === 'open' ? sessions : props.openSessions,
+      openSessions: state.tabValue === 'open' ? sessions : [session, ...props.openSessions],
       closeSessions: state.tabValue === 'close' ? sessions : props.closeSessions,
       closeCount: state.tabValue === 'close' ? props.closeCount - 1 : props.closeCount
     }
