@@ -6,16 +6,26 @@ import StyledTreeItem from './styledTreeItem'
 class Sidebar extends React.Component {
   constructor(props, context) {
     super(props, context)
-    this.state = {
-      items: []
-    }
-
+    this.state = {}
     this.getCollapseIcon = this.getCollapseIcon.bind(this)
     this.getExpandIcon = this.getExpandIcon.bind(this)
-    this.prepareSidebarData = this.prepareSidebarData.bind(this)
+    this.getItems = this.getItems.bind(this)
   }
 
-  prepareSidebarData (data) {}
+  getItems () {
+    if (this.props.data.length > 1) {
+      //
+    } else {
+      return (
+        <StyledTreeItem
+          nodeId={`${this.props.data[0].id}`}
+          label={this.props.data[0].title}
+          selected={true}
+          completed={false}
+        />
+      )
+    }
+  }
 
   getCollapseIcon () {
     return (
@@ -38,15 +48,18 @@ class Sidebar extends React.Component {
               defaultCollapseIcon={this.getCollapseIcon()}
               defaultExpandIcon={this.getExpandIcon()}
             >
-              <StyledTreeItem nodeId='1' label='Welcome' selected={false} completed={true}>
-                <StyledTreeItem nodeId="2" label="Calendar" selected={true} completed={false} />
-                <StyledTreeItem nodeId="3" label="Chrome" selected={false} completed={false} />
-                <StyledTreeItem nodeId="4" label="Webstorm" selected={false} completed={false} />
-                <StyledTreeItem nodeId="5" label="Documents" selected={false} completed={false}>
-                  <StyledTreeItem nodeId="10" label="OSS" selected={false} completed={false} />
-                  <StyledTreeItem nodeId="6" label="Material-UI" selected={false} completed={false} />
+              {this.getItems()}
+              {/*
+                <StyledTreeItem nodeId='1' label='Welcome' selected={false} completed={true}>
+                  <StyledTreeItem nodeId="2" label="Calendar" selected={true} completed={false} />
+                  <StyledTreeItem nodeId="3" label="Chrome" selected={false} completed={false} />
+                  <StyledTreeItem nodeId="4" label="Webstorm" selected={false} completed={false} />
+                  <StyledTreeItem nodeId="5" label="Documents" selected={false} completed={false}>
+                    <StyledTreeItem nodeId="10" label="OSS" selected={false} completed={false} />
+                    <StyledTreeItem nodeId="6" label="Material-UI" selected={false} completed={false} />
+                  </StyledTreeItem>
                 </StyledTreeItem>
-              </StyledTreeItem>
+              */}
             </TreeView>
           </div>
         </div>

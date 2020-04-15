@@ -67,3 +67,23 @@ export function handleAttachment (data, callback) {
       })
   }
 }
+
+export function handleMessageBlock (data, callback) {
+  return (dispatch) => {
+    callApi('messageBlock', 'post', data)
+      .then(res => {
+        console.log('response from handleMessageBlock', res)
+        callback(res)
+      })
+  }
+}
+
+export function changeActiveStatus (data, callback) {
+  return (dispatch) => {
+    callApi('chatbots', 'PUT', data)
+      .then(res => {
+        console.log('response from changeActiveStatus', res)
+        callback(res)
+      })
+  }
+}

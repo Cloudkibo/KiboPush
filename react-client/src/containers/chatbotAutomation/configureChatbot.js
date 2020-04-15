@@ -4,7 +4,9 @@ import { bindActionCreators } from 'redux'
 import {
   fetchChatbotDetails,
   uploadAttachment,
-  handleAttachment
+  handleAttachment,
+  handleMessageBlock,
+  changeActiveStatus
 } from '../../redux/actions/chatbotAutomation.actions'
 import AlertContainer from 'react-alert'
 import PROGRESS from '../../components/chatbotAutomation/progress'
@@ -19,7 +21,9 @@ class ConfigureChatbot extends React.Component {
       chatbot: props.location.state,
       blocks: [],
       sidebarItems: [],
-      currentBlock: {}
+      currentBlock: {title: ''},
+      currentLevel: 1,
+      progress: 0
     }
 
     this.handleChatbotDetails = this.handleChatbotDetails.bind(this)
@@ -39,8 +43,8 @@ class ConfigureChatbot extends React.Component {
       this.preparePayload(res.payload)
     } else {
       this.msg.error('An unexpected error occured. Please try again later')
+      this.setState({loading: false})
     }
-    this.setState({loading: false})
   }
 
   preparePayload (data) {
@@ -57,8 +61,9 @@ class ConfigureChatbot extends React.Component {
         sidebarItems.push({
           title: data[i].title,
           id: data[i].uniqueId,
-          isParent: this.isItParent(data[i]),
-          parentId: this.getParentId(data, data[i])
+          isParent: false
+          // isParent: this.isItParent(data[i]),
+          // parentId: this.getParentId(data, data[i])
         })
       }
     } else {
@@ -75,7 +80,7 @@ class ConfigureChatbot extends React.Component {
         isParent: false
       }]
     }
-    this.setState({blocks, sidebarItems, currentBlock: blocks[0]})
+    this.setState({blocks, sidebarItems, currentBlock: blocks[0], loading: false})
   }
 
   isItParent (data) {
@@ -127,31 +132,50 @@ class ConfigureChatbot extends React.Component {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={(a) => { this.msg = a }} {...alertOptions} />
-        <div style={{margin: '15px'}} className='row'>
-          <SIDEBAR data={this.state.sidebarItems} />
-          <MESSAGEAREA
-            block={this.state.currentBlock}
-            chatbot={this.state.chatbot}
-            alertMsg={this.msg}
-            uploadAttachment={this.props.uploadAttachment}
-            handleAttachment={this.props.handleAttachment}
-          />
-        </div>
-        <PROGRESS progress='65%' />
+        {
+          this.state.loading
+          ? <div style={{position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%,-50%)'}}>
+            <div className="m-loader m-loader--brand" style={{width: "30px", display: "inline-block"}} />
+            <span className='m--font-brand'>Please wait...</span>
+          </div>
+          : <div>
+            <div style={{margin: '15px'}} className='row'>
+              <SIDEBAR data={this.state.sidebarItems} />
+              <MESSAGEAREA
+                block={this.state.currentBlock}
+                chatbot={this.state.chatbot}
+                alertMsg={this.msg}
+                uploadAttachment={this.props.uploadAttachment}
+                handleAttachment={this.props.handleAttachment}
+                currentLevel={this.state.currentLevel}
+                maxLevel={this.state.chatbot.maxLevels}
+                blocks={this.state.blocks}
+                handleMessageBlock={this.props.handleMessageBlock}
+                fbAppId={this.props.fbAppId}
+                changeActiveStatus={this.props.changeActiveStatus}
+              />
+            </div>
+            <PROGRESS progress={`${this.state.progress}%`} />
+          </div>
+        }
       </div>
     )
   }
 }
 
 function mapStateToProps (state) {
-  return {}
+  return {
+    fbAppId: state.basicInfo.fbAppId
+  }
 }
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     fetchChatbotDetails,
     uploadAttachment,
-    handleAttachment
+    handleAttachment,
+    handleMessageBlock,
+    changeActiveStatus
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(ConfigureChatbot)
