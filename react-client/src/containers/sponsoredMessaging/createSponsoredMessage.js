@@ -32,7 +32,8 @@ class CreateSponsoredMessage extends React.Component {
       : props.sponsoredMessage.adAccountId && props.sponsoredMessage.adAccountId !== '' ? 'campaign'
       : 'adAccount',
       loading: false,
-      initialFiles: props.sponsoredMessage && props.sponsoredMessage.payload ? getFileIdsOfBroadcast(props.sponsoredMessage.payload) : []
+      initialFiles: props.sponsoredMessage && props.sponsoredMessage.payload ? getFileIdsOfBroadcast(props.sponsoredMessage.payload) : [],
+      showScheduleModal: false
     }
     if(this.props.location.state && this.props.location.state.module === 'edit'  && this.props.location.state.sponsoredMessage) {
       this.props.updateSponsoredMessage(this.props.location.state.sponsoredMessage)
@@ -88,13 +89,16 @@ class CreateSponsoredMessage extends React.Component {
 
   openScheduleModal () {
     if (checkValidations(this.props.sponsoredMessage)) {
+      this.setState({showScheduleModal: true}, () =>
       this.refs.sponsoredMessage.click()
+    )
     } else {
       this.msg.error('Please complete all the steps')
     }
   }
 
   UNSAFE_componentWillReceiveProps (nextProps) {
+    console.log('nextProps in create', nextProps)
     if (nextProps.sponsoredMessage) {
       if (nextProps.sponsoredMessage.adSetId && nextProps.sponsoredMessage.adSetId !== '') {
         this.setState({currentStep: 'ad'})
@@ -173,7 +177,7 @@ class CreateSponsoredMessage extends React.Component {
       this.msg.error('Please complete all the steps')
     }
   }
-  
+
   sendToFacebook () {
       this.props.updateSponsoredMessage(this.props.sponsoredMessage, null, null, {newFiles: []})
       let initialFiles = this.state.initialFiles
@@ -209,14 +213,18 @@ class CreateSponsoredMessage extends React.Component {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-          <button ref='sponsoredMessage' style={{display: 'none'}} data-toggle="modal" data-target="#sponsoredMessage"></button>
-          <ScheduleModal
-            id='sponsoredMessage'
-            title='Schedule Broadcast'
-            content='Send this broadcast on:'
-            saveSchedule={this.saveSchedule}
-            dateTime={this.props.sponsoredMessage.scheduleDateTime}
-          />
+        {this.state.showScheduleModal &&
+          <div>
+            <button ref='sponsoredMessage' style={{display: 'none'}} data-toggle="modal" data-target="#sponsoredMessage"></button>
+            <ScheduleModal
+              id='sponsoredMessage'
+              title='Schedule Broadcast'
+              content='Send this broadcast on:'
+              saveSchedule={this.saveSchedule}
+              dateTime={this.props.sponsoredMessage.scheduleDateTime}
+            />
+          </div>
+        }
         <button ref='cancelScheduleModal' style={{display: 'none'}} data-toggle="modal" data-target="#cancelScheduleModal"></button>
           <ConfirmationModal
             id='cancelScheduleModal'
@@ -261,11 +269,11 @@ class CreateSponsoredMessage extends React.Component {
                   {this.state.currentStep === 'adSet' &&
                     <AdSet changeCurrentStep={this.changeCurrentStep} msg={this.msg} />
                   }
-                  <Ad currentStep={this.state.currentStep} 
-                      changeCurrentStep={this.changeCurrentStep} 
-                      initialFiles={this.state.initialFiles} 
+                  <Ad currentStep={this.state.currentStep}
+                      changeCurrentStep={this.changeCurrentStep}
+                      initialFiles={this.state.initialFiles}
                       msg={this.msg}
-                      scheduleModal={this.refs.sponsoredMessage}
+                      openScheduleModal={this.openScheduleModal}
                       cancelScheduleModal={this.refs.cancelScheduleModal}
                    />
                 </div>
@@ -279,7 +287,7 @@ class CreateSponsoredMessage extends React.Component {
 }
 
 function mapStateToProps (state) {
-  console.log(state)
+  console.log('state in create', state)
   return {
     sponsoredMessage: (state.sponsoredMessagingInfo.sponsoredMessage),
     pages: state.pagesInfo.pages,

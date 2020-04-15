@@ -13,9 +13,26 @@ class ScheduleModal extends React.Component {
     this.getMinDate = this.getMinDate.bind(this)
   }
   UNSAFE_componentWillReceiveProps (nextProps) {
+    console.log('in UNSAFE_componentWillReceiveProps of scheduleModal')
     if (nextProps.dateTime && nextProps.dateTime !== '') {
       // "2020-03-26T06:42:29.928Z"
       let dateTime = new Date(nextProps.dateTime)
+      let month = ('0' + (dateTime.getMonth() + 1)).slice(-2)
+      let day = ('0' + dateTime.getDate()).slice(-2)
+      let date = `${dateTime.getFullYear()}-${month}-${day}`
+      let hour = ('0' + (dateTime.getHours())).slice(-2)
+      let minute = ('0' + (dateTime.getMinutes())).slice(-2)
+      let time = `${hour}:${minute}`
+      this.setState({date: date, time: time})
+    } else {
+      this.setState({date: '', time: '00:00'})
+    }
+  }
+  componentDidMount () {
+    console.log('in componentDidMount of scheduleModal')
+    if (this.props.dateTime && this.props.dateTime !== '') {
+      // "2020-03-26T06:42:29.928Z"
+      let dateTime = new Date(this.props.dateTime)
       let month = ('0' + (dateTime.getMonth() + 1)).slice(-2)
       let day = ('0' + dateTime.getDate()).slice(-2)
       let date = `${dateTime.getFullYear()}-${month}-${day}`
