@@ -411,7 +411,7 @@ class GreetingMessage extends React.Component {
                           <br />
                           <div className='col-7' />
                           <div className='col-5 form-group m-form__group row'>
-                            <div style={{ paddingLeft: '140px' }}>
+                            <div style={{ paddingLeft: '90px' }}>
                               <a href='#/' className='linkMessageTypes' style={{ color: '#5867dd', cursor: 'pointer', margin: '10px', display: 'inline-block' }} data-toggle="modal" data-target="#preview" onClick={this.viewGreetingMessage}>See how it looks </a>
                               {
                                 this.state.greetingMessage.length > 0
