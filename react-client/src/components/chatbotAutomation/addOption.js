@@ -1,40 +1,16 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { isWebURL } from '../../utility/utils'
 
-class ButtonAction extends React.Component {
+class AddOption extends React.Component {
   constructor(props, context) {
     super(props, context)
     this.state = {
       title: props.title,
-      url: props.url,
-      invalidUrl: false,
-      helpMessage: '',
-      typingInterval: 1000
+      blockId: props.blockId
     }
     this.onTitleChange = this.onTitleChange.bind(this)
-    this.onUrlChange = this.onUrlChange.bind(this)
+    this.onBlockChange = this.onBlockChange.bind(this)
     this.onSave = this.onSave.bind(this)
-  }
-
-  componentDidMount () {
-    let typingTimer
-    let doneTypingInterval = this.state.typingInterval
-    let input = document.getElementById(`_button_action_url_in_chatbot`)
-    input.addEventListener('keyup', () => {
-      clearTimeout(typingTimer)
-      typingTimer = setTimeout(() => {
-        if (isWebURL(this.state.url)) {
-          this.setState({invalidUrl: false})
-        } else {
-          this.setState({
-            helpMessage: 'Please provide a valid url',
-            invalidUrl: true
-          })
-        }
-      }, doneTypingInterval)
-    })
-    input.addEventListener('keydown', () => {clearTimeout(typingTimer)})
   }
 
   onTitleChange (e) {
@@ -43,17 +19,17 @@ class ButtonAction extends React.Component {
     }
   }
 
-  onUrlChange (e) {
-    this.setState({url: e.target.value})
+  onBlockChange (e) {
+    this.setState({blockId: e.target.value})
   }
 
   onSave () {
     if (!this.state.title) {
       this.props.alertMsg.error('Title cannot empty')
-    } else if (!isWebURL(this.state.url)) {
-      this.props.alertMsg.error('Please provide a valid url')
+    } else if (!this.state.blockId) {
+      this.props.alertMsg.error('Please select a block to trigger')
     } else {
-      this.props.onSave({title: this.state.title, url: this.state.url})
+      this.props.onSave({title: this.state.title, blockId: this.state.blockId})
     }
   }
 
@@ -61,7 +37,7 @@ class ButtonAction extends React.Component {
     return (
       <div>
         <i onClick={this.props.onCancel} style={{cursor: 'pointer'}} className='la la-close pull-right' />
-        <div style={{padding: '10px', overflow: 'hidden'}}>
+        <div style={{paddingTop: '10px', overflow: 'hidden'}}>
           <div className="form-group m-form__group">
             <span>Title:</span>
   					<input
@@ -74,21 +50,19 @@ class ButtonAction extends React.Component {
           </div>
           <div className='m--space-10' />
           <div className="form-group m-form__group">
-            <span>Url:</span>
-  					<input
-              type="text"
-              id='_button_action_url_in_chatbot'
+            <span>Trigger block:</span>
+            <select
               className="form-control m-input"
-              placeholder="Enter url..."
-              value={this.state.url}
-              onChange={this.onUrlChange}
-            />
-            {
-              this.state.invalidUrl &&
-              <span className='m-form__help m--font-danger'>
-                {this.state.helpMessage}
-              </span>
-            }
+              value={this.state.blockId}
+              onChange={this.onBlockChange}
+            >
+              <option value='' disabled>Select a block...</option>
+              {
+                this.props.blocks.map((block) => (
+                  <option key={block._id} value={block._id}>{block.title}</option>
+                ))
+              }
+            </select>
           </div>
             {
               this.props.showRemove &&
@@ -104,7 +78,7 @@ class ButtonAction extends React.Component {
               type='button'
               className='btn btn-primary btn-sm pull-right'
               onClick={this.onSave}
-              disabled={!(this.state.title && this.state.url && !this.state.invalidUrl)}
+              disabled={!(this.state.title && this.state.blockId)}
             >
               Save
             </button>
@@ -114,13 +88,14 @@ class ButtonAction extends React.Component {
   }
 }
 
-ButtonAction.propTypes = {
+AddOption.propTypes = {
   'title': PropTypes.string.isRequired,
-  'url': PropTypes.string.isRequired,
+  'blockId': PropTypes.string.isRequired,
+  'blocks': PropTypes.array.isRequired,
   'onSave': PropTypes.func.isRequired,
   'onCancel': PropTypes.func.isRequired,
   'onRemove': PropTypes.func.isRequired,
   'showRemove': PropTypes.bool.isRequired
 }
 
-export default ButtonAction
+export default AddOption

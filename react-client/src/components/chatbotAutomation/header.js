@@ -47,7 +47,7 @@ class Header extends React.Component {
 
   onPublish () {
     this.setState({waitingForPublish: true})
-    this.porps.onPublish(this.afterPublish)
+    this.props.onPublish(this.afterPublish)
   }
 
   afterPublish (res) {

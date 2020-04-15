@@ -78,19 +78,40 @@ class AttachmentArea extends React.Component {
   onSaveAction (data) {
     data.type = 'web_url'
     this.setState({buttons: [data], showPopover: false})
+    let attachment = this.props.attachment
+    attachment.buttons = [data]
+    this.props.updateParentState({attachment})
   }
 
   onRemoveAction () {
     this.setState({buttons: [], showPopover: false})
+    let attachment = this.props.attachment
+    attachment.buttons = []
+    this.props.updateParentState({attachment})
   }
 
   onUrlResponse (res) {
+    const data = res.payload
     if (res.status === 'success') {
       this.setState({
         waitingForUrlData: false,
         invalidUrl: false,
-        helpMessage: 'Url is valid'
+        helpMessage: 'Url is valid',
+        attachmentType: data.attachment_id ? 'video' : 'card'
       })
+      const attachment = {
+        type: data.attachment_id ? 'video' : 'card',
+        fileurl: data.attachment_id ? data : {},
+        cardData: data.attachment_id ? {} : {
+          title: data.ogTitle,
+          description: data.ogDescription,
+          image_url: data.ogImage && data.ogImage.url,
+          url: this.state.inputValue
+        },
+        fileData: data.attachment_id ? {url: this.state.inputValue} : {},
+        buttons: this.state.buttons
+      }
+      this.props.updateParentState({attachment})
     } else {
       this.setState({
         waitingForUrlData: false,
@@ -137,13 +158,25 @@ class AttachmentArea extends React.Component {
     }
   }
 
-  afterAttachmentUpload (res) {
+  afterAttachmentUpload (res, type) {
     console.log('afterAttachmentUpload', res)
     if (res.status === 'success') {
       this.setState({
         isUploaded: true,
-        waitingForAttachment: false
+        waitingForAttachment: false,
+        attachmentType: type
       })
+      const attachment = {
+        type,
+        fileurl: res.payload,
+        fileData: {
+          name: this.state.attachment.name,
+          type: this.state.attachment.type,
+          size: this.state.attachment.size
+        },
+        buttons: this.state.buttons
+      }
+      this.props.updateParentState({attachment})
     } else {
       this.props.alertMsg.error('Failed to upload attachment. Please try again later')
       this.setState({waitingForAttachment: false})
@@ -163,7 +196,7 @@ class AttachmentArea extends React.Component {
           isUploaded: false,
           inputValue: 'Uploading...',
           attachment: file,
-          attachmentType: type,
+          attachmentType: '',
           waitingForAttachment: true,
           helpMessage: '',
           invalidUrl: false
@@ -175,8 +208,20 @@ class AttachmentArea extends React.Component {
         fileData.append('filesize', file.size)
         fileData.append('pages', JSON.stringify([this.props.chatbot.pageId]))
         fileData.append('componentType', type)
-        this.props.uploadAttachment(fileData, this.afterAttachmentUpload)
+        this.props.uploadAttachment(fileData, (res) => this.afterAttachmentUpload(res, type))
       }
+    }
+  }
+
+  UNSAFE_componentWillReceiveProps (nextProps) {
+    if (nextProps.attachment) {
+      this.setState({
+        inputValue: nextProps.attachment.fileData ? (nextProps.attachment.fileData.url || '') : nextProps.attachment.cradData.url,
+        attachment: nextProps.attachment.fileData || {},
+        attachmentType: nextProps.attachment.type,
+        buttons: nextProps.attachment.buttons,
+        isUploaded: nextProps.attachment.fileData ? true : false
+      })
     }
   }
 
@@ -240,13 +285,13 @@ class AttachmentArea extends React.Component {
 						</button>
           }
           {
-            ['image', 'video'].includes(this.state.attachmentType) &&
-            this.state.isUploaded && this.state.buttons.length === 0 &&
+            this.state.attachmentType &&
+            ['file', 'audio'].indexOf(this.state.attachmentType) === -1 &&
+            this.state.buttons.length === 0 &&
             <button
               id='_attach_button_in_chatbot'
-              type="button"
-              style={{border: '1px solid #36a3f7'}}
-              className="btn m-btn--pill btn-outline-info btn-sm"
+              style={{border: 'none', cursor: 'pointer'}}
+              className='m-link m-link--state m-link--info'
               onClick={this.showPopover}
             >
 							+ Attach button
@@ -283,10 +328,11 @@ class AttachmentArea extends React.Component {
 }
 
 AttachmentArea.propTypes = {
-  'data': PropTypes.object.isRequired,
   'chatbot': PropTypes.object.isRequired,
   'uploadAttachment': PropTypes.func.isRequired,
-  'handleAttachment': PropTypes.func.isRequired
+  'handleAttachment': PropTypes.func.isRequired,
+  'attachment': PropTypes.object.isRequired,
+  'updateParentState': PropTypes.func.isRequired
 }
 
 export default AttachmentArea

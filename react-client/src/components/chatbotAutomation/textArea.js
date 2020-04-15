@@ -7,7 +7,7 @@ class TextArea extends React.Component {
   constructor(props, context) {
     super(props, context)
     this.state = {
-      text: '',
+      text: props.text,
       showPopover: false,
       popoverOptions: {
         placement: 'left',
@@ -25,7 +25,9 @@ class TextArea extends React.Component {
 
   onTextChange (e) {
     if (e.target.value.length <= 2000) {
-      this.setState({text: e.target.value})
+      let text = e.target.value
+      this.setState({text})
+      this.props.updateParentState({text})
     }
   }
 
@@ -71,7 +73,9 @@ class TextArea extends React.Component {
   }
 
   setEmoji (emoji) {
-    this.setState({text: `${this.state.text}${emoji.native}`})
+    let text = `${this.state.text}${emoji.native}`
+    this.setState({text})
+    this.props.updateParentState({text})
   }
 
   openPicker (type) {
@@ -83,7 +87,15 @@ class TextArea extends React.Component {
   }
 
   appendUserName (nameType) {
-    this.setState({text: `${this.state.text}{{user_${nameType}_name}}`})
+    let text = `${this.state.text}{{user_${nameType}_name}}`
+    this.setState({text})
+    this.props.updateParentState({text})
+  }
+
+  UNSAFE_componentWillReceiveProps (nextProps) {
+    if (nextProps.text) {
+      this.setState({text: nextProps.text})
+    }
   }
 
   render () {
@@ -134,7 +146,8 @@ class TextArea extends React.Component {
 }
 
 TextArea.propTypes = {
-  'data': PropTypes.object.isRequired
+  'text': PropTypes.string.isRequired,
+  'updateParentState': PropTypes.func.isRequired
 }
 
 export default TextArea
