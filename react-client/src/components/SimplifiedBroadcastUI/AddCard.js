@@ -222,6 +222,7 @@ class AddCard extends React.Component {
             />
           <AddAction
             edit={this.props.edit}
+            pageId={this.props.pageId}
             default_action={this.state.default_action}
             webviewurl={this.state.webviewurl}
             webviewsize={this.state.webviewsize}
