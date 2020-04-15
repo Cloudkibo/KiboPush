@@ -98,7 +98,6 @@ class CreateSponsoredMessage extends React.Component {
   }
 
   UNSAFE_componentWillReceiveProps (nextProps) {
-    console.log('nextProps in create', nextProps)
     if (nextProps.sponsoredMessage) {
       if (nextProps.sponsoredMessage.adSetId && nextProps.sponsoredMessage.adSetId !== '') {
         this.setState({currentStep: 'ad'})

@@ -13,7 +13,6 @@ class ScheduleModal extends React.Component {
     this.getMinDate = this.getMinDate.bind(this)
   }
   UNSAFE_componentWillReceiveProps (nextProps) {
-    console.log('in UNSAFE_componentWillReceiveProps of scheduleModal')
     if (nextProps.dateTime && nextProps.dateTime !== '') {
       // "2020-03-26T06:42:29.928Z"
       let dateTime = new Date(nextProps.dateTime)
@@ -29,7 +28,6 @@ class ScheduleModal extends React.Component {
     }
   }
   componentDidMount () {
-    console.log('in componentDidMount of scheduleModal')
     if (this.props.dateTime && this.props.dateTime !== '') {
       // "2020-03-26T06:42:29.928Z"
       let dateTime = new Date(this.props.dateTime)
