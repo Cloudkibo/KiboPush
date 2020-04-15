@@ -289,7 +289,10 @@ class AddChannel extends React.Component {
     }
   }
 
-  closeAddFeedModal () {
+  closeAddFeedModal () {    
+    /* eslint-disable */
+    $('#selectPage').val([]).trigger('change') 
+    /* eslint-enable */
     this.setState({
       facebookSubscriptionUrl: '',
       twitterSubscriptionUrl: '',
