@@ -237,9 +237,11 @@ export function getFileIdsOfComponent (component) {
 
 export function getFileIdsOfBroadcast (payload) {
   let files = []
-  for (let i = 0; i < payload.length; i++) {
-    let component = payload[i]
-    files = files.concat(getFileIdsOfComponent(component))
+  if (payload) {
+    for (let i = 0; i < payload.length; i++) {
+      let component = payload[i]
+      files = files.concat(getFileIdsOfComponent(component))
+    }
   }
   return files
 }
