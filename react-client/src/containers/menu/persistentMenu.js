@@ -1234,7 +1234,7 @@ class Menu extends React.Component {
                   {
                     this.addMenuElement()
                   }
-                  <div className='col-8 menuDiv' style={{marginLeft: '-15px', width: '540px'}} >
+                  <div className='col-8 menuDiv' style={{marginLeft: '-15px', width: '540px'}}>
                     <input type='text' className='form-control m-input menuFix' value='Powered by KiboPush' readOnly />
                   </div>
                   <div className='col-12' style={{paddingTop: '30px', marginLeft: '-15px'}}>
