@@ -108,7 +108,7 @@ class Menu extends React.Component {
   addMenuElement () {
     let element = []
     for (let j = 0; j < this.state.maxMainmenu; j++) {
-     element.push(<div className='col-8 menuDiv' style={{marginLeft: '-15px', width: '498px'}}>
+     element.push(<div className='col-8 menuDiv' style={{marginLeft: '-15px', width: '53.5%'}}>
           <button className='addMenu'onClick={this.addMenu}>+ Add Menu </button>
           </div>)
     }
@@ -1234,7 +1234,7 @@ class Menu extends React.Component {
                   {
                     this.addMenuElement()
                   }
-                  <div className='col-8 menuDiv' style={{marginLeft: '-15px', width: '498px'}}>
+                  <div className='col-8 menuDiv' style={{marginLeft: '-15px', width: '53.5%'}}>
                     <input type='text' className='form-control m-input menuFix' value='Powered by KiboPush' readOnly />
                   </div>
                   <div className='col-12' style={{paddingTop: '30px', marginLeft: '-15px'}}>
