@@ -74,7 +74,7 @@ class Ad extends React.Component {
           <button className='btn btn-secondary btn-sm' style={{marginLeft: '10px'}} onClick={this.openCancelScheduleModal}>
             Cancel
           </button>
-          <button className='btn btn-primary btn-sm' style={{marginLeft: '10px'}} onClick={this.openScheduleModal}>
+          <button className='btn btn-primary btn-sm' style={{marginLeft: '10px'}} onClick={this.props.openScheduleModal}>
             Edit
           </button>
         </div>

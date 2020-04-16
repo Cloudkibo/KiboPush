@@ -75,11 +75,14 @@ export function deleteautoposting (id) {
   }
 }
 
-export function editautoposting (data) {
+export function editautoposting (data, handleResponse) {
   return (dispatch) => {
     callApi('autoposting/edit', 'post', data)
       .then(res => {
         console.log(res)
+        if (handleResponse) {
+          handleResponse(res)
+        }
         if (res.status === 'success') {
           dispatch(editAutopostingSuccess())
           dispatch(loadAutopostingList())
