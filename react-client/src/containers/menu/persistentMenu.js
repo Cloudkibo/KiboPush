@@ -21,10 +21,7 @@ class Menu extends React.Component {
     props.loadMyPagesList()
     this.state = {
       openPopover: false,
-      menuItems: [{
-        title: 'Menu Item',
-        submenu: []
-      }],
+      menuItems: [],
       selectPage: '',
       selectedIndex: 'menuPopover',
       disabledWebUrl: true,
@@ -38,7 +35,8 @@ class Menu extends React.Component {
       subMenuEnable: false,
       openVideo: false,
       newFiles: [],
-      initialFiles: []
+      initialFiles: [],
+      maxMainmenu : 2
     }
 
     this.pageChange = this.pageChange.bind(this)
@@ -75,6 +73,8 @@ class Menu extends React.Component {
     this.saveMenuData = this.saveMenuData.bind(this)
     this.openVideoTutorial = this.openVideoTutorial.bind(this)
     this.removePayloadFiles = this.removePayloadFiles.bind(this)
+    this.messageDisplay = this.messageDisplay.bind(this)
+    this.addMenuElement = this.addMenuElement.bind(this)
     if (!this.props.currentMenuItem) {
       if (this.props.pages && this.props.pages.length > 0) {
         this.props.getIndexBypage(this.props.pages[0].pageId, this.handleIndexByPage)
@@ -82,6 +82,27 @@ class Menu extends React.Component {
     }
   }
 
+  messageDisplay () {
+    if (this.state.maxMainmenu === 2) {
+        return 'Only two more main menus can be added.'
+    }
+    else if(this.state.maxMainmenu === 1) {
+      return 'Only one more main menus can be added.'
+    }
+    else {
+      return 'No more main menus can be added.'
+    }
+  }
+
+  addMenuElement () {
+    let element = []
+    for (let j = 0; j < this.state.maxMainmenu; j++) {
+     element.push(<div className='col-8 menuDiv' style={{marginLeft: '-15px', width: '498px'}}>
+          <button className='addMenu'onClick={this.addMenu}>+ Add Menu </button>
+          </div>)
+    }
+    return element
+  }
   openVideoTutorial () {
     this.setState({
       openVideo: true
@@ -208,10 +229,7 @@ class Menu extends React.Component {
     }
   }
   initializeMenuItems () {
-    var tempItemMenus = [{
-      title: 'Main Menu',
-      submenu: []
-    }]
+    var tempItemMenus = []
     this.setState({
       menuItems: tempItemMenus
     })
@@ -281,10 +299,13 @@ class Menu extends React.Component {
   }
   handleIndexByPage (res) {
     if (res.status === 'success' && res.payload && res.payload.length > 0) {
+      if(res.payload[0].jsonStructure[0].type) {
+        let maxMainmenu = this.state.maxMainmenu - res.payload[0].jsonStructure.length
       let initialFiles = getFileIdsOfMenu(res.payload[0].jsonStructure)
       this.setState({
         initialFiles,
-        menuItems: res.payload[0].jsonStructure
+        menuItems: res.payload[0].jsonStructure,
+        maxMainmenu:maxMainmenu
       })
       for (var i = 0; i < this.props.pages.length; i++) {
         if (this.props.pages[i]._id === res.payload.pageId) {
@@ -292,6 +313,12 @@ class Menu extends React.Component {
         }
       }
     } else {
+      this.setState({
+        initialFiles : [],
+        menuItems: []
+      })
+    }
+  } else {
       this.initializeMenuItems()
     }
   }
@@ -334,7 +361,7 @@ class Menu extends React.Component {
     data.jsonStructure = tempItemMenus
     var currentState = null
     this.props.saveCurrentMenuItem(currentState)
-    this.setState({newFiles: [], initialFiles: []})
+    this.setState({newFiles: [], initialFiles: [], maxMainmenu: 2})
     this.props.removeMenu(data, this.handleReset, this.msg)
   }
 
@@ -533,18 +560,23 @@ class Menu extends React.Component {
   }
   addMenu () {
     var menuItems = this.state.menuItems
+    var noOfItems = this.state.maxMainmenu
+    noOfItems = noOfItems-1
     var newMenu = {
       title: 'Menu Item',
       submenu: []
     }
     menuItems.push(newMenu)
     this.setState({
-      menuItems: this.state.menuItems
+      menuItems: this.state.menuItems,
+      maxMainmenu : noOfItems
     })
   }
   removeMenu (index) {
     var menuItems = []
     let newFiles = this.state.newFiles
+    var noOfItems = this.state.maxMainmenu
+    noOfItems = noOfItems+1
     if (this.state.menuItems[index].payload) {
       newFiles = deleteFiles(JSON.parse(this.state.menuItems[index].payload), newFiles, this.state.initialFiles)
     }
@@ -555,7 +587,8 @@ class Menu extends React.Component {
     }
     this.setState({
       menuItems: menuItems,
-      newFiles
+      newFiles: newFiles,
+      maxMainmenu : noOfItems
     })
   }
   addSubMenu (index) {
@@ -813,13 +846,17 @@ class Menu extends React.Component {
         this.setState({
           loading: true,
           newFiles: [],
-          initialFiles: currentFiles
+          initialFiles: currentFiles,
+          maxMainmenu: 2
         })
         this.editing = true
         this.props.saveMenu(data, this.handleSaveMenu, this.msg)
       } else {
         this.msg.error(errorMessage)
       }
+    }
+    else {
+      this.msg.error('PLease aa at least one Main menu')
     }
   }
   handleSaveMenu (res) {
@@ -1096,7 +1133,7 @@ class Menu extends React.Component {
                     this.state.menuItems.map((item, index) => {
                       return (
                         <div key={index}>
-                          <div className='col-6 menuDiv m-input-icon m-input-icon--right'>
+                          <div className='col-6 menuDiv m-input-icon m-input-icon--right' style={{width: '46%'}}>
                             <input id={'item-' + index} onClick={(e) => { this.selectIndex(e, 'item-' + index); this.handleToggle() }} type='text' className='form-control m-input menuInput' onChange={(e) => this.changeLabel(e)} value={item.title} />
                             { this.state.menuItems.length > 1 &&
                               <span className='m-input-icon__icon m-input-icon__icon--right' onClick={() => this.removeMenu(index)}>
@@ -1151,10 +1188,8 @@ class Menu extends React.Component {
                       )
                     })
                  }
-                  { this.state.menuItems.length === 1 &&
-                    <div className='col-8 menuDiv' style={{marginLeft: '-15px', width: '498px'}}>
-                      <button className='addMenu'onClick={this.addMenu}>+ Add Menu </button>
-                    </div>
+                  { 
+                    this.addMenuElement()
                   }
                   <div className='col-8 menuDiv' style={{marginLeft: '-15px', width: '498px'}}>
                     <input type='text' className='form-control m-input menuFix' value='Powered by KiboPush' readOnly />
@@ -1162,7 +1197,7 @@ class Menu extends React.Component {
                   <div className='col-12' style={{paddingTop: '30px', marginLeft: '-15px'}}>
                     <i className='flaticon-exclamation m--font-brand' />
                     <span style={{marginLeft: '5px'}}>
-                      Only two more main menus can be added.
+                      {this.messageDisplay()}
                     </span>
                   </div>
                 </div>
