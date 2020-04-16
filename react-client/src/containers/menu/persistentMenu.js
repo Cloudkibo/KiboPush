@@ -856,7 +856,7 @@ class Menu extends React.Component {
       }
     }
     else {
-      this.msg.error('PLease aa at least one Main menu')
+      this.msg.error('Please add at least one Main menu')
     }
   }
   handleSaveMenu (res) {
