@@ -90,7 +90,6 @@ class LiveChat extends React.Component {
     this.fetchSessions = this.fetchSessions.bind(this)
     this.updateState = this.updateState.bind(this)
     this.changeActiveSession = this.changeActiveSession.bind(this)
-    this.setDefaultPicture = this.setDefaultPicture.bind(this)
     this.profilePicError = this.profilePicError.bind(this)
     this.changeStatus = this.changeStatus.bind(this)
     this.performAction = this.performAction.bind(this)
@@ -320,22 +319,11 @@ class LiveChat extends React.Component {
 
   profilePicError(e, subscriber) {
     e.persist()
-    this.setDefaultPicture(e, subscriber)
     this.props.updatePicture({ subscriber }, (newProfilePic) => {
       if (newProfilePic) {
         e.target.src = newProfilePic
-      } else {
-        this.setDefaultPicture(e, subscriber)
       }
     })
-  }
-
-  setDefaultPicture (e, subscriber) {
-    if (subscriber.gender === 'female') {
-      e.target.src = 'https://i.pinimg.com/236x/50/28/b5/5028b59b7c35b9ea1d12496c0cfe9e4d.jpg'
-    } else {
-      e.target.src = 'https://www.mastermindpromotion.com/wp-content/uploads/2015/02/facebook-default-no-profile-pic-300x300.jpg'
-    }
   }
 
   saveCustomField (data) {
