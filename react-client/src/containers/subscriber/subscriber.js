@@ -15,6 +15,7 @@ import { fetchAllSequence, subscribeToSequence, unsubscribeToSequence, getSubscr
 import fileDownload from 'js-file-download'
 import { Popover, PopoverHeader, PopoverBody, UncontrolledTooltip } from 'reactstrap'
 import Select from 'react-select'
+import Creatable from 'react-select/creatable'
 import AlertContainer from 'react-alert'
 import EditTags from './editTags'
 import AlertMessage from '../../components/alertMessages/alertMessage'
@@ -472,12 +473,7 @@ class Subscriber extends React.Component {
     if (value) {
       var data = String(value.label).toLowerCase()
       value.label = data
-      for (var i = 0; i < this.props.tags.length; i++) {
-        if (this.props.tags[i].tag !== data) {
-          index++
-        }
-      }
-      if (index === this.props.tags.length) {
+      if (value.__isNew__) {
         this.props.createTag(data, this.handleCreateTag, this.msg)
       } else {
         if (value.className) {
@@ -550,10 +546,21 @@ class Subscriber extends React.Component {
   handleSequenceInd(obj) {
     this.setState({ seqValueInd: obj.value, saveEnableSeqInd: true })
   }
-  handleCreateTag() {
-    this.setState({
-      saveEnable: false
-    })
+  handleCreateTag(res) {
+    if (res.status === 'success' && res.payload) {
+      this.setState({
+        saveEnable: true,
+        saveEnableIndividual: true,
+        addTagIndividual: {
+          label: res.payload.tag,
+          value: res.payload._id
+        }
+      })
+    } else {
+      this.setState({
+        saveEnable: false
+      })
+    }
   }
   createUnassignPayload(tagId) {
     let tag = this.state.options.find(t => t.value === tagId)
@@ -1951,7 +1958,7 @@ class Subscriber extends React.Component {
                             <br />
                             <div className='row'>
                               <span style={{ fontWeight: 600, marginLeft: '15px' }}>User Tags:</span>
-                              <a href='#/' id='assignIndividualTag' style={{ cursor: 'pointer', float: 'right', color: 'blue', marginLeft: '260px' }} onClick={this.showAddTagIndiviual}><i className='la la-plus' />Assign Tags</a>
+                              <span id='assignIndividualTag' style={{ cursor: 'pointer', float: 'right', color: 'blue', marginLeft: '260px' }} onClick={this.showAddTagIndiviual}><i className='la la-plus' />Assign Tags</span>
                             </div>
                             {
                               this.props.tags && this.props.tags.length > 0 && this.state.subscriber.tags && this.state.subscriber.tags.length > 0
@@ -1972,11 +1979,11 @@ class Subscriber extends React.Component {
                                 <div className='row' style={{ minWidth: '250px' }}>
                                   <div className='col-12'>
                                     <label>Select Tags</label>
-                                    <Select.Creatable
+                                    <Creatable
                                       options={this.state.options}
                                       onChange={this.handleAddIndividual}
                                       value={this.state.addTagIndividual}
-                                      placeholder='Add User Tags'
+                                      placeholder='Select a Tag'
                                     />
                                   </div>
                                   {this.state.saveEnableIndividual
