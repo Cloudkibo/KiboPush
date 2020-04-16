@@ -1223,7 +1223,7 @@ class Menu extends React.Component {
                           })
                         }
                           { item.submenu.length < 5 && this.state.subMenuEnable &&
-                            <div className='col-8 menuDiv' style={{paddingLeft: '30px', width: '53.5%'}}>
+                            <div className='col-8 menuDiv' style={{paddingLeft: '30px', width: '482px'}}>
                               <button className='addMenu'onClick={() => this.addSubMenu(index)}>+ Add Sub Menu </button>
                             </div>
                           }
