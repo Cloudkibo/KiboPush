@@ -157,7 +157,6 @@ class Subscriber extends React.Component {
     this.handleBulkResponse = this.handleBulkResponse.bind(this)
     this.updateOption = this.updateOption.bind(this)
     this.loadsubscriberData = this.loadsubscriberData.bind(this)
-    this.setDefaultPicture = this.setDefaultPicture.bind(this)
     this.handleFilterBySource = this.handleFilterBySource.bind(this)
     this.loadSubscribers = this.loadSubscribers.bind(this)
     this.setSelectedField = this.setSelectedField.bind(this)
@@ -387,23 +386,7 @@ class Subscriber extends React.Component {
   profilePicError(e, subscriber) {
     e.persist()
     console.log('profile picture error', subscriber)
-    console.log('event object', e.target)
-    this.setDefaultPicture(e, subscriber)
-    this.props.updatePicture({ subscriber }, (newProfilePic) => {
-      if (newProfilePic) {
-        e.target.src = newProfilePic
-      } else {
-        this.setDefaultPicture(e, subscriber)
-      }
-    })
-  }
-
-  setDefaultPicture(e, subscriber) {
-    if (subscriber.gender === 'female') {
-      e.target.src = 'https://i.pinimg.com/236x/50/28/b5/5028b59b7c35b9ea1d12496c0cfe9e4d.jpg'
-    } else {
-      e.target.src = 'https://www.mastermindpromotion.com/wp-content/uploads/2015/02/facebook-default-no-profile-pic-300x300.jpg'
-    }
+    this.props.updatePicture({ subscriber })
   }
 
   getDate(datetime) {
@@ -1749,7 +1732,7 @@ class Subscriber extends React.Component {
                                           style={{ width: '100px', overflow: 'inherit' }}>
                                           <img alt='pic'
                                             src={(subscriber.profilePic) ? subscriber.profilePic : ''}
-                                            onError={(e) => this.profilePicError(e, subscriber)}
+                                            onError={(e) => this.profilePicError(e, subscriber, i)}
                                             className='m--img-rounded m--marginless m--img-centered' width='60' height='60'
                                           />
                                         </span>
