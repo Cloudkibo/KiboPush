@@ -102,7 +102,7 @@ class Menu extends React.Component {
   addMenuElement () {
     let element = []
     for (let j = 0; j < this.state.maxMainmenu; j++) {
-     element.push(<div className='col-8 menuDiv' style={{marginLeft: '-15px', width: '498px'}}>
+     element.push(<div className='col-8 menuDiv' style={{marginLeft: '-15px', width: '470px'}}>
           <button className='addMenu'onClick={this.addMenu}>+ Add Menu </button>
           </div>)
     }
@@ -175,6 +175,7 @@ class Menu extends React.Component {
 
       this.setState({
         initialFiles: this.props.location.state.initialFiles,
+        maxMainmenu: this.props.location.state.maxMainmenu,
         newFiles: this.props.currentMenuItem.newFiles,
         menuItems: menuReturned,
         selectedIndex: this.props.currentMenuItem.clickedIndex
@@ -315,7 +316,7 @@ class Menu extends React.Component {
     }
     this.props.history.push({
       pathname: `/createMessage`,
-      state: {realInitialFiles: this.state.initialFiles, initialFiles: initialFiles, newFiles: this.state.newFiles}
+      state: {realInitialFiles: this.state.initialFiles, initialFiles: initialFiles, newFiles: this.state.newFiles, maxMainmenu: this.state.maxMainmenu}
     })
   }
   handleReset () {
@@ -1175,7 +1176,7 @@ class Menu extends React.Component {
                     this.state.menuItems.map((item, index) => {
                       return (
                         <div key={index}>
-                          <div className='col-6 menuDiv m-input-icon m-input-icon--right' style={{width: '46%'}}>
+                          <div className='col-6 menuDiv m-input-icon m-input-icon--right' >
                             <input id={'item-' + index} onClick={(e) => { this.selectIndex(e, 'item-' + index); this.handleToggle() }} type='text' className='form-control m-input menuInput' onChange={(e) => this.changeLabel(e)} value={item.title} />
                             { this.state.menuItems.length > 1 &&
                               <span className='m-input-icon__icon m-input-icon__icon--right' onClick={() => this.removeMenu(index)}>
@@ -1233,7 +1234,7 @@ class Menu extends React.Component {
                   { 
                     this.addMenuElement()
                   }
-                  <div className='col-8 menuDiv' style={{marginLeft: '-15px', width: '498px'}}>
+                  <div className='col-8 menuDiv' style={{marginLeft: '-15px', width: '470px'}}>
                     <input type='text' className='form-control m-input menuFix' value='Powered by KiboPush' readOnly />
                   </div>
                   <div className='col-12' style={{paddingTop: '30px', marginLeft: '-15px'}}>
