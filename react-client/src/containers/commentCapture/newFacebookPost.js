@@ -748,7 +748,7 @@ class FacebookPosts extends React.Component {
                             }
                             {
                               this.state.title === '' &&
-                              <label htmlFor='title' className='form-control-label'>Required</label>
+                              <label htmlFor='title' className='form-control-label'>*Required</label>
                             }
                           </div>
                       </div>
@@ -863,7 +863,7 @@ class FacebookPosts extends React.Component {
                                 className='form-control m-input m-input--solid'
                                 id='postTextArea' rows='3'
                                 placeholder={this.state.isVideo ? 'Describe your video here' : 'Please write your Facebook Post here that will be posted on your Facebook page...'}
-                                style={{height: '150px', resize: 'none'}}
+                                style={{height: '150px', resize: 'none', borderColor: (this.state.postText !== '' ||  this.state.attachments.length !==0 || this.state.cards.length !==0) ? '' : 'red' }} 
                                 value={this.state.postText}
                                 onChange={this.onFacebookPostChange} />
                               {
@@ -1044,7 +1044,7 @@ class FacebookPosts extends React.Component {
                         ? <div className='col-12 form-group m-form__group has-danger'>
                           <input
                             className='form-control form-control-danger m-input'
-                            style={{borderColor: this.state.text === '' ? 'red' : ''}}
+                            style={{borderColor: this.state.postUrl === '' ? 'red' : ''}}
                             id='postUrl'
                             value={this.state.postUrl}
                             onChange={(e) => {this.handlePostUrlChange(e)}}
