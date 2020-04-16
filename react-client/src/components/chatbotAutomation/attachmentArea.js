@@ -214,9 +214,9 @@ class AttachmentArea extends React.Component {
   }
 
   UNSAFE_componentWillReceiveProps (nextProps) {
-    if (nextProps.attachment) {
+    if (nextProps.attachment && Object.keys(nextProps.attachment).length > 0) {
       this.setState({
-        inputValue: nextProps.attachment.fileData ? (nextProps.attachment.fileData.url || '') : nextProps.attachment.cradData.url,
+        inputValue: nextProps.attachment.fileData ? (nextProps.attachment.fileData.url || '') : nextProps.attachment.cardData.url,
         attachment: nextProps.attachment.fileData || {},
         attachmentType: nextProps.attachment.type,
         buttons: nextProps.attachment.buttons,
