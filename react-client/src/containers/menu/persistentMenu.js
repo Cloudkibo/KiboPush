@@ -79,6 +79,7 @@ class Menu extends React.Component {
     this.handleFetch = this.handleFetch.bind(this)
     this.messageDisplay = this.messageDisplay.bind(this)
     this.addMenuElement = this.addMenuElement.bind(this)
+
     if (!this.props.currentMenuItem) {
       if (this.props.pages && this.props.pages.length > 0) {
         this.props.getIndexBypage(this.props.pages[0].pageId, this.handleIndexByPage)
@@ -109,11 +110,13 @@ class Menu extends React.Component {
     let element = []
     for (let j = 0; j < this.state.maxMainmenu; j++) {
      element.push(<div className='col-8 menuDiv' style={{marginLeft: '-15px'}}>
+
           <button className='addMenu'onClick={this.addMenu}>+ Add Menu </button>
           </div>)
     }
     return element
   }
+
   openVideoTutorial () {
     this.setState({
       openVideo: true

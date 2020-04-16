@@ -131,6 +131,8 @@ class SponsoredMessaging extends React.Component {
       statusValue = `Scheduled on ${date.toDateString()} at ${formatAMPM(date)}`
     } else if (status.toLowerCase() === 'failed') {
       statusValue = 'Failed'
+    } else if (status.toLowerCase() === 'with_issues') {
+      statusValue = 'With Issues'
     }
     return statusValue
   }
@@ -530,6 +532,7 @@ class SponsoredMessaging extends React.Component {
                           <option value='active'>Active</option>
                           <option value='rejected'>Rejected</option>
                           <option value='failed'>Failed</option>
+                          <option value='with_issues'>With Issues</option>
                         </select>
                       </div>
                     </div>
@@ -622,7 +625,7 @@ class SponsoredMessaging extends React.Component {
                                         Insights
                                     </button>
                                   }
-                                  {(sponsoredMessage.status === 'draft' || sponsoredMessage.status === 'scheduled' || sponsoredMessage.status === 'failed') &&
+                                  {(sponsoredMessage.status === 'draft' || sponsoredMessage.status === 'scheduled' || sponsoredMessage.status === 'failed' || sponsoredMessage.status.toLowerCase() === 'with_issues') &&
                                     <button className='btn btn-primary btn-sm' style={{margin: 2}} onClick={() => this.onEdit(sponsoredMessage)}>
                                       Edit
                                     </button>
@@ -632,7 +635,7 @@ class SponsoredMessaging extends React.Component {
                                       Delete
                                   </button>
                                   }
-                                  {sponsoredMessage.adSetId && sponsoredMessage.payload && sponsoredMessage.payload.length > 0 && (sponsoredMessage.status === 'draft' || sponsoredMessage.status === 'scheduled' || sponsoredMessage.status === 'failed') &&
+                                  {sponsoredMessage.adSetId && sponsoredMessage.payload && sponsoredMessage.payload.length > 0 && (sponsoredMessage.status === 'draft' || sponsoredMessage.status === 'scheduled' || sponsoredMessage.status === 'failed' || sponsoredMessage.status.toLowerCase() === 'with_issues') &&
                                     <button className='btn btn-primary btn-sm' style={{margin: 2}} onClick={() => this.openPublishModal(sponsoredMessage)}>
                                       {sponsoredMessage.status === 'scheduled' ? 'Publish Now' : 'Publish'}
                                     </button>
