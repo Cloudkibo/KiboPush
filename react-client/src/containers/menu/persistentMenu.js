@@ -5,15 +5,15 @@ import { loadMyPagesList } from '../../redux/actions/pages.actions'
 import { saveCurrentMenuItem, removeMenu, saveMenu, getIndexBypage } from '../../redux/actions/menu.actions'
 import { transformData, removeMenuPayload } from './utility'
 import { checkWhitelistedDomains } from '../../redux/actions/broadcast.actions'
-import { Link } from 'react-router-dom'
 import AlertContainer from 'react-alert'
 import { registerAction } from '../../utility/socketio'
-import { isWebURL, isWebViewUrl, deleteFiles, deleteFile, getFileIdsOfMenu, deleteInitialFiles } from './../../utility/utils'
+import { isWebURL, isWebViewUrl, deleteFiles, deleteFile, getFileIdsOfMenu, deleteInitialFiles, getHostName } from './../../utility/utils'
 import { Popover, PopoverHeader, PopoverBody } from 'reactstrap'
 import ViewScreen from './viewScreen'
 import { RingLoader } from 'halogenium'
 import YouTube from 'react-youtube'
 import AlertMessage from '../../components/alertMessages/alertMessage'
+import { fetchWhiteListedDomains } from '../../redux/actions/settings.actions'
 
 class Menu extends React.Component {
   constructor (props, context) {
@@ -36,9 +36,10 @@ class Menu extends React.Component {
       openVideo: false,
       newFiles: [],
       initialFiles: [],
+      errorMsg: '',
+      whitelistedDomains: [],
       maxMainmenu : 2
     }
-
     this.pageChange = this.pageChange.bind(this)
     this.selectPage = this.selectPage.bind(this)
     this.handleToggle = this.handleToggle.bind(this)
@@ -73,12 +74,22 @@ class Menu extends React.Component {
     this.saveMenuData = this.saveMenuData.bind(this)
     this.openVideoTutorial = this.openVideoTutorial.bind(this)
     this.removePayloadFiles = this.removePayloadFiles.bind(this)
+    this.goToSettings = this.goToSettings.bind(this)
+    this.handleFetch = this.handleFetch.bind(this)
     this.messageDisplay = this.messageDisplay.bind(this)
     this.addMenuElement = this.addMenuElement.bind(this)
+
     if (!this.props.currentMenuItem) {
       if (this.props.pages && this.props.pages.length > 0) {
         this.props.getIndexBypage(this.props.pages[0].pageId, this.handleIndexByPage)
+        props.fetchWhiteListedDomains(this.props.pages[0].pageId, this.handleFetch)
       }
+    }
+  }
+
+  handleFetch(resp) {
+    if (resp.status === 'success') {
+      this.setState({ whitelistedDomains: resp.payload })
     }
   }
 
@@ -103,6 +114,7 @@ class Menu extends React.Component {
     }
     return element
   }
+
   openVideoTutorial () {
     this.setState({
       openVideo: true
@@ -127,8 +139,10 @@ class Menu extends React.Component {
       action: function (data) {
         if (self.state.selectPage === '') {
           compProp.getIndexBypage(compProp.pages[0].pageId, self.handleIndexByPage)
+          compProp.fetchWhiteListedDomains(compProp.pages[0].pageId, this.handleFetch)
         } else {
           compProp.getIndexBypage(self.state.selectPage.pageId, self.handleIndexByPage)
+          compProp.fetchWhiteListedDomains(self.state.selectPage.pageId, this.handleFetch)
         }
       }
     })
@@ -191,12 +205,23 @@ class Menu extends React.Component {
     this.setState({openWebsite: false, disabledWebUrl: true, webUrl: ''})
   }
   changeWebviewUrl (e) {
-    if (isWebURL(this.state.webviewurl)) {
-      this.setState({disabledWebUrl: false})
-    } else {
-      this.setState({disabledWebUrl: true})
-    }
     this.setState({webviewurl: e.target.value})
+
+    let validDomain = false
+    for (let i = 0; i < this.state.whitelistedDomains.length; i++) {
+      let domain = this.state.whitelistedDomains[i]
+      if (getHostName(e.target.value) === getHostName(domain)) {
+        validDomain = true
+        break
+      }
+    }
+
+    if (validDomain) {
+      this.setState({disabledWebUrl: false, errorMsg: ''})
+    } else {
+      this.setState({disabledWebUrl: true, errorMsg: 'The given domain is not whitelisted. Please add it to whitelisted domains.' })
+    }
+
   }
   onChangeWebviewSize (event) {
     if (event.target.value !== -1) {
@@ -296,6 +321,7 @@ class Menu extends React.Component {
   }
   handleReset () {
     this.props.getIndexBypage(this.state.selectPage.pageId, this.handleIndexByPage)
+    this.props.fetchWhiteListedDomains(this.state.selectPage.pageId, this.handleFetch)
   }
   handleIndexByPage (res) {
     if (res.status === 'success' && res.payload && res.payload.length > 0) {
@@ -440,7 +466,8 @@ class Menu extends React.Component {
           webviewsize: menu.webview_height_ratio,
           openWebView: true,
           openWebsite: false,
-          webUrl: ''
+          webUrl: '',
+          errorMsg: ''
         })
       } else {
         this.setState({
@@ -451,7 +478,19 @@ class Menu extends React.Component {
           webviewsize: 'FULL'
         })
       }
-    } else if (menu.type === 'nested') {
+    } else {
+      this.setState({
+        webUrl: '',
+        openWebsite: false,
+        webviewurl: '',
+        openWebView: false,
+        webviewsize: 'FULL',
+        selectedRadio: '',
+        disabledWebUrl: false,
+        errorMsg: ''
+      })
+    }
+    if (menu.type === 'nested') {
       this.setState({
         selectedRadio: 'openSubMenu'
       })
@@ -459,11 +498,6 @@ class Menu extends React.Component {
       this.setState({
         selectedRadio: 'replyWithMessage',
         isEditMessage: true
-      })
-    } else {
-      this.setState({
-        selectedRadio: '',
-        webUrl: ''
       })
     }
     console.log('Selected Index', this.state.selectedIndex)
@@ -541,6 +575,7 @@ class Menu extends React.Component {
       var currentState = null
       this.props.saveCurrentMenuItem(currentState)
       this.props.getIndexBypage(page.pageId, this.handleIndexByPage)
+      this.props.fetchWhiteListedDomains(page.pageId, this.handleFetch)
     } else {
       this.setState({
         selectPage: {}
@@ -887,6 +922,13 @@ class Menu extends React.Component {
     }
   }
 
+  goToSettings () {
+    this.props.history.push({
+      pathname: '/settings',
+      state: {tab: 'whitelistDomains'}
+    })
+  }
+
   render () {
     var alertOptions = {
       offset: 14,
@@ -898,7 +940,7 @@ class Menu extends React.Component {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        { this.state.loading && 
+        { this.state.loading &&
         <div style={{ width: '100vw', height: '100vh', background: 'rgba(33, 37, 41, 0.6)', position: 'fixed', zIndex: '99999', top: '0px' }}>
             <div style={{ position: 'fixed', top: '50%', left: '50%', width: '30em', height: '18em', marginLeft: '-10em' }}
               className='align-center'>
@@ -915,7 +957,7 @@ class Menu extends React.Component {
                   <h5 className="modal-title" id="exampleModalLabel">
                     Menu Video Tutorial
 									</h5>
-                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" 
+                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal"
                   aria-label="Close"
                   onClick={() => {
                     this.setState({
@@ -1027,24 +1069,25 @@ class Menu extends React.Component {
                 {
                   this.state.openWebView &&
                   <div className='card'>
-                    <h7 className='card-header'>Open WebView <i style={{float: 'right', cursor: 'pointer'}} className='la la-close' onClick={this.closeWebview} /></h7>
+                    <h7 className='card-header'>Open WebView <i style={{float: 'right', cursor: 'pointer', marginTop: '10px'}} className='la la-close' onClick={this.closeWebview} /></h7>
                     <div style={{padding: '10px'}} className='card-block'>
                       <div>
-                        <Link to='/settings' state={{tab: 'whitelistDomains'}} style={{color: '#5867dd', cursor: 'pointer', fontSize: 'small'}}>Whitelist url domains to open in-app browser</Link>
+                        <button onClick={this.goToSettings} style={{color: '#5867dd', cursor: 'pointer', fontSize: 'small', border: 'none', background: 'none'}}>Whitelist url domains to open in-app browser</button>
                       </div>
                       <label className='form-label col-form-label' style={{textAlign: 'left'}}>Url</label>
                       <input type='text' value={this.state.webviewurl} className='form-control' onChange={this.changeWebviewUrl} placeholder='Enter link...' />
+                      <div style={{ marginBottom: '30px', color: 'red' }}>{this.state.errorMsg}</div>
                       <label className='form-label col-form-label' style={{textAlign: 'left'}}>WebView Size</label>
                       <select className='form-control m-input' value={this.state.webviewsize} onChange={this.onChangeWebviewSize}>
                         {
                           this.state.webviewsizes && this.state.webviewsizes.length > 0 && this.state.webviewsizes.map((size, i) => (
                             <option key={i} value={size} selected={size === this.state.webviewsize}>{size}</option>
                           ))
-                        }
+                      }
                       </select>
                     </div>
                   </div>
-                }
+              }
                 { (this.state.openWebsite || this.state.openWebView) &&
                 <div style={{marginTop: '10px'}}>
                   <button onClick={this.saveWebUrl} className='btn btn-success pull-right' disabled={(this.state.disabledWebUrl)}> Done </button>
@@ -1188,7 +1231,7 @@ class Menu extends React.Component {
                       )
                     })
                  }
-                  { 
+                  {
                     this.addMenuElement()
                   }
                   <div className='col-8 menuDiv' style={{marginLeft: '-15px', width: '498px'}}>
@@ -1239,7 +1282,8 @@ function mapDispatchToProps (dispatch) {
     saveMenu: saveMenu,
     getIndexBypage: getIndexBypage,
     removeMenu: removeMenu,
-    checkWhitelistedDomains: checkWhitelistedDomains
+    checkWhitelistedDomains: checkWhitelistedDomains,
+    fetchWhiteListedDomains: fetchWhiteListedDomains
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Menu)
