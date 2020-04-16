@@ -1178,13 +1178,11 @@ class Menu extends React.Component {
                         <div key={index}>
                           <div className='col-6 menuDiv m-input-icon m-input-icon--right' >
                             <input id={'item-' + index} onClick={(e) => { this.selectIndex(e, 'item-' + index); this.handleToggle() }} type='text' className='form-control m-input menuInput' onChange={(e) => this.changeLabel(e)} value={item.title}  style= {{width: '647px'}}/>
-                            { this.state.menuItems.length > 1 &&
                               <span className='m-input-icon__icon m-input-icon__icon--right' onClick={() => this.removeMenu(index)} style= {{left: '604px'}}>
                                 <span>
                                   <i className='fa fa-times-circle' />
                                 </span>
                               </span>
-                            }
                           </div>
                           {item.submenu.map((subItem, subindex) => {
                             return (

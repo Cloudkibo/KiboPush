@@ -37,7 +37,7 @@ class CreateMessage extends React.Component {
     this.editing = true
     this.props.history.push({
       pathname: `/menu`,
-      state: {action: 'replyWithMessage', initialFiles: this.props.location.state.realInitialFiles}
+      state: {action: 'replyWithMessage', initialFiles: this.props.location.state.realInitialFiles, maxMainmenu: this.props.location.state.maxMainmenu}
     })
     // this.props.history.push(`/pollResult/${poll._id}`)
   }
@@ -199,6 +199,7 @@ class CreateMessage extends React.Component {
     }
     let initialFiles = this.state.initialFiles.concat(newFiles)
     this.setState({newFiles: [], initialFiles})
+     this.gotoMenu ()
   }
 
   componentWillUnmount () {
