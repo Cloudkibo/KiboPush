@@ -36,9 +36,10 @@ class Menu extends React.Component {
       openVideo: false,
       newFiles: [],
       initialFiles: [],
+      maxMainmenu : 2,
       errorMsg: '',
       whitelistedDomains: [],
-      maxMainmenu : 2
+      maxMainMenuItems:2
     }
     this.pageChange = this.pageChange.bind(this)
     this.selectPage = this.selectPage.bind(this)
@@ -78,6 +79,8 @@ class Menu extends React.Component {
     this.handleFetch = this.handleFetch.bind(this)
     this.messageDisplay = this.messageDisplay.bind(this)
     this.addMenuElement = this.addMenuElement.bind(this)
+    this.goToSettings = this.goToSettings.bind(this)
+    this.handleFetch = this.handleFetch.bind(this)
 
     if (!this.props.currentMenuItem) {
       if (this.props.pages && this.props.pages.length > 0) {
@@ -108,11 +111,17 @@ class Menu extends React.Component {
   addMenuElement () {
     let element = []
     for (let j = 0; j < this.state.maxMainmenu; j++) {
-     element.push(<div className='col-8 menuDiv' style={{marginLeft: '-15px', width: '498px'}}>
+     element.push(<div className='col-8 menuDiv' style={{marginLeft: '-15px', width: '540px'}}>
           <button className='addMenu'onClick={this.addMenu}>+ Add Menu </button>
           </div>)
     }
     return element
+  }
+
+  handleFetch(resp) {
+    if (resp.status === 'success') {
+      this.setState({ whitelistedDomains: resp.payload })
+    }
   }
 
   openVideoTutorial () {
@@ -176,6 +185,7 @@ class Menu extends React.Component {
 
       this.setState({
         initialFiles: this.props.location.state.initialFiles,
+        maxMainmenu: this.props.location.state.maxMainmenu,
         newFiles: this.props.currentMenuItem.newFiles,
         menuItems: menuReturned,
         selectedIndex: this.props.currentMenuItem.clickedIndex
@@ -316,7 +326,7 @@ class Menu extends React.Component {
     }
     this.props.history.push({
       pathname: `/createMessage`,
-      state: {realInitialFiles: this.state.initialFiles, initialFiles: initialFiles, newFiles: this.state.newFiles}
+      state: {realInitialFiles: this.state.initialFiles, initialFiles: initialFiles, newFiles: this.state.newFiles, maxMainmenu: this.state.maxMainmenu}
     })
   }
   handleReset () {
@@ -326,7 +336,7 @@ class Menu extends React.Component {
   handleIndexByPage (res) {
     if (res.status === 'success' && res.payload && res.payload.length > 0) {
       if(res.payload[0].jsonStructure[0].type) {
-        let maxMainmenu = this.state.maxMainmenu - res.payload[0].jsonStructure.length
+        let maxMainmenu = this.state.maxMainMenuItems - res.payload[0].jsonStructure.length
       let initialFiles = getFileIdsOfMenu(res.payload[0].jsonStructure)
       this.setState({
         initialFiles,
@@ -341,7 +351,8 @@ class Menu extends React.Component {
     } else {
       this.setState({
         initialFiles : [],
-        menuItems: []
+        menuItems: [],
+        maxMainmenu:2
       })
     }
   } else {
@@ -387,7 +398,7 @@ class Menu extends React.Component {
     data.jsonStructure = tempItemMenus
     var currentState = null
     this.props.saveCurrentMenuItem(currentState)
-    this.setState({newFiles: [], initialFiles: [], maxMainmenu: 2})
+    this.setState({newFiles: [], initialFiles: []})
     this.props.removeMenu(data, this.handleReset, this.msg)
   }
 
@@ -882,7 +893,6 @@ class Menu extends React.Component {
           loading: true,
           newFiles: [],
           initialFiles: currentFiles,
-          maxMainmenu: 2
         })
         this.editing = true
         this.props.saveMenu(data, this.handleSaveMenu, this.msg)
@@ -1176,7 +1186,7 @@ class Menu extends React.Component {
                     this.state.menuItems.map((item, index) => {
                       return (
                         <div key={index}>
-                          <div className='col-6 menuDiv m-input-icon m-input-icon--right' style={{width: '46%'}}>
+                          <div className='col-6 menuDiv m-input-icon m-input-icon--right' >
                             <input id={'item-' + index} onClick={(e) => { this.selectIndex(e, 'item-' + index); this.handleToggle() }} type='text' className='form-control m-input menuInput' onChange={(e) => this.changeLabel(e)} value={item.title} />
                             { this.state.menuItems.length > 1 &&
                               <span className='m-input-icon__icon m-input-icon__icon--right' onClick={() => this.removeMenu(index)}>
@@ -1234,7 +1244,7 @@ class Menu extends React.Component {
                   {
                     this.addMenuElement()
                   }
-                  <div className='col-8 menuDiv' style={{marginLeft: '-15px', width: '498px'}}>
+                  <div className='col-8 menuDiv' style={{marginLeft: '-15px', width: '540px'}}>
                     <input type='text' className='form-control m-input menuFix' value='Powered by KiboPush' readOnly />
                   </div>
                   <div className='col-12' style={{paddingTop: '30px', marginLeft: '-15px'}}>
