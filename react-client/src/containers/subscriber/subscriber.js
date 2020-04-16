@@ -384,25 +384,37 @@ class Subscriber extends React.Component {
     this.setState({ hoverId: '' })
   }
 
-  profilePicError(e, subscriber) {
+  profilePicError(e, subscriber, i) {
     e.persist()
     console.log('profile picture error', subscriber)
     console.log('event object', e.target)
-    this.setDefaultPicture(e, subscriber)
+    this.setDefaultPicture(e, subscriber, i)
     this.props.updatePicture({ subscriber }, (newProfilePic) => {
       if (newProfilePic) {
-        e.target.src = newProfilePic
+        let subscribersData = this.state.subscribersData
+        let subscribersDataAll = this.state.subscribersDataAll
+        subscribersData[i].profilePic = newProfilePic
+        subscribersDataAll[i].profilePic = newProfilePic
+        this.setState({subscribersData, subscribersDataAll})
       } else {
-        this.setDefaultPicture(e, subscriber)
+        this.setDefaultPicture(e, subscriber, i)
       }
     })
   }
 
-  setDefaultPicture(e, subscriber) {
+  setDefaultPicture(e, subscriber, i) {
     if (subscriber.gender === 'female') {
-      e.target.src = 'https://i.pinimg.com/236x/50/28/b5/5028b59b7c35b9ea1d12496c0cfe9e4d.jpg'
+      let subscribersData = this.state.subscribersData
+      let subscribersDataAll = this.state.subscribersDataAll
+      subscribersData[i].profilePic = 'https://i.pinimg.com/236x/50/28/b5/5028b59b7c35b9ea1d12496c0cfe9e4d.jpg'
+      subscribersDataAll[i].profilePic = 'https://i.pinimg.com/236x/50/28/b5/5028b59b7c35b9ea1d12496c0cfe9e4d.jpg'
+      this.setState({subscribersData, subscribersDataAll})
     } else {
-      e.target.src = 'https://www.mastermindpromotion.com/wp-content/uploads/2015/02/facebook-default-no-profile-pic-300x300.jpg'
+      let subscribersData = this.state.subscribersData
+      let subscribersDataAll = this.state.subscribersDataAll
+      subscribersData[i].profilePic = 'https://www.mastermindpromotion.com/wp-content/uploads/2015/02/facebook-default-no-profile-pic-300x300.jpg'
+      subscribersDataAll[i].profilePic = 'https://www.mastermindpromotion.com/wp-content/uploads/2015/02/facebook-default-no-profile-pic-300x300.jpg'
+      this.setState({subscribersData, subscribersDataAll})
     }
   }
 
@@ -1186,13 +1198,25 @@ class Subscriber extends React.Component {
   }
 
   handleFilterByPage(e) {
-    this.setState({ filterPage: e.target.value })
     if (e.target.value !== '' && e.target.value !== 'all') {
-      this.setState({ filter: true, filterByPage: e.target.value, pageSelected: 0 }, () => {
+      this.setState({ 
+        filter: true, 
+        filterByPage: e.target.value, 
+        pageSelected: 0,
+        selectAllChecked: false,
+        showBulkActions: false,
+        filterPage: e.target.value
+      }, () => {
         this.loadSubscribers()
       })
     } else {
-      this.setState({ filterByPage: '', pageSelected: 0 }, () => {
+      this.setState({ 
+      filterPage: e.target.value,
+      filterByPage: '', 
+      pageSelected: 0, 
+      selectAllChecked: false,
+      showBulkActions: false 
+    }, () => {
         this.loadSubscribers()
       })
     }
@@ -1737,7 +1761,7 @@ class Subscriber extends React.Component {
                                           style={{ width: '100px', overflow: 'inherit' }}>
                                           <img alt='pic'
                                             src={(subscriber.profilePic) ? subscriber.profilePic : ''}
-                                            onError={(e) => this.profilePicError(e, subscriber)}
+                                            onError={(e) => this.profilePicError(e, subscriber, i)}
                                             className='m--img-rounded m--marginless m--img-centered' width='60' height='60'
                                           />
                                         </span>

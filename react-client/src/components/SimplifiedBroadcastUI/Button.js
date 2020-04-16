@@ -208,6 +208,7 @@ class Button extends React.Component {
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
+    console.log('nextProps.tempButton', nextProps.tempButton)
     let newState = {
       title: nextProps.tempButton
         ? nextProps.tempButton.title
