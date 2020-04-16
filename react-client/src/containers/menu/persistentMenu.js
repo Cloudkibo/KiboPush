@@ -38,7 +38,8 @@ class Menu extends React.Component {
       initialFiles: [],
       maxMainmenu : 2,
       errorMsg: '',
-      whitelistedDomains: []
+      whitelistedDomains: [],
+      maxMainMenuItems:2
     }
     this.pageChange = this.pageChange.bind(this)
     this.selectPage = this.selectPage.bind(this)
@@ -102,7 +103,7 @@ class Menu extends React.Component {
   addMenuElement () {
     let element = []
     for (let j = 0; j < this.state.maxMainmenu; j++) {
-     element.push(<div className='col-8 menuDiv' style={{marginLeft: '-15px', width: '470px'}}>
+     element.push(<div className='col-8 menuDiv' style={{marginLeft: '-15px', width: '540px'}}>
           <button className='addMenu'onClick={this.addMenu}>+ Add Menu </button>
           </div>)
     }
@@ -326,7 +327,7 @@ class Menu extends React.Component {
   handleIndexByPage (res) {
     if (res.status === 'success' && res.payload && res.payload.length > 0) {
       if(res.payload[0].jsonStructure[0].type) {
-        let maxMainmenu = this.state.maxMainmenu - res.payload[0].jsonStructure.length
+        let maxMainmenu = this.state.maxMainMenuItems - res.payload[0].jsonStructure.length
       let initialFiles = getFileIdsOfMenu(res.payload[0].jsonStructure)
       this.setState({
         initialFiles,
@@ -341,7 +342,8 @@ class Menu extends React.Component {
     } else {
       this.setState({
         initialFiles : [],
-        menuItems: []
+        menuItems: [],
+        maxMainmenu:2
       })
     }
   } else {
@@ -387,7 +389,7 @@ class Menu extends React.Component {
     data.jsonStructure = tempItemMenus
     var currentState = null
     this.props.saveCurrentMenuItem(currentState)
-    this.setState({newFiles: [], initialFiles: [], maxMainmenu: 2})
+    this.setState({newFiles: [], initialFiles: []})
     this.props.removeMenu(data, this.handleReset, this.msg)
   }
 
@@ -882,7 +884,6 @@ class Menu extends React.Component {
           loading: true,
           newFiles: [],
           initialFiles: currentFiles,
-          maxMainmenu: 2
         })
         this.editing = true
         this.props.saveMenu(data, this.handleSaveMenu, this.msg)
@@ -1234,7 +1235,7 @@ class Menu extends React.Component {
                   { 
                     this.addMenuElement()
                   }
-                  <div className='col-8 menuDiv' style={{marginLeft: '-15px', width: '470px'}}>
+                  <div className='col-8 menuDiv' style={{marginLeft: '-15px', width: '540px'}}>
                     <input type='text' className='form-control m-input menuFix' value='Powered by KiboPush' readOnly />
                   </div>
                   <div className='col-12' style={{paddingTop: '30px', marginLeft: '-15px'}}>
