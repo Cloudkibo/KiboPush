@@ -157,7 +157,6 @@ class Subscriber extends React.Component {
     this.handleBulkResponse = this.handleBulkResponse.bind(this)
     this.updateOption = this.updateOption.bind(this)
     this.loadsubscriberData = this.loadsubscriberData.bind(this)
-    this.setDefaultPicture = this.setDefaultPicture.bind(this)
     this.handleFilterBySource = this.handleFilterBySource.bind(this)
     this.loadSubscribers = this.loadSubscribers.bind(this)
     this.setSelectedField = this.setSelectedField.bind(this)
@@ -384,38 +383,10 @@ class Subscriber extends React.Component {
     this.setState({ hoverId: '' })
   }
 
-  profilePicError(e, subscriber, i) {
+  profilePicError(e, subscriber) {
     e.persist()
     console.log('profile picture error', subscriber)
-    console.log('event object', e.target)
-    this.setDefaultPicture(e, subscriber, i)
-    this.props.updatePicture({ subscriber }, (newProfilePic) => {
-      if (newProfilePic) {
-        let subscribersData = this.state.subscribersData
-        let subscribersDataAll = this.state.subscribersDataAll
-        subscribersData[i].profilePic = newProfilePic
-        subscribersDataAll[i].profilePic = newProfilePic
-        this.setState({subscribersData, subscribersDataAll})
-      } else {
-        this.setDefaultPicture(e, subscriber, i)
-      }
-    })
-  }
-
-  setDefaultPicture(e, subscriber, i) {
-    if (subscriber.gender === 'female') {
-      let subscribersData = this.state.subscribersData
-      let subscribersDataAll = this.state.subscribersDataAll
-      subscribersData[i].profilePic = 'https://i.pinimg.com/236x/50/28/b5/5028b59b7c35b9ea1d12496c0cfe9e4d.jpg'
-      subscribersDataAll[i].profilePic = 'https://i.pinimg.com/236x/50/28/b5/5028b59b7c35b9ea1d12496c0cfe9e4d.jpg'
-      this.setState({subscribersData, subscribersDataAll})
-    } else {
-      let subscribersData = this.state.subscribersData
-      let subscribersDataAll = this.state.subscribersDataAll
-      subscribersData[i].profilePic = 'https://www.mastermindpromotion.com/wp-content/uploads/2015/02/facebook-default-no-profile-pic-300x300.jpg'
-      subscribersDataAll[i].profilePic = 'https://www.mastermindpromotion.com/wp-content/uploads/2015/02/facebook-default-no-profile-pic-300x300.jpg'
-      this.setState({subscribersData, subscribersDataAll})
-    }
+    this.props.updatePicture({ subscriber })
   }
 
   getDate(datetime) {
