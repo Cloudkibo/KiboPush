@@ -206,7 +206,7 @@ class WelcomeMessage extends React.Component {
                                        <div className='m-widget4__img m-widget4__img--pic'>
                                          <img alt='pic' src={(page.pagePic) ? page.pagePic : ''} />
                                        </div>
-                                       <div className='m-widget4__info'>
+                                       <div className='m-widget4__info' style = {{paddingTop:'26px'}}>
                                          <span className='m-widget4__title'>
                                            {page.pageName}
                                          </span>
@@ -221,8 +221,8 @@ class WelcomeMessage extends React.Component {
                                                 Disabled
                                               </label>
                                              }
-                                            <div className='col-3'>
-                                              <span className='m-switch m-switch--outline m-switch--icon m-switch--success'>
+                                            <div className='col-3' style={{marginLeft: '15px'}}>
+                                              <span className={'m-switch m-switch--outline m-switch--icon m-switch--success'}>
                                                 <label>
                                                   <input type='checkbox' data-switch='true' checked={page.isWelcomeMessageEnabled} onChange={() => { this.handleEnableWelMessage(page._id, !page.isWelcomeMessageEnabled)}} />
                                                   <span></span>
