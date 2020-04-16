@@ -75,6 +75,8 @@ class Menu extends React.Component {
     this.saveMenuData = this.saveMenuData.bind(this)
     this.openVideoTutorial = this.openVideoTutorial.bind(this)
     this.removePayloadFiles = this.removePayloadFiles.bind(this)
+    this.goToSettings = this.goToSettings.bind(this)
+    this.handleFetch = this.handleFetch.bind(this)
     this.messageDisplay = this.messageDisplay.bind(this)
     this.addMenuElement = this.addMenuElement.bind(this)
     this.goToSettings = this.goToSettings.bind(this)
@@ -85,6 +87,12 @@ class Menu extends React.Component {
         this.props.getIndexBypage(this.props.pages[0].pageId, this.handleIndexByPage)
         props.fetchWhiteListedDomains(this.props.pages[0].pageId, this.handleFetch)
       }
+    }
+  }
+
+  handleFetch(resp) {
+    if (resp.status === 'success') {
+      this.setState({ whitelistedDomains: resp.payload })
     }
   }
 
@@ -109,6 +117,7 @@ class Menu extends React.Component {
     }
     return element
   }
+
   handleFetch(resp) {
     if (resp.status === 'success') {
       this.setState({ whitelistedDomains: resp.payload })
@@ -1232,7 +1241,7 @@ class Menu extends React.Component {
                       )
                     })
                  }
-                  { 
+                  {
                     this.addMenuElement()
                   }
                   <div className='col-8 menuDiv' style={{marginLeft: '-15px', width: '540px'}}>
