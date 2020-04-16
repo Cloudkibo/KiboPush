@@ -109,7 +109,7 @@ class Menu extends React.Component {
   addMenuElement () {
     let element = []
     for (let j = 0; j < this.state.maxMainmenu; j++) {
-     element.push(<div className='col-8 menuDiv' style={{marginLeft: '-15px', width: '53.3%'}}>
+     element.push(<div className='col-8 menuDiv' style={{marginLeft: '-15px', width: '54%'}}>
           <button className='addMenu'onClick={this.addMenu}>+ Add Menu </button>
           </div>)
     }
