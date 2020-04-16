@@ -1186,13 +1186,25 @@ class Subscriber extends React.Component {
   }
 
   handleFilterByPage(e) {
-    this.setState({ filterPage: e.target.value })
     if (e.target.value !== '' && e.target.value !== 'all') {
-      this.setState({ filter: true, filterByPage: e.target.value, pageSelected: 0 }, () => {
+      this.setState({ 
+        filter: true, 
+        filterByPage: e.target.value, 
+        pageSelected: 0,
+        selectAllChecked: false,
+        showBulkActions: false,
+        filterPage: e.target.value
+      }, () => {
         this.loadSubscribers()
       })
     } else {
-      this.setState({ filterByPage: '', pageSelected: 0 }, () => {
+      this.setState({ 
+      filterPage: e.target.value,
+      filterByPage: '', 
+      pageSelected: 0, 
+      selectAllChecked: false,
+      showBulkActions: false 
+    }, () => {
         this.loadSubscribers()
       })
     }
