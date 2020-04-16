@@ -107,7 +107,7 @@ class AddChannel extends React.Component {
       }
       if (!incorrectUrl) {
         if (this.state.facebookSubscriptionUrl.substring(this.state.facebookSubscriptionUrl.length - 1) === '/') {
-          this.state.facebookSubscriptionUrl = this.state.facebookSubscriptionUrl.substring(0, (this.state.facebookSubscriptionUrl.length - 1))
+          this.setState({facebookSubscriptionUrl: this.state.facebookSubscriptionUrl.substring(0, (this.state.facebookSubscriptionUrl.length - 1))})
         }
         var usernameFacebook = this.state.facebookSubscriptionUrl.substr(this.state.facebookSubscriptionUrl.lastIndexOf('/') + 1)
         if (!testUserName(usernameFacebook)) {
@@ -123,7 +123,7 @@ class AddChannel extends React.Component {
       }
       if (!incorrectUrl) {
         if (this.state.twitterSubscriptionUrl.substring(this.state.twitterSubscriptionUrl.length - 1) === '/') {
-          this.state.twitterSubscriptionUrl = this.state.twitterSubscriptionUrl.substring(0, (this.state.twitterSubscriptionUrl.length - 1))
+          this.setState({twitterSubscriptionUrl: this.state.twitterSubscriptionUrl.substring(0, (this.state.twitterSubscriptionUrl.length - 1))})
         }
         var userNameTwitter = this.state.twitterSubscriptionUrl.substr(this.state.twitterSubscriptionUrl.lastIndexOf('/') + 1)
         if (!testUserName(userNameTwitter)) {
