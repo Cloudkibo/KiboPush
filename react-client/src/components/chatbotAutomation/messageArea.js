@@ -6,6 +6,7 @@ import TEXTAREA from './textArea'
 import ATTACHMENTAREA from './attachmentArea'
 import MOREOPTIONS from './moreOptions'
 import MODAL from '../extras/modal'
+import TRIGGERAREA from './triggerArea'
 
 const MessengerPlugin = require('react-messenger-plugin').default
 
@@ -13,6 +14,7 @@ class MessageArea extends React.Component {
   constructor(props, context) {
     super(props, context)
     this.state = {
+      triggers: '',
       text: '',
       attachment: {},
       quickReplies: [],
@@ -27,6 +29,8 @@ class MessageArea extends React.Component {
     this.getTestModalContent = this.getTestModalContent.bind(this)
     this.onPublish = this.onPublish.bind(this)
     this.onDisable = this.onDisable.bind(this)
+    this.onDelete = this.onDelete.bind(this)
+    this.afterDelete = this.afterDelete.bind(this)
   }
 
   componentDidMount () {
@@ -40,7 +44,7 @@ class MessageArea extends React.Component {
       const textComponent = block.payload.find((item) => item.componentType === 'text')
       const attachmentComponent = block.payload.find((item) => item.componentType !== 'text')
       let attachment = {}
-      if (attachmentComponent.componentType) {
+      if (attachmentComponent) {
         switch (attachmentComponent.componentType) {
           case 'media':
             attachment = {
@@ -65,9 +69,14 @@ class MessageArea extends React.Component {
             }
         }
       }
-      this.setState({text: textComponent.text, attachment, canTest: true})
+      this.setState({
+        text: textComponent.text,
+        attachment,
+        canTest: true,
+        triggers: this.props.chatbot.startingBlockId === block._id ? this.props.chatbot.triggers : ''
+      })
     } else {
-      this.setState({text: '', attachment: {}, canTest: false})
+      this.setState({text: '', attachment: {}, canTest: false, triggers: ''})
     }
   }
 
@@ -115,6 +124,7 @@ class MessageArea extends React.Component {
       callback()
     } else {
       const data = {
+        triggers: this.state.triggers ? this.state.triggers : undefined,
         uniqueId: `${this.props.block.uniqueId}`,
         title: this.props.block.title,
         chatbotId: this.props.chatbot._id,
@@ -165,6 +175,18 @@ class MessageArea extends React.Component {
     this.props.changeActiveStatus(data, callback)
   }
 
+  onDelete () {
+    this.props.deleteMessageBlock(this.props.block._id, this.afterDelete)
+  }
+
+  afterDelete (res) {
+    if (res.status === 'success') {
+      this.props.alertMsg.success('Message block deleted successfully')
+    } else {
+      this.props.alertMsg.error('Failed to delete message block')
+    }
+  }
+
   UNSAFE_componentWillReceiveProps (nextProps) {
     if (nextProps.block) {
       this.setStateData(nextProps.block)
@@ -178,8 +200,8 @@ class MessageArea extends React.Component {
           <div style={{height: '80vh', position: 'relative', padding: '15px'}} className='m-portlet__body'>
             <HEADER
               title={this.props.block.title}
-              showDelete={false}
-              onDelete={() => {}}
+              showDelete={this.props.block._id && (this.props.chatbot.startingBlockId !== this.props.block._id)}
+              onDelete={this.onDelete}
               onTest={this.showTestModal}
               canTest={this.state.canTest}
               canPublish={this.state.canTest}
@@ -189,6 +211,17 @@ class MessageArea extends React.Component {
               alertMsg={this.props.alertMsg}
             />
             <div className='m--space-30' />
+            {
+              this.props.chatbot.startingBlockId === this.props.block._id &&
+              <TRIGGERAREA
+                triggers={this.state.triggers}
+                updateParentState={this.updateState}
+              />
+            }
+            {
+              this.props.chatbot.startingBlockId === this.props.block._id &&
+              <div className='m--space-10' />
+            }
             <TEXTAREA
               text={this.state.text}
               updateParentState={this.updateState}
@@ -241,7 +274,8 @@ MessageArea.propTypes = {
   'blocks': PropTypes.array.isRequired,
   'handleMessageBlock': PropTypes.func.isRequired,
   'fbAppId': PropTypes.string.isRequired,
-  'changeActiveStatus': PropTypes.func.isRequired
+  'changeActiveStatus': PropTypes.func.isRequired,
+  'deleteMessageBlock': PropTypes.func.isRequired
 }
 
 export default MessageArea

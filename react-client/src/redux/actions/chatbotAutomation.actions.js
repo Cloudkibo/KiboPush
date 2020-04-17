@@ -80,9 +80,19 @@ export function handleMessageBlock (data, callback) {
 
 export function changeActiveStatus (data, callback) {
   return (dispatch) => {
-    callApi('chatbots', 'PUT', data)
+    callApi('chatbots', 'put', data)
       .then(res => {
         console.log('response from changeActiveStatus', res)
+        callback(res)
+      })
+  }
+}
+
+export function deleteMessageBlock (id, callback) {
+  return (dispatch) => {
+    callApi(`messageBlock/${id}`, 'delete')
+      .then(res => {
+        console.log('response from deleteMessageBlock', res)
         callback(res)
       })
   }

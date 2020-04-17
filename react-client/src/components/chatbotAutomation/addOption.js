@@ -6,17 +6,23 @@ class AddOption extends React.Component {
     super(props, context)
     this.state = {
       title: props.title,
-      blockId: props.blockId
+      blockId: props.blockId,
+      selectedRadio: 'create'
     }
     this.onTitleChange = this.onTitleChange.bind(this)
     this.onBlockChange = this.onBlockChange.bind(this)
     this.onSave = this.onSave.bind(this)
+    this.onRadioClick = this.onRadioClick.bind(this)
   }
 
   onTitleChange (e) {
     if (e.target.value.length <= 20) {
       this.setState({title: e.target.value})
     }
+  }
+
+  onRadioClick (e) {
+    this.setState({selectedRadio: e.target.value})
   }
 
   onBlockChange (e) {
@@ -39,7 +45,7 @@ class AddOption extends React.Component {
         <i onClick={this.props.onCancel} style={{cursor: 'pointer'}} className='la la-close pull-right' />
         <div style={{paddingTop: '10px', overflow: 'hidden'}}>
           <div className="form-group m-form__group">
-            <span>Title:</span>
+            <label>Title:</label>
   					<input
               type="text"
               className="form-control m-input"
@@ -50,19 +56,46 @@ class AddOption extends React.Component {
           </div>
           <div className='m--space-10' />
           <div className="form-group m-form__group">
-            <span>Trigger block:</span>
-            <select
-              className="form-control m-input"
-              value={this.state.blockId}
-              onChange={this.onBlockChange}
-            >
-              <option value='' disabled>Select a block...</option>
-              {
-                this.props.blocks.map((block) => (
-                  <option key={block._id} value={block._id}>{block.title}</option>
-                ))
-              }
-            </select>
+            <label>Action:</label>
+            <div className="m-radio-list">
+              <label className="m-radio m-radio--bold m-radio--state-brand">
+                <input
+                  type="radio"
+                  onClick={this.onRadioClick}
+                  onChange={() => {}}
+                  value='create'
+                  checked={this.state.selectedRadio === 'create'}
+                />
+                  Create new block
+                <span />
+              </label>
+              <label className="m-radio m-radio--bold m-radio--state-brand">
+                <input
+                  type="radio"
+                  onClick={this.onRadioClick}
+                  onChange={() => {}}
+                  value='link'
+                  checked={this.state.selectedRadio === 'link'}
+                />
+                  Link existing block
+                <span />
+              </label>
+            </div>
+            {
+              this.state.selectedRadio === 'link' &&
+              <select
+                className="form-control m-input"
+                value={this.state.blockId}
+                onChange={this.onBlockChange}
+              >
+                <option value='' disabled>Select a block...</option>
+                {
+                  this.props.blocks.map((block) => (
+                    <option key={block._id} value={block._id}>{block.title}</option>
+                  ))
+                }
+              </select>
+            }
           </div>
             {
               this.props.showRemove &&
