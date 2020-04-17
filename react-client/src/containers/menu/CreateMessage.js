@@ -199,6 +199,7 @@ class CreateMessage extends React.Component {
     }
     let initialFiles = this.state.initialFiles.concat(newFiles)
     this.setState({newFiles: [], initialFiles})
+     this.gotoMenu ()
   }
 
   componentWillUnmount () {

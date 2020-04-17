@@ -87,6 +87,15 @@ class Ad extends React.Component {
   				</div>
         </div>
         }
+        {this.props.sponsoredMessage.status.toLowerCase() === 'with_issues' && 
+        this.props.sponsoredMessage.statusFbPayload &&
+        <div>
+          <br />
+          <div className='alert alert-danger' role='alert'>
+            { this.props.sponsoredMessage.statusFbPayload.error_message ? this.props.sponsoredMessage.statusFbPayload.error_message : 'Some unknown error occurred in your ad accounts. Please check on Facebook Ads Manager.'}
+  				</div>
+        </div>
+        }
         <br />
           <span style={{fontWeight: 'normal', marginLeft: '20px'}}>Ad Name:</span>
           <input type='text' className='form-control m-input' placeholder='Enter Ad Name...' onChange={this.changeAdName} value={this.state.adName} style={{borderRadius: '20px', width: '30%', display: 'inline-block', marginLeft: '15px'}} />
