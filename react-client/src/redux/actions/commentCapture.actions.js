@@ -191,14 +191,13 @@ export function fetchCurrentPostsAnalytics (postId) {
     })
   }
 }
-export function deletePost (id, msg) {
+export function deletePost (id, msg, fetchAllPost) {
   console.log('Actions for deleting facebook Post')
   return (dispatch) => {
     callApi(`post/delete/${id}`, 'delete').then(res => {
       if (res.status === 'success') {
-        var data = {last_id: 'none',number_of_records: 10,first_page: 'first',search_value: '',type_value: '',startDate: '',endDate: ''}
         msg.success('Post has been deleted')
-        dispatch(fetchAllPosts(data))
+        fetchAllPost()
         dispatch(fetchPostsAnalytics(res.payload))
       } else {
         msg.error('Error in deleting post')
