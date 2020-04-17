@@ -6,7 +6,8 @@ import {
   uploadAttachment,
   handleAttachment,
   handleMessageBlock,
-  changeActiveStatus
+  changeActiveStatus,
+  deleteMessageBlock
 } from '../../redux/actions/chatbotAutomation.actions'
 import AlertContainer from 'react-alert'
 import PROGRESS from '../../components/chatbotAutomation/progress'
@@ -48,16 +49,10 @@ class ConfigureChatbot extends React.Component {
   }
 
   preparePayload (data) {
-    let blocks = []
+    let blocks = data
     let sidebarItems = []
     if (data.length > 0) {
       for (let i = 0; i < data.length; i++) {
-        blocks.push({
-          title: data[i].title,
-          payload: data[i].payload,
-          uniqueId: data[i].uniqueId,
-          triggers: this.state.chatbot.startingBlockId === data[i]._id ? this.state.chatbot.triggers : undefined
-        })
         sidebarItems.push({
           title: data[i].title,
           id: data[i].uniqueId,
@@ -153,6 +148,7 @@ class ConfigureChatbot extends React.Component {
                 handleMessageBlock={this.props.handleMessageBlock}
                 fbAppId={this.props.fbAppId}
                 changeActiveStatus={this.props.changeActiveStatus}
+                deleteMessageBlock={this.props.deleteMessageBlock}
               />
             </div>
             <PROGRESS progress={`${this.state.progress}%`} />
@@ -175,7 +171,8 @@ function mapDispatchToProps (dispatch) {
     uploadAttachment,
     handleAttachment,
     handleMessageBlock,
-    changeActiveStatus
+    changeActiveStatus,
+    deleteMessageBlock
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(ConfigureChatbot)
