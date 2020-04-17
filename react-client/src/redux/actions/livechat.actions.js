@@ -8,6 +8,15 @@ import { clearCustomFieldValues } from '../../redux/actions/customFields.actions
 
 export const API_URL = '/api'
 
+export function updateSessionProfilePicture (subscriber, profilePic) {
+  console.log('updateActiveSessionPicture called')
+  return {
+    type: ActionTypes.UPDATE_SESSION_PROFILE_PICTURE,
+    subscriber,
+    profilePic
+  }
+}
+
 export function clearUserChat () {
   console.log('clearUserChat called')
   return {
