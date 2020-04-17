@@ -6,8 +6,9 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import AlertContainer from 'react-alert'
-import { isWebURL, isWebViewUrl, getHostName } from './../../utility/utils'
+import { isWebURL, isWebViewUrl } from './../../utility/utils'
 import { saveWhiteListDomains, fetchWhiteListedDomains, deleteDomain } from '../../redux/actions/settings.actions'
+import URL from 'url'
 
 class WhiteListDomains extends React.Component {
   constructor (props, context) {
@@ -99,10 +100,10 @@ class WhiteListDomains extends React.Component {
   }
   saveDomain () {
     let domains = this.state.domains
+    console.log('entered domain', URL.parse(this.state.domainText))
     for (var i = 0; i < domains.length; i++) {
-      console.log(getHostName(domains[i]))
-      console.log(getHostName(this.state.domainText))
-       if (getHostName(domains[i]) === getHostName(this.state.domainText)) {
+      console.log('domains', URL.parse(domains[i]))
+       if (URL.parse(domains[i]).href === URL.parse(this.state.domainText).href) {
          this.msg.error('Domain is already whitelisted')
          return
        }

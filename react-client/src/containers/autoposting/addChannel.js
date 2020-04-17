@@ -20,12 +20,21 @@ class AddChannel extends React.Component {
       errorMessage: '',
       type: '',
       selectedPages: [],
-      defaultPages: []
+      defaultPages: [],
+      facebookSubscriptionUrl: '',
+      twitterSubscriptionUrl: '',
+      rssSubscriptionUrl: '',
+      wordpressSubscriptionUrl: ''
     }
     this.onSelectItem = this.onSelectItem.bind(this)
     this.createAutoposting = this.createAutoposting.bind(this)
     this.handleCreateAutopostingResponse = this.handleCreateAutopostingResponse.bind(this)
     this.initializePageSelect = this.initializePageSelect.bind(this)
+    this.closeAddFeedModal = this.closeAddFeedModal.bind(this)
+    this.handleFacebookSubscriptionUrl = this.handleFacebookSubscriptionUrl.bind(this)
+    this.handleTwitterSubscriptionUrl = this.handleTwitterSubscriptionUrl.bind(this)
+    this.handleRssSubscriptionUrl = this.handleRssSubscriptionUrl.bind(this)
+    this.handleWordpressSubscriptionUrl = this.handleWordpressSubscriptionUrl.bind(this)
   }
   componentDidMount () {
     let options = []
@@ -64,6 +73,23 @@ class AddChannel extends React.Component {
       }
     })
   }
+
+  handleFacebookSubscriptionUrl (e) {
+    this.setState({facebookSubscriptionUrl: e.target.value})
+  }
+
+  handleTwitterSubscriptionUrl (e) {
+    this.setState({twitterSubscriptionUrl: e.target.value})
+  }
+
+  handleRssSubscriptionUrl (e) {
+    this.setState({rssSubscriptionUrl: e.target.value})
+  }
+
+  handleWordpressSubscriptionUrl (e) {
+    this.setState({wordpressSubscriptionUrl: e.target.value})
+  }
+
   createAutoposting (type) {
     var autopostingData = {}
     var isWebUrl
@@ -73,52 +99,52 @@ class AddChannel extends React.Component {
       type: type
     })
     if (type === 'facebook') {
-      isWebUrl = isWebURL(this.facebookSubscriptionUrl.value)
-      isWebViewURL = isWebViewUrl(this.facebookSubscriptionUrl.value)
-      var isFacebookPage = isFacebookPageUrl(this.facebookSubscriptionUrl.value)
+      isWebUrl = isWebURL(this.state.facebookSubscriptionUrl)
+      isWebViewURL = isWebViewUrl(this.state.facebookSubscriptionUrl)
+      var isFacebookPage = isFacebookPageUrl(this.state.facebookSubscriptionUrl)
       if (!isWebUrl || !isFacebookPage || !isWebViewURL) {
         incorrectUrl = true
       }
       if (!incorrectUrl) {
-        if (this.facebookSubscriptionUrl.value.substring(this.facebookSubscriptionUrl.value.length - 1) === '/') {
-          this.facebookSubscriptionUrl.value = this.facebookSubscriptionUrl.value.substring(0, (this.facebookSubscriptionUrl.value.length - 1))
+        if (this.state.facebookSubscriptionUrl.substring(this.state.facebookSubscriptionUrl.length - 1) === '/') {
+          this.setState({facebookSubscriptionUrl: this.state.facebookSubscriptionUrl.substring(0, (this.state.facebookSubscriptionUrl.length - 1))})
         }
-        var usernameFacebook = this.facebookSubscriptionUrl.value.substr(this.facebookSubscriptionUrl.value.lastIndexOf('/') + 1)
+        var usernameFacebook = this.state.facebookSubscriptionUrl.substr(this.state.facebookSubscriptionUrl.lastIndexOf('/') + 1)
         if (!testUserName(usernameFacebook)) {
           incorrectUrl = true
         }
       }
     } else if (type === 'twitter') {
-      isWebUrl = isWebURL(this.twitterSubscriptionUrl.value)
-      isWebViewURL = isWebViewUrl(this.twitterSubscriptionUrl.value)
-      var isTwitterPage = isTwitterUrl(this.twitterSubscriptionUrl.value)
+      isWebUrl = isWebURL(this.state.twitterSubscriptionUrl)
+      isWebViewURL = isWebViewUrl(this.state.twitterSubscriptionUrl)
+      var isTwitterPage = isTwitterUrl(this.state.twitterSubscriptionUrl)
       if (!isWebUrl || !isTwitterPage || !isWebViewURL) {
         incorrectUrl = true
       }
       if (!incorrectUrl) {
-        if (this.twitterSubscriptionUrl.value.substring(this.twitterSubscriptionUrl.value.length - 1) === '/') {
-          this.twitterSubscriptionUrl.value = this.twitterSubscriptionUrl.value.substring(0, (this.twitterSubscriptionUrl.value.length - 1))
+        if (this.state.twitterSubscriptionUrl.substring(this.state.twitterSubscriptionUrl.length - 1) === '/') {
+          this.setState({twitterSubscriptionUrl: this.state.twitterSubscriptionUrl.substring(0, (this.state.twitterSubscriptionUrl.length - 1))})
         }
-        var userNameTwitter = this.twitterSubscriptionUrl.value.substr(this.twitterSubscriptionUrl.value.lastIndexOf('/') + 1)
+        var userNameTwitter = this.state.twitterSubscriptionUrl.substr(this.state.twitterSubscriptionUrl.lastIndexOf('/') + 1)
         if (!testUserName(userNameTwitter)) {
           incorrectUrl = true
         }
       }
     } else if (type === 'rss') {
-      isWebUrl = isWebURL(this.rssSubscriptionUrl.value)
-      isWebViewURL = isWebViewUrl(this.rssSubscriptionUrl.value)
-      var RssURL = isRssUrl(this.rssSubscriptionUrl.value)
+      isWebUrl = isWebURL(this.state.rssSubscriptionUrl)
+      isWebViewURL = isWebViewUrl(this.state.rssSubscriptionUrl)
+      var RssURL = isRssUrl(this.state.rssSubscriptionUrl)
       if (!isWebUrl || !isWebViewURL || !RssURL) {
         incorrectUrl = true
       }
     } else if (type === 'wordpress') {
-      isWebUrl = isWebURL(this.wordpressSubscriptionUrl.value)
-      isWebViewURL = isWebViewUrl(this.wordpressSubscriptionUrl.value)
+      isWebUrl = isWebURL(this.state.wordpressSubscriptionUrl)
+      isWebViewURL = isWebViewUrl(this.state.wordpressSubscriptionUrl)
       if (!isWebUrl || !isWebViewURL) {
         incorrectUrl = true
       }
       if (!incorrectUrl) {
-        if (this.wordpressSubscriptionUrl.value.includes('facebook.com') || this.wordpressSubscriptionUrl.value.includes('twitter.com')) {
+        if (this.state.wordpressSubscriptionUrl.includes('facebook.com') || this.state.wordpressSubscriptionUrl.includes('twitter.com')) {
           incorrectUrl = true
         }
       }
@@ -126,7 +152,7 @@ class AddChannel extends React.Component {
     switch (type) {
       case 'facebook':
         autopostingData = {
-          subscriptionUrl: this.facebookSubscriptionUrl.value,
+          subscriptionUrl: this.state.facebookSubscriptionUrl,
           subscriptionType: type,
           accountTitle: 'Facebook Page',
           isSegmented: true,
@@ -137,7 +163,7 @@ class AddChannel extends React.Component {
         break
       case 'twitter':
         autopostingData = {
-          subscriptionUrl: this.twitterSubscriptionUrl.value,
+          subscriptionUrl: this.state.twitterSubscriptionUrl,
           subscriptionType: type,
           accountTitle: 'Twitter Account',
           isSegmented: true,
@@ -148,7 +174,7 @@ class AddChannel extends React.Component {
         break
       case 'rss':
         autopostingData = {
-          subscriptionUrl: this.rssSubscriptionUrl.value,
+          subscriptionUrl: this.state.rssSubscriptionUrl,
           subscriptionType: type,
           accountTitle: 'RSS Feed',
           isSegmented: true,
@@ -159,7 +185,7 @@ class AddChannel extends React.Component {
         break
       case 'wordpress':
         autopostingData = {
-          subscriptionUrl: this.wordpressSubscriptionUrl.value,
+          subscriptionUrl: this.state.wordpressSubscriptionUrl,
           subscriptionType: type,
           accountTitle: 'WordPress Channel',
           isSegmented: true,
@@ -175,7 +201,6 @@ class AddChannel extends React.Component {
       this.setState({
         errorMessage: ''
       })
-      this.props.addFeedClose.click()
       this.props.createautoposting(autopostingData, this.handleCreateAutopostingResponse)
     } else {
       var errorMsg = ''
@@ -192,11 +217,11 @@ class AddChannel extends React.Component {
 
   handleCreateAutopostingResponse (response) {
     if (response.status === 'success') {
+      this.refs.addFeedClose.click()
       this.props.msg.success('Changes saved successfully!')
     } else {
       if (typeof response.description === 'string' || response.description instanceof String) {
         this.props.msg.error(response.description)
-
       }
       else {
         this.props.msg.error('Failed to create autoposting')
@@ -244,7 +269,7 @@ class AddChannel extends React.Component {
           rssForeGroundColor: 'white',
           wordPressForeGroundColor: 'black'
         })*/
-        this.props.addFeedClose.click()
+        this.refs.addFeedClose.click()
         this.props.gotoRssIntegration()
         break
       case 'wordpress':
@@ -264,6 +289,28 @@ class AddChannel extends React.Component {
     }
   }
 
+  closeAddFeedModal () {    
+    /* eslint-disable */
+    $('#selectPage').val([]).trigger('change') 
+    /* eslint-enable */
+    this.setState({
+      facebookSubscriptionUrl: '',
+      twitterSubscriptionUrl: '',
+      wordpressSubscriptionUrl: '',
+      rssSubscriptionUrl: '',
+      selectedPages: [],
+      type: '',
+      facebookColor: '#716aca',
+      twitterColor: '',
+      rssColor: '',
+      wordPressColor: '',
+      facebookForeGroundColor: 'white',
+      twitterForeGroundColor: 'black',
+      rssForeGroundColor: 'black',
+      wordPressForeGroundColor: 'black'
+    })
+  }
+
   render () {
     let facebookColor = this.state.facebookColor
     let twitterColor = this.state.twitterColor
@@ -274,106 +321,124 @@ class AddChannel extends React.Component {
     let wordPressForeGroundColor = this.state.wordPressForeGroundColor
     let rssForeGroundColor = this.state.rssForeGroundColor
     return (
-      <div>
-        <h3>Connect Feed</h3>
-        <div style={{width: '100%', textAlign: 'center'}}>
-          <div style={{display: 'inline-block', padding: '5px'}}>
-            <button onClick={() => this.onSelectItem('facebook')} style={{backgroundColor: facebookColor, color: facebookForeGroundColor}} className='btn'>
-              <i className='fa fa-facebook fa-2x' aria-hidden='true' />
-              <br />Facebook
-            </button>
-          </div>
-          <div style={{display: 'inline-block', padding: '5px'}}>
-            <button onClick={() => this.onSelectItem('twitter')} style={{backgroundColor: twitterColor, color: twitterForeGroundColor}} className='btn'>
-              <i className='fa fa-twitter fa-2x' aria-hidden='true' />
-              <br />Twitter
-            </button>
-          </div>
-          { this.props.module !== 'wizard' &&
-          <div style={{display: 'inline-block', padding: '5px'}}>
-            <button onClick={() => this.onSelectItem('rss')} style={{backgroundColor: rssColor, color: rssForeGroundColor}} className='btn'>
-              <i className='fa fa-feed fa-2x' aria-hidden='true' />
-              <br />RSS Feed
-            </button>
-          </div>
-          }
-          <div style={{display: 'inline-block', padding: '5px'}}>
-            <button onClick={() => this.onSelectItem('wordpress')} style={{backgroundColor: wordPressColor, color: wordPressForeGroundColor}} className='btn'>
-              <i className='fa fa-wordpress fa-2x' aria-hidden='true' />
-              <br />WordPress
-            </button>
-          </div>
-          <div style={{textAlign: 'left', marginTop: '15px', marginBottom: '10px'}}>
-            <label>Select Page</label>
-            <div>
-              <select id='selectPage' />
+      <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="addFeed" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+          <div className="modal-content">
+            <div style={{ display: 'block' }} className="modal-header">
+              <h5 className="modal-title" id="exampleModalLabel">
+                Add Feed
+              </h5>
+              <button onClick={this.closeAddFeedModal} ref='addFeedClose' style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">
+                  &times;
+                </span>
+              </button>
+            </div>
+            <div style={{ color: 'black' }} className="modal-body">
+              <div>
+                <h3>Connect Feed</h3>
+                <div style={{width: '100%', textAlign: 'center'}}>
+                  <div style={{display: 'inline-block', padding: '5px'}}>
+                    <button onClick={() => this.onSelectItem('facebook')} style={{backgroundColor: facebookColor, color: facebookForeGroundColor}} className='btn'>
+                      <i className='fa fa-facebook fa-2x' aria-hidden='true' />
+                      <br />Facebook
+                    </button>
+                  </div>
+                  <div style={{display: 'inline-block', padding: '5px'}}>
+                    <button onClick={() => this.onSelectItem('twitter')} style={{backgroundColor: twitterColor, color: twitterForeGroundColor}} className='btn'>
+                      <i className='fa fa-twitter fa-2x' aria-hidden='true' />
+                      <br />Twitter
+                    </button>
+                  </div>
+                  { this.props.module !== 'wizard' &&
+                  <div style={{display: 'inline-block', padding: '5px'}}>
+                    <button onClick={() => this.onSelectItem('rss')} style={{backgroundColor: rssColor, color: rssForeGroundColor}} className='btn'>
+                      <i className='fa fa-feed fa-2x' aria-hidden='true' />
+                      <br />RSS Feed
+                    </button>
+                  </div>
+                  }
+                  <div style={{display: 'inline-block', padding: '5px'}}>
+                    <button onClick={() => this.onSelectItem('wordpress')} style={{backgroundColor: wordPressColor, color: wordPressForeGroundColor}} className='btn'>
+                      <i className='fa fa-wordpress fa-2x' aria-hidden='true' />
+                      <br />WordPress
+                    </button>
+                  </div>
+                  <div style={{textAlign: 'left', marginTop: '15px', marginBottom: '10px'}}>
+                    <label>Select Page</label>
+                    <div>
+                      <select id='selectPage' />
+                    </div>
+                  </div>
+                </div>
+                { facebookColor !== '' &&
+                  <div>
+                    <div>
+                      <label> Facebook Page Url </label>
+                      <input placeholder='Enter FB url' value={this.state.facebookSubscriptionUrl} onChange={this.handleFacebookSubscriptionUrl} type='text' className='form-control' />
+                      { this.state.type === 'facebook' &&
+                        <span style={{color: 'red'}}>{this.state.errorMessage}</span>
+                      }
+                    </div>
+                    <button style={{float: 'right', margin: '10px'}}
+                      onClick={() => this.createAutoposting('facebook')}
+                      className='btn btn-primary btn-sm'>Add Facebook Feed
+                    </button>
+                  </div>
+                }
+                { twitterColor !== '' &&
+                  <div>
+                    <div>
+                      <label> Twitter Account Url </label>
+                      <input placeholder='Enter Twitter handle' value={this.state.twitterSubscriptionUrl} onChange={this.handleTwitterSubscriptionUrl} type='text' className='form-control' />
+                      { this.state.type === 'twitter' &&
+                        <span style={{color: 'red'}}>{this.state.errorMessage}</span>
+                      }
+                    </div>
+                    <button style={{float: 'right', margin: '10px'}}
+                      onClick={() => this.createAutoposting('twitter')}
+                      className='btn btn-primary btn-sm'>Add Twitter Feed
+                    </button>
+                  </div>
+                }
+                { rssColor !== '' &&
+                  <div>
+                    <div>
+                      <label> RSS Feed Url </label>
+                      <input placeholder='Enter RSS Feed url' value={this.state.rssSubscriptionUrl} onChange={this.handleRssSubscriptionUrl} type='text' className='form-control' />
+                      { this.state.type === 'rss' &&
+                        <span style={{color: 'red'}}>{this.state.errorMessage}</span>
+                      }
+                    </div>
+                    <button style={{float: 'right', margin: '10px'}}
+                      onClick={() => this.createAutoposting('rss')}
+                      className='btn btn-primary btn-sm'>Add RSS Feed
+                    </button>
+                  </div>
+                }
+                { wordPressColor !== '' &&
+                  <div>
+                    <div>
+                      <label> WordPress Channel Url </label>
+                      <input placeholder='Enter WordPress Channel url' value={this.state.wordpressSubscriptionUrl} onChange={this.handleWordpressSubscriptionUrl} type='text' className='form-control' />
+                      { this.state.type === 'wordpress' &&
+                        <span style={{color: 'red'}}>{this.state.errorMessage}</span>
+                      }
+                    </div>
+                    <button style={{float: 'right', marginTop: '10px'}}
+                      onClick={this.props.openGuidelines}
+                      className='btn btn-primary btn-sm'>View Integration Guidelines
+                    </button>
+                    <button style={{float: 'right', marginTop: '10px', marginRight: '10px'}}
+                      onClick={() => this.createAutoposting('wordpress')}
+                      className='btn btn-primary btn-sm'>Add WordPress Channel
+                    </button>
+                  </div>
+                }
+              </div>
             </div>
           </div>
         </div>
-        { facebookColor !== '' &&
-          <div>
-            <div>
-              <label> Facebook Page Url </label>
-              <input placeholder='Enter FB url' ref={(c) => { this.facebookSubscriptionUrl = c }} type='text' className='form-control' />
-              { this.state.type === 'facebook' &&
-                <span style={{color: 'red'}}>{this.state.errorMessage}</span>
-              }
-            </div>
-            <button style={{float: 'right', margin: '10px'}}
-              onClick={() => this.createAutoposting('facebook')}
-              className='btn btn-primary btn-sm'>Add Facebook Feed
-            </button>
-          </div>
-        }
-        { twitterColor !== '' &&
-          <div>
-            <div>
-              <label> Twitter Account Url </label>
-              <input placeholder='Enter Twitter handle' ref={(c) => { this.twitterSubscriptionUrl = c }} type='text' className='form-control' />
-              { this.state.type === 'twitter' &&
-                <span style={{color: 'red'}}>{this.state.errorMessage}</span>
-              }
-            </div>
-            <button style={{float: 'right', margin: '10px'}}
-              onClick={() => this.createAutoposting('twitter')}
-              className='btn btn-primary btn-sm'>Add Twitter Feed
-            </button>
-          </div>
-        }
-        { rssColor !== '' &&
-          <div>
-            <div>
-              <label> RSS Feed Url </label>
-              <input placeholder='Enter RSS Feed url' ref={(c) => { this.rssSubscriptionUrl = c }} type='text' className='form-control' />
-              { this.state.type === 'rss' &&
-                <span style={{color: 'red'}}>{this.state.errorMessage}</span>
-              }
-            </div>
-            <button style={{float: 'right', margin: '10px'}}
-              onClick={() => this.createAutoposting('rss')}
-              className='btn btn-primary btn-sm'>Add RSS Feed
-            </button>
-          </div>
-        }
-        { wordPressColor !== '' &&
-          <div>
-            <div>
-              <label> WordPress Channel Url </label>
-              <input placeholder='Enter WordPress Channel url' ref={(c) => { this.wordpressSubscriptionUrl = c }} type='text' className='form-control' />
-              { this.state.type === 'wordpress' &&
-                <span style={{color: 'red'}}>{this.state.errorMessage}</span>
-              }
-            </div>
-            <button style={{float: 'right', marginTop: '10px'}}
-              onClick={this.props.openGuidelines}
-              className='btn btn-primary btn-sm'>View Integration Guidelines
-            </button>
-            <button style={{float: 'right', marginTop: '10px', marginRight: '10px'}}
-              onClick={() => this.createAutoposting('wordpress')}
-              className='btn btn-primary btn-sm'>Add WordPress Channel
-            </button>
-          </div>
-        }
       </div>
     )
   }

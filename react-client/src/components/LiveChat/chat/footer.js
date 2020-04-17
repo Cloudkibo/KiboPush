@@ -138,7 +138,7 @@ class Footer extends React.Component {
   }
 
   removeAttachment () {
-    this.props.deletefile(this.state.attachment.id, () => {})
+    this.props.deletefile(this.state.attachment.id)
     this.setState({
       attachment: {},
       componentType: '',
@@ -154,6 +154,9 @@ class Footer extends React.Component {
     console.log('recordedBlob object', recordedBlob)
     const file = new File([recordedBlob.blob], 'recorded-audio.mp3', { type: recordedBlob.blob.type, lastModified: new Date()})
     if (file) {
+      if (this.state.attachment) {
+        this.props.deletefile(this.state.attachment.id)
+      }
       this.setState({
         uploadingFile: true,
         attachment: file,
@@ -243,6 +246,9 @@ class Footer extends React.Component {
       } else {
         const data = this.props.performAction('send attachments', this.props.activeSession)
         if (data.isAllowed) {
+          if (this.state.attachment && this.state.attachment.id) {
+            this.props.deletefile(this.state.attachment.id)
+          }
           const componentType = this.getComponentType(file.type)
           this.setState({
             uploadingFile: true,
@@ -370,6 +376,12 @@ class Footer extends React.Component {
       sendGif: (gif) => this.sendGif(gif)
     }
     this.props.getPicker(type, popoverOptions, otherOptions)
+  }
+
+  componentWillUnmount () {
+    if (this.state.attachment && this.state.attachment.id) {
+      this.props.deletefile(this.state.attachment.id)
+    }
   }
 
   render() {

@@ -12,6 +12,7 @@ import { uploadImage } from '../../redux/actions/convos.actions'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { updateLandingPageData } from '../../redux/actions/landingPages.actions'
+import {deleteFile, getFileIdFromUrl} from '../../utility/utils'
 
 class InitialState extends React.Component {
   constructor (props) {
@@ -34,13 +35,11 @@ class InitialState extends React.Component {
     this.removeImage = this.removeImage.bind(this)
   }
 
-  componentDidMount () {
-  }
-
   handleImage (obj) {
     console.log('handleImage', obj)
     this.setState({showImagePlacement: true, loading: false})
     if (this.props.landingPage.currentTab === 'initialState') {
+      this.props.landingPage.initialState.newFile = obj.fileurl.id
       this.props.updateLandingPageData(this.props.landingPage, this.props.landingPage.currentTab, 'mediaLink', obj.image_url)
     } else {
       this.props.updateLandingPageData(this.props.landingPage, this.props.landingPage.currentTab, 'state', obj.image_url, 'mediaLink')
@@ -54,6 +53,12 @@ class InitialState extends React.Component {
       if (file && file.type !== 'image/bmp' && file.type !== 'image/jpeg' && file.type !== 'image/png' && file.type !== 'image/gif') {
         this.msg.error('Please select an image of type jpg, gif, bmp or png')
         return
+      }
+      if (this.props.initialState.mediaLink) {
+        let fileId = getFileIdFromUrl(this.props.initialState.mediaLink)
+        if (this.props.landingPage.initialState.initialFile !== fileId) {
+          deleteFile(fileId)
+        }
       }
       var reader = new FileReader()
       reader.readAsDataURL(file)
@@ -78,7 +83,12 @@ class InitialState extends React.Component {
 
   removeImage () {
     console.log('clicked')
-
+    if (this.props.initialState.mediaLink) {
+      let fileId = getFileIdFromUrl(this.props.initialState.mediaLink)
+      if (this.props.landingPage.initialState.initialFile !== fileId) {
+        deleteFile(fileId)
+      }
+    }
     this.setState({showImagePlacement:false})
     if (this.props.landingPage.currentTab === 'initialState') {
       this.props.updateLandingPageData(this.props.landingPage, this.props.landingPage.currentTab, 'mediaLink', '')
@@ -144,6 +154,10 @@ class InitialState extends React.Component {
 
   UNSAFE_componentWillReceiveProps (nextProps) {
     if (nextProps.initialState && nextProps.initialState.mediaLink) {
+      if (!this.fileChanged && !this.props.landingPage.initialState.initialFile) {
+        let fileId = getFileIdFromUrl(nextProps.initialState.mediaLink)
+        this.props.updateLandingPageData(nextProps.landingPage, nextProps.landingPage.currentTab, 'initialFile', fileId)
+      }
       this.setState({showImagePlacement: true})
     }
   }

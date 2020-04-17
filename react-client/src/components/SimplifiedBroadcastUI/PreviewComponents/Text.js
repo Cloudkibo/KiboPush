@@ -43,7 +43,7 @@ class Text extends React.Component {
       console.log('this.state.urlMetaData in edit', this.state.urlMetaData)
       this.props.editComponent('video', {
         edit: true,
-        youtubeLink:this.state.text, 
+        youtubeLink:this.state.text,
         videoId:this.state.videoId,
         videoTitle: this.state.videoTitle,
         videoDescription: this.state.videoDescription,
@@ -83,12 +83,12 @@ class Text extends React.Component {
     }
     return true
   }
- 
+
   render () {
     return (
       <div className='broadcast-component' style={{marginBottom: '50px', display: 'inline-block'}}>
-        <div onClick={() => { this.props.onRemove({id: this.props.id, deletePayload: this.getDeletePayload()}) }} 
-          style={{float: 'right', height: 20 + 'px', marginTop: '-20px', marginRight: '-10px'}}>
+        <div onClick={() => { this.props.onRemove({id: this.props.id, deletePayload: this.getDeletePayload()}) }}
+          style={{float: 'right', height: 20 + 'px', marginTop: '-4px', marginRight: '-10px'}}>
           <span style={{cursor: 'pointer'}} className='fa-stack'>
             <i className='fa fa-times fa-stack-2x' />
           </span>
@@ -106,7 +106,7 @@ class Text extends React.Component {
                 opts={{
                   height: '100',
                   width: '200',
-                  playerVars: { 
+                  playerVars: {
                     autoplay: 0
                   }
                 }}
@@ -128,22 +128,22 @@ class Text extends React.Component {
           </div>
           }
           {
-            !this.state.videoId && <div style={{maxWidth: '100%', fontSize: '16px', textAlign: 'center'}} className='bubble recipient broadcastContent'>{this.state.text}</div>
+            !this.state.videoId && <div style={{maxWidth: '100%', fontSize: '16px', textAlign: 'center', whiteSpace: 'pre-wrap', wordBreak: 'break-word'}} className='bubble recipient broadcastContent'>{this.state.text}</div>
           }
           {
               this.state.buttons.map((button, index) => {
                 return (
-                  <div id={`button-${button.id}`} className='bubble recipient' 
+                  <div id={`button-${button.id}`} className='bubble recipient'
                     style={{
-                      maxWidth: '100%', 
-                      textAlign: 'center', 
-                      margin: 'auto', 
-                      marginTop: '5px', 
-                      fontSize: '16px', 
-                      backgroundColor: 'white', 
-                      border: !this.validateButton(button) ? '1px solid red' : '1px solid rgba(0,0,0,.1)', 
-                      borderRadius: '10px', 
-                      wordBreak: 'break-all', 
+                      maxWidth: '100%',
+                      textAlign: 'center',
+                      margin: 'auto',
+                      marginTop: '5px',
+                      fontSize: '16px',
+                      backgroundColor: 'white',
+                      border: !this.validateButton(button) ? '1px solid red' : '1px solid rgba(0,0,0,.1)',
+                      borderRadius: '10px',
+                      wordBreak: 'break-all',
                       color: '#0782FF'
                     }}>{button.title}</div>
                 )

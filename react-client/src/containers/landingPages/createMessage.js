@@ -10,6 +10,7 @@
   import { updateLandingPageData } from '../../redux/actions/landingPages.actions'
   import AlertContainer from 'react-alert'
   import { validateFields } from '../../containers/convo/utility'
+  import {getFileIdsOfBroadcast, deleteInitialFiles, deleteFile} from '../../utility/utils'
 
   class LandingPageMessage extends React.Component {
     constructor (props, context) {
@@ -42,16 +43,29 @@
       } else {
         document.title = `${title} | Create Message`
       }
+      this.setState({initialFiles: this.props.location.state.initialFiles})
     }
     saveMessage () {
       if (!validateFields(this.state.broadcast, this.msg)) {
         return
       }
+      let newFiles = this.props.location.state.newFiles
+      if (newFiles) {
+        newFiles = newFiles.concat(this.state.newFiles)
+      } else {
+        newFiles = this.state.newFiles
+      }
+      let currentFiles = getFileIdsOfBroadcast(this.state.broadcast)
+      newFiles = deleteInitialFiles(newFiles, currentFiles)
+      this.props.landingPage.newFiles = newFiles
       this.props.updateLandingPageData(this.props.landingPage, this.props.landingPage.currentTab, 'optInMessage', this.state.broadcast)
+      let initialFiles = this.state.initialFiles.concat(newFiles)
+      this.setState({newFiles: [], initialFiles})
       this.msg.success('Message has been saved.')
     }
 
     goBack () {
+      this.editing = true
       if (this.props.location.state && this.props.location.state.module === 'edit') {
         const currentLP = this.props.landingPages.filter((lp) => lp.pageId._id === this.state.pageId)[0]
         this.props.landingPage.isActive = true
@@ -60,13 +74,23 @@
         this.props.landingPage.currentTab = 'optInActions'
         this.props.history.push({
           pathname: `/editLandingPage`,
-          state: {module: 'edit', landingPage: this.props.landingPage, _id: this.state.pageId}
+          state: {module: 'edit', landingPage: this.props.landingPage, _id: this.state.pageId, initialFiles: this.props.location.state.realInitialFiles}
         })
       } else {
         this.props.history.push({
           pathname: `/createLandingPage`,
-          state: {pageId: this.props.landingPage.pageId.pageId, _id: this.state.pageId}
+          state: {pageId: this.props.landingPage.pageId.pageId, _id: this.state.pageId, initialFiles: this.props.location.state.realInitialFiles}
         })
+      }
+    }
+
+    componentWillUnmount () {
+      if (!this.editing) {
+        if (this.props.landingPage.newFiles) {
+          for (let i = 0; i < this.props.landingPage.newFiles.length; i++) {
+            deleteFile(this.props.landingPage.newFiles[i])
+          }
+        }
       }
     }
 
@@ -97,6 +121,8 @@
             </div>
           </div>
           <GenericMessage
+            newFiles={this.state.newFiles}
+            initialFiles={this.state.initialFiles}
             pageId={this.props.landingPage.pageId}
             broadcast={this.state.broadcast}
             handleChange={this.handleChange}

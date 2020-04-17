@@ -2,17 +2,12 @@
 
 import React from 'react'
 import { connect } from 'react-redux'
-import {
-  addBroadcast,
-  clearAlertMessage,
-  loadBroadcastsList,
-  sendbroadcast
-} from '../../redux/actions/broadcast.actions'
 import { uploadFile, uploadTemplate } from '../../redux/actions/convos.actions'
 import { bindActionCreators } from 'redux'
 import Files from 'react-files'
 import { RingLoader } from 'halogenium'
 import AlertContainer from 'react-alert'
+import { deleteFile } from '../../utility/utils'
 
 class File extends React.Component {
   // eslint-disable-next-line no-useless-constructor
@@ -71,6 +66,21 @@ class File extends React.Component {
 
   onFilesChange (files) {
     if (files.length > 0) {
+      if (this.state.file && this.state.file.id) {
+        let canBeDeleted = true
+        for (let i = 0; i < this.props.initialFiles.length; i++) {
+          if (this.state.file.id === this.props.initialFiles[i]) {
+            canBeDeleted = false
+          }
+        }
+        if (this.state.file.id === this.props.initialFile) {
+          canBeDeleted = false
+        }
+        if (canBeDeleted) {
+          this.props.setTempFiles(null, [this.state.file.id])
+          deleteFile(this.state.file.id)
+        }
+      }
       var file = files[files.length - 1]
       console.log('file', file)
     //   this.props.updateFile(file)
@@ -180,12 +190,8 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-    loadBroadcastsList: loadBroadcastsList,
-    addBroadcast: addBroadcast,
-    sendbroadcast: sendbroadcast,
-    clearAlertMessage: clearAlertMessage,
-    uploadFile: uploadFile,
-    uploadTemplate: uploadTemplate
+    uploadFile,
+    uploadTemplate
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(File)

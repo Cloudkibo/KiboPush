@@ -729,6 +729,7 @@ class FacebookPosts extends React.Component {
                         <div className='col-9 form-group m-form__group has-danger'>
                           <input
                               className='form-control form-control-danger m-input'
+                              style={{borderColor: this.state.title === '' ? 'red' : '' }}
                               id='title'
                               value={this.state.title}
                               onChange={(e) => {this.handleTitleChange(e)}} onBlur={(e)=> {
@@ -744,6 +745,10 @@ class FacebookPosts extends React.Component {
                               }} maxLength='25'/>
                             { !this.state.titleLengthValid &&
                             <label htmlFor='title' className='form-control-label'>Title should be atleast 3 characters long</label>
+                            }
+                            {
+                              this.state.title === '' &&
+                              <label htmlFor='title' className='form-control-label'>*Required</label>
                             }
                           </div>
                       </div>
@@ -858,7 +863,7 @@ class FacebookPosts extends React.Component {
                                 className='form-control m-input m-input--solid'
                                 id='postTextArea' rows='3'
                                 placeholder={this.state.isVideo ? 'Describe your video here' : 'Please write your Facebook Post here that will be posted on your Facebook page...'}
-                                style={{height: '150px', resize: 'none'}}
+                                style={{height: '150px', resize: 'none', borderColor: (this.state.postText !== '' ||  this.state.attachments.length !==0 || this.state.cards.length !==0) ? '' : 'red' }} 
                                 value={this.state.postText}
                                 onChange={this.onFacebookPostChange} />
                               {
@@ -866,11 +871,11 @@ class FacebookPosts extends React.Component {
                                   <div className='attachmentDiv' style={{display: 'flex'}}>
                                     {
                                     this.state.attachments.map((attachment, i) => (
-                                      <div className='col-2'>
-                                        <span className='fa-stack' style={{cursor: 'pointer', float: 'right', padding: '7px'}} onClick={() => this.removeAttachment(attachment)}><i className='fa fa-times fa-stack-2x' /></span>
-                                        <div className='ui-block' style={{borderStyle: 'dotted', borderWidth: '2px'}}>
+                                      <div className='col-2' style={{position: 'relative', marginTop: '10px'}}>
+                                        <span className='fa-stack' style={{cursor: 'pointer', position: 'absolute', right: '0px', top: '-10px', height: '0.5em'}} onClick={() => this.removeAttachment(attachment)}><i className='fa fa-times fa-stack-2x' /></span>
+                                        <div className='ui-block' style={{borderStyle: 'dotted', borderWidth: '2px', marginBottom: '10px', paddingTop: '0px'}}>
                                           { attachment.componentType === 'image' && <div className='align-center' style={{height: '60px'}}>
-                                            <img src={attachment.url} alt='' style={{maxHeight: '40px', maxWidth: '120px'}} />
+                                            <img src={attachment.url} alt='' style={{objectFit: 'cover', height: '100%', width: '100%'}} />
                                           </div>
                                           }
                                           { attachment.componentType === 'video' && <div className='align-center' style={{height: '60px'}}>
@@ -1039,6 +1044,7 @@ class FacebookPosts extends React.Component {
                         ? <div className='col-12 form-group m-form__group has-danger'>
                           <input
                             className='form-control form-control-danger m-input'
+                            style={{borderColor: this.state.postUrl === '' ? 'red' : ''}}
                             id='postUrl'
                             value={this.state.postUrl}
                             onChange={(e) => {this.handlePostUrlChange(e)}}
@@ -1046,6 +1052,13 @@ class FacebookPosts extends React.Component {
                           { !this.state.isCorrectUrl &&
                             <label className='form-control-label' htmlFor='postUrl'>Invalid Facebook Post Url</label>
                           }
+                          { !this.state.isCorrectUrl &&
+                            <label className='form-control-label' htmlFor='postUrl'>Invalid Facebook Post Url</label>
+                          }
+                          { !this.state.postUrl &&
+                            <label className='form-control-label' htmlFor='postUrl'>*Required</label>
+                          }
+
                         </div>
                         : <div className='col-12 form-group m-form__group '>
                            <input

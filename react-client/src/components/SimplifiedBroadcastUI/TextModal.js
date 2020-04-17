@@ -60,10 +60,12 @@ class TextModal extends React.Component {
         let foundPayload = false
         for (let j = 0; j < buttons.length; j++) {
           let oldButtonPayload = this.state.buttonPayloads[i].substr(1, this.state.buttonPayloads[i].length-2)
-          let newButtonPayload = buttons[j].payload.substr(1, buttons[j].payload.length - 2)
-          if (newButtonPayload.includes('send_message_block')) {
-            if (newButtonPayload.includes(oldButtonPayload) || oldButtonPayload.includes(newButtonPayload)) {
-              foundPayload = true
+          if (buttons[j].payload) {
+            let newButtonPayload = buttons[j].payload.substr(1, buttons[j].payload.length - 2)
+            if (newButtonPayload.includes('send_message_block')) {
+              if (newButtonPayload.includes(oldButtonPayload) || oldButtonPayload.includes(newButtonPayload)) {
+                foundPayload = true
+              }
             }
           }
         }
@@ -91,10 +93,6 @@ class TextModal extends React.Component {
     } else {
       this.props.showCloseModalAlertDialog()
     }
-  }
-
-  UNSAFE_componentWillUnmount() {
-    this.props.closeModal()
   }
 
   render() {
@@ -174,8 +172,8 @@ class TextModal extends React.Component {
             <div className='col-5'>
               <h4 style={{ marginLeft: '-50px' }}>Preview:</h4>
               <div className='ui-block' style={{ overflowY: 'auto', border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', minHeight: '68vh', maxHeight: '68vh', marginLeft: '-50px' }} >
-                <div className='discussion' style={{ display: 'inline-block', marginTop: '100px' }} >
-                  <div style={{ maxWidth: '100%', fontSize: '16px' }} className='bubble recipient'>{this.state.text}</div>
+                <div className='discussion' style={{ display: 'inline-block', marginTop: '100px', paddingLeft: '10px', paddingRight: '10px' }} >
+                  <div style={{ maxWidth: '100%', fontSize: '16px', textAlign: 'center', whiteSpace: 'pre-wrap', wordBreak: 'break-word' }} className='bubble recipient'>{this.state.text}</div>
                   {
                     this.state.buttons.map((button, index) => (
                       button.visible && (

@@ -2,12 +2,6 @@
 
 import React from 'react'
 import { connect } from 'react-redux'
-import {
-  addBroadcast,
-  clearAlertMessage,
-  loadBroadcastsList,
-  sendbroadcast
-} from '../../../redux/actions/broadcast.actions'
 import { uploadFile, uploadTemplate } from '../../../redux/actions/convos.actions'
 import { bindActionCreators } from 'redux'
 
@@ -29,24 +23,24 @@ class File extends React.Component {
   }
 
   componentDidMount () {
-    if (this.props.file && this.props.file !== '') {
-      if (this.props.pages && this.props.file) {
-        this.props.uploadTemplate({pages: this.props.pages,
-          url: this.props.file.fileurl.url,
-          componentType: 'file',
-          componentName: 'file',
-          id: this.props.file.fileurl.id,
-          name: this.props.file.fileurl.name
-        }, {
-          id: this.props.id,
-          componentType: 'file',
-          componentName: 'file',
-          fileName: this.props.file.fileName,
-          type: this.props.file.type,
-          size: this.props.file.size
-        }, this.props.handleFile, this.setLoading)
-      }
-    }
+    // if (this.props.file && this.props.file !== '') {
+    //   if (this.props.pages && this.props.file) {
+    //     this.props.uploadTemplate({pages: this.props.pages,
+    //       url: this.props.file.fileurl.url,
+    //       componentType: 'file',
+    //       componentName: 'file',
+    //       id: this.props.file.fileurl.id,
+    //       name: this.props.file.fileurl.name
+    //     }, {
+    //       id: this.props.id,
+    //       componentType: 'file',
+    //       componentName: 'file',
+    //       fileName: this.props.file.fileName,
+    //       type: this.props.file.type,
+    //       size: this.props.file.size
+    //     }, this.props.handleFile, this.setLoading)
+    //   }
+    // }
   }
 
   render () {
@@ -81,10 +75,6 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-    loadBroadcastsList: loadBroadcastsList,
-    addBroadcast: addBroadcast,
-    sendbroadcast: sendbroadcast,
-    clearAlertMessage: clearAlertMessage,
     uploadFile: uploadFile,
     uploadTemplate: uploadTemplate
   }, dispatch)

@@ -76,6 +76,7 @@ class ItemSettings extends React.Component {
     this.handleSave = this.handleSave.bind(this)
     this.saveCallback = this.saveCallback.bind(this)
     this.handleRSSTime = this.handleRSSTime.bind(this)
+    this.handleEdit = this.handleEdit.bind(this)
   }
 
   handleRSSTime (event) {
@@ -415,7 +416,15 @@ class ItemSettings extends React.Component {
       approvalChannel: { type: 'messenger', pageId:  this.state.selectedPage, pageAccessToken: this.state.selectedPageAccessToken }
     }
     console.log(autopostingData)
-    this.props.editautoposting(autopostingData)
+    this.props.editautoposting(autopostingData, this.handleEdit)
+  }
+
+  handleEdit (res) {
+    if (res.status === 'success') {
+      this.props.history.push({
+        pathname: `/autoposting`
+      })
+    }
   }
 
   render () {

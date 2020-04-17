@@ -5,6 +5,7 @@
 import React from 'react'
 import Media from './AddMedia'
 import AddButton from './AddButton'
+import { deleteFile } from '../../utility/utils'
 
 class MediaModal extends React.Component {
   constructor(props) {
@@ -18,6 +19,7 @@ class MediaModal extends React.Component {
       buttonActions: this.props.buttonActions ? this.props.buttonActions : ['open website', 'open webview'],
       imgSrc: props.imgSrc ? props.imgSrc : '',
       file: props.file ? props.file : null,
+      initialFile: props.file ? props.file.fileurl.id : null,
       edited: false,
       buttonPayloads: this.props.buttons.map((button) => button.payload).filter(button => !!button)
     }
@@ -39,16 +41,32 @@ class MediaModal extends React.Component {
 
   addComponent(buttons) {
     console.log('addComponent MediaModal', this.state)
+    if (this.state.initialFile) {
+      let canBeDeleted = true
+      for (let i = 0; i < this.props.initialFiles.length; i++) {
+        if (this.state.initialFile === this.props.initialFiles[i]) {
+          canBeDeleted = false
+          break
+        }
+      } 
+      if (canBeDeleted) {
+        if (this.state.file.fileurl.id !== this.state.initialFile) {
+          deleteFile(this.state.initialFile)
+        }
+      }
+    }
     let deletePayload = []
     if (this.state.buttonPayloads.length > 0) {
       for (let i = 0; i < this.state.buttonPayloads.length; i++) {
         let foundPayload = false
         for (let j = 0; j < buttons.length; j++) {
           let oldButtonPayload = this.state.buttonPayloads[i].substr(1, this.state.buttonPayloads[i].length-2)
-          let newButtonPayload = buttons[j].payload.substr(1, buttons[j].payload.length - 2)
-          if (newButtonPayload.includes('send_message_block')) {
-            if (newButtonPayload.includes(oldButtonPayload) || oldButtonPayload.includes(newButtonPayload)) {
-              foundPayload = true
+          if (buttons[j].payload) {
+            let newButtonPayload = buttons[j].payload.substr(1, buttons[j].payload.length - 2)
+            if (newButtonPayload.includes('send_message_block')) {
+              if (newButtonPayload.includes(oldButtonPayload) || oldButtonPayload.includes(newButtonPayload)) {
+                foundPayload = true
+              }
             }
           }
         }
@@ -95,10 +113,6 @@ class MediaModal extends React.Component {
     this.setState(status)
   }
 
-  UNSAFE_componentWillUnmount() {
-    this.props.closeModal()
-  }
-
   updateStatus(status) {
     status.edited = true
     this.setState(status)
@@ -110,6 +124,7 @@ class MediaModal extends React.Component {
 
   updateFile(file) {
     console.log('updating file MediaModal', file)
+    this.props.setTempFiles([file.fileurl.id])
     this.setState({ file, edited: true, disabled: false }, () => {
       if (this.refs.video) {
         this.refs.video.pause();
@@ -146,6 +161,7 @@ class MediaModal extends React.Component {
               <h4>Media:</h4>
               <Media
                 required
+                setTempFiles={this.props.setTempFiles}
                 updateStatus={this.updateStatus}
                 mediaType={this.state.imgSrc ? 'image' : 'video'}
                 pages={this.props.pages}
@@ -153,6 +169,8 @@ class MediaModal extends React.Component {
                 updateImage={this.updateImage}
                 updateFile={this.updateFile}
                 onFilesError={this.props.onFilesError}
+                initialFiles={this.props.initialFiles}
+                initialFile={this.state.initialFile}
                 fileurl={this.state.file ? this.state.file.fileurl : ''}
                 fileName={this.state.file ? this.state.file.fileName : ''}
                 image_url={this.state.file && this.state.file.image_url ? this.state.file.image_url : ''}

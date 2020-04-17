@@ -270,11 +270,7 @@ class UserInputModal extends React.Component {
   updateActionStatus (action) {
     this.setState({action})
   }
-
-  UNSAFE_componentWillUnmount() {
-    this.props.closeModal()
-  }
-
+  
   render() {
     console.log('UserInputModal state', this.state)
     return (

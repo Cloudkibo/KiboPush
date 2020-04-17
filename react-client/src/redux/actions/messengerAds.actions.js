@@ -62,14 +62,41 @@ export function fetchMessengerAd (jsonAdId, updatePreview) {
       console.log('response from fetchMessengerAd', res)
       if (res.status === 'success' && res.payload) {
         let data = res.payload
+        let jsonMessages = data.jsonAdMessages
+        for (var l = jsonMessages.length-1; l >= 0; l--) {
+          for (let i = 0; i < jsonMessages[l].messageContent.length; i++) {
+            let messageContent = jsonMessages[l].messageContent[i]
+            if (messageContent.cards) {
+              for (let j = 0; j < messageContent.cards.length; j++) {
+                for (let k = 0; k < messageContent.cards[j].buttons.length; k++) {
+                  if (messageContent.cards[j].buttons[k].payload && messageContent.cards[j].buttons[k].type === 'postback') {
+                    let buttonPayload = JSON.parse(messageContent.cards[j].buttons[k].payload)
+                    if (Number.isInteger(buttonPayload)) {
+                      jsonMessages[l].messageContent[i].cards[j].buttons[k].payload = JSON.stringify([{action: 'send_message_block', blockUniqueId: buttonPayload+''}])
+                    }
+                  }
+                }
+              }
+            } else if (messageContent.buttons) {
+              for (let j = 0; j < messageContent.buttons.length; j++) {
+                if (messageContent.buttons[j].payload && messageContent.buttons[j].type === 'postback') {
+                  let buttonPayload = JSON.parse(messageContent.buttons[j].payload)
+                  if (Number.isInteger(buttonPayload)) {
+                    jsonMessages[l].messageContent[i].buttons[j].payload = JSON.stringify([{action: 'send_message_block', blockUniqueId: buttonPayload+''}])
+                  }
+                }
+              }
+            }
+          } 
+        }
         let payload = {
           // pageId: data.jsonAd.pageId,
           jsonAdId: data.jsonAd._id,
           title: data.jsonAd.title,
-          jsonAdMessages: data.jsonAdMessages
+          jsonAdMessages: jsonMessages
         }
         dispatch(saveCurrentJsonAd(payload))
-        updatePreview()
+        updatePreview(res.payload)
       }
     })
   }
@@ -165,10 +192,13 @@ const prepareJsonPayload = (data, optinMessage) => {
       button = body.buttons[i]
       let jsonAdMessageId
       if (button.payload && button.type === 'postback') {
+        let postbackPayload = JSON.parse(button.payload)
         for (let j = 0; j < data.length; j++) {
-          if ((button.payload).toString() === (data[j].jsonAdMessageId).toString()) {
-            jsonAdMessageId = data[j]._id
-            break
+          for (let k = 0; k < postbackPayload.length; k++) {
+            if ((postbackPayload[k].blockUniqueId).toString() === (data[j].jsonAdMessageId).toString()) {
+              jsonAdMessageId = data[j]._id
+              break
+            }
           }
         }
         button.payload = 'JSONAD-' + jsonAdMessageId
@@ -176,6 +206,9 @@ const prepareJsonPayload = (data, optinMessage) => {
         if (button.newUrl) {
           delete button.newUrl
         }
+      }
+      if (button.id) {
+        delete button.id
       }
       buttonPayload.push(button)
     }

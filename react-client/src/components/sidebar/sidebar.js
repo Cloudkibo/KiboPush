@@ -312,6 +312,7 @@ class Sidebar extends Component {
                 </a>
               </li>
               {this.showSmartRespliesItem()}
+              {this.showChatbotAutomation()}
               {this.showAutoPostingItem()}
               {this.showRssIntegrationItem()}
               {this.showNewsIntegrationItem()}
@@ -385,7 +386,7 @@ class Sidebar extends Component {
               {this.showInviteUsingPhoneNumber()}
               {this.showInviteSubscribers()}
               {this.showMessengerCode()}
-              {this.showDiscoverTabs()}
+              {/* {this.showDiscoverTabs()} */}
               {this.showLandingPages()}
               {this.showMessengerAds()}
               {this.showMessengerRefURL()}
@@ -601,6 +602,25 @@ class Sidebar extends Component {
             </i>
             <span className='m-menu__link-text'>
               Smart Replies
+            </span>
+          </Link>
+        </li>
+      )
+    } else {
+      return (null)
+    }
+  }
+
+  showChatbotAutomation () {
+    if (this.props.user && this.props.user.isSuperUser) {
+      return (
+        <li className='m-menu__item' aria-haspopup='true' >
+          <Link to='/chatbotAutomation' className='m-menu__link'>
+            <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
+              <span />
+            </i>
+            <span className='m-menu__link-text'>
+              Chatbot Automation
             </span>
           </Link>
         </li>

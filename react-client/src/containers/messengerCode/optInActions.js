@@ -21,10 +21,17 @@ class OptInActions extends React.Component {
 
     }
     editMessage() {
-        this.props.history.push({
-            pathname: `/editMessageCodeMessage`,
-            state: { module: this.props.module, selectedMessengerCode: this.props.messengerCode }
-        })
+      if (this.props.onEditMessage) {
+          this.props.onEditMessage() 
+      }
+      let initialFiles = this.props.initialFiles
+      if (this.props.newFiles) {
+          initialFiles = initialFiles.concat(this.props.newFiles)
+      }
+      this.props.history.push({
+          pathname: `/editMessageCodeMessage`,
+          state: { newFiles: this.props.newFiles, initialFiles, realInitialFiles: this.props.initialFiles, module: this.props.module, selectedMessengerCode: this.props.messengerCode }
+      })
     }
     render() {
       console.log('optInActions props', this.props)

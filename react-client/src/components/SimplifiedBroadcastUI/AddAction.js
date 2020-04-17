@@ -1,6 +1,10 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
 import { isWebURL } from '../../utility/utils'
+import { fetchWhiteListedDomains } from '../../redux/actions/settings.actions'
+import URL from 'url'
 
 class AddAction extends React.Component {
   constructor (props) {
@@ -20,6 +24,8 @@ class AddAction extends React.Component {
       }
     }
     this.state = {
+      whitelistedDomains: [],
+      errorMsg: '',
       default_action: props.default_action ? props.default_action : null,
       actionDisabled: !(webviewurl || elementUrl),
       openPopover: webviewurl || elementUrl,
@@ -41,6 +47,16 @@ class AddAction extends React.Component {
     this.closeWebview = this.closeWebview.bind(this)
     this.handleClose = this.handleClose.bind(this)
     this.getDefaultAction = this.getDefaultAction.bind(this)
+    this.handleFetch = this.handleFetch.bind(this)
+    props.fetchWhiteListedDomains(props.pageId, this.handleFetch)
+  }
+
+  handleFetch(resp) {
+    console.log('done fetching whitelisted domains', resp)
+    if (resp.status === 'success') {
+      console.log('fetched whitelisted domains', resp.payload)
+      this.setState({ whitelistedDomains: resp.payload })
+    }
   }
 
   UNSAFE_componentWillReceiveProps (nextProps) {
@@ -115,11 +131,19 @@ class AddAction extends React.Component {
   }
 
   changeWebviewUrl (e) {
-    if (isWebURL(e.target.value)) {
-      this.setState({actionDisabled: false})
+    let validDomain = false
+    for (let i = 0; i < this.state.whitelistedDomains.length; i++) {
+      let domain = this.state.whitelistedDomains[i]
+      if (URL.parse(e.target.value).href === URL.parse(domain).href) {
+        validDomain = true
+        break
+      }
+    }
+    if (validDomain) {
+      this.setState({actionDisabled: false, errorMsg: ''})
       this.props.updateActionStatus({actionDisabled: false})
     } else {
-      this.setState({actionDisabled: true})
+      this.setState({actionDisabled: true, errorMsg: 'The given domain is not whitelisted. Please add it to whitelisted domains.' })
       this.props.updateActionStatus({actionDisabled: true})
     }
     let default_action = this.getDefaultAction(e.target.value)
@@ -202,6 +226,7 @@ class AddAction extends React.Component {
                     </div>
                     <label className='form-label col-form-label' style={{textAlign: 'left'}}>Url</label>
                     <input type='text' value={this.state.webviewurl} className='form-control' onChange={this.changeWebviewUrl} placeholder='Enter link...' />
+                    <div style={{ marginBottom: '30px', color: 'red' }}>{this.state.errorMsg}</div>
                     <label className='form-label col-form-label' style={{textAlign: 'left'}}>WebView Size</label>
                     <select className='form-control m-input' value={this.state.webviewsize} onChange={this.onChangeWebviewSize}>
                       {
@@ -228,4 +253,15 @@ class AddAction extends React.Component {
   }
 }
 
-export default AddAction
+function mapStateToProps(state) {
+  console.log(state)
+  return {
+  }
+}
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators({
+    fetchWhiteListedDomains,
+  }, dispatch)
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(AddAction)

@@ -20,11 +20,17 @@ class OptInActions extends React.Component {
   }
   editMessage () {
     this.props.switchSetupState('false')
+    this.props.onEditMessage()
+    let initialFiles = this.props.initialFiles
+    if (this.props.newFiles) {
+      initialFiles = initialFiles.concat(this.props.newFiles)
+    }
     this.props.history.push({
       pathname: `/createMessengerAdMessage`,
-      state: {jsonAdId: this.props.jsonAdId}
+      state: {jsonAdId: this.props.jsonAdId, setupState: this.props.setupState, initialFiles, realInitialFiles: this.props.initialFiles, newFiles: this.props.newFiles}
     })
   }
+
   render () {
     console.log('this.props.messengerAds', this.props.jsonAdId)
     return (

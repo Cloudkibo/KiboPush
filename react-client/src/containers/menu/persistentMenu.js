@@ -5,15 +5,16 @@ import { loadMyPagesList } from '../../redux/actions/pages.actions'
 import { saveCurrentMenuItem, removeMenu, saveMenu, getIndexBypage } from '../../redux/actions/menu.actions'
 import { transformData, removeMenuPayload } from './utility'
 import { checkWhitelistedDomains } from '../../redux/actions/broadcast.actions'
-import { Link } from 'react-router-dom'
 import AlertContainer from 'react-alert'
 import { registerAction } from '../../utility/socketio'
-import { isWebURL, isWebViewUrl } from './../../utility/utils'
+import { isWebURL, isWebViewUrl, deleteFiles, deleteFile, getFileIdsOfMenu, deleteInitialFiles } from './../../utility/utils'
 import { Popover, PopoverHeader, PopoverBody } from 'reactstrap'
 import ViewScreen from './viewScreen'
 import { RingLoader } from 'halogenium'
 import YouTube from 'react-youtube'
 import AlertMessage from '../../components/alertMessages/alertMessage'
+import { fetchWhiteListedDomains } from '../../redux/actions/settings.actions'
+import URL from 'url'
 
 class Menu extends React.Component {
   constructor (props, context) {
@@ -21,10 +22,7 @@ class Menu extends React.Component {
     props.loadMyPagesList()
     this.state = {
       openPopover: false,
-      menuItems: [{
-        title: 'Menu Item',
-        submenu: []
-      }],
+      menuItems: [],
       selectPage: '',
       selectedIndex: 'menuPopover',
       disabledWebUrl: true,
@@ -36,9 +34,14 @@ class Menu extends React.Component {
       webviewsize: 'FULL',
       webviewsizes: ['COMPACT', 'TALL', 'FULL'],
       subMenuEnable: false,
-      openVideo: false
+      openVideo: false,
+      newFiles: [],
+      initialFiles: [],
+      maxMainmenu : 2,
+      errorMsg: '',
+      whitelistedDomains: [],
+      maxMainMenuItems:2
     }
-
     this.pageChange = this.pageChange.bind(this)
     this.selectPage = this.selectPage.bind(this)
     this.handleToggle = this.handleToggle.bind(this)
@@ -72,12 +75,48 @@ class Menu extends React.Component {
     this.handleWebView = this.handleWebView.bind(this)
     this.saveMenuData = this.saveMenuData.bind(this)
     this.openVideoTutorial = this.openVideoTutorial.bind(this)
+    this.removePayloadFiles = this.removePayloadFiles.bind(this)
+    this.goToSettings = this.goToSettings.bind(this)
+    this.handleFetch = this.handleFetch.bind(this)
+    this.messageDisplay = this.messageDisplay.bind(this)
+    this.addMenuElement = this.addMenuElement.bind(this)
+
     if (!this.props.currentMenuItem) {
       if (this.props.pages && this.props.pages.length > 0) {
         this.props.getIndexBypage(this.props.pages[0].pageId, this.handleIndexByPage)
+        props.fetchWhiteListedDomains(this.props.pages[0].pageId, this.handleFetch)
       }
     }
   }
+
+  handleFetch(resp) {
+    if (resp.status === 'success') {
+      this.setState({ whitelistedDomains: resp.payload })
+    }
+  }
+
+  messageDisplay () {
+    if (this.state.maxMainmenu === 2) {
+        return 'Only two more main menus can be added.'
+    }
+    else if(this.state.maxMainmenu === 1) {
+      return 'Only one more main menus can be added.'
+    }
+    else {
+      return 'No more main menus can be added.'
+    }
+  }
+
+  addMenuElement () {
+    let element = []
+    for (let j = 0; j < this.state.maxMainmenu; j++) {
+     element.push(<div className='col-6 menuDiv m-input-icon m-input-icon--right'>
+          <button className='addMenu'onClick={this.addMenu}>+ Add Menu </button>
+          </div>)
+    }
+    return element
+  }
+
   openVideoTutorial () {
     this.setState({
       openVideo: true
@@ -102,8 +141,10 @@ class Menu extends React.Component {
       action: function (data) {
         if (self.state.selectPage === '') {
           compProp.getIndexBypage(compProp.pages[0].pageId, self.handleIndexByPage)
+          compProp.fetchWhiteListedDomains(compProp.pages[0].pageId, this.handleFetch)
         } else {
           compProp.getIndexBypage(self.state.selectPage.pageId, self.handleIndexByPage)
+          compProp.fetchWhiteListedDomains(self.state.selectPage.pageId, this.handleFetch)
         }
       }
     })
@@ -134,7 +175,11 @@ class Menu extends React.Component {
         default:
           break
       }
+
       this.setState({
+        initialFiles: this.props.location.state.initialFiles,
+        maxMainmenu: this.props.location.state.maxMainmenu,
+        newFiles: this.props.currentMenuItem.newFiles,
         menuItems: menuReturned,
         selectedIndex: this.props.currentMenuItem.clickedIndex
       })
@@ -163,12 +208,23 @@ class Menu extends React.Component {
     this.setState({openWebsite: false, disabledWebUrl: true, webUrl: ''})
   }
   changeWebviewUrl (e) {
-    if (isWebURL(this.state.webviewurl)) {
-      this.setState({disabledWebUrl: false})
-    } else {
-      this.setState({disabledWebUrl: true})
-    }
     this.setState({webviewurl: e.target.value})
+
+    let validDomain = false
+    for (let i = 0; i < this.state.whitelistedDomains.length; i++) {
+      let domain = this.state.whitelistedDomains[i]
+      if (URL.parse(e.target.value).href === URL.parse(domain).href) {
+        validDomain = true
+        break
+      }
+    }
+
+    if (validDomain) {
+      this.setState({disabledWebUrl: false, errorMsg: ''})
+    } else {
+      this.setState({disabledWebUrl: true, errorMsg: 'The given domain is not whitelisted. Please add it to whitelisted domains.' })
+    }
+
   }
   onChangeWebviewSize (event) {
     if (event.target.value !== -1) {
@@ -201,10 +257,7 @@ class Menu extends React.Component {
     }
   }
   initializeMenuItems () {
-    var tempItemMenus = [{
-      title: 'Main Menu',
-      submenu: []
-    }]
+    var tempItemMenus = []
     this.setState({
       menuItems: tempItemMenus
     })
@@ -257,20 +310,31 @@ class Menu extends React.Component {
     }
 
     this.setState({menuItems: temp})
-    var currentState = { itemMenus: this.state.menuItems, clickedIndex: this.state.selectedIndex, currentPage: [this.state.selectPage._id] }
+    this.editing = true
+    var currentState = { itemMenus: this.state.menuItems, clickedIndex: this.state.selectedIndex, currentPage: [this.state.selectPage._id], newFiles: this.state.newFiles }
     this.props.saveCurrentMenuItem(currentState)
+    let initialFiles = this.state.initialFiles
+    if (this.state.initialFiles && this.state.newFiles) {
+      initialFiles = initialFiles.concat(this.state.newFiles)
+    }
     this.props.history.push({
       pathname: `/createMessage`,
+      state: {realInitialFiles: this.state.initialFiles, initialFiles: initialFiles, newFiles: this.state.newFiles, maxMainmenu: this.state.maxMainmenu}
     })
-
   }
   handleReset () {
     this.props.getIndexBypage(this.state.selectPage.pageId, this.handleIndexByPage)
+    this.props.fetchWhiteListedDomains(this.state.selectPage.pageId, this.handleFetch)
   }
   handleIndexByPage (res) {
     if (res.status === 'success' && res.payload && res.payload.length > 0) {
+      if(res.payload[0].jsonStructure[0].type) {
+        let maxMainmenu = this.state.maxMainMenuItems - res.payload[0].jsonStructure.length
+      let initialFiles = getFileIdsOfMenu(res.payload[0].jsonStructure)
       this.setState({
-        menuItems: res.payload[0].jsonStructure
+        initialFiles,
+        menuItems: res.payload[0].jsonStructure,
+        maxMainmenu:maxMainmenu
       })
       for (var i = 0; i < this.props.pages.length; i++) {
         if (this.props.pages[i]._id === res.payload.pageId) {
@@ -278,10 +342,44 @@ class Menu extends React.Component {
         }
       }
     } else {
+      this.setState({
+        initialFiles : [],
+        menuItems: [],
+        maxMainmenu:2
+      })
+    }
+  } else {
       this.initializeMenuItems()
     }
   }
+
+  removePayloadFiles () {
+    for (let i = 0; i < this.state.menuItems.length; i++) {
+      let menuItem = this.state.menuItems[i]
+      if (menuItem.payload) {
+        deleteFiles(JSON.parse(menuItem.payload))
+      }
+      if (menuItem.submenu) {
+        for (let j = 0; j < menuItem.submenu.length; j++) {
+          let subItem = menuItem.submenu[j]
+          if (subItem.payload) {
+            deleteFiles(JSON.parse(subItem.payload))
+          }
+          if (subItem.submenu) {
+            for (let k = 0; k < subItem.submenu.length; k++) {
+              let nestedItem = subItem.submenu[k]
+              if (nestedItem.payload) {
+                deleteFiles(JSON.parse(nestedItem.payload))
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
   removeMainMenu () {
+    this.removePayloadFiles()
     var data = {}
     data.payload = removeMenuPayload()
     data.pageId = this.state.selectPage.pageId
@@ -293,8 +391,10 @@ class Menu extends React.Component {
     data.jsonStructure = tempItemMenus
     var currentState = null
     this.props.saveCurrentMenuItem(currentState)
+    this.setState({newFiles: [], initialFiles: []})
     this.props.removeMenu(data, this.handleReset, this.msg)
   }
+
   validateMenu () {
     var errorMessage = ''
     var menuItems = this.state.menuItems
@@ -370,7 +470,8 @@ class Menu extends React.Component {
           webviewsize: menu.webview_height_ratio,
           openWebView: true,
           openWebsite: false,
-          webUrl: ''
+          webUrl: '',
+          errorMsg: ''
         })
       } else {
         this.setState({
@@ -381,7 +482,19 @@ class Menu extends React.Component {
           webviewsize: 'FULL'
         })
       }
-    } else if (menu.type === 'nested') {
+    } else {
+      this.setState({
+        webUrl: '',
+        openWebsite: false,
+        webviewurl: '',
+        openWebView: false,
+        webviewsize: 'FULL',
+        selectedRadio: '',
+        disabledWebUrl: false,
+        errorMsg: ''
+      })
+    }
+    if (menu.type === 'nested') {
       this.setState({
         selectedRadio: 'openSubMenu'
       })
@@ -389,11 +502,6 @@ class Menu extends React.Component {
       this.setState({
         selectedRadio: 'replyWithMessage',
         isEditMessage: true
-      })
-    } else {
-      this.setState({
-        selectedRadio: '',
-        webUrl: ''
       })
     }
     console.log('Selected Index', this.state.selectedIndex)
@@ -452,6 +560,9 @@ class Menu extends React.Component {
   }
   pageChange (event) {
     if (event.target.value !== -1) {
+      for (let i = 0; i < this.state.newFiles.length; i++) {
+        deleteFile(this.state.newFiles[i])
+      }
       let page
       for (let i = 0; i < this.props.pages.length; i++) {
         if (this.props.pages[i].pageId === event.target.value) {
@@ -461,12 +572,14 @@ class Menu extends React.Component {
       }
       if (page) {
         this.setState({
-          selectPage: page
+          selectPage: page,
+          newFiles: []
         })
       }
       var currentState = null
       this.props.saveCurrentMenuItem(currentState)
       this.props.getIndexBypage(page.pageId, this.handleIndexByPage)
+      this.props.fetchWhiteListedDomains(page.pageId, this.handleFetch)
     } else {
       this.setState({
         selectPage: {}
@@ -486,24 +599,35 @@ class Menu extends React.Component {
   }
   addMenu () {
     var menuItems = this.state.menuItems
+    var noOfItems = this.state.maxMainmenu
+    noOfItems = noOfItems-1
     var newMenu = {
       title: 'Menu Item',
       submenu: []
     }
     menuItems.push(newMenu)
     this.setState({
-      menuItems: this.state.menuItems
+      menuItems: this.state.menuItems,
+      maxMainmenu : noOfItems
     })
   }
   removeMenu (index) {
     var menuItems = []
+    let newFiles = this.state.newFiles
+    var noOfItems = this.state.maxMainmenu
+    noOfItems = noOfItems+1
+    if (this.state.menuItems[index].payload) {
+      newFiles = deleteFiles(JSON.parse(this.state.menuItems[index].payload), newFiles, this.state.initialFiles)
+    }
     for (let i = 0; i < this.state.menuItems.length; i++) {
       if (index !== i) {
         menuItems.push(this.state.menuItems[i])
       }
     }
     this.setState({
-      menuItems: menuItems
+      menuItems: menuItems,
+      newFiles: newFiles,
+      maxMainmenu : noOfItems
     })
   }
   addSubMenu (index) {
@@ -533,6 +657,10 @@ class Menu extends React.Component {
   }
   removeSubMenu (index, subIndex) {
     var subItems = []
+    let newFiles = this.state.newFiles
+    if (this.state.menuItems[index].submenu[subIndex].payload) {
+      newFiles = deleteFiles(JSON.parse(this.state.menuItems[index].submenu[subIndex].payload), newFiles, this.state.initialFiles)
+    }
     for (let i = 0; i < this.state.menuItems[index].submenu.length; i++) {
       if (subIndex !== i) {
         subItems.push(this.state.menuItems[index].submenu[i])
@@ -545,7 +673,8 @@ class Menu extends React.Component {
       menuItems[index].type = ''
     }
     this.setState({
-      menuItems: menuItems
+      menuItems: menuItems,
+      newFiles
     })
   }
   addNestedMenu (index, subIndex) {
@@ -574,6 +703,10 @@ class Menu extends React.Component {
   }
   removeNestedMenu (index, subIndex, nestedIndex) {
     var nestedItems = []
+    let newFiles = this.state.newFiles
+    if (this.state.menuItems[index].submenu[subIndex].submenu[nestedIndex].payload) {
+      newFiles = deleteFiles(JSON.parse(this.state.menuItems[index].submenu[subIndex].submenu[nestedIndex].payload), newFiles, this.state.initialFiles)
+    }
     for (let i = 0; i < this.state.menuItems[index].submenu[subIndex].submenu.length; i++) {
       if (nestedIndex !== i) {
         nestedItems.push(this.state.menuItems[index].submenu[subIndex].submenu[i])
@@ -586,7 +719,8 @@ class Menu extends React.Component {
       menuItems[index].submenu[subIndex].type = ''
     }
     this.setState({
-      menuItems: menuItems
+      menuItems: menuItems,
+      newFiles
     })
   }
   getMenuHierarchy (indexVal) {
@@ -641,11 +775,13 @@ class Menu extends React.Component {
   saveMenuData (url) {
     var temp = this.state.menuItems
     var index = this.state.selectedIndex.split('-')
+    let newFiles = this.state.newFiles
     if (index && index.length > 1) {
       var menu = this.getMenuHierarchy(this.state.selectedIndex)
       switch (menu) {
         case 'item':
           if (temp[index[1]].payload) {
+            newFiles = deleteFiles(JSON.parse(temp[index[1]].payload), newFiles, this.state.initialFiles)
             delete temp[index[1]].payload
           }
           temp[index[1]].type = 'web_url'
@@ -660,6 +796,7 @@ class Menu extends React.Component {
           break
         case 'submenu':
           if (temp[index[1]].submenu[index[2]].payload) {
+            newFiles = deleteFiles(JSON.parse(temp[index[1]].submenu[index[2]].payload), newFiles, this.state.initialFiles)
             delete temp[index[1]].submenu[index[2]].payload
           }
           temp[index[1]].submenu[index[2]].type = 'web_url'
@@ -674,6 +811,7 @@ class Menu extends React.Component {
           break
         case 'nestedMenu':
           if (temp[index[1]].submenu[index[2]].submenu[index[3]].payload) {
+            newFiles = deleteFiles(JSON.parse(temp[index[1]].submenu[index[2]].submenu[index[3]].payload), newFiles, this.state.initialFiles)
             delete temp[index[1]].submenu[index[2]].submenu[index[3]].payload
           }
           temp[index[1]].submenu[index[2]].submenu[index[3]].type = 'web_url'
@@ -690,7 +828,7 @@ class Menu extends React.Component {
           break
       }
     }
-    this.setState({menuItems: temp})
+    this.setState({menuItems: temp, newFiles})
 
   }
   handleWebView (resp, url) {
@@ -725,7 +863,10 @@ class Menu extends React.Component {
     if (this.state.menuItems && this.state.menuItems.length > 0) {
       var errorMessage = this.validateMenu()
       if (errorMessage === '') {
-        var currentState = { itemMenus: this.state.menuItems, clickedIndex: this.state.selectedIndex, currentPage: this.state.selectPage.pageId }
+        let initialFiles = this.state.initialFiles
+        let currentFiles = getFileIdsOfMenu(this.state.menuItems)
+        deleteInitialFiles(initialFiles, currentFiles)
+        var currentState = { itemMenus: this.state.menuItems, clickedIndex: this.state.selectedIndex, currentPage: this.state.selectPage.pageId, newFiles: [] }
         this.props.saveCurrentMenuItem(currentState)
         var temp = []
         for (var k = 0; k < this.state.menuItems.length; k++) {
@@ -742,12 +883,18 @@ class Menu extends React.Component {
         data.userId = this.props.user._id
         data.jsonStructure = this.state.menuItems
         this.setState({
-          loading: true
+          loading: true,
+          newFiles: [],
+          initialFiles: currentFiles,
         })
+        this.editing = true
         this.props.saveMenu(data, this.handleSaveMenu, this.msg)
       } else {
         this.msg.error(errorMessage)
       }
+    }
+    else {
+      this.msg.error('Please add at least one Main menu')
     }
   }
   handleSaveMenu (res) {
@@ -767,6 +914,24 @@ class Menu extends React.Component {
     var currentState = null
     this.props.saveCurrentMenuItem(currentState)
   }
+
+  componentWillUnmount () {
+    if (!this.editing) {
+      if (this.state.newFiles) {
+        for (let i = 0; i < this.state.newFiles.length; i++) {
+          deleteFile(this.state.newFiles[i])
+        }
+      }
+    }
+  }
+
+  goToSettings () {
+    this.props.history.push({
+      pathname: '/settings',
+      state: {tab: 'whitelistDomains'}
+    })
+  }
+
   render () {
     var alertOptions = {
       offset: 14,
@@ -778,7 +943,7 @@ class Menu extends React.Component {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        { this.state.loading && 
+        { this.state.loading &&
         <div style={{ width: '100vw', height: '100vh', background: 'rgba(33, 37, 41, 0.6)', position: 'fixed', zIndex: '99999', top: '0px' }}>
             <div style={{ position: 'fixed', top: '50%', left: '50%', width: '30em', height: '18em', marginLeft: '-10em' }}
               className='align-center'>
@@ -795,7 +960,7 @@ class Menu extends React.Component {
                   <h5 className="modal-title" id="exampleModalLabel">
                     Menu Video Tutorial
 									</h5>
-                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" 
+                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal"
                   aria-label="Close"
                   onClick={() => {
                     this.setState({
@@ -907,24 +1072,25 @@ class Menu extends React.Component {
                 {
                   this.state.openWebView &&
                   <div className='card'>
-                    <h7 className='card-header'>Open WebView <i style={{float: 'right', cursor: 'pointer'}} className='la la-close' onClick={this.closeWebview} /></h7>
+                    <h7 className='card-header'>Open WebView <i style={{float: 'right', cursor: 'pointer', marginTop: '10px'}} className='la la-close' onClick={this.closeWebview} /></h7>
                     <div style={{padding: '10px'}} className='card-block'>
                       <div>
-                        <Link to='/settings' state={{tab: 'whitelistDomains'}} style={{color: '#5867dd', cursor: 'pointer', fontSize: 'small'}}>Whitelist url domains to open in-app browser</Link>
+                        <button onClick={this.goToSettings} style={{color: '#5867dd', cursor: 'pointer', fontSize: 'small', border: 'none', background: 'none'}}>Whitelist url domains to open in-app browser</button>
                       </div>
                       <label className='form-label col-form-label' style={{textAlign: 'left'}}>Url</label>
                       <input type='text' value={this.state.webviewurl} className='form-control' onChange={this.changeWebviewUrl} placeholder='Enter link...' />
+                      <div style={{ marginBottom: '30px', color: 'red' }}>{this.state.errorMsg}</div>
                       <label className='form-label col-form-label' style={{textAlign: 'left'}}>WebView Size</label>
                       <select className='form-control m-input' value={this.state.webviewsize} onChange={this.onChangeWebviewSize}>
                         {
                           this.state.webviewsizes && this.state.webviewsizes.length > 0 && this.state.webviewsizes.map((size, i) => (
                             <option key={i} value={size} selected={size === this.state.webviewsize}>{size}</option>
                           ))
-                        }
+                      }
                       </select>
                     </div>
                   </div>
-                }
+              }
                 { (this.state.openWebsite || this.state.openWebView) &&
                 <div style={{marginTop: '10px'}}>
                   <button onClick={this.saveWebUrl} className='btn btn-success pull-right' disabled={(this.state.disabledWebUrl)}> Done </button>
@@ -1013,15 +1179,13 @@ class Menu extends React.Component {
                     this.state.menuItems.map((item, index) => {
                       return (
                         <div key={index}>
-                          <div className='col-6 menuDiv m-input-icon m-input-icon--right'>
+                          <div className='col-6 menuDiv m-input-icon m-input-icon--right' >
                             <input id={'item-' + index} onClick={(e) => { this.selectIndex(e, 'item-' + index); this.handleToggle() }} type='text' className='form-control m-input menuInput' onChange={(e) => this.changeLabel(e)} value={item.title} />
-                            { this.state.menuItems.length > 1 &&
-                              <span className='m-input-icon__icon m-input-icon__icon--right' onClick={() => this.removeMenu(index)}>
+                              <span className='m-input-icon__icon m-input-icon__icon--right' onClick={() => this.removeMenu(index)} >
                                 <span>
                                   <i className='fa fa-times-circle' />
                                 </span>
                               </span>
-                            }
                           </div>
                           {item.submenu.map((subItem, subindex) => {
                             return (
@@ -1068,18 +1232,18 @@ class Menu extends React.Component {
                       )
                     })
                  }
-                  { this.state.menuItems.length === 1 &&
-                    <div className='col-8 menuDiv' style={{marginLeft: '-15px', width: '498px'}}>
-                      <button className='addMenu'onClick={this.addMenu}>+ Add Menu </button>
-                    </div>
+                  {
+                    this.addMenuElement()
                   }
-                  <div className='col-8 menuDiv' style={{marginLeft: '-15px', width: '498px'}}>
+                  <div>
+                  <div className='col-6 menuDiv m-input-icon m-input-icon--right'>
                     <input type='text' className='form-control m-input menuFix' value='Powered by KiboPush' readOnly />
+                  </div>
                   </div>
                   <div className='col-12' style={{paddingTop: '30px', marginLeft: '-15px'}}>
                     <i className='flaticon-exclamation m--font-brand' />
                     <span style={{marginLeft: '5px'}}>
-                      Only two more main menus can be added.
+                      {this.messageDisplay()}
                     </span>
                   </div>
                 </div>
@@ -1121,7 +1285,8 @@ function mapDispatchToProps (dispatch) {
     saveMenu: saveMenu,
     getIndexBypage: getIndexBypage,
     removeMenu: removeMenu,
-    checkWhitelistedDomains: checkWhitelistedDomains
+    checkWhitelistedDomains: checkWhitelistedDomains,
+    fetchWhiteListedDomains: fetchWhiteListedDomains
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Menu)

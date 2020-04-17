@@ -20,14 +20,23 @@ import { getFbAppId, getAdminSubscriptions } from '../../redux/actions/basicinfo
 import { registerAction } from '../../utility/socketio'
 import {loadTags} from '../../redux/actions/tags.actions'
 import BUILDER from '../../components/SimplifiedBroadcastUI/builder/builders'
+import { getFileIdsOfBroadcast } from '../../utility/utils'
 var MessengerPlugin = require('react-messenger-plugin').default
 
 class CreateConvo extends React.Component {
   constructor (props, context) {
     super(props, context)
+    let initialFiles = null
+    if (this.props.location.state && this.props.location.state.linkedMessages && this.props.location.state.linkedMessages.length > 0) {
+      initialFiles = []
+      for (let i = 0; i < this.props.location.state.linkedMessages.length; i++) {
+        initialFiles = initialFiles.concat(getFileIdsOfBroadcast( this.props.location.state.linkedMessages[i].messageContent))
+      }
+    }
     this.state = {
       buttonActions: ['open website', 'open webview', 'unsubscribe sequence', 'subscribe sequence', 'set custom field', 'create message', 'google sheets', 'hubspot'],
       broadcast: this.props.location.state && this.props.location.state.payload ? this.props.location.state.payload : [],
+      initialFiles,
       stayOpen: false,
       disabled: false,
       linkedMessages: this.props.location.state && this.props.location.state.linkedMessages ? this.props.location.state.linkedMessages : null,
@@ -362,6 +371,7 @@ class CreateConvo extends React.Component {
       //     }
       //   }
       // }
+      this.setState({newFiles: []})
       console.log('payload before', this.state.linkedMessages[0].messageContent)
       this.deleteButtonIds(this.state.linkedMessages)
       this.deleteQuickReplyIds(this.state.linkedMessages)
@@ -519,6 +529,10 @@ class CreateConvo extends React.Component {
           }
         }
       }
+      this.setState({newFiles: []})
+      console.log('payload before', this.state.linkedMessages[0].messageContent)
+      this.deleteButtonIds(this.state.linkedMessages)
+      this.deleteQuickReplyIds(this.state.linkedMessages)
       var data = {
         platform: 'facebook',
         self: true,
@@ -756,6 +770,8 @@ class CreateConvo extends React.Component {
         <BUILDER
           titleEditable
           module='broadcast'
+          initialFiles={this.state.initialFiles}
+          newFiles={this.state.newFiles}
           rerenderFlowBuilder={this.rerenderFlowBuilder}
           convoTitle={this.state.convoTitle}
           handleChange={this.handleChange}
