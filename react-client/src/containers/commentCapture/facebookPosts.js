@@ -176,15 +176,15 @@ class FacebookPosts extends React.Component {
   }
 
   fetchAllPost () {
-    props.fetchAllPosts({
-      pageIds: props.pages ? props.pages.map(p => p._id) : [],
+    this.props.fetchAllPosts({
+      pageIds: this.props.pages ? this.props.pages.map(p => p._id) : [],
       last_id: 'none',
       number_of_records: 10,
       first_page: 'first',
       search_value: this.state.searchValue,
       type_value: this.state.captureType,
-      startDate: startDate,
-      endDate: endDate})
+      startDate: this.state.startDate,
+      endDate: this.state.endDate})
     this.setState({pageNumber:0})
   }
   componentDidMount() {
@@ -399,7 +399,7 @@ class FacebookPosts extends React.Component {
                   className='btn btn-primary btn-sm'
                   onClick={() => {
                     this.setState({filter: false})
-                    this.props.deletePost(this.state.deleteid, this.msg, fetchAllPost)
+                    this.props.deletePost(this.state.deleteid, this.msg, this.fetchAllPost)
                   }}
                   data-dismiss='modal'>Delete
               </button>
