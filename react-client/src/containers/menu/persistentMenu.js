@@ -108,7 +108,7 @@ class Menu extends React.Component {
   addMenuElement () {
     let element = []
     for (let j = 0; j < this.state.maxMainmenu; j++) {
-     element.push(<div className='col-8 menuDiv' style={{marginLeft: '-15px'}}>
+     element.push(<div className='col-6 menuDiv m-input-icon m-input-icon--right'>
           <button className='addMenu'onClick={this.addMenu}>+ Add Menu </button>
           </div>)
     }
@@ -1177,8 +1177,8 @@ class Menu extends React.Component {
                       return (
                         <div key={index}>
                           <div className='col-6 menuDiv m-input-icon m-input-icon--right' >
-                            <input id={'item-' + index} onClick={(e) => { this.selectIndex(e, 'item-' + index); this.handleToggle() }} type='text' className='form-control m-input menuInput' onChange={(e) => this.changeLabel(e)} value={item.title}  style= {{width: '647px'}}/>
-                              <span className='m-input-icon__icon m-input-icon__icon--right' onClick={() => this.removeMenu(index)} style= {{left: '604px'}}>
+                            <input id={'item-' + index} onClick={(e) => { this.selectIndex(e, 'item-' + index); this.handleToggle() }} type='text' className='form-control m-input menuInput' onChange={(e) => this.changeLabel(e)} value={item.title} />
+                              <span className='m-input-icon__icon m-input-icon__icon--right' onClick={() => this.removeMenu(index)} >
                                 <span>
                                   <i className='fa fa-times-circle' />
                                 </span>
@@ -1232,8 +1232,10 @@ class Menu extends React.Component {
                   {
                     this.addMenuElement()
                   }
-                  <div className='col-8 menuDiv' style={{marginLeft: '-15px'}}>
+                  <div>
+                  <div className='col-6 menuDiv m-input-icon m-input-icon--right'>
                     <input type='text' className='form-control m-input menuFix' value='Powered by KiboPush' readOnly />
+                  </div>
                   </div>
                   <div className='col-12' style={{paddingTop: '30px', marginLeft: '-15px'}}>
                     <i className='flaticon-exclamation m--font-brand' />
