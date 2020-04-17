@@ -7,13 +7,14 @@ import { transformData, removeMenuPayload } from './utility'
 import { checkWhitelistedDomains } from '../../redux/actions/broadcast.actions'
 import AlertContainer from 'react-alert'
 import { registerAction } from '../../utility/socketio'
-import { isWebURL, isWebViewUrl, deleteFiles, deleteFile, getFileIdsOfMenu, deleteInitialFiles, getHostName } from './../../utility/utils'
+import { isWebURL, isWebViewUrl, deleteFiles, deleteFile, getFileIdsOfMenu, deleteInitialFiles } from './../../utility/utils'
 import { Popover, PopoverHeader, PopoverBody } from 'reactstrap'
 import ViewScreen from './viewScreen'
 import { RingLoader } from 'halogenium'
 import YouTube from 'react-youtube'
 import AlertMessage from '../../components/alertMessages/alertMessage'
 import { fetchWhiteListedDomains } from '../../redux/actions/settings.actions'
+import URL from 'url'
 
 class Menu extends React.Component {
   constructor (props, context) {
@@ -212,7 +213,7 @@ class Menu extends React.Component {
     let validDomain = false
     for (let i = 0; i < this.state.whitelistedDomains.length; i++) {
       let domain = this.state.whitelistedDomains[i]
-      if (getHostName(e.target.value) === getHostName(domain)) {
+      if (URL.parse(e.target.value).href === URL.parse(domain).href) {
         validDomain = true
         break
       }
