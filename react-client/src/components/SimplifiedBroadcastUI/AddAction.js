@@ -2,8 +2,10 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { isWebURL , getHostName} from '../../utility/utils'
+import { isWebURL } from '../../utility/utils'
 import { fetchWhiteListedDomains } from '../../redux/actions/settings.actions'
+import URL from 'url'
+
 class AddAction extends React.Component {
   constructor (props) {
     super(props)
@@ -132,7 +134,7 @@ class AddAction extends React.Component {
     let validDomain = false
     for (let i = 0; i < this.state.whitelistedDomains.length; i++) {
       let domain = this.state.whitelistedDomains[i]
-      if (getHostName(e.target.value) === getHostName(domain)) {
+      if (URL.parse(e.target.value).href === URL.parse(domain).href) {
         validDomain = true
         break
       }

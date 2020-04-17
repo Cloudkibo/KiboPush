@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom'
 import { fetchAllSequence } from '../../redux/actions/sequence.action'
 import { getIntegrations } from '../../redux/actions/settings.actions'
 import { addButton, editButton } from '../../redux/actions/broadcast.actions'
-import { isWebURL, isWebViewUrl, getHostName } from './../../utility/utils'
+import { isWebURL, isWebViewUrl } from './../../utility/utils'
 import { checkWhitelistedDomains } from '../../redux/actions/broadcast.actions'
 import { fetchWhiteListedDomains } from '../../redux/actions/settings.actions'
 import { loadCustomFields } from '../../redux/actions/customFields.actions'
@@ -13,6 +13,7 @@ import CustomFields from '../customFields/customfields'
 import GoogleSheetActions from './GoogleSheetActions'
 import HubspotActions from './hubspot/HubspotActions'
 import ActionsPopover from './ActionsPopover'
+import URL from 'url'
 
 class Button extends React.Component {
   constructor(props, context) {
@@ -152,7 +153,7 @@ class Button extends React.Component {
       portalId: hubSpotFormPayload.portalId,
       formId: hubSpotFormPayload.hubSpotForm,
       mapping: hubSpotFormPayload.mapping,
-      identityCustomFieldValue:hubSpotFormPayload.identityFieldValue, 
+      identityCustomFieldValue:hubSpotFormPayload.identityFieldValue,
       identityFieldValue: hubSpotFormPayload.identityFieldValue
     })
     this.setState({postbackPayload})
@@ -657,7 +658,7 @@ class Button extends React.Component {
       let validDomain = false
       for (let i = 0; i < this.state.whitelistedDomains.length; i++) {
         let domain = this.state.whitelistedDomains[i]
-        if (getHostName(this.state.webviewurl) === getHostName(domain)) {
+        if (URL.parse(this.state.webviewurl).href === URL.parse(domain).href) {
           validDomain = true
           break
         }
