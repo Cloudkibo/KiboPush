@@ -39,7 +39,7 @@ const handleIncomingMessage = (payload, state, props, updateLiveChatInfo, clearS
     data = {
       userChat,
       chatCount: props.chatCount + 1,
-      openSessions: state.tabValue === 'open' ? sessions : props.openSessions,
+      openSessions: state.tabValue === 'open' ? sessions : [session, ...props.openSessions],
       closeSessions: state.tabValue === 'close' ? sessions : props.closeSessions,
       closeCount: state.tabValue === 'close' ? props.closeCount - 1 : props.closeCount
     }
