@@ -2111,7 +2111,7 @@ class Subscriber extends React.Component {
                               </div>
                             {
                               (this.state.selectedField && this.state.selectedField._id) &&
-                                <div style={{paddingLeft: '0', marginLeft:'-15px'}} className='col-md-6'>
+                                <div style={{paddingLeft: '0', marginLeft:'-10px'}} className='col-md-6'>
                                   {this.getInputComponent(this.state.selectedField, this.handleSelectedFieldValue)}
                                 </div>
                             }
