@@ -16,6 +16,11 @@ class ViewScreen extends React.Component {
     this.setState({data: this.props.data})
     console.log('this.props.data', this.props.data)
   }
+  componentWillReceiveProps(nextProps) {
+    if(nextProps.data) {
+      this.setState({data:nextProps.data})
+    }
+  }
   onRight (data, type, heading, previous) {
     console.log('previous', previous)
     console.log('this.props.data', this.props.data[previous])

@@ -79,8 +79,6 @@ class Menu extends React.Component {
     this.handleFetch = this.handleFetch.bind(this)
     this.messageDisplay = this.messageDisplay.bind(this)
     this.addMenuElement = this.addMenuElement.bind(this)
-    this.goToSettings = this.goToSettings.bind(this)
-    this.handleFetch = this.handleFetch.bind(this)
 
     if (!this.props.currentMenuItem) {
       if (this.props.pages && this.props.pages.length > 0) {
@@ -116,12 +114,6 @@ class Menu extends React.Component {
           </div>)
     }
     return element
-  }
-
-  handleFetch(resp) {
-    if (resp.status === 'success') {
-      this.setState({ whitelistedDomains: resp.payload })
-    }
   }
 
   openVideoTutorial () {
@@ -1187,14 +1179,12 @@ class Menu extends React.Component {
                       return (
                         <div key={index}>
                           <div className='col-6 menuDiv m-input-icon m-input-icon--right' >
-                            <input id={'item-' + index} onClick={(e) => { this.selectIndex(e, 'item-' + index); this.handleToggle() }} type='text' className='form-control m-input menuInput' onChange={(e) => this.changeLabel(e)} value={item.title} />
-                            { this.state.menuItems.length > 1 &&
-                              <span className='m-input-icon__icon m-input-icon__icon--right' onClick={() => this.removeMenu(index)}>
+                            <input id={'item-' + index} onClick={(e) => { this.selectIndex(e, 'item-' + index); this.handleToggle() }} type='text' className='form-control m-input menuInput' onChange={(e) => this.changeLabel(e)} value={item.title}  />
+                              <span className='m-input-icon__icon m-input-icon__icon--right' onClick={() => this.removeMenu(index)} >
                                 <span>
                                   <i className='fa fa-times-circle' />
                                 </span>
                               </span>
-                            }
                           </div>
                           {item.submenu.map((subItem, subindex) => {
                             return (
