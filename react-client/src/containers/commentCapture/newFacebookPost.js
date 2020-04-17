@@ -871,8 +871,8 @@ class FacebookPosts extends React.Component {
                                   <div className='attachmentDiv' style={{display: 'flex'}}>
                                     {
                                     this.state.attachments.map((attachment, i) => (
-                                      <div className='col-2'>
-                                        <span className='fa-stack' style={{cursor: 'pointer', marginLeft: '90px', height: '0.5em'}} onClick={() => this.removeAttachment(attachment)}><i className='fa fa-times fa-stack-2x' /></span>
+                                      <div className='col-2' style={{position: 'relative', marginTop: '10px'}}>
+                                        <span className='fa-stack' style={{cursor: 'pointer', position: 'absolute', right: '0px', top: '-10px', height: '0.5em'}} onClick={() => this.removeAttachment(attachment)}><i className='fa fa-times fa-stack-2x' /></span>
                                         <div className='ui-block' style={{borderStyle: 'dotted', borderWidth: '2px', marginBottom: '10px', paddingTop: '0px'}}>
                                           { attachment.componentType === 'image' && <div className='align-center' style={{height: '60px'}}>
                                             <img src={attachment.url} alt='' style={{objectFit: 'cover', height: '100%', width: '100%'}} />
