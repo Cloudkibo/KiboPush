@@ -117,7 +117,7 @@ export function unassignTags (data, handleResponse, msg) {
     })
   }
 }
-export function createTag (tag, handleResponse) {
+export function createTag (tag, handleResponse, msg) {
   console.log('Actions for saving new subscriber Tag', tag)
   return (dispatch) => {
     callApi('tags', 'post', {tag: tag})
@@ -125,6 +125,11 @@ export function createTag (tag, handleResponse) {
         console.log('createTag res', res)
         if (handleResponse) {
           handleResponse(res)
+        }
+        if (msg && res.status === 'success' && res.payload) {
+          msg.success(`Tag "${res.payload.tag}" created succesfully`)
+        } else {
+          msg.error('Unable to create tag')
         }
         // if (res.status === 'success' && res.payload) {
         //   dispatch(loadTags())
