@@ -128,7 +128,7 @@ class Text extends React.Component {
           </div>
           }
           {
-            !this.state.videoId && <div style={{maxWidth: '100%', fontSize: '16px', textAlign: 'center', whiteSpace: 'pre-wrap'}} className='bubble recipient broadcastContent'>{this.state.text}</div>
+            !this.state.videoId && <div style={{maxWidth: '100%', fontSize: '16px', textAlign: 'center', whiteSpace: 'pre-wrap', wordBreak: 'break-all'}} className='bubble recipient broadcastContent'>{this.state.text}</div>
           }
           {
               this.state.buttons.map((button, index) => {
