@@ -150,7 +150,8 @@ class LinkCarouselModal extends React.Component {
                 }
               })
             } else {
-              let lastCard = cards.splice(cards.length - 2)
+              let lastCard = cards[cards.length - 2]
+              cards.splice(cards.length - 2, 1)
               lastCard.id = links.length + 1
               cards.push(lastCard)
             }

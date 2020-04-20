@@ -549,7 +549,8 @@ class FacebookPosts extends React.Component {
       titleLengthValid: true,
       cards: [],
       links: [],
-      postType: ''
+      postType: '',
+      seeMoreLink: null
     })
     this.props.saveCurrentPost(null)
   }
