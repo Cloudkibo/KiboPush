@@ -100,7 +100,7 @@ class Menu extends React.Component {
         return 'Only two more main menus can be added.'
     }
     else if(this.state.maxMainmenu === 1) {
-      return 'Only one more main menus can be added.'
+      return 'Only one more main menu can be added.'
     }
     else {
       return 'No more main menus can be added.'
