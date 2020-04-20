@@ -35,7 +35,11 @@ class LinkCarouselModal extends React.Component {
         this.cardComponents = new Array(10)
         this.state = {
             cards,
-            links: props.links ? props.links : [{ valid: false, url: '', loading: false, errorMsg: this.defaultErrorMsg }],
+            seeMoreLink: {
+                link: this.props.seeMoreLink ? this.props.seeMoreLink : "KIBOPUSH.COM",
+                valid: true
+            },
+            links: props.links && props.links.length > 0 ? props.links : [{ valid: false, url: '', loading: false, errorMsg: this.defaultErrorMsg }],
             selectedIndex: 0,
             currentCollapsed: false,
             disabled: props.edit ? false : true,
@@ -74,12 +78,16 @@ class LinkCarouselModal extends React.Component {
         this.addLink = this.addLink.bind(this)
         this.removeLink = this.removeLink.bind(this)
         this.valid = this.valid.bind(this)
+        this.handleSeeMoreLinkChange = this.handleSeeMoreLinkChange.bind(this)
         this.typingTimer = null
         this.doneTypingInterval = 500
     }
 
     valid() {
         let links = this.state.links
+        if (!this.state.seeMoreLink.valid) {
+          return false
+        }
         for (let i = 0; i < links.length; i++) {
             if (!links[i].valid || links[i].loading) {
                 return false
@@ -94,10 +102,13 @@ class LinkCarouselModal extends React.Component {
         let selectedIndex = this.state.selectedIndex
         if (links.length > 1) {
             links.splice(index, 1)
+            if (this.props.module === 'commentcapture' && links.length <= 1 && cards.length > 1) {
+              cards.splice(cards.length-1)
+            }
             if (cards[index]) {
                 cards.splice(index, 1)
             }
-            if (selectedIndex === 0) {
+            if (selectedIndex === 0 && links.length > 1) {
                 selectedIndex = 1
             } else {
                 selectedIndex = index - 1
@@ -109,9 +120,42 @@ class LinkCarouselModal extends React.Component {
 
     addLink() {
         let links = this.state.links
+        let cards = this.state.cards
         if (links.length < this.elementLimit) {
-            links.push({ url: '', valid: false, loading: false, errorMsg: this.defaultErrorMsg })
-            this.setState({ links })
+          links.push({ url: '', valid: false, loading: false, errorMsg: this.defaultErrorMsg })
+          cards.push({
+              disabled: true,
+              id: links.length,
+              component: {
+                  title: '',
+                  subtitle: '',
+                  buttons: [],
+                  default_action: ''
+              }
+          })
+          if (this.props.module === 'commentcapture' && links.length > 1) {
+            if (cards.length === links.length) {
+              cards.push({
+                disabled: false,
+                id: links.length + 1,
+                component: {
+                    image_url: this.props.connectedPages.find(p => p._id === this.props.pages[0]).pagePic,
+                    title: `See more at ${this.state.seeMoreLink.link.toUpperCase()}`,
+                    subtitle: '',
+                    buttons: [],
+                    default_action: {
+                      type: 'web_url',
+                      url: this.state.seeMoreLink.link
+                  }
+                }
+              })
+            } else {
+              let lastCard = cards.splice(cards.length - 2)
+              lastCard.id = links.length + 1
+              cards.push(lastCard)
+            }
+          }
+          this.setState({ links, cards })
         }
     }
 
@@ -258,6 +302,22 @@ class LinkCarouselModal extends React.Component {
             this.setState({ links, cards, selectedIndex: index })
         }
     }
+    
+    handleSeeMoreLinkChange (e) {
+      let cards = this.state.cards
+      cards[cards.length - 1].component.title = `See more at ${e.target.value.toUpperCase()}`
+      cards[cards.length - 1].component.default_action = {
+        type: 'web_url',
+        url: e.target.value
+      }
+      this.setState({
+          cards,
+          seeMoreLink: {
+              valid: this.validateURL(e.target.value),
+              link: e.target.value.toUpperCase()
+          }
+      })
+    }
 
     handleLinkChange(e, index) {
         console.log('changing link', e.target.value)
@@ -347,6 +407,26 @@ class LinkCarouselModal extends React.Component {
                             </div>
                         </div>
                         }
+                        {
+                            this.props.module === 'commentcapture' && this.state.links.length > 1 &&
+                            <div style={{marginTop: '50px'}}>
+                                <div className='row'>
+                                    <div className='col-12'>
+                                        <h6>
+                                          See More Link
+                                          <i className='la la-question-circle' data-toggle='tooltip' title='This will be the last card visible on desktop that lets people know where they can find more information' />
+                                        </h6>
+                                        <input disabled={this.props.user.currentPlan.unique_ID === 'plan_B' || this.props.user.currentPlan.unique_ID === 'plan_D'} value={this.state.seeMoreLink.link} style={{ maxWidth: '100%', borderColor: !this.state.seeMoreLink.valid ? 'red' : 'green'}} onChange={this.handleSeeMoreLinkChange} className='form-control' />
+                                    </div>
+                                </div>
+                                {
+                                  this.props.user.currentPlan.unique_ID === 'plan_B' || this.props.user.currentPlan.unique_ID === 'plan_D' ?
+                                  <div style={{color: 'darkgoldenrod'}}>{'*Only available on premium'}</div>
+                                  :
+                                  <div style={{color: this.state.seeMoreLink.valid ? 'green' : 'red'}}>{this.state.seeMoreLink.valid ? '*Link is valid.' : '*Link is invalid'}</div>
+                                }
+                            </div>
+                        }
                     </div>
                     <div className='col-1'>
                     <div style={{minHeight: '100%', width: '1px', borderLeft: '1px solid rgba(0,0,0,.1)'}} />
@@ -403,7 +483,7 @@ class LinkCarouselModal extends React.Component {
                         }
                         </div>
                         {
-                            this.state.cards.length > 1 &&
+                            this.props.module === 'commentcapture' && this.state.cards.length > 1 &&
                             <div>
                             {
                               this.state.selectedIndex > 0 &&
@@ -439,7 +519,7 @@ class LinkCarouselModal extends React.Component {
                             <button onClick={this.closeModal} className='btn btn-secondary' style={{marginRight: '25px', marginLeft: '280px'}}>
                                 Cancel
                             </button>
-                            <button disabled={!this.valid()} onClick={() => {this.props.saveLinks(this.state.links,this.state.cards)}} className='btn btn-primary'>
+                            <button disabled={!this.valid()} onClick={() => {this.props.saveLinks(this.state.links,this.state.cards, this.state.seeMoreLink.link)}} className='btn btn-primary'>
                                 Save
                             </button>
                         </div>
@@ -455,7 +535,8 @@ class LinkCarouselModal extends React.Component {
 
 function mapStateToProps(state) {
     return {
-      connectedPages: (state.pagesInfo.pages)
+      connectedPages: (state.pagesInfo.pages),
+      user: (state.basicInfo.user)
     }
 }
 
