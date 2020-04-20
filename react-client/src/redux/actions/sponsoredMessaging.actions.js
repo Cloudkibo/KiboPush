@@ -183,7 +183,7 @@ export function getInsights (adId) {
       .then(res => {
         console.log('response from insights', res)
         if (res.status === 'success') {
-          dispatch(insights(res.payload))
+          dispatch(insights(res.payload[0]))
         } else {
           console.log(res)
         }
