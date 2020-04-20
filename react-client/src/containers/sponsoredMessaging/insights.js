@@ -6,10 +6,11 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import ReactPaginate from 'react-paginate'
 import { Link } from 'react-router-dom'
 import {getInsights} from '../../redux/actions/sponsoredMessaging.actions'
-
+import IconStack from '../../components/Dashboard/IconStack'
+import CardBox from '../../components/Dashboard/CardBox'
+import { UncontrolledTooltip } from 'reactstrap'
 
 class AdInsights extends React.Component {
   constructor (props, context) {
@@ -26,113 +27,172 @@ componentDidMount () {
   render () {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+        <div className='m-subheader '>
+          <Link to='/sponsoredMessaging' className='addLink btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill pull-right'>
+            Back
+          </Link>
+          <div className='d-flex align-items-center'>
+            <div className='mr-auto'>
+              <h3 className='m-subheader__title'>Ad Insights</h3>
+            </div>
+          </div>
+        </div>
         <div className='m-content'>
           <div className='row'>
             <div className='col-xl-12'>
               <div className='m-portlet'>
                 <div className='m-portlet__head'>
                   <div className='m-portlet__head-caption'>
-                    <div className='m-portlet__head-title'>
-                      <h3 className='m-portlet__head-text'>
-                        Ad insights
-                      </h3>
+                    <span className='m-portlet__head-text'>
+                      <b style={{fontWeight: 'bold'}}>Ad Name:</b> {this.props.insights && this.props.insights.ad_name ? this.props.insights.ad_name : '-'}
+                    </span>
+                  </div>
+                  <div className='m-portlet__head-caption'>
+                    <span className='m-portlet__head-text'>
+                      <b style={{fontWeight: 'bold'}}>Start Date:</b> {this.props.insights && this.props.insights.date_start ? this.props.insights.date_start : '-'}
+                    </span>
+                  </div>
+                  <div className='m-portlet__head-caption'>
+                    <span className='m-portlet__head-text'>
+                      <b style={{fontWeight: 'bold'}}>Stop Date:</b> {this.props.insights && this.props.insights.date_stop ? this.props.insights.date_stop : '-'}
+                    </span>
+                  </div>
+                  <div className='m-portlet__head-caption'>
+                    <span className='m-portlet__head-text'>
+                      <b style={{fontWeight: 'bold'}}>Account Currency:</b> {this.props.insights && this.props.insights.account_currency ? this.props.insights.account_currency : '-'}
+                    </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className='row'>
+          <div className='col-md-6'>
+            <div className='m-portlet'>
+              <div className='m-portlet__body' style={{height: '312px'}}>
+                <div className='tab-content' style={{paddingTop: '30px', paddingBottom: '30px'}}>
+                    <div className='row'>
+                      <div className='col-md-6'>
+                        <UncontrolledTooltip style={{minWidth: '100px', opacity: '1.0'}} target='impressions'>
+                          <span>The number of times your ads were on screen</span>
+                        </UncontrolledTooltip>
+                        <IconStack
+                          path='/'
+                          state={{}}
+                          icon='la la-mobile-phone'
+                          title={this.props.insights && this.props.insights.impressions ? this.props.insights.impressions : '0'}
+                          subtitle='Impressions'
+                          iconStyle='success'
+                          iconHeight='50px'
+                          iconWidth='50px'
+                          id='impressions'
+                        />
+                      </div>
+                      <div className='col-md-6'>
+                        <UncontrolledTooltip style={{minWidth: '100px', opacity: '1.0'}} target='reach'>
+                          <span>The number of people who saw your ads at least once</span>
+                        </UncontrolledTooltip>
+                        <IconStack
+                          path='/'
+                          state={{}}
+                          icon='la la-eye'
+                          title={this.props.insights && this.props.insights.reach ? this.props.insights.reach : '0'}
+                          subtitle='Reach'
+                          iconStyle='brand'
+                          iconHeight='50px'
+                          iconWidth='50px'
+                          id='reach'
+                        />
+                      </div>
+                    </div>
+                    <br /><br /><br /><br />
+                    <div className='row'>
+                      <div className='col-md-6'>
+                        <UncontrolledTooltip style={{minWidth: '100px', opacity: '1.0'}} target='clicks'>
+                          <span>The number of clicks on your ads</span>
+                        </UncontrolledTooltip>
+                        <IconStack
+                          path='/'
+                          state={{}}
+                          icon='la la-mouse-pointer'
+                          title={this.props.insights && this.props.insights.clicks ? this.props.insights.clicks : '0'}
+                          subtitle='Clicks'
+                          iconStyle='warning'
+                          iconHeight='50px'
+                          iconWidth='50px'
+                          id='clicks'
+                        />
+                      </div>
+                      <div className='col-md-6'>
+                        <UncontrolledTooltip style={{minWidth: '100px', opacity: '1.0'}} target='uniqueClicks'>
+                          <span>The number of people who performed a click (all)</span>
+                        </UncontrolledTooltip>
+                        <IconStack
+                          path='/'
+                          state={{}}
+                          icon='la la-hand-pointer-o'
+                          title={this.props.insights && this.props.insights.unique_clicks ? this.props.insights.unique_clicks : '0'}
+                          subtitle='Unique Clicks'
+                          iconStyle='danger'
+                          iconHeight='50px'
+                          iconWidth='50px'
+                          id='uniqueClicks'
+                        />
+                      </div>
                     </div>
                   </div>
-                  <div className='m-portlet__head-tools'>
-                    <Link to='/sponsoredMessaging' className='addLink btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
-                          Back
-                    </Link>
+                </div>
+              </div>
+            </div>
+            <div className='col-md-6'>
+              <div className='m-portlet__body'>
+                <div className='row'>
+                  <div className='col-md-6'>
+                    <UncontrolledTooltip style={{minWidth: '100px', opacity: '1.0'}} target='amountSpent'>
+                      <span>The estimated total amount of money you've spent on your campaign, ad set or ad during its schedule</span>
+                    </UncontrolledTooltip>
+                    <CardBox
+                      style={`accent`}
+                      value={this.props.insights && this.props.insights.spend ? this.props.insights.spend : '0'}
+                      label='Amount Spent'
+                      id='amountSpent'
+                    />
+                  </div>
+                  <div className='col-md-6' >
+                    <UncontrolledTooltip style={{minWidth: '100px', opacity: '1.0'}} target='cpm'>
+                      <span>The average cost for 1,000 impressions</span>
+                    </UncontrolledTooltip>
+                    <CardBox
+                      style={`danger`}
+                      value={this.props.insights && this.props.insights.cpm ? this.props.insights.cpm : '0'}
+                      label='Cost Per Mile (CPM)'
+                      id='cpm'
+                    />
                   </div>
                 </div>
-                <div className='m-portlet__body'>
-
-
-                <div className='form-row'>
-                  {this.props.insights && this.props.insights.length > 0
-                  ? <div className='col-md-12 m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
-                    <table className='m-datatable__table' style={{display: 'block', height: 'auto', overflowX: 'auto'}}>
-                      <thead className='m-datatable__head'>
-                        <tr className='m-datatable__row'
-                          style={{height: '53px'}}>
-                          <th data-field='name'
-                            className='m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '100px'}}>Ad Name</span>
-                          </th>
-                          <th data-field='impression'
-                            className='m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '100px'}}>Impression</span>
-                          </th>
-                          <th data-field='reach'
-                            className='m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '100px'}}>Reach</span>
-                          </th>
-                          <th data-field='clicks'
-                            className='m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '100px'}}>Clicks</span>
-                          </th>
-                          <th data-field='amount_spent'
-                            className='m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '100px'}}>Amount Spent</span>
-                          </th>
-                          <th data-field='start_date'
-                            className='m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '100px'}}>Start date</span>
-                          </th>
-                          <th data-field='end_date'
-                            className='m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '100px'}}>End date</span>
-                          </th>
-
-                        </tr>
-                      </thead>
-                      <tbody className='m-datatable__body'>
-                          {this.props.insights.map((insight, i) => (
-                            <tr data-row={i}
-                            className='m-datatable__row m-datatable__row--even'
-                            style={{height: '64px'}}
-                            >
-                              <td data-field='name' className='m-datatable__cell'>
-                                <span style={{width: '150px'}}>{insight.ad_name}</span></td>
-                              <td data-field='impression' className='m-datatable__cell'>
-                              <span style={{width: '100px'}}>{insight.impressions}</span></td>
-                              <td data-field='reach' className='m-datatable__cell'>
-                              <span style={{width: '100px'}}>{insight.reach}</span></td>
-                              <td data-field='clicks' className='m-datatable__cell'>
-                              <span style={{width: '100px'}}>{insight.clicks}</span></td>
-                              <td data-field='amount_spent' className='m-datatable__cell'>
-                              <span style={{width: '150px'}}>{insight.spend}</span></td>
-                              <td data-field='start_date' className='m-datatable__cell'>
-                              <span style={{width: '150px'}}>{insight.date_start}</span></td>
-                              <td data-field='end_date' className='m-datatable__cell'>
-                              <span style={{width: '150px'}}>{insight.date_stop}</span></td>
-                            </tr>
-                          ))
-                          }
-                      </tbody>
-                    </table>
-                    <div className='pagination'>
-                      <ReactPaginate
-                        previousLabel={'previous'}
-                        nextLabel={'next'}
-                        breakLabel={<a href='#/'>...</a>}
-                        breakClassName={'break-me'}
-                        // pageCount={Math.ceil(this.state.totalLength / 10)}
-                        pageCount = {1}
-                        marginPagesDisplayed={2}
-                        pageRangeDisplayed={3}
-                        onPageChange={this.handlePageClick}
-                        containerClassName={'pagination'}
-                        subContainerClassName={'pages pagination'}
-                        activeClassName={'active'} />
-                    </div>
+                <div className='row'>
+                  <div className='col-md-6'>
+                    <UncontrolledTooltip style={{minWidth: '100px', opacity: '1.0'}} target='cpp'>
+                      <span>The average cost to reach 1,000 people</span>
+                    </UncontrolledTooltip>
+                    <CardBox
+                      style={`warning`}
+                      value={this.props.insights && this.props.insights.cpp ? this.props.insights.cpp : '0'}
+                      label='Cost Per Rating Point (CPP)'
+                      id='cpp'
+                    />
                   </div>
-                  : <div>No data to display</div>
-                }
-                  {/* <div className='col-12'>
-                    <p> No data to display </p>
-                  </div> */}
-                </div>
-
+                  <div className='col-md-6' >
+                    <UncontrolledTooltip style={{minWidth: '100px', opacity: '1.0'}} target='ctr'>
+                      <span>The percentage of times people saw your ad and performed a click</span>
+                    </UncontrolledTooltip>
+                    <CardBox
+                      style={`success`}
+                      value={this.props.insights && this.props.insights.ctr ? this.props.insights.ctr : '0'}
+                      label='Click Through Rate (CTR)'
+                      id='ctr'
+                    />
+                  </div>
                 </div>
               </div>
             </div>
