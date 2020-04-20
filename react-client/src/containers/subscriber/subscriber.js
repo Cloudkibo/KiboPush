@@ -462,7 +462,6 @@ class Subscriber extends React.Component {
 
   handleAddIndividual(value) {
     console.log('handleAddIndividual', value)
-    var index = 0
     if (value) {
       var data = String(value.label).toLowerCase()
       value.label = data
