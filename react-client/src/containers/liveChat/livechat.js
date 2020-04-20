@@ -27,7 +27,8 @@ import {
   updateLiveChatInfo,
   deletefile,
   clearSearchResult,
-  getSMPStatus
+  getSMPStatus,
+  updateSessionProfilePicture
 } from '../../redux/actions/livechat.actions'
 import { updatePicture } from '../../redux/actions/subscribers.actions'
 import { loadTeamsList } from '../../redux/actions/teams.actions'
@@ -321,7 +322,8 @@ class LiveChat extends React.Component {
     e.persist()
     this.props.updatePicture({ subscriber }, (newProfilePic) => {
       if (newProfilePic) {
-        e.target.src = newProfilePic
+        this.props.updateSessionProfilePicture(subscriber, newProfilePic)
+        // e.target.src = newProfilePic
       }
     })
   }
@@ -687,7 +689,8 @@ function mapDispatchToProps(dispatch) {
     deletefile,
     clearSearchResult,
     urlMetaData,
-    getSMPStatus
+    getSMPStatus,
+    updateSessionProfilePicture
   }, dispatch)
 }
 

@@ -9,6 +9,20 @@ export function liveChat (state = initialState, action) {
   console.log('livechat reducer', action)
   console.log('livechat reducer state', state)
   switch (action.type) {
+    case ActionTypes.UPDATE_SESSION_PROFILE_PICTURE:
+      let openSessions = state.openSessions
+      let closeSessions = state.closeSessions
+      let openIndex = openSessions.findIndex(s => s._id === action.subscriber._id)
+      if (openIndex > -1) {
+        openSessions[openIndex].profilePic = action.profilePic
+      } else {
+        let closeIndex = closeSessions.findIndex(s => s._id === action.subscriber._id)
+        closeSessions[closeIndex].profilePic = action.profilePic
+      }      
+      return Object.assign({}, state, {
+        openSessions: [...openSessions],
+        closeSessions: [...closeSessions]
+      })
     case ActionTypes.EMPTY_SOCKET_DATA:
       return Object.assign({}, state, {
         socketData: {}
