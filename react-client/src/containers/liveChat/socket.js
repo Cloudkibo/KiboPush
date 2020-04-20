@@ -35,7 +35,11 @@ const handleIncomingMessage = (payload, state, props, updateLiveChatInfo, clearS
     session.last_activity_time = new Date()
     session.lastMessagedAt = new Date()
     session.pendingResponse = true
-    if (state.tabValue === 'open') sessions = [session, ...sessions]
+    if (state.tabValue === 'open') {
+      sessions = [session, ...sessions]
+    } else {
+      session.status = 'new'
+    }
     data = {
       userChat,
       chatCount: props.chatCount + 1,
