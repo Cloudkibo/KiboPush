@@ -37,6 +37,15 @@ class MessageArea extends React.Component {
     if (this.props.block) {
       this.setStateData(this.props.block)
     }
+
+    let comp = this
+    this.props.registerSocketAction({
+      event: 'chatbot.test.message',
+      action: function (data) {
+        comp.props.alertMsg.success('Sent successfully on messenger')
+        comp.refs._open_test_chatbot_modal.click()
+      }
+    })
   }
 
   setStateData (block) {
@@ -95,23 +104,23 @@ class MessageArea extends React.Component {
     if (Object.keys(this.state.attachment).length > 0) {
       if (['image', 'video'].includes(this.state.attachment.type)) {
         payload.push({
+          ...this.state.attachment.fileData,
           componentType: 'media',
           mediaType: this.state.attachment.type,
           fileurl: this.state.attachment.fileurl,
-          buttons: this.state.attachment.buttons,
-          ...this.state.attachment.fileData
+          buttons: this.state.attachment.buttons
         })
       } else if (this.state.attachment.type === 'card') {
         payload.push({
+          ...this.state.attachment.cardData,
           componentType: 'card',
-          buttons: this.state.attachment.buttons,
-          ...this.state.attachment.cardData
+          buttons: this.state.attachment.buttons
         })
       } else if (['audio', 'file'].includes(this.state.attachment.type)) {
         payload.push({
+          ...this.state.attachment.fileData,
           componentType: this.state.attachment.type,
-          fileurl: this.state.attachment.fileurl,
-          ...this.state.attachment.fileData
+          fileurl: this.state.attachment.fileurl
         })
       }
     }
@@ -152,7 +161,7 @@ class MessageArea extends React.Component {
     return (
       <MessengerPlugin
         appId={this.props.fbAppId}
-        pageId={this.props.chatbot.pageId}
+        pageId={this.props.chatbot.pageFbId}
         size='large'
         passthroughParams='_chatbot'
       />
@@ -275,7 +284,8 @@ MessageArea.propTypes = {
   'handleMessageBlock': PropTypes.func.isRequired,
   'fbAppId': PropTypes.string.isRequired,
   'changeActiveStatus': PropTypes.func.isRequired,
-  'deleteMessageBlock': PropTypes.func.isRequired
+  'deleteMessageBlock': PropTypes.func.isRequired,
+  'registerSocketAction': PropTypes.func.isRequired
 }
 
 export default MessageArea
