@@ -73,6 +73,7 @@ import Invitations from './containers/invitations/invitations'
 import InviteMembers from './containers/invitations/inviteMember'
 import Members from './containers/members/members'
 import Connect from './containers/facebookConnect/connect'
+import SessionInvalidated from './containers/facebookConnect/invalidatedSession'
 import WelcomeMessage from './containers/welcomeMessage/welcomeMessage'
 import ViewWelcomeMessage from './containers/welcomeMessage/viewMessage'
 import SegmentedLists from './containers/segmentedLists/segmentedLists'
@@ -289,6 +290,7 @@ const Routes = () => (
     <Route path='/newInvitation' component={InviteMembers} onEnter={requireAuth} />
     <Route path='/members' component={Members} onEnter={requireAuth} />
     <Route path='/connectFb' component={Connect} onEnter={requireAuth} />
+    <Route path='/sessionInvalidated' component={SessionInvalidated} onEnter={requireAuth} />
     <Route path='/welcomeMessage' component={WelcomeMessage} onEnter={requireAuth} />
     <Route path='/viewWelcomeMessage' component={ViewWelcomeMessage} onEnter={requireAuth} />
     <Route path='/listDetails' component={PhoneList} onEnter={requireAuth} />
