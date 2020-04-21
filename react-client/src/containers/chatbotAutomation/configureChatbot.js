@@ -9,6 +9,8 @@ import {
   changeActiveStatus,
   deleteMessageBlock
 } from '../../redux/actions/chatbotAutomation.actions'
+import { getFbAppId } from '../../redux/actions/basicinfo.actions'
+import { registerAction } from '../../utility/socketio'
 import AlertContainer from 'react-alert'
 import PROGRESS from '../../components/chatbotAutomation/progress'
 import SIDEBAR from '../../components/chatbotAutomation/sidebar'
@@ -31,6 +33,8 @@ class ConfigureChatbot extends React.Component {
     this.preparePayload = this.preparePayload.bind(this)
     this.isItParent = this.isItParent.bind(this)
     this.getParentId = this.getParentId.bind(this)
+
+    props.getFbAppId()
   }
 
   componentDidMount () {
@@ -149,6 +153,7 @@ class ConfigureChatbot extends React.Component {
                 fbAppId={this.props.fbAppId}
                 changeActiveStatus={this.props.changeActiveStatus}
                 deleteMessageBlock={this.props.deleteMessageBlock}
+                registerSocketAction={registerAction}
               />
             </div>
             <PROGRESS progress={`${this.state.progress}%`} />
@@ -172,7 +177,8 @@ function mapDispatchToProps (dispatch) {
     handleAttachment,
     handleMessageBlock,
     changeActiveStatus,
-    deleteMessageBlock
+    deleteMessageBlock,
+    getFbAppId
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(ConfigureChatbot)
