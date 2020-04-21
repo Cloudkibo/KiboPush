@@ -20,6 +20,7 @@ class ChatbotAutomation extends React.Component {
     this.onCreate = this.onCreate.bind(this)
     this.handleOnCreate = this.handleOnCreate.bind(this)
     this.modifyChatbot = this.modifyChatbot.bind(this)
+    this.getPages = this.getPages.bind(this)
 
     props.fetchChatbots()
   }
@@ -37,11 +38,13 @@ class ChatbotAutomation extends React.Component {
   }
 
   onCreate () {
+    const pageFbId = this.props.pages.find((item) => item._id === this.state.selectedPage).pageId
     this.setState({loading: true})
-    this.props.createChatbot({pageId: this.state.selectedPage}, this.handleOnCreate)
+    this.props.createChatbot({pageId: this.state.selectedPage}, (res) => this.handleOnCreate(res, pageFbId))
   }
 
   modifyChatbot (chatbot) {
+    chatbot.pageFbId = chatbot.pageId.pageId
     chatbot.pageId = chatbot.pageId._id
     this.props.history.push({
       pathname: '/configureChatbot',
@@ -49,16 +52,24 @@ class ChatbotAutomation extends React.Component {
     })
   }
 
-  handleOnCreate (res) {
+  handleOnCreate (res, pageFbId) {
+    const chatbot = res.payload
+    chatbot.pageFbId = pageFbId
     if (res.status === 'success') {
       this.props.history.push({
         pathname: '/configureChatbot',
-        state: res.payload
+        state: chatbot
       })
     } else {
       this.msg.error(res.description)
     }
     this.setState({loading: false})
+  }
+
+  getPages () {
+    const chatbotPages = this.props.chatbots.map((item) => item.pageId._id)
+    const pages = this.props.pages.filter((item) => chatbotPages.indexOf(item._id) === -1)
+    return pages
   }
 
   render () {
@@ -140,7 +151,7 @@ class ChatbotAutomation extends React.Component {
                                   >
                                     <option value='' disabled>Select a page...</option>
                                     {
-                                      this.props.pages.map((page) => (
+                                      this.getPages().map((page) => (
                                         <option key={page._id} value={page._id}>{page.pageName}</option>
                                       ))
                                     }
