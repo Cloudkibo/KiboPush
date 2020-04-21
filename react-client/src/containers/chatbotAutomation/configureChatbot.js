@@ -33,6 +33,7 @@ class ConfigureChatbot extends React.Component {
     this.preparePayload = this.preparePayload.bind(this)
     this.isItParent = this.isItParent.bind(this)
     this.getParentId = this.getParentId.bind(this)
+    this.updateState = this.updateState.bind(this)
 
     props.getFbAppId()
   }
@@ -41,6 +42,10 @@ class ConfigureChatbot extends React.Component {
     this.props.fetchChatbotDetails(this.props.location.state._id, this.handleChatbotDetails)
     document.getElementsByTagName('body')[0].className = 'm-page--fluid m--skin- m-content--skin-light2 m-header--fixed m-header--fixed-mobile m-footer--push'
     document.title = 'KiboChat | Configure ChatBot'
+  }
+
+  updateState (state) {
+    this.setState(state)
   }
 
   handleChatbotDetails (res) {
@@ -55,6 +60,8 @@ class ConfigureChatbot extends React.Component {
   preparePayload (data) {
     let blocks = data
     let sidebarItems = []
+    let completed = 0
+    let progress = 0
     if (data.length > 0) {
       for (let i = 0; i < data.length; i++) {
         sidebarItems.push({
@@ -64,7 +71,11 @@ class ConfigureChatbot extends React.Component {
           // isParent: this.isItParent(data[i]),
           // parentId: this.getParentId(data, data[i])
         })
+        if (data[i].payload.length > 0) {
+          completed = completed + 1
+        }
       }
+      progress = Math.floor((completed / data.length) * 100)
     } else {
       const id = new Date().getTime()
       blocks = [{
@@ -79,7 +90,13 @@ class ConfigureChatbot extends React.Component {
         isParent: false
       }]
     }
-    this.setState({blocks, sidebarItems, currentBlock: blocks[0], loading: false})
+    this.setState({
+      blocks,
+      sidebarItems,
+      currentBlock: blocks[0],
+      loading: false,
+      progress
+    })
   }
 
   isItParent (data) {
@@ -154,6 +171,8 @@ class ConfigureChatbot extends React.Component {
                 changeActiveStatus={this.props.changeActiveStatus}
                 deleteMessageBlock={this.props.deleteMessageBlock}
                 registerSocketAction={registerAction}
+                progress={this.state.progress}
+                updateParentState={this.updateState}
               />
             </div>
             <PROGRESS progress={`${this.state.progress}%`} />
