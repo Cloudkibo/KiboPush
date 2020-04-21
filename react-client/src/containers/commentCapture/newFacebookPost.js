@@ -106,7 +106,7 @@ class FacebookPosts extends React.Component {
     })
   }
 
-  saveLinks (links, cards) {
+  saveLinks (links, cards, seeMoreLink) {
     this.validationCommentCapture({
       selectedRadio: this.state.selectedRadio,
       title: this.state.title,
@@ -122,6 +122,7 @@ class FacebookPosts extends React.Component {
     this.setState({
       postType: 'links',
       cards: cardArray,
+      seeMoreLink,
       links: links,
       attachments:[],
       isShowingLinkCarousel: false
@@ -177,7 +178,8 @@ class FacebookPosts extends React.Component {
       title : this.state.title,
       includedKeywords: this.state.includedKeywords !== '' ? this.state.includedKeywords.split(',') : [],
       excludedKeywords: this.state.excludedKeywords !== '' ? this.state.excludedKeywords.split(',') : [],
-      secondReply: secondReply
+      secondReply: secondReply,
+      seeMoreLink: this.state.seeMoreLink
     }
 
     return payload
@@ -547,7 +549,8 @@ class FacebookPosts extends React.Component {
       titleLengthValid: true,
       cards: [],
       links: [],
-      postType: ''
+      postType: '',
+      seeMoreLink: null
     })
     this.props.saveCurrentPost(null)
   }
@@ -1295,6 +1298,7 @@ class FacebookPosts extends React.Component {
               pages={[this.state.selectedPage._id]}
               module='commentcapture'
               edited={false}
+              seeMoreLink={this.state.seeMoreLink}
               links={this.state.links}
               cards={this.state.cards}
               saveLinks={this.saveLinks} 
