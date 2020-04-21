@@ -19,6 +19,13 @@ export function saveCommentReplies (data) {
     data: data
   }
 }
+
+export function removePost(data) {
+  return {
+    type: ActionTypes.REMOVE_COMMENT_REPLIES,
+    data: data
+  }
+}
 export function saveComments (data) {
   return {
     type: ActionTypes.SAVE_COMMENTS,
@@ -191,13 +198,13 @@ export function fetchCurrentPostsAnalytics (postId) {
     })
   }
 }
-export function deletePost (id, msg, fetchAllPost) {
+export function deletePost (id, msg) {
   console.log('Actions for deleting facebook Post')
   return (dispatch) => {
     callApi(`post/delete/${id}`, 'delete').then(res => {
       if (res.status === 'success') {
         msg.success('Post has been deleted')
-        fetchAllPost()
+        dispatch(removePost(id))
         dispatch(fetchPostsAnalytics(res.payload))
       } else {
         msg.error('Error in deleting post')

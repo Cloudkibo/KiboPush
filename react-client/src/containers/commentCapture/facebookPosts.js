@@ -46,7 +46,6 @@ class FacebookPosts extends React.Component {
     props.fetchPostsAnalytics()
     props.saveCurrentPost(null)
     props.resetComments(null)
-    this.fetchAllPost = this.fetchAllPost.bind(this)
     this.displayData = this.displayData.bind(this)
     this.onTypeFilter = this.onTypeFilter.bind(this)
     this.onEdit = this.onEdit.bind(this)
@@ -175,18 +174,6 @@ class FacebookPosts extends React.Component {
     }
   }
 
-  fetchAllPost () {
-    this.props.fetchAllPosts({
-      pageIds: this.props.pages ? this.props.pages.map(p => p._id) : [],
-      last_id: 'none',
-      number_of_records: 10,
-      first_page: 'first',
-      search_value: this.state.searchValue,
-      type_value: this.state.captureType,
-      startDate: this.state.startDate,
-      endDate: this.state.endDate})
-    this.setState({pageNumber:0})
-  }
   componentDidMount() {
     $('#sidebarDiv').removeClass('hideSideBar')
     const hostname = window.location.hostname
@@ -399,7 +386,7 @@ class FacebookPosts extends React.Component {
                   className='btn btn-primary btn-sm'
                   onClick={() => {
                     this.setState({filter: false})
-                    this.props.deletePost(this.state.deleteid, this.msg, this.fetchAllPost)
+                    this.props.deletePost(this.state.deleteid, this.msg)
                   }}
                   data-dismiss='modal'>Delete
               </button>
