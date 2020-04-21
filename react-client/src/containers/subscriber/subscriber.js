@@ -1566,6 +1566,7 @@ class Subscriber extends React.Component {
                                           <option value='chat_plugin'>Chat Plugin</option>
                                           <option value='messaging_referrals'>Messaging Referral</option>
                                           <option value='landing_page'>Landing Page</option>
+                                          <option value='comment_capture'>Comment Capture</option>
                                           <option value='shopify'>Shopify</option>
                                         </select>
                                       </div>
