@@ -137,16 +137,12 @@ class ItemSettings extends React.Component {
           options.push({text: this.props.pages[i].pageName, id: this.props.pages[i].pageId, selected: true})
           selectedPageIds.push(this.props.pages[i].pageId)
         } else {
-          if (this.props.pages[i].gotPageSubscriptionPermission) {
             options.push({text: this.props.pages[i].pageName, id: this.props.pages[i].pageId})
             selectedPageIds.push(this.props.pages[i].pageId)
-          }
         }
       } else {
-        if (this.props.pages[i].gotPageSubscriptionPermission) {
           options.push({text: this.props.pages[i].pageName, id: this.props.pages[i].pageId})
           selectedPageIds.push(this.props.pages[i].pageId)
-        }
       }
     }
     this.setState({page: {options: options}})
