@@ -6,7 +6,6 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { Link } from 'react-router-dom'
-import auth from '../../utility/auth.service'
 import { skip } from '../../redux/actions/signup.actions'
 import $ from 'jquery'
 
