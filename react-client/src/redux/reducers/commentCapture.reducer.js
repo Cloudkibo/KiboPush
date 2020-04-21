@@ -7,6 +7,15 @@ export function postsInfo (state = {}, action) {
         posts: action.posts,
         postsCount: action.postsCount
       })
+      case ActionTypes.REMOVE_COMMENT_REPLIES:
+      let posts = state.posts
+      let postsCount = state.postsCount-1
+      let postsIndex = posts.findIndex(cf => cf._id === action.data)
+      posts.splice(postsIndex, 1)
+      return Object.assign({}, state, {
+        posts: [...posts],
+        postsCount: postsCount
+      })
     case ActionTypes.SHOW_POST_COMMENTS:
       return Object.assign({}, state, {
         comments: state.comments? [...state.comments, ...action.comments] : action.comments,

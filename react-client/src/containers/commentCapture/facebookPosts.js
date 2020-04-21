@@ -173,6 +173,7 @@ class FacebookPosts extends React.Component {
         endDate: ''})
     }
   }
+
   componentDidMount() {
     $('#sidebarDiv').removeClass('hideSideBar')
     const hostname = window.location.hostname

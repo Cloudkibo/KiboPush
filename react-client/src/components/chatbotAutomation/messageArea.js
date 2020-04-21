@@ -14,11 +14,11 @@ class MessageArea extends React.Component {
   constructor(props, context) {
     super(props, context)
     this.state = {
-      triggers: '',
+      triggers: undefined,
       text: '',
       attachment: {},
       quickReplies: [],
-      canTest: false
+      showTestContent: false
     }
     this.onNext = this.onNext.bind(this)
     this.preparePayload = this.preparePayload.bind(this)
@@ -31,6 +31,9 @@ class MessageArea extends React.Component {
     this.onDisable = this.onDisable.bind(this)
     this.onDelete = this.onDelete.bind(this)
     this.afterDelete = this.afterDelete.bind(this)
+    this.toggleTestModalContent = this.toggleTestModalContent.bind(this)
+    this.afterPublish = this.afterPublish.bind(this)
+    this.afterDisable = this.afterDisable.bind(this)
   }
 
   componentDidMount () {
@@ -44,8 +47,13 @@ class MessageArea extends React.Component {
       action: function (data) {
         comp.props.alertMsg.success('Sent successfully on messenger')
         comp.refs._open_test_chatbot_modal.click()
+        comp.toggleTestModalContent()
       }
     })
+  }
+
+  toggleTestModalContent () {
+    this.setState({showTestContent: !this.state.showTestContent})
   }
 
   setStateData (block) {
@@ -81,11 +89,10 @@ class MessageArea extends React.Component {
       this.setState({
         text: textComponent.text,
         attachment,
-        canTest: true,
-        triggers: this.props.chatbot.startingBlockId === block._id ? this.props.chatbot.triggers : ''
+        triggers: this.props.chatbot.startingBlockId === block._id ? this.props.chatbot.triggers : undefined
       })
     } else {
-      this.setState({text: '', attachment: {}, canTest: false, triggers: ''})
+      this.setState({text: '', attachment: {}, triggers: block.triggers})
     }
   }
 
@@ -133,20 +140,27 @@ class MessageArea extends React.Component {
       callback()
     } else {
       const data = {
-        triggers: this.state.triggers ? this.state.triggers : undefined,
+        triggers: this.state.triggers,
         uniqueId: `${this.props.block.uniqueId}`,
         title: this.props.block.title,
         chatbotId: this.props.chatbot._id,
         payload: this.preparePayload()
       }
       console.log('data to save for message block', data)
-      this.props.handleMessageBlock(data, (res) => this.afterNext(res, callback))
+      this.props.handleMessageBlock(data, (res) => this.afterNext(res, data, callback))
     }
   }
 
-  afterNext (res, callback) {
+  afterNext (res, data, callback) {
     if (res.status === 'success') {
       this.props.alertMsg.success('Saved successfully!')
+      let blocks = this.props.blocks
+      const index = blocks.findIndex((item) => item.uniqueId === data.uniqueId)
+      blocks.splice(index, 1)
+      blocks = [...blocks, data]
+      const completed = blocks.filter((item) => item.payload.length > 0).length
+      const progress = Math.floor((completed / blocks.length) * 100)
+      this.props.updateParentState({blocks, currentBlock: data, progress})
     } else {
       this.props.alertMsg.error(res.description)
     }
@@ -154,18 +168,24 @@ class MessageArea extends React.Component {
   }
 
   showTestModal () {
-    this.refs._open_test_chatbot_modal.click()
+    this.setState({showTestContent: true}, () => {
+      this.refs._open_test_chatbot_modal.click()
+    })
   }
 
   getTestModalContent () {
-    return (
-      <MessengerPlugin
-        appId={this.props.fbAppId}
-        pageId={this.props.chatbot.pageFbId}
-        size='large'
-        passthroughParams='_chatbot'
-      />
-    )
+    if (this.state.showTestContent) {
+      return (
+        <MessengerPlugin
+          appId={this.props.fbAppId}
+          pageId={this.props.chatbot.pageFbId}
+          size='large'
+          passthroughParams='_chatbot'
+        />
+      )
+    } else {
+      return (<div />)
+    }
   }
 
   onPublish (callback) {
@@ -173,7 +193,7 @@ class MessageArea extends React.Component {
       chatbotId: this.props.chatbot._id,
       published: true
     }
-    this.props.changeActiveStatus(data, callback)
+    this.props.changeActiveStatus(data, (res) => this.afterPublish(res, callback))
   }
 
   onDisable (callback) {
@@ -181,7 +201,7 @@ class MessageArea extends React.Component {
       chatbotId: this.props.chatbot._id,
       published: false
     }
-    this.props.changeActiveStatus(data, callback)
+    this.props.changeActiveStatus(data, (res) => this.afterDisable(res, callback))
   }
 
   onDelete () {
@@ -193,6 +213,24 @@ class MessageArea extends React.Component {
       this.props.alertMsg.success('Message block deleted successfully')
     } else {
       this.props.alertMsg.error('Failed to delete message block')
+    }
+  }
+
+  afterPublish (res, callback) {
+    callback(res)
+    if (res.status === 'success') {
+      let chatbot = this.props.chatbot
+      chatbot.published = true
+      this.props.updateParentState({chatbot})
+    }
+  }
+
+  afterDisable (res, callback) {
+    callback(res)
+    if (res.status === 'success') {
+      let chatbot = this.props.chatbot
+      chatbot.published = false
+      this.props.updateParentState({chatbot})
     }
   }
 
@@ -209,11 +247,11 @@ class MessageArea extends React.Component {
           <div style={{height: '80vh', position: 'relative', padding: '15px'}} className='m-portlet__body'>
             <HEADER
               title={this.props.block.title}
-              showDelete={this.props.block._id && (this.props.chatbot.startingBlockId !== this.props.block._id)}
+              showDelete={(this.props.block._id && (this.props.chatbot.startingBlockId !== this.props.block._id))}
               onDelete={this.onDelete}
               onTest={this.showTestModal}
-              canTest={this.state.canTest}
-              canPublish={this.state.canTest}
+              canTest={this.props.progress === 100}
+              canPublish={this.props.progress === 100}
               onPublish={this.onPublish}
               onDisable={this.onDisable}
               isPublished={this.props.chatbot.published}
@@ -265,6 +303,7 @@ class MessageArea extends React.Component {
               id='_test_chatbot'
               title='Test Chatbot'
               content={this.getTestModalContent()}
+              onClose={this.toggleTestModalContent}
             />
           </div>
         </div>
@@ -285,7 +324,9 @@ MessageArea.propTypes = {
   'fbAppId': PropTypes.string.isRequired,
   'changeActiveStatus': PropTypes.func.isRequired,
   'deleteMessageBlock': PropTypes.func.isRequired,
-  'registerSocketAction': PropTypes.func.isRequired
+  'registerSocketAction': PropTypes.func.isRequired,
+  'progress': PropTypes.number.isRequired,
+  'updateParentState': PropTypes.func.isRequired
 }
 
 export default MessageArea

@@ -19,6 +19,13 @@ export function saveCommentReplies (data) {
     data: data
   }
 }
+
+export function removePost(data) {
+  return {
+    type: ActionTypes.REMOVE_COMMENT_REPLIES,
+    data: data
+  }
+}
 export function saveComments (data) {
   return {
     type: ActionTypes.SAVE_COMMENTS,
@@ -196,9 +203,8 @@ export function deletePost (id, msg) {
   return (dispatch) => {
     callApi(`post/delete/${id}`, 'delete').then(res => {
       if (res.status === 'success') {
-        var data = {last_id: 'none',number_of_records: 10,first_page: 'first',search_value: '',type_value: '',startDate: '',endDate: ''}
         msg.success('Post has been deleted')
-        dispatch(fetchAllPosts(data))
+        dispatch(removePost(id))
         dispatch(fetchPostsAnalytics(res.payload))
       } else {
         msg.error('Error in deleting post')
