@@ -862,8 +862,7 @@ class Header extends React.Component {
                 <button style={{float: 'right'}}
                     className='btn btn-primary btn-sm'
                     onClick={() => {
-                    this.props.disconnectFacebook()
-                    this.logout()
+                    this.props.disconnectFacebook(this.logout)
                   }} data-dismiss='modal'>Yes
                   </button>
                 </div>
