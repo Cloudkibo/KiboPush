@@ -95,6 +95,8 @@ class TextArea extends React.Component {
   UNSAFE_componentWillReceiveProps (nextProps) {
     if (nextProps.text) {
       this.setState({text: nextProps.text})
+    } else {
+      this.setState({text: ''})
     }
   }
 

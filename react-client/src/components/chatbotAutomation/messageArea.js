@@ -34,6 +34,9 @@ class MessageArea extends React.Component {
     this.toggleTestModalContent = this.toggleTestModalContent.bind(this)
     this.afterPublish = this.afterPublish.bind(this)
     this.afterDisable = this.afterDisable.bind(this)
+    this.addOption = this.addOption.bind(this)
+    this.removeOption = this.removeOption.bind(this)
+    this.updateOption = this.updateOption.bind(this)
   }
 
   componentDidMount () {
@@ -89,47 +92,65 @@ class MessageArea extends React.Component {
       this.setState({
         text: textComponent.text,
         attachment,
+        quickReplies: block.payload[block.payload.length - 1].quickReplies || [],
         triggers: this.props.chatbot.startingBlockId === block._id ? this.props.chatbot.triggers : undefined
       })
     } else {
-      this.setState({text: '', attachment: {}, triggers: block.triggers})
+      this.setState({
+        text: '',
+        attachment: {},
+        triggers: this.props.chatbot.startingBlockId === block._id ? this.props.chatbot.triggers : block.triggers,
+        quickReplies: []
+      })
     }
   }
 
   updateState (state) {
-    this.setState(state)
+    this.setState(state, () => {
+      const currentBlock = this.props.block
+      const payload = this.preparePayload(this.state)
+      currentBlock.payload = payload
+      const chatbot = this.props.chatbot
+      if (this.state.triggers) {
+        chatbot.triggers = this.state.triggers
+      }
+      this.props.updateParentState({currentBlock, chatbot})
+    })
   }
 
-  preparePayload () {
+  preparePayload (state) {
     let payload = []
-    if (this.state.text) {
+    if (state.text) {
       payload.push({
         componentType: 'text',
-        text: this.state.text
+        text: state.text
       })
     }
-    if (Object.keys(this.state.attachment).length > 0) {
-      if (['image', 'video'].includes(this.state.attachment.type)) {
+    if (Object.keys(state.attachment).length > 0) {
+      if (['image', 'video'].includes(state.attachment.type)) {
         payload.push({
-          ...this.state.attachment.fileData,
+          ...state.attachment.fileData,
           componentType: 'media',
-          mediaType: this.state.attachment.type,
-          fileurl: this.state.attachment.fileurl,
-          buttons: this.state.attachment.buttons
+          mediaType: state.attachment.type,
+          fileurl: state.attachment.fileurl,
+          buttons: state.attachment.buttons
         })
-      } else if (this.state.attachment.type === 'card') {
+      } else if (state.attachment.type === 'card') {
         payload.push({
-          ...this.state.attachment.cardData,
+          ...state.attachment.cardData,
           componentType: 'card',
-          buttons: this.state.attachment.buttons
+          buttons: state.attachment.buttons
         })
-      } else if (['audio', 'file'].includes(this.state.attachment.type)) {
+      } else if (['audio', 'file'].includes(state.attachment.type)) {
         payload.push({
-          ...this.state.attachment.fileData,
-          componentType: this.state.attachment.type,
-          fileurl: this.state.attachment.fileurl
+          ...state.attachment.fileData,
+          componentType: state.attachment.type,
+          fileurl: state.attachment.fileurl
         })
       }
+    }
+    if (payload.length > 0) {
+      payload[payload.length - 1].quickReplies = state.quickReplies
     }
     return payload
   }
@@ -144,7 +165,7 @@ class MessageArea extends React.Component {
         uniqueId: `${this.props.block.uniqueId}`,
         title: this.props.block.title,
         chatbotId: this.props.chatbot._id,
-        payload: this.preparePayload()
+        payload: this.preparePayload(this.state)
       }
       console.log('data to save for message block', data)
       this.props.handleMessageBlock(data, (res) => this.afterNext(res, data, callback))
@@ -156,11 +177,19 @@ class MessageArea extends React.Component {
       this.props.alertMsg.success('Saved successfully!')
       let blocks = this.props.blocks
       const index = blocks.findIndex((item) => item.uniqueId === data.uniqueId)
-      blocks.splice(index, 1)
+      if (index !== -1) {
+        const deletedItem = blocks.splice(index, 1)
+        data._id = deletedItem[0]._id
+      }
       blocks = [...blocks, data]
       const completed = blocks.filter((item) => item.payload.length > 0).length
       const progress = Math.floor((completed / blocks.length) * 100)
-      this.props.updateParentState({blocks, currentBlock: data, progress})
+      const incompleteBlocks = blocks.filter((item) => item.payload.length === 0)
+      let currentBlock = data
+      if (incompleteBlocks.length > 0) {
+        currentBlock = incompleteBlocks[0]
+      }
+      this.props.updateParentState({blocks, currentBlock, progress})
     } else {
       this.props.alertMsg.error(res.description)
     }
@@ -234,6 +263,89 @@ class MessageArea extends React.Component {
     }
   }
 
+  addOption (title, action, uniqueId) {
+    const options = this.state.quickReplies
+    let option = {
+      content_type: 'text',
+      title
+    }
+    if (action === 'link') {
+      option.payload = JSON.stringify([{action: '_chatbot', blockUniqueId: uniqueId}])
+      options.push(option)
+    } else if (action === 'create') {
+      const id = new Date().getTime()
+      const newBlock = {title, payload: [], uniqueId: id}
+      const sidebarItems = this.props.sidebarItems
+      const index = sidebarItems.findIndex((item) => item.id === this.props.block.uniqueId)
+      sidebarItems[index].isParent = true
+      const newSidebarItem = {title, isParent: false, id, parentId: this.props.block.uniqueId}
+      const blocks = [...this.props.blocks, newBlock]
+      const completed = blocks.filter((item) => item.payload.length > 0).length
+      const progress = Math.floor((completed / blocks.length) * 100)
+      option.payload = JSON.stringify([{action: '_chatbot', blockUniqueId: id, payloadAction: 'create'}])
+      options.push(option)
+      const currentBlock = this.props.block
+      if (currentBlock.payload.length > 0) {
+        currentBlock.payload[currentBlock.payload.length - 1].quickReplies = options
+      } else {
+        currentBlock.payload.push({quickReplies: options})
+      }
+      this.props.updateParentState({
+        blocks,
+        currentBlock,
+        progress,
+        sidebarItems: [...sidebarItems, newSidebarItem]
+      })
+    }
+    this.setState({quickReplies: options})
+  }
+
+  updateOption (uniqueId, index, title, action) {
+    const quickReplies = this.state.quickReplies
+    quickReplies[index].title = title
+
+    if (action === 'create') {
+      const {blocks, sidebarItems} = this.props
+      const blockIndex = blocks.findIndex((item) => item.uniqueId === uniqueId)
+      const sidebarIndex = sidebarItems.findIndex((item) => item.id === uniqueId)
+      blocks[blockIndex].title = title
+      sidebarItems[sidebarIndex].title = title
+      const currentBlock = this.props.block
+      if (currentBlock.payload.length > 0) {
+        currentBlock.payload[currentBlock.payload.length - 1].quickReplies = quickReplies
+      } else {
+        currentBlock.payload.push({quickReplies})
+      }
+      this.props.updateParentState({blocks, currentBlock, sidebarItems})
+    }
+
+    this.setState({quickReplies})
+  }
+
+  removeOption (uniqueId, index, action) {
+    const quickReplies = this.state.quickReplies
+    quickReplies.splice(index, 1)
+
+    if (action === 'create') {
+      const {blocks, sidebarItems} = this.props
+      const blockIndex = blocks.findIndex((item) => item.uniqueId === uniqueId)
+      const sidebarIndex = sidebarItems.findIndex((item) => item.id === uniqueId)
+      blocks.splice(blockIndex, 1)
+      sidebarItems.splice(sidebarIndex, 1)
+      const completed = blocks.filter((item) => item.payload.length > 0).length
+      const progress = Math.floor((completed / blocks.length) * 100)
+      const currentBlock = this.props.block
+      if (currentBlock.payload.length > 0) {
+        currentBlock.payload[currentBlock.payload.length - 1].quickReplies = quickReplies
+      } else {
+        currentBlock.payload.push({quickReplies})
+      }
+      this.props.updateParentState({blocks, currentBlock, sidebarItems, progress})
+    }
+
+    this.setState({quickReplies})
+  }
+
   UNSAFE_componentWillReceiveProps (nextProps) {
     if (nextProps.block) {
       this.setStateData(nextProps.block)
@@ -283,14 +395,20 @@ class MessageArea extends React.Component {
               updateParentState={this.updateState}
             />
             <div className='m--space-10' />
-            <MOREOPTIONS
-              data={{}}
-              chatbot={this.props.chatbot}
-              alertMsg={this.props.alertMsg}
-              currentLevel={this.props.currentLevel}
-              maxLevel={this.props.maxLevel}
-              blocks={this.props.blocks}
-            />
+            {
+              (this.state.text || Object.keys(this.state.attachment).length > 0) &&
+              <MOREOPTIONS
+                data={this.state.quickReplies}
+                chatbot={this.props.chatbot}
+                alertMsg={this.props.alertMsg}
+                currentLevel={this.props.currentLevel}
+                maxLevel={this.props.maxLevel}
+                blocks={this.props.blocks}
+                addOption={this.addOption}
+                removeOption={this.removeOption}
+                updateOption={this.updateOption}
+              />
+            }
             <div className='m--space-10' />
             <FOOTER
               showPrevious={false}
@@ -320,6 +438,7 @@ MessageArea.propTypes = {
   'currentLevel': PropTypes.number.isRequired,
   'maxLevel': PropTypes.number.isRequired,
   'blocks': PropTypes.array.isRequired,
+  'sidebarItems': PropTypes.array.isRequired,
   'handleMessageBlock': PropTypes.func.isRequired,
   'fbAppId': PropTypes.string.isRequired,
   'changeActiveStatus': PropTypes.func.isRequired,

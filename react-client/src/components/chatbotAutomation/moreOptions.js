@@ -14,18 +14,54 @@ class MoreOptions extends React.Component {
     }
     this.showPopover = this.showPopover.bind(this)
     this.togglePopover = this.togglePopover.bind(this)
+    this.setOptions = this.setOptions.bind(this)
   }
 
-  showPopover (option, id) {
+  componentDidMount () {
+    if (this.props.data && this.props.data.length > 0) {
+      this.setOptions(this.props.data)
+    }
+  }
+
+  showPopover (data, id) {
+    const option = {
+      index: id,
+      title: data.title,
+      blockId: data.blockId,
+      showRemove: true,
+      action: 'link',
+      payloadAction: data.payloadAction
+    }
     this.setState({
       showPopover: true,
       popoverTarget: `_more_options_chatbot_${id}`,
-      selectedOption: option
+      selectedOption: Object.keys(data).length > 0 ? option : data
     })
   }
 
   togglePopover () {
     this.setState({showPopover: !this.state.showPopover})
+  }
+
+  setOptions (data) {
+    const options = data.map((item) => {
+      let payload = JSON.parse(item.payload)
+      return {
+        title: item.title,
+        action: payload[0].action,
+        payloadAction: payload[0].payloadAction,
+        blockId: payload[0].blockUniqueId
+      }
+    })
+    this.setState({options})
+  }
+
+  UNSAFE_componentWillReceiveProps (nextProps) {
+    if (nextProps.data && nextProps.data.length > 0) {
+      this.setOptions(nextProps.data)
+    } else {
+      this.setState({options: []})
+    }
   }
 
   render () {
@@ -38,11 +74,12 @@ class MoreOptions extends React.Component {
               {
                 this.state.options.map((option, i) => (
                   <button
+                    key={i}
                     id={`_more_options_chatbot_${i}`}
                     type="button"
-                    style={{border: '1px solid #36a3f7'}}
+                    style={{border: '1px solid #36a3f7', marginRight: '10px', marginBottom: '10px'}}
                     className="btn m-btn--pill btn-outline-info btn-sm"
-                    onClick={this.showPopover}
+                    onClick={() => this.showPopover(option, i)}
                   >
       							{option.title}
       						</button>
@@ -74,13 +111,17 @@ class MoreOptions extends React.Component {
               {
                 this.state.showPopover &&
                 <ADDOPTION
+                  index={this.state.selectedOption.index}
                   title={this.state.selectedOption.title || ''}
                   blockId={this.state.selectedOption.blockId || ''}
                   blocks={this.props.blocks}
                   onCancel={this.togglePopover}
-                  onSave={() => {}}
-                  onRemove={() => {}}
-                  showRemove={this.state.options.length > 0}
+                  onSave={this.props.addOption}
+                  onUpdate={this.props.updateOption}
+                  onRemove={this.props.removeOption}
+                  showRemove={this.state.selectedOption.showRemove || false}
+                  action={this.state.selectedOption.action || 'create'}
+                  payloadAction={this.state.selectedOption.payloadAction || ''}
                   alertMsg={this.props.alertMsg}
                 />
               }
@@ -93,10 +134,13 @@ class MoreOptions extends React.Component {
 }
 
 MoreOptions.propTypes = {
-  'data': PropTypes.object.isRequired,
+  'data': PropTypes.array.isRequired,
   'chatbot': PropTypes.object.isRequired,
   'currentLevel': PropTypes.number.isRequired,
-  'maxLevel': PropTypes.number.isRequired
+  'maxLevel': PropTypes.number.isRequired,
+  'addOption': PropTypes.func.isRequired,
+  'removeOption': PropTypes.func.isRequired,
+  'updateOption': PropTypes.func.isRequired
 }
 
 export default MoreOptions
