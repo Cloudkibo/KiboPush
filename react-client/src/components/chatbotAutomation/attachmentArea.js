@@ -222,6 +222,15 @@ class AttachmentArea extends React.Component {
         buttons: nextProps.attachment.buttons,
         isUploaded: nextProps.attachment.fileData && !nextProps.attachment.fileData.url ? true : false
       })
+    } else {
+      this.setState({
+        inputValue: '',
+        attachment: {},
+        attachmentType: '',
+        isUploaded: false,
+        buttons: [],
+        currentButton: {}
+      })
     }
   }
 

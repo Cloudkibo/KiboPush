@@ -34,6 +34,7 @@ class ConfigureChatbot extends React.Component {
     this.isItParent = this.isItParent.bind(this)
     this.getParentId = this.getParentId.bind(this)
     this.updateState = this.updateState.bind(this)
+    this.getAllBlocks = this.getAllBlocks.bind(this)
 
     props.getFbAppId()
   }
@@ -50,7 +51,8 @@ class ConfigureChatbot extends React.Component {
 
   handleChatbotDetails (res) {
     if (res.status === 'success') {
-      this.preparePayload(res.payload)
+      const blocks = this.getAllBlocks(res.payload)
+      this.preparePayload(blocks)
     } else {
       this.msg.error('An unexpected error occured. Please try again later')
       this.setState({loading: false})
@@ -67,9 +69,8 @@ class ConfigureChatbot extends React.Component {
         sidebarItems.push({
           title: data[i].title,
           id: data[i].uniqueId,
-          isParent: false
-          // isParent: this.isItParent(data[i]),
-          // parentId: this.getParentId(data, data[i])
+          isParent: this.isItParent(data[i]),
+          parentId: this.getParentId(data, data[i])
         })
         if (data[i].payload.length > 0) {
           completed = completed + 1
@@ -105,7 +106,7 @@ class ConfigureChatbot extends React.Component {
     } else {
       let quickReplies = data.payload[data.payload.length - 1].quickReplies
       if (quickReplies && quickReplies.length > 0) {
-        quickReplies = quickReplies.filter((item) => item.title !== 'Home')
+        quickReplies = quickReplies.filter((item) => JSON.parse(item.payload)[0].payloadAction === 'create')
         if (quickReplies.length > 0) {
           return true
         } else {
@@ -121,16 +122,41 @@ class ConfigureChatbot extends React.Component {
     for (let i = 0; i < data.length; i++) {
       if (data[i].payload.length > 0) {
         let replies = data[i].payload[data[i].payload.length - 1].quickReplies
-        replies = replies.filter((item) => item.title !== 'Home')
-        if (replies.length > 0) {
-          let payload = replies.map((item) => JSON.parse(item.payload))
-          payload = payload.map((item) => item.filter((p) => p.action === 'send_message_block')[0].blockUniqueId)
-          if (payload.includes(current.uniqueId)) {
-            return data[i].uniqueId
+        if (replies) {
+          replies = replies.filter((item) => JSON.parse(item.payload)[0].payloadAction === 'create')
+          if (replies.length > 0) {
+            let payload = replies.map((item) => JSON.parse(item.payload))
+            payload = payload.map((item) => item[0].blockUniqueId.toString())
+            if (payload.includes(current.uniqueId.toString())) {
+              return data[i].uniqueId
+            }
           }
         }
       }
     }
+  }
+
+  getAllBlocks (data) {
+    let blocks = data
+    for (let i = 0; i < data.length; i++) {
+      if (data[i].payload.length > 0) {
+        let quickReplies = data[i].payload[data[i].payload.length - 1].quickReplies
+        if (quickReplies && quickReplies.length > 0) {
+          for (let j = 0; j < quickReplies.length; j++) {
+            let payload = JSON.parse(quickReplies[j].payload)
+            let uniqueIds = blocks.map((item) => item.uniqueId.toString())
+            if (!uniqueIds.includes(payload[0].blockUniqueId.toString())) {
+              blocks.push({
+                title: quickReplies[j].title,
+                payload: [],
+                uniqueId: payload[0].blockUniqueId
+              })
+            }
+          }
+        }
+      }
+    }
+    return blocks
   }
 
   componentWillUnmount () {
@@ -156,7 +182,12 @@ class ConfigureChatbot extends React.Component {
           </div>
           : <div>
             <div style={{margin: '15px'}} className='row'>
-              <SIDEBAR data={this.state.sidebarItems} />
+              <SIDEBAR
+                data={this.state.sidebarItems}
+                currentBlock={this.state.currentBlock}
+                blocks={this.state.blocks}
+                updateParentState={this.updateState}
+              />
               <MESSAGEAREA
                 block={this.state.currentBlock}
                 chatbot={this.state.chatbot}
@@ -173,6 +204,7 @@ class ConfigureChatbot extends React.Component {
                 registerSocketAction={registerAction}
                 progress={this.state.progress}
                 updateParentState={this.updateState}
+                sidebarItems={this.state.sidebarItems}
               />
             </div>
             <PROGRESS progress={`${this.state.progress}%`} />
