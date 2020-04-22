@@ -4,7 +4,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { urlMetaData } from '../../redux/actions/convos.actions'
-import {isWebURL, getHostName} from '../../utility/utils'
+import {isWebURL} from '../../utility/utils'
 
 class LinkCarouselModal extends React.Component {
     constructor(props) {
@@ -79,8 +79,13 @@ class LinkCarouselModal extends React.Component {
         this.removeLink = this.removeLink.bind(this)
         this.valid = this.valid.bind(this)
         this.handleSeeMoreLinkChange = this.handleSeeMoreLinkChange.bind(this)
+        this.getHostName = this.getHostName.bind(this)
         this.typingTimer = null
         this.doneTypingInterval = 500
+    }
+
+    getHostName (url) {
+       return url.replace('HTTP://','').replace('HTTPS://','').replace('WWW.','').split(/[/?#]/)[0];
     }
 
     valid() {
@@ -140,7 +145,7 @@ class LinkCarouselModal extends React.Component {
                 id: links.length + 1,
                 component: {
                     image_url: this.props.connectedPages.find(p => p._id === this.props.pages[0]).pagePic,
-                    title: `See more at ${getHostName(this.state.seeMoreLink.link.toUpperCase())}`,
+                    title: `See more at ${this.getHostName(this.state.seeMoreLink.link.toUpperCase())}`,
                     subtitle: '',
                     buttons: []
                 }
@@ -302,7 +307,7 @@ class LinkCarouselModal extends React.Component {
     
     handleSeeMoreLinkChange (e) {
       let cards = this.state.cards
-      cards[cards.length - 1].component.title = `See more at ${getHostName(e.target.value.toUpperCase())}`
+      cards[cards.length - 1].component.title = `See more at ${this.getHostName(e.target.value.toUpperCase())}`
       this.setState({
           cards,
           seeMoreLink: {
