@@ -36,8 +36,10 @@ class LinkCarouselModal extends React.Component {
         this.state = {
             cards,
             seeMoreLink: {
-                link: this.props.seeMoreLink ? this.props.seeMoreLink : "KIBOPUSH.COM",
-                valid: true
+                link: this.props.seeMoreLink ? this.props.seeMoreLink : "kibopush.com",
+                valid: true,
+                urlValid: true,
+                validating: false
             },
             links: props.links && props.links.length > 0 ? props.links : [{ valid: false, url: '', loading: false, errorMsg: this.defaultErrorMsg }],
             selectedIndex: 0,
@@ -311,9 +313,29 @@ class LinkCarouselModal extends React.Component {
       this.setState({
           cards,
           seeMoreLink: {
-              valid: this.validateURL(e.target.value),
+              validating: true, 
+              urlValid: this.validateURL(e.target.value),
+              valid: false,
               link: e.target.value
           }
+      }, () => {
+        let seeMoreLink = this.state.seeMoreLink
+        if (this.state.seeMoreLink.urlValid) {
+          clearTimeout(this.typingTimer)
+          this.typingTimer = setTimeout(() => this.props.urlMetaData(this.state.seeMoreLink.link, (data) => {
+            if (!data || !data.ogTitle) {
+              seeMoreLink.validating = false
+              seeMoreLink.valid = false
+            } else {
+              seeMoreLink.validating = false
+              seeMoreLink.valid = true
+            }
+            this.setState({seeMoreLink})
+          }, this.doneTypingInterval))
+        } else {
+          seeMoreLink.validating = false
+          this.setState({seeMoreLink})
+        }
       })
     }
 
@@ -417,15 +439,16 @@ class LinkCarouselModal extends React.Component {
                                         <input 
                                           disabled={this.props.user.currentPlan.unique_ID === 'plan_B' || this.props.user.currentPlan.unique_ID === 'plan_D'} 
                                           value={this.state.seeMoreLink.link} 
-                                          style={{ maxWidth: '100%', borderColor: !this.state.seeMoreLink.valid ? 'red' : 'green', textTransform: 'uppercase'}} 
+                                          style={{ maxWidth: '100%', borderColor: !this.state.seeMoreLink.valid && !this.state.seeMoreLink.validating ? 'red' : 'green'}} 
                                           onChange={this.handleSeeMoreLinkChange} className='form-control' 
                                         />
                                     </div>
                                 </div>
                                 {
                                   this.props.user.currentPlan.unique_ID === 'plan_B' || this.props.user.currentPlan.unique_ID === 'plan_D' ?
-                                  <div style={{color: 'darkgoldenrod'}}>{'*Only available on premium'}</div>
-                                  :
+                                  <div style={{color: 'darkgoldenrod'}}>{'*Only available on premium'}</div> :
+                                  this.state.seeMoreLink.validating ?
+                                  <div style={{color: 'green'}}>{'*Validating Link...'}</div> :
                                   <div style={{color: this.state.seeMoreLink.valid ? 'green' : 'red'}}>{this.state.seeMoreLink.valid ? '*Link is valid.' : '*Link is invalid'}</div>
                                 }
                             </div>
