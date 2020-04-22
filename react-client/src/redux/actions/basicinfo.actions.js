@@ -213,13 +213,16 @@ export function updateShowIntegrations (data, browserHistory) {
   }
 }
 
-export function disconnectFacebook () {
+export function disconnectFacebook (callback) {
   return (dispatch) => {
     callApi('users/disconnectFacebook').then(res => {
       if (res.status === 'success') {
         dispatch(getuserdetails())
       } else {
         console.log('Failed to update show integrations!')
+      }
+      if (callback) {
+        callback()
       }
     })
   }

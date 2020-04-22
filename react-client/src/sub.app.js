@@ -81,6 +81,7 @@ class App extends Component {
       '/finish',
       '/resendVerificationEmail',
       '/connectFb',
+      '/sessionInvalidated',
       '/addfbpages'
     ].includes(path)) {
       return true

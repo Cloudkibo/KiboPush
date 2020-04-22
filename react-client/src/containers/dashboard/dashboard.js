@@ -105,13 +105,19 @@ class Dashboard extends React.Component {
   }
   checkUserAccessToken (response) {
     console.log('checkUserAccessToken response', response)
-    if (this.props.user && this.props.user.role === 'buyer' &&
-        response.status === 'failed' && response.payload.error &&
-        response.payload.error.code === 190 && this.props.user.platform === 'messenger') {
-      this.props.history.push({
-        pathname: '/connectFb',
-        state: { session_inavalidated: true }
-      })
+    if (response.status === 'failed' && response.payload.error &&
+    response.payload.error.code === 190 && this.props.user && this.props.user.platform === 'messenger') {
+      if (this.props.user.role === 'buyer') {
+        this.props.history.push({
+          pathname: '/sessionInvalidated',
+          state: { session_inavalidated: true, role: 'buyer' }
+        })
+      } else {
+        this.props.history.push({
+          pathname: '/sessionInvalidated',
+          state: { session_inavalidated: true, role: this.props.user.role, buyerInfo: response.payload.buyerInfo }
+        })
+      }
     }
   }
   goToSettings () {
