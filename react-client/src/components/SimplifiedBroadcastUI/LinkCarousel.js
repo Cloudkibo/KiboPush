@@ -38,7 +38,6 @@ class LinkCarouselModal extends React.Component {
             seeMoreLink: {
                 link: this.props.seeMoreLink ? this.props.seeMoreLink : "kibopush.com",
                 valid: true,
-                urlValid: true,
                 validating: false
             },
             links: props.links && props.links.length > 0 ? props.links : [{ valid: false, url: '', loading: false, errorMsg: this.defaultErrorMsg }],
@@ -308,21 +307,20 @@ class LinkCarouselModal extends React.Component {
     }
     
     handleSeeMoreLinkChange (e) {
+      clearTimeout(this.typingTimer)
       let cards = this.state.cards
       cards[cards.length - 1].component.title = `See more at ${this.getHostName(e.target.value.toUpperCase())}`
       this.setState({
           cards,
           seeMoreLink: {
-              validating: true, 
-              urlValid: this.validateURL(e.target.value),
+              validating: this.validateURL(e.target.value), 
               valid: false,
               link: e.target.value
           }
       }, () => {
-        let seeMoreLink = this.state.seeMoreLink
-        if (this.state.seeMoreLink.urlValid) {
-          clearTimeout(this.typingTimer)
+        if (this.state.seeMoreLink.validating) {
           this.typingTimer = setTimeout(() => this.props.urlMetaData(this.state.seeMoreLink.link, (data) => {
+            let seeMoreLink = this.state.seeMoreLink
             if (!data || !data.ogTitle) {
               seeMoreLink.validating = false
               seeMoreLink.valid = false
@@ -332,9 +330,6 @@ class LinkCarouselModal extends React.Component {
             }
             this.setState({seeMoreLink})
           }, this.doneTypingInterval))
-        } else {
-          seeMoreLink.validating = false
-          this.setState({seeMoreLink})
         }
       })
     }
