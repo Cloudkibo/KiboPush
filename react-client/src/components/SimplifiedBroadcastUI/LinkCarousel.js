@@ -312,7 +312,7 @@ class LinkCarouselModal extends React.Component {
           cards,
           seeMoreLink: {
               valid: this.validateURL(e.target.value),
-              link: e.target.value.toUpperCase()
+              link: e.target.value
           }
       })
     }
@@ -414,7 +414,12 @@ class LinkCarouselModal extends React.Component {
                                           See More Link
                                           <i className='la la-question-circle' data-toggle='tooltip' title='This will be the last card visible on desktop that lets people know where they can find more information' />
                                         </h6>
-                                        <input disabled={this.props.user.currentPlan.unique_ID === 'plan_B' || this.props.user.currentPlan.unique_ID === 'plan_D'} value={this.state.seeMoreLink.link} style={{ maxWidth: '100%', borderColor: !this.state.seeMoreLink.valid ? 'red' : 'green'}} onChange={this.handleSeeMoreLinkChange} className='form-control' />
+                                        <input 
+                                          disabled={this.props.user.currentPlan.unique_ID === 'plan_B' || this.props.user.currentPlan.unique_ID === 'plan_D'} 
+                                          value={this.state.seeMoreLink.link} 
+                                          style={{ maxWidth: '100%', borderColor: !this.state.seeMoreLink.valid ? 'red' : 'green', textTransform: 'uppercase'}} 
+                                          onChange={this.handleSeeMoreLinkChange} className='form-control' 
+                                        />
                                     </div>
                                 </div>
                                 {
