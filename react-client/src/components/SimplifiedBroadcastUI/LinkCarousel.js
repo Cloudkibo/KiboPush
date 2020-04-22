@@ -307,7 +307,6 @@ class LinkCarouselModal extends React.Component {
     }
     
     handleSeeMoreLinkChange (e) {
-      clearTimeout(this.typingTimer)
       let cards = this.state.cards
       cards[cards.length - 1].component.title = `See more at ${this.getHostName(e.target.value.toUpperCase())}`
       this.setState({
@@ -319,17 +318,17 @@ class LinkCarouselModal extends React.Component {
           }
       }, () => {
         if (this.state.seeMoreLink.validating) {
+          clearTimeout(this.typingTimer)
           this.typingTimer = setTimeout(() => this.props.urlMetaData(this.state.seeMoreLink.link, (data) => {
             let seeMoreLink = this.state.seeMoreLink
+            seeMoreLink.validating = false
             if (!data || !data.ogTitle) {
-              seeMoreLink.validating = false
               seeMoreLink.valid = false
             } else {
-              seeMoreLink.validating = false
               seeMoreLink.valid = true
             }
             this.setState({seeMoreLink})
-          }, this.doneTypingInterval))
+          }), this.doneTypingInterval)
         }
       })
     }
