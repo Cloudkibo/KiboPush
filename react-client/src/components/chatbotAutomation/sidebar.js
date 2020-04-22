@@ -39,7 +39,7 @@ class Sidebar extends React.Component {
   }
 
   getChildren (id) {
-    const children = this.props.data.filter((item) => item.parentId === id)
+    const children = this.props.data.filter((item) => item.parentId && item.parentId.toString() === id.toString())
     let elements = []
     if (children.length > 0) {
       for (let i = 0; i < children.length; i++) {

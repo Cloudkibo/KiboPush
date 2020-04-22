@@ -276,7 +276,7 @@ class MessageArea extends React.Component {
       const id = new Date().getTime()
       const newBlock = {title, payload: [], uniqueId: id}
       const sidebarItems = this.props.sidebarItems
-      const index = sidebarItems.findIndex((item) => item.id === this.props.block.uniqueId)
+      const index = sidebarItems.findIndex((item) => item.id.toString() === this.props.block.uniqueId.toString())
       sidebarItems[index].isParent = true
       const newSidebarItem = {title, isParent: false, id, parentId: this.props.block.uniqueId}
       const blocks = [...this.props.blocks, newBlock]
