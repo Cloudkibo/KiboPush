@@ -29,7 +29,8 @@ class YoutubeVideoModal extends React.Component {
       videoId: this.props.videoId ? this.props.videoId : null,
       card: this.props.card,
       fileSizeExceeded: this.props.fileSizeExceeded,
-      initialFile: this.props.file ? this.props.file.fileurl.id : null
+      initialFile: this.props.file ? this.props.file.fileurl.id : null,
+      videoType: 'youtube'
     }
     console.log('YoutubeVideoModal state', this.state)
     console.log('YoutubeVideoModal module', this.props.module)
@@ -42,6 +43,7 @@ class YoutubeVideoModal extends React.Component {
     this.setLoading = this.setLoading.bind(this)
     this.closeModal = this.closeModal.bind(this)
     this.handleUrlMetaData = this.handleUrlMetaData.bind(this)
+    this.handleRadioButton = this.handleRadioButton.bind(this)
   }
 
   handleLinkChange(e) {
@@ -63,7 +65,11 @@ class YoutubeVideoModal extends React.Component {
       }
     }
     this.setState({ fileSizeExceeded: false, buttons: [], disabled: true, link: e.target.value, videoId: null, videoTitle: null, videoDescription: null, file: null, card: null }, () => {
-      this.validateYoutubeUrl()
+      if (this.state.videoType === 'facebook') {
+        this.validateFacebookUrl()
+      } else {
+        this.validateYoutubeUrl()
+      }
     })
   }
 
@@ -208,6 +214,21 @@ class YoutubeVideoModal extends React.Component {
     })
   }
 
+  validateFacebookUrl () {
+    /* eslint-disable */
+    let regExp = /^(?:(?:https?:)?\/\/)?(?:www\.)?facebook\.com\/[a-zA-Z0-9\.]+\/videos\/(?:[a-zA-Z0-9\.]+\/)?([0-9]+)/
+    /* eslint-enable */
+    if (regExp.test(this.state.link)) {
+      this.setState({ 
+        disabled: false, 
+        loading: false, 
+        fileSizeExceeded: false, 
+        edited: true 
+      }, () => {
+      })
+    }
+  }
+
 
   validateYoutubeUrl() {
     let url = this.state.link
@@ -235,32 +256,34 @@ class YoutubeVideoModal extends React.Component {
   }
 
   handleUrlMetaData(data) {
-    let description
-    if (data.ogDescription) {
-      description = data.ogDescription.length > 80 ? data.ogDescription.substring(0, 80) + '...' : data.ogDescription
-    } else {
-      description = this.props.connectedPages.filter(page => page.pageId === this.props.pageId)[0].pageName
-    }
-    if (data.ogImage && data.ogImage.url && data.ogImage.url.startsWith('/')) {
-        data.ogImage.url = this.state.link + data.ogImage.url
-    }
-    let card = {
-      title: data.ogTitle.length > 80 ? data.ogTitle.substring(0, 80) + '...' : data.ogTitle,
-      subtitle: description,
-      image_url: data.ogImage && data.ogImage.url ? data.ogImage.url : this.defaultImage,
-      buttons: [
-          {
-              title: 'Watch on YouTube',
-              type: 'web_url',
-              url: this.state.link
-          }
-      ],
-      default_action: {
-          type: 'web_url',
-          url: this.state.link
+    if (data) {
+      let description
+      if (data.ogDescription) {
+        description = data.ogDescription.length > 80 ? data.ogDescription.substring(0, 80) + '...' : data.ogDescription
+      } else {
+        description = this.props.connectedPages.filter(page => page.pageId === this.props.pageId)[0].pageName
       }
+      if (data.ogImage && data.ogImage.url && data.ogImage.url.startsWith('/')) {
+          data.ogImage.url = this.state.link + data.ogImage.url
+      }
+      let card = {
+        title: data.ogTitle.length > 80 ? data.ogTitle.substring(0, 80) + '...' : data.ogTitle,
+        subtitle: description,
+        image_url: data.ogImage && data.ogImage.url ? data.ogImage.url : this.defaultImage,
+        buttons: [
+            {
+                title: 'Watch on YouTube',
+                type: 'web_url',
+                url: this.state.link
+            }
+        ],
+        default_action: {
+            type: 'web_url',
+            url: this.state.link
+        }
+      }
+      this.setState({card, disabled: false})
     }
-    this.setState({card, disabled: false})
   }
 
   closeModal() {
@@ -271,6 +294,17 @@ class YoutubeVideoModal extends React.Component {
     }
   }
 
+  handleRadioButton (e) {
+    this.setState({
+      videoType: e.target.value, 
+      file: null, 
+      loading: false, 
+      fileSizeExceeded: false,
+      link: '',
+      disabled: true
+    })
+  }
+
   render() {
     console.log('video link', this.state.link)
     console.log('YoutubeVideoModal props in render', this.props)
@@ -279,7 +313,7 @@ class YoutubeVideoModal extends React.Component {
       <div className="modal-content" style={{width: '72vw'}}>
         <div style={{ display: 'block' }} className="modal-header">
           <h5 className="modal-title" id="exampleModalLabel">
-            YouTube Video
+            Video Link
           </h5>
           <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" onClick={this.closeModal} aria-label="Close">
             <span aria-hidden="true">
@@ -289,11 +323,42 @@ class YoutubeVideoModal extends React.Component {
         </div>
         <div style={{ color: 'black' }} className="modal-body">
           <div className='row'>
+            
             <div className='col-6' style={{ maxHeight: '65vh', overflowY: 'scroll' }}>
+
+              <div>
+                <label>Select video source:</label>
+                <div className='row' style={{marginLeft: '10px'}}>
+                  <div className='col-md-6 col-lg-6 col-sm-6'>
+                    <div className='radio'>
+                      <input
+                        type='radio'
+                        value='youtube'
+                        name='youtube'
+                        onChange={this.handleRadioButton}
+                        checked={this.state.videoType === 'youtube'} />
+                      <span>YouTube</span>
+                    </div>
+                  </div>
+                  <div className='col-md-6 col-lg-6 col-sm-6'>
+                    <div className='radio'>
+                      <input
+                        type='radio'
+                        value='facebook'
+                        name='facebook'
+                        onChange={this.handleRadioButton}
+                        checked={this.state.videoType === 'facebook'} />
+                      <span>Facebook</span>
+                    </div>
+                  </div>
+                </div>
+                <br />
+              </div>
+
               <input value={this.state.link} style={{ maxWidth: '100%', borderColor: this.state.disabled && !this.state.loading && !this.state.fileSizeExceeded ? 'red' : (this.state.loading || !this.state.disabled || this.state.fileSizeExceeded) ? 'green' : '' }} onChange={this.handleLinkChange} className='form-control' />
               <div style={{ color: 'green' }}>{this.state.fileSizeExceeded ? '*The size of this YouTube video exceeds the 25 Mb limit imposed by Facebook, so it will be sent as a card.' : ''}</div>
-              <div style={{ color: 'red' }}>{!this.state.fileSizeExceeded && this.state.disabled && !this.state.loading ? '*Please enter a valid YouTube link.' : ''}</div>
-              <div style={{ marginBottom: '30px', color: 'green' }}>{this.state.loading ? '*Please wait for the YouTube video to download.' : ''}</div>
+              <div style={{ color: 'red' }}>{!this.state.fileSizeExceeded && this.state.disabled && !this.state.loading ? `*Please enter a valid ${this.state.videoType} link.` : ''}</div>
+              <div style={{ marginBottom: '30px', color: 'green' }}>{this.state.loading ? `*Please wait for the ${this.state.videoType} video to download.` : ''}</div>
               {
                 this.state.file && this.props.module !== 'whatsapp' &&
                 <AddButton
@@ -377,10 +442,15 @@ class YoutubeVideoModal extends React.Component {
                     </div>
                   }
                   {
-                    (this.props.module !== 'whatsapp' && !this.state.disabled && !this.state.loading && !this.state.fileSizeExceeded) &&
+                    (this.props.module !== 'whatsapp' && !this.state.disabled && !this.state.loading && !this.state.fileSizeExceeded && this.state.videoType === 'youtube') &&
                     <video ref="video" controls style={{ width: '100%', borderRadius: '10px', marginTop: '-10px', borderBottomLeftRadius: '0px', borderBottomRightRadius: '0px' }} name='media' id='youtube_player'>
                       <source src={this.state.videoLink} type='audio/mpeg' />
                     </video>
+                  }
+                  {
+                    (this.props.module !== 'whatsapp' && !this.state.disabled && !this.state.loading && !this.state.fileSizeExceeded && this.state.videoType === 'facebook') &&
+                    <div className="fb-video" data-href={this.state.link} data-width="500" data-show-text="false">
+                    </div>
                   }
                   {
                     visibleButtons.map((button, index) => {

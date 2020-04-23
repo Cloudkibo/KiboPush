@@ -138,6 +138,25 @@
   </head>
   <body class="m-page--fluid m--skin- m-content--skin-light2 m-aside-left--fixed m-header--fixed m-header--fixed-mobile m-aside-left--enabled m-aside-left--skin-dark m-aside-left--offcanvas m-footer--push m-aside--offcanvas-default">
     <noscript>You need to enable JavaScript to run this app.</noscript>
+    <script>
+      window.fbAsyncInit = function() {
+        FB.init({
+          appId      : '1429073230510150',
+          xfbml      : true,
+          version    : 'v3.2'
+        });
+        var my_video_player;
+        FB.Event.subscribe('xfbml.ready', function(msg) {
+          debugger
+          console.log('facebook video')
+          if (msg.type === 'video') {
+            my_video_player = msg.instance;
+          }
+        });
+      };
+    </script>
+    <div id="fb-root"></div>
+    <script async defer src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v3.2"></script>
     <div id='quickReplyPopover'></div>
     <div id="content" class="m-grid m-grid--hor m-grid--root m-page"></div>
     <script src="https://cdn.ravenjs.com/3.22.3/raven.min.js" crossorigin="anonymous"></script>
