@@ -8,6 +8,7 @@ import AddButton from './AddButton'
 import { downloadYouTubeVideo, uploadTemplate, urlMetaData } from '../../redux/actions/convos.actions'
 import { getVideoId, deleteFile } from '../../utility/utils'
 import YouTube from 'react-youtube'
+import FacebookPlayer from 'react-player/lib/players/Facebook'
 
 class YoutubeVideoModal extends React.Component {
   constructor(props) {
@@ -21,7 +22,7 @@ class YoutubeVideoModal extends React.Component {
       buttonLimit: 3,
       buttonActions: this.props.buttonActions ? this.props.buttonActions : ['open website', 'open webview'],
       file: this.props.file ? this.props.file : '',
-      link: this.props.youtubeLink ? this.props.youtubeLink : '',
+      link: this.props.youtubeLink || this.props.facebookUrl,
       videoLink: this.props.videoLink ? this.props.videoLink : '',
       videoTitle: this.props.videoTitle ? this.props.videoTitle : '',
       videoDescription: this.props.videoDescription ? this.props.videoDescription : '',
@@ -30,7 +31,8 @@ class YoutubeVideoModal extends React.Component {
       card: this.props.card,
       fileSizeExceeded: this.props.fileSizeExceeded,
       initialFile: this.props.file ? this.props.file.fileurl.id : null,
-      videoType: 'youtube'
+      videoType: this.props.videoType ? this.props.videoType : 'youtube',
+      facebookUrl: this.props.facebookUrl
     }
     console.log('YoutubeVideoModal state', this.state)
     console.log('YoutubeVideoModal module', this.props.module)
@@ -99,6 +101,7 @@ class YoutubeVideoModal extends React.Component {
           id: this.props.id,
           fileSizeExceeded: this.state.fileSizeExceeded,
           componentName:  'YouTube video',
+          videoType: this.state.videoType,
           youtubeLink: this.state.link,
           componentType: 'card',
           image_url: this.state.card.image_url ? this.state.card.image_url : '',
@@ -107,6 +110,16 @@ class YoutubeVideoModal extends React.Component {
           buttons: this.state.card.buttons,
           default_action: this.state.card.default_action,
           card: this.state.card
+        }, this.props.edit)
+      } else if (this.state.videoType === 'facebook') {
+        this.props.addComponent({
+          id: this.props.id,
+          componentName:  'Facebook video',
+          videoType: this.state.videoType,
+          facebookUrl: this.state.facebookUrl,
+          componentType: 'media',
+          mediaType: 'video',
+          buttons
         }, this.props.edit)
       } else {
         if (this.state.initialFile) {
@@ -220,11 +233,19 @@ class YoutubeVideoModal extends React.Component {
     /* eslint-enable */
     if (regExp.test(this.state.link)) {
       this.setState({ 
-        disabled: false, 
+        facebookUrl: this.state.link,
+        loading: false, 
+        disabled: false,
+        fileSizeExceeded: false, 
+        edited: true 
+      })
+    } else {
+      this.setState({ 
+        disabled: true,
+        facebookUrl: '', 
         loading: false, 
         fileSizeExceeded: false, 
         edited: true 
-      }, () => {
       })
     }
   }
@@ -301,7 +322,8 @@ class YoutubeVideoModal extends React.Component {
       loading: false, 
       fileSizeExceeded: false,
       link: '',
-      disabled: true
+      disabled: true,
+      facebookUrl: ''
     })
   }
 
@@ -360,7 +382,7 @@ class YoutubeVideoModal extends React.Component {
               <div style={{ color: 'red' }}>{!this.state.fileSizeExceeded && this.state.disabled && !this.state.loading ? `*Please enter a valid ${this.state.videoType} link.` : ''}</div>
               <div style={{ marginBottom: '30px', color: 'green' }}>{this.state.loading ? `*Please wait for the ${this.state.videoType} video to download.` : ''}</div>
               {
-                this.state.file && this.props.module !== 'whatsapp' &&
+                (this.state.file || this.state.facebookUrl) && this.props.module !== 'whatsapp' &&
                 <AddButton
                   replyWithMessage={this.props.replyWithMessage}
                   disabled={this.state.disabled}
@@ -448,9 +470,18 @@ class YoutubeVideoModal extends React.Component {
                     </video>
                   }
                   {
-                    (this.props.module !== 'whatsapp' && !this.state.disabled && !this.state.loading && !this.state.fileSizeExceeded && this.state.videoType === 'facebook') &&
-                    <div className="fb-video" data-href={this.state.link} data-width="500" data-show-text="false">
-                    </div>
+                    (this.props.module !== 'whatsapp' && this.state.facebookUrl) &&
+                        <FacebookPlayer
+                          width='100%'
+                          height='100%'
+                          controls={true}
+                          url={this.state.facebookUrl}
+                          config={{
+                            facebook: {
+                              appId: '1429073230510150'
+                            }
+                          }}
+                        />
                   }
                   {
                     visibleButtons.map((button, index) => {

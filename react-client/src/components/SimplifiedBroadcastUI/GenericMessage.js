@@ -902,6 +902,8 @@ class GenericMessage extends React.Component {
       'media': {
         component: (<Media
           id={componentId}
+          videoType={broadcast.videoType}
+          facebookUrl={broadcast.facebookUrl}
           editComponent={this.showAddComponentModal}
           pageId={this.state.pageId}
           pages={this.props.pages}
@@ -916,7 +918,10 @@ class GenericMessage extends React.Component {
           buttonActions={this.props.buttonActions}
           replyWithMessage={this.props.replyWithMessage} />),
         handler: () => {
-          this.handleMedia({id: componentId,
+          this.handleMedia({
+            id: componentId,
+            videoType:broadcast.videoType,
+            facebookUrl:broadcast.facebookUrl,
             youtubeLink: broadcast.youtubeLink && broadcast.youtubeLink,
             videoLink: broadcast.videoLink && broadcast.videoLink,
             componentType: 'media',
