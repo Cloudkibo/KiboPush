@@ -101,7 +101,7 @@ class MoreOptions extends React.Component {
         </div>
         <div id='_more_options_in_chatbot'>
           <Popover
-            placement='right'
+            placement='top'
             isOpen={this.state.showPopover}
             className='chatPopover _popover_max_width_400'
             target={this.state.popoverTarget}
