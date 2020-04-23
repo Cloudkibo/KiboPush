@@ -28,5 +28,8 @@ export function checkValidations (sponsoredMessage) {
   ) {
     return false
   }
+  if (sponsoredMessage.payload[0].text === '') {
+    return false
+  }
   return true
 }

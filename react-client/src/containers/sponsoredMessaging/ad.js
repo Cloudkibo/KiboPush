@@ -15,12 +15,12 @@ class Ad extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      text: this.props.sponsoredMessage.payload[0] ? this.props.sponsoredMessage.payload[0].text : '',
+      text: this.props.sponsoredMessage.payload && this.props.sponsoredMessage.payload[0] ? this.props.sponsoredMessage.payload[0].text : '',
       card: {},
       buttons: [],
       quickReplies: [],
       selectedFormat: 'text',
-      selectedAction: props.sponsoredMessage.payload.length > 1 ? 'textAndImage' : 'text',
+      selectedAction: props.sponsoredMessage.payload && props.sponsoredMessage.payload.length > 1 ? 'textAndImage' : 'text',
       buttonActions: ['open website'],
       broadcast: this.props.sponsoredMessage.payload ? this.props.sponsoredMessage.payload : [],
       list: [],
@@ -345,7 +345,7 @@ class Ad extends React.Component {
                       checked={this.state.selectedFormat === 'text'}
                     />
 				              Text
-										<span></span>
+                    <span></span>
 									</label>
 									<label className="m-radio" style={{fontWeight: 'lighter'}}>
 										<input
