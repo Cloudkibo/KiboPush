@@ -56,9 +56,7 @@ class Ad extends React.Component {
 
   getItems () {
     if (this.state.list.length > 0) {
-      console.log('in one')
       if (!this.state.quickRepliesComponent) {
-        console.log('in two')
         this.setState({quickRepliesComponent: {
           content:
             (<QuickReplies
@@ -73,11 +71,9 @@ class Ad extends React.Component {
             />)
         }})
       } else {
-        console.log('in three')
         return this.state.list.concat([this.state.quickRepliesComponent])
       }
     } else {
-      console.log('in four')
       return this.state.list
     }
   }
@@ -88,7 +84,6 @@ class Ad extends React.Component {
   }
 
   updateState (componentDetails) {
-    console.log('in updateState', componentDetails)
     let component = this.getComponent(componentDetails)
     this.updateList(component)
     component.handler()
@@ -100,18 +95,14 @@ class Ad extends React.Component {
      let temp = this.state.list
      let componentIndex = this.state.list.findIndex(item => item.content.props.id === component.component.props.id)
      if (componentIndex < 0) {
-       console.log('adding new component')
-       console.log({list: [...temp, {content: component.component}]})
        this.setState({list: [...temp, {content: component.component}]})
      } else {
-       console.log('editing exisiting component')
        temp[componentIndex] = {content: component.component}
        this.setState({list: temp})
      }
    }
 
    handleText (obj) {
-     console.log('handleText', obj)
      var temp = this.state.broadcast
      var isPresent = false
      for (let a = 0; a < temp.length; a++) {
@@ -135,20 +126,16 @@ class Ad extends React.Component {
        }
      }
     //  temp = this.appendQuickRepliesToEnd(temp, this.state.quickReplies)
-     console.log('handleText temp', temp)
-     console.log('handleText state', this.state)
      this.setState({broadcast: temp})
      this.handleChange({broadcast: temp}, obj)
    }
 
    appendQuickRepliesToEnd (broadcast, quickReplies) {
      let quickRepliesIndex = broadcast.findIndex(x => !!x.quickReplies)
-     console.log('quickRepliesIndex', quickRepliesIndex)
      if (quickRepliesIndex > -1) {
        delete broadcast[quickRepliesIndex].quickReplies
      }
      broadcast[broadcast.length-1].quickReplies = quickReplies
-     console.log('appendQuickRepliesToEnd', broadcast)
      return broadcast
    }
 
@@ -246,7 +233,6 @@ class Ad extends React.Component {
    preparePayload (state) {
      let broadcast = this.state.broadcast
      if (state.text) {
-       console.log('inside if')
        broadcast[0] = {
          componentType: 'text',
          text: state.text
@@ -276,7 +262,6 @@ class Ad extends React.Component {
   }
 
   handleChange (broadcast) {
-      console.log('handleChange ad', broadcast)
       if (broadcast.newFiles || broadcast.initialFiles) {
         this.props.updateSponsoredMessage(this.props.sponsoredMessage, null, null, broadcast)
       } else {

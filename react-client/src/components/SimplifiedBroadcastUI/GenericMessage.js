@@ -935,7 +935,6 @@ class GenericMessage extends React.Component {
   }
 
   getItems () {
-    console.log('in get items', this.state.list)
     if (this.state.list.length > 0 && this.props.showQuickRelplies) {
       console.log('quick reply', this.state.list[this.state.list.length - 1])
       if (!this.state.quickRepliesComponent) {
