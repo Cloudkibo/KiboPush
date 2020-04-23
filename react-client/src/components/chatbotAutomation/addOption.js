@@ -6,9 +6,9 @@ class AddOption extends React.Component {
   constructor(props, context) {
     super(props, context)
     this.state = {
-      title: props.title,
+      title: '',
       selectedBlock: '',
-      selectedRadio: props.action
+      selectedRadio: ''
     }
     this.onTitleChange = this.onTitleChange.bind(this)
     this.onBlockChange = this.onBlockChange.bind(this)
@@ -17,6 +17,22 @@ class AddOption extends React.Component {
     this.onRemove = this.onRemove.bind(this)
     this.onRadioClick = this.onRadioClick.bind(this)
     this.getSelectOptions = this.getSelectOptions.bind(this)
+  }
+
+  componentDidMount () {
+    let selectedBlock = ''
+    if (this.props.blockId) {
+      const block = this.props.blocks.find((item) => item.uniqueId.toString() === this.props.blockId.toString())
+      selectedBlock = {
+        label: block.title,
+        value: this.props.blockId
+      }
+    }
+    this.setState({
+      title: this.props.title,
+      selectedBlock,
+      selectedRadio: this.props.action
+    })
   }
 
   onTitleChange (e) {
@@ -51,7 +67,7 @@ class AddOption extends React.Component {
 
   onUpdate () {
     this.props.onUpdate(
-      this.props.selectedBlock.value,
+      this.state.selectedBlock.value,
       this.props.index,
       this.state.title,
       this.props.payloadAction
@@ -61,7 +77,7 @@ class AddOption extends React.Component {
 
   onRemove () {
     this.props.onRemove(
-      this.props.selectedBlock.value,
+      this.state.selectedBlock.value,
       this.props.index,
       this.props.payloadAction
     )
