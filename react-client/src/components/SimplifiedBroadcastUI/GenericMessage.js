@@ -758,7 +758,7 @@ class GenericMessage extends React.Component {
             header: broadcast.header,
             defaultErrorMsg: broadcast.defaultErrorMsg,
             invalidMsg: broadcast.invalidMsg,
-            validMsg: broadcast.validMsg, 
+            validMsg: broadcast.validMsg,
             retrievingMsg: broadcast.retrievingMsg,
             buttonTitle: broadcast.buttonTitle,
             validateUrl: broadcast.validateUrl,
@@ -970,7 +970,7 @@ class GenericMessage extends React.Component {
       for (let i = 0; i < this.state.newFiles.length; i++) {
         deleteFile(this.state.newFiles[i])
       }
-    } 
+    }
   }
 
   render () {
