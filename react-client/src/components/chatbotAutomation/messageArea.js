@@ -326,23 +326,14 @@ class MessageArea extends React.Component {
     const quickReplies = this.state.quickReplies
     quickReplies.splice(index, 1)
 
-    if (action === 'create') {
-      const {blocks, sidebarItems} = this.props
-      const blockIndex = blocks.findIndex((item) => item.uniqueId === uniqueId)
-      const sidebarIndex = sidebarItems.findIndex((item) => item.id === uniqueId)
-      blocks.splice(blockIndex, 1)
-      sidebarItems.splice(sidebarIndex, 1)
-      const completed = blocks.filter((item) => item.payload.length > 0).length
-      const progress = Math.floor((completed / blocks.length) * 100)
-      const currentBlock = this.props.block
-      if (currentBlock.payload.length > 0) {
-        currentBlock.payload[currentBlock.payload.length - 1].quickReplies = quickReplies
-      } else {
-        currentBlock.payload.push({quickReplies})
-      }
-      this.props.updateParentState({blocks, currentBlock, sidebarItems, progress})
+    const currentBlock = this.props.block
+    if (currentBlock.payload.length > 0) {
+      currentBlock.payload[currentBlock.payload.length - 1].quickReplies = quickReplies
+    } else {
+      currentBlock.payload.push({quickReplies})
     }
 
+    this.props.updateParentState({currentBlock})
     this.setState({quickReplies})
   }
 
@@ -359,7 +350,7 @@ class MessageArea extends React.Component {
           <div style={{height: '80vh', position: 'relative', padding: '15px'}} className='m-portlet__body'>
             <HEADER
               title={this.props.block.title}
-              showDelete={(this.props.block._id && (this.props.chatbot.startingBlockId !== this.props.block._id))}
+              showDelete={false}
               onDelete={this.onDelete}
               onTest={this.showTestModal}
               canTest={this.props.progress === 100}
