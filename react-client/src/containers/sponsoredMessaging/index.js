@@ -292,6 +292,7 @@ class SponsoredMessaging extends React.Component {
   onEdit (sponsoredMessage) {
     sponsoredMessage.campaignType = 'existing'
     sponsoredMessage.adSetType = 'existing'
+    sponsoredMessage.selectedAction = sponsoredMessage.payload.length > 1 ? 'textAndImage' : 'text'
     this.props.showUpdatedData(sponsoredMessage)
     this.props.history.push({
       pathname: '/editSponsoredMessage',

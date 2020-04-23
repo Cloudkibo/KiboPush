@@ -758,7 +758,7 @@ class GenericMessage extends React.Component {
             header: broadcast.header,
             defaultErrorMsg: broadcast.defaultErrorMsg,
             invalidMsg: broadcast.invalidMsg,
-            validMsg: broadcast.validMsg, 
+            validMsg: broadcast.validMsg,
             retrievingMsg: broadcast.retrievingMsg,
             buttonTitle: broadcast.buttonTitle,
             validateUrl: broadcast.validateUrl,
@@ -935,6 +935,7 @@ class GenericMessage extends React.Component {
   }
 
   getItems () {
+    console.log('in get items', this.state.list)
     if (this.state.list.length > 0 && this.props.showQuickRelplies) {
       console.log('quick reply', this.state.list[this.state.list.length - 1])
       if (!this.state.quickRepliesComponent) {
@@ -970,7 +971,7 @@ class GenericMessage extends React.Component {
       for (let i = 0; i < this.state.newFiles.length; i++) {
         deleteFile(this.state.newFiles[i])
       }
-    } 
+    }
   }
 
   render () {
