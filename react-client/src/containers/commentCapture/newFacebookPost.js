@@ -179,7 +179,8 @@ class FacebookPosts extends React.Component {
       includedKeywords: this.state.includedKeywords !== '' ? this.state.includedKeywords.split(',') : [],
       excludedKeywords: this.state.excludedKeywords !== '' ? this.state.excludedKeywords.split(',') : [],
       secondReply: secondReply,
-      seeMoreLink: this.state.seeMoreLink
+      seeMoreLink: this.state.seeMoreLink,
+      seeMoreCard: this.state.seeMoreLink ? this.state.cards[this.state.cards.length - 1] : null
     }
 
     return payload
@@ -356,6 +357,9 @@ class FacebookPosts extends React.Component {
             cards.push(payload[i].card)
           }
         }
+        if (this.props.currentPost.seeMoreCard) {
+          cards.push(this.props.currentPost.seeMoreCard)
+        }
         if (images.length > 0) {
           this.setState({
             attachments: images,
@@ -366,7 +370,8 @@ class FacebookPosts extends React.Component {
           this.setState({
             links: links,
             cards: cards,
-            postType: 'links'
+            postType: 'links',
+            seeMoreLink: this.props.currentPost.seeMoreLink
           })
         }
         this.setState({ selectedRadio: 'new'})
