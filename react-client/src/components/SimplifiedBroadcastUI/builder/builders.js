@@ -32,7 +32,7 @@ import LinkCarousel from '../LinkCarousel'
 import QuickReplies from '../QuickReplies'
 import UserInputModal from '../UserInputModal'
 import UserInput from '../PreviewComponents/UserInput'
-import YoutubeVideoModal from '../YoutubeVideoModal'
+import VideoLinkModal from '../VideoLinkModal'
 
 import CustomFields from '../../customFields/customfields'
 
@@ -1465,7 +1465,7 @@ class Builders extends React.Component {
         toggleGSModal={this.toggleGSModal}
         closeGSModal={this.closeGSModal}
         addComponent={this.addComponent} />),
-      'video': (<YoutubeVideoModal
+      'video': (<VideoLinkModal
           buttons={[]}
           setTempFiles={this.setTempFiles}
           initialFiles={this.state.initialFiles}

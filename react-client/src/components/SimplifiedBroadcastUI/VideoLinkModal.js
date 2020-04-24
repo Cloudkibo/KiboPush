@@ -10,23 +10,48 @@ import { getVideoId, deleteFile } from '../../utility/utils'
 import YouTube from 'react-youtube'
 import FacebookPlayer from 'react-player/lib/players/Facebook'
 
-class YoutubeVideoModal extends React.Component {
+class VideoLinkModal extends React.Component {
   constructor(props) {
     super(props)
-    console.log('YoutubeVideoModal props in constructor', props)
+    console.log('VideoLinkModal props in constructor', props)
+    let youtubeButtons = []
+    let facebookButtons = []
+    if (props.videoType  && props.buttons) {
+      if (props.videoType === 'youtube') {
+        youtubeButtons = props.buttons.map(button => { return { visible: true, title: button.title } })
+      } else if (props.videoType === 'facebook') {
+        facebookButtons = props.buttons.map(button => { return { visible: true, title: button.title } })
+      }
+    } else if (props.buttons) {
+      youtubeButtons = props.buttons.map(button => { return { visible: true, title: button.title } })
+    }
+    let facebookDisabled = true
+    let youtubeDisabled = true
+    if (props.videoType) {
+      if (props.videoType === 'youtube') {
+        youtubeDisabled = props.edit ? false : true
+      } else if (props.videoType === 'facebook') {
+        facebookDisabled = props.edit ? false : true
+      }
+    } else {
+      youtubeDisabled = props.edit ? false : true
+    }
+
     this.state = {
-      buttons: props.buttons.map(button => { return { visible: true, title: button.title } }),
-      numOfCurrentButtons: 0,
-      disabled: props.edit ? false : true,
-      buttonDisabled: false,
+      facebookDisabled,
+      youtubeDisabled,
       buttonLimit: 3,
       buttonActions: this.props.buttonActions ? this.props.buttonActions : ['open website', 'open webview'],
       file: this.props.file ? this.props.file : '',
-      link: this.props.youtubeLink || this.props.facebookUrl,
+      facebookLink: this.props.facebookUrl ? this.props.facebookUrl : '',
+      youtubeLink: this.props.youtubeLink ? this.props.youtubeLink : '',
+      facebookButtons,
+      youtubeButtons,
       videoLink: this.props.videoLink ? this.props.videoLink : '',
       videoTitle: this.props.videoTitle ? this.props.videoTitle : '',
       videoDescription: this.props.videoDescription ? this.props.videoDescription : '',
-      loading: false,
+      youtubeLoading: false,
+      facebookLoading: false,
       videoId: this.props.videoId ? this.props.videoId : null,
       card: this.props.card,
       fileSizeExceeded: this.props.fileSizeExceeded,
@@ -34,19 +59,20 @@ class YoutubeVideoModal extends React.Component {
       videoType: this.props.videoType ? this.props.videoType : 'youtube',
       facebookUrl: this.props.facebookUrl
     }
-    console.log('YoutubeVideoModal state', this.state)
-    console.log('YoutubeVideoModal module', this.props.module)
+    console.log('VideoLinkModal state', this.state)
+    console.log('VideoLinkModal module', this.props.module)
     this.updateFile = this.updateFile.bind(this)
     this.handleDone = this.handleDone.bind(this)
     this.updateButtonStatus = this.updateButtonStatus.bind(this)
     this.validateYoutubeUrl = this.validateYoutubeUrl.bind(this)
     this.handleLinkChange = this.handleLinkChange.bind(this)
     this.uploadTemplate = this.uploadTemplate.bind(this)
-    this.setLoading = this.setLoading.bind(this)
     this.closeModal = this.closeModal.bind(this)
     this.handleUrlMetaData = this.handleUrlMetaData.bind(this)
     this.handleRadioButton = this.handleRadioButton.bind(this)
     this.facebookVideoReady = this.facebookVideoReady.bind(this)
+    this.getInputBorderColor = this.getInputBorderColor.bind(this)
+    this.checkDisabled = this.checkDisabled.bind(this)
   }
 
   handleLinkChange(e) {
@@ -67,25 +93,45 @@ class YoutubeVideoModal extends React.Component {
         deleteFile(this.state.file.fileurl.id)
       }
     }
-    this.setState({ fileSizeExceeded: false, buttons: [], disabled: true, link: e.target.value, videoId: null, videoTitle: null, videoDescription: null, file: null, card: null }, () => {
-      if (this.state.videoType === 'facebook') {
-        this.validateFacebookUrl()
-      } else {
+    if (this.state.videoType === 'youtube') {
+      this.setState({ 
+        fileSizeExceeded: false, 
+        youtubeButtons: [], 
+        youtubeDisabled: true,
+        youtubeLink: e.target.value, 
+        videoId: null, 
+        videoTitle: null, 
+        videoDescription: null, 
+        file: null, 
+        card: null 
+      }, () => {
         this.validateYoutubeUrl()
-      }
-    })
+      })
+    } else if (this.state.videoType === 'facebook') {
+      this.setState({ 
+        facebookButtons: [], 
+        facebookDisabled: true,
+        facebookLink: e.target.value
+      }, () => {
+        this.validateFacebookUrl()
+      })
+    }
   }
 
   handleDone() {
-    if (this.props.noButtons || this.state.card) {
+    if (this.props.noButtons || (this.state.videoType === 'youtube' && this.state.card)) {
       this.addComponent([])
     } else {
-      this.AddButton.handleDone()
+      if (this.state.videoType === 'youtube') {
+        this.YoutubeAddButton.handleDone()
+      } else if (this.state.videoType === 'facebook') {
+        this.FacebookAddButton.handleDone()
+      }
     }
   }
 
   addComponent(buttons) {
-    console.log('addComponent YoutubeVideoModal', this.state)
+    console.log('addComponent VideoLinkModal', this.state)
     if (this.props.module === 'whatsapp') {
       this.props.addComponent({
         id: this.props.id >= 0 ? this.props.id : null,
@@ -93,26 +139,11 @@ class YoutubeVideoModal extends React.Component {
         videoTitle: this.state.videoTitle,
         videoDescription: this.state.videoDescription,
         videoId: this.state.videoId,
-        text: this.state.link,
+        text: this.state.youtubeLink,
         buttons
       }, this.props.edit)
     } else {
-      if (this.state.fileSizeExceeded) {
-        this.props.addComponent({
-          id: this.props.id,
-          fileSizeExceeded: this.state.fileSizeExceeded,
-          componentName:  'YouTube video',
-          videoType: this.state.videoType,
-          youtubeLink: this.state.link,
-          componentType: 'card',
-          image_url: this.state.card.image_url ? this.state.card.image_url : '',
-          title: this.state.card.title,
-          description: this.state.card.subtitle,
-          buttons: this.state.card.buttons,
-          default_action: this.state.card.default_action,
-          card: this.state.card
-        }, this.props.edit)
-      } else if (this.state.videoType === 'facebook') {
+      if (this.state.videoType === 'facebook') {
         this.props.addComponent({
           id: this.props.id,
           componentName:  'Facebook video',
@@ -122,48 +153,76 @@ class YoutubeVideoModal extends React.Component {
           mediaType: 'video',
           buttons
         }, this.props.edit)
-      } else {
-        if (this.state.initialFile) {
-          let canBeDeleted = true
-          for (let i = 0; i < this.props.initialFiles.length; i++) {
-            if (this.state.initialFile === this.props.initialFiles[i]) {
-              canBeDeleted = false
-              break
-            }
-          } 
-          if (canBeDeleted) {
-            if (this.state.file.fileurl.id !== this.state.initialFile) {
-              deleteFile(this.state.initialFile)
+      } else if (this.state.videoType === 'youtube') {
+        if (this.state.fileSizeExceeded) {
+          this.props.addComponent({
+            id: this.props.id,
+            fileSizeExceeded: this.state.fileSizeExceeded,
+            componentName:  'YouTube video',
+            videoType: this.state.videoType,
+            youtubeLink: this.state.youtubeLink,
+            componentType: 'card',
+            image_url: this.state.card.image_url ? this.state.card.image_url : '',
+            title: this.state.card.title,
+            description: this.state.card.subtitle,
+            youtubeButtons: this.state.card.buttons,
+            default_action: this.state.card.default_action,
+            card: this.state.card
+          }, this.props.edit)
+        } else {
+          if (this.state.initialFile) {
+            let canBeDeleted = true
+            for (let i = 0; i < this.props.initialFiles.length; i++) {
+              if (this.state.initialFile === this.props.initialFiles[i]) {
+                canBeDeleted = false
+                break
+              }
+            } 
+            if (canBeDeleted) {
+              if (this.state.file.fileurl.id !== this.state.initialFile) {
+                deleteFile(this.state.initialFile)
+              }
             }
           }
+          this.props.addComponent({
+            id: this.props.id,
+            componentName:  'YouTube video',
+            youtubeLink: this.state.youtubeLink,
+            videoLink: this.state.videoLink,
+            componentType: 'media',
+            fileurl: this.state.file.fileurl,
+            fileName: this.state.file.fileName,
+            image_url: '',
+            size: this.state.file.size,
+            type: this.state.file.type,
+            mediaType: 'video',
+            buttons
+          }, this.props.edit)
         }
-        this.props.addComponent({
-          id: this.props.id,
-          componentName:  'YouTube video',
-          youtubeLink: this.state.link,
-          videoLink: this.state.videoLink,
-          componentType: 'media',
-          fileurl: this.state.file.fileurl,
-          fileName: this.state.file.fileName,
-          image_url: '',
-          size: this.state.file.size,
-          type: this.state.file.type,
-          mediaType: 'video',
-          buttons
-        }, this.props.edit)
       }
     }
   }
 
   updateButtonStatus(status) {
     console.log('updateButtonStatus MediaModal', status)
+    if (this.state.videoType === 'youtube') {
+      status.youtubeButtonDisabled = status.buttonDisabled
+      if (status.buttons) {
+        status.youtubeButtons = status.buttons 
+      }
+    } else if (this.state.videoType === 'facebook') {
+      status.facebookButtonDisabled = status.buttonDisabled
+      if (status.buttons) {
+        status.facebookButtons = status.buttons 
+      }
+    }
     this.setState(status)
   }
 
   updateFile(file) {
     if (file === 'ERR_LIMIT_REACHED') {
-      this.setState({ fileSizeExceeded: true, disabled: true, loading: false })
-      this.props.urlMetaData(this.state.link, (data) => this.handleUrlMetaData(data))
+      this.setState({ fileSizeExceeded: true, youtubeDisabled: true, youtubeLoading: false })
+      this.props.urlMetaData(this.state.youtubeLink, (data) => this.handleUrlMetaData(data))
       return
     }
     this.props.setTempFiles([file.fileurl.id])
@@ -172,7 +231,7 @@ class YoutubeVideoModal extends React.Component {
       this.uploadTemplate(file)
     } else { 
       this.setState({
-        loading: false,
+        youtubeLoading: false,
         file: file,
         videoLink: file.fileurl.url
       }, () => {
@@ -186,10 +245,6 @@ class YoutubeVideoModal extends React.Component {
     //   this.refs.video.load();
     //   this.refs.video.play();
     // })
-  }
-
-  setLoading() {
-    this.setState({ loading: true })
   }
 
   uploadTemplate(data) {
@@ -216,41 +271,42 @@ class YoutubeVideoModal extends React.Component {
 
   updateFileUrl(data, newData) {
     data.fileurl = newData.fileurl
-    console.log('updating fileurl of YoutubeVideoModal', data)
+    console.log('updating fileurl of VideoLinkModal', data)
     this.setState({
-      loading: false,
+      youtubeLoading: false,
       file: data,
       videoLink: data.fileurl.url
     }, () => {
-      this.refs.video.pause();
-      this.refs.video.load();
-      this.refs.video.play();
+      if (this.refs.video) {
+        this.refs.video.pause();
+        this.refs.video.load();
+      }
     })
   }
 
   facebookVideoReady () {
     this.setState({ 
-      loading: false, 
-      disabled: false
+      facebookLoading: false, 
+      facebookDisabled: false
     })
   }
 
   validateFacebookUrl () {
     /* eslint-disable */
-    let regExp = /^(?:(?:https?:)?\/\/)?(?:www\.)?(web.)?facebook\.com\/[a-zA-Z0-9\.]+\/videos\/(?:[a-zA-Z0-9\.]+\/)?([0-9]+)/
+    let regExp = /^(?:(?:https?:)?\/\/)?(?:www\.)?facebook\.com\/[a-zA-Z0-9\.]+\/videos\/(?:[a-zA-Z0-9\.]+\/)?([0-9]+)\/?$/g
     /* eslint-enable */
-    if (regExp.test(this.state.link)) {
+    if (regExp.test(this.state.facebookLink)) {
       this.setState({ 
-        facebookUrl: this.state.link,
-        loading: true, 
-        disabled: true,
+        facebookUrl: this.state.facebookLink,
+        facebookLoading: true, 
+        facebookDisabled: true,
         edited: true 
       })
     } else {
       this.setState({ 
-        disabled: true,
+        facebookDisabled: true,
         facebookUrl: '', 
-        loading: false, 
+        facebookLoading: false, 
         edited: true 
       })
     }
@@ -258,26 +314,26 @@ class YoutubeVideoModal extends React.Component {
 
 
   validateYoutubeUrl() {
-    let url = this.state.link
+    let url = this.state.youtubeLink
     if (url !== undefined || url !== '') {
       /* eslint-disable */
       var regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=|\?v=)([^#\&\?]*).*/
       /* eslint-enable */
       var match = url.match(regExp)
       if (match && match[2].length === 11) {
-        this.setState({ disabled: false, loading: true, fileSizeExceeded: false, edited: true }, () => {
+        this.setState({ youtubeDisabled: false, youtubeLoading: true, fileSizeExceeded: false, edited: true }, () => {
           if (this.props.module && this.props.module === 'whatsapp') {
             console.log('setting videoId')
-            let videoId = getVideoId(this.state.link)
+            let videoId = getVideoId(this.state.youtubeLink)
             console.log('setting videoId', videoId)
-            this.setState({ videoId, loading: false })
-            this.props.urlMetaData(this.state.link, (data) => this.handleUrlMetaData(data))
+            this.setState({ videoId, youtubeLoading: false })
+            this.props.urlMetaData(this.state.youtubeLink, (data) => this.handleUrlMetaData(data))
           } else {
-            this.props.downloadYouTubeVideo(this.state.link, this.props.id, (file) => { this.updateFile(file) })
+            this.props.downloadYouTubeVideo(this.state.youtubeLink, this.props.id, (file) => { this.updateFile(file) })
           }
         })
       } else {
-        this.setState({ disabled: true, file: null, fileSizeExceeded: false, edited: false })
+        this.setState({ youtubeDisabled: true, file: null, fileSizeExceeded: false, edited: false })
       }
     }
   }
@@ -291,7 +347,7 @@ class YoutubeVideoModal extends React.Component {
         description = this.props.connectedPages.filter(page => page.pageId === this.props.pageId)[0].pageName
       }
       if (data.ogImage && data.ogImage.url && data.ogImage.url.startsWith('/')) {
-          data.ogImage.url = this.state.link + data.ogImage.url
+          data.ogImage.url = this.state.youtubeLink + data.ogImage.url
       }
       let card = {
         title: data.ogTitle.length > 80 ? data.ogTitle.substring(0, 80) + '...' : data.ogTitle,
@@ -301,15 +357,15 @@ class YoutubeVideoModal extends React.Component {
             {
                 title: 'Watch on YouTube',
                 type: 'web_url',
-                url: this.state.link
+                url: this.state.youtubeLink
             }
         ],
         default_action: {
             type: 'web_url',
-            url: this.state.link
+            url: this.state.youtubeLink
         }
       }
-      this.setState({card, disabled: false})
+      this.setState({card, youtubeDisabled: false})
     }
   }
 
@@ -323,20 +379,45 @@ class YoutubeVideoModal extends React.Component {
 
   handleRadioButton (e) {
     this.setState({
-      videoType: e.target.value, 
-      file: null, 
-      loading: false, 
-      fileSizeExceeded: false,
-      link: '',
-      disabled: true,
-      facebookUrl: ''
+      videoType: e.target.value
     })
   }
 
+  getInputBorderColor () {
+    if (this.state.videoType === 'youtube') {
+      if (this.state.youtubeDisabled && !this.state.youtubeLoading && !this.state.fileSizeExceeded) {
+        return 'red'
+      } else if (this.state.youtubeLoading || !this.state.youtubeDisabled || this.state.fileSizeExceeded) {
+        return 'green'
+      }
+    } else if (this.state.videoType === 'facebook') {
+      if (this.state.facebookDisabled && !this.state.facebookLoading) {
+        return 'red'
+      } else if (this.state.facebookLoading || !this.state.facebookDisabled) {
+        return 'green'
+      }
+    }
+    return ''
+  }
+
+  checkDisabled () {
+    if (this.props.module === 'whatsapp') {
+      return this.state.videoId && this.state.videoTitle && this.state.videoDescription
+    } else if (this.state.videoType === 'youtube') {
+      return this.state.youtubeDisabled || this.state.youtubeButtonDisabled || this.state.youtubeLoading
+    } else if (this.state.videoType === 'facebook') {
+      return this.state.facebookDisabled || this.state.facebookButtonDisabled || this.state.facebookLoading
+    }
+  }
+
   render() {
-    console.log('video link', this.state.link)
-    console.log('YoutubeVideoModal props in render', this.props)
-    let visibleButtons = this.state.buttons.filter(button => button.visible)
+    console.log('VideoLinkModal props in render', this.props)
+    let visibleButtons = []
+    if (this.state.videoType === 'facebook') {
+      visibleButtons = this.state.facebookButtons.filter(button => button.visible)
+    } else if (this.state.videoType === 'youtube') {
+      visibleButtons = this.state.youtubeButtons.filter(button => button.visible)
+    }
     return (
       <div className="modal-content" style={{width: '72vw'}}>
         <div style={{ display: 'block' }} className="modal-header">
@@ -354,7 +435,9 @@ class YoutubeVideoModal extends React.Component {
             
             <div className='col-6' style={{ maxHeight: '65vh', overflowY: 'scroll' }}>
 
-              <div>
+              {
+                this.props.module !== 'whatsapp' &&
+                <div>
                 <label>Select video source:</label>
                 <div className='row' style={{marginLeft: '10px'}}>
                   <div className='col-md-6 col-lg-6 col-sm-6'>
@@ -382,43 +465,104 @@ class YoutubeVideoModal extends React.Component {
                 </div>
                 <br />
               </div>
-
-              <input value={this.state.link} style={{ maxWidth: '100%', borderColor: this.state.disabled && !this.state.loading && !this.state.fileSizeExceeded ? 'red' : (this.state.loading || !this.state.disabled || this.state.fileSizeExceeded) ? 'green' : '' }} onChange={this.handleLinkChange} className='form-control' />
-              <div style={{ color: 'green' }}>{this.state.fileSizeExceeded ? '*The size of this YouTube video exceeds the 25 Mb limit imposed by Facebook, so it will be sent as a card.' : ''}</div>
-              <div style={{ color: 'red' }}>{!this.state.fileSizeExceeded && this.state.disabled && !this.state.loading ? `*Please enter a valid ${this.state.videoType} video link.` : ''}</div>
-              <div style={{ marginBottom: '30px', color: 'green' }}>{this.state.loading && this.state.videoType !== 'facebook' ? `*Please wait for the ${this.state.videoType} video to download.` : ''}</div>
-              {
-                (!this.state.loading && (this.state.file || this.state.facebookUrl)) && this.props.module !== 'whatsapp' &&
-                <AddButton
-                  replyWithMessage={this.props.replyWithMessage}
-                  disabled={this.state.disabled}
-                  buttons={this.state.buttons}
-                  finalButtons={this.props.buttons}
-                  buttonLimit={this.state.buttonLimit}
-                  pageId={this.props.pageId}
-                  buttonActions={this.state.buttonActions}
-                  ref={(ref) => { this.AddButton = ref }}
-                  updateButtonStatus={this.updateButtonStatus}
-                  toggleGSModal={this.props.toggleGSModal}
-                  closeGSModal={this.props.closeGSModal}
-                  addComponent={(buttons) => this.addComponent(buttons)} />
               }
+
+              {
+                <div style={{display: this.state.videoType !== 'youtube' ? 'none' : ''}}>
+                  <input 
+                    value={this.state.youtubeLink} 
+                    style={{ 
+                      maxWidth: '100%', 
+                      borderColor: this.getInputBorderColor()
+                    }} 
+                    onChange={this.handleLinkChange} 
+                    className='form-control' 
+                  />
+                  <div style={{ color: 'green' }}>{this.state.fileSizeExceeded ? '*The size of this YouTube video exceeds the 25 Mb limit imposed by Facebook, so it will be sent as a card.' : ''}</div>
+                  <div style={{ color: 'red' }}>{!this.state.fileSizeExceeded && this.state.youtubeDisabled && !this.state.youtubeLoading ? `*Please enter a valid YouTube video link.` : ''}</div>
+                  <div style={{ marginBottom: '30px', color: 'green' }}>{this.state.youtubeLoading ? `*Please wait for the YouTube video to download.` : ''}</div>
+                  {
+                  !this.state.youtubeLoading && this.state.file &&
+                  <AddButton
+                    replyWithMessage={this.props.replyWithMessage}
+                    disabled={this.state.youtubeDisabled}
+                    buttons={this.state.youtubeButtons}
+                    finalButtons={this.props.buttons}
+                    buttonLimit={this.state.buttonLimit}
+                    pageId={this.props.pageId}
+                    buttonActions={this.state.buttonActions}
+                    ref={(ref) => { this.YoutubeAddButton = ref }}
+                    updateButtonStatus={this.updateButtonStatus}
+                    toggleGSModal={this.props.toggleGSModal}
+                    closeGSModal={this.props.closeGSModal}
+                    addComponent={(buttons) => this.addComponent(buttons)} />
+                  }
+                </div>
+              }
+
+              {
+                <div style={{display: this.state.videoType !== 'facebook' ? 'none' : ''}}>
+                  <input 
+                    value={this.state.facebookLink} 
+                    style={{ 
+                      maxWidth: '100%', 
+                      borderColor: this.getInputBorderColor()
+                    }} 
+                    onChange={this.handleLinkChange} 
+                    className='form-control' 
+                  />
+                  <div style={{ color: 'red' }}>{this.state.facebookDisabled && !this.state.facebookLoading ? `*Please enter a valid Facebook video link.` : ''}</div>
+                  <div style={{ marginBottom: '30px', color: 'green' }}>{this.state.facebookLoading ? `*Validating Facebook video link...Please make sure link is publicly accessible` : ''}</div>
+                  {
+                    !this.state.facebookLoading && this.state.facebookUrl &&
+                    <AddButton
+                      replyWithMessage={this.props.replyWithMessage}
+                      disabled={this.state.facebookDisabled}
+                      buttons={this.state.facebookButtons}
+                      finalButtons={this.props.buttons}
+                      buttonLimit={this.state.buttonLimit}
+                      pageId={this.props.pageId}
+                      buttonActions={this.state.buttonActions}
+                      ref={(ref) => { this.FacebookAddButton = ref }}
+                      updateButtonStatus={this.updateButtonStatus}
+                      toggleGSModal={this.props.toggleGSModal}
+                      closeGSModal={this.props.closeGSModal}
+                      addComponent={(buttons) => this.addComponent(buttons)} />
+                  }
+                </div>
+              }
+          
             </div>
             <div className='col-1'>
               <div style={{ minHeight: '100%', width: '1px', borderLeft: '1px solid rgba(0,0,0,.1)' }} />
             </div>
             <div className='col-5'>
               <h4 style={{ marginLeft: '-50px' }}>Preview:</h4>
-              <div className='ui-block' style={{ overflowY: 'auto', border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', minHeight: '68vh', maxHeight: '68vh', marginLeft: '-50px' }} >
-                <div className='ui-block' style={{ border: !this.state.disabled && !this.state.fileSizeExceeded ? '1px solid rgba(0,0,0,.1)' : '', borderRadius: '10px', maxWidth: '80%', margin: 'auto', marginTop: '80px' }} >
+              <div className='ui-block' 
+                style={{ 
+                  overflowY: 'auto', 
+                  border: '1px solid rgba(0,0,0,.1)', 
+                  borderRadius: '3px', 
+                  minHeight: '68vh', 
+                  maxHeight: '68vh', 
+                  marginLeft: '-50px' 
+                }} >
+                <div className='ui-block' 
+                  style={{ 
+                    border: (this.state.videoType === 'youtube' && !this.state.youtubeDisabled && !this.state.fileSizeExceeded) || (this.state.videoType === 'facebook' && !this.state.facebookDisabled) ? '1px solid rgba(0,0,0,.1)' : '', 
+                    borderRadius: '10px', 
+                    maxWidth: '80%', 
+                    margin: 'auto', 
+                    marginTop: '80px' 
+                  }} >
                   {
-                    this.state.loading && this.state.videoType !== 'facebook' && 
+                    this.state.youtubeLoading && this.state.videoType !== 'facebook' && 
                     <div className='align-center' style={{ padding: '50px' }}>
                       <center><RingLoader color='#FF5E3A' /></center>
                     </div>
                   }
                   {
-                    this.state.fileSizeExceeded && this.state.card &&
+                    this.state.videoType === 'youtube' && this.state.fileSizeExceeded && this.state.card &&
                       <div style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px', minHeight: '200px', maxWidth: '250px', margin: 'auto', marginTop: '-10px'}} className="carousel-item active">
                         {
                             this.state.card.image_url &&
@@ -465,19 +609,20 @@ class YoutubeVideoModal extends React.Component {
                             <p style={{ fontSize: '0.7em', marginTop: '5px' }}>www.youtube.com</p>
                           </div>
                           <hr />
-                          <p style={{ textAlign: 'left', color: '#0782FF', fontSize: '0.9em', marginLeft: '5px' }}>{this.state.link}</p>
+                          <p style={{ textAlign: 'left', color: '#0782FF', fontSize: '0.9em', marginLeft: '5px' }}>{this.state.youtubeLink}</p>
                         </div>
                       }
                     </div>
                   }
                   {
-                    (this.props.module !== 'whatsapp' && !this.state.disabled && !this.state.loading && !this.state.fileSizeExceeded && this.state.videoType === 'youtube') &&
+                    (this.props.module !== 'whatsapp' && !this.state.youtubeDisabled && !this.state.youtubeLoading && !this.state.fileSizeExceeded && this.state.videoType === 'youtube' && this.state.videoLink) &&
                     <video ref="video" controls style={{ width: '100%', borderRadius: '10px', marginTop: '-10px', borderBottomLeftRadius: '0px', borderBottomRightRadius: '0px' }} name='media' id='youtube_player'>
                       <source src={this.state.videoLink} type='audio/mpeg' />
                     </video>
                   }
                   {
                     (this.props.module !== 'whatsapp' && this.state.facebookUrl) &&
+                      <div style={{display: this.state.videoType !== 'facebook' ? 'none' : ''}}>
                         <FacebookPlayer
                           onReady={this.facebookVideoReady}
                           width='100%'
@@ -490,13 +635,16 @@ class YoutubeVideoModal extends React.Component {
                             }
                           }}
                         />
+                      </div>
                   }
                   {
                     visibleButtons.map((button, index) => {
                       let style = null
                       if (index === 0 || visibleButtons.length === 1) {
                         style = { marginTop: '55%' }
-                        if (this.state.link && !this.state.disabled) {
+                        if ((this.state.videoType === 'facebook' && this.state.facebookLink && !this.state.facebookDisabled) ||
+                          (this.state.videoType === 'youtube' && this.state.youtubeLink && !this.state.youtubeDisabled)
+                        ) {
                           style = { marginTop: '-9%' }
                         }
                       }
@@ -514,12 +662,10 @@ class YoutubeVideoModal extends React.Component {
             </div>
             <div className='col-6' style={{ marginTop: '-5vh' }}>
               <div className='pull-right'>
-              <button onClick={this.closeModal} className='btn btn-primary' style={{ marginRight: '20px' }}
-              >
+                <button onClick={this.closeModal} className='btn btn-primary' style={{ marginRight: '20px' }}>
                   Cancel
                 </button>
-                <button disabled={(!this.props.module === 'whatsapp' && !this.state.file) || this.state.disabled || this.state.buttonDisabled || (this.props.module === 'whatsapp' && !this.state.videoTitle) || this.state.loading} onClick={() => this.handleDone()} className='btn btn-primary'
-                 >
+                <button disabled={this.checkDisabled()} onClick={() => this.handleDone()} className='btn btn-primary'>
                   {this.props.edit ? 'Edit' : 'Next'}
                 </button>
               </div>
@@ -544,4 +690,4 @@ function mapDispatchToProps(dispatch) {
     urlMetaData
   }, dispatch)
 }
-export default connect(mapStateToProps, mapDispatchToProps)(YoutubeVideoModal)
+export default connect(mapStateToProps, mapDispatchToProps)(VideoLinkModal)
