@@ -32,8 +32,9 @@ class TriggerArea extends React.Component {
   handleChange (value, actionMeta) {
     console.log('value', value)
     console.log('actionMeta', actionMeta)
-    this.setState({value})
-    this.props.updateParentState({triggers: value.map((item) => item.value)})
+    const triggers = value || []
+    this.setState({value: triggers})
+    this.props.updateParentState({triggers: triggers.map((item) => item.value)})
   }
 
   handleInputChange (inputValue) {
@@ -46,15 +47,17 @@ class TriggerArea extends React.Component {
     switch (event.key) {
       case 'Enter':
       case 'Tab':
-        console.group('Value Added', value)
-        this.setState({
-          inputValue: '',
-          value: [...value, createOption(inputValue)]
-        },
-        () => {
-          this.props.updateParentState({triggers: this.state.value.map((item) => item.value)})
+        if (value.map((item) => item.value).includes(inputValue)) {
+          this.props.alertMsg.error('Cannot add the same trigger twice.')
+        } else {
+          this.setState({
+            inputValue: '',
+            value: [...value, createOption(inputValue)]
+          },
+          () => {
+            this.props.updateParentState({triggers: this.state.value.map((item) => item.value)})
+          })
         }
-      )
         event.preventDefault()
         break
       default:
