@@ -385,10 +385,10 @@ class YoutubeVideoModal extends React.Component {
 
               <input value={this.state.link} style={{ maxWidth: '100%', borderColor: this.state.disabled && !this.state.loading && !this.state.fileSizeExceeded ? 'red' : (this.state.loading || !this.state.disabled || this.state.fileSizeExceeded) ? 'green' : '' }} onChange={this.handleLinkChange} className='form-control' />
               <div style={{ color: 'green' }}>{this.state.fileSizeExceeded ? '*The size of this YouTube video exceeds the 25 Mb limit imposed by Facebook, so it will be sent as a card.' : ''}</div>
-              <div style={{ color: 'red' }}>{!this.state.fileSizeExceeded && this.state.disabled && !this.state.loading ? `*Please enter a valid ${this.state.videoType} link.` : ''}</div>
+              <div style={{ color: 'red' }}>{!this.state.fileSizeExceeded && this.state.disabled && !this.state.loading ? `*Please enter a valid ${this.state.videoType} video link.` : ''}</div>
               <div style={{ marginBottom: '30px', color: 'green' }}>{this.state.loading && this.state.videoType !== 'facebook' ? `*Please wait for the ${this.state.videoType} video to download.` : ''}</div>
               {
-                (this.state.file || this.state.facebookUrl) && this.props.module !== 'whatsapp' &&
+                (!this.state.loading && (this.state.file || this.state.facebookUrl)) && this.props.module !== 'whatsapp' &&
                 <AddButton
                   replyWithMessage={this.props.replyWithMessage}
                   disabled={this.state.disabled}
