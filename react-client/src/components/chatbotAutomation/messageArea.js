@@ -18,7 +18,8 @@ class MessageArea extends React.Component {
       text: '',
       attachment: {},
       quickReplies: [],
-      showTestContent: false
+      showTestContent: false,
+      disableNext: false
     }
     this.onNext = this.onNext.bind(this)
     this.preparePayload = this.preparePayload.bind(this)
@@ -405,6 +406,7 @@ class MessageArea extends React.Component {
               showPrevious={false}
               showNext={true}
               onNext={this.onNext}
+              disableNext={this.state.disableNext}
               onPrevious={() => {}}
             />
             <button ref='_open_test_chatbot_modal' style={{display: 'none'}} data-toggle='modal' data-target='#_test_chatbot' />
