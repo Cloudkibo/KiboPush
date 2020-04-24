@@ -8,7 +8,7 @@ const components = {
 
 const createOption = (label) => ({
   label,
-  value: label,
+  value: label.toLowerCase(),
 })
 
 class TriggerArea extends React.Component {
@@ -47,7 +47,7 @@ class TriggerArea extends React.Component {
     switch (event.key) {
       case 'Enter':
       case 'Tab':
-        if (value.map((item) => item.value).includes(inputValue)) {
+        if (value.map((item) => item.value).includes(inputValue.toLowerCase())) {
           this.props.alertMsg.error('Cannot add the same trigger twice.')
         } else {
           this.setState({
