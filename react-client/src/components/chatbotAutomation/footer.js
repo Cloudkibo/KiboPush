@@ -45,6 +45,7 @@ class Footer extends React.Component {
               type='button'
               className={`pull-right btn btn-primary m-btn m-btn--icon ${this.state.loading && 'm-loader m-loader--light m-loader--right'}`}
               onClick={this.onNext}
+              disabled={this.props.disableNext}
             >
               <span>
                 <span>Next</span>
@@ -65,7 +66,8 @@ Footer.propTypes = {
   'showPrevious': PropTypes.bool.isRequired,
   'showNext': PropTypes.bool.isRequired,
   'onNext': PropTypes.func.isRequired,
-  'onPrevious': PropTypes.func.isRequired
+  'onPrevious': PropTypes.func.isRequired,
+  'disableNext': PropTypes.bool.isRequired
 }
 
 export default Footer

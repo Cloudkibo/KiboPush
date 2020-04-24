@@ -51,6 +51,8 @@ class AttachmentArea extends React.Component {
             waitingForUrlData: true,
             invalidUrl: false,
             helpMessage: 'Validating url...'
+          }, () => {
+            this.props.updateParentState({disableNext: true})
           })
         } else {
           this.setState({
@@ -111,13 +113,14 @@ class AttachmentArea extends React.Component {
         fileData: data.attachment_id ? {url: this.state.inputValue} : {},
         buttons: this.state.buttons
       }
-      this.props.updateParentState({attachment})
+      this.props.updateParentState({attachment, disableNext: false})
     } else {
       this.setState({
         waitingForUrlData: false,
         invalidUrl: true,
         helpMessage: res.description
       })
+      this.props.updateParentState({disableNext: false})
     }
   }
 
@@ -176,10 +179,11 @@ class AttachmentArea extends React.Component {
         },
         buttons: this.state.buttons
       }
-      this.props.updateParentState({attachment})
+      this.props.updateParentState({attachment, disableNext: false})
     } else {
       this.props.alertMsg.error('Failed to upload attachment. Please try again later')
       this.setState({waitingForAttachment: false})
+      this.props.updateParentState({disableNext: false})
     }
   }
 
@@ -200,6 +204,8 @@ class AttachmentArea extends React.Component {
           waitingForAttachment: true,
           helpMessage: '',
           invalidUrl: false
+        }, () => {
+          this.props.updateParentState({disableNext: true})
         })
         const fileData = new FormData()
         fileData.append('file', file)
@@ -214,23 +220,25 @@ class AttachmentArea extends React.Component {
   }
 
   UNSAFE_componentWillReceiveProps (nextProps) {
-    if (nextProps.attachment && Object.keys(nextProps.attachment).length > 0) {
-      this.setState({
-        inputValue: nextProps.attachment.fileData ? (nextProps.attachment.fileData.url || '') : nextProps.attachment.cardData.url,
-        attachment: nextProps.attachment.fileData || {},
-        attachmentType: nextProps.attachment.type,
-        buttons: nextProps.attachment.buttons,
-        isUploaded: nextProps.attachment.fileData && !nextProps.attachment.fileData.url ? true : false
-      })
-    } else {
-      this.setState({
-        inputValue: '',
-        attachment: {},
-        attachmentType: '',
-        isUploaded: false,
-        buttons: [],
-        currentButton: {}
-      })
+    if (!(this.state.waitingForUrlData || this.state.waitingForAttachment)) {
+      if (nextProps.attachment && Object.keys(nextProps.attachment).length > 0) {
+        this.setState({
+          inputValue: nextProps.attachment.fileData ? (nextProps.attachment.fileData.url || '') : nextProps.attachment.cardData.url,
+          attachment: nextProps.attachment.fileData || {},
+          attachmentType: nextProps.attachment.type,
+          buttons: nextProps.attachment.buttons,
+          isUploaded: nextProps.attachment.fileData && !nextProps.attachment.fileData.url ? true : false
+        })
+      } else {
+        this.setState({
+          inputValue: '',
+          attachment: {},
+          attachmentType: '',
+          isUploaded: false,
+          buttons: [],
+          currentButton: {}
+        })
+      }
     }
   }
 
