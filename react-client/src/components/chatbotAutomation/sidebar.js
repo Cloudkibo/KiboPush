@@ -30,7 +30,7 @@ class Sidebar extends React.Component {
         nodeId={`${firstLevel[0].id}`}
         label={firstLevel[0].title}
         selected={firstLevel[0].id === this.props.currentBlock.uniqueId}
-        completed={this.props.blocks.find((item) => item.uniqueId === firstLevel[0].id).payload.length > 0}
+        completed={this.props.blocks.find((item) => item.uniqueId.toString() === firstLevel[0].id.toString()).payload.length > 0}
       >
         {this.getChildren(firstLevel[0].id)}
       </StyledTreeItem>

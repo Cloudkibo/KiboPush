@@ -177,10 +177,18 @@ class MessageArea extends React.Component {
     if (res.status === 'success') {
       this.props.alertMsg.success('Saved successfully!')
       let blocks = this.props.blocks
-      const index = blocks.findIndex((item) => item.uniqueId === data.uniqueId)
+      const index = blocks.findIndex((item) => item.uniqueId.toString() === data.uniqueId.toString())
       if (index !== -1) {
         const deletedItem = blocks.splice(index, 1)
-        data._id = deletedItem[0]._id
+        if (res.payload.upserted && res.payload.upserted.length > 0) {
+          data._id = res.payload.upserted[0]._id
+        } else {
+          data._id = deletedItem[0]._id
+        }
+      }
+      const chatbot = this.props.chatbot
+      if (data.triggers && data._id) {
+        chatbot.startingBlockId = data._id
       }
       blocks = [...blocks, data]
       const completed = blocks.filter((item) => item.payload.length > 0).length
@@ -367,6 +375,7 @@ class MessageArea extends React.Component {
               <TRIGGERAREA
                 triggers={this.state.triggers}
                 updateParentState={this.updateState}
+                alertMsg={this.props.alertMsg}
               />
             }
             {
