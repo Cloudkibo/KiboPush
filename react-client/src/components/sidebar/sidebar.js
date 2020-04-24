@@ -612,7 +612,7 @@ class Sidebar extends Component {
   }
 
   showChatbotAutomation () {
-    if (this.props.user && this.props.user.isSuperUser) {
+    if (this.props.user) {
       return (
         <li className='m-menu__item' aria-haspopup='true' >
           <Link to='/chatbotAutomation' className='m-menu__link'>
