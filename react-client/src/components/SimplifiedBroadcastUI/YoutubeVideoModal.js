@@ -237,7 +237,7 @@ class YoutubeVideoModal extends React.Component {
 
   validateFacebookUrl () {
     /* eslint-disable */
-    let regExp = /^(?:(?:https?:)?\/\/)?(?:www\.)?facebook\.com\/[a-zA-Z0-9\.]+\/videos\/(?:[a-zA-Z0-9\.]+\/)?([0-9]+)/
+    let regExp = /^(?:(?:https?:)?\/\/)?(?:www\.)?(web.)?facebook\.com\/[a-zA-Z0-9\.]+\/videos\/(?:[a-zA-Z0-9\.]+\/)?([0-9]+)/
     /* eslint-enable */
     if (regExp.test(this.state.link)) {
       this.setState({ 
