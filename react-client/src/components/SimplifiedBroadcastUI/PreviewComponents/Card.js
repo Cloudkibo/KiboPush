@@ -76,11 +76,11 @@ class Card extends React.Component {
     console.log('defaultAction in card', cardProps.cardDetails.default_action)
     if (cardProps.cardDetails.default_action) {
       if (cardProps.cardDetails.default_action.type === 'web_url' && cardProps.cardDetails.default_action.messenger_extensions === undefined) {
-        this.setState({elementUrl: cardProps.cardDetails.default_action.url, 
+        this.setState({elementUrl: cardProps.cardDetails.default_action.url,
           default_action: cardProps.cardDetails.default_action})
       } else {
-        this.setState({webviewurl: cardProps.cardDetails.default_action.url, 
-            webviewsize: cardProps.cardDetails.default_action.webview_height_ratio, 
+        this.setState({webviewurl: cardProps.cardDetails.default_action.url,
+            webviewsize: cardProps.cardDetails.default_action.webview_height_ratio,
             default_action: cardProps.cardDetails.default_action})
       }
     }
@@ -203,14 +203,16 @@ class Card extends React.Component {
   render () {
     return (
       <div className='broadcast-component' style={{marginBottom: '50px'}}>
-        {
+        {this.props.onRemove &&
           <div onClick={() => { this.props.onRemove({id: this.props.id, deletePayload: this.getDeletePayload()}) }} style={{float: 'right', height: 20 + 'px', marginTop: '-20px'}}>
             <span style={{cursor: 'pointer'}} className='fa-stack'>
               <i className='fa fa-times fa-stack-2x' />
             </span>
           </div>
         }
-        <i onClick={this.edit} style={{cursor: 'pointer', marginLeft: '-15px', float: 'left', height: '20px'}} className='fa fa-pencil-square-o' aria-hidden='true' />
+        {this.props.editComponent &&
+          <i onClick={this.edit} style={{cursor: 'pointer', marginLeft: '-15px', float: 'left', height: '20px'}} className='fa fa-pencil-square-o' aria-hidden='true' />
+        }
         <div className='ui-block' style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px', minHeight: '125px', maxWidth: '200px', marginLeft: '15px'}} >
           <div className='broadcastContent'>
             {

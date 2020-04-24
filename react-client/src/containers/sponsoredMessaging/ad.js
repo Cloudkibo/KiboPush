@@ -6,6 +6,7 @@ import Footer from './footer'
 import GenericMessage from '../../components/SimplifiedBroadcastUI/GenericMessage'
 import { formatAMPM } from '../../utility/utils'
 import TextArea from '../../components/sponsoredMessaging/textArea'
+import CardArea from '../../components/sponsoredMessaging/cardArea'
 import DragSortableList from 'react-drag-sortable'
 import Text from '../../components/SimplifiedBroadcastUI/PreviewComponents/Text'
 import Card from '../../components/SimplifiedBroadcastUI/PreviewComponents/Card'
@@ -19,15 +20,14 @@ class Ad extends React.Component {
       card: {},
       buttons: [],
       quickReplies: [],
-      selectedFormat: 'text',
-      selectedAction: props.sponsoredMessage.payload && props.sponsoredMessage.payload.length > 1 ? 'textAndImage' : 'text',
+      selectedFormat: props.sponsoredMessage.payload && props.sponsoredMessage.payload.length > 1 ? 'textAndImage' : 'text',
+      selectedAction: '',
       buttonActions: ['open website'],
       broadcast: this.props.sponsoredMessage.payload ? this.props.sponsoredMessage.payload : [],
       list: [],
       adName: this.props.sponsoredMessage.adName ? this.props.sponsoredMessage.adName : '',
       scheduleDateTime: ''
     }
-
     this.updateState = this.updateState.bind(this)
     this.handleChange = this.handleChange.bind(this)
     this.handleBack = this.handleBack.bind(this)
@@ -37,6 +37,35 @@ class Ad extends React.Component {
     this.showScheduledDateTime = this.showScheduledDateTime.bind(this)
     this.handleFormat = this.handleFormat.bind(this)
     this.getItems = this.getItems.bind(this)
+    this.handleCard = this.handleCard.bind(this)
+  }
+
+  handleCard (obj) {
+    var temp = this.state.broadcast
+    var isPresent = false
+    for (let a = 0; a < temp.length; a++) {
+      let data = temp[a]
+      if (data.id === obj.id) {
+        temp[a].componentType = obj.componentType
+        temp[a].componentName = obj.componentName
+        temp[a].fileName = obj.fileName
+        temp[a].fileurl = obj.fileurl
+        temp[a].image_url = obj.image_url
+        temp[a].size = obj.size
+        temp[a].type = obj.type
+        temp[a].title = obj.title
+        temp[a].buttons = obj.buttons
+        temp[a].description = obj.description
+        isPresent = true
+      }
+    }
+    if (!isPresent) {
+      temp.push(obj)
+    }
+
+    temp = this.appendQuickRepliesToEnd(temp, this.state.quickReplies)
+    this.setState({broadcast: temp})
+    this.handleChange({broadcast: temp}, obj)
   }
 
   componentDidMount () {
@@ -81,6 +110,16 @@ class Ad extends React.Component {
   handleFormat (e) {
     this.setState({selectedFormat: e.target.value})
     this.props.updateSponsoredMessage(this.props.sponsoredMessage, 'selectedFormat', e.target.value)
+    if (e.target.value === 'text') {
+      if (this.state.broadcast[1]) {
+        let broadcast = this.state.broadcast
+        let list = this.state.list
+        list.splice(1, 1)
+        broadcast.splice(1, 1)
+        this.setState({broadcast: broadcast, list: list})
+        this.props.updateSponsoredMessage(this.props.sponsoredMessage, null, null, broadcast)
+      }
+    }
   }
 
   updateState (componentDetails) {
@@ -95,7 +134,12 @@ class Ad extends React.Component {
      let temp = this.state.list
      let componentIndex = this.state.list.findIndex(item => item.content.props.id === component.component.props.id)
      if (componentIndex < 0) {
-       this.setState({list: [...temp, {content: component.component}]})
+       if (component.component.props.id === 0) {
+         temp.unshift({content: component.component})
+         this.setState({list: temp})
+       } else {
+         this.setState({list: [...temp, {content: component.component}]})
+       }
      } else {
        temp[componentIndex] = {content: component.component}
        this.setState({list: temp})
@@ -119,13 +163,15 @@ class Ad extends React.Component {
      }
 
      if (!isPresent) {
-       if (obj.buttons.length > 0) {
+       if (temp[0]) {
+         temp.unshift({id: obj.id, text: obj.text, componentType: 'text', componentName: 'text'})
+       } else if (obj.buttons.length > 0) {
          temp.push({id: obj.id, text: obj.text, componentType: 'text', componentName: 'text', buttons: obj.buttons})
        } else {
          temp.push({id: obj.id, text: obj.text, componentType: 'text', componentName: 'text'})
        }
      }
-    //  temp = this.appendQuickRepliesToEnd(temp, this.state.quickReplies)
+     temp = this.appendQuickRepliesToEnd(temp, this.state.quickReplies)
      this.setState({broadcast: temp})
      this.handleChange({broadcast: temp}, obj)
    }
@@ -198,16 +244,6 @@ class Ad extends React.Component {
          handler: () => {
            this.handleCard({
              id: componentId,
-             youtubeVideo: broadcast.youtubeVideo,
-             elementLimit: broadcast.elementLimit,
-             header: broadcast.header,
-             defaultErrorMsg: broadcast.defaultErrorMsg,
-             invalidMsg: broadcast.invalidMsg,
-             validMsg: broadcast.validMsg,
-             retrievingMsg: broadcast.retrievingMsg,
-             buttonTitle: broadcast.buttonTitle,
-             validateUrl: broadcast.validateUrl,
-             links: broadcast.links,
              componentType: 'card',
              componentName:  broadcast.componentName ? broadcast.componentName: 'card',
              title: broadcast.title ? broadcast.title : '',
@@ -218,10 +254,6 @@ class Ad extends React.Component {
              type: broadcast.type ? broadcast.type : '',
              size: broadcast.size ? broadcast.size : '',
              buttons: broadcast.buttons ? broadcast.buttons : [],
-             webviewurl: broadcast.webviewurl,
-             elementUrl: broadcast.elementUrl,
-             webviewsize: broadcast.webviewsize,
-             default_action: broadcast.default_action,
              deletePayload: broadcast.deletePayload
            })
          }
@@ -364,6 +396,12 @@ class Ad extends React.Component {
             <TextArea
               updateParentState={this.updateState}
               text={this.state.broadcast[0] ? this.state.broadcast[0].text : ''} />
+            {this.state.selectedFormat === 'textAndImage' &&
+              <CardArea
+                updateParentState={this.updateState}
+                card={this.state.broadcast[1] ? this.state.broadcast[1] : {}}
+                />
+            }
           </div>
           <div className='col-md-5'>
             <div className='iphone-x' style={{height: !this.props.noDefaultHeight ? 90 + 'vh' : null, marginTop: '15px', paddingRight: '10%', paddingLeft: '10%', paddingTop: 100}}>
