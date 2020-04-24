@@ -11,6 +11,8 @@
     "react-test-renderer": "^16.13.0"
   },
   "dependencies": {
+    "@material-ui/core": "^4.9.9",
+    "@material-ui/lab": "^4.0.0-alpha.48",
     "@mrblenny/react-flow-chart": "0.0.8",
     "add": "^2.0.6",
     "braces": "^3.0.2",
@@ -98,7 +100,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
-  "proxy": "http://localhost:3021",
+  "proxy": "http://localhost:3022",
   "eslintConfig": {
     "extends": "react-app"
   },
