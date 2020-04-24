@@ -46,6 +46,7 @@ class YoutubeVideoModal extends React.Component {
     this.closeModal = this.closeModal.bind(this)
     this.handleUrlMetaData = this.handleUrlMetaData.bind(this)
     this.handleRadioButton = this.handleRadioButton.bind(this)
+    this.facebookVideoReady = this.facebookVideoReady.bind(this)
   }
 
   handleLinkChange(e) {
@@ -227,6 +228,13 @@ class YoutubeVideoModal extends React.Component {
     })
   }
 
+  facebookVideoReady () {
+    this.setState({ 
+      loading: false, 
+      disabled: false
+    })
+  }
+
   validateFacebookUrl () {
     /* eslint-disable */
     let regExp = /^(?:(?:https?:)?\/\/)?(?:www\.)?facebook\.com\/[a-zA-Z0-9\.]+\/videos\/(?:[a-zA-Z0-9\.]+\/)?([0-9]+)/
@@ -234,9 +242,8 @@ class YoutubeVideoModal extends React.Component {
     if (regExp.test(this.state.link)) {
       this.setState({ 
         facebookUrl: this.state.link,
-        loading: false, 
-        disabled: false,
-        fileSizeExceeded: false, 
+        loading: true, 
+        disabled: true,
         edited: true 
       })
     } else {
@@ -244,7 +251,6 @@ class YoutubeVideoModal extends React.Component {
         disabled: true,
         facebookUrl: '', 
         loading: false, 
-        fileSizeExceeded: false, 
         edited: true 
       })
     }
@@ -380,7 +386,7 @@ class YoutubeVideoModal extends React.Component {
               <input value={this.state.link} style={{ maxWidth: '100%', borderColor: this.state.disabled && !this.state.loading && !this.state.fileSizeExceeded ? 'red' : (this.state.loading || !this.state.disabled || this.state.fileSizeExceeded) ? 'green' : '' }} onChange={this.handleLinkChange} className='form-control' />
               <div style={{ color: 'green' }}>{this.state.fileSizeExceeded ? '*The size of this YouTube video exceeds the 25 Mb limit imposed by Facebook, so it will be sent as a card.' : ''}</div>
               <div style={{ color: 'red' }}>{!this.state.fileSizeExceeded && this.state.disabled && !this.state.loading ? `*Please enter a valid ${this.state.videoType} link.` : ''}</div>
-              <div style={{ marginBottom: '30px', color: 'green' }}>{this.state.loading ? `*Please wait for the ${this.state.videoType} video to download.` : ''}</div>
+              <div style={{ marginBottom: '30px', color: 'green' }}>{this.state.loading && this.state.videoType !== 'facebook' ? `*Please wait for the ${this.state.videoType} video to download.` : ''}</div>
               {
                 (this.state.file || this.state.facebookUrl) && this.props.module !== 'whatsapp' &&
                 <AddButton
@@ -406,7 +412,8 @@ class YoutubeVideoModal extends React.Component {
               <div className='ui-block' style={{ overflowY: 'auto', border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', minHeight: '68vh', maxHeight: '68vh', marginLeft: '-50px' }} >
                 <div className='ui-block' style={{ border: !this.state.disabled && !this.state.fileSizeExceeded ? '1px solid rgba(0,0,0,.1)' : '', borderRadius: '10px', maxWidth: '80%', margin: 'auto', marginTop: '80px' }} >
                   {
-                    this.state.loading && <div className='align-center' style={{ padding: '50px' }}>
+                    this.state.loading && this.state.videoType !== 'facebook' && 
+                    <div className='align-center' style={{ padding: '50px' }}>
                       <center><RingLoader color='#FF5E3A' /></center>
                     </div>
                   }
@@ -472,6 +479,7 @@ class YoutubeVideoModal extends React.Component {
                   {
                     (this.props.module !== 'whatsapp' && this.state.facebookUrl) &&
                         <FacebookPlayer
+                          onReady={this.facebookVideoReady}
                           width='100%'
                           height='100%'
                           controls={true}
