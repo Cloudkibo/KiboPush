@@ -16,13 +16,13 @@ class VideoLinkModal extends React.Component {
     console.log('VideoLinkModal props in constructor', props)
     let youtubeButtons = []
     let facebookButtons = []
-    if (props.videoType  && props.buttons) {
+    if (props.videoType) {
       if (props.videoType === 'youtube') {
         youtubeButtons = props.buttons.map(button => { return { visible: true, title: button.title } })
       } else if (props.videoType === 'facebook') {
         facebookButtons = props.buttons.map(button => { return { visible: true, title: button.title } })
       }
-    } else if (props.buttons) {
+    } else {
       youtubeButtons = props.buttons.map(button => { return { visible: true, title: button.title } })
     }
     let facebookDisabled = true
@@ -487,7 +487,7 @@ class VideoLinkModal extends React.Component {
                     replyWithMessage={this.props.replyWithMessage}
                     disabled={this.state.youtubeDisabled}
                     buttons={this.state.youtubeButtons}
-                    finalButtons={this.props.buttons}
+                    finalButtons={this.props.videoType === 'youtube' ? this.props.buttons : []}
                     buttonLimit={this.state.buttonLimit}
                     pageId={this.props.pageId}
                     buttonActions={this.state.buttonActions}
@@ -512,14 +512,14 @@ class VideoLinkModal extends React.Component {
                     className='form-control' 
                   />
                   <div style={{ color: 'red' }}>{this.state.facebookDisabled && !this.state.facebookLoading ? `*Please enter a valid Facebook video link.` : ''}</div>
-                  <div style={{ marginBottom: '30px', color: 'green' }}>{this.state.facebookLoading ? `*Validating Facebook video link...Please make sure link is publicly accessible` : ''}</div>
+                  <div style={{ marginBottom: '30px', color: 'green' }}>{this.state.facebookLoading ? `*Validating Facebook video link...Please make sure video is publicly accessible` : ''}</div>
                   {
                     !this.state.facebookLoading && this.state.facebookUrl &&
                     <AddButton
                       replyWithMessage={this.props.replyWithMessage}
                       disabled={this.state.facebookDisabled}
                       buttons={this.state.facebookButtons}
-                      finalButtons={this.props.buttons}
+                      finalButtons={this.props.videoType === 'facebook' ? this.props.buttons : []}
                       buttonLimit={this.state.buttonLimit}
                       pageId={this.props.pageId}
                       buttonActions={this.state.buttonActions}
@@ -622,8 +622,9 @@ class VideoLinkModal extends React.Component {
                   }
                   {
                     (this.props.module !== 'whatsapp' && this.state.facebookUrl) &&
-                      <div style={{display: this.state.videoType !== 'facebook' ? 'none' : ''}}>
+                      <div style={{display: this.state.videoType !== 'facebook' ? 'none' : '', marginTop: '-10px'}}>
                         <FacebookPlayer
+                          style={{marginTop: '10px', borderRadius: '10px 10px 0px 0px'}}
                           onReady={this.facebookVideoReady}
                           width='100%'
                           height='100%'
@@ -640,23 +641,28 @@ class VideoLinkModal extends React.Component {
                   {
                     visibleButtons.map((button, index) => {
                       let style = null
+                      let hrStyle = null
                       if (index === 0 || visibleButtons.length === 1) {
                         style = { marginTop: '55%' }
                         if ((this.state.videoType === 'facebook' && this.state.facebookLink && !this.state.facebookDisabled) ||
                           (this.state.videoType === 'youtube' && this.state.youtubeLink && !this.state.youtubeDisabled)
                         ) {
-                          style = { marginTop: '-9%' }
+                          style = { marginTop: '-9%', padding: '2px' }
                         }
+                      } else {
+                        if (index === visibleButtons.length - 1) {
+                          style = {paddingBottom: '5px'}
+                        }
+                        hrStyle = {marginTop: '5px', marginBottom: '5px'}
                       }
                       return (
                         <div style={style}>
-                          <hr />
-                          <h5 style={{ color: '#0782FF' }}>{button.title}</h5>
+                          <hr style={hrStyle} />
+                          <span style={{ fontWeight: '500', color: '#0782FF' }}>{button.title}</span>
                         </div>
                       )
                     })
                   }
-
                 </div>
               </div>
             </div>
