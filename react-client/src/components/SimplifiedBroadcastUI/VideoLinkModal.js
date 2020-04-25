@@ -553,7 +553,8 @@ class VideoLinkModal extends React.Component {
                     borderRadius: '10px', 
                     maxWidth: '80%', 
                     margin: 'auto', 
-                    marginTop: '80px' 
+                    marginTop: '50px',
+                    marginBottom: '50px' 
                   }} >
                   {
                     this.state.youtubeLoading && this.state.videoType !== 'facebook' && 
