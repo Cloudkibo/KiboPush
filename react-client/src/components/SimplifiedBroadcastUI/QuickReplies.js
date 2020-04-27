@@ -128,7 +128,7 @@ class QuickReplies extends React.Component {
       }
       if (action === 'hubspot') {
         quickReplyActions.push({title: 'Hubspot', action: () => this.selectAction(action)})
-      }      
+      }
       if (action === 'assign_tag') {
         quickReplyActions.push({title: 'Assign Tag', action: () => this.selectAction(action)})
       }
@@ -719,7 +719,9 @@ class QuickReplies extends React.Component {
 
             {
                 this.state.quickReplies.length < this.quickReplyLimit &&
-                <button id={`addQuickReply-${this.props.currentId}`} onClick={this.addQuickReply} style={{marginLeft: '15%', marginTop: '10px', border: 'dashed', borderWidth: '1.5px', 'color': 'black'}} className="btn m-btn--pill btn-sm m-btn hoverbordercomponent">
+                <button id={`addQuickReply-${this.props.currentId}`} onClick={this.addQuickReply}
+                  style={{marginLeft: '15%', marginTop: '10px', border: 'dashed', borderWidth: '1.5px', 'color': 'black', display: this.props.showAddQuickReply ? 'block' : 'none'}} 
+                  className="btn m-btn--pill btn-sm m-btn hoverbordercomponent">
                     + Add Quick Reply
                 </button>
             }
