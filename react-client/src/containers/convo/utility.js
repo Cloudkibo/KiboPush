@@ -42,9 +42,11 @@
       }
       if (broadcast[i].componentType === 'media') {
         if ((broadcast[i].fileurl === undefined || broadcast[i].fileurl === '') && (broadcast[i].file === undefined || broadcast[i].file === '')) {
-          msg.error('Select an image or video')
-          isValid = false
-          break
+          if (!broadcast[i].facebookUrl) {
+            msg.error('Select an image or video')
+            isValid = false
+            break 
+          }
         }
       }
       if (broadcast[i].componentType === 'card') {
