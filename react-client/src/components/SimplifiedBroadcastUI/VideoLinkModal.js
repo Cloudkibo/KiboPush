@@ -293,7 +293,7 @@ class VideoLinkModal extends React.Component {
 
   validateFacebookUrl () {
     /* eslint-disable */
-    let regExp = /^(?:(?:https?:)?\/\/)?(?:www\.)?facebook\.com\/[a-zA-Z0-9\.]+\/videos\/(?:[a-zA-Z0-9\.]+\/)?([0-9]+)\/?$/g
+    let regExp = /^(?:(?:https?:)?\/\/)?(?:www\.)?(web.)?facebook\.com\/[a-zA-Z0-9\.]+\/videos\/(?:[a-zA-Z0-9\.]+\/)?([0-9]+)\/?$/g
     /* eslint-enable */
     if (regExp.test(this.state.facebookLink)) {
       this.setState({ 
