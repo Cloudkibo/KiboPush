@@ -30,7 +30,9 @@ class AutopostingSummary extends React.Component {
     if (this.props.backdoor) {
       this.props.loadAutopostingSummaryForBackdoor({days: 30})
     } else {
+      if (window.location.hostname.includes('kiboengage.cloudkibo.com')) {
       this.props.loadAutopostingSummary({days: 30})
+        }
     }
   }
   UNSAFE_componentWillReceiveProps (nextprops) {
