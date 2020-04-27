@@ -71,7 +71,9 @@ class Dashboard extends React.Component {
     this.openVideoTutorial = this.openVideoTutorial.bind(this)
     this.getNewsPages = this.getNewsPages.bind(this)
     this.handlePermissions = this.handlePermissions.bind(this)
-    this.props.checkSubscriptionPermissions(this.handlePermissions)
+    if(window.location.hostname.includes('kiboengage.cloudkibo.com')) {
+      this.props.checkSubscriptionPermissions(this.handlePermissions)
+    }
   }
 
   getNewsPages (permissions) {
@@ -96,7 +98,9 @@ class Dashboard extends React.Component {
     this.props.validateUserAccessToken(this.checkUserAccessToken)
     this.props.loadDashboardData()
     this.props.updateSubscriptionPermission()
-    this.props.loadSubscribersCount({})
+    if (window.location.hostname.includes('kiboengage.cloudkibo.com')) {
+      this.props.loadSubscribersCount({})
+    }
     this.props.loadGraphData(0)
     this.props.loadTopPages()
     this.props.loadMyPagesList()
