@@ -48,6 +48,7 @@ class Sidebar extends Component {
       sequenceMessaging: false,
       waitingResponse: false,
       isKiboChat: false,
+      isLocalhost: false,
       messengerAds: true,
       businessGateway: false,
       checkbox: true,
@@ -64,19 +65,83 @@ class Sidebar extends Component {
     console.log('url', url)
     if (url === 'skibochat.cloudkibo.com' || url === 'kibochat.cloudkibo.com') {
       console.log('kibochat')
-      this.setState({rssIntegration: false, newsIntegration: false, livechat: true, smartReplies: true, waitingResponse: true, broadcasts: false, polls: false, surveys: false, sequenceMessaging: false, templates: false, autoposting: false, isKiboChat: true})
+      this.setState({
+        rssIntegration: false,
+        newsIntegration: false,
+        livechat: true,
+        smartReplies: true,
+        waitingResponse: true,
+        broadcasts: false,
+        polls: false,
+        surveys: false,
+        sequenceMessaging: false,
+        templates: false,
+        autoposting: false,
+        isKiboChat: true
+      })
     } else if (url === 'skiboengage.cloudkibo.com' || url === 'kiboengage.cloudkibo.com') {
       console.log('kiboEngage')
-      this.setState({rssIntegration: true, newsIntegration: true, broadcasts: true, polls: true, surveys: true, sequenceMessaging: true, templates: true, autoposting: true, livechat: false, smartReplies: false, waitingResponse: false, abandonedCarts: true })
+      this.setState({
+        rssIntegration: true,
+        newsIntegration: true,
+        broadcasts: true,
+        polls: true,
+        surveys: true,
+        sequenceMessaging: true,
+        templates: true,
+        autoposting: true,
+        livechat: false,
+        smartReplies: false,
+        waitingResponse: false,
+        abandonedCarts: true
+      })
     } else if (url === 'staging.kibopush.com') {
       console.log('staging')
-      this.setState({broadcasts: true, polls: true, surveys: true, sequenceMessaging: true, templates: true, autoposting: true, livechat: true, smartReplies: true, waitingResponse: true})
+      this.setState({
+        broadcasts: true,
+        polls: true,
+        surveys: true,
+        sequenceMessaging: true,
+        templates: true,
+        autoposting: true,
+        livechat: true,
+        smartReplies: true,
+        waitingResponse: true
+      })
     } else if (url.includes('localhost')) {
       console.log('localhost')
-      this.setState({rssIntegration: true, newsIntegration: true,broadcasts: true, polls: true, surveys: true, sequenceMessaging: true, templates: true, autoposting: true, livechat: true, smartReplies: true, waitingResponse: true, businessGateway: true})
+      this.setState({
+        rssIntegration: true,
+        newsIntegration: true,
+        broadcasts: true,
+        polls: true,
+        surveys: true,
+        sequenceMessaging: true,
+        templates: true,
+        autoposting: true,
+        livechat: true,
+        smartReplies: true,
+        waitingResponse: true,
+        businessGateway: true,
+        isLocalhost: true
+      })
     } else if (url === 'skibolite.cloudkibo.com' || url === 'kibolite.cloudkibo.com') {
       console.log('kibolite')
-      this.setState({rssIntegration: false, newsIntegration: false, broadcasts: false, polls: false, surveys: false, sequenceMessaging: false, templates: false, autoposting: false, livechat: false, smartReplies: false, waitingResponse: false, businessGateway: true, isKiboLite: true})
+      this.setState({
+        rssIntegration: false,
+        newsIntegration: false,
+        broadcasts: false,
+        polls: false,
+        surveys: false,
+        sequenceMessaging: false,
+        templates: false,
+        autoposting: false,
+        livechat: false,
+        smartReplies: false,
+        waitingResponse: false,
+        businessGateway: true,
+        isKiboLite: true
+      })
     }
     this.props.getAutomatedOptions()
   }
@@ -612,7 +677,7 @@ class Sidebar extends Component {
   }
 
   showChatbotAutomation () {
-    if (this.props.user) {
+    if (this.props.user && (this.state.isKiboChat || this.state.isLocalhost)) {
       return (
         <li className='m-menu__item' aria-haspopup='true' >
           <Link to='/chatbotAutomation' className='m-menu__link'>
@@ -1202,7 +1267,7 @@ class Sidebar extends Component {
                   {this.showBroadcastingItems()}
                   {this.uploadContacts()}
                   {this.showLiveChatItem()}
-                  {this.props.user.isSuperUser && this.showAutomationItems()}
+                  {this.showAutomationItems()}
                   {this.showGrowthToolsItems()}
                   {this.showManagePagesItems()}
                   {this.showOrganizationItems()}
