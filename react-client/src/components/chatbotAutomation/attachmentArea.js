@@ -135,7 +135,7 @@ class AttachmentArea extends React.Component {
   }
 
   onInputChange (e) {
-    this.setState({inputValue: e.target.value})
+    this.setState({inputValue: e.target.value, attachmentType: ''})
   }
 
   getInputValue () {
