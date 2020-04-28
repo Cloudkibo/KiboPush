@@ -764,7 +764,6 @@ class QuickReplies extends React.Component {
                     + Add Button
                 </button>
             }
-            {console.log(`addQuickReply-${this.props.currentId}`)}
             <Popover trigger='click' placement='right' isOpen={this.state.addingQuickReply} target={`addQuickReply-${this.state.selectedQuickReply}`} style={{zIndex: '999'}}>
                 <PopoverBody>
                     <div style={{paddingRight: '10px', maxHeight: '500px', overflowY: 'scroll', overflowX: 'hidden'}}>
