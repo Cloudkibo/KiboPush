@@ -35,7 +35,8 @@ class QuickReplies extends React.Component {
         currentSlideIndex: this.props.quickReplies && this.props.quickReplies.length > 3 ? this.props.quickReplies.length - 3 : 0,
         showGSModal: false,
         deletePayload: [],
-        showAddAction: true
+        showAddAction: true,
+        selectedQuickReply: undefined
     }
 
     this.addQuickReply = this.addQuickReply.bind(this)
@@ -255,7 +256,8 @@ class QuickReplies extends React.Component {
       image_url: this.state.quickReplies[index].image_url,
       index: index,
       editing: false,
-      showAddAction: showAddAction
+      showAddAction: showAddAction,
+      selectedQuickReply: this.state.quickReplies[index].id
     }, () => {
         if (this.props.updateQuickReplies) {
             this.props.updateQuickReplies(this.state.quickReplies, index)
@@ -654,7 +656,7 @@ class QuickReplies extends React.Component {
   }
 
   addQuickReply () {
-      this.setState({addingQuickReply: true, showAddAction: true})
+      this.setState({addingQuickReply: true, showAddAction: true, selectedQuickReply: undefined})
   }
 
   slideIndexChange (newIndex) {
@@ -700,7 +702,7 @@ class QuickReplies extends React.Component {
                 </div>
             </div>
 
-            <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="deleteQuickReply" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div style={{ background: 'rgba(33, 37, 41, 0.6)', zIndex: '9999' }} className="modal fade" id="deleteQuickReply" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div style={{ transform: 'translate(0px, 100px)' }} className="modal-dialog" role="document">
                     <div className="modal-content">
                         <div style={{ display: 'block' }} className="modal-header">
@@ -731,7 +733,7 @@ class QuickReplies extends React.Component {
                 <div style={{maxWidth: '80%'}}>
                   {this.state.quickReplies.map((reply, index) => {
                     return (
-                      <button onClick={() => this.editQuickReply(index)} style={{margin: '5px', borderColor: 'black', borderWidth: '1px', 'color': 'black', }} className={this.props.className}>
+                      <button id={`addQuickReply-${reply.id}`} onClick={() => this.editQuickReply(index)} style={{margin: '5px', borderColor: 'black', borderWidth: '1px', 'color': 'black', }} className={this.props.className}>
                         {reply.image_url && <img src={reply.image_url} style={{marginRight: '5px', pointerEvents: 'none', zIndex: -1, borderRadius: '50%', width: '20px', height: '20px', display: 'inline'}} alt='Text' />
                         }
                         {reply.title.length > 20 ? reply.title.slice(0,20)+'...' : reply.title}
@@ -743,19 +745,27 @@ class QuickReplies extends React.Component {
             }
 
             {
-                this.state.quickReplies.length < this.props.limit && this.props.module === 'quickReplies' &&
-                <button id={`addQuickReply-${this.props.currentId}`} onClick={this.addQuickReply} style={{marginTop: '10px', border: 'dashed', borderWidth: '1.5px', 'color': 'black'}} className="btn m-btn--pill btn-sm m-btn hoverbordercomponent">
+                this.props.module === 'quickReplies' &&
+                <button
+                  id={`addQuickReply-${this.props.currentId}`}
+                  onClick={this.addQuickReply}
+                  style={{marginTop: '10px', border: 'dashed', borderWidth: '1.5px', 'color': 'black', display: this.state.quickReplies.length < this.props.limit ? 'block': 'none'}}
+                  className="btn m-btn--pill btn-sm m-btn hoverbordercomponent">
                     + Add Quick Reply
                 </button>
             }
             {
-                this.state.quickReplies.length < this.props.limit && this.props.module === 'buttons' &&
-                <button id={`addQuickReply-${this.props.currentId}`} onClick={this.addQuickReply} style={{marginTop: '10px', border: 'dashed', borderWidth: '1.5px', 'color': 'black'}} className="btn-sm m-btn hoverbordercomponent">
+                this.props.module === 'buttons' &&
+                <button
+                  id={`addQuickReply-${this.props.currentId}`}
+                  onClick={this.addQuickReply}
+                  style={{marginTop: '10px', border: 'dashed', borderWidth: '1.5px', 'color': 'black', display: this.state.quickReplies.length < this.props.limit ? 'block': 'none'}}
+                  className="btn-sm m-btn hoverbordercomponent">
                     + Add Button
                 </button>
             }
-
-            <Popover trigger='click' placement='right' isOpen={this.state.addingQuickReply} target={`addQuickReply-${this.props.currentId}`} style={{zIndex: '999'}}>
+            {console.log(`addQuickReply-${this.props.currentId}`)}
+            <Popover trigger='click' placement='right' isOpen={this.state.addingQuickReply} target={`addQuickReply-${this.state.selectedQuickReply}`} style={{zIndex: '999'}}>
                 <PopoverBody>
                     <div style={{paddingRight: '10px', maxHeight: '500px', overflowY: 'scroll', overflowX: 'hidden'}}>
                     <div data-toggle="modal" data-target={this.state.editing ? "#closeQuickReply" : ""} onClick={this.closeQuickReply} style={{marginLeft: '98%', cursor: 'pointer'}}><span role='img' aria-label='times'>❌</span></div>
