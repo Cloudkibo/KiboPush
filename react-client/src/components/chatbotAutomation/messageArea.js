@@ -91,7 +91,7 @@ class MessageArea extends React.Component {
         }
       }
       this.setState({
-        text: textComponent.text,
+        text: textComponent ? textComponent.text : '',
         attachment,
         quickReplies: block.payload[block.payload.length - 1].quickReplies || [],
         triggers: this.props.chatbot.startingBlockId === block._id ? this.props.chatbot.triggers : undefined
