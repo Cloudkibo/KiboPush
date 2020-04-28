@@ -87,13 +87,17 @@ class Text extends React.Component {
   render () {
     return (
       <div className='broadcast-component' style={{marginBottom: '50px', display: 'inline-block'}}>
-        <div onClick={() => { this.props.onRemove({id: this.props.id, deletePayload: this.getDeletePayload()}) }}
-          style={{float: 'right', height: 20 + 'px', marginTop: '-4px', marginRight: '-10px'}}>
-          <span style={{cursor: 'pointer'}} className='fa-stack'>
-            <i className='fa fa-times fa-stack-2x' />
-          </span>
-        </div>
-        <i onClick={this.edit} style={{cursor: 'pointer', float: 'left', marginLeft: '-15px', height: '20px', marginRight: '15px'}} className='fa fa-pencil-square-o' aria-hidden='true' />
+        {this.props.onRemove &&
+          <div onClick={() => { this.props.onRemove({id: this.props.id, deletePayload: this.getDeletePayload()}) }}
+            style={{float: 'right', height: 20 + 'px', marginTop: '-4px', marginRight: '-10px'}}>
+            <span style={{cursor: 'pointer'}} className='fa-stack'>
+              <i className='fa fa-times fa-stack-2x' />
+            </span>
+          </div>
+        }
+        {this.props.editComponent &&
+          <i onClick={this.edit} style={{cursor: 'pointer', float: 'left', marginLeft: '-15px', height: '20px', marginRight: '15px'}} className='fa fa-pencil-square-o' aria-hidden='true' />
+        }
         <div className='discussion' style={{display: 'inline-block'}} >
 
         {
