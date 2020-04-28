@@ -49,7 +49,7 @@ class CardArea extends React.Component {
       size: this.state.file && this.state.file.size ? this.state.file.size : '',
       title: e.target.value,
       description: this.state.subtitle,
-      buttons: []
+      buttons: this.props.card.buttons ? this.props.card.buttons : []
     })
   }
 
@@ -66,7 +66,7 @@ class CardArea extends React.Component {
       size: this.state.file && this.state.file.size ? this.state.file.size : '',
       title: this.state.title,
       description: e.target.value,
-      buttons: []
+      buttons: this.props.card.buttons ? this.props.card.buttons : []
     })
   }
 
@@ -179,7 +179,7 @@ class CardArea extends React.Component {
       size: fileInfo.size,
       title: this.state.title,
       description: this.state.subtitle,
-      buttons: []
+      buttons: this.props.card.buttons ? this.props.card.buttons : []
     })
   }
 
@@ -248,7 +248,7 @@ class CardArea extends React.Component {
 }
 
 CardArea.propTypes = {
-  'text': PropTypes.object.isRequired,
+  'card': PropTypes.object.isRequired,
   'updateParentState': PropTypes.func.isRequired
 }
 

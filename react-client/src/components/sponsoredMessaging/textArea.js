@@ -32,7 +32,7 @@ class TextArea extends React.Component {
       componentName: 'text',
       componentType: 'text',
       text: e.target.value,
-      buttons: []
+      buttons: this.props.textArea.buttons ? this.props.textArea.buttons : []
     })
   }
 
@@ -85,7 +85,7 @@ class TextArea extends React.Component {
       componentName: 'text',
       componentType: 'text',
       text: text,
-      buttons: []
+      buttons: this.props.textArea.buttons ? this.props.textArea.buttons : []
     })
   }
 
@@ -105,7 +105,7 @@ class TextArea extends React.Component {
       componentName: 'text',
       componentType: 'text',
       text: text,
-      buttons: []
+      buttons: this.props.textArea.buttons ? this.props.textArea.buttons : []
     })
   }
 

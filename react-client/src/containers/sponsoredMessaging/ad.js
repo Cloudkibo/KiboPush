@@ -3,14 +3,18 @@ import { saveDraft, updateSponsoredMessage } from '../../redux/actions/sponsored
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import Footer from './footer'
-import GenericMessage from '../../components/SimplifiedBroadcastUI/GenericMessage'
 import { formatAMPM } from '../../utility/utils'
 import TextArea from '../../components/sponsoredMessaging/textArea'
 import CardArea from '../../components/sponsoredMessaging/cardArea'
+import QuickReplies from '../../components/sponsoredMessaging/quickReplies'
 import DragSortableList from 'react-drag-sortable'
 import Text from '../../components/SimplifiedBroadcastUI/PreviewComponents/Text'
 import Card from '../../components/SimplifiedBroadcastUI/PreviewComponents/Card'
-import QuickReplies from '../../components/SimplifiedBroadcastUI/QuickReplies'
+import PreviewQuickReplies from '../../components/sponsoredMessaging/previewQuickReplies'
+import { loadTags } from '../../redux/actions/tags.actions'
+import { fetchAllSequence } from '../../redux/actions/sequence.action'
+import { loadCustomFields } from '../../redux/actions/customFields.actions'
+import { getIntegrations } from '../../redux/actions/settings.actions'
 
 class Ad extends React.Component {
   constructor (props) {
@@ -18,15 +22,16 @@ class Ad extends React.Component {
     this.state = {
       text: this.props.sponsoredMessage.payload && this.props.sponsoredMessage.payload[0] ? this.props.sponsoredMessage.payload[0].text : '',
       card: {},
-      buttons: [],
-      quickReplies: [],
+      buttons: props.sponsoredMessage.payload && props.sponsoredMessage.payload.length > 0 ? props.sponsoredMessage.payload[props.sponsoredMessage.payload.length - 1].buttons : [],
+      quickReplies: props.sponsoredMessage.payload && props.sponsoredMessage.payload.length > 0 ? props.sponsoredMessage.payload[props.sponsoredMessage.payload.length - 1].quickReplies : [],
       selectedFormat: props.sponsoredMessage.payload && props.sponsoredMessage.payload.length > 1 ? 'textAndImage' : 'text',
-      selectedAction: '',
+      selectedAction: props.sponsoredMessage.payload && props.sponsoredMessage.payload.length > 0 && props.sponsoredMessage.payload[props.sponsoredMessage.payload.length - 1].quickReplies && props.sponsoredMessage.payload[props.sponsoredMessage.payload.length - 1].quickReplies.length > 0 ? 'quickReplies' : 'buttons',
       buttonActions: ['open website'],
-      broadcast: this.props.sponsoredMessage.payload ? this.props.sponsoredMessage.payload : [],
+      broadcast: this.props.sponsoredMessage.payload ? this.props.sponsoredMessage.payload : [{componentType: 'text', text: '', id: 0}],
       list: [],
       adName: this.props.sponsoredMessage.adName ? this.props.sponsoredMessage.adName : '',
-      scheduleDateTime: ''
+      scheduleDateTime: '',
+      quickRepliesComponent: null
     }
     this.updateState = this.updateState.bind(this)
     this.handleChange = this.handleChange.bind(this)
@@ -38,6 +43,52 @@ class Ad extends React.Component {
     this.handleFormat = this.handleFormat.bind(this)
     this.getItems = this.getItems.bind(this)
     this.handleCard = this.handleCard.bind(this)
+    this.handleAction = this.handleAction.bind(this)
+    this.updateQuickReplies = this.updateQuickReplies.bind(this)
+
+    this.props.loadCustomFields()
+    this.props.loadTags()
+    this.props.fetchAllSequence()
+    this.props.getIntegrations()
+
+  }
+
+  updateQuickReplies (quickReplies) {
+    return new Promise((resolve, reject) => {
+      let broadcast
+      if (this.state.selectedAction === 'buttons') {
+        broadcast = this.appendButtonsToEnd(this.state.broadcast, quickReplies)
+        let component = this.getComponent(broadcast[broadcast.length - 1])
+        this.updateList(component)
+        this.setState({buttons: quickReplies, broadcast}, () => {
+          resolve()
+        })
+      } else {
+        broadcast = this.appendQuickRepliesToEnd(this.state.broadcast, quickReplies)
+        this.setState({quickReplies, broadcast}, () => {
+          resolve()
+        })
+      }
+      this.handleChange({broadcast})
+    })
+  }
+
+  handleAction (e) {
+    this.setState({selectedAction: e.target.value})
+    let broadcast = this.state.broadcast
+    if (e.target.value === 'buttons') {
+      if (broadcast[broadcast.length -1].quickReplies && broadcast[broadcast.length -1].quickReplies.length > 0) {
+        delete broadcast[broadcast.length -1].quickReplies
+      }
+    } else if (e.target.value === 'quickReplies') {
+      if (broadcast[broadcast.length -1].buttons && broadcast[broadcast.length -1].buttons.length > 0) {
+        delete broadcast[broadcast.length -1].buttons
+      }
+    }
+    this.setState({broadcast: broadcast})
+    let component = this.getComponent(broadcast[broadcast.length -1])
+    this.updateList(component)
+    this.props.updateSponsoredMessage(this.props.sponsoredMessage, null, null, broadcast)
   }
 
   handleCard (obj) {
@@ -54,7 +105,7 @@ class Ad extends React.Component {
         temp[a].size = obj.size
         temp[a].type = obj.type
         temp[a].title = obj.title
-        temp[a].buttons = obj.buttons
+        // temp[a].buttons = obj.buttons
         temp[a].description = obj.description
         isPresent = true
       }
@@ -64,6 +115,7 @@ class Ad extends React.Component {
     }
 
     temp = this.appendQuickRepliesToEnd(temp, this.state.quickReplies)
+    temp = this.appendButtonsToEnd(temp, this.state.buttons)
     this.setState({broadcast: temp})
     this.handleChange({broadcast: temp}, obj)
   }
@@ -85,22 +137,16 @@ class Ad extends React.Component {
 
   getItems () {
     if (this.state.list.length > 0) {
-      if (!this.state.quickRepliesComponent) {
-        this.setState({quickRepliesComponent: {
+      if (this.state.broadcast[this.state.broadcast.length -1].quickReplies && this.state.broadcast[this.state.broadcast.length -1].quickReplies.length > 0) {
+        return this.state.list.concat([{
           content:
-            (<QuickReplies
-              toggleGSModal={this.toggleGSModal}
-              closeGSModal={this.closeGSModal}
-              customFields={this.props.customFields}
-              sequences={this.props.sequences}
-              tags={this.props.tags}
-              quickReplies={this.state.quickReplies}
-              updateQuickReplies={this.updateQuickReplies}
+            (<PreviewQuickReplies
+              quickReplies={this.state.broadcast[this.state.broadcast.length -1].quickReplies}
               currentId={this.state.currentId}
             />)
-        }})
+        }])
       } else {
-        return this.state.list.concat([this.state.quickRepliesComponent])
+        return this.state.list
       }
     } else {
       return this.state.list
@@ -114,11 +160,46 @@ class Ad extends React.Component {
       if (this.state.broadcast[1]) {
         let broadcast = this.state.broadcast
         let list = this.state.list
+        let quickReplies = broadcast[1].quickReplies
+        let buttons = broadcast[1].buttons
         list.splice(1, 1)
         broadcast.splice(1, 1)
+        if (quickReplies) {
+          broadcast = this.appendQuickRepliesToEnd(broadcast, quickReplies)
+        }
+        if (buttons) {
+          broadcast = this.appendButtonsToEnd(broadcast, buttons)
+        }
+        let component = this.getComponent(broadcast[0])
+        this.updateList(component)
         this.setState({broadcast: broadcast, list: list})
         this.props.updateSponsoredMessage(this.props.sponsoredMessage, null, null, broadcast)
       }
+    } else if (e.target.value === 'textAndImage') {
+      let broadcast = this.state.broadcast
+      if (!this.state.broadcast[1]) {
+        broadcast.push({componentType: 'card', id: 1})
+        let component = this.getComponent(broadcast[1])
+        this.updateList(component)
+      }
+      if (broadcast[0].quickReplies) {
+        broadcast = this.appendQuickRepliesToEnd(broadcast, broadcast[0].quickReplies)
+        delete broadcast[0].quickReplies
+        let component = this.getComponent(broadcast[0])
+        this.updateList(component)
+        let component1 = this.getComponent(broadcast[1])
+        this.updateList(component1)
+      }
+      if (broadcast[0].buttons) {
+        broadcast = this.appendButtonsToEnd(broadcast, broadcast[0].buttons)
+        delete broadcast[0].buttons
+        let component = this.getComponent(broadcast[0])
+        this.updateList(component)
+        let component1 = this.getComponent(broadcast[1])
+        this.updateList(component1)
+      }
+      this.setState({broadcast: broadcast})
+      this.props.updateSponsoredMessage(this.props.sponsoredMessage, null, null, broadcast)
     }
   }
 
@@ -126,8 +207,6 @@ class Ad extends React.Component {
     let component = this.getComponent(componentDetails)
     this.updateList(component)
     component.handler()
-    // this.setState(state)
-    // this.preparePayload(state)
    }
 
    updateList (component) {
@@ -153,15 +232,14 @@ class Ad extends React.Component {
        let data = temp[a]
        if (data.id === obj.id) {
          temp[a].text = obj.text
-         if (obj.buttons.length > 0) {
-           temp[a].buttons = obj.buttons
-         } else {
-           delete temp[a].buttons
-         }
+        //  if (obj.buttons.length > 0) {
+        //    temp[a].buttons = obj.buttons
+        //  } else {
+        //    delete temp[a].buttons
+        //  }
          isPresent = true
        }
      }
-
      if (!isPresent) {
        if (temp[0]) {
          temp.unshift({id: obj.id, text: obj.text, componentType: 'text', componentName: 'text'})
@@ -171,7 +249,6 @@ class Ad extends React.Component {
          temp.push({id: obj.id, text: obj.text, componentType: 'text', componentName: 'text'})
        }
      }
-     temp = this.appendQuickRepliesToEnd(temp, this.state.quickReplies)
      this.setState({broadcast: temp})
      this.handleChange({broadcast: temp}, obj)
    }
@@ -182,6 +259,15 @@ class Ad extends React.Component {
        delete broadcast[quickRepliesIndex].quickReplies
      }
      broadcast[broadcast.length-1].quickReplies = quickReplies
+     return broadcast
+   }
+
+   appendButtonsToEnd (broadcast, buttons) {
+     let buttonsIndex = broadcast.findIndex(x => !!x.buttons)
+     if (buttonsIndex > -1) {
+       delete broadcast[buttonsIndex].buttons
+     }
+     broadcast[broadcast.length-1].buttons = buttons
      return broadcast
    }
 
@@ -262,24 +348,6 @@ class Ad extends React.Component {
      return components[broadcast.componentType]
    }
 
-   preparePayload (state) {
-     let broadcast = this.state.broadcast
-     if (state.text) {
-       broadcast[0] = {
-         componentType: 'text',
-         text: state.text
-       }
-     } else if (state.text === '') {
-       broadcast.splice(0, 1)
-     }
-     this.setState(broadcast)
-     if (broadcast.newFiles || broadcast.initialFiles) {
-       this.props.updateSponsoredMessage(this.props.sponsoredMessage, null, null, broadcast)
-     } else {
-       this.props.updateSponsoredMessage(this.props.sponsoredMessage, 'payload', broadcast)
-     }
-   }
-
   UNSAFE_componentWillReceiveProps (nextProps) {
     if (nextProps.sponsoredMessage.scheduleDateTime && nextProps.sponsoredMessage.scheduleDateTime !== '') {
       this.setState({scheduleDateTime: new Date(nextProps.sponsoredMessage.scheduleDateTime)})
@@ -320,11 +388,6 @@ class Ad extends React.Component {
   }
 
   render () {
-    //<TextArea updateParentState={this.updateState} text: {this.state.text} />
-    // <CardArea updateParentState={this.updateState} card: {this.state.card} />
-    // <Buttons updateParentState={this.updateState} card: {this.state.card} />
-    // <QuickReplies updateParentState={this.updateState} card: {this.state.card} />
-    // <Preview />
     return (
       <div style={{display: this.props.currentStep === 'ad' ? 'block' : 'none'}}>
         <h5>Step 04:</h5>
@@ -395,13 +458,53 @@ class Ad extends React.Component {
             <br />
             <TextArea
               updateParentState={this.updateState}
-              text={this.state.broadcast[0] ? this.state.broadcast[0].text : ''} />
+              text={this.state.broadcast[0] ? this.state.broadcast[0].text : ''}
+              textArea={this.state.broadcast[0]}
+              />
             {this.state.selectedFormat === 'textAndImage' &&
               <CardArea
                 updateParentState={this.updateState}
                 card={this.state.broadcast[1] ? this.state.broadcast[1] : {}}
                 />
             }
+            <br />
+            <div className='form-group m-form__group'>
+              <span style={{fontWeight: 'bold'}}>Actions (Optional):</span>
+                <select className='form-control' value={this.state.selectedAction} onChange={this.handleAction}>
+                 <option key={1} value={'buttons'}>Buttons</option>
+                 <option key={2} value={'quickReplies'}>Quick Replies</option>
+             </select>
+            </div>
+            {this.state.selectedAction === 'quickReplies' ?
+              <QuickReplies
+                toggleGSModal={this.toggleGSModal}
+                closeGSModal={this.closeGSModal}
+                customFields={this.props.customFields}
+                sequences={this.props.sequences}
+                tags={this.props.tags}
+                quickReplies={this.state.broadcast[this.state.broadcast.length - 1].quickReplies}
+                updateQuickReplies={this.updateQuickReplies}
+                currentId={this.state.currentId}
+                integrations={this.props.integrations}
+                module='quickReplies'
+                limit={13}
+                className='btn m-btn--pill btn-sm m-btn btn-secondary'
+              />
+            : <QuickReplies
+              toggleGSModal={this.toggleGSModal}
+              closeGSModal={this.closeGSModal}
+              customFields={this.props.customFields}
+              sequences={this.props.sequences}
+              tags={this.props.tags}
+              quickReplies={this.state.broadcast[this.state.broadcast.length - 1].buttons}
+              updateQuickReplies={this.updateQuickReplies}
+              currentId={this.state.currentId}
+              integrations={this.props.integrations}
+              module='buttons'
+              limit={3}
+              className='btn btn-sm m-btn btn-secondary'
+            />
+          }
           </div>
           <div className='col-md-5'>
             <div className='iphone-x' style={{height: !this.props.noDefaultHeight ? 90 + 'vh' : null, marginTop: '15px', paddingRight: '10%', paddingLeft: '10%', paddingTop: 100}}>
@@ -431,14 +534,22 @@ class Ad extends React.Component {
 function mapStateToProps (state) {
   return {
     sponsoredMessage: state.sponsoredMessagingInfo.sponsoredMessage,
-    updateSessionTimeStamp: state.sponsoredMessagingInfo.updateSessionTimeStamp
+    updateSessionTimeStamp: state.sponsoredMessagingInfo.updateSessionTimeStamp,
+    customFields: (state.customFieldInfo.customFields),
+    sequences: state.sequenceInfo.sequences,
+    tags: state.tagsInfo.tags,
+    integrations: (state.settingsInfo.integrations)
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     updateSponsoredMessage,
-    saveDraft
+    saveDraft,
+    loadCustomFields,
+    fetchAllSequence,
+    loadTags,
+    getIntegrations
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Ad)
