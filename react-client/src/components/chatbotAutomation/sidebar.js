@@ -15,6 +15,7 @@ class Sidebar extends React.Component {
     this.getChildren = this.getChildren.bind(this)
     this.expandAll = this.expandAll.bind(this)
     this.onNodeSelect = this.onNodeSelect.bind(this)
+    this.getOrphanBlocks = this.getOrphanBlocks.bind(this)
   }
 
   componentDidMount () {
@@ -33,6 +34,7 @@ class Sidebar extends React.Component {
         completed={this.props.blocks.find((item) => item.uniqueId.toString() === firstLevel[0].id.toString()).payload.length > 0}
       >
         {this.getChildren(firstLevel[0].id)}
+        {this.getOrphanBlocks(firstLevel[0].id)}
       </StyledTreeItem>
     )
     return sidebar
@@ -53,6 +55,27 @@ class Sidebar extends React.Component {
           >
             {this.getChildren(children[i].id)}
           </StyledTreeItem>
+        )
+      }
+      return elements
+    } else {
+      return
+    }
+  }
+
+  getOrphanBlocks (id) {
+    const blocks = this.props.data.filter((item) => !item.parentId && item.id.toString() !== id.toString())
+    let elements = []
+    if (blocks.length > 0) {
+      for (let i = 0; i < blocks.length; i++) {
+        elements.push(
+          <StyledTreeItem
+            key={blocks[i].id}
+            nodeId={`${blocks[i].id}`}
+            label={blocks[i].title}
+            selected={blocks[i].id === this.props.currentBlock.uniqueId}
+            completed={this.props.blocks.find((item) => item.uniqueId.toString() === blocks[i].id.toString()).payload.length > 0}
+          />
         )
       }
       return elements
