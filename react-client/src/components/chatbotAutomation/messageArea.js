@@ -38,6 +38,7 @@ class MessageArea extends React.Component {
     this.addOption = this.addOption.bind(this)
     this.removeOption = this.removeOption.bind(this)
     this.updateOption = this.updateOption.bind(this)
+    this.renameBlock = this.renameBlock.bind(this)
   }
 
   componentDidMount () {
@@ -346,6 +347,16 @@ class MessageArea extends React.Component {
     this.setState({quickReplies})
   }
 
+  renameBlock (title) {
+    let { block, blocks, sidebarItems } = this.props
+    block.title = title
+    const blockIndex = blocks.findIndex((item) => item.uniqueId.toString() === block.uniqueId.toString())
+    const sidebarIndex = sidebarItems.findIndex((item) => item.id.toString() === block.uniqueId.toString())
+    blocks[blockIndex].title = title
+    sidebarItems[sidebarIndex].title = title
+    this.props.updateParentState({currentBlock: block, blocks, sidebarItems})
+  }
+
   UNSAFE_componentWillReceiveProps (nextProps) {
     if (nextProps.block) {
       this.setStateData(nextProps.block)
@@ -368,6 +379,7 @@ class MessageArea extends React.Component {
               onDisable={this.onDisable}
               isPublished={this.props.chatbot.published}
               alertMsg={this.props.alertMsg}
+              onRename={this.renameBlock}
             />
             <div className='m--space-30' />
             {
