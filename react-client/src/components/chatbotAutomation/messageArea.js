@@ -39,6 +39,7 @@ class MessageArea extends React.Component {
     this.removeOption = this.removeOption.bind(this)
     this.updateOption = this.updateOption.bind(this)
     this.renameBlock = this.renameBlock.bind(this)
+    this.checkEmptyBlock = this.checkEmptyBlock.bind(this)
   }
 
   componentDidMount () {
@@ -357,6 +358,16 @@ class MessageArea extends React.Component {
     this.props.updateParentState({currentBlock: block, blocks, sidebarItems})
   }
 
+  checkEmptyBlock () {
+    const { block, blocks } = this.props
+    const emptyBlocks = blocks.filter((item) => item.payload.length === 0 && item.uniqueId.toString() !== block.uniqueId.toString())
+    if (emptyBlocks.length > 0) {
+      return true
+    } else {
+      return false
+    }
+  }
+
   UNSAFE_componentWillReceiveProps (nextProps) {
     if (nextProps.block) {
       this.setStateData(nextProps.block)
@@ -429,6 +440,7 @@ class MessageArea extends React.Component {
               onNext={this.onNext}
               disableNext={this.state.disableNext}
               onPrevious={() => {}}
+              emptyBlocks={this.checkEmptyBlock()}
             />
             <button ref='_open_test_chatbot_modal' style={{display: 'none'}} data-toggle='modal' data-target='#_test_chatbot' />
             <MODAL
