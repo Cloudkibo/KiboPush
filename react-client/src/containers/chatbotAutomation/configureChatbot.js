@@ -15,6 +15,7 @@ import AlertContainer from 'react-alert'
 import PROGRESS from '../../components/chatbotAutomation/progress'
 import SIDEBAR from '../../components/chatbotAutomation/sidebar'
 import MESSAGEAREA from '../../components/chatbotAutomation/messageArea'
+import BACKBUTTON from '../../components/extras/backButton'
 
 class ConfigureChatbot extends React.Component {
   constructor (props, context) {
@@ -35,6 +36,7 @@ class ConfigureChatbot extends React.Component {
     this.getParentId = this.getParentId.bind(this)
     this.updateState = this.updateState.bind(this)
     this.getAllBlocks = this.getAllBlocks.bind(this)
+    this.onBack = this.onBack.bind(this)
 
     props.getFbAppId()
   }
@@ -159,6 +161,12 @@ class ConfigureChatbot extends React.Component {
     return blocks
   }
 
+  onBack() {
+    this.props.history.push({
+      pathname: '/chatbotAutomation'
+    })
+  }
+
   componentWillUnmount () {
     document.getElementsByTagName('body')[0].className = 'm-page--fluid m--skin- m-content--skin-light2 m-aside-left--fixed m-header--fixed m-header--fixed-mobile m-aside-left--enabled m-aside-left--skin-dark m-aside-left--offcanvas m-footer--push m-aside--offcanvas-default'
   }
@@ -208,6 +216,10 @@ class ConfigureChatbot extends React.Component {
               />
             </div>
             <PROGRESS progress={`${this.state.progress}%`} />
+            <BACKBUTTON
+              onBack={this.onBack}
+              position='bottom-left'
+            />
           </div>
         }
       </div>
