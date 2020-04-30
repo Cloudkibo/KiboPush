@@ -1,24 +1,16 @@
 
 import React from 'react'
-
 import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
 import { Popover, PopoverBody } from 'reactstrap'
-import { RingLoader } from 'halogenium'
-import Slider from 'react-slick'
-import { uploadImage } from '../../redux/actions/convos.actions'
-import GoogleSheetActions from './GoogleSheetActions'
-import HubspotAction from './hubspot/HubspotActions'
-import { getIntegrations } from '../../redux/actions/settings.actions'
-import ActionsPopover from './ActionsPopover'
+import { isWebURL } from '../../utility/utils'
+import GoogleSheetActions from '../SimplifiedBroadcastUI/GoogleSheetActions'
+import HubspotAction from '../SimplifiedBroadcastUI/hubspot/HubspotActions'
+import ActionsPopover from '../SimplifiedBroadcastUI/ActionsPopover'
 
 class QuickReplies extends React.Component {
   constructor (props) {
     super(props)
     let actions = []
-    if (this.props.module === 'broadcast') {
-        actions.push('send_message_block')
-    }
     if (this.props.customFields && this.props.customFields.length > 0) {
         actions.push('set_custom_field')
     }
@@ -42,9 +34,11 @@ class QuickReplies extends React.Component {
         editing: false,
         currentSlideIndex: this.props.quickReplies && this.props.quickReplies.length > 3 ? this.props.quickReplies.length - 3 : 0,
         showGSModal: false,
-        deletePayload: []
+        deletePayload: [],
+        showAddAction: true,
+        selectedQuickReply: undefined
     }
-    props.getIntegrations()
+
     this.addQuickReply = this.addQuickReply.bind(this)
     this.toggleAddQuickReply = this.toggleAddQuickReply.bind(this)
     this.addAction = this.addAction.bind(this)
@@ -54,8 +48,6 @@ class QuickReplies extends React.Component {
     this.getActionTitle = this.getActionTitle.bind(this)
     this.removeAction = this.removeAction.bind(this)
     this.changeTitle = this.changeTitle.bind(this)
-    this._onChange = this._onChange.bind(this)
-    this.handleImage = this.handleImage.bind(this)
     this.disableSave = this.disableSave.bind(this)
     this.updateSequence = this.updateSequence.bind(this)
     this.updateTag = this.updateTag.bind(this)
@@ -78,6 +70,8 @@ class QuickReplies extends React.Component {
     this.removeHubspotAction = this.removeHubspotAction.bind(this)
     this.addReplyWithMessage = this.addReplyWithMessage.bind(this)
     this.createQuickReplyActions = this.createQuickReplyActions.bind(this)
+    this.changeUrl = this.changeUrl.bind(this)
+    this.getUrlErrorMessage = this.getUrlErrorMessage.bind(this)
 
     this.GSModalContent = null
     if (this.props.setToggleQuickReply) {
@@ -88,26 +82,76 @@ class QuickReplies extends React.Component {
     }
   }
 
-  UNSAFE_componentWillReceiveProps(nextProps) {
-    if (nextProps.integrations && nextProps.integrations.length > 0) {
-        let actions = this.state.actions
-        let googleIntegration = nextProps.integrations.filter(integration => integration.integrationName === 'Google Sheets')
-        let hubspotIntegration = nextProps.integrations.filter(integration => integration.integrationName === 'Hubspot')
-        if (!actions.includes('google sheets') && googleIntegration && googleIntegration.length > 0) {
+  getUrlErrorMessage (index) {
+    let message = ''
+    if (!this.state.currentActions[index].url || this.state.currentActions[index].url === '') {
+      message = '*Required'
+    } else if (!isWebURL(this.state.currentActions[index].url)) {
+      message = 'Invalid URL'
+    }
+    return message
+  }
+
+  getActions () {
+    let actions = this.state.actions
+    if (this.props.customFields && this.props.customFields.length > 0) {
+        actions.push('set_custom_field')
+    }
+    if (this.props.sequences && this.props.sequences.length > 0) {
+        actions.push('subscribe_to_sequence',  'unsubscribe_from_sequence')
+    }
+    if (this.props.tags && this.props.tags.length > 0) {
+        actions.push('assign_tag', 'unassign_tag')
+    }
+    if (this.props.integrations && this.props.integrations.length > 0) {
+        let googleIntegration = this.props.integrations.filter(integration => integration.integrationName === 'Google Sheets')
+        let hubspotIntegration = this.props.integrations.filter(integration => integration.integrationName === 'Hubspot')
+        if (googleIntegration && googleIntegration.length > 0) {
             actions.push('google_sheets')
-            this.setState({actions})
         }
-        if (!actions.includes('hubspot') && hubspotIntegration && hubspotIntegration.length > 0) {
+        if (hubspotIntegration && hubspotIntegration.length > 0) {
             actions.push('hubspot')
             this.setState({actions})
         }
     }
+    this.setState({actions: actions})
+  }
+
+  UNSAFE_componentWillReceiveProps(nextProps) {
+    this.setState({quickReplies: nextProps.quickReplies ? nextProps.quickReplies : []})
+    let actions = this.state.actions
+    if (nextProps.integrations && nextProps.integrations.length > 0) {
+        let googleIntegration = nextProps.integrations.filter(integration => integration.integrationName === 'Google Sheets')
+        let hubspotIntegration = nextProps.integrations.filter(integration => integration.integrationName === 'Hubspot')
+        if (!actions.includes('google_sheets') && googleIntegration && googleIntegration.length > 0) {
+            actions.push('google_sheets')
+        }
+        if (!actions.includes('hubspot') && hubspotIntegration && hubspotIntegration.length > 0) {
+            actions.push('hubspot')
+        }
+    }
+    if (this.props.customFields && this.props.customFields.length > 0 && !actions.includes('set_custom_field')) {
+        actions.push('set_custom_field')
+    }
+    if (this.props.sequences && this.props.sequences.length > 0 && !actions.includes('subscribe_to_sequence')) {
+        actions.push('subscribe_to_sequence',  'unsubscribe_from_sequence')
+    }
+    if (this.props.tags && this.props.tags.length > 0 && !actions.includes('assign_tag')) {
+        actions.push('assign_tag', 'unassign_tag')
+    }
+    if (this.props.module === 'buttons' && !actions.includes('open_website')) {
+        actions.push('open_website')
+    }
+    this.setState({actions: actions})
 }
 
   createQuickReplyActions () {
     let quickReplyActions = []
     for (let i = 0; i < this.state.actions.length; i++) {
       let action = this.state.actions[i]
+      if (action === 'open_website' && this.state.currentActions.length === 0) {
+        quickReplyActions.push({title: 'Open Website', action: () => this.selectAction(action)})
+      }
       if (action === 'send_message_block' && !this.state.openCreateMessage) {
         let replyAction = this.state.currentActions.filter(a => a.action.includes('message'))
         if (replyAction.length === 0) {
@@ -150,7 +194,6 @@ class QuickReplies extends React.Component {
   }
 
   componentDidMount () {
-    console.log('componentDidMount quickReplies', this.state)
     if (this.state.index === -1) {
         let closeQuickReplyYes = document.getElementById('closeQuickReplyYes')
         if (closeQuickReplyYes) {
@@ -198,13 +241,23 @@ class QuickReplies extends React.Component {
   }
 
   editQuickReply (index) {
-      this.setState({
-        addingQuickReply: true,
-        currentActions: JSON.parse(this.state.quickReplies[index].payload),
-        currentTitle: this.state.quickReplies[index].title,
-        image_url: this.state.quickReplies[index].image_url,
-        index: index,
-        editing: false
+    let currentActions = []
+    let showAddAction = true
+    if (this.state.quickReplies[index].payload) {
+      currentActions = JSON.parse(this.state.quickReplies[index].payload)
+    } else if (this.state.quickReplies[index].url) {
+      currentActions = [{action: 'open_website', url: this.state.quickReplies[index].url}]
+      showAddAction = false
+    }
+    this.setState({
+      addingQuickReply: true,
+      currentActions: currentActions,
+      currentTitle: this.state.quickReplies[index].title,
+      image_url: this.state.quickReplies[index].image_url,
+      index: index,
+      editing: false,
+      showAddAction: showAddAction,
+      selectedQuickReply: this.state.quickReplies[index].id
     }, () => {
         if (this.props.updateQuickReplies) {
             this.props.updateQuickReplies(this.state.quickReplies, index)
@@ -250,6 +303,10 @@ class QuickReplies extends React.Component {
           if (this.state.currentActions[i].customFieldId && !this.state.currentActions[i].customFieldValue) {
               return true
           }
+          if (this.props.module === 'buttons' && this.state.currentActions[i].action === 'open_website' &&
+            (!this.state.currentActions[i].url || this.state.currentActions[i].url === '')) {
+              return true
+          }
           if (this.state.currentActions[i].googleSheetAction && !this.state.currentActions[i].worksheet && !this.state.currentActions[i].worksheetName) {
               return true
           }
@@ -260,19 +317,29 @@ class QuickReplies extends React.Component {
   saveQuickReply () {
       let quickReplies = this.state.quickReplies
       let id = new Date().getTime() + (Math.floor(Math.random() * 100))
-      let quickReply = {
-        id,
-        content_type: 'text',
-        title:  this.state.currentTitle,
-        payload: JSON.stringify(this.state.currentActions)
-      }
-      if (this.state.image_url) {
-        quickReply = {
+      let quickReply = {}
+      if (this.props.module === 'buttons') {
+        if (this.state.currentActions.length > 0 && this.state.currentActions[0].url) {
+          quickReply = {
             id,
-            content_type: 'text',
+            type: 'web_url',
             title:  this.state.currentTitle,
-            payload: JSON.stringify(this.state.currentActions),
-            image_url: this.state.image_url
+            url: this.state.currentActions[0].url
+          }
+        } else {
+          quickReply = {
+            id,
+            type: 'postback',
+            title:  this.state.currentTitle,
+            payload: JSON.stringify(this.state.currentActions)
+          }
+        }
+      } else {
+        quickReply = {
+          id,
+          content_type: 'text',
+          title:  this.state.currentTitle,
+          payload: JSON.stringify(this.state.currentActions)
         }
       }
 
@@ -288,25 +355,6 @@ class QuickReplies extends React.Component {
         }
       })
   }
-
-  _onChange () {
-      console.log('in _onChange')
-      var file = this.file.files[0]
-      if (file) {
-        console.log('image file', file)
-        this.setState({
-          loading: true
-        })
-        this.props.uploadImage(file, undefined, 'image', {}, this.handleImage)
-      }
-    }
-
-    handleImage (fileInfo) {
-        console.log('finished uploading file', fileInfo)
-        this.setState({image_url: fileInfo.image_url, loading: false}, () => {
-            this.checkIfEdited()
-        })
-    }
 
   changeTitle (e) {
     this.setState({currentTitle: e.target.value}, () => {
@@ -329,6 +377,9 @@ class QuickReplies extends React.Component {
   removeAction (index, action) {
     if (action.action.includes('message')) {
       this.setState({deletePayload: [this.state.currentActions[index]]})
+    }
+    if (action.action.includes('open')) {
+      this.setState({showAddAction: true})
     }
     let currentActions = this.state.currentActions
     currentActions.splice(index, 1)
@@ -384,6 +435,12 @@ class QuickReplies extends React.Component {
   updateCustomField (event, index) {
     let currentActions = this.state.currentActions
     currentActions[index].customFieldId = event.target.value
+    this.setState({currentActions})
+  }
+
+  changeUrl (event, index) {
+    let currentActions = this.state.currentActions
+    currentActions[index].url = event.target.value
     this.setState({currentActions})
   }
 
@@ -473,6 +530,14 @@ class QuickReplies extends React.Component {
                 <div style={{color: 'red', textAlign: 'left'}}>{!this.state.currentActions[index].tagId ? '*Required' : ''}</div>
             </div>
         )
+    } else if (action.includes('open')) {
+        return (
+            <div>
+                <input type='text' value={this.state.currentActions[index].url} className='form-control' onChange={(event) => this.changeUrl(event, index)} placeholder='Enter link...'
+                  style={{borderColor: !this.state.currentActions[index].url || this.state.currentActions[index].url === ''  ? 'red' : ''}} />
+                <div style={{color: 'red', textAlign: 'left'}}>{this.getUrlErrorMessage(index)}</div>
+            </div>
+        )
     } else if (action.includes('custom')) {
         return (
             <div>
@@ -559,6 +624,8 @@ class QuickReplies extends React.Component {
         return 'flaticon-interface-9'
       } else if (action.includes('custom')) {
         return 'flaticon-profile'
+      } else if (action.includes('open')) {
+        return 'la la-external-link'
       }
   }
 
@@ -577,18 +644,19 @@ class QuickReplies extends React.Component {
       this.setState({selectedAction: action, addingAction: false, currentActions}, () => {
         this.checkIfEdited()
     })
+    if (action === 'open_website') {
+      this.setState({showAddAction: false})
+    }
   }
 
   toggleAddQuickReply () {
-      console.log('toggleAddQuickReply', this.state)
       if (!this.state.addingAction) {
         this.setState({index: -1, addingQuickReply: false, currentTitle: '', addingAction: false, currentActions: [], image_url: '', editing: false})
       }
   }
 
   addQuickReply () {
-      console.log('adding quick reply')
-      this.setState({addingQuickReply: true})
+      this.setState({addingQuickReply: true, showAddAction: true, selectedQuickReply: undefined})
   }
 
   slideIndexChange (newIndex) {
@@ -596,21 +664,6 @@ class QuickReplies extends React.Component {
   }
 
   render () {
-    console.log('quickReplies props', this.props)
-    console.log('quickReplies state', this.state)
-    console.log('currentSlideIndex', this.state.currentSlideIndex)
-    console.log('this.state.currentActions', this.state.currentActions)
-    console.log(this.state.addingQuickReply, this.state.addingQuickReply)
-    let settings = {
-        dots: false,
-        infinite: false,
-        speed: 250,
-        slidesToShow: 1,
-        slidesToScroll: 1,
-        arrows: this.state.quickReplies.length > 1 ? true : false,
-        initialSlide: this.state.currentSlideIndex,
-        afterChange: this.slideIndexChange
-    };
     return (
         <div className='no-drag'>
 
@@ -621,7 +674,7 @@ class QuickReplies extends React.Component {
             </div>
           </div>
 
-            <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="closeQuickReply" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div style={{ background: 'rgba(33, 37, 41, 0.6)', zIndex: '99999' }} className="modal fade" id="closeQuickReply" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div style={{ transform: 'translate(0px, 100px)' }} className="modal-dialog" role="document">
                     <div className="modal-content">
                         <div style={{ display: 'block' }} className="modal-header">
@@ -649,7 +702,7 @@ class QuickReplies extends React.Component {
                 </div>
             </div>
 
-            <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="deleteQuickReply" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div style={{ background: 'rgba(33, 37, 41, 0.6)', zIndex: '9999' }} className="modal fade" id="deleteQuickReply" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div style={{ transform: 'translate(0px, 100px)' }} className="modal-dialog" role="document">
                     <div className="modal-content">
                         <div style={{ display: 'block' }} className="modal-header">
@@ -676,93 +729,51 @@ class QuickReplies extends React.Component {
                     </div>
                 </div>
             </div>
-
-            {/* <CustomFields onLoadCustomFields={this.onLoadCustomFields} /> */}
             {this.state.quickReplies.length > 0 &&
                 <div style={{maxWidth: '80%'}}>
-                    <Slider ref={(instance) => { this.slider = instance }}  {...settings}>
-                        {
-                            this.state.quickReplies.map((reply, index) => {
-                                console.log(`quickReplies index ${index}`, this.state.quickReplies)
-                                return (
-                                    <div className='btn-toolbar' style={{padding: '10px', visibility: this.state.currentSlideIndex !== index ? 'hidden': 'visible', display: 'flex', flexWrap: 'nowrap'}} key={index}>
-                                        <button onClick={() => this.editQuickReply(index)} style={{margin: '5px', borderColor: 'black', borderWidth: '1px', 'color': 'black', }} className="btn m-btn--pill btn-sm m-btn btn-secondary">
-                                          {reply.image_url && <img src={reply.image_url} style={{marginRight: '5px', pointerEvents: 'none', zIndex: -1, borderRadius: '50%', width: '20px', height: '20px', display: 'inline'}} alt='Text' />
-                                          }
-                                          {reply.title.length > 20 ? reply.title.slice(0,20)+'...' : reply.title}
-                                        </button>
-
-                                        {
-                                            (index+1) < this.state.quickReplies.length &&
-                                            <button onClick={() => this.editQuickReply(index+1)} style={{margin: '5px', borderColor: 'black', borderWidth: '1px', 'color': 'black', }} className="btn m-btn--pill btn-sm m-btn btn-secondary">
-                                              {this.state.quickReplies[index+1].image_url && <img src={this.state.quickReplies[index+1].image_url} style={{marginRight: '5px', pointerEvents: 'none', zIndex: -1, borderRadius: '50%', width: '20px', height: '20px', display: 'inline'}} alt='Text' />
-                                              }
-                                              {this.state.quickReplies[index+1].title}
-                                            </button>
-                                        }
-
-                                        {
-                                            (index+2) < this.state.quickReplies.length &&
-                                            <button onClick={() => this.editQuickReply(index+2)} style={{margin: '5px', borderColor: 'black', borderWidth: '1px', 'color': 'black', }} className="btn m-btn--pill btn-sm m-btn btn-secondary">
-                                              {this.state.quickReplies[index+2].image_url && <img src={this.state.quickReplies[index+2].image_url} style={{marginRight: '5px', pointerEvents: 'none', zIndex: -1, borderRadius: '50%', width: '20px', height: '20px', display: 'inline'}} alt='Text' />
-                                              }
-                                              {this.state.quickReplies[index+2].title}
-                                            </button>
-                                        }
-                                    </div>
-                                )
-                            })
+                  {this.state.quickReplies.map((reply, index) => {
+                    return (
+                      <button id={`addQuickReply-${reply.id}`} onClick={() => this.editQuickReply(index)} style={{margin: '5px', borderColor: 'black', borderWidth: '1px', 'color': 'black', }} className={this.props.className}>
+                        {reply.image_url && <img src={reply.image_url} style={{marginRight: '5px', pointerEvents: 'none', zIndex: -1, borderRadius: '50%', width: '20px', height: '20px', display: 'inline'}} alt='Text' />
                         }
-                    </Slider>
-                </div>
+                        {reply.title.length > 20 ? reply.title.slice(0,20)+'...' : reply.title}
+                      </button>
+                    )
+                  })
+                }
+              </div>
             }
 
             {
-                this.state.quickReplies.length < this.quickReplyLimit &&
-                <button id={`addQuickReply-${this.props.currentId}`} onClick={this.addQuickReply} style={{marginLeft: '15%', marginTop: '10px', border: 'dashed', borderWidth: '1.5px', 'color': 'black'}} className="btn m-btn--pill btn-sm m-btn hoverbordercomponent">
+                this.props.module === 'quickReplies' &&
+                <button
+                  id={`addQuickReply-${this.props.currentId}`}
+                  onClick={this.addQuickReply}
+                  style={{marginTop: '10px', border: 'dashed', borderWidth: '1.5px', 'color': 'black', display: this.state.quickReplies.length < this.props.limit ? 'block': 'none'}}
+                  className="btn m-btn--pill btn-sm m-btn hoverbordercomponent">
                     + Add Quick Reply
                 </button>
             }
-
-            <Popover trigger='click' placement='auto' isOpen={this.state.addingQuickReply} target={`addQuickReply-${this.props.currentId}`}>
+            {
+                this.props.module === 'buttons' &&
+                <button
+                  id={`addQuickReply-${this.props.currentId}`}
+                  onClick={this.addQuickReply}
+                  style={{marginTop: '10px', border: 'dashed', borderWidth: '1.5px', 'color': 'black', display: this.state.quickReplies.length < this.props.limit ? 'block': 'none'}}
+                  className="btn-sm m-btn hoverbordercomponent">
+                    + Add Button
+                </button>
+            }
+            <Popover trigger='click' placement='right' isOpen={this.state.addingQuickReply} target={`addQuickReply-${this.state.selectedQuickReply}`} style={{zIndex: '999'}}>
                 <PopoverBody>
                     <div style={{paddingRight: '10px', maxHeight: '500px', overflowY: 'scroll', overflowX: 'hidden'}}>
                     <div data-toggle="modal" data-target={this.state.editing ? "#closeQuickReply" : ""} onClick={this.closeQuickReply} style={{marginLeft: '98%', cursor: 'pointer'}}><span role='img' aria-label='times'>❌</span></div>
                         <div style={{marginBottom: '20px', maxHeight: '100px'}} className='row'>
-                            <div className='col-4'>
-                                <div onClick={this.clickFile} className='ui-block hoverbordercomponent' style={{height: '75px', width: '75px', borderRadius: '50%', display: 'inline-block'}}>
-                                    {
-                                    this.state.loading
-                                    ? <div className='align-center'><center><RingLoader color='#FF5E3A' /></center></div>
-                                    : <div>
-                                        <input
-                                        ref={el => { this.file = el }}
-                                        type='file'
-                                        name='user[image]'
-                                        multiple='true'
-                                        accept='image/*'
-                                        title=' '
-                                        onChange={this._onChange} style={{display: 'none'}} />
-                                        {
-                                            (!this.state.image_url)
-                                            ? <div className='align-center' style={{padding: '7px'}}>
-                                                <h6 style={{pointerEvents: 'none', zIndex: -1, display: 'inline'}}>Upload Image </h6>
-                                            </div>
-                                            : <div className='align-center' style={{marginTop: '-12px', marginLeft: '-2px'}}>
-                                                <img src={this.state.image_url} style={{pointerEvents: 'none', zIndex: -1, borderRadius: '50%', width: '75px', height: '75px'}} alt='Text' />
-                                            </div>
-                                        }
-                                        </div>
-                                    }
-                                </div>
-                            </div>
-
-                            <div className='col-8' style={{marginTop: '25px'}}>
+                            <div className='col-md-12' style={{marginTop: '20px'}}>
                                 <input style={{borderColor: this.state.currentTitle === '' ? 'red' : ''}} value={this.state.currentTitle} onChange={this.changeTitle} placeholder='Enter title here...' className='form-control' />
                                 <div style={{color: 'red', textAlign: 'left'}}>{this.state.currentTitle === '' ? '*Required' : ''}</div>
                             </div>
                         </div>
-
                         <h4>Actions:</h4>
                         {
                             this.state.currentActions.map((action, index) => {
@@ -802,8 +813,8 @@ class QuickReplies extends React.Component {
                             targetId={`addActionButton`}
                             actions={this.createQuickReplyActions()}
                         />
-                        <div style={{marginBottom: '10px', marginTop: '20px'}}>
-                            <button disabled={this.state.addingAction ? true : null} id="addActionButton" onClick={this.addAction} style={{ border: 'dashed', marginLeft: '30%', borderWidth: '1.5px', 'color': 'black'}} className="btn m-btn--pill btn-sm m-btn hoverbordercomponent">
+                      <div style={{marginBottom: '10px', marginTop: '20px'}}>
+                            <button disabled={this.state.addingAction ? true : null} id="addActionButton" onClick={this.addAction} style={{ border: 'dashed', marginLeft: '30%', borderWidth: '1.5px', 'color': 'black', display: this.state.showAddAction ? 'block': 'none'}} className="btn m-btn--pill btn-sm m-btn hoverbordercomponent">
                                 + Add Action
                             </button>
                         </div>
@@ -833,18 +844,4 @@ QuickReplies.defaultProps = {
   'tags': []
 }
 
-
-function mapStateToProps (state) {
-    console.log(state)
-    return {
-        integrations: (state.settingsInfo.integrations)
-    }
-  }
-
-  function mapDispatchToProps (dispatch) {
-    return bindActionCreators({
-        uploadImage: uploadImage,
-        getIntegrations
-    }, dispatch)
-  }
-  export default connect(mapStateToProps, mapDispatchToProps, null, { withRef: true })(QuickReplies)
+export default connect(null, null, null, { withRef: true })(QuickReplies)

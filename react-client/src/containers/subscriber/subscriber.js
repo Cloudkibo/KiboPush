@@ -440,8 +440,15 @@ class Subscriber extends React.Component {
     }
   }
   setSubscriber(s) {
-    this.setState({ subscriber: s }, () => {
-      console.log('find me', this.state.subscriber)
+    this.settingSubscriber = true
+    this.setState({ 
+      subscriber: s,
+      selectedField: null,
+      existingSelectedField: null,
+      show: false
+    }, () => {
+      this.settingSubscriber = false
+      console.log('setSubscriber', this.state.subscriber)
     })
     this.props.getSubscriberSequences(s._id)
   }
@@ -2014,22 +2021,25 @@ class Subscriber extends React.Component {
                               <span style={{ fontWeight: 600, marginLeft: '15px' }}>Custom Fields: </span>
                               {this.state.subscriber.customFields && this.state.subscriber.customFields.filter(cf => !!cf.value).length > 0
                                 ? <span>
-                                  <a href='#/' data-toggle='collapse' data-target='#customFields' style={{ cursor: 'pointer', color: 'blue' }}
+                                  <span data-toggle='collapse' data-target='#customFields' style={{ cursor: 'pointer', color: 'blue' }}
                                     onClick={this.showToggle}>
                                     {this.state.show
                                       ? <span>Hide <i style={{ fontSize: '12px' }} className='la la-angle-up ' /></span>
                                       : <span>Show <i style={{ fontSize: '12px' }} className='la la-angle-down ' /></span>
                                     }
-                                  </a>
+                                  </span>
                                   <span onClick={() => this.props.history.push('/customFields')} data-dismiss='modal' id='customfieldid' style={{ cursor: 'pointer', float: 'right', color: 'blue', marginLeft: '145px' }}><i className='la la-gear' /> Manage Fields</span>
                                 </span>
                                 :
                                 <span onClick={() => this.props.history.push('/customFields')} data-dismiss='modal' id='customfieldid' style={{ cursor: 'pointer', float: 'right', color: 'blue', marginLeft: '210px' }}><i className='la la-gear' /> Manage Fields</span>
                               }
                             </div>
-                            <div className='row'>
-                              {this.state.subscriber.customFields && this.state.subscriber.customFields.filter(cf => !!cf.value).length > 0
-                                ? <div id='customFields' style={{ padding: '15px' }} className='collapse'>
+                            {
+                              !this.settingSubscriber &&
+                              <div className='row'>
+                              {
+                                this.state.subscriber.customFields && this.state.subscriber.customFields.filter(cf => !!cf.value).length > 0 ? 
+                                <div id='customFields' style={{ padding: '15px' }} className='collapse'>
                                   {
                                     this.state.subscriber.customFields.filter(cf => !!cf.value).map((field, i) => {
                                         return (
@@ -2072,12 +2082,13 @@ class Subscriber extends React.Component {
                                       </PopoverBody>
                                   </Popover> 
                                   }
-                                </div>
-                                : <div style={{ padding: '15px', maxHeight: '120px' }}>
+                                </div> :
+                                <div style={{ padding: '15px', maxHeight: '120px' }}>
                                   <span>No Custom Fields Set</span>
                                 </div>
                               }
-                            </div>
+                              </div>
+                            }
                           
                           {
                             unassignedCustomFields.length > 0 &&
