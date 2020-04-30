@@ -327,7 +327,7 @@ class Convo extends React.Component {
                   <h5 className="modal-title" id="exampleModalLabel">
                     Broadcast Video Tutorial
 									</h5>
-                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" 
+                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal"
                   aria-label="Close"
                   onClick={() => {
                     this.setState({
@@ -542,6 +542,7 @@ class Convo extends React.Component {
                         <option value='file'>file</option>
                         <option value='media'>media</option>
                         <option value='YouTube video'>youtube video</option>
+                        <option value='Facebook video'>Facebook Video</option>
                         <option value='userInput'>user input</option>
                         <option value='links carousel'>link carousel</option>
                         <option value='miscellaneous'>miscellaneous</option>
