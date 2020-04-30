@@ -7,7 +7,9 @@ class Header extends React.Component {
     this.state = {
       waitingForDelete: false,
       waitingForPublish: false,
-      waitingForDisable: false
+      waitingForDisable: false,
+      title: props.title,
+      editTitle: false
     }
     this.onDelete = this.onDelete.bind(this)
     this.afterDelete = this.afterDelete.bind(this)
@@ -15,6 +17,10 @@ class Header extends React.Component {
     this.afterDisable = this.afterDisable.bind(this)
     this.onPublish = this.onPublish.bind(this)
     this.afterPublish = this.afterPublish.bind(this)
+    this.onEditTitle = this.onEditTitle.bind(this)
+    this.onCancelEdit = this.onCancelEdit.bind(this)
+    this.onRename = this.onRename.bind(this)
+    this.onTitleChange = this.onTitleChange.bind(this)
   }
 
   onDelete () {
@@ -59,11 +65,70 @@ class Header extends React.Component {
     this.setState({waitingForPublish: false})
   }
 
+  onEditTitle () {
+    this.setState({editTitle: true})
+  }
+
+  onCancelEdit () {
+    this.setState({
+      editTitle: false,
+      title: this.props.title
+    })
+  }
+
+  onRename () {
+    this.setState({editTitle: false}, () => {
+      this.props.onRename(this.state.title)
+    })
+  }
+
+  onTitleChange (e) {
+    this.setState({title: e.target.value})
+  }
+
+  UNSAFE_componentWillReceiveProps (nextProps) {
+    if (nextProps.title) {
+      this.setState({
+        title: nextProps.title,
+        editTitle: false
+      })
+    }
+  }
+
   render () {
     return (
       <div className='row'>
         <div className='col-md-6'>
-          <h3>{this.props.title}</h3>
+          {
+            this.state.editTitle
+            ? <div className='row'>
+              <div className='col-md-8'>
+                <input
+                  style={{color: '#575962'}}
+                  className='form-control m-input'
+                  type='text'
+                  value={this.state.title}
+                  onChange={this.onTitleChange}
+                />
+              </div>
+              <div className='col-md-4'>
+                <button style={{border: 'none'}} onClick={this.onRename} className="m-portlet__nav-link btn m-btn m-btn--hover-success m-btn--icon m-btn--icon-only m-btn--pill" title="Save">
+                  <i className="la la-check" />
+                </button>
+                <button style={{border: 'none'}} onClick={this.onCancelEdit} className="m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill" title="Cancel">
+                  <i className="la la-close" />
+                </button>
+              </div>
+            </div>
+            : <h3>
+              {this.props.title}
+              <i
+                style={{fontSize: '1.5rem', marginLeft: '10px', cursor: 'pointer'}}
+                className='fa fa-pencil-square-o'
+                onClick={this.onEditTitle}
+              />
+            </h3>
+          }
         </div>
         <div className='col-md-6'>
           {
