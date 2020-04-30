@@ -48,9 +48,9 @@ class Footer extends React.Component {
               disabled={this.props.disableNext}
             >
               <span>
-                <span>Next</span>
+                <span>{this.props.emptyBlocks ? 'Next' : 'Save'}</span>
                 {
-                  !this.state.loading &&
+                  this.props.emptyBlocks && !this.state.loading &&
                   <i style={{paddingLeft: '.5em'}} className='la la-arrow-right' />
                 }
               </span>
@@ -67,7 +67,8 @@ Footer.propTypes = {
   'showNext': PropTypes.bool.isRequired,
   'onNext': PropTypes.func.isRequired,
   'onPrevious': PropTypes.func.isRequired,
-  'disableNext': PropTypes.bool.isRequired
+  'disableNext': PropTypes.bool.isRequired,
+  'emptyBlocks': PropTypes.bool.isRequired
 }
 
 export default Footer
