@@ -184,12 +184,12 @@ class ConfigureChatbot extends React.Component {
         <AlertContainer ref={(a) => { this.msg = a }} {...alertOptions} />
         {
           this.state.loading
-          ? <div style={{position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%,-50%)'}}>
+          ? <div id='_chatbot_please_wait' style={{position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%,-50%)'}}>
             <div className="m-loader m-loader--brand" style={{width: "30px", display: "inline-block"}} />
             <span className='m--font-brand'>Please wait...</span>
           </div>
-          : <div>
-            <div style={{margin: '15px'}} className='row'>
+          : <div id='_chatbot_main_container'>
+            <div id='_chatbot_configure_area' style={{margin: '15px'}} className='row'>
               <SIDEBAR
                 data={this.state.sidebarItems}
                 currentBlock={this.state.currentBlock}

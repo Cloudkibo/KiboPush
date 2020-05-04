@@ -102,11 +102,12 @@ class TextArea extends React.Component {
 
   render () {
     return (
-      <div className='row'>
+      <div id='_chatbot_message_area_text' className='row'>
         <div className='col-md-12'>
           <div style={{position: 'relative'}} className="form-group m-form__group">
             <span className='m--font-boldest'>Text:</span>
             <textarea
+              id='_chatbot_message_area_text_input'
               placeholder='Please type here...'
               rows='3'
               value={this.state.text}

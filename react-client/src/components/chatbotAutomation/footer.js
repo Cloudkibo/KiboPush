@@ -22,11 +22,12 @@ class Footer extends React.Component {
 
   render () {
     return (
-      <div style={{position: 'absolute', bottom: 0, marginBottom: '15px', width: '100%', right: '15px'}} className='row'>
+      <div id='_cb_ma_footer' style={{position: 'absolute', bottom: 0, marginBottom: '15px', width: '100%', right: '15px'}} className='row'>
         <div className='col-md-6'>
           {
             this.props.showPrevious &&
             <button
+              id='_cb_ma_footer_previous'
               type='button'
               className='pull-left btn btn-secondary m-btn m-btn--icon'
               onClick={this.props.onPrevious}
@@ -43,6 +44,7 @@ class Footer extends React.Component {
             this.props.showNext &&
             <button
               type='button'
+              id='_cb_ma_footer_next'
               className={`pull-right btn btn-primary m-btn m-btn--icon ${this.state.loading && 'm-loader m-loader--light m-loader--right'}`}
               onClick={this.onNext}
               disabled={this.props.disableNext}
