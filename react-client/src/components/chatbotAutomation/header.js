@@ -75,9 +75,14 @@ class Header extends React.Component {
   }
 
   onRename () {
-    this.setState({editTitle: false}, () => {
-      this.props.onRename(this.state.title)
-    })
+    const titles = this.props.blocks.map((item) => item.title.toLowerCase())
+    if (titles.indexOf(this.state.title.toLowerCase()) > -1) {
+      this.props.alertMsg.error('A block with this title already exists. Please choose a diffrent title')
+    } else {
+      this.setState({editTitle: false}, () => {
+        this.props.onRename(this.state.title)
+      })
+    }
   }
 
   onTitleChange (e) {
@@ -212,7 +217,8 @@ Header.propTypes = {
   'canPublish': PropTypes.bool.isRequired,
   'onPublish': PropTypes.func.isRequired,
   'onDisable': PropTypes.func.isRequired,
-  'isPublished': PropTypes.bool.isRequired
+  'isPublished': PropTypes.bool.isRequired,
+  'blocks': PropTypes.array.isRequired
 }
 
 export default Header
