@@ -286,40 +286,45 @@ class MessageArea extends React.Component {
   }
 
   addOption (title, action, uniqueId) {
-    const options = this.state.quickReplies
-    let option = {
-      content_type: 'text',
-      title
-    }
-    if (action === 'link') {
-      option.payload = JSON.stringify([{action: '_chatbot', blockUniqueId: uniqueId}])
-      options.push(option)
-    } else if (action === 'create') {
-      const id = new Date().getTime()
-      const newBlock = {title, payload: [], uniqueId: id}
-      const sidebarItems = this.props.sidebarItems
-      const index = sidebarItems.findIndex((item) => item.id.toString() === this.props.block.uniqueId.toString())
-      sidebarItems[index].isParent = true
-      const newSidebarItem = {title, isParent: false, id, parentId: this.props.block.uniqueId}
-      const blocks = [...this.props.blocks, newBlock]
-      const completed = blocks.filter((item) => item.payload.length > 0).length
-      const progress = Math.floor((completed / blocks.length) * 100)
-      option.payload = JSON.stringify([{action: '_chatbot', blockUniqueId: id, payloadAction: 'create'}])
-      options.push(option)
-      const currentBlock = this.props.block
-      if (currentBlock.payload.length > 0) {
-        currentBlock.payload[currentBlock.payload.length - 1].quickReplies = options
-      } else {
-        currentBlock.payload.push({quickReplies: options})
+    const titles = this.props.blocks.map((item) => item.title.toLowerCase())
+    if (action === 'create' && titles.indexOf(title.toLowerCase()) > -1) {
+      this.props.alertMsg.error('A block with this title already exists. Please choose a diffrent title')
+    } else {
+      const options = this.state.quickReplies
+      let option = {
+        content_type: 'text',
+        title
       }
-      this.props.updateParentState({
-        blocks,
-        currentBlock,
-        progress,
-        sidebarItems: [...sidebarItems, newSidebarItem]
-      })
+      if (action === 'link') {
+        option.payload = JSON.stringify([{action: '_chatbot', blockUniqueId: uniqueId}])
+        options.push(option)
+      } else if (action === 'create') {
+        const id = new Date().getTime()
+        const newBlock = {title, payload: [], uniqueId: id}
+        const sidebarItems = this.props.sidebarItems
+        const index = sidebarItems.findIndex((item) => item.id.toString() === this.props.block.uniqueId.toString())
+        sidebarItems[index].isParent = true
+        const newSidebarItem = {title, isParent: false, id, parentId: this.props.block.uniqueId}
+        const blocks = [...this.props.blocks, newBlock]
+        const completed = blocks.filter((item) => item.payload.length > 0).length
+        const progress = Math.floor((completed / blocks.length) * 100)
+        option.payload = JSON.stringify([{action: '_chatbot', blockUniqueId: id, payloadAction: 'create'}])
+        options.push(option)
+        const currentBlock = this.props.block
+        if (currentBlock.payload.length > 0) {
+          currentBlock.payload[currentBlock.payload.length - 1].quickReplies = options
+        } else {
+          currentBlock.payload.push({quickReplies: options})
+        }
+        this.props.updateParentState({
+          blocks,
+          currentBlock,
+          progress,
+          sidebarItems: [...sidebarItems, newSidebarItem]
+        })
+      }
+      this.setState({quickReplies: options})
     }
-    this.setState({quickReplies: options})
   }
 
   updateOption (uniqueId, index, title, action) {
@@ -421,6 +426,7 @@ class MessageArea extends React.Component {
               isPublished={this.props.chatbot.published}
               alertMsg={this.props.alertMsg}
               onRename={this.renameBlock}
+              blocks={this.props.blocks}
             />
             <div className='m--space-30' />
             {
