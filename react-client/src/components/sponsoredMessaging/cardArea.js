@@ -4,7 +4,6 @@ import { RingLoader } from 'halogenium'
 import { uploadImage, uploadTemplate } from '../../redux/actions/convos.actions'
 import { bindActionCreators } from 'redux'
 import AlertContainer from 'react-alert'
-import { deleteFile } from '../../utility/utils'
 import PropTypes from 'prop-types'
 
 class CardArea extends React.Component {
