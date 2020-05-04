@@ -56,6 +56,7 @@ export function insights (data) {
 }
 
 export function showUpdatedData (data) {
+  console.log('in showUpdatedData', data)
     return {
         type: ActionTypes.UPDATE_SPONSORED_MESSAGE,
         data
@@ -118,7 +119,7 @@ export function updateSponsoredMessage(sponsoredMessage, key, value, edit) {
       dispatch(showUpdatedData(temp))
     } else if (key) {
       let temp = sponsoredMessage
-      if(key === 'payload') {
+      if (key === 'payload') {
         value = value.broadcast
       }
       temp[key] = value

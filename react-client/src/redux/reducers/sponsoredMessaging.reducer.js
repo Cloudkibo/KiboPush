@@ -29,7 +29,8 @@ const initialState = {
       budgetType: '',
       budgetAmount: '',
       bidAmount: '',
-      currency: ''
+      currency: '',
+      selectedFormat: 'text'
     },
     reconnectFbRequired: false
 }
