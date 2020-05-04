@@ -66,7 +66,7 @@ class MoreOptions extends React.Component {
 
   render () {
     return (
-      <div className='row'>
+      <div id='_cb_ma_mo' className='row'>
         <div className='col-md-12'>
           <div className="form-group m-form__group">
             <span className='m--font-boldest'>More Options:</span>
