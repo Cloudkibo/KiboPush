@@ -98,7 +98,7 @@ class AttachmentArea extends React.Component {
     const data = res.payload
     if (res.status === 'success') {
       let helpMessage = 'Url is valid.'
-      if (data.attachment_id) {
+      if (data.attachment_id || data.type === 'fb_video') {
         helpMessage = `${helpMessage} This will be sent as a playable video on messenger.`
       } else if (validateYoutubeURL(this.state.inputValue)) {
         helpMessage = `${helpMessage} Video size is greater than 25MB and it will be sent as a card.`
@@ -109,18 +109,18 @@ class AttachmentArea extends React.Component {
         waitingForUrlData: false,
         invalidUrl: false,
         helpMessage,
-        attachmentType: data.attachment_id ? 'video' : 'card'
+        attachmentType: (data.attachment_id || data.type === 'fb_video') ? 'video' : 'card'
       })
       const attachment = {
-        type: data.attachment_id ? 'video' : 'card',
-        fileurl: data.attachment_id ? data : {},
+        type: (data.attachment_id || data.type === 'fb_video') ? 'video' : 'card',
+        fileurl: data.attachment_id ? data : data.type === 'fb_video' ? {facebookUrl: data.url} : {},
         cardData: data.attachment_id ? {} : {
           title: data.ogTitle,
           description: data.ogDescription,
           image_url: data.ogImage && data.ogImage.url,
           url: this.state.inputValue
         },
-        fileData: data.attachment_id ? {url: this.state.inputValue} : {},
+        fileData: (data.attachment_id || data.type === 'fb_video') ? {url: this.state.inputValue} : {},
         buttons: this.state.buttons
       }
       this.props.updateParentState({attachment, disableNext: false})
@@ -262,7 +262,7 @@ class AttachmentArea extends React.Component {
 
   render () {
     return (
-      <div className='row'>
+      <div id='_chatbot_message_area_attachment' className='row'>
         <div className='col-md-12'>
           <div className="form-group m-form__group">
             <span className='m--font-boldest'>Attachment:</span>
@@ -287,23 +287,23 @@ class AttachmentArea extends React.Component {
               />
               {
                 this.state.isUploaded &&
-                <span onClick={this.removeAttachment} style={{border: 'none', cursor: 'pointer', backgroundColor: '#eee', boxShadow: 'inset 0 1px 1px rgba(0, 0, 0, .075)'}} className='input-group-addon'>
+                <span onClick={this.removeAttachment} id='_chatbot_message_area_attachment_remove' style={{border: 'none', cursor: 'pointer', backgroundColor: '#eee', boxShadow: 'inset 0 1px 1px rgba(0, 0, 0, .075)'}} className='input-group-addon'>
                   <span>
                     <i className='la la-times-circle' />
                   </span>
                 </span>
               }
-              <span style={{border: '1px solid #ccc', cursor: 'pointer'}} onClick={this.handleFilChange} className="input-group-addon m--font-boldest">
+              <span id='_chatbot_message_area_attachment_upload' style={{border: '1px solid #ccc', cursor: 'pointer'}} onClick={this.handleFilChange} className="input-group-addon m--font-boldest">
                 {
                   this.state.waitingForAttachment
-                  ? <div className="m-loader" style={{width: "30px"}} />
+                  ? <div id='_chatbot_message_area_attachment_upload_loader' className="m-loader" style={{width: "30px"}} />
                   : <span>
                     <i style={{color: '#575962'}} className='fa fa-cloud-upload' /> Upload
                   </span>
                 }
               </span>
             </div>
-            <span className={`m-form__help m--font-${this.state.invalidUrl ? 'danger' : this.state.waitingForUrlData ? 'info' : 'success'}`}>
+            <span id='_cb_ma_attachment_hm' className={`m-form__help m--font-${this.state.invalidUrl ? 'danger' : this.state.waitingForUrlData ? 'info' : 'success'}`}>
               {this.state.inputValue && this.state.helpMessage}
             </span>
           </div>

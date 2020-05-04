@@ -40,6 +40,7 @@ class MessageArea extends React.Component {
     this.updateOption = this.updateOption.bind(this)
     this.renameBlock = this.renameBlock.bind(this)
     this.checkEmptyBlock = this.checkEmptyBlock.bind(this)
+    this.isOrphanBlock = this.isOrphanBlock.bind(this)
   }
 
   componentDidMount () {
@@ -251,6 +252,16 @@ class MessageArea extends React.Component {
   afterDelete (res) {
     if (res.status === 'success') {
       this.props.alertMsg.success('Message block deleted successfully')
+      const { blocks, sidebarItems } = this.props
+      const blockIndex = blocks.findIndex((item) => item.uniqueId.toString() === this.props.block.uniqueId.toString())
+      const sidebarIndex = sidebarItems.findIndex((item) => item.id.toString() === this.props.block.uniqueId.toString())
+      if (blockIndex > -1) {
+        blocks.splice(blockIndex, 1)
+      }
+      if (sidebarIndex > -1) {
+        sidebarItems.splice(sidebarIndex, 1)
+      }
+      this.props.updateParentState({blocks, sidebarItems, currentBlock: blocks[0]})
     } else {
       this.props.alertMsg.error('Failed to delete message block')
     }
@@ -368,6 +379,25 @@ class MessageArea extends React.Component {
     }
   }
 
+  isOrphanBlock () {
+    const currentBlock = this.props.block
+    if (!currentBlock._id || this.props.chatbot.startingBlockId === currentBlock._id) {
+      return false
+    } else {
+      let temp = this.props.blocks.filter((item) => item.payload.length > 0)
+      temp = temp.map((item) => item.payload[item.payload.length - 1].quickReplies)
+      temp = temp.filter((item) => item.length > 0)
+      temp = [].concat.apply([], temp) // merge array of arrays into single arary
+      temp = temp.map((item) => JSON.parse(item.payload)[0])
+      const ids = temp.map((item) => item.blockUniqueId.toString())
+      if (ids.includes(currentBlock.uniqueId.toString())) {
+        return false
+      } else {
+        return true
+      }
+    }
+  }
+
   UNSAFE_componentWillReceiveProps (nextProps) {
     if (nextProps.block) {
       this.setStateData(nextProps.block)
@@ -378,10 +408,10 @@ class MessageArea extends React.Component {
     return (
       <div style={{border: '1px solid #ccc', backgroundColor: 'white', padding: '0px'}} className='col-md-9'>
         <div style={{margin: '0px'}} className='m-portlet m-portlet-mobile'>
-          <div style={{height: '80vh', position: 'relative', padding: '15px'}} className='m-portlet__body'>
+          <div id='_chatbot_message_area' style={{height: '80vh', position: 'relative', padding: '15px'}} className='m-portlet__body'>
             <HEADER
               title={this.props.block.title}
-              showDelete={false}
+              showDelete={this.isOrphanBlock()}
               onDelete={this.onDelete}
               onTest={this.showTestModal}
               canTest={this.props.progress === 100}
