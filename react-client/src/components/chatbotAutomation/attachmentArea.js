@@ -1,8 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { isWebURL } from '../../utility/utils'
+import { isWebURL, validateYoutubeURL } from '../../utility/utils'
 import { Popover, PopoverBody} from 'reactstrap'
 import BUTTONACTION from './buttonAction'
+import CONFIRMATIONMODAL from '../extras/confirmationModal'
 
 class AttachmentArea extends React.Component {
   constructor(props, context) {
@@ -33,6 +34,7 @@ class AttachmentArea extends React.Component {
     this.togglePopover = this.togglePopover.bind(this)
     this.onSaveAction = this.onSaveAction.bind(this)
     this.onRemoveAction = this.onRemoveAction.bind(this)
+    this.handleFilChange = this.handleFilChange.bind(this)
   }
 
   componentDidMount () {
@@ -51,6 +53,8 @@ class AttachmentArea extends React.Component {
             waitingForUrlData: true,
             invalidUrl: false,
             helpMessage: 'Validating url...'
+          }, () => {
+            this.props.updateParentState({disableNext: true})
           })
         } else {
           this.setState({
@@ -93,10 +97,18 @@ class AttachmentArea extends React.Component {
   onUrlResponse (res) {
     const data = res.payload
     if (res.status === 'success') {
+      let helpMessage = 'Url is valid.'
+      if (data.attachment_id) {
+        helpMessage = `${helpMessage} This will be sent as a playable video on messenger.`
+      } else if (validateYoutubeURL(this.state.inputValue)) {
+        helpMessage = `${helpMessage} Video size is greater than 25MB and it will be sent as a card.`
+      } else {
+        helpMessage =`${helpMessage} This will be sent as a card.`
+      }
       this.setState({
         waitingForUrlData: false,
         invalidUrl: false,
-        helpMessage: 'Url is valid',
+        helpMessage,
         attachmentType: data.attachment_id ? 'video' : 'card'
       })
       const attachment = {
@@ -111,18 +123,19 @@ class AttachmentArea extends React.Component {
         fileData: data.attachment_id ? {url: this.state.inputValue} : {},
         buttons: this.state.buttons
       }
-      this.props.updateParentState({attachment})
+      this.props.updateParentState({attachment, disableNext: false})
     } else {
       this.setState({
         waitingForUrlData: false,
         invalidUrl: true,
         helpMessage: res.description
       })
+      this.props.updateParentState({disableNext: false})
     }
   }
 
   onInputChange (e) {
-    this.setState({inputValue: e.target.value})
+    this.setState({inputValue: e.target.value, attachmentType: ''})
   }
 
   getInputValue () {
@@ -176,10 +189,11 @@ class AttachmentArea extends React.Component {
         },
         buttons: this.state.buttons
       }
-      this.props.updateParentState({attachment})
+      this.props.updateParentState({attachment, disableNext: false})
     } else {
       this.props.alertMsg.error('Failed to upload attachment. Please try again later')
       this.setState({waitingForAttachment: false})
+      this.props.updateParentState({disableNext: false})
     }
   }
 
@@ -200,6 +214,8 @@ class AttachmentArea extends React.Component {
           waitingForAttachment: true,
           helpMessage: '',
           invalidUrl: false
+        }, () => {
+          this.props.updateParentState({disableNext: true})
         })
         const fileData = new FormData()
         fileData.append('file', file)
@@ -213,24 +229,34 @@ class AttachmentArea extends React.Component {
     }
   }
 
-  UNSAFE_componentWillReceiveProps (nextProps) {
-    if (nextProps.attachment && Object.keys(nextProps.attachment).length > 0) {
-      this.setState({
-        inputValue: nextProps.attachment.fileData ? (nextProps.attachment.fileData.url || '') : nextProps.attachment.cardData.url,
-        attachment: nextProps.attachment.fileData || {},
-        attachmentType: nextProps.attachment.type,
-        buttons: nextProps.attachment.buttons,
-        isUploaded: nextProps.attachment.fileData && !nextProps.attachment.fileData.url ? true : false
-      })
+  handleFilChange () {
+    if (this.state.attachmentType) {
+      this.refs._override_attachment.click()
     } else {
-      this.setState({
-        inputValue: '',
-        attachment: {},
-        attachmentType: '',
-        isUploaded: false,
-        buttons: [],
-        currentButton: {}
-      })
+      this.refs._upload_attachment_in_chatbot.click()
+    }
+  }
+
+  UNSAFE_componentWillReceiveProps (nextProps) {
+    if (!(this.state.waitingForUrlData || this.state.waitingForAttachment)) {
+      if (nextProps.attachment && Object.keys(nextProps.attachment).length > 0) {
+        this.setState({
+          inputValue: nextProps.attachment.fileData ? (nextProps.attachment.fileData.url || '') : nextProps.attachment.cardData.url,
+          attachment: nextProps.attachment.fileData || {},
+          attachmentType: nextProps.attachment.type,
+          buttons: nextProps.attachment.buttons,
+          isUploaded: nextProps.attachment.fileData && !nextProps.attachment.fileData.url ? true : false
+        })
+      } else {
+        this.setState({
+          inputValue: '',
+          attachment: {},
+          attachmentType: '',
+          isUploaded: false,
+          buttons: [],
+          currentButton: {}
+        })
+      }
     }
   }
 
@@ -244,7 +270,7 @@ class AttachmentArea extends React.Component {
               ref='_upload_attachment_in_chatbot'
               style={{display: 'none'}}
               type='file'
-              accept='image/*, audio/*, video/*, application/*, text/*'
+              accept='image/*, video/*'
               onChange={this.onFileChange}
               onClick={(e) => {e.target.value = ''}}
             />
@@ -254,7 +280,7 @@ class AttachmentArea extends React.Component {
                 type="text"
                 id='_attachment_in_chatbot'
                 className="form-control m-input"
-                placeholder="Paste url or upload file"
+                placeholder="Paste url or upload an image or video"
                 value={this.getInputValue()}
                 onChange={this.onInputChange}
                 disabled={this.state.isUploaded || this.state.waitingForAttachment}
@@ -267,7 +293,7 @@ class AttachmentArea extends React.Component {
                   </span>
                 </span>
               }
-              <span style={{border: '1px solid #ccc', cursor: 'pointer'}} onClick={() => this.refs._upload_attachment_in_chatbot.click()} className="input-group-addon m--font-boldest">
+              <span style={{border: '1px solid #ccc', cursor: 'pointer'}} onClick={this.handleFilChange} className="input-group-addon m--font-boldest">
                 {
                   this.state.waitingForAttachment
                   ? <div className="m-loader" style={{width: "30px"}} />
@@ -299,7 +325,7 @@ class AttachmentArea extends React.Component {
             this.state.buttons.length === 0 &&
             <button
               id='_attach_button_in_chatbot'
-              style={{border: 'none', cursor: 'pointer'}}
+              style={{border: 'none', cursor: 'pointer', background: 'none'}}
               className='m-link m-link--state m-link--info'
               onClick={this.showPopover}
             >
@@ -330,6 +356,13 @@ class AttachmentArea extends React.Component {
               </PopoverBody>
             </Popover>
           </div>
+          <button style={{display: 'none'}} ref='_override_attachment' data-toggle='modal' data-target='#_override_attachment_chatbot' />
+          <CONFIRMATIONMODAL
+            id='_override_attachment_chatbot'
+            title='Override Attachment'
+            description='This will override the existing attachment. Are you sure you want to continue?'
+            onConfirm={() => this.refs._upload_attachment_in_chatbot.click()}
+          />
         </div>
       </div>
     )

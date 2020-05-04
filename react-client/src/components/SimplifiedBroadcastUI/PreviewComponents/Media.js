@@ -4,6 +4,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { uploadImage, uploadFile, uploadTemplate } from '../../../redux/actions/convos.actions'
+import FacebookPlayer from 'react-player/lib/players/Facebook'
 
 class Media extends React.Component {
   constructor (props, context) {
@@ -19,13 +20,15 @@ class Media extends React.Component {
   }
 
   edit () {
-    if (this.props.youtubeLink) {
+    if (this.props.youtubeLink || this.props.facebookUrl) {
       this.props.editComponent('video', {
         edit: true,
+        videoType: this.props.videoType,
         youtubeLink:this.props.youtubeLink,
-        videoLink:this.props.videoLink,
+        facebookUrl: this.props.facebookUrl,
+        videoLink: this.props.videoLink,
         buttonActions:this.props.buttonActions,
-        file:this.state.media,
+        file:this.props.youtubeLink ? this.state.media : null,
         buttons:this.state.buttons,
         id:this.props.id
       })
@@ -127,13 +130,27 @@ class Media extends React.Component {
         </div>
         <div className='ui-block' style={{maxWidth: '250px'}} >
           {
+            this.props.facebookUrl &&
+            <FacebookPlayer
+              width='100%'
+              height='100%'
+              controls={true}
+              url={this.props.facebookUrl}
+              config={{
+                facebook: {
+                  appId: '1429073230510150'
+                }
+              }}
+            />
+          }
+          {
               this.state.imgSrc &&
               <div style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '5px'}} className='broadcastContent'>
                 <img src={this.state.imgSrc} alt='' style={{minHeight: '130px', maxWidth: '250px', padding: '25px', margin: '-25px'}} />
               </div>
           }
           {
-            (this.state.media && !this.state.imgSrc) &&
+            (this.state.media && !this.state.imgSrc && !this.props.facebookUrl) &&
             <div style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '5px'}} className='broadcastContent'>
               <video controls style={{width: '100%', borderRadius: '10px', marginTop: '-10px', borderBottomLeftRadius: '0px', borderBottomRightRadius: '0px'}} name='media' id='youtube_player'>
                 <source src={this.state.media.fileurl.url} type='audio/mpeg' />

@@ -18,7 +18,8 @@ class MessageArea extends React.Component {
       text: '',
       attachment: {},
       quickReplies: [],
-      showTestContent: false
+      showTestContent: false,
+      disableNext: false
     }
     this.onNext = this.onNext.bind(this)
     this.preparePayload = this.preparePayload.bind(this)
@@ -37,6 +38,8 @@ class MessageArea extends React.Component {
     this.addOption = this.addOption.bind(this)
     this.removeOption = this.removeOption.bind(this)
     this.updateOption = this.updateOption.bind(this)
+    this.renameBlock = this.renameBlock.bind(this)
+    this.checkEmptyBlock = this.checkEmptyBlock.bind(this)
   }
 
   componentDidMount () {
@@ -90,7 +93,7 @@ class MessageArea extends React.Component {
         }
       }
       this.setState({
-        text: textComponent.text,
+        text: textComponent ? textComponent.text : '',
         attachment,
         quickReplies: block.payload[block.payload.length - 1].quickReplies || [],
         triggers: this.props.chatbot.startingBlockId === block._id ? this.props.chatbot.triggers : undefined
@@ -176,10 +179,18 @@ class MessageArea extends React.Component {
     if (res.status === 'success') {
       this.props.alertMsg.success('Saved successfully!')
       let blocks = this.props.blocks
-      const index = blocks.findIndex((item) => item.uniqueId === data.uniqueId)
+      const index = blocks.findIndex((item) => item.uniqueId.toString() === data.uniqueId.toString())
       if (index !== -1) {
         const deletedItem = blocks.splice(index, 1)
-        data._id = deletedItem[0]._id
+        if (res.payload.upserted && res.payload.upserted.length > 0) {
+          data._id = res.payload.upserted[0]._id
+        } else {
+          data._id = deletedItem[0]._id
+        }
+      }
+      const chatbot = this.props.chatbot
+      if (data.triggers && data._id) {
+        chatbot.startingBlockId = data._id
       }
       blocks = [...blocks, data]
       const completed = blocks.filter((item) => item.payload.length > 0).length
@@ -326,24 +337,35 @@ class MessageArea extends React.Component {
     const quickReplies = this.state.quickReplies
     quickReplies.splice(index, 1)
 
-    if (action === 'create') {
-      const {blocks, sidebarItems} = this.props
-      const blockIndex = blocks.findIndex((item) => item.uniqueId === uniqueId)
-      const sidebarIndex = sidebarItems.findIndex((item) => item.id === uniqueId)
-      blocks.splice(blockIndex, 1)
-      sidebarItems.splice(sidebarIndex, 1)
-      const completed = blocks.filter((item) => item.payload.length > 0).length
-      const progress = Math.floor((completed / blocks.length) * 100)
-      const currentBlock = this.props.block
-      if (currentBlock.payload.length > 0) {
-        currentBlock.payload[currentBlock.payload.length - 1].quickReplies = quickReplies
-      } else {
-        currentBlock.payload.push({quickReplies})
-      }
-      this.props.updateParentState({blocks, currentBlock, sidebarItems, progress})
+    const currentBlock = this.props.block
+    if (currentBlock.payload.length > 0) {
+      currentBlock.payload[currentBlock.payload.length - 1].quickReplies = quickReplies
+    } else {
+      currentBlock.payload.push({quickReplies})
     }
 
+    this.props.updateParentState({currentBlock})
     this.setState({quickReplies})
+  }
+
+  renameBlock (title) {
+    let { block, blocks, sidebarItems } = this.props
+    block.title = title
+    const blockIndex = blocks.findIndex((item) => item.uniqueId.toString() === block.uniqueId.toString())
+    const sidebarIndex = sidebarItems.findIndex((item) => item.id.toString() === block.uniqueId.toString())
+    blocks[blockIndex].title = title
+    sidebarItems[sidebarIndex].title = title
+    this.props.updateParentState({currentBlock: block, blocks, sidebarItems})
+  }
+
+  checkEmptyBlock () {
+    const { block, blocks } = this.props
+    const emptyBlocks = blocks.filter((item) => item.payload.length === 0 && item.uniqueId.toString() !== block.uniqueId.toString())
+    if (emptyBlocks.length > 0) {
+      return true
+    } else {
+      return false
+    }
   }
 
   UNSAFE_componentWillReceiveProps (nextProps) {
@@ -359,7 +381,7 @@ class MessageArea extends React.Component {
           <div style={{height: '80vh', position: 'relative', padding: '15px'}} className='m-portlet__body'>
             <HEADER
               title={this.props.block.title}
-              showDelete={(this.props.block._id && (this.props.chatbot.startingBlockId !== this.props.block._id))}
+              showDelete={false}
               onDelete={this.onDelete}
               onTest={this.showTestModal}
               canTest={this.props.progress === 100}
@@ -368,6 +390,7 @@ class MessageArea extends React.Component {
               onDisable={this.onDisable}
               isPublished={this.props.chatbot.published}
               alertMsg={this.props.alertMsg}
+              onRename={this.renameBlock}
             />
             <div className='m--space-30' />
             {
@@ -375,6 +398,7 @@ class MessageArea extends React.Component {
               <TRIGGERAREA
                 triggers={this.state.triggers}
                 updateParentState={this.updateState}
+                alertMsg={this.props.alertMsg}
               />
             }
             {
@@ -414,7 +438,9 @@ class MessageArea extends React.Component {
               showPrevious={false}
               showNext={true}
               onNext={this.onNext}
+              disableNext={this.state.disableNext}
               onPrevious={() => {}}
+              emptyBlocks={this.checkEmptyBlock()}
             />
             <button ref='_open_test_chatbot_modal' style={{display: 'none'}} data-toggle='modal' data-target='#_test_chatbot' />
             <MODAL

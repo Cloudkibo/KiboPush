@@ -88,7 +88,7 @@ class MoreOptions extends React.Component {
               {
                 this.props.currentLevel < this.props.maxLevel && this.state.options.length < 13 &&
                 <button
-                  style={{border: 'none', cursor: 'pointer'}}
+                  style={{border: 'none', cursor: 'pointer', background: 'none'}}
                   className='m-link m-link--state m-link--info'
                   onClick={() => this.showPopover({}, 'add')}
                   id='_more_options_chatbot_add'
@@ -101,7 +101,7 @@ class MoreOptions extends React.Component {
         </div>
         <div id='_more_options_in_chatbot'>
           <Popover
-            placement='right'
+            placement='top'
             isOpen={this.state.showPopover}
             className='chatPopover _popover_max_width_400'
             target={this.state.popoverTarget}

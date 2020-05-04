@@ -27,7 +27,7 @@ import AudioModal from './AudioModal'
 import MediaModal from './MediaModal'
 import LinkCarousel from './LinkCarousel';
 import QuickReplies from './QuickReplies'
-import YoutubeVideoModal from './YoutubeVideoModal'
+import VideoLinkModal from './VideoLinkModal'
 
 class GenericMessage extends React.Component {
   constructor (props, context) {
@@ -623,7 +623,7 @@ class GenericMessage extends React.Component {
         toggleGSModal={this.toggleGSModal}
         closeGSModal={this.closeGSModal}
         addComponent={this.addComponent} />),
-      'video': (<YoutubeVideoModal
+      'video': (<VideoLinkModal
         buttons={[]}
         setTempFiles={this.setTempFiles}
         initialFiles={this.state.initialFiles}
@@ -902,6 +902,8 @@ class GenericMessage extends React.Component {
       'media': {
         component: (<Media
           id={componentId}
+          videoType={broadcast.videoType}
+          facebookUrl={broadcast.facebookUrl}
           editComponent={this.showAddComponentModal}
           pageId={this.state.pageId}
           pages={this.props.pages}
@@ -916,7 +918,10 @@ class GenericMessage extends React.Component {
           buttonActions={this.props.buttonActions}
           replyWithMessage={this.props.replyWithMessage} />),
         handler: () => {
-          this.handleMedia({id: componentId,
+          this.handleMedia({
+            id: componentId,
+            videoType:broadcast.videoType,
+            facebookUrl:broadcast.facebookUrl,
             youtubeLink: broadcast.youtubeLink && broadcast.youtubeLink,
             videoLink: broadcast.videoLink && broadcast.videoLink,
             componentType: 'media',

@@ -141,9 +141,9 @@ class GenericMessageComponents extends React.Component {
               <div className='col-12' style={innerColumnStyle}>
                 <h5 style={headerStyle}>
                   <img src='https://cdn.cloudkibo.com/public/icons/video.png' alt='Video' style={{maxHeight: '20px', margin: '10px', marginLeft: '20px'}} />
-                  YouTube Video
+                  Video Link
                 </h5>
-                <p style={descriptionStyle}>Enter a YouTube link to send it as a playable video or card</p>
+                <p style={descriptionStyle}>Enter a YouTube or Facebook link to send it as a playable video</p>
               </div>
             </div>
           </div>
