@@ -367,7 +367,7 @@ class NewsIntegrations extends React.Component {
                 </div>
                 <div style={{color: 'black'}} className="modal-body">
                   <YouTube
-                    videoId='Rt4uOwG9vQE'
+                    videoId='QV0vZS_KPVM'
                     opts={{
                       height: '390',
                       width: '640',
@@ -458,7 +458,7 @@ class NewsIntegrations extends React.Component {
                 <i className='flaticon-technology m--font-accent' />
               </div>
               <div className='m-alert__text'>
-                Need help in understanding News Integration? Here is the <a href='https://kibopush.com/rss-integration/' target='_blank' rel='noopener noreferrer'>documentation</a>.
+                Need help in understanding News Integration? Here is the <a href='https://kibopush.com/news-integration/' target='_blank' rel='noopener noreferrer'>documentation</a>.
                 Or check out this <a href='#/' data-toggle="modal" data-target="#video">video tutorial</a>
               </div>
             </div>
