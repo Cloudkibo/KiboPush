@@ -114,9 +114,9 @@ class Sidebar extends React.Component {
 
   render () {
     return (
-      <div style={{border: '1px solid #ccc', backgroundColor: 'white', padding: '0px'}} className='col-md-3'>
+      <div id='_chatbot_sidebar' style={{border: '1px solid #ccc', backgroundColor: 'white', padding: '0px'}} className='col-md-3'>
         <div style={{margin: '0px'}} className='m-portlet m-portlet-mobile'>
-          <div style={{height: '80vh'}} className='m-portlet__body'>
+          <div id='_chatbot_sidebar_items' style={{height: '80vh'}} className='m-portlet__body'>
             {
               this.state.expandedNodes.length > 0 &&
               <TreeView

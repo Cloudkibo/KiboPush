@@ -1,11 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import CONFIRMATIONMODAL from '../extras/confirmationModal'
 
 class Header extends React.Component {
   constructor(props, context) {
     super(props, context)
     this.state = {
-      waitingForDelete: false,
       waitingForPublish: false,
       waitingForDisable: false,
       title: props.title,
@@ -24,7 +24,6 @@ class Header extends React.Component {
   }
 
   onDelete () {
-    this.setState({waitingForDelete: true})
     this.props.onDelete(this.afterDelete)
   }
 
@@ -34,7 +33,6 @@ class Header extends React.Component {
     } else {
       this.props.alertMsg.error(res.description)
     }
-    this.setState({waitingForDelete: false})
   }
 
   onDisable () {
@@ -77,9 +75,14 @@ class Header extends React.Component {
   }
 
   onRename () {
-    this.setState({editTitle: false}, () => {
-      this.props.onRename(this.state.title)
-    })
+    const titles = this.props.blocks.map((item) => item.title.toLowerCase())
+    if (titles.indexOf(this.state.title.toLowerCase()) > -1) {
+      this.props.alertMsg.error('A block with this title already exists. Please choose a diffrent title')
+    } else {
+      this.setState({editTitle: false}, () => {
+        this.props.onRename(this.state.title)
+      })
+    }
   }
 
   onTitleChange (e) {
@@ -97,13 +100,14 @@ class Header extends React.Component {
 
   render () {
     return (
-      <div className='row'>
+      <div id='_chatbot_message_area_header' className='row'>
         <div className='col-md-6'>
           {
             this.state.editTitle
             ? <div className='row'>
               <div className='col-md-8'>
                 <input
+                  id='_chatbot_message_area_header_title_input'
                   style={{color: '#575962'}}
                   className='form-control m-input'
                   type='text'
@@ -112,10 +116,10 @@ class Header extends React.Component {
                 />
               </div>
               <div className='col-md-4'>
-                <button style={{border: 'none'}} onClick={this.onRename} className="m-portlet__nav-link btn m-btn m-btn--hover-success m-btn--icon m-btn--icon-only m-btn--pill" title="Save">
+                <button id='_chatbot_message_area_header_save_title' style={{border: 'none'}} onClick={this.onRename} className="m-portlet__nav-link btn m-btn m-btn--hover-success m-btn--icon m-btn--icon-only m-btn--pill" title="Save">
                   <i className="la la-check" />
                 </button>
-                <button style={{border: 'none'}} onClick={this.onCancelEdit} className="m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill" title="Cancel">
+                <button id='_chatbot_message_area_header_cancel_title' style={{border: 'none'}} onClick={this.onCancelEdit} className="m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill" title="Cancel">
                   <i className="la la-close" />
                 </button>
               </div>
@@ -123,6 +127,7 @@ class Header extends React.Component {
             : <h3>
               {this.props.title}
               <i
+                id='_chatbot_message_area_header_edit_title'
                 style={{fontSize: '1.5rem', marginLeft: '10px', cursor: 'pointer'}}
                 className='fa fa-pencil-square-o'
                 onClick={this.onEditTitle}
@@ -134,6 +139,7 @@ class Header extends React.Component {
           {
             this.props.isPublished
             ? <button
+              id='_chatbot_message_area_header_disable'
               style={{marginLeft: '10px'}}
               type='button'
               className={`pull-right btn btn-danger m-btn m-btn--icon ${this.state.waitingForDisable && 'm-loader m-loader--light m-loader--left'}`}
@@ -148,6 +154,7 @@ class Header extends React.Component {
               </span>
             </button>
             : <button
+              id='_chatbot_message_area_header_publish'
               style={{marginLeft: '10px'}}
               type='button'
               className={`pull-right btn btn-success m-btn m-btn--icon ${this.state.waitingForPublish && 'm-loader m-loader--light m-loader--left'}`}
@@ -164,6 +171,7 @@ class Header extends React.Component {
             </button>
           }
           <button
+            id='_chatbot_message_area_header_test'
             style={{marginLeft: '10px'}}
             type='button'
             className='btn btn-primary pull-right m-btn m-btn--icon'
@@ -178,15 +186,23 @@ class Header extends React.Component {
           {
             this.props.showDelete &&
             <button
+              id='_chatbot_message_area_header_delete'
               style={{marginLeft: '10px'}}
               type='button'
-              className={`pull-right btn btn-primary ${this.state.waitingForDelete && 'm-loader m-loader--light m-loader--left'}`}
-              onClick={this.onDelete}
+              className='pull-right btn btn-primary'
+              onClick={() => this.refs._delete_message_block.click()}
             >
               Delete Step
             </button>
           }
         </div>
+        <button style={{display: 'none'}} ref='_delete_message_block' data-toggle='modal' data-target='#_cb_ma_delete_mb' />
+        <CONFIRMATIONMODAL
+          id='_cb_ma_delete_mb'
+          title='Delete Step'
+          description='Are you sure you want to delete this step?'
+          onConfirm={this.onDelete}
+        />
       </div>
     )
   }
@@ -201,7 +217,8 @@ Header.propTypes = {
   'canPublish': PropTypes.bool.isRequired,
   'onPublish': PropTypes.func.isRequired,
   'onDisable': PropTypes.func.isRequired,
-  'isPublished': PropTypes.bool.isRequired
+  'isPublished': PropTypes.bool.isRequired,
+  'blocks': PropTypes.array.isRequired
 }
 
 export default Header
