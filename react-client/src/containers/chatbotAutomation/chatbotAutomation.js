@@ -80,6 +80,7 @@ class ChatbotAutomation extends React.Component {
       time: 3000,
       transition: 'scale'
     }
+    let pages = this.getPages()
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
@@ -141,35 +142,39 @@ class ChatbotAutomation extends React.Component {
                         <div style={{marginLeft: '50px'}} className='row'>
                           {
                             this.props.pages.length > 0
-                            ? <div style={{width: '100%'}} className='row'>
-                              <div className='col-md-6'>
-                                <div className="form-group m-form__group">
-                                  <select
-                                    className="form-control m-input"
-                                    value={this.state.selectedPage}
-                                    onChange={this.onPageChange}
+                            ? pages.length > 0
+                              ? <div style={{width: '100%'}} className='row'>
+                                <div className='col-md-6'>
+                                  <div className="form-group m-form__group">
+                                    <select
+                                      className="form-control m-input"
+                                      value={this.state.selectedPage}
+                                      onChange={this.onPageChange}
+                                    >
+                                      <option value='' disabled>Select a page...</option>
+                                      {
+                                        pages.map((page) => (
+                                          <option key={page._id} value={page._id}>{page.pageName}</option>
+                                        ))
+                                      }
+                                    </select>
+                                  </div>
+                                </div>
+                                <div className='col-md-3'>
+                                  <button
+                                    type='button'
+                                    style={{border: '1px solid'}}
+                                    className={`btn btn-primary ${this.state.loading && 'm-loader m-loader--light m-loader--left'}`}
+                                    onClick={this.onCreate}
+                                    disabled={!this.state.selectedPage}
                                   >
-                                    <option value='' disabled>Select a page...</option>
-                                    {
-                                      this.getPages().map((page) => (
-                                        <option key={page._id} value={page._id}>{page.pageName}</option>
-                                      ))
-                                    }
-                                  </select>
+                                    Create
+                                  </button>
                                 </div>
                               </div>
-                              <div className='col-md-3'>
-                                <button
-                                  type='button'
-                                  style={{border: '1px solid'}}
-                                  className={`btn btn-primary ${this.state.loading && 'm-loader m-loader--light m-loader--left'}`}
-                                  onClick={this.onCreate}
-                                  disabled={!this.state.selectedPage}
-                                >
-                                  Create
-                                </button>
+                              : <div>
+                                You have created the chatbot for all your connected pages.
                               </div>
-                            </div>
                             : <div>
                               Please connect a Facebook page to continue
                               <Link to='/addPages' style={{border: '1px solid', marginLeft: '10px'}} className="btn btn-outline-success">
