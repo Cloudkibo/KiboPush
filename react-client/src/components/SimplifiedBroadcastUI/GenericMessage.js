@@ -819,7 +819,7 @@ class GenericMessage extends React.Component {
         handler: () => {
           this.handleFile({
             id: componentId,
-            fileurl: broadcast.fileurl ? broadcast.fileurl : '',
+            fileurl: broadcast.file.fileurl ? broadcast.file.fileurl : '',
             componentType: 'audio',
             componentName: 'audio',
             file: broadcast.file ? broadcast.file : ''
@@ -839,9 +839,9 @@ class GenericMessage extends React.Component {
           replyWithMessage={this.props.replyWithMessage} />),
         handler: () => {
           this.handleFile({id: componentId,
-            fileurl: broadcast.fileurl ? broadcast.fileurl : '',
+            fileurl: broadcast.file.fileurl ? broadcast.file.fileurl : '',
             componentType: 'file',
-            componentName: 'file',
+            componentName: 'fi le',
             file: broadcast.file ? broadcast.file : ''
           })
         }
