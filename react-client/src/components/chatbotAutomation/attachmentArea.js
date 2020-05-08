@@ -56,10 +56,15 @@ class AttachmentArea extends React.Component {
           }, () => {
             this.props.updateParentState({disableNext: true})
           })
-        } else {
+        } else if (this.state.inputValue) {
           this.setState({
             helpMessage: 'Please provide a valid url',
             invalidUrl: true
+          })
+        } else {
+          this.setState({
+            helpMessage: '',
+            invalidUrl: false
           })
         }
       }, doneTypingInterval)
@@ -135,7 +140,11 @@ class AttachmentArea extends React.Component {
   }
 
   onInputChange (e) {
-    this.setState({inputValue: e.target.value, attachmentType: ''})
+    this.setState({inputValue: e.target.value, attachmentType: ''}, () => {
+      if (!this.state.inputValue) {
+        this.props.updateParentState({attachment: {}})
+      }
+    })
   }
 
   getInputValue () {
@@ -156,6 +165,8 @@ class AttachmentArea extends React.Component {
       isUploaded: false,
       waitingForUrlData: false,
       buttons: []
+    }, () => {
+      this.props.updateParentState({attachment: {}})
     })
   }
 
