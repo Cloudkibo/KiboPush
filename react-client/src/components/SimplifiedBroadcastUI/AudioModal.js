@@ -94,6 +94,7 @@ class AudioModal extends React.Component {
                     initialFile={this.state.initialFile} 
                     initialFiles={this.props.initialFiles} 
                     updateFile={this.updateFile} 
+                    pages= {this.props.pages} 
                   />
                 </div>
                 <div className='col-1'>

@@ -96,7 +96,8 @@ class FileModal extends React.Component {
                 initialFiles={this.props.initialFiles}
                 file={this.state.file} 
                 updateFile={this.updateFile} 
-                module={this.props.module} 
+                module={this.props.module}
+                pages= {this.props.pages} 
               />
             </div>
             <div className='col-1'>
