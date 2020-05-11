@@ -296,6 +296,11 @@ class InsertRow extends React.Component {
                 </span>
           </button>
         </div>
+        { this.props.reconnectWarning && this.props.reconnectWarning !== '' && 
+         <div style={{margin: '10px'}} className="alert alert-danger alert-dismissible fade show   m-alert m-alert--air" role="alert">
+         { this.props.reconnectWarning }
+       </div>
+        }
         <div style={{ textAlign: 'left' }} className="modal-body">
           <h6>Google Sheets: Insert Row</h6><br />
           <span style={{color: '#575962'}}>The first row of the table is used for your column titles. You could easily match KiboPush subscriber data with your columns by titles names.</span>
@@ -375,7 +380,8 @@ function mapStateToProps (state) {
   return {
     worksheets: (state.googleSheetsInfo.worksheets),
     columns: (state.googleSheetsInfo.columns),
-    spreadsheets: (state.googleSheetsInfo.spreadsheets)
+    spreadsheets: (state.googleSheetsInfo.spreadsheets),
+    reconnectWarning: (state.googleSheetsInfo.reconnectWarning)
   }
 }
 
