@@ -1670,8 +1670,8 @@ class Builders extends React.Component {
           replyWithMessage={this.props.replyWithMessage} />),
         handler: () => {
           this.handleFile({
+            fileurl: broadcast.file ? broadcast.file.fileurl: '',
             id: componentId,
-            fileurl: broadcast.file ? broadcast.file.fileurl : '',
             componentName: 'audio',
             componentType: 'audio',
             file: broadcast.file ? broadcast.file : ''
@@ -1691,7 +1691,7 @@ class Builders extends React.Component {
           replyWithMessage={this.props.replyWithMessage} />),
         handler: () => {
           this.handleFile({id: componentId,
-            fileurl: broadcast.file ? broadcast.file.fileurl : '',
+            fileurl: broadcast.file ? broadcast.file.fileurl: '',
             componentType: 'file',
             componentName: 'file',
             file: broadcast.file ? broadcast.file : ''
