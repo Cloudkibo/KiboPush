@@ -2208,7 +2208,7 @@ Builders.defaultProps = {
   'hiddenComponents': [],
   'titleEditable': false,
   'broadcast': []
-}
+}...
 
 function mapStateToProps (state) {
   console.log(state)
@@ -2227,4 +2227,4 @@ function mapDispatchToProps (dispatch) {
       uploadTemplate
   }, dispatch)
 }
-export default connect(mapStateToProps, mapDispatchToProps, null, { withRef: true })(Builders)
+export default connect(mapStateToProps, mapDispatchToProps, null, { withRef: true })(Builders)......
