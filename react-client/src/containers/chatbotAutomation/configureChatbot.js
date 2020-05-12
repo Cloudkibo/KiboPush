@@ -7,7 +7,11 @@ import {
   handleAttachment,
   handleMessageBlock,
   changeActiveStatus,
-  deleteMessageBlock
+  deleteMessageBlock,
+  fetchBackup,
+  createBackup,
+  restoreBackup,
+  fetchChatbot
 } from '../../redux/actions/chatbotAutomation.actions'
 import { getFbAppId } from '../../redux/actions/basicinfo.actions'
 import { registerAction } from '../../utility/socketio'
@@ -30,6 +34,7 @@ class ConfigureChatbot extends React.Component {
       progress: 0
     }
 
+    this.fetchChatbotDetails = this.fetchChatbotDetails.bind(this)
     this.handleChatbotDetails = this.handleChatbotDetails.bind(this)
     this.preparePayload = this.preparePayload.bind(this)
     this.isItParent = this.isItParent.bind(this)
@@ -37,18 +42,34 @@ class ConfigureChatbot extends React.Component {
     this.updateState = this.updateState.bind(this)
     this.getAllBlocks = this.getAllBlocks.bind(this)
     this.onBack = this.onBack.bind(this)
+    this.fetchChatbot = this.fetchChatbot.bind(this)
+    this.handleChatbot = this.handleChatbot.bind(this)
 
     props.getFbAppId()
   }
 
   componentDidMount () {
-    this.props.fetchChatbotDetails(this.props.location.state._id, this.handleChatbotDetails)
+    this.fetchChatbotDetails()
     document.getElementsByTagName('body')[0].className = 'm-page--fluid m--skin- m-content--skin-light2 m-header--fixed m-header--fixed-mobile m-footer--push'
     document.title = 'KiboChat | Configure ChatBot'
   }
 
   updateState (state) {
     this.setState(state)
+  }
+
+  fetchChatbot () {
+    this.props.fetchChatbot(this.state.chatbot._id, this.handleChatbot)
+  }
+
+  handleChatbot (res) {
+    if (res.status === 'success') {
+      this.setState({chatbot: res.payload})
+    }
+  }
+
+  fetchChatbotDetails () {
+    this.props.fetchChatbotDetails(this.props.location.state._id, this.handleChatbotDetails)
   }
 
   handleChatbotDetails (res) {
@@ -195,6 +216,13 @@ class ConfigureChatbot extends React.Component {
                 currentBlock={this.state.currentBlock}
                 blocks={this.state.blocks}
                 updateParentState={this.updateState}
+                chatbot={this.state.chatbot}
+                fetchBackup={this.props.fetchBackup}
+                createBackup={this.props.createBackup}
+                restoreBackup={this.props.restoreBackup}
+                alertMsg={this.msg}
+                fetchChatbotDetails={this.fetchChatbotDetails}
+                fetchChatbot={this.fetchChatbot}
               />
               <MESSAGEAREA
                 block={this.state.currentBlock}
@@ -241,7 +269,11 @@ function mapDispatchToProps (dispatch) {
     handleMessageBlock,
     changeActiveStatus,
     deleteMessageBlock,
-    getFbAppId
+    getFbAppId,
+    fetchBackup,
+    createBackup,
+    restoreBackup,
+    fetchChatbot
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(ConfigureChatbot)
