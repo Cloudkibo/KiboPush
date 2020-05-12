@@ -8,6 +8,14 @@ export function showSpreadSheets (data) {
   }
 }
 
+export function showIntegrationWarning (data) {
+  return {
+    type: ActionTypes.SHOW_INTEGRATION_WARNING,
+    data
+  }
+}
+
+
 export function fetchSpreadSheets () {
   return (dispatch) => {
     callApi(`sheetsIntegrations/listSpreadSheets`)
@@ -15,6 +23,9 @@ export function fetchSpreadSheets () {
         console.log('response from sheetsIntegrations', res)
         if (res.status === 'success') {
           dispatch(showSpreadSheets(res.payload))
+        } else {
+          if (res.description)
+          dispatch(showIntegrationWarning(res.description))
         }
       })
   }
