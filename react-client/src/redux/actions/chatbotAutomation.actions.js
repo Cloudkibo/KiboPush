@@ -97,3 +97,43 @@ export function deleteMessageBlock (id, callback) {
       })
   }
 }
+
+export function fetchChatbot (id, callback) {
+  return (dispatch) => {
+    callApi(`chatbots/${id}/fetch`)
+      .then(res => {
+        console.log('response from fetchChatbot', res)
+        callback(res)
+      })
+  }
+}
+
+export function fetchBackup (id, callback) {
+  return (dispatch) => {
+    callApi(`chatbots/${id}/fetchBackup`)
+      .then(res => {
+        console.log('response from fetchBackup', res)
+        callback(res)
+      })
+  }
+}
+
+export function createBackup (data, callback) {
+  return (dispatch) => {
+    callApi(`chatbots/createBackup`, 'post', data)
+      .then(res => {
+        console.log('response from createBackup', res)
+        callback(res)
+      })
+  }
+}
+
+export function restoreBackup (data, callback) {
+  return (dispatch) => {
+    callApi(`chatbots/restoreBackup`, 'post', data)
+      .then(res => {
+        console.log('response from restoreBackup', res)
+        callback(res)
+      })
+  }
+}
