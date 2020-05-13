@@ -2,12 +2,15 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import TreeView from '@material-ui/lab/TreeView'
 import StyledTreeItem from './styledTreeItem'
+import BACKUP from './backup'
 
 class Sidebar extends React.Component {
   constructor(props, context) {
     super(props, context)
     this.state = {
-      expandedNodes: []
+      expandedNodes: [],
+      backup: '',
+      showBackup: false
     }
     this.getCollapseIcon = this.getCollapseIcon.bind(this)
     this.getExpandIcon = this.getExpandIcon.bind(this)
@@ -16,6 +19,13 @@ class Sidebar extends React.Component {
     this.expandAll = this.expandAll.bind(this)
     this.onNodeSelect = this.onNodeSelect.bind(this)
     this.getOrphanBlocks = this.getOrphanBlocks.bind(this)
+    this.toggleBackupModal = this.toggleBackupModal.bind(this)
+    this.openBackupModal = this.openBackupModal.bind(this)
+    this.handleBackup = this.handleBackup.bind(this)
+    this.createBackup = this.createBackup.bind(this)
+    this.restoreBackup = this.restoreBackup.bind(this)
+    this.afterCreateBackup = this.afterCreateBackup.bind(this)
+    this.afterRestoreBackup = this.afterRestoreBackup.bind(this)
   }
 
   componentDidMount () {
@@ -108,6 +118,60 @@ class Sidebar extends React.Component {
     this.props.updateParentState({currentBlock})
   }
 
+  toggleBackupModal () {
+    this.setState({showBackup: !this.state.showBackup}, () => {
+      this.refs.chatbotBackup.click()
+    })
+  }
+
+  openBackupModal () {
+    this.props.fetchBackup(this.props.chatbot._id, this.handleBackup)
+  }
+
+  handleBackup (res) {
+    if (res.status === 'success') {
+      this.setState({backup: res.payload, showBackup: true}, () => {
+        this.refs.chatbotBackup.click()
+      })
+    }
+  }
+
+  createBackup (callback) {
+    this.props.createBackup(
+      {chatbotId: this.props.chatbot._id},
+      (res) => this.afterCreateBackup(res, callback)
+    )
+  }
+
+  restoreBackup (callback) {
+    this.props.restoreBackup(
+      {chatbotId: this.props.chatbot._id},
+      (res) => this.afterRestoreBackup(res, callback)
+    )
+  }
+
+  afterCreateBackup (res, callback) {
+    if (res.status === 'success') {
+      this.toggleBackupModal()
+      this.props.alertMsg.success('Backup created successfully')
+    } else {
+      this.props.alertMsg.error('Failed to create backup')
+    }
+    callback()
+  }
+
+  afterRestoreBackup (res, callback) {
+    if (res.status === 'success') {
+      this.props.fetchChatbot()
+      this.props.fetchChatbotDetails()
+      this.toggleBackupModal()
+      this.props.alertMsg.success('Backup restored successfully')
+    } else {
+      this.props.alertMsg.error('Failed to restore backup')
+    }
+    callback()
+  }
+
   UNSAFE_componentWillReceiveProps (nextProps) {
     if (nextProps.data && nextProps.data.length > 0) {
       this.expandAll(nextProps.data)
@@ -130,6 +194,49 @@ class Sidebar extends React.Component {
                 {this.getItems()}
               </TreeView>
             }
+            <BACKUP
+              data={this.state.backup}
+              createBackup={this.createBackup}
+              restoreBackup={this.restoreBackup}
+              toggleBackupModal={this.toggleBackupModal}
+            />
+            <div
+              style={{
+                position: 'absolute',
+                bottom: 0,
+                left: 0,
+                width: '100%',
+                paddinng: '1.1rem',
+                borderTop: 'none'
+              }}
+              className="m-portlet__foot"
+            >
+  						<div className="row align-items-center">
+  							<div className="col-lg-12">
+                  <button
+                    ref='chatbotBackup'
+                    style={{display: 'none'}}
+                    data-toggle='modal'
+                    data-target='#_chatbot_backup_modal'
+                  />
+                  <button
+                    style={{
+                      background: 'none',
+                      border: 'none',
+                      float: 'right',
+                      cursor: 'pointer'
+                    }}
+                    className="m-link m--font-boldest m-btn m-btn--icon"
+                    onClick={this.openBackupModal}
+                  >
+                    <span>
+                      <i className='fa fa-cloud-upload'/>
+                      <span>Backup</span>
+                    </span>
+                  </button>
+  							</div>
+  						</div>
+  					</div>
           </div>
         </div>
       </div>
@@ -141,7 +248,13 @@ Sidebar.propTypes = {
   'data': PropTypes.array.isRequired,
   'currentBlock': PropTypes.object.isRequired,
   'blocks': PropTypes.array.isRequired,
-  'updateParentState': PropTypes.func.isRequired
+  'updateParentState': PropTypes.func.isRequired,
+  'chatbot': PropTypes.object.isRequired,
+  'fetchBackup': PropTypes.func.isRequired,
+  'createBackup': PropTypes.func.isRequired,
+  'restoreBackup': PropTypes.func.isRequired,
+  'fetchChatbotDetails': PropTypes.func.isRequired,
+  'fetchChatbot': PropTypes.func.isRequired
 }
 
 export default Sidebar
