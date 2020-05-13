@@ -307,12 +307,12 @@ class templatePolls extends React.Component {
                               <td data-field='seemore'
                                 className='m-datatable__cell'>
                                 <span style={{width: '170px'}}>
-                                  <button onClick={(e) => { let pollSelected = poll; this.onPollClick(e, pollSelected) }} to={'/viewPoll'} className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}}>
+                                  <Link onClick={(e) => { let pollSelected = poll; this.onPollClick(e, pollSelected) }} to={'/viewPoll'} className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}}>
                                     View
-                                  </button>
-                                  <button onClick={(e) => { let pollSelected = poll; this.onPollClick(e, pollSelected) }} to={'/editPoll'} className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}}>
+                                  </Link>
+                                  <Link onClick={(e) => { let pollSelected = poll; this.onPollClick(e, pollSelected) }} to={'/editPoll'} className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}}>
                                     Edit
-                                  </button>
+                                  </Link>
                                   <button className='btn btn-primary btn-sm'
                                     style={{float: 'left', margin: 2}}
                                     onClick={() => this.showDialogDelete(poll._id)}

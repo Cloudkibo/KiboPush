@@ -321,12 +321,13 @@ class templateSurveys extends React.Component {
                               <td data-field='seemore'
                                 className='m-datatable__cell'>
                                 <span
-                                  style={{width: '170px'}}><button onClick={(e) => { let surveySelected = survey; this.onSurveyClick(e, surveySelected) }} to={'/viewSurvey'} className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}}>
-                                  View
-                                </button>
-                                  <button onClick={(e) => { let surveySelected = survey; this.onSurveyClick(e, surveySelected) }} to={'/editSurvey'} className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}}>
+                                  style={{width: '170px'}}>
+                                  <Link onClick={(e) => { let surveySelected = survey; this.onSurveyClick(e, surveySelected) }} to={'/viewSurvey'} className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}}>
+                                    View
+                                  </Link>
+                                  <Link onClick={(e) => { let surveySelected = survey; this.onSurveyClick(e, surveySelected) }} to={'/editSurvey'} className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}}>
                                     Edit
-                                  </button>
+                                  </Link>
                                   <button className='btn btn-primary btn-sm'
                                     style={{float: 'left', margin: 2}}
                                     onClick={() => this.showDialogDelete(survey._id)}
