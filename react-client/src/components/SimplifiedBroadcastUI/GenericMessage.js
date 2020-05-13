@@ -841,7 +841,7 @@ class GenericMessage extends React.Component {
           this.handleFile({id: componentId,
             fileurl: broadcast.file ? broadcast.file.fileurl : '',
             componentType: 'file',
-            componentName: 'file',
+            componentName: 'fi le',
             file: broadcast.file ? broadcast.file : ''
           })
         }
