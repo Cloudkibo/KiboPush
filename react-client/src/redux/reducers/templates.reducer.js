@@ -6,6 +6,15 @@ import * as ActionTypes from '../constants/constants'
 
 export function templatesInfo (state = {}, action) {
   switch (action.type) {
+    case ActionTypes.REMOVE_TEMPLATE_BROADCAST:
+    let broadcasts = state.broadcasts
+    let broadcastsCount = state.broadcastsCount-1
+    let BroadcastIndex = broadcasts.findIndex(cf => cf._id === action.data)
+    broadcasts.splice(BroadcastIndex, 1)
+    return Object.assign({}, state, {
+      broadcasts: [...broadcasts],
+      broadcastsCount: broadcastsCount
+    })
     case ActionTypes.LOAD_CATEGORY_LIST:
       return Object.assign({}, state, {
         categories: action.data
