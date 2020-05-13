@@ -46,6 +46,7 @@ class ChatbotAutomation extends React.Component {
   modifyChatbot (chatbot) {
     chatbot.pageFbId = chatbot.pageId.pageId
     chatbot.pageId = chatbot.pageId._id
+    chatbot.startingBlockId = chatbot.startingBlockId || 'welcome-id'
     this.props.history.push({
       pathname: '/configureChatbot',
       state: chatbot
@@ -55,6 +56,7 @@ class ChatbotAutomation extends React.Component {
   handleOnCreate (res, pageFbId) {
     const chatbot = res.payload
     chatbot.pageFbId = pageFbId
+    chatbot.startingBlockId = chatbot.startingBlockId || 'welcome-id'
     if (res.status === 'success') {
       this.props.history.push({
         pathname: '/configureChatbot',
