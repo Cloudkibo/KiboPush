@@ -13,7 +13,7 @@ class ButtonAction extends React.Component {
       typingInterval: 1000,
       webview: {
         openWebview: props.webview,
-        height: props.webview_height_ratio || 'full',
+        height: props.webviewHeight || 'full',
         invalidUrl: false,
         helpMessage: ''
       }
