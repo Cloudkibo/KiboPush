@@ -121,6 +121,14 @@ export function addConvoTemplate (data, msg) {
   }
 }
 
+
+export function removeBroadcastTemplate(data) {
+  return {
+    type: ActionTypes.REMOVE_TEMPLATE_BROADCAST,
+    data: data
+  }
+}
+
 export function createsurvey (survey) {
   return (dispatch) => {
     callApi('templates/createSurvey', 'post', survey)
@@ -350,7 +358,7 @@ export function deleteBroadcast (id, msg, data) {
       .then(res => {
         if (res.status === 'success') {
           msg.success('Broadcast template deleted')
-          dispatch(loadBroadcastsListNew(data))
+          dispatch(removeBroadcastTemplate(id))
         } else {
           if (res.status === 'failed' && res.description) {
             msg.error(`Failed to delete broadcast template. ${res.description}`)
