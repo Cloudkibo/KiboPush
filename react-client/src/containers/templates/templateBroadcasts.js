@@ -202,7 +202,7 @@ class TemplateBroadcasts extends React.Component {
     return (
       <div className='template-broadcasts row'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="delete" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="deleteBroadcast" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
             <div className="modal-content">
               <div style={{ display: 'block' }} className="modal-header">
@@ -371,7 +371,7 @@ class TemplateBroadcasts extends React.Component {
                                   <button className='btn btn-primary btn-sm'
                                     style={{float: 'left', margin: 2}}
                                     onClick={() => this.showDialogDelete(broadcast._id)}
-                                    data-toggle="modal" data-target="#delete">
+                                    data-toggle="modal" data-target="#deleteBroadcast">
                                   Delete
                               </button>
                                 </span></td>
