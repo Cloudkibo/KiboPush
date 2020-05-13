@@ -14,12 +14,14 @@ import {
   fetchChatbot
 } from '../../redux/actions/chatbotAutomation.actions'
 import { getFbAppId } from '../../redux/actions/basicinfo.actions'
+import { checkWhitelistedDomains } from '../../redux/actions/broadcast.actions'
 import { registerAction } from '../../utility/socketio'
 import AlertContainer from 'react-alert'
 import PROGRESS from '../../components/chatbotAutomation/progress'
 import SIDEBAR from '../../components/chatbotAutomation/sidebar'
 import MESSAGEAREA from '../../components/chatbotAutomation/messageArea'
 import BACKBUTTON from '../../components/extras/backButton'
+import HELPWIDGET from '../../components/extras/helpWidget'
 
 class ConfigureChatbot extends React.Component {
   constructor (props, context) {
@@ -103,6 +105,7 @@ class ConfigureChatbot extends React.Component {
     } else {
       const id = new Date().getTime()
       blocks = [{
+        _id: 'welcome-id',
         title: 'Welcome',
         payload: [],
         uniqueId: id,
@@ -241,12 +244,17 @@ class ConfigureChatbot extends React.Component {
                 progress={this.state.progress}
                 updateParentState={this.updateState}
                 sidebarItems={this.state.sidebarItems}
+                checkWhitelistedDomains={this.props.checkWhitelistedDomains}
               />
             </div>
             <PROGRESS progress={`${this.state.progress}%`} />
             <BACKBUTTON
               onBack={this.onBack}
               position='bottom-left'
+            />
+            <HELPWIDGET
+              documentation={{visibility: false}}
+              videoTutorial={{visibility: true, videoId: 'eszeTV3-Uzs'}}
             />
           </div>
         }
@@ -273,7 +281,8 @@ function mapDispatchToProps (dispatch) {
     fetchBackup,
     createBackup,
     restoreBackup,
-    fetchChatbot
+    fetchChatbot,
+    checkWhitelistedDomains
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(ConfigureChatbot)

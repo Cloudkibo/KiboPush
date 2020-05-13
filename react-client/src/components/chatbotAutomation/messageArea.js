@@ -453,6 +453,7 @@ class MessageArea extends React.Component {
               uploadAttachment={this.props.uploadAttachment}
               handleAttachment={this.props.handleAttachment}
               updateParentState={this.updateState}
+              checkWhitelistedDomains={this.props.checkWhitelistedDomains}
             />
             <div className='m--space-10' />
             {
@@ -507,7 +508,8 @@ MessageArea.propTypes = {
   'deleteMessageBlock': PropTypes.func.isRequired,
   'registerSocketAction': PropTypes.func.isRequired,
   'progress': PropTypes.number.isRequired,
-  'updateParentState': PropTypes.func.isRequired
+  'updateParentState': PropTypes.func.isRequired,
+  'checkWhitelistedDomains': PropTypes.func.isRequired
 }
 
 export default MessageArea
