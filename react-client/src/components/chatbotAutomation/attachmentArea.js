@@ -358,6 +358,7 @@ class AttachmentArea extends React.Component {
                     title={this.state.currentButton.title}
                     url={this.state.currentButton.url}
                     webview={this.state.currentButton.messenger_extensions}
+                    webviewHeight={this.state.currentButton.webview_height_ratio}
                     onCancel={this.togglePopover}
                     onSave={this.onSaveAction}
                     onRemove={this.onRemoveAction}
