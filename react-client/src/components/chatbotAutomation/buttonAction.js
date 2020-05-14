@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { isWebURL } from '../../utility/utils'
+import { isWebURL, isWebViewUrl } from '../../utility/utils'
 
 class ButtonAction extends React.Component {
   constructor(props, context) {
@@ -10,11 +10,20 @@ class ButtonAction extends React.Component {
       url: props.url,
       invalidUrl: false,
       helpMessage: '',
-      typingInterval: 1000
+      typingInterval: 1000,
+      webview: {
+        openWebview: props.webview,
+        height: props.webviewHeight || 'full',
+        invalidUrl: false,
+        helpMessage: ''
+      }
     }
     this.onTitleChange = this.onTitleChange.bind(this)
     this.onUrlChange = this.onUrlChange.bind(this)
     this.onSave = this.onSave.bind(this)
+    this.handleCheckbox = this.handleCheckbox.bind(this)
+    this.handleWhitelistedDomain = this.handleWhitelistedDomain.bind(this)
+    this.handleWebviewHeight = this.handleWebviewHeight.bind(this)
   }
 
   componentDidMount () {
@@ -44,7 +53,16 @@ class ButtonAction extends React.Component {
   }
 
   onUrlChange (e) {
-    this.setState({url: e.target.value})
+    this.setState({
+      url: e.target.value,
+      invalidUrl: false,
+      helpMessage: '',
+      webview: {
+        ...this.state.webview,
+        invalidUrl: false,
+        helpMessage: ''
+      }
+    })
   }
 
   onSave () {
@@ -52,9 +70,60 @@ class ButtonAction extends React.Component {
       this.props.alertMsg.error('Title cannot empty')
     } else if (!isWebURL(this.state.url)) {
       this.props.alertMsg.error('Please provide a valid url')
+    } else if (this.state.webview.openWebview && !isWebViewUrl(this.state.url)) {
+      this.setState({
+        webview: {
+          ...this.state.webview,
+          invalidUrl: true,
+          helpMessage: 'Webview url must include a protocol identifier e.g.(https://)'
+        }
+      })
     } else {
-      this.props.onSave({title: this.state.title, url: this.state.url})
+      if (this.state.webview.openWebview) {
+        this.props.checkWhitelistedDomains({pageId: this.props.chatbot.pageFbId, domain: this.state.url}, this.handleWhitelistedDomain)
+      } else {
+        this.props.onSave({title: this.state.title, url: this.state.url})
+      }
     }
+  }
+
+  handleCheckbox (e) {
+    this.setState({
+      webview: {
+        ...this.state.webview,
+        openWebview: e.target.checked,
+        invalidUrl: false,
+        helpMessage: ''
+      }})
+  }
+
+  handleWhitelistedDomain (res) {
+    console.log('handleWhitelistedDomain', res)
+    if (res.status === 'success' && res.payload) {
+      this.props.onSave({
+        title: this.state.title,
+        url: this.state.url,
+        webview_height_ratio: this.state.webview.height,
+        messenger_extensions: true
+      })
+    } else {
+      this.setState({
+        webview: {
+          ...this.state.webview,
+          invalidUrl: true,
+          helpMessage: 'The given domain is not whitelisted. Domain needs to be whitelisted to open it inside webview.'
+        }
+      })
+    }
+  }
+
+  handleWebviewHeight (e) {
+    this.setState({
+      webview: {
+        ...this.state.webview,
+        height: e.target.value
+      }
+    })
   }
 
   render () {
@@ -90,6 +159,42 @@ class ButtonAction extends React.Component {
               </span>
             }
           </div>
+          <div className="form-group m-form__group">
+            <label style={{fontWeight: 'normal'}} className="m-checkbox m-checkbox--brand">
+  						<input
+                type="checkbox"
+                onChange={this.handleCheckbox}
+                checked={this.state.webview.openWebview}
+              />
+  						Open in webview
+  						<span />
+  					</label>
+            {
+              this.state.webview.openWebview &&
+              <div class="form-group m-form__group">
+  							<span>
+  								Webview Height:
+  							</span>
+                <select className="form-control m-input" onChange={this.handleWebviewHeight}>
+  								<option value='full'>
+  									FULL
+  								</option>
+  								<option value='tall'>
+  									TALL
+  								</option>
+  								<option value='compact'>
+  									COMPACT
+  								</option>
+  							</select>
+  						</div>
+            }
+            {
+              this.state.webview.invalidUrl &&
+              <span className='m-form__help m--font-danger'>
+                {this.state.webview.helpMessage}
+              </span>
+            }
+          </div>
             {
               this.props.showRemove &&
               <button
@@ -120,7 +225,9 @@ ButtonAction.propTypes = {
   'onSave': PropTypes.func.isRequired,
   'onCancel': PropTypes.func.isRequired,
   'onRemove': PropTypes.func.isRequired,
-  'showRemove': PropTypes.bool.isRequired
+  'showRemove': PropTypes.bool.isRequired,
+  'chatbot': PropTypes.object.isRequired,
+  'checkWhitelistedDomains': PropTypes.func.isRequired
 }
 
 export default ButtonAction

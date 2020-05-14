@@ -357,11 +357,15 @@ class AttachmentArea extends React.Component {
                   <BUTTONACTION
                     title={this.state.currentButton.title}
                     url={this.state.currentButton.url}
+                    webview={this.state.currentButton.messenger_extensions}
+                    webviewHeight={this.state.currentButton.webview_height_ratio}
                     onCancel={this.togglePopover}
                     onSave={this.onSaveAction}
                     onRemove={this.onRemoveAction}
                     showRemove={this.state.buttons.length > 0}
                     alertMsg={this.props.alertMsg}
+                    chatbot={this.props.chatbot}
+                    checkWhitelistedDomains={this.props.checkWhitelistedDomains}
                   />
                 }
               </PopoverBody>
@@ -385,7 +389,8 @@ AttachmentArea.propTypes = {
   'uploadAttachment': PropTypes.func.isRequired,
   'handleAttachment': PropTypes.func.isRequired,
   'attachment': PropTypes.object.isRequired,
-  'updateParentState': PropTypes.func.isRequired
+  'updateParentState': PropTypes.func.isRequired,
+  'checkWhitelistedDomains': PropTypes.func.isRequired
 }
 
 export default AttachmentArea
