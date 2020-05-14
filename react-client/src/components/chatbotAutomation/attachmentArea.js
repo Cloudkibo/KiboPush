@@ -346,10 +346,10 @@ class AttachmentArea extends React.Component {
           <div id='_action_in_chatbot'>
             <Popover
               placement='right'
+              trigger='click'
               isOpen={this.state.showPopover}
-              className='chatPopover _popover_max_width_400'
+              className='chatPopover'
               target={this.state.popoverTarget}
-              toggle={this.togglePopover}
             >
               <PopoverBody>
                 {
@@ -366,6 +366,7 @@ class AttachmentArea extends React.Component {
                     alertMsg={this.props.alertMsg}
                     chatbot={this.props.chatbot}
                     checkWhitelistedDomains={this.props.checkWhitelistedDomains}
+                    toggleWhitelistModal={this.props.toggleWhitelistModal}
                   />
                 }
               </PopoverBody>
@@ -390,7 +391,8 @@ AttachmentArea.propTypes = {
   'handleAttachment': PropTypes.func.isRequired,
   'attachment': PropTypes.object.isRequired,
   'updateParentState': PropTypes.func.isRequired,
-  'checkWhitelistedDomains': PropTypes.func.isRequired
+  'checkWhitelistedDomains': PropTypes.func.isRequired,
+  'toggleWhitelistModal': PropTypes.func.isRequired
 }
 
 export default AttachmentArea

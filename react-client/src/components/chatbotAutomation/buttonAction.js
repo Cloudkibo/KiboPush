@@ -16,7 +16,8 @@ class ButtonAction extends React.Component {
         height: props.webviewHeight || 'full',
         invalidUrl: false,
         helpMessage: ''
-      }
+      },
+      manageWhitelistedDomains: false
     }
     this.onTitleChange = this.onTitleChange.bind(this)
     this.onUrlChange = this.onUrlChange.bind(this)
@@ -24,6 +25,7 @@ class ButtonAction extends React.Component {
     this.handleCheckbox = this.handleCheckbox.bind(this)
     this.handleWhitelistedDomain = this.handleWhitelistedDomain.bind(this)
     this.handleWebviewHeight = this.handleWebviewHeight.bind(this)
+    this.openWhitelistModal = this.openWhitelistModal.bind(this)
   }
 
   componentDidMount () {
@@ -61,7 +63,8 @@ class ButtonAction extends React.Component {
         ...this.state.webview,
         invalidUrl: false,
         helpMessage: ''
-      }
+      },
+      manageWhitelistedDomains: false
     })
   }
 
@@ -91,10 +94,9 @@ class ButtonAction extends React.Component {
     this.setState({
       webview: {
         ...this.state.webview,
-        openWebview: e.target.checked,
-        invalidUrl: false,
-        helpMessage: ''
-      }})
+        openWebview: e.target.checked
+      },
+    })
   }
 
   handleWhitelistedDomain (res) {
@@ -112,7 +114,8 @@ class ButtonAction extends React.Component {
           ...this.state.webview,
           invalidUrl: true,
           helpMessage: 'The given domain is not whitelisted. Domain needs to be whitelisted to open it inside webview.'
-        }
+        },
+        manageWhitelistedDomains: true
       })
     }
   }
@@ -124,6 +127,11 @@ class ButtonAction extends React.Component {
         height: e.target.value
       }
     })
+  }
+
+  openWhitelistModal () {
+    this.props.toggleWhitelistModal()
+    this.refs.whitelistDomains.click()
   }
 
   render () {
@@ -194,6 +202,27 @@ class ButtonAction extends React.Component {
                 {this.state.webview.helpMessage}
               </span>
             }
+            {
+              this.state.manageWhitelistedDomains &&
+              <div>
+                <button
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    margin: '10px 0px',
+                    paddingLeft: '0px',
+                    cursor: 'pointer'
+                  }}
+                  className="m-link m-btn m-btn--icon"
+                  onClick={this.openWhitelistModal}
+                >
+                  <span>
+                    <i className='la la-gear'/>
+                    <span>Whitelist Domain?</span>
+                  </span>
+                </button>
+              </div>
+            }
           </div>
             {
               this.props.showRemove &&
@@ -214,6 +243,12 @@ class ButtonAction extends React.Component {
               Save
             </button>
           </div>
+          <button
+            ref='whitelistDomains'
+            style={{display: 'none'}}
+            data-toggle='modal'
+            data-target='#_cb_whitelist_domains'
+          />
       </div>
     )
   }
@@ -227,7 +262,8 @@ ButtonAction.propTypes = {
   'onRemove': PropTypes.func.isRequired,
   'showRemove': PropTypes.bool.isRequired,
   'chatbot': PropTypes.object.isRequired,
-  'checkWhitelistedDomains': PropTypes.func.isRequired
+  'checkWhitelistedDomains': PropTypes.func.isRequired,
+  'toggleWhitelistModal': PropTypes.func.isRequired
 }
 
 export default ButtonAction
