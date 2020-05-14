@@ -15,6 +15,7 @@ import {
 } from '../../redux/actions/chatbotAutomation.actions'
 import { getFbAppId } from '../../redux/actions/basicinfo.actions'
 import { checkWhitelistedDomains } from '../../redux/actions/broadcast.actions'
+import { saveWhiteListDomains, fetchWhiteListedDomains, deleteDomain } from '../../redux/actions/settings.actions'
 import { registerAction } from '../../utility/socketio'
 import AlertContainer from 'react-alert'
 import PROGRESS from '../../components/chatbotAutomation/progress'
@@ -22,18 +23,21 @@ import SIDEBAR from '../../components/chatbotAutomation/sidebar'
 import MESSAGEAREA from '../../components/chatbotAutomation/messageArea'
 import BACKBUTTON from '../../components/extras/backButton'
 import HELPWIDGET from '../../components/extras/helpWidget'
+import MODAL from '../../components/extras/modal'
+import WHITELISTDOMAINS from '../../components/chatbotAutomation/whitelistDomains'
 
 class ConfigureChatbot extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
       loading: true,
-      chatbot: props.location.state,
+      chatbot: props.location.state.chatbot,
       blocks: [],
       sidebarItems: [],
       currentBlock: {title: ''},
       currentLevel: 1,
-      progress: 0
+      progress: 0,
+      showWhitelistDomains: false
     }
 
     this.fetchChatbotDetails = this.fetchChatbotDetails.bind(this)
@@ -46,6 +50,8 @@ class ConfigureChatbot extends React.Component {
     this.onBack = this.onBack.bind(this)
     this.fetchChatbot = this.fetchChatbot.bind(this)
     this.handleChatbot = this.handleChatbot.bind(this)
+    this.toggleWhitelistModal = this.toggleWhitelistModal.bind(this)
+    this.getWhitelistModalContent = this.getWhitelistModalContent.bind(this)
 
     props.getFbAppId()
   }
@@ -71,7 +77,7 @@ class ConfigureChatbot extends React.Component {
   }
 
   fetchChatbotDetails () {
-    this.props.fetchChatbotDetails(this.props.location.state._id, this.handleChatbotDetails)
+    this.props.fetchChatbotDetails(this.props.location.state.chatbot._id, this.handleChatbotDetails)
   }
 
   handleChatbotDetails (res) {
@@ -191,6 +197,26 @@ class ConfigureChatbot extends React.Component {
     })
   }
 
+  toggleWhitelistModal () {
+    this.setState({showWhitelistDomains: true})
+  }
+
+  getWhitelistModalContent () {
+    if (this.state.showWhitelistDomains) {
+      return (
+        <WHITELISTDOMAINS
+          pages={[this.props.location.state.page]}
+          alertMsg={this.msg}
+          deleteDomain={this.props.deleteDomain}
+          saveWhiteListDomains={this.props.saveWhiteListDomains}
+          fetchWhiteListedDomains={this.props.fetchWhiteListedDomains}
+        />
+      )
+    } else {
+      return (<div />)
+    }
+  }
+
   componentWillUnmount () {
     document.getElementsByTagName('body')[0].className = 'm-page--fluid m--skin- m-content--skin-light2 m-aside-left--fixed m-header--fixed m-header--fixed-mobile m-aside-left--enabled m-aside-left--skin-dark m-aside-left--offcanvas m-footer--push m-aside--offcanvas-default'
   }
@@ -245,6 +271,7 @@ class ConfigureChatbot extends React.Component {
                 updateParentState={this.updateState}
                 sidebarItems={this.state.sidebarItems}
                 checkWhitelistedDomains={this.props.checkWhitelistedDomains}
+                toggleWhitelistModal={this.toggleWhitelistModal}
               />
             </div>
             <PROGRESS progress={`${this.state.progress}%`} />
@@ -255,6 +282,12 @@ class ConfigureChatbot extends React.Component {
             <HELPWIDGET
               documentation={{visibility: false}}
               videoTutorial={{visibility: true, videoId: 'eszeTV3-Uzs'}}
+            />
+            <MODAL
+              zIndex={9999}
+              id='_cb_whitelist_domains'
+              title='Manage Whitelist Domains'
+              content={this.getWhitelistModalContent()}
             />
           </div>
         }
@@ -282,7 +315,10 @@ function mapDispatchToProps (dispatch) {
     createBackup,
     restoreBackup,
     fetchChatbot,
-    checkWhitelistedDomains
+    checkWhitelistedDomains,
+    deleteDomain,
+    saveWhiteListDomains,
+    fetchWhiteListedDomains
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(ConfigureChatbot)
