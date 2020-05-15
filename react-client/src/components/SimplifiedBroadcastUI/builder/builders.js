@@ -1425,6 +1425,7 @@ class Builders extends React.Component {
         closeModal={this.closeAddComponentModal}
         addComponent={this.addComponent} />),
       'file': (<FileModal
+        onFilesError={this.onFilesError}
         edit={this.state.editData ? true : false}
         setTempFiles={this.setTempFiles}
         initialFiles={this.state.initialFiles}
@@ -1437,6 +1438,7 @@ class Builders extends React.Component {
         closeModal={this.closeAddComponentModal}
         addComponent={this.addComponent} />),
       'audio': (<AudioModal
+        onFilesError={this.onFilesError}
         edit={this.state.editData ? true : false}
         setTempFiles={this.setTempFiles}
         initialFiles={this.state.initialFiles}
