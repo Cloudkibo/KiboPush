@@ -8,7 +8,6 @@ import { bindActionCreators } from 'redux'
 import Files from 'react-files'
 import { RingLoader } from 'halogenium'
 import { deleteFile } from '../../utility/utils'
-import SizeValidation from './SizeValidation'
 class Audio extends React.Component {
   // eslint-disable-next-line no-useless-constructor
   constructor (props, context) {
@@ -26,14 +25,8 @@ class Audio extends React.Component {
     this.setLoading = this.setLoading.bind(this)
     this.onTestURLAudio = this.onTestURLAudio.bind(this)
     this.handleFile = this.handleFile.bind(this)
-    this.openModal = this.openModal.bind(this)
   }
 
-  openModal (errorMessage) {
-    return (
-        <SizeValidation errorMessage = {errorMessage} closeGSModal= {this.props.closeGSModal}/>
-     )
-   }
 
   componentDidMount () {
     if (this.props.file && this.props.file !== '') {
@@ -132,7 +125,7 @@ class Audio extends React.Component {
 
   onFilesError (error, file) {
 
-    this.props.toggleGSModal(true, this.openModal(error.message))
+    this.props.toggleGSModal(true, this.props.openGSModal(error.message))
   }
 
   render () {

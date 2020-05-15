@@ -101,6 +101,7 @@ class FileModal extends React.Component {
                 onFilesError={this.props.onFilesError} 
                 toggleGSModal={this.props.toggleGSModal}
                 closeGSModal={this.props.closeGSModal}
+                openGSModal ={this.props.openGSModal}
                 GSModalTarget='ActionModal'
               />
             </div>

@@ -8,7 +8,6 @@ import Files from 'react-files'
 import { RingLoader } from 'halogenium'
 import AlertContainer from 'react-alert'
 import { deleteFile } from '../../utility/utils'
-import SizeValidation from './SizeValidation'
 class File extends React.Component {
   // eslint-disable-next-line no-useless-constructor
   constructor (props, context) {
@@ -24,7 +23,6 @@ class File extends React.Component {
     this.onFilesError = this.onFilesError.bind(this)
     this.setLoading = this.setLoading.bind(this)
     this.handleFile = this.handleFile.bind(this)
-    this.openModal = this.openModal.bind(this)
   }
 
   componentDidMount () {
@@ -118,15 +116,10 @@ class File extends React.Component {
     this.setState({file: fileInfo.fileurl, showPreview: true})
     // this.props.handleFile(fileInfo)
   }
-  openModal (errorMessage) {
-   return (
-       <SizeValidation errorMessage = {errorMessage} closeGSModal= {this.props.closeGSModal}/>
-    )
-  }
 
   onFilesError (error, file) {
 
-    this.props.toggleGSModal(true, this.openModal(error.message))
+    this.props.toggleGSModal(true, this.props.openGSModal(error.message))
   }
 
   render () {
