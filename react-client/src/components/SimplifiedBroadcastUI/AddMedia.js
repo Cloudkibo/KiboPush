@@ -6,7 +6,7 @@ import { bindActionCreators } from 'redux'
 import { RingLoader } from 'halogenium'
 import { uploadImage, uploadFile, uploadTemplate } from '../../redux/actions/convos.actions'
 import { deleteFile } from '../../utility/utils'
-
+import SizeValidation from './SizeValidation'
 class Media extends React.Component {
   constructor (props, context) {
     super(props, context)
@@ -20,6 +20,7 @@ class Media extends React.Component {
     this.updateFile = this.updateFile.bind(this)
     this.updateFileUrl = this.updateFileUrl.bind(this)
     this.onTestURLVideo = this.onTestURLVideo.bind(this)
+    this.openModal = this.openModal.bind(this)
     this.state = {
       errorMsg: '',
       imgSrc: props.img ? props.img : '',
@@ -38,6 +39,12 @@ class Media extends React.Component {
       styling: {minHeight: 30, maxWidth: 400}
     }
   }
+
+openModal (errorMessage) {
+  return (
+      <SizeValidation errorMessage = {errorMessage} closeGSModal= {this.props.closeGSModal}/>
+   )
+ }
   onTestURLVideo (url) {
     var videoEXTENSIONS = /\.(mp4|ogg|webm|quicktime)($|\?)/i
     var truef = videoEXTENSIONS.test(url)
@@ -46,9 +53,8 @@ class Media extends React.Component {
     }
   }
   onFilesError (error, file) {
-    console.log('error.message', error.message)
-    //this.setState({errorMsg: error.message})
-    this.props.onFilesError(error.message)
+
+    this.props.toggleGSModal(true, this.openModal(error.message))
   }
 
   _onChange () {
@@ -79,6 +85,7 @@ class Media extends React.Component {
       this.onFilesError(error, true)
       return
     }
+    this.props.closeGSModal()
     if (!video && !image) {
       this.props.handleMedia({error: 'invalid file'})
       return
@@ -257,7 +264,7 @@ class Media extends React.Component {
   render () {
     return (
       <div className='broadcast-component' style={{marginBottom: 40 + 'px'}}>
-        <div style={{marginBottom: '-0.5px', paddingTop: '0px', borderColor: this.props.required && !this.state.fileurl ? 'red' : ''}} className='ui-block hoverbordersolid'>
+        <div style={{marginBottom: '-0.5px', paddingTop: '0px', borderColor: this.props.required && !this.state.fileurl ? 'red' : ''}} className='ui-block hoverbordersolid' data-toggle='modal' data-target={`#${this.props.GSModalTarget}`}>
           {
           this.state.loading
           ? <div className='align-center' style={{padding: '50px'}}><center><RingLoader color='#FF5E3A' /></center></div>

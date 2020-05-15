@@ -1436,6 +1436,8 @@ class Builders extends React.Component {
         pageId={this.props.pageId.pageId}
         showCloseModalAlertDialog={this.showCloseModalAlertDialog}
         closeModal={this.closeAddComponentModal}
+        toggleGSModal={this.toggleGSModal}
+        closeGSModal={this.closeGSModal}
         addComponent={this.addComponent} />),
       'audio': (<AudioModal
         onFilesError={this.onFilesError}
@@ -1448,6 +1450,8 @@ class Builders extends React.Component {
         pages={this.props.pages} pageId={this.props.pageId.pageId}
         showCloseModalAlertDialog={this.showCloseModalAlertDialog}
         closeModal={this.closeAddComponentModal}
+        toggleGSModal={this.toggleGSModal}
+        closeGSModal={this.closeGSModal}
         addComponent={this.addComponent} />),
       'media': (<MediaModal
         buttons={[]}

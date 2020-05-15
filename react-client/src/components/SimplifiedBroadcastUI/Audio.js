@@ -8,7 +8,7 @@ import { bindActionCreators } from 'redux'
 import Files from 'react-files'
 import { RingLoader } from 'halogenium'
 import { deleteFile } from '../../utility/utils'
-
+import SizeValidation from './SizeValidation'
 class Audio extends React.Component {
   // eslint-disable-next-line no-useless-constructor
   constructor (props, context) {
@@ -26,7 +26,14 @@ class Audio extends React.Component {
     this.setLoading = this.setLoading.bind(this)
     this.onTestURLAudio = this.onTestURLAudio.bind(this)
     this.handleFile = this.handleFile.bind(this)
+    this.openModal = this.openModal.bind(this)
   }
+
+  openModal (errorMessage) {
+    return (
+        <SizeValidation errorMessage = {errorMessage} closeGSModal= {this.props.closeGSModal}/>
+     )
+   }
 
   componentDidMount () {
     if (this.props.file && this.props.file !== '') {
@@ -96,6 +103,7 @@ class Audio extends React.Component {
       if (file.size > 10000000) {
         this.msg.error('Files greater than 25MB not allowed')
       } else {
+        this.props.closeGSModal()
         var fileData = new FormData()
         fileData.append('file', file)
         fileData.append('filename', file.name)
@@ -123,7 +131,8 @@ class Audio extends React.Component {
   }
 
   onFilesError (error, file) {
-    this.props.onFilesError(error.message)
+
+    this.props.toggleGSModal(true, this.openModal(error.message))
   }
 
   render () {
@@ -145,7 +154,7 @@ class Audio extends React.Component {
           </span>
         </div>
         }
-        <div className='ui-block hoverborder' style={{padding: 25, borderColor: this.props.required && !this.state.file ? 'red' : ''}}>
+        <div className='ui-block hoverborder' style={{padding: 25, borderColor: this.props.required && !this.state.file ? 'red' : ''}} data-toggle='modal' data-target={`#${this.props.GSModalTarget}`}>
           {
             this.state.loading
             ? <div className='align-center'><center><RingLoader color='#FF5E3A' /></center></div>
