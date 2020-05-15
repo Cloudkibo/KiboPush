@@ -8,7 +8,6 @@ import Files from 'react-files'
 import { RingLoader } from 'halogenium'
 import AlertContainer from 'react-alert'
 import { deleteFile } from '../../utility/utils'
-
 class File extends React.Component {
   // eslint-disable-next-line no-useless-constructor
   constructor (props, context) {
@@ -90,6 +89,7 @@ class File extends React.Component {
       } else if (file.size > 10000000) {
         this.msg.error('Files greater than 25MB not allowed')
       } else {
+        this.props.closeGSModal()
         var fileData = new FormData()
         fileData.append('file', file)
         fileData.append('filename', file.name)
@@ -118,8 +118,8 @@ class File extends React.Component {
   }
 
   onFilesError (error, file) {
-    this.setState({errorMsg: error.message})
-    this.refs.error.click()
+
+    this.props.toggleGSModal(true, this.props.openGSModal(error.message))
   }
 
   render () {
@@ -134,11 +134,11 @@ class File extends React.Component {
       <div className='broadcast-component' style={{marginBottom: 40 + 'px'}}>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
 
-        <div className='ui-block hoverborder' style={{padding: 25, borderColor: this.props.required && !this.state.file ? 'red' : ''}}>
+        <div className='ui-block hoverborder' style={{padding: 25, borderColor: this.props.required && !this.state.file ? 'red' : ''}} >
           {
             this.state.loading
             ? <div className='align-center'><center><RingLoader color='#FF5E3A' /></center></div>
-            : <Files
+            : <div data-toggle='modal' data-target={`#${this.props.GSModalTarget}`}><Files
                 className='files-dropzone'
                 onChange={this.onFilesChange}
                 onError={this.onFilesError}
@@ -151,6 +151,7 @@ class File extends React.Component {
                 <h4 style={{pointerEvents: 'none', zIndex: -1, marginLeft: '10px', display: 'inline'}}>{this.state.file !== '' ? this.state.file.name : 'File'}</h4>
               </div>
             </Files>
+            </div>
           }
           <a href='#/' style={{ display: 'none' }} ref='error' data-toggle="modal" data-target="#error">error</a>
           <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="error" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">

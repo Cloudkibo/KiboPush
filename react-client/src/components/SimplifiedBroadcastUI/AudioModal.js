@@ -94,7 +94,12 @@ class AudioModal extends React.Component {
                     initialFile={this.state.initialFile} 
                     initialFiles={this.props.initialFiles} 
                     updateFile={this.updateFile}
-                    pages={this.props.pages} 
+                    pages={this.props.pages}
+                    toggleGSModal={this.props.toggleGSModal}
+                    closeGSModal={this.props.closeGSModal}
+                    openGSModal ={this.props.openGSModal}
+                    GSModalTarget='ActionModal'
+                    onFilesError={this.props.onFilesError} 
                   />
                 </div>
                 <div className='col-1'>

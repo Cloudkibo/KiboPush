@@ -28,6 +28,7 @@ import MediaModal from './MediaModal'
 import LinkCarousel from './LinkCarousel';
 import QuickReplies from './QuickReplies'
 import VideoLinkModal from './VideoLinkModal'
+import SizeValidation from './SizeValidation'
 
 class GenericMessage extends React.Component {
   constructor (props, context) {
@@ -85,6 +86,7 @@ class GenericMessage extends React.Component {
     this.closeGSModal = this.closeGSModal.bind(this)
     this.setTempFiles = this.setTempFiles.bind(this)
     this.setNewFiles = this.setNewFiles.bind(this)
+    this.openGSModal = this.openGSModal.bind(this)
     this.GSModalContent = null
 
     if (props.setReset) {
@@ -96,7 +98,11 @@ class GenericMessage extends React.Component {
     console.log('genericMessage props in constructor', this.props)
   }
 
-
+  openGSModal (errorMessage) {
+    return (
+        <SizeValidation errorMessage = {errorMessage} closeGSModal= {this.closeGSModal}/>
+     )
+   }
   setTempFiles (files, filesToRemove) {
     let tempFiles = this.state.tempFiles
     if (files) {
@@ -594,6 +600,9 @@ class GenericMessage extends React.Component {
         pageId={this.props.pageId}
         showCloseModalAlertDialog={this.showCloseModalAlertDialog}
         closeModal={this.closeAddComponentModal}
+        toggleGSModal={this.toggleGSModal}
+        closeGSModal={this.closeGSModal}
+        openGSModal ={this.openGSModal}
         addComponent={this.addComponent} />),
       'audio': (<AudioModal
         edit={this.state.editData ? true : false}
@@ -605,6 +614,9 @@ class GenericMessage extends React.Component {
         pages={this.props.pages} pageId={this.props.pageId}
         showCloseModalAlertDialog={this.showCloseModalAlertDialog}
         closeModal={this.closeAddComponentModal}
+        toggleGSModal={this.toggleGSModal}
+        closeGSModal={this.closeGSModal}
+        openGSModal ={this.openGSModal}
         addComponent={this.addComponent} />),
       'media': (<MediaModal
         buttons={[]}
@@ -622,6 +634,7 @@ class GenericMessage extends React.Component {
         closeModal={this.closeAddComponentModal}
         toggleGSModal={this.toggleGSModal}
         closeGSModal={this.closeGSModal}
+        openGSModal ={this.openGSModal}
         addComponent={this.addComponent} />),
       'video': (<VideoLinkModal
         buttons={[]}
@@ -1052,7 +1065,6 @@ class GenericMessage extends React.Component {
                         {this.state.isShowingAddComponentModal && this.openModal()}
                       </div>
                     </div>
-
                     <a href='#/' style={{ display: 'none' }} ref='lossData' data-toggle="modal" data-target="#lossData">lossData</a>
                     <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="lossData" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                       <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">

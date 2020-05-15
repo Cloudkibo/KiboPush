@@ -33,7 +33,7 @@ import QuickReplies from '../QuickReplies'
 import UserInputModal from '../UserInputModal'
 import UserInput from '../PreviewComponents/UserInput'
 import VideoLinkModal from '../VideoLinkModal'
-
+import SizeValidation from '../SizeValidation'
 import CustomFields from '../../customFields/customfields'
 
 class Builders extends React.Component {
@@ -121,6 +121,7 @@ class Builders extends React.Component {
     this.confirmDeleteModal = this.confirmDeleteModal.bind(this)
     this.setTempFiles = this.setTempFiles.bind(this)
     this.setNewFiles = this.setNewFiles.bind(this)
+    this.openGSModal = this.openGSModal.bind(this)
     this.GSModalContent = null
 
     if (props.setReset) {
@@ -151,7 +152,11 @@ class Builders extends React.Component {
       this.setState({newFiles: nextProps.newFiles})
     }
   }
-
+  openGSModal (errorMessage) {
+    return (
+        <SizeValidation errorMessage = {errorMessage} closeGSModal= {this.closeGSModal}/>
+     )
+   }
   setTempFiles (files, filesToRemove) {
     let tempFiles = this.state.tempFiles
     if (files) {
@@ -1425,6 +1430,7 @@ class Builders extends React.Component {
         closeModal={this.closeAddComponentModal}
         addComponent={this.addComponent} />),
       'file': (<FileModal
+        onFilesError={this.onFilesError}
         edit={this.state.editData ? true : false}
         setTempFiles={this.setTempFiles}
         initialFiles={this.state.initialFiles}
@@ -1435,8 +1441,12 @@ class Builders extends React.Component {
         pageId={this.props.pageId.pageId}
         showCloseModalAlertDialog={this.showCloseModalAlertDialog}
         closeModal={this.closeAddComponentModal}
+        toggleGSModal={this.toggleGSModal}
+        closeGSModal={this.closeGSModal}
+        openGSModal ={this.openGSModal}
         addComponent={this.addComponent} />),
       'audio': (<AudioModal
+        onFilesError={this.onFilesError}
         edit={this.state.editData ? true : false}
         setTempFiles={this.setTempFiles}
         initialFiles={this.state.initialFiles}
@@ -1446,6 +1456,9 @@ class Builders extends React.Component {
         pages={this.props.pages} pageId={this.props.pageId.pageId}
         showCloseModalAlertDialog={this.showCloseModalAlertDialog}
         closeModal={this.closeAddComponentModal}
+        toggleGSModal={this.toggleGSModal}
+        closeGSModal={this.closeGSModal}
+        openGSModal ={this.openGSModal}
         addComponent={this.addComponent} />),
       'media': (<MediaModal
         buttons={[]}
@@ -1463,6 +1476,7 @@ class Builders extends React.Component {
         closeModal={this.closeAddComponentModal}
         onFilesError={this.onFilesError}
         toggleGSModal={this.toggleGSModal}
+        openGSModal ={this.openGSModal}
         closeGSModal={this.closeGSModal}
         addComponent={this.addComponent} />),
       'video': (<VideoLinkModal
