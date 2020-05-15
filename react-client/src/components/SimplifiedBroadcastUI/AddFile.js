@@ -118,8 +118,6 @@ class File extends React.Component {
   }
 
   onFilesError (error, file) {
-    // this.setState({errorMsg: error.message})
-    // this.refs.error.click()
     this.props.onFilesError(error.message) 
   }
 
