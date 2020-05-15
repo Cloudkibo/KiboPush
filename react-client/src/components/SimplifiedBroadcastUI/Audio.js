@@ -96,7 +96,6 @@ class Audio extends React.Component {
       if (file.size > 10000000) {
         this.msg.error('Files greater than 25MB not allowed')
       } else {
-        this.props.closeGSModal()
         var fileData = new FormData()
         fileData.append('file', file)
         fileData.append('filename', file.name)
@@ -125,7 +124,7 @@ class Audio extends React.Component {
 
   onFilesError (error, file) {
 
-    this.props.toggleGSModal(true, this.props.openGSModal(error.message))
+    this.props.showValidationModal('Audio size cannot exceed 10MB. Please upload any Audio(up to 10MB)')
   }
 
   render () {
@@ -151,7 +150,7 @@ class Audio extends React.Component {
           {
             this.state.loading
             ? <div className='align-center'><center><RingLoader color='#FF5E3A' /></center></div>
-            : <div data-toggle='modal' data-target={`#${this.props.GSModalTarget}`}><Files
+            : <Files
               className='files-dropzone'
               onChange={this.onFilesChange}
               onError={this.onFilesError}
@@ -165,7 +164,6 @@ class Audio extends React.Component {
                 <h4 style={{pointerEvents: 'none', zIndex: -1, marginLeft: '10px', display: 'inline'}}>{this.state.file !== '' ? this.state.file.name : 'Audio'}</h4>
               </div>
             </Files>
-            </div>
           }
           <a href='#/' style={{ display: 'none' }} ref='error' data-toggle="modal" data-target="#error">error</a>
           <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="error" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">

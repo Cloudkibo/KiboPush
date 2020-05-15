@@ -161,9 +161,7 @@ class MediaModal extends React.Component {
               <h4>Media:</h4>
               <Media
                 required
-                toggleGSModal={this.props.toggleGSModal}
-                closeGSModal={this.props.closeGSModal}
-                GSModalTarget='ActionModal'
+                showValidationModal= {this.props.showValidationModal}
                 setTempFiles={this.props.setTempFiles}
                 updateStatus={this.updateStatus}
                 mediaType={this.state.imgSrc ? 'image' : 'video'}

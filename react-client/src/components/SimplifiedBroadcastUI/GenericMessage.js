@@ -28,8 +28,7 @@ import MediaModal from './MediaModal'
 import LinkCarousel from './LinkCarousel';
 import QuickReplies from './QuickReplies'
 import VideoLinkModal from './VideoLinkModal'
-import SizeValidation from './SizeValidation'
-
+import MODAL from '../extras/modal'
 class GenericMessage extends React.Component {
   constructor (props, context) {
     super(props, context)
@@ -54,7 +53,9 @@ class GenericMessage extends React.Component {
       showGSModal: false,
       quickRepliesComponent: null,
       tempFiles: [],
-      newFiles: []
+      newFiles: [],
+      showContent: false,
+      errorMessage: ''
     }
     this.defaultTitle = this.props.convoTitle
     this.reset = this.reset.bind(this)
@@ -86,7 +87,9 @@ class GenericMessage extends React.Component {
     this.closeGSModal = this.closeGSModal.bind(this)
     this.setTempFiles = this.setTempFiles.bind(this)
     this.setNewFiles = this.setNewFiles.bind(this)
-    this.openGSModal = this.openGSModal.bind(this)
+    this.showValidationModal = this.showValidationModal.bind(this)
+    this.getModalContent= this.getModalContent.bind(this)
+    this.toggleModalContent = this.toggleModalContent.bind(this)
     this.GSModalContent = null
 
     if (props.setReset) {
@@ -98,11 +101,26 @@ class GenericMessage extends React.Component {
     console.log('genericMessage props in constructor', this.props)
   }
 
-  openGSModal (errorMessage) {
-    return (
-        <SizeValidation errorMessage = {errorMessage} closeGSModal= {this.closeGSModal}/>
-     )
-   }
+
+   showValidationModal (errorMessage) {
+    this.setState({showContent: true, errorMessage: errorMessage}, () => {
+      this.refs.openValidationModal.click()
+    })
+  }
+
+  getModalContent () {
+    if (this.state.showContent) {
+      return (
+        <h6>{this.state.errorMessage}</h6>
+      )
+    } else {
+      return (<div />)
+    }
+  }
+
+  toggleModalContent () {
+    this.setState({showContent: !this.state.showContent})
+  }
   setTempFiles (files, filesToRemove) {
     let tempFiles = this.state.tempFiles
     if (files) {
@@ -600,9 +618,7 @@ class GenericMessage extends React.Component {
         pageId={this.props.pageId}
         showCloseModalAlertDialog={this.showCloseModalAlertDialog}
         closeModal={this.closeAddComponentModal}
-        toggleGSModal={this.toggleGSModal}
-        closeGSModal={this.closeGSModal}
-        openGSModal ={this.openGSModal}
+        showValidationModal= {this.showValidationModal}
         addComponent={this.addComponent} />),
       'audio': (<AudioModal
         edit={this.state.editData ? true : false}
@@ -614,9 +630,7 @@ class GenericMessage extends React.Component {
         pages={this.props.pages} pageId={this.props.pageId}
         showCloseModalAlertDialog={this.showCloseModalAlertDialog}
         closeModal={this.closeAddComponentModal}
-        toggleGSModal={this.toggleGSModal}
-        closeGSModal={this.closeGSModal}
-        openGSModal ={this.openGSModal}
+        showValidationModal= {this.showValidationModal}
         addComponent={this.addComponent} />),
       'media': (<MediaModal
         buttons={[]}
@@ -632,9 +646,7 @@ class GenericMessage extends React.Component {
         pageId={this.props.pageId}
         showCloseModalAlertDialog={this.showCloseModalAlertDialog}
         closeModal={this.closeAddComponentModal}
-        toggleGSModal={this.toggleGSModal}
-        closeGSModal={this.closeGSModal}
-        openGSModal ={this.openGSModal}
+        showValidationModal= {this.showValidationModal}
         addComponent={this.addComponent} />),
       'video': (<VideoLinkModal
         buttons={[]}
@@ -1065,6 +1077,14 @@ class GenericMessage extends React.Component {
                         {this.state.isShowingAddComponentModal && this.openModal()}
                       </div>
                     </div>
+                    <a href='#/' style={{ display: 'none' }} ref='openValidationModal' data-toggle="modal" data-target="#_validationModal">fileError</a>
+                  <MODAL
+                    id='_validationModal'
+                    title='Error'
+                    content={this.getModalContent()}
+                    onClose={this.toggleModalContent}
+                  />
+                    
                     <a href='#/' style={{ display: 'none' }} ref='lossData' data-toggle="modal" data-target="#lossData">lossData</a>
                     <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="lossData" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                       <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">

@@ -99,10 +99,7 @@ class FileModal extends React.Component {
                 module={this.props.module}
                 pages={this.props.pages}
                 onFilesError={this.props.onFilesError} 
-                toggleGSModal={this.props.toggleGSModal}
-                closeGSModal={this.props.closeGSModal}
-                openGSModal ={this.props.openGSModal}
-                GSModalTarget='ActionModal'
+                showValidationModal= {this.props.showValidationModal}
               />
             </div>
             <div className='col-1'>

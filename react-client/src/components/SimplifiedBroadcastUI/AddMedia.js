@@ -46,8 +46,7 @@ class Media extends React.Component {
     }
   }
   onFilesError (error, file) {
-
-    this.props.toggleGSModal(true, this.props.openGSModal(error.message))
+    this.props.showValidationModal('Media size cannot exceed 10MB. Please upload any Media(up to 10MB)')
   }
 
   _onChange () {
@@ -78,7 +77,6 @@ class Media extends React.Component {
       this.onFilesError(error, true)
       return
     }
-    this.props.closeGSModal()
     if (!video && !image) {
       this.props.handleMedia({error: 'invalid file'})
       return
@@ -264,7 +262,6 @@ class Media extends React.Component {
           : <div style={{display: 'flex', minHeight: 170, backgroundColor: '#F2F3F8'}} className='mediaImage' onClick={() => {
             this.refs.file.click()
           }}>
-            <div data-toggle='modal' data-target={`#${this.props.GSModalTarget}`}>
             <input
               ref='file'
               type='file'
@@ -276,7 +273,6 @@ class Media extends React.Component {
               clickable
               onClick={(e)=>{e.target.value= ''}}
               onChange={this._onChange} onError={this.onFilesError} style={{position: 'absolute', cursor: 'pointer', display: 'none'}} />
-              </div>
             <div style={{width: '100%'}}>
               {
                 (this.state.fileName === '') &&
