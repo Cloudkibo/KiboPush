@@ -85,6 +85,7 @@ class GenericMessage extends React.Component {
     this.closeGSModal = this.closeGSModal.bind(this)
     this.setTempFiles = this.setTempFiles.bind(this)
     this.setNewFiles = this.setNewFiles.bind(this)
+    this.onFilesError = this.onFilesError.bind(this)
     this.GSModalContent = null
 
     if (props.setReset) {
@@ -94,6 +95,13 @@ class GenericMessage extends React.Component {
     this.props.loadTags()
     this.props.fetchAllSequence()
     console.log('genericMessage props in constructor', this.props)
+  }
+
+  onFilesError (errorMsg) {
+    this.setState({
+      fileError: errorMsg   
+    })
+    this.refs.fileError.click()
   }
 
 
@@ -584,6 +592,7 @@ class GenericMessage extends React.Component {
         closeModal={this.closeAddComponentModal}
         addComponent={this.addComponent} />),
       'file': (<FileModal
+        onFilesError={this.onFilesError}
         edit={this.state.editData ? true : false}
         setTempFiles={this.setTempFiles}
         initialFiles={this.state.initialFiles}
@@ -596,6 +605,7 @@ class GenericMessage extends React.Component {
         closeModal={this.closeAddComponentModal}
         addComponent={this.addComponent} />),
       'audio': (<AudioModal
+        onFilesError={this.onFilesError}
         edit={this.state.editData ? true : false}
         setTempFiles={this.setTempFiles}
         initialFiles={this.state.initialFiles}
@@ -607,6 +617,7 @@ class GenericMessage extends React.Component {
         closeModal={this.closeAddComponentModal}
         addComponent={this.addComponent} />),
       'media': (<MediaModal
+        onFilesError={this.onFilesError}
         buttons={[]}
         setTempFiles={this.setTempFiles}
         initialFiles={this.state.initialFiles}
@@ -1053,6 +1064,26 @@ class GenericMessage extends React.Component {
                       </div>
                     </div>
 
+                    <a href='#/' style={{ display: 'none' }} ref='fileError' data-toggle="modal" data-target="#fileError">fileError</a>
+              <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="fileError" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+                  <div className="modal-content">
+                    <div style={{ display: 'block' }} className="modal-header">
+                      <h5 className="modal-title" id="exampleModalLabel">
+                        <i className='fa fa-exclamation-triangle' aria-hidden='true' /> Error
+                      </h5>
+                      <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">
+                          &times;
+                        </span>
+                      </button>
+                    </div>
+                    <div style={{ color: 'black' }} className="modal-body">
+                      <p>{this.state.fileError}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>                   
                     <a href='#/' style={{ display: 'none' }} ref='lossData' data-toggle="modal" data-target="#lossData">lossData</a>
                     <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="lossData" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                       <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
