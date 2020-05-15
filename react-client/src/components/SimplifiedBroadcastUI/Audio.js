@@ -147,11 +147,11 @@ class Audio extends React.Component {
           </span>
         </div>
         }
-        <div className='ui-block hoverborder' style={{padding: 25, borderColor: this.props.required && !this.state.file ? 'red' : ''}} data-toggle='modal' data-target={`#${this.props.GSModalTarget}`}>
+        <div className='ui-block hoverborder' style={{padding: 25, borderColor: this.props.required && !this.state.file ? 'red' : ''}} >
           {
             this.state.loading
             ? <div className='align-center'><center><RingLoader color='#FF5E3A' /></center></div>
-            : <Files
+            : <div data-toggle='modal' data-target={`#${this.props.GSModalTarget}`}><Files
               className='files-dropzone'
               onChange={this.onFilesChange}
               onError={this.onFilesError}
@@ -165,6 +165,7 @@ class Audio extends React.Component {
                 <h4 style={{pointerEvents: 'none', zIndex: -1, marginLeft: '10px', display: 'inline'}}>{this.state.file !== '' ? this.state.file.name : 'Audio'}</h4>
               </div>
             </Files>
+            </div>
           }
           <a href='#/' style={{ display: 'none' }} ref='error' data-toggle="modal" data-target="#error">error</a>
           <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="error" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">

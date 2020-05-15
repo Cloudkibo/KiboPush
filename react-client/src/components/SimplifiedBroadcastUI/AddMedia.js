@@ -257,14 +257,14 @@ class Media extends React.Component {
   render () {
     return (
       <div className='broadcast-component' style={{marginBottom: 40 + 'px'}}>
-        <div style={{marginBottom: '-0.5px', paddingTop: '0px', borderColor: this.props.required && !this.state.fileurl ? 'red' : ''}} className='ui-block hoverbordersolid' data-toggle='modal' data-target={`#${this.props.GSModalTarget}`}>
+        <div style={{marginBottom: '-0.5px', paddingTop: '0px', borderColor: this.props.required && !this.state.fileurl ? 'red' : ''}} className='ui-block hoverbordersolid' >
           {
           this.state.loading
           ? <div className='align-center' style={{padding: '50px'}}><center><RingLoader color='#FF5E3A' /></center></div>
           : <div style={{display: 'flex', minHeight: 170, backgroundColor: '#F2F3F8'}} className='mediaImage' onClick={() => {
             this.refs.file.click()
           }}>
-
+            <div data-toggle='modal' data-target={`#${this.props.GSModalTarget}`}>
             <input
               ref='file'
               type='file'
@@ -276,6 +276,7 @@ class Media extends React.Component {
               clickable
               onClick={(e)=>{e.target.value= ''}}
               onChange={this._onChange} onError={this.onFilesError} style={{position: 'absolute', cursor: 'pointer', display: 'none'}} />
+              </div>
             <div style={{width: '100%'}}>
               {
                 (this.state.fileName === '') &&
