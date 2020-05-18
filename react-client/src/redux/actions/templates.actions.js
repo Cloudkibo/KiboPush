@@ -129,6 +129,20 @@ export function removeBroadcastTemplate(data) {
   }
 }
 
+export function removeSurveyTemplate(data) {
+  return {
+    type: ActionTypes.REMOVE_TEMPLATE_SURVEY,
+    data: data
+  }
+}
+
+export function removePollTemplate(data) {
+  return {
+    type: ActionTypes.REMOVE_TEMPLATE_POLL,
+    data: data
+  }
+}
+
 export function createsurvey (survey) {
   return (dispatch) => {
     callApi('templates/createSurvey', 'post', survey)
@@ -233,7 +247,7 @@ export function deletePoll (id, msg, data) {
       .then(res => {
         if (res.status === 'success') {
           msg.success('Poll template deleted')
-          dispatch(loadPollsListNew(data))
+          dispatch(removePollTemplate(id))
         } else {
           if (res.status === 'failed' && res.description) {
             msg.error(`Failed to delete poll template. ${res.description}`)
@@ -250,7 +264,7 @@ export function deleteSurvey (id, msg, data) {
       .then(res => {
         if (res.status === 'success') {
           msg.success('Survey template deleted')
-          dispatch(loadSurveysListNew(data))
+          dispatch(removeSurveyTemplate(id))
         } else {
           if (res.status === 'failed' && res.description) {
             msg.error(`Failed to delete survey template. ${res.description}`)

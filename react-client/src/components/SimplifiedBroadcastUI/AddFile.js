@@ -19,6 +19,7 @@ class File extends React.Component {
       showErrorDialogue: false,
       loading: false,
       showPreview: false,
+      showContent: false,
     }
     this.onFilesChange = this.onFilesChange.bind(this)
     this.onFilesError = this.onFilesError.bind(this)
@@ -90,6 +91,7 @@ class File extends React.Component {
       } else if (file.size > 10000000) {
         this.msg.error('Files greater than 25MB not allowed')
       } else {
+        // this.props.closeGSModal()
         var fileData = new FormData()
         fileData.append('file', file)
         fileData.append('filename', file.name)
@@ -118,8 +120,7 @@ class File extends React.Component {
   }
 
   onFilesError (error, file) {
-    this.setState({errorMsg: error.message})
-    this.refs.error.click()
+    this.props.showValidationModal('File size cannot exceed 10MB. Please upload any File(up to 10MB)')
   }
 
   render () {
@@ -133,12 +134,12 @@ class File extends React.Component {
     return (
       <div className='broadcast-component' style={{marginBottom: 40 + 'px'}}>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-
-        <div className='ui-block hoverborder' style={{padding: 25, borderColor: this.props.required && !this.state.file ? 'red' : ''}}>
+        <div className='ui-block hoverborder' style={{padding: 25, borderColor: this.props.required && !this.state.file ? 'red' : ''}} >
           {
             this.state.loading
             ? <div className='align-center'><center><RingLoader color='#FF5E3A' /></center></div>
-            : <Files
+            : 
+              <Files
                 className='files-dropzone'
                 onChange={this.onFilesChange}
                 onError={this.onFilesError}

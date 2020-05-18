@@ -33,7 +33,8 @@ import QuickReplies from '../QuickReplies'
 import UserInputModal from '../UserInputModal'
 import UserInput from '../PreviewComponents/UserInput'
 import VideoLinkModal from '../VideoLinkModal'
-
+import SizeValidation from '../SizeValidation'
+import MODAL from '../../extras/modal'
 import CustomFields from '../../customFields/customfields'
 
 class Builders extends React.Component {
@@ -68,7 +69,9 @@ class Builders extends React.Component {
       fileError: '',
       tempFiles: [],
       newFiles: [],
-      initialFiles: this.props.initialFiles ? this.props.initialFiles : []
+      initialFiles: this.props.initialFiles ? this.props.initialFiles : [],
+      showContent: false,
+      errorMessage: ''
     }
     this.defaultTitle = this.props.convoTitle
     this.reset = this.reset.bind(this)
@@ -121,6 +124,10 @@ class Builders extends React.Component {
     this.confirmDeleteModal = this.confirmDeleteModal.bind(this)
     this.setTempFiles = this.setTempFiles.bind(this)
     this.setNewFiles = this.setNewFiles.bind(this)
+    this.openGSModal = this.openGSModal.bind(this)
+    this.showValidationModal = this.showValidationModal.bind(this)
+    this.getModalContent= this.getModalContent.bind(this)
+    this.toggleModalContent = this.toggleModalContent.bind(this)
     this.GSModalContent = null
 
     if (props.setReset) {
@@ -146,12 +153,36 @@ class Builders extends React.Component {
     console.log('builders props in constructor', this.props)
   }
 
+  showValidationModal (errorMessage) {
+    this.setState({showContent: true, errorMessage: errorMessage}, () => {
+      this.refs.openValidationModal.click()
+    })
+  }
+
+  getModalContent () {
+    if (this.state.showContent) {
+      return (
+        <h6>{this.state.errorMessage}</h6>
+      )
+    } else {
+      return (<div />)
+    }
+  }
+
+  toggleModalContent () {
+    this.setState({showContent: !this.state.showContent})
+  }
+
   UNSAFE_componentWillReceiveProps (nextProps) {
     if (nextProps.newFiles && this.state.newFiles.length !== nextProps.newFiles.length) {
       this.setState({newFiles: nextProps.newFiles})
     }
   }
-
+  openGSModal (errorMessage) {
+    return (
+        <SizeValidation errorMessage = {errorMessage} closeGSModal= {this.closeGSModal}/>
+     )
+   }
   setTempFiles (files, filesToRemove) {
     let tempFiles = this.state.tempFiles
     if (files) {
@@ -1425,6 +1456,7 @@ class Builders extends React.Component {
         closeModal={this.closeAddComponentModal}
         addComponent={this.addComponent} />),
       'file': (<FileModal
+        onFilesError={this.onFilesError}
         edit={this.state.editData ? true : false}
         setTempFiles={this.setTempFiles}
         initialFiles={this.state.initialFiles}
@@ -1435,8 +1467,10 @@ class Builders extends React.Component {
         pageId={this.props.pageId.pageId}
         showCloseModalAlertDialog={this.showCloseModalAlertDialog}
         closeModal={this.closeAddComponentModal}
+        showValidationModal= {this.showValidationModal}
         addComponent={this.addComponent} />),
       'audio': (<AudioModal
+        onFilesError={this.onFilesError}
         edit={this.state.editData ? true : false}
         setTempFiles={this.setTempFiles}
         initialFiles={this.state.initialFiles}
@@ -1446,6 +1480,7 @@ class Builders extends React.Component {
         pages={this.props.pages} pageId={this.props.pageId.pageId}
         showCloseModalAlertDialog={this.showCloseModalAlertDialog}
         closeModal={this.closeAddComponentModal}
+        showValidationModal= {this.showValidationModal}
         addComponent={this.addComponent} />),
       'media': (<MediaModal
         buttons={[]}
@@ -1462,8 +1497,7 @@ class Builders extends React.Component {
         showCloseModalAlertDialog={this.showCloseModalAlertDialog}
         closeModal={this.closeAddComponentModal}
         onFilesError={this.onFilesError}
-        toggleGSModal={this.toggleGSModal}
-        closeGSModal={this.closeGSModal}
+        showValidationModal= {this.showValidationModal}
         addComponent={this.addComponent} />),
       'video': (<VideoLinkModal
           buttons={[]}
@@ -2001,6 +2035,14 @@ class Builders extends React.Component {
           {this.state.isShowingAddComponentModal && this.openModal()}
         </div>
       </div>
+
+      <a href='#/' style={{ display: 'none' }} ref='openValidationModal' data-toggle="modal" data-target="#_validationModal">fileError</a>
+        <MODAL
+              id='_validationModal'
+              title='Error'
+              content={this.getModalContent()}
+              onClose={this.toggleModalContent}
+            />
 
       <a href='#/' style={{ display: 'none' }} ref='fileError' data-toggle="modal" data-target="#fileError">fileError</a>
         <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="fileError" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">

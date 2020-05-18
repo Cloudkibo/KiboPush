@@ -8,7 +8,6 @@ import { bindActionCreators } from 'redux'
 import Files from 'react-files'
 import { RingLoader } from 'halogenium'
 import { deleteFile } from '../../utility/utils'
-
 class Audio extends React.Component {
   // eslint-disable-next-line no-useless-constructor
   constructor (props, context) {
@@ -27,6 +26,7 @@ class Audio extends React.Component {
     this.onTestURLAudio = this.onTestURLAudio.bind(this)
     this.handleFile = this.handleFile.bind(this)
   }
+
 
   componentDidMount () {
     if (this.props.file && this.props.file !== '') {
@@ -123,8 +123,8 @@ class Audio extends React.Component {
   }
 
   onFilesError (error, file) {
-    this.setState({errorMsg: error.message})
-    this.refs.error.click()
+
+    this.props.showValidationModal('Audio size cannot exceed 10MB. Please upload any Audio(up to 10MB)')
   }
 
   render () {
@@ -146,7 +146,7 @@ class Audio extends React.Component {
           </span>
         </div>
         }
-        <div className='ui-block hoverborder' style={{padding: 25, borderColor: this.props.required && !this.state.file ? 'red' : ''}}>
+        <div className='ui-block hoverborder' style={{padding: 25, borderColor: this.props.required && !this.state.file ? 'red' : ''}} >
           {
             this.state.loading
             ? <div className='align-center'><center><RingLoader color='#FF5E3A' /></center></div>

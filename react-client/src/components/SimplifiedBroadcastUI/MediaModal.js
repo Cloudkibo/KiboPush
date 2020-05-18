@@ -161,6 +161,7 @@ class MediaModal extends React.Component {
               <h4>Media:</h4>
               <Media
                 required
+                showValidationModal= {this.props.showValidationModal}
                 setTempFiles={this.props.setTempFiles}
                 updateStatus={this.updateStatus}
                 mediaType={this.state.imgSrc ? 'image' : 'video'}
@@ -169,6 +170,7 @@ class MediaModal extends React.Component {
                 updateImage={this.updateImage}
                 updateFile={this.updateFile}
                 onFilesError={this.props.onFilesError}
+                openGSModal ={this.props.openGSModal}
                 initialFiles={this.props.initialFiles}
                 initialFile={this.state.initialFile}
                 fileurl={this.state.file ? this.state.file.fileurl : ''}

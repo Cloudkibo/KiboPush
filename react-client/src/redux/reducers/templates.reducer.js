@@ -48,6 +48,25 @@ export function templatesInfo (state = {}, action) {
         pollCreated: '',
         totalSurveysCount: action.totalCount
       })
+      case ActionTypes.REMOVE_TEMPLATE_SURVEY:
+      let surveys = state.surveys
+      let surveysCount = state.totalSurveysCount-1
+      let surveyIndex = surveys.findIndex(cf => cf._id === action.data)
+      surveys.splice(surveyIndex, 1)
+      return Object.assign({}, state, {
+        surveys: [...surveys],
+        totalSurveysCount: surveysCount
+      })
+
+      case ActionTypes.REMOVE_TEMPLATE_POLL:
+      let polls = state.polls
+      let PollsCount = state.totalPollsCount-1
+      let pollIndex = polls.findIndex(cf => cf._id === action.data)
+      polls.splice(pollIndex, 1)
+      return Object.assign({}, state, {
+        polls: [...polls],
+        totalPollsCount: PollsCount
+      })
     case ActionTypes.LOAD_TEMPLATE_POLLS_LIST:
       return Object.assign({}, state, {
         polls: action.data,
