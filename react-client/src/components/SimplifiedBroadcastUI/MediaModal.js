@@ -161,6 +161,7 @@ class MediaModal extends React.Component {
               <h4>Media:</h4>
               <Media
                 required
+                showValidationModal= {this.props.showValidationModal} 
                 setTempFiles={this.props.setTempFiles}
                 updateStatus={this.updateStatus}
                 mediaType={this.state.imgSrc ? 'image' : 'video'}

@@ -118,8 +118,7 @@ class File extends React.Component {
   }
 
   onFilesError (error, file) {
-    this.setState({errorMsg: error.message})
-    this.refs.error.click()
+    this.props.showValidationModal('File size cannot exceed 10MB. Please upload any Media(up to 10MB)')
   }
 
   render () {

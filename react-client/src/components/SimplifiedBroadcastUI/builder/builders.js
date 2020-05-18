@@ -33,7 +33,7 @@ import QuickReplies from '../QuickReplies'
 import UserInputModal from '../UserInputModal'
 import UserInput from '../PreviewComponents/UserInput'
 import VideoLinkModal from '../VideoLinkModal'
-
+import MODAL from '../../extras/modal' 
 import CustomFields from '../../customFields/customfields'
 
 class Builders extends React.Component {
@@ -68,7 +68,9 @@ class Builders extends React.Component {
       fileError: '',
       tempFiles: [],
       newFiles: [],
-      initialFiles: this.props.initialFiles ? this.props.initialFiles : []
+      initialFiles: this.props.initialFiles ? this.props.initialFiles : [],
+      showContent: false,
+      errorMessage: ''
     }
     this.defaultTitle = this.props.convoTitle
     this.reset = this.reset.bind(this)
@@ -121,6 +123,9 @@ class Builders extends React.Component {
     this.confirmDeleteModal = this.confirmDeleteModal.bind(this)
     this.setTempFiles = this.setTempFiles.bind(this)
     this.setNewFiles = this.setNewFiles.bind(this)
+    this.showValidationModal = this.showValidationModal.bind(this)
+    this.getModalContent= this.getModalContent.bind(this)
+    this.toggleModalContent = this.toggleModalContent.bind(this)
     this.GSModalContent = null
 
     if (props.setReset) {
@@ -145,6 +150,27 @@ class Builders extends React.Component {
     this.props.loadCustomFields()
     console.log('builders props in constructor', this.props)
   }
+
+  showValidationModal (errorMessage) {
+    this.setState({showContent: true, errorMessage: errorMessage}, () => {
+      this.refs.openValidationModal.click()
+    })
+  }
+
+  getModalContent () {
+    if (this.state.showContent) {
+      return (
+        <h6>{this.state.errorMessage}</h6>
+      )
+    } else {
+      return (<div />)
+    }
+  }
+
+  toggleModalContent () {
+    this.setState({showContent: !this.state.showContent})
+  }
+
 
   UNSAFE_componentWillReceiveProps (nextProps) {
     if (nextProps.newFiles && this.state.newFiles.length !== nextProps.newFiles.length) {
@@ -1435,6 +1461,7 @@ class Builders extends React.Component {
         pageId={this.props.pageId.pageId}
         showCloseModalAlertDialog={this.showCloseModalAlertDialog}
         closeModal={this.closeAddComponentModal}
+        showValidationModal= {this.showValidationModal} 
         addComponent={this.addComponent} />),
       'audio': (<AudioModal
         edit={this.state.editData ? true : false}
@@ -1446,6 +1473,7 @@ class Builders extends React.Component {
         pages={this.props.pages} pageId={this.props.pageId.pageId}
         showCloseModalAlertDialog={this.showCloseModalAlertDialog}
         closeModal={this.closeAddComponentModal}
+        showValidationModal= {this.showValidationModal} 
         addComponent={this.addComponent} />),
       'media': (<MediaModal
         buttons={[]}
@@ -1462,6 +1490,7 @@ class Builders extends React.Component {
         showCloseModalAlertDialog={this.showCloseModalAlertDialog}
         closeModal={this.closeAddComponentModal}
         onFilesError={this.onFilesError}
+        showValidationModal= {this.showValidationModal} 
         toggleGSModal={this.toggleGSModal}
         closeGSModal={this.closeGSModal}
         addComponent={this.addComponent} />),
@@ -2001,7 +2030,13 @@ class Builders extends React.Component {
           {this.state.isShowingAddComponentModal && this.openModal()}
         </div>
       </div>
-
+      <a href='#/' style={{ display: 'none' }} ref='openValidationModal' data-toggle="modal" data-target="#_validationModal">fileError</a>
+        <MODAL
+              id='_validationModal'
+              title='Error'
+              content={this.getModalContent()}
+              onClose={this.toggleModalContent}
+            />
       <a href='#/' style={{ display: 'none' }} ref='fileError' data-toggle="modal" data-target="#fileError">fileError</a>
         <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="fileError" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
@@ -2022,6 +2057,8 @@ class Builders extends React.Component {
             </div>
           </div>
         </div>
+
+        
 
       <a href='#/' style={{ display: 'none' }} ref='lossData' data-toggle="modal" data-target="#lossData">lossData</a>
       <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="lossData" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
