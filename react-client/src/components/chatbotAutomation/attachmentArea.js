@@ -135,7 +135,12 @@ class AttachmentArea extends React.Component {
         invalidUrl: true,
         helpMessage: res.description
       })
-      this.props.updateParentState({disableNext: false})
+      const attachment = {
+        type: 'video',
+        fileData: {url: this.state.inputValue},
+        buttons: this.state.buttons
+      }
+      this.props.updateParentState({attachment, disableNext: false})
     }
   }
 
