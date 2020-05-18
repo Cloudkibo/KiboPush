@@ -98,6 +98,7 @@ class FileModal extends React.Component {
                 updateFile={this.updateFile} 
                 module={this.props.module}
                 pages= {this.props.pages} 
+                showValidationModal= {this.props.showValidationModal} 
               />
             </div>
             <div className='col-1'>

@@ -46,9 +46,7 @@ class Media extends React.Component {
     }
   }
   onFilesError (error, file) {
-    console.log('error.message', error.message)
-    //this.setState({errorMsg: error.message})
-    this.props.onFilesError(error.message)
+    this.props.showValidationModal('Media size cannot exceed 10MB. Please upload any Media(up to 10MB)')
   }
 
   _onChange () {
