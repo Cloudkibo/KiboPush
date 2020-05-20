@@ -24,6 +24,11 @@ class CommentCapturePreview extends React.Component {
     if (truef === false) {
     }
   }
+
+  getHostName (url) {
+    return url.replace('HTTP://','').replace('HTTPS://','').replace('WWW.','').split(/[/?#]/)[0];
+  }
+
   render () {
     return (
       <div className='row'>
@@ -46,7 +51,7 @@ class CommentCapturePreview extends React.Component {
                   </div>
                   <div className='m-widget3__body' style={{height:'300px', overflow: 'auto'}}>
                     <p className='widget3__text'>{this.props.postText}</p>
-                    {  this.props.attachments.length > 0 && this.props.postType === 'images' &&
+                    {  this.props.attachments.length === 1 && this.props.postType === 'images' &&
                     this.props.attachments.map((attachment, i) => (
                       <div key={i} className='col-12'>
                         <div className='ui-block'>
@@ -63,6 +68,22 @@ class CommentCapturePreview extends React.Component {
                       height='auto'
                       onPlay={this.onTestURLVideo(this.props.attachments[0].url)}
                     />
+                    }
+                    { this.props.attachments.length > 1 && this.props.postType === 'images' &&
+                      <Gallery
+                        module='commentcapture'
+                        cards={
+                          this.props.attachments.map((attachment) => {
+                            return {
+                              image_url: attachment.url
+                            }
+                          }).concat({
+                            image_url: this.props.selectedPage.pagePic,
+                            title: `See more at ${this.getHostName(this.props.seeMoreLink.link.toUpperCase())}`,
+                          })
+                        }
+                        pages={[this.props.selectedPage._id]}
+                      />
                     }
                     { this.props.cards.length > 0 && this.props.postType === 'links' &&
                       <Gallery

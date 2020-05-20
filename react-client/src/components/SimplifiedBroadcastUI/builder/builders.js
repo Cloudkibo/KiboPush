@@ -178,11 +178,13 @@ class Builders extends React.Component {
       this.setState({newFiles: nextProps.newFiles})
     }
   }
+
   openGSModal (errorMessage) {
     return (
         <SizeValidation errorMessage = {errorMessage} closeGSModal= {this.closeGSModal}/>
      )
    }
+
   setTempFiles (files, filesToRemove) {
     let tempFiles = this.state.tempFiles
     if (files) {
@@ -1706,6 +1708,7 @@ class Builders extends React.Component {
           this.handleFile({
             fileurl: broadcast.file ? broadcast.file.fileurl: '',
             id: componentId,
+            fileurl: broadcast.file ? broadcast.file.fileurl : '',
             componentName: 'audio',
             componentType: 'audio',
             file: broadcast.file ? broadcast.file : ''
@@ -2064,6 +2067,8 @@ class Builders extends React.Component {
             </div>
           </div>
         </div>
+
+        
 
       <a href='#/' style={{ display: 'none' }} ref='lossData' data-toggle="modal" data-target="#lossData">lossData</a>
       <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="lossData" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">

@@ -123,8 +123,7 @@ class Audio extends React.Component {
   }
 
   onFilesError (error, file) {
-
-    this.props.showValidationModal('Audio size cannot exceed 10MB. Please upload any Audio(up to 10MB)')
+    this.props.showValidationModal('Audio size cannot exceed 10MB. Please upload any Audio (up to 10MB)')
   }
 
   render () {

@@ -232,4 +232,5 @@ function mapDispatchToProps (dispatch) {
     uploadTemplate
   }, dispatch)
 }
+
 export default connect(null, mapDispatchToProps)(CardArea)

@@ -19,6 +19,12 @@ class Gallery extends React.Component {
     console.log('Gallery constructor state', this.state)
   }
 
+  componentWillReceiveProps (nextProps) {
+    if (nextProps.cards) {
+      this.setState({cards: nextProps.cards})
+    }
+  }
+
   componentDidMount () {
     //Improve Later
     let that = this
@@ -117,7 +123,22 @@ class Gallery extends React.Component {
                 <div style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '10px', minHeight: '125px', maxWidth: '170px', margin: 'auto', transform: index === this.state.selectedIndex-1 ? 'translate3d(62%, 0, 0)' : index === this.state.selectedIndex+1 ? 'translate3d(-20%, 0, 0' : ''}} className={"carousel-item carousel-item-preview " + (index === this.state.selectedIndex ? "active" : "") + (index === this.state.selectedIndex+1 ? "next" : "") + (index === this.state.selectedIndex-1 ? "prev" : "")}>
                     {
                         card.image_url &&
-                        <img src={card.image_url} alt='' style={{objectFit: 'cover', paddingLeft: '2px', paddingRight: '2px', minHeight: '105px', minWidth: '170px', maxHeight: '105px', maxWidth: '170px', paddingTop: '15px', margin: '-10px', width: '100%', height: '100%'}} />
+                        <img 
+                          src={card.image_url} 
+                          alt='' 
+                          style={{
+                            objectFit: 'cover', 
+                            paddingLeft: '2px', 
+                            paddingRight: '2px', 
+                            minHeight: card.title || card.subtitle ? '105px' : '125px', 
+                            minWidth: '170px', 
+                            maxHeight: card.title || card.subtitle ? '105px' : '125px', 
+                            maxWidth: '170px', 
+                            paddingTop: '15px',
+                            margin: '-10px', 
+                            width: '100%', 
+                            height: '100%'
+                          }} />
                     }
                     <hr style={{marginTop: card.image_url ? '' : '100px', marginBottom: '5px'}} />
                     <h6 style={{textAlign: 'left', marginLeft: '10px', marginTop: '10px', fontSize: '16px'}}>{card.title}</h6>
