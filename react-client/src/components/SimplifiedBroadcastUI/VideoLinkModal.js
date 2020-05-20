@@ -165,7 +165,7 @@ class VideoLinkModal extends React.Component {
             image_url: this.state.card.image_url ? this.state.card.image_url : '',
             title: this.state.card.title,
             description: this.state.card.subtitle,
-            youtubeButtons: this.state.card.buttons,
+            buttons: this.state.card.buttons,
             default_action: this.state.card.default_action,
             card: this.state.card
           }, this.props.edit)
