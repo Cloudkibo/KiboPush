@@ -78,9 +78,9 @@ class Page extends React.Component {
     if (data.selected === 0) {
       this.props.loadMyPagesListNew({ last_id: 'none', number_of_records: 10, first_page: 'first', filter: this.state.filter, filter_criteria: { search_value: this.state.searchValue } })
     } else if (this.state.pageNumber < data.selected) {
-      this.props.loadMyPagesListNew({ last_id: this.props.pages.length > 0 ? this.props.pages[this.props.pages.length - 1]._id : 'none', number_of_records: 10, first_page: 'next', filter: this.state.filter, filter_criteria: { search_value: this.state.searchValue } })
+      this.props.loadMyPagesListNew({ last_id: this.props.pages.length > 0 ? this.props.pages[this.props.pages.length - 1]._id : 'none', number_of_records: 10, first_page: 'next', filter: this.state.filter, filter_criteria: { search_value: this.state.searchValue }, current_page: this.state.pageNumber,requested_page: data.selected})
     } else {
-      this.props.loadMyPagesListNew({ last_id: this.props.pages.length > 0 ? this.props.pages[0]._id : 'none', number_of_records: 10, first_page: 'previous', filter: this.state.filter, filter_criteria: { search_value: this.state.searchValue } })
+      this.props.loadMyPagesListNew({ last_id: this.props.pages.length > 0 ? this.props.pages[0]._id : 'none', number_of_records: 10, first_page: 'previous', filter: this.state.filter, filter_criteria: { search_value: this.state.searchValue }, current_page: this.state.pageNumber, requested_page: data.selected })
     }
     this.setState({ pageNumber: data.selected })
     this.displayData(data.selected, this.props.pages)
@@ -165,7 +165,7 @@ class Page extends React.Component {
   searchPages(event) {
     // var filtered = []
     if (event.target.value !== '') {
-      this.setState({ searchValue: event.target.value, filter: true, showingSearchResult: false })
+      this.setState({ searchValue: event.target.value, filter: true, showingSearchResult: false, pageNumber:0 })
       this.props.loadMyPagesListNew({ last_id: this.props.pages.length > 0 ? this.props.pages[this.props.pages.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: { search_value: event.target.value } })
 
       // for (let i = 0; i < this.props.pages.length; i++) {
@@ -175,7 +175,7 @@ class Page extends React.Component {
       // }
     } else {
       this.props.loadMyPagesListNew({ last_id: this.props.pages.length > 0 ? this.props.pages[this.props.pages.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: false, filter_criteria: { search_value: '' } })
-      this.setState({ filter: false, search_value: '', showingSearchResult: false })
+      this.setState({ filter: false, search_value: '', showingSearchResult: false,pageNumber:0 })
       // filtered = this.props.pages
     }
     // this.displayData(0, filtered)
