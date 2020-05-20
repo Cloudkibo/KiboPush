@@ -39,7 +39,7 @@ class FacebookPosts extends React.Component {
     this.state = {
       postText: '',
       seeMoreLink: {
-        link: "kibopush.com",
+        link: this.props.currentPost && this.props.currentPost.seeMoreLink ? this.props.currentPost.seeMoreLink : "kibopush.com",
         valid: true,
         validating: false
       },
@@ -282,7 +282,7 @@ class FacebookPosts extends React.Component {
   }
   validationCommentCapture (data) {
     if (data.selectedRadio === 'new') {
-      if (data.title !== '' && data.title.length > 2 && (data.postText !== '' || data.attachments.length > 0 || data.cards.length > 0)) {
+      if (this.state.seeMoreLink.valid && data.title !== '' && data.title.length > 2 && (data.postText !== '' || data.attachments.length > 0 || data.cards.length > 0)) {
         this.setState({
           disabled: false
         })
@@ -727,6 +727,14 @@ class FacebookPosts extends React.Component {
             link: e.target.value
         }
     }, () => {
+      this.validationCommentCapture({
+        selectedRadio: this.state.selectedRadio,
+        title: this.state.title,
+        postUrl: this.state.postUrl,
+        postText: this.state.postText,
+        attachments: this.state.attachments,
+        cards: this.state.cards
+      })
       if (this.state.seeMoreLink.validating) {
         clearTimeout(this.typingTimer)
         this.typingTimer = setTimeout(() => this.props.urlMetaData(this.state.seeMoreLink.link, (data) => {
@@ -737,7 +745,16 @@ class FacebookPosts extends React.Component {
           } else {
             seeMoreLink.valid = true
           }
-          this.setState({seeMoreLink})
+          this.setState({seeMoreLink}, () => {
+            this.validationCommentCapture({
+              selectedRadio: this.state.selectedRadio,
+              title: this.state.title,
+              postUrl: this.state.postUrl,
+              postText: this.state.postText,
+              attachments: this.state.attachments,
+              cards: this.state.cards
+            })
+          })
         }), this.doneTypingInterval)
       }
     })
