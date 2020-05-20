@@ -49,6 +49,9 @@ class Media extends React.Component {
 
   componentDidMount () {
     console.log('Media componentDidMount')
+    setTimeout(() => {
+      this.setState({facebookUrl: this.props.facebookUrl})
+    }, 100)
     // this.props.handleMedia({id: this.props.id,
     //   componentType: 'media',
     //   mediaType: this.props.media.mediaType,
@@ -151,7 +154,7 @@ class Media extends React.Component {
               width='100%'
               height='100%'
               controls={true}
-              url={this.props.facebookUrl}
+              url={this.state.facebookUrl}
               config={{
                 facebook: {
                   appId: '1429073230510150'
