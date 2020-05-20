@@ -31,7 +31,8 @@ class Ad extends React.Component {
       list: [],
       adName: this.props.sponsoredMessage.adName ? this.props.sponsoredMessage.adName : '',
       scheduleDateTime: '',
-      quickRepliesComponent: null
+      quickRepliesComponent: null,
+      showGSModal: false
     }
     this.updateState = this.updateState.bind(this)
     this.handleChange = this.handleChange.bind(this)
@@ -45,12 +46,25 @@ class Ad extends React.Component {
     this.handleCard = this.handleCard.bind(this)
     this.handleAction = this.handleAction.bind(this)
     this.updateQuickReplies = this.updateQuickReplies.bind(this)
+    this.toggleGSModal = this.toggleGSModal.bind(this)
+    this.closeGSModal = this.closeGSModal.bind(this)
+    this.GSModalContent = null
 
     this.props.loadCustomFields()
     this.props.loadTags()
     this.props.fetchAllSequence()
     this.props.getIntegrations()
 
+  }
+
+  toggleGSModal (value, content) {
+    this.setState({showGSModal: value})
+    this.GSModalContent = content
+  }
+
+  closeGSModal () {
+    this.setState({showGSModal: false})
+    this.refs.ActionModal.click()
   }
 
   updateQuickReplies (quickReplies) {
@@ -421,6 +435,12 @@ class Ad extends React.Component {
         </div>
         }
         <br />
+        <a href='#/' style={{ display: 'none' }} ref='ActionModal' data-toggle='modal' data-target='#ActionModal'>ActionModal</a>
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)', zIndex: 9999 }} className='modal fade' id='ActionModal' tabindex='-1' role='dialog' aria-labelledby='exampleModalLabel' aria-hidden='true'>
+          <div style={{ transform: 'translate(0, 0)'}} className='modal-dialog modal-lg' role='document'>
+            {this.state.showGSModal && this.GSModalContent}
+          </div>
+        </div>
         <div className='row'>
           <div className='col-md-7'>
             <div className='form-group m-form__group'>

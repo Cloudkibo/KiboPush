@@ -6,7 +6,6 @@ import { bindActionCreators } from 'redux'
 import { RingLoader } from 'halogenium'
 import { uploadImage, uploadFile, uploadTemplate } from '../../redux/actions/convos.actions'
 import { deleteFile } from '../../utility/utils'
-
 class Media extends React.Component {
   constructor (props, context) {
     super(props, context)
@@ -38,6 +37,7 @@ class Media extends React.Component {
       styling: {minHeight: 30, maxWidth: 400}
     }
   }
+
   onTestURLVideo (url) {
     var videoEXTENSIONS = /\.(mp4|ogg|webm|quicktime)($|\?)/i
     var truef = videoEXTENSIONS.test(url)
@@ -255,14 +255,13 @@ class Media extends React.Component {
   render () {
     return (
       <div className='broadcast-component' style={{marginBottom: 40 + 'px'}}>
-        <div style={{marginBottom: '-0.5px', paddingTop: '0px', borderColor: this.props.required && !this.state.fileurl ? 'red' : ''}} className='ui-block hoverbordersolid'>
+        <div style={{marginBottom: '-0.5px', paddingTop: '0px', borderColor: this.props.required && !this.state.fileurl ? 'red' : ''}} className='ui-block hoverbordersolid' >
           {
           this.state.loading
           ? <div className='align-center' style={{padding: '50px'}}><center><RingLoader color='#FF5E3A' /></center></div>
           : <div style={{display: 'flex', minHeight: 170, backgroundColor: '#F2F3F8'}} className='mediaImage' onClick={() => {
             this.refs.file.click()
           }}>
-
             <input
               ref='file'
               type='file'
