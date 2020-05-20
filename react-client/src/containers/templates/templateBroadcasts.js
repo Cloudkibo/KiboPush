@@ -349,7 +349,7 @@ class TemplateBroadcasts extends React.Component {
                               <td data-field='description'
                                 className='m-datatable__cell'>
                                 <span
-                                  style={{width: '100px'}}>{(broadcast.payload.length > 1) ? 'Miscellaneous' : broadcast.payload[0].componentType}</span>
+                                  style={{width: '100px'}}>{(broadcast.payload.length > 1) ? 'Miscellaneous' : broadcast.payload[0].componentName || broadcast.payload[0].componentType}</span>
                               </td>
                               <td data-field='category' className='m-datatable__cell'>
                                 <span style={{width: '100px'}}>{broadcast.category.join(

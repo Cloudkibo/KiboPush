@@ -955,7 +955,7 @@ class GenericMessage extends React.Component {
             youtubeLink: broadcast.youtubeLink && broadcast.youtubeLink,
             videoLink: broadcast.videoLink && broadcast.videoLink,
             componentType: 'media',
-            componentName: 'media',
+            componentName:  broadcast.componentName ? broadcast.componentName: 'media',
             fileurl: broadcast.fileurl,
             fileName: broadcast.fileName,
             image_url: broadcast.image_url,

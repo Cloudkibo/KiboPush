@@ -5,6 +5,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { uploadImage, uploadFile, uploadTemplate } from '../../../redux/actions/convos.actions'
 import FacebookPlayer from 'react-player/lib/players/Facebook'
+import { RingLoader } from 'halogenium'
 
 class Media extends React.Component {
   constructor (props, context) {
@@ -13,8 +14,10 @@ class Media extends React.Component {
     this.state = {
       imgSrc: props.media.image_url ? props.media.image_url : '',
       buttons: props.buttons ? props.buttons : [],
-      media: props.media ? props.media : null
+      media: props.media ? props.media : null,
+      facebookLoading: props.facebookUrl ? true : false
     }
+    this.facebookVideoReady = this.facebookVideoReady.bind(this)
     this.edit = this.edit.bind(this)
     this.getDeletePayload = this.getDeletePayload.bind(this)
   }
@@ -116,6 +119,12 @@ class Media extends React.Component {
     return deletePayload
   }
 
+  facebookVideoReady () {
+    this.setState({ 
+      facebookLoading: false
+    })
+  }
+
   render () {
     return (
       <div className='broadcast-component' style={{marginBottom: '50px'}}>
@@ -130,8 +139,15 @@ class Media extends React.Component {
         </div>
         <div className='ui-block' style={{maxWidth: '250px'}} >
           {
+            this.state.facebookLoading &&
+            <div className='align-center' style={{ padding: '50px' }}>
+              <center><RingLoader color='#FF5E3A' /></center>
+            </div>
+          }
+          {
             this.props.facebookUrl &&
             <FacebookPlayer
+              onReady={this.facebookVideoReady}
               width='100%'
               height='100%'
               controls={true}
