@@ -152,6 +152,10 @@ class CreateBroadcastTemplate extends React.Component {
       return
     }
     if (this.state.categoryValue.length > 0) {
+      let initialFiles = this.state.initialFiles
+      let currentFiles = getFileIdsOfBroadcast(this.state.broadcast)
+      deleteInitialFiles(initialFiles, currentFiles)
+      this.setState({newFiles: [], initialFiles: currentFiles})
       var broadcastTemplate = {
         _id: this.props.template._id,
         title: this.state.convoTitle,
