@@ -139,7 +139,6 @@ class Media extends React.Component {
           {
             this.props.facebookUrl &&
             <FacebookPlayer
-              onReady={this.facebookVideoReady}
               width='100%'
               height='100%'
               controls={true}
