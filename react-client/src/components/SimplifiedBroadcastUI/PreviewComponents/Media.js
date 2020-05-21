@@ -51,7 +51,7 @@ class Media extends React.Component {
     console.log('Media componentDidMount')
     setTimeout(() => {
       this.setState({facebookUrl: this.props.facebookUrl})
-    }, 100)
+    }, 500)
     // this.props.handleMedia({id: this.props.id,
     //   componentType: 'media',
     //   mediaType: this.props.media.mediaType,
