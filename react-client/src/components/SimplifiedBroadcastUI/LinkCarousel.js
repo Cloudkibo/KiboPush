@@ -36,7 +36,7 @@ class LinkCarouselModal extends React.Component {
         this.state = {
             cards,
             seeMoreLink: {
-                link: this.props.seeMoreLink ? this.props.seeMoreLink : "kibopush.com",
+                link: this.props.seeMoreLink ? this.props.seeMoreLink.link : "kibopush.com",
                 valid: true,
                 validating: false
             },
@@ -539,7 +539,7 @@ class LinkCarouselModal extends React.Component {
                             <button onClick={this.closeModal} className='btn btn-secondary' style={{marginRight: '25px', marginLeft: '280px'}}>
                                 Cancel
                             </button>
-                            <button disabled={!this.valid()} onClick={() => {this.props.saveLinks(this.state.links,this.state.cards, this.state.seeMoreLink.link)}} className='btn btn-primary'>
+                            <button disabled={!this.valid()} onClick={() => {this.props.saveLinks(this.state.links,this.state.cards, this.state.seeMoreLink)}} className='btn btn-primary'>
                                 Save
                             </button>
                         </div>
