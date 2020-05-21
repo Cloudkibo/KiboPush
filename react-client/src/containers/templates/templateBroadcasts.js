@@ -24,7 +24,8 @@ class TemplateBroadcasts extends React.Component {
       filteredByCategory: '',
       searchValue: '',
       filter: false,
-      pageNumber: 0
+      pageNumber: 0,
+      lastBroadcastTemplateId: 'none'
     }
     this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
@@ -114,10 +115,25 @@ class TemplateBroadcasts extends React.Component {
 
   UNSAFE_componentWillReceiveProps (nextProps) {
     if (nextProps.broadcasts && nextProps.count) {
+      if(nextProps.broadcasts.length > 0 && this.state.pageNumber > 1 ) {
+       this.setState({lastBroadcastTemplateId: nextProps.broadcasts[0]._id})
+      }
+      else {
+        this.setState({lastBroadcastTemplateId: 'none'})
+      }
       this.displayData(0, nextProps.broadcasts)
       this.setState({ totalLength: nextProps.count })
     } else {
       this.setState({broadcastsData: [], broadcastsDataAll: [], totalLength: 0})
+    }
+    if(nextProps.broadcasts && nextProps.broadcasts.length === 0 && nextProps.count > 0) {
+      if (this.state.pageNumber > 0) {
+      this.props.loadBroadcastsListNew({last_id: this.state.lastBroadcastTemplateId, number_of_records: 5, first_page: this.state.pageNumber < 2 ? 'first': 'previous', filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, category_value: this.state.filterValue}})
+      let pageNumber = this.state.pageNumber-1 
+      this.setState({pageNumber:pageNumber})
+      } else {
+        this.props.loadBroadcastsListNew({last_id: 'none', number_of_records: 5, first_page: 'first', filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, category_value: this.state.filterValue}})      
+      }
     }
   }
 
