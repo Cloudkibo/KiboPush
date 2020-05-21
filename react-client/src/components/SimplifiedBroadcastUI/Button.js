@@ -949,7 +949,7 @@ class Button extends React.Component {
         <div onClick={this.props.closeButton} style={{ marginLeft: '100%', marginTop: '-10px', marginBottom: '15px', cursor: 'pointer' }}><span role='img' aria-label='times'>❌</span></div>
         <div>
           <h6>Button Title:</h6>
-          <input style={{ borderColor: this.state.title === '' ? 'red' : '' }} type='text' className='form-control' value={this.state.title} onChange={this.changeTitle} placeholder='Enter button title' />
+          <input maxLength={23} style={{ borderColor: this.state.title === '' ? 'red' : '' }} type='text' className='form-control' value={this.state.title} onChange={this.changeTitle} placeholder='Enter button title' />
           <div style={{ color: 'red', textAlign: 'left' }}>{this.state.title === '' ? '*Required' : ''}</div>
 
           <div>
