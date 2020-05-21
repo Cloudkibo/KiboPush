@@ -2041,8 +2041,8 @@ class Builders extends React.Component {
               </button>
             </div>
             <div style={{ color: 'black' }} className="modal-body">
-              <input style={{ maxWidth: '300px', float: 'left', margin: 2 }} value={this.state.tempConvoTitle} onChange={this.titleChange} type='text' className='form-control' />
-              <button style={{ float: 'left', margin: 2 }} onClick={this.renameTitle} className='btn btn-primary' type='button' data-dismiss='modal' disabled={!this.state.tempConvoTitle}>Save</button>
+              <input maxLength={23} style={{ maxWidth: '300px', float: 'left' }} value={this.state.tempConvoTitle} onChange={this.titleChange} type='text' className='form-control' />
+              <button style={{ float: 'left', marginLeft: '20px' }} onClick={this.renameTitle} className='btn btn-primary' type='button' data-dismiss='modal' disabled={!this.state.tempConvoTitle}>Save</button>
             </div>
           </div>
         </div>

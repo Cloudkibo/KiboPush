@@ -29,7 +29,7 @@ class BasicBuilder extends React.Component {
                       {
                         this.props.linkedMessages.map((message, index) =>
                         <li key={message.id}>
-                          <a href='#/' className={'broadcastTabs' + (this.props.currentId === message.id ? ' active' : '')} onClick={() => this.props.changeMessage(message.id)} id={'tab-' + message.id} data-toggle='tab' role='tab' style={{cursor: 'pointer', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '200px'}}>
+                          <a href='#/' className={'broadcastTabs' + (this.props.currentId === message.id ? ' active' : '')} onClick={() => this.props.changeMessage(message.id)} id={'tab-' + message.id} data-toggle='tab' role='tab' style={{cursor: 'pointer', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap'}}>
                           {
                             !this.props.titleEditable || this.props.currentId !== message.id
                             ? <h7> {message.title} </h7>
