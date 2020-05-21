@@ -51,7 +51,7 @@ class EditPoll extends React.Component {
     document.title = `${title} | Edit Poll`;
   }
   UNSAFE_componentWillReceiveProps (nextprops) {
-    if (nextprops.categories) {
+    if (nextprops.categories && nextprops.pollDetails) {
       let options = []
       for (var j = 0; j < nextprops.pollDetails.category.length; j++) {
             options.push({id:j, text: nextprops.pollDetails.category[j], selected: true})

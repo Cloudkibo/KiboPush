@@ -50,8 +50,8 @@ class createSurvey extends React.Component {
     document.title = `${title} | Edit Survey`;
   }
   UNSAFE_componentWillReceiveProps (nextprops) {
-    console.log('nextprops', nextprops)
-    if (nextprops.categories) {
+    console.log('nextprops.survey', nextprops.survey)
+    if (nextprops.categories && nextprops.survey) {
       let options = []
       for (var j = 0; j < nextprops.survey.category.length; j++) {
             options.push({id: j, text: nextprops.survey.category[j], selected: true})
