@@ -23,7 +23,8 @@ class templateSurveys extends React.Component {
       filteredByCategory: [],
       searchValue: '',
       filter: false,
-      pageNumber: 0
+      pageNumber: 0,
+      lastSurveyTemplateId: 'none'
     }
     this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
@@ -89,10 +90,25 @@ class templateSurveys extends React.Component {
   }
   UNSAFE_componentWillReceiveProps (nextProps) {
     if (nextProps.surveys && nextProps.count) {
+      if(nextProps.surveys.length > 0 && this.state.pageNumber > 1 ) {
+        this.setState({lastSurveyTemplateId: nextProps.surveys[0]._id})
+       }
+       else {
+         this.setState({lastSurveyTemplateId: 'none'})
+       }
       this.displayData(0, nextProps.surveys)
       this.setState({ totalLength: nextProps.count })
     } else {
       this.setState({surveysData: [], surveysDataAll: [], totalLength: 0})
+    }
+    if(nextProps.surveys && nextProps.surveys.length === 0 && nextProps.count > 0) {
+      if (this.state.pageNumber > 0) {
+      this.props.loadSurveysListNew({last_id: this.state.lastSurveyTemplateId, number_of_records: 5, first_page: this.state.pageNumber < 2 ? 'first': 'previous', filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, category_value: this.state.filterValue}})
+      let pageNumber = this.state.pageNumber-1 
+      this.setState({pageNumber:pageNumber})
+      } else {
+        this.props.loadSurveysListNew({last_id: 'none', number_of_records: 5, first_page: 'first', filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, category_value: this.state.filterValue}})      
+      }
     }
   }
   searchSurvey (event) {
