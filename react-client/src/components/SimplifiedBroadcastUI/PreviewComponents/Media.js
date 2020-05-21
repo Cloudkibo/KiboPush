@@ -14,10 +14,8 @@ class Media extends React.Component {
     this.state = {
       imgSrc: props.media.image_url ? props.media.image_url : '',
       buttons: props.buttons ? props.buttons : [],
-      media: props.media ? props.media : null,
-      facebookLoading: props.facebookUrl ? true : false
+      media: props.media ? props.media : null
     }
-    this.facebookVideoReady = this.facebookVideoReady.bind(this)
     this.edit = this.edit.bind(this)
     this.getDeletePayload = this.getDeletePayload.bind(this)
   }
@@ -49,9 +47,6 @@ class Media extends React.Component {
 
   componentDidMount () {
     console.log('Media componentDidMount')
-    setTimeout(() => {
-      this.setState({facebookUrl: this.props.facebookUrl})
-    }, 500)
     // this.props.handleMedia({id: this.props.id,
     //   componentType: 'media',
     //   mediaType: this.props.media.mediaType,
@@ -122,12 +117,6 @@ class Media extends React.Component {
     return deletePayload
   }
 
-  facebookVideoReady () {
-    this.setState({ 
-      facebookLoading: false
-    })
-  }
-
   render () {
     return (
       <div className='broadcast-component' style={{marginBottom: '50px'}}>
@@ -150,11 +139,10 @@ class Media extends React.Component {
           {
             this.props.facebookUrl &&
             <FacebookPlayer
-              onReady={this.facebookVideoReady}
               width='100%'
               height='100%'
               controls={true}
-              url={this.state.facebookUrl}
+              url={this.props.facebookUrl}
               config={{
                 facebook: {
                   appId: '1429073230510150'
