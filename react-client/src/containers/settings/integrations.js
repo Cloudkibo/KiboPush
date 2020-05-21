@@ -104,7 +104,7 @@ class Integrations extends React.Component {
                 </button>
               </div>
               <div style={{ color: 'black' }} className="modal-body">
-                <p>Are you sure you want to disable this integration?</p>
+                <p>Are you sure you want to disable this integration? When you will connect again your old integration will be overridden.</p>
                 <button style={{ float: 'right' }}
                   className='btn btn-primary btn-sm'
                   onClick={() => {
