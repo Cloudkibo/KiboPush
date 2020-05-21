@@ -118,7 +118,7 @@ class Builders extends React.Component {
     this.onLoadCustomFields = this.onLoadCustomFields.bind(this)
     this.createLinkedMessagesFromQuickReplies = this.createLinkedMessagesFromQuickReplies.bind(this)
     this.titleChange = this.titleChange.bind(this)
-    this.checkMediaComponents = this.checkMediaComponents.bind(this)
+    this.checkAttachments = this.checkAttachments.bind(this)
     this.updateFileUrl = this.updateFileUrl.bind(this)
     this.onFilesError = this.onFilesError.bind(this)
     this.confirmDeleteModal = this.confirmDeleteModal.bind(this)
@@ -659,20 +659,42 @@ class Builders extends React.Component {
     console.log('appendQuickRepliesToEnd', broadcast)
     return broadcast
   }
-  checkMediaComponents (linkedMessages) {
+
+  checkAttachments (linkedMessages) {
     var isMediaValid = true
     for (var i = 0; i < linkedMessages.length; i++) {
       for (var j = 0; j < linkedMessages[i].messageContent.length; j++) {
         var component = linkedMessages[i].messageContent[j]
-        if (component.componentType === 'media' && component.fileurl && !component.fileurl.attachment_id) {
+        if (component.cards) {
+          for (let k = 0; k < component.cards.length; k++) {
+            if (component.cards[k].fileurl && !component.cards[k].fileurl.attachment_id) {
+              isMediaValid = false
+              this.props.uploadTemplate({
+                pages: this.props.pages,
+                url: component.cards[k].fileurl.url,
+                componentType: "image",
+                id: component.cards[k].fileurl.id,
+                name: component.cards[k].fileurl.name
+              }, { 
+                id: component.id,
+                componentType: "image",
+                fileName: component.cards[k].fileurl.name,
+                type: component.cards[k].fileurl.type,
+                size: component.cards[k].fileurl.size
+              }, (data) => this.updateFileUrl(data, k))
+            }
+          }
+        } else if (component.fileurl && !component.fileurl.attachment_id) {
           isMediaValid = false
-          this.props.uploadTemplate({pages: this.props.pages,
+          this.props.uploadTemplate({
+            pages: this.props.pages,
             url: component.fileurl.url,
-            componentType: component.mediaType,
+            componentType: component.mediaType || component.componentType,
             id: component.fileurl.id,
             name: component.fileurl.name
-          }, { id: component.id,
-            componentType: component.mediaType,
+          }, { 
+            id: component.id,
+            componentType: component.mediaType || component.componentType,
             fileName: component.fileurl.name,
             type: component.fileurl.type,
             size: component.fileurl.size
@@ -686,15 +708,19 @@ class Builders extends React.Component {
         }
       }
     }
-
   }
-  updateFileUrl (data) {
+
+  updateFileUrl (data, cardIndex) {
     let linkedMessages = this.state.linkedMessages
     for (let i = 0; i < linkedMessages.length; i++) {
       for (let j = 0; j < linkedMessages[i].messageContent.length; j++) {
         let component = linkedMessages[i].messageContent[j]
         if (component.id === data.id) {
-          component.fileurl = data.fileurl
+          if (component.cards) {
+            component.cards[cardIndex].fileurl = data.fileurl
+          } else {
+            component.fileurl = data.fileurl
+          }
           break
         }
       }
@@ -706,7 +732,14 @@ class Builders extends React.Component {
     for (var m = 0; m < linkedMessages.length; m++) {
       for (var n = 0; n < linkedMessages[m].messageContent.length; n++) {
         var componentObj = linkedMessages[m].messageContent[n]
-        if (componentObj.componentType === 'media' && componentObj.fileurl && !componentObj.fileurl.attachment_id) {
+        if (componentObj.cards) {
+          for (let k = 0; k < componentObj.cards.length; k++) {
+            if (componentObj.cards[k].fileurl && !componentObj.cards[k].fileurl.attachment_id) {
+              isMediaValid = false
+              break
+            }
+          }
+        } else if (componentObj.fileurl && !componentObj.fileurl.attachment_id) {
           isMediaValid = false
           break
         }
@@ -725,7 +758,7 @@ class Builders extends React.Component {
     if (this.state.broadcast && this.state.broadcast.length > 0) {
       this.initializeList(this.state.linkedMessages.concat(this.state.unlinkedMessages).filter((lm) => lm.id === this.state.currentId)[0].messageContent)
     }
-    this.checkMediaComponents(this.state.linkedMessages)
+    this.checkAttachments(this.state.linkedMessages)
     console.log('genericMessage props in end of componentDidMount', this.props)
   }
 
@@ -1941,7 +1974,7 @@ class Builders extends React.Component {
             <div style={{ position: 'fixed', top: '50%', left: '50%', width: '30em', height: '18em', marginLeft: '-10em' }}
               className='align-center'>
               <center><RingLoader color='#716aca' /></center>
-              <center><span style={{color: '#5867dd', fontSize: 'large', fontWeight: '900'}}>Uploading Media...</span></center>
+              <center><span style={{color: '#5867dd', fontSize: 'large', fontWeight: '900'}}>Uploading Attachments...</span></center>
             </div>
           </div>
         }
