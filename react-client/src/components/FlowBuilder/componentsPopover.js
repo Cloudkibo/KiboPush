@@ -94,7 +94,7 @@ class ComponentsPopover extends React.Component {
             type="button"
             className="btn btn-outline-brand"
           >
-              + Add YouTube Video Component
+              + Add Video Link Component
           </button>
           <button
             style={{

@@ -51,14 +51,10 @@ class EditPoll extends React.Component {
     document.title = `${title} | Edit Poll`;
   }
   UNSAFE_componentWillReceiveProps (nextprops) {
-    if (nextprops.categories) {
+    if (nextprops.categories && nextprops.pollDetails) {
       let options = []
       for (var j = 0; j < nextprops.pollDetails.category.length; j++) {
-        for (var i = 0; i < nextprops.categories.length; i++) {
-          if (nextprops.categories[i].name === nextprops.pollDetails.category[j]) {
-            options.push({id: nextprops.categories[i]._id, text: nextprops.categories[i].name, selected: true})
-          }
-        }
+            options.push({id:j, text: nextprops.pollDetails.category[j], selected: true})
       }
       for (var k = 0; k < nextprops.categories.length; k++) {
         if (this.exists(options, nextprops.categories[k]) === false) {
@@ -218,7 +214,7 @@ class EditPoll extends React.Component {
                 <button style={{ float: 'right' }}
                   className='btn btn-primary btn-sm'
                   onClick={() => {
-                    this.closeAddCategoryDialog()
+                    this.closeDialog()
                     this.saveCategory()
                   }} data-dismiss='modal'>Save
                 </button>

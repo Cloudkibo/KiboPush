@@ -8,12 +8,10 @@ export function templatesInfo (state = {}, action) {
   switch (action.type) {
     case ActionTypes.REMOVE_TEMPLATE_BROADCAST:
     let broadcasts = state.broadcasts
-    let broadcastsCount = state.broadcastsCount-1
     let BroadcastIndex = broadcasts.findIndex(cf => cf._id === action.data)
     broadcasts.splice(BroadcastIndex, 1)
     return Object.assign({}, state, {
       broadcasts: [...broadcasts],
-      broadcastsCount: broadcastsCount
     })
     case ActionTypes.LOAD_CATEGORY_LIST:
       return Object.assign({}, state, {
@@ -50,22 +48,18 @@ export function templatesInfo (state = {}, action) {
       })
       case ActionTypes.REMOVE_TEMPLATE_SURVEY:
       let surveys = state.surveys
-      let surveysCount = state.totalSurveysCount-1
       let surveyIndex = surveys.findIndex(cf => cf._id === action.data)
       surveys.splice(surveyIndex, 1)
       return Object.assign({}, state, {
         surveys: [...surveys],
-        totalSurveysCount: surveysCount
       })
 
       case ActionTypes.REMOVE_TEMPLATE_POLL:
       let polls = state.polls
-      let PollsCount = state.totalPollsCount-1
       let pollIndex = polls.findIndex(cf => cf._id === action.data)
       polls.splice(pollIndex, 1)
       return Object.assign({}, state, {
         polls: [...polls],
-        totalPollsCount: PollsCount
       })
     case ActionTypes.LOAD_TEMPLATE_POLLS_LIST:
       return Object.assign({}, state, {

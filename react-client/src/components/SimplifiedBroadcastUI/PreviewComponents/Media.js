@@ -5,6 +5,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { uploadImage, uploadFile, uploadTemplate } from '../../../redux/actions/convos.actions'
 import FacebookPlayer from 'react-player/lib/players/Facebook'
+import { RingLoader } from 'halogenium'
 
 class Media extends React.Component {
   constructor (props, context) {
@@ -129,6 +130,12 @@ class Media extends React.Component {
           </span>
         </div>
         <div className='ui-block' style={{maxWidth: '250px'}} >
+          {
+            this.state.facebookLoading &&
+            <div className='align-center' style={{ padding: '50px' }}>
+              <center><RingLoader color='#FF5E3A' /></center>
+            </div>
+          }
           {
             this.props.facebookUrl &&
             <FacebookPlayer

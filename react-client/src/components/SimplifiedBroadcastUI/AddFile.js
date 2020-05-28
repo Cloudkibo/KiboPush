@@ -120,7 +120,7 @@ class File extends React.Component {
   }
 
   onFilesError (error, file) {
-    this.props.showValidationModal('File size cannot exceed 10MB. Please upload any File(up to 10MB)')
+    this.props.showValidationModal('File size cannot exceed 10MB. Please upload any File (up to 10MB)')
   }
 
   render () {

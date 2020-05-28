@@ -29,6 +29,7 @@ import LinkCarousel from './LinkCarousel';
 import QuickReplies from './QuickReplies'
 import VideoLinkModal from './VideoLinkModal'
 import MODAL from '../extras/modal'
+
 class GenericMessage extends React.Component {
   constructor (props, context) {
     super(props, context)
@@ -101,6 +102,27 @@ class GenericMessage extends React.Component {
     console.log('genericMessage props in constructor', this.props)
   }
 
+  showValidationModal (errorMessage) {
+    this.setState({showContent: true, errorMessage: errorMessage}, () => {
+      this.refs.openValidationModal.click()
+    })
+  }
+
+  getModalContent () {
+    if (this.state.showContent) {
+      return (
+        <h6>{this.state.errorMessage}</h6>
+      )
+    } else {
+      return (<div />)
+    }
+  }
+
+  toggleModalContent () {
+    this.setState({showContent: !this.state.showContent})
+  }
+
+
 
    showValidationModal (errorMessage) {
     this.setState({showContent: true, errorMessage: errorMessage}, () => {
@@ -121,6 +143,7 @@ class GenericMessage extends React.Component {
   toggleModalContent () {
     this.setState({showContent: !this.state.showContent})
   }
+      
   setTempFiles (files, filesToRemove) {
     let tempFiles = this.state.tempFiles
     if (files) {
@@ -952,7 +975,7 @@ class GenericMessage extends React.Component {
             youtubeLink: broadcast.youtubeLink && broadcast.youtubeLink,
             videoLink: broadcast.videoLink && broadcast.videoLink,
             componentType: 'media',
-            componentName: 'media',
+            componentName:  broadcast.componentName ? broadcast.componentName: 'media',
             fileurl: broadcast.fileurl,
             fileName: broadcast.fileName,
             image_url: broadcast.image_url,

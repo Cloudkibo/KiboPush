@@ -16,6 +16,8 @@ import { isFacebookPageUrl } from '../../utility/utils'
 import LinkCarousel from '../../components/SimplifiedBroadcastUI/LinkCarousel'
 import Preview from './preview'
 import ViewMessage from '../../components/ViewMessage/viewMessage'
+import {isWebURL} from '../../utility/utils'
+import { urlMetaData } from '../../redux/actions/convos.actions'
 
 const styles = {
   iconclass: {
@@ -36,6 +38,11 @@ class FacebookPosts extends React.Component {
     this.linkLimit = 10
     this.state = {
       postText: '',
+      seeMoreLink: {
+        link: this.props.currentPost && this.props.currentPost.seeMoreLink ? this.props.currentPost.seeMoreLink : "kibopush.com",
+        valid: true,
+        validating: false
+      },
       isCorrectUrl: true,
       postOriginalText:'',
       attachments: [],
@@ -97,7 +104,10 @@ class FacebookPosts extends React.Component {
     this.setCommentCapture = this.setCommentCapture.bind(this)
     this.saveLinks = this.saveLinks.bind(this)
     this.removeLinkCarousel = this.removeLinkCarousel.bind(this)
-    this.closeModal = this.closeModal.bind(this)
+    this.closeModal = this.closeModal.bind(this)        
+    this.handleSeeMoreLinkChange = this.handleSeeMoreLinkChange.bind(this)
+    this.typingTimer = null
+    this.doneTypingInterval = 500
   }
   closeModal () {
     this.refs.linkCarousel.click()
@@ -132,6 +142,11 @@ class FacebookPosts extends React.Component {
   removeLinkCarousel () {
     this.setState({
       postType: '',
+      seeMoreLink: {
+        link: "kibopush.com",
+        valid: true,
+        validating: false
+      },
       cards: [],
       links: [],
       attachments:[]
@@ -179,7 +194,7 @@ class FacebookPosts extends React.Component {
       includedKeywords: this.state.includedKeywords !== '' ? this.state.includedKeywords.split(',') : [],
       excludedKeywords: this.state.excludedKeywords !== '' ? this.state.excludedKeywords.split(',') : [],
       secondReply: secondReply,
-      seeMoreLink: this.state.seeMoreLink,
+      seeMoreLink: this.state.seeMoreLink.link,
       seeMoreCard: this.state.seeMoreLink ? this.state.cards[this.state.cards.length - 1] : null
     }
 
@@ -267,7 +282,7 @@ class FacebookPosts extends React.Component {
   }
   validationCommentCapture (data) {
     if (data.selectedRadio === 'new') {
-      if (data.title !== '' && data.title.length > 2 && (data.postText !== '' || data.attachments.length > 0 || data.cards.length > 0)) {
+      if (this.state.seeMoreLink.valid && data.title !== '' && data.title.length > 2 && (data.postText !== '' || data.attachments.length > 0 || data.cards.length > 0)) {
         this.setState({
           disabled: false
         })
@@ -371,7 +386,11 @@ class FacebookPosts extends React.Component {
             links: links,
             cards: cards,
             postType: 'links',
-            seeMoreLink: this.props.currentPost.seeMoreLink
+            seeMoreLink: {
+              link: this.props.currentPost.seeMoreLink,
+              valid: true,
+              validating: false
+            }
           })
         }
         this.setState({ selectedRadio: 'new'})
@@ -555,7 +574,11 @@ class FacebookPosts extends React.Component {
       cards: [],
       links: [],
       postType: '',
-      seeMoreLink: null
+      seeMoreLink: {
+        link: "kibopush.com",
+        valid: true,
+        validating: false
+      }
     })
     this.props.saveCurrentPost(null)
   }
@@ -694,6 +717,47 @@ class FacebookPosts extends React.Component {
     var payload = this.createPayload()
     console.log('facebook post', payload)
     this.props.createCommentCapture(payload, this.msg, this.reset)
+  }
+
+  handleSeeMoreLinkChange (e) {
+    this.setState({
+        seeMoreLink: {
+            validating: isWebURL(e.target.value), 
+            valid: false,
+            link: e.target.value
+        }
+    }, () => {
+      this.validationCommentCapture({
+        selectedRadio: this.state.selectedRadio,
+        title: this.state.title,
+        postUrl: this.state.postUrl,
+        postText: this.state.postText,
+        attachments: this.state.attachments,
+        cards: this.state.cards
+      })
+      if (this.state.seeMoreLink.validating) {
+        clearTimeout(this.typingTimer)
+        this.typingTimer = setTimeout(() => this.props.urlMetaData(this.state.seeMoreLink.link, (data) => {
+          let seeMoreLink = this.state.seeMoreLink
+          seeMoreLink.validating = false
+          if (!data || !data.ogTitle) {
+            seeMoreLink.valid = false
+          } else {
+            seeMoreLink.valid = true
+          }
+          this.setState({seeMoreLink}, () => {
+            this.validationCommentCapture({
+              selectedRadio: this.state.selectedRadio,
+              title: this.state.title,
+              postUrl: this.state.postUrl,
+              postText: this.state.postText,
+              attachments: this.state.attachments,
+              cards: this.state.cards
+            })
+          })
+        }), this.doneTypingInterval)
+      }
+    })
   }
 
   render () {
@@ -1084,6 +1148,34 @@ class FacebookPosts extends React.Component {
                       <span style={{color:'blue', marginLeft: '15px'}}>Uploading File...</span>
                     </div>
                     } 
+
+                    {
+                      this.state.attachments.length > 1 && this.state.postType === 'images' &&
+                      <div className='col-12'>
+                        <div className='form-group m-form__group' style={{display: 'flex'}}>
+                          <div className='col-9'>
+                            <label className='col-form-label'>
+                              See More Link
+                              <i className='la la-question-circle' data-toggle='tooltip' title='This will be the last card visible on desktop that lets people know where they can find more information' />  
+                            </label>
+                            <input 
+                              disabled={this.props.user.currentPlan.unique_ID === 'plan_B' || this.props.user.currentPlan.unique_ID === 'plan_D'} 
+                              value={this.state.seeMoreLink.link} 
+                              style={{ maxWidth: '100%', borderColor: !this.state.seeMoreLink.valid && !this.state.seeMoreLink.validating ? 'red' : 'green'}} 
+                              onChange={this.handleSeeMoreLinkChange} className='form-control' 
+                            />
+                            {
+                              this.props.user.currentPlan.unique_ID === 'plan_B' || this.props.user.currentPlan.unique_ID === 'plan_D' ?
+                              <div style={{color: 'darkgoldenrod'}}>{'*Only available on premium'}</div> :
+                              this.state.seeMoreLink.validating ?
+                              <div style={{color: 'green'}}>{'*Validating Link...'}</div> :
+                              <div style={{color: this.state.seeMoreLink.valid ? 'green' : 'red'}}>{this.state.seeMoreLink.valid ? '*Link is valid.' : '*Link is invalid'}</div>
+                            }
+                          </div>
+                        </div>
+                      </div>
+                    }
+
                     <div className='col-12'>
                       <div className='form-group m-form__group'>
                         <div className='col-3'>
@@ -1284,6 +1376,7 @@ class FacebookPosts extends React.Component {
                 </div>
                 <div style={{ maxHeight: '500px', overflowX: 'hidden', overflowY: 'scroll' }} className='m-scrollable modal-body' data-scrollbar-shown='true' data-scrollable='true' data-max-height='200'>
                   <Preview
+                  seeMoreLink={this.state.seeMoreLink}
                   selectedPage={this.state.selectedPage}
                   postType={this.state.postType}
                   attachments={this.state.attachments}
@@ -1320,6 +1413,7 @@ class FacebookPosts extends React.Component {
 function mapStateToProps (state) {
   console.log(state)
   return {
+    user: (state.basicInfo.user),
     pages: (state.pagesInfo.pages),
     currentPost: (state.postsInfo.currentPost),
     sequences: (state.sequenceInfo.sequences)
@@ -1328,11 +1422,12 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-    createCommentCapture: createCommentCapture,
-    editCommentCapture: editCommentCapture,
-    uploadAttachment: uploadAttachment,
-    saveCurrentPost: saveCurrentPost,
-    fetchAllSequence: fetchAllSequence
+    createCommentCapture,
+    editCommentCapture,
+    uploadAttachment,
+    saveCurrentPost,
+    fetchAllSequence,
+    urlMetaData
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(FacebookPosts)
