@@ -427,7 +427,7 @@ class Footer extends React.Component {
                   </span>
                 </span>
               </div>
-              : 
+              :
               <div className='m-input-icon m-input-icon--right'>
                 <input
                   autoFocus
@@ -454,7 +454,7 @@ class Footer extends React.Component {
                           className='fa fa-smile-o'
                           id='_emoji_picker'
                         />
-                      }   
+                      }
                   </span>
                 </span>
               </div>
@@ -467,11 +467,11 @@ class Footer extends React.Component {
                 ? <div className="m-loader" style={{width: "30px"}} />
                 : this.state.uploaded
                 ? <i style={{color: '#36a3f7'}} onClick={this.sendAttachment} className='flaticon-paper-plane' />
-                : 
+                :
                 (
-                  this.props.showThumbsUp ? 
+                  this.props.showThumbsUp ?
                   <i style={{color: '#36a3f7'}} onClick={this.sendThumbsUp} className='la la-thumbs-o-up' />
-                  : 
+                  :
                   <i style={{color: '#36a3f7'}} onClick={this.sendMessage} className='flaticon-paper-plane' />
                 )
               }
@@ -534,6 +534,8 @@ class Footer extends React.Component {
               data-tip='Record Audio'
               className='fa fa-microphone'
               data-target='#_record_audio'
+              data-backdrop="static"
+              data-keyboard="false"
               data-toggle='modal'
               onClick={() => {this.toggleAudioRecording(true)}}
             />
