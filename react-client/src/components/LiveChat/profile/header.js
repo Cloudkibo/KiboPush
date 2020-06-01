@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import {localeCodeToEnglish} from '../../../utility/utils'
 
 // Components
 import CONFIRMATIONMODAL from '../../extras/confirmationModal'
@@ -43,14 +44,21 @@ class ProfileHeader extends React.Component {
           {
             this.props.showUnsubscribe && this.props.user && (this.props.user.role === 'admin' || this.props.user.role === 'buyer') &&
             <span className='m-card-profile__email m-link' data-toggle="modal" data-target="#_unsubscribe" style={{ color: '#716aca', cursor: 'pointer' }}>
-              (Unsubscribe)
+              (Block User)
             </span>
           }
           <br />
           <span style={{pointerEvents: 'none'}} className='m-card-profile__email m-link'>
             {
-              (this.props.activeSession.gender && this.props.activeSession.locale) &&
-                this.props.activeSession.gender + ', ' + this.props.activeSession.locale
+              (this.props.activeSession.gender) &&
+                this.props.activeSession.gender
+            }
+          </span>
+          <br />
+          <span style={{pointerEvents: 'none'}} className='m-card-profile__email m-link'>
+            {
+                (this.props.activeSession.locale) &&
+                localeCodeToEnglish(this.props.activeSession.locale)
             }
           </span>
           <br />
