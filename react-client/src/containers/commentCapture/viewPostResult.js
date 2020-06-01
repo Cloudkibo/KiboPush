@@ -24,10 +24,11 @@ class PostResult extends React.Component {
         captureType: this.props.currentPost.payload && this.props.currentPost.payload.length > 0 ? 'New Post': (this.props.currentPost.post_id && this.props.currentPost.post_id !== ''? 'Existing Post': 'Any Post'),
             CurrentPostsAnalytics: {
               totalComments: this.props.currentPost.count,
+              deletedComments: this.props.currentPost.deletedComments,
               conversions: this.props.currentPost.conversionCount,
               totalRepliesSent: this.props.currentPost.positiveMatchCount,
               waitingConversions: this.props.currentPost.waitingReply,
-              negativeMatch: this.props.currentPost.count-this.props.currentPost.positiveMatchCount
+              negativeMatch: (this.props.currentPost.count + this.props.currentPost.deletedComments)-this.props.currentPost.positiveMatchCount
             }
         }
         if ((props.currentPost.payload && this.props.currentPost.payload.length > 0) ||  (this.props.currentPost.post_id && this.props.currentPost.post_id !== '')) {
@@ -174,10 +175,11 @@ componentDidMount() {
   console.log('ComponentDidMount called in ', this.props.currentPost)
     let conversions = this.props.currentPost.conversionCount
     let waitingConversions = this.props.currentPost.waitingReply
-    let negativeMatch = this.props.currentPost.count-this.props.currentPost.positiveMatchCount
+    let negativeMatch = (this.props.currentPost.count + this.props.currentPost.deletedComments)-this.props.currentPost.positiveMatchCount
     let CurrentPostsAnalytics = {
               totalComments: this.props.currentPost.count,
               conversions: conversions,
+              deletedComments: this.props.currentPost.deletedComments,
               totalRepliesSent: this.props.currentPost.positiveMatchCount,
               waitingConversions: waitingConversions,
               negativeMatch: negativeMatch
