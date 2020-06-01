@@ -30,7 +30,7 @@ class Header extends React.Component {
               this.props.showTitle &&
               <div style={{paddingLeft: '20px'}} className='m-stack m-stack--ver m-stack--general'>
                 <div className='m-stack__item m-stack__item--middle m-brand__logo'>
-                  <h4 style={{cursor: 'pointer'}} onClick={() => {window.location.reload()}} className='m-brand__logo-wrapper'>
+                  <h4 style={{cursor: 'pointer'}} onClick={() => {this.props.history.push({pathname: '/'})}} className='m-brand__logo-wrapper'>
                     KIBOPUSH
                   </h4>
                 </div>
