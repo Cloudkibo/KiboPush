@@ -25,6 +25,7 @@ import BACKBUTTON from '../../components/extras/backButton'
 import HELPWIDGET from '../../components/extras/helpWidget'
 import MODAL from '../../components/extras/modal'
 import WHITELISTDOMAINS from '../../components/chatbotAutomation/whitelistDomains'
+import $ from 'jquery'
 
 class ConfigureChatbot extends React.Component {
   constructor (props, context) {
@@ -60,6 +61,16 @@ class ConfigureChatbot extends React.Component {
     this.fetchChatbotDetails()
     document.getElementsByTagName('body')[0].className = 'm-page--fluid m--skin- m-content--skin-light2 m-header--fixed m-header--fixed-mobile m-footer--push'
     document.title = 'KiboChat | Configure ChatBot'
+
+    var addScript = document.createElement('script')
+    addScript.setAttribute('type', 'text/javascript')
+    addScript.setAttribute('src', 'https://cdn.cloudkibo.com/public/assets/demo/default/custom/components/base/toastr.js')
+    addScript.type = 'text/javascript'
+    document.body.appendChild(addScript)
+
+    /* eslint-disable */
+    $('#sidebarDiv').addClass('hideSideBar')
+    /* eslint-enable */
   }
 
   updateState (state) {
