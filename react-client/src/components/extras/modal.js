@@ -32,7 +32,7 @@ Modal.defaultPropTypes = {
 }
 
 Modal.propTypes = {
-  'zIndex': PropTypes.number.isRequired,
+  'zIndex': PropTypes.number,
   'id': PropTypes.string.isRequired,
   'title': PropTypes.string.isRequired,
   'content': PropTypes.element.isRequired,

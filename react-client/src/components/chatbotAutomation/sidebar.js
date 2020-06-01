@@ -26,6 +26,7 @@ class Sidebar extends React.Component {
     this.restoreBackup = this.restoreBackup.bind(this)
     this.afterCreateBackup = this.afterCreateBackup.bind(this)
     this.afterRestoreBackup = this.afterRestoreBackup.bind(this)
+    this.afterSave = this.afterSave.bind(this)
   }
 
   componentDidMount () {
@@ -115,7 +116,23 @@ class Sidebar extends React.Component {
 
   onNodeSelect (event, value) {
     const currentBlock = this.props.blocks.find((item) => item.uniqueId.toString() === value)
-    this.props.updateParentState({currentBlock})
+    if (this.props.unsavedChanges) {
+      if (this.props.currentBlock.payload && this.props.currentBlock.payload.length === 0) {
+        this.props.alertMsg.error('Text or attachment is required')
+      } else {
+        const data = {
+          triggers: this.props.currentBlock._id === this.props.chatbot.startingBlockId ? this.props.chatbot.triggers : undefined,
+          uniqueId: `${this.props.currentBlock.uniqueId}`,
+          title: this.props.currentBlock.title,
+          chatbotId: this.props.chatbot._id,
+          payload: this.props.currentBlock.payload
+        }
+        console.log('data to save for message block', data)
+        this.props.handleMessageBlock(data, (res) => this.afterSave(res, data, currentBlock))
+      }
+    } else {
+      this.props.updateParentState({currentBlock})
+    }
   }
 
   toggleBackupModal () {
@@ -170,6 +187,31 @@ class Sidebar extends React.Component {
       this.props.alertMsg.error('Failed to restore backup')
     }
     callback()
+  }
+
+  afterSave (res, data, currentBlock) {
+    if (res.status === 'success') {
+      let blocks = this.props.blocks
+      const index = blocks.findIndex((item) => item.uniqueId.toString() === data.uniqueId.toString())
+      if (index !== -1) {
+        const deletedItem = blocks.splice(index, 1)
+        if (res.payload.upserted && res.payload.upserted.length > 0) {
+          data._id = res.payload.upserted[0]._id
+        } else {
+          data._id = deletedItem[0]._id
+        }
+      }
+      const chatbot = this.props.chatbot
+      if (data.triggers && data._id) {
+        chatbot.startingBlockId = data._id
+      }
+      blocks = [...blocks, data]
+      const completed = blocks.filter((item) => item.payload.length > 0).length
+      const progress = Math.floor((completed / blocks.length) * 100)
+      this.props.updateParentState({blocks, currentBlock, progress, unsavedChanges: false})
+    } else {
+      this.props.alertMsg.error(res.description)
+    }
   }
 
   UNSAFE_componentWillReceiveProps (nextProps) {
@@ -254,7 +296,9 @@ Sidebar.propTypes = {
   'createBackup': PropTypes.func.isRequired,
   'restoreBackup': PropTypes.func.isRequired,
   'fetchChatbotDetails': PropTypes.func.isRequired,
-  'fetchChatbot': PropTypes.func.isRequired
+  'fetchChatbot': PropTypes.func.isRequired,
+  'unsavedChanges': PropTypes.bool.isRequired,
+  'handleMessageBlock': PropTypes.func.isRequired
 }
 
 export default Sidebar
