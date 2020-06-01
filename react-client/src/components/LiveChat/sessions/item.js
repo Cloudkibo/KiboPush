@@ -103,7 +103,7 @@ class SessionItem extends React.Component {
                     ? <a href='#/' style={{backgroundColor: '#d9534f', color: '#fff', fontSize: '0.7em', marginRight: '2px', pointerEvents: 'none'}} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-danger'>
                       {this.props.session.unreadCount}
                     </a>
-                    : this.props.session.pendingResponse &&
+                    : this.props.session.pendingResponse &&  this.props.session.status === 'new' && 
                     <span className='m-badge m-badge--metal m-badge--wide'>
                       pending
                     </span>

@@ -17,6 +17,7 @@ import { getFbAppId } from '../../redux/actions/basicinfo.actions'
 import { checkWhitelistedDomains } from '../../redux/actions/broadcast.actions'
 import { saveWhiteListDomains, fetchWhiteListedDomains, deleteDomain } from '../../redux/actions/settings.actions'
 import { registerAction } from '../../utility/socketio'
+import { Prompt } from 'react-router'
 import AlertContainer from 'react-alert'
 import PROGRESS from '../../components/chatbotAutomation/progress'
 import SIDEBAR from '../../components/chatbotAutomation/sidebar'
@@ -38,7 +39,8 @@ class ConfigureChatbot extends React.Component {
       currentBlock: {title: ''},
       currentLevel: 1,
       progress: 0,
-      showWhitelistDomains: false
+      showWhitelistDomains: false,
+      unsavedChanges: false
     }
 
     this.fetchChatbotDetails = this.fetchChatbotDetails.bind(this)
@@ -232,6 +234,14 @@ class ConfigureChatbot extends React.Component {
     document.getElementsByTagName('body')[0].className = 'm-page--fluid m--skin- m-content--skin-light2 m-aside-left--fixed m-header--fixed m-header--fixed-mobile m-aside-left--enabled m-aside-left--skin-dark m-aside-left--offcanvas m-footer--push m-aside--offcanvas-default'
   }
 
+  componentDidUpdate () {
+    if (this.state.unsavedChanges) {
+      window.onbeforeunload = () => true
+    } else {
+      window.onbeforeunload = undefined
+    }
+  }
+
   render () {
     var alertOptions = {
       offset: 75,
@@ -243,6 +253,12 @@ class ConfigureChatbot extends React.Component {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={(a) => { this.msg = a }} {...alertOptions} />
+
+        <Prompt
+          when={this.state.unsavedChanges}
+          message='You have unsaved changes, are you sure you want to leave?'
+        />
+
         {
           this.state.loading
           ? <div id='_chatbot_please_wait' style={{position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%,-50%)'}}>
@@ -263,6 +279,8 @@ class ConfigureChatbot extends React.Component {
                 alertMsg={this.msg}
                 fetchChatbotDetails={this.fetchChatbotDetails}
                 fetchChatbot={this.fetchChatbot}
+                unsavedChanges={this.state.unsavedChanges}
+                handleMessageBlock={this.props.handleMessageBlock}
               />
               <MESSAGEAREA
                 block={this.state.currentBlock}
@@ -291,7 +309,7 @@ class ConfigureChatbot extends React.Component {
               position='bottom-left'
             />
             <HELPWIDGET
-              documentation={{visibility: false}}
+              documentation={{visibility: true, link: 'https://kibopush.com/chatbot-automation/'}}
               videoTutorial={{visibility: true, videoId: 'eszeTV3-Uzs'}}
             />
             <MODAL
