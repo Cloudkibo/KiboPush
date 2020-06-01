@@ -118,7 +118,7 @@ class MessageArea extends React.Component {
       if (this.state.triggers) {
         chatbot.triggers = this.state.triggers
       }
-      this.props.updateParentState({currentBlock, chatbot})
+      this.props.updateParentState({currentBlock, chatbot, unsavedChanges: true})
     })
   }
 
@@ -201,7 +201,7 @@ class MessageArea extends React.Component {
       if (incompleteBlocks.length > 0) {
         currentBlock = incompleteBlocks[0]
       }
-      this.props.updateParentState({blocks, currentBlock, progress})
+      this.props.updateParentState({blocks, currentBlock, progress, unsavedChanges: false})
     } else {
       this.props.alertMsg.error(res.description)
     }
@@ -320,7 +320,8 @@ class MessageArea extends React.Component {
           blocks,
           currentBlock,
           progress,
-          sidebarItems: [...sidebarItems, newSidebarItem]
+          sidebarItems: [...sidebarItems, newSidebarItem],
+          unsavedChanges: true
         })
       }
       this.setState({quickReplies: options})
@@ -333,8 +334,8 @@ class MessageArea extends React.Component {
 
     if (action === 'create') {
       const {blocks, sidebarItems} = this.props
-      const blockIndex = blocks.findIndex((item) => item.uniqueId === uniqueId)
-      const sidebarIndex = sidebarItems.findIndex((item) => item.id === uniqueId)
+      const blockIndex = blocks.findIndex((item) => item.uniqueId.toString() === uniqueId.toString())
+      const sidebarIndex = sidebarItems.findIndex((item) => item.id.toString() === uniqueId.toString())
       blocks[blockIndex].title = title
       sidebarItems[sidebarIndex].title = title
       const currentBlock = this.props.block
@@ -343,7 +344,7 @@ class MessageArea extends React.Component {
       } else {
         currentBlock.payload.push({quickReplies})
       }
-      this.props.updateParentState({blocks, currentBlock, sidebarItems})
+      this.props.updateParentState({blocks, currentBlock, sidebarItems, unsavedChanges: true})
     }
 
     this.setState({quickReplies})
@@ -360,7 +361,7 @@ class MessageArea extends React.Component {
       currentBlock.payload.push({quickReplies})
     }
 
-    this.props.updateParentState({currentBlock})
+    this.props.updateParentState({currentBlock, unsavedChanges: true})
     this.setState({quickReplies})
   }
 
@@ -371,7 +372,7 @@ class MessageArea extends React.Component {
     const sidebarIndex = sidebarItems.findIndex((item) => item.id.toString() === block.uniqueId.toString())
     blocks[blockIndex].title = title
     sidebarItems[sidebarIndex].title = title
-    this.props.updateParentState({currentBlock: block, blocks, sidebarItems})
+    this.props.updateParentState({currentBlock: block, blocks, sidebarItems, unsavedChanges: true})
   }
 
   checkEmptyBlock () {
