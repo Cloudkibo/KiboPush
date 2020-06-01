@@ -724,7 +724,7 @@ class QuickReplies extends React.Component {
                 </button>
             }
 
-            <Popover trigger='click' placement='auto' isOpen={this.state.addingQuickReply} target={`addQuickReply-${this.props.currentId}`}>
+            <Popover trigger='click' placement='auto' isOpen={this.state.addingQuickReply} target={`addQuickReply-${this.props.currentId}`} className='popoverQuickReplies'>
                 <PopoverBody>
                     <div style={{paddingRight: '10px', maxHeight: '500px', overflowY: 'scroll', overflowX: 'hidden'}}>
                     <div data-toggle="modal" data-target={this.state.editing ? "#closeQuickReply" : ""} onClick={this.closeQuickReply} style={{marginLeft: '98%', cursor: 'pointer'}}><span role='img' aria-label='times'>❌</span></div>
