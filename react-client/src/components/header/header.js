@@ -264,7 +264,7 @@ class Header extends React.Component {
 
     const environment = cookie.load('environment')
     console.log('environment header', environment)
-    window.location.replace(productUrls[product][environment])
+    return productUrls[product][environment]
   }
 
   render () {
@@ -643,12 +643,12 @@ class Header extends React.Component {
                       }
                       {/* APP CHOOSER */}
                       <li style={{marginRight: '20px', padding: '0'}} className='m-nav__item m-topbar__quick-actions m-topbar__quick-actions--img m-dropdown m-dropdown--large m-dropdown--header-bg-fill m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push m-dropdown--mobile-full-width m-dropdown--skin-light' data-dropdown-toggle='click'>
-                        <a href='#/' className='m-nav__link m-dropdown__toggle'>
+                        <span style={{cursor: 'pointer'}} className='m-nav__link m-dropdown__toggle'>
                           <span className='m-nav__link-badge m-badge m-badge--dot m-badge--info m--hide' />
                           <span className='m-nav__link-icon'>
                             <i className='flaticon-app' />
                           </span>
-                        </a>
+                        </span>
                         <div className='m-dropdown__wrapper'>
                           <span className='m-dropdown__arrow m-dropdown__arrow--right m-dropdown__arrow--adjust' />
                           <div className='m-dropdown__inner'>
@@ -659,26 +659,26 @@ class Header extends React.Component {
                                     <div className='m-nav-grid__row'>
                                       {
                                         (!window.location.hostname.toLowerCase().includes('kiboengage'))
-                                          ? <a href='#kiboengage' onClick={() => { this.goToSubProduct('kiboengage') }} className='m-nav-grid__item'>
+                                          ? <a href={this.goToSubProduct('kiboengage')} className='m-nav-grid__item'>
                                             <i className='m-nav-grid__icon flaticon-network' />
                                             <span className='m-nav-grid__text'>KiboEngage</span>
                                           </a>
-                                          : <a href='#/' style={{ backgroundColor: 'aliceblue' }} className='m-nav-grid__item' disabled>
+                                          : <span style={{ backgroundColor: 'aliceblue' }} className='m-nav-grid__item' disabled>
                                             <i className='m-nav-grid__icon flaticon-network' />
                                             <span className='m-nav-grid__text'>KiboEngage</span>
-                                          </a>
+                                          </span>
                                       }
 
                                       {
                                         (!window.location.hostname.toLowerCase().includes('kibochat'))
-                                          ? <a href='#kibochat' onClick={() => { this.goToSubProduct('kibochat') }} className='m-nav-grid__item'>
+                                          ? <a href={this.goToSubProduct('kibochat')} className='m-nav-grid__item'>
                                             <i className='m-nav-grid__icon flaticon-speech-bubble' />
                                             <span className='m-nav-grid__text'>KiboChat</span>
                                           </a>
-                                          : <a href='#/' style={{ backgroundColor: 'aliceblue' }} className='m-nav-grid__item' disabled>
+                                          : <span style={{ backgroundColor: 'aliceblue' }} className='m-nav-grid__item' disabled>
                                             <i className='m-nav-grid__icon flaticon-speech-bubble' />
                                             <span className='m-nav-grid__text'>KiboChat</span>
-                                          </a>
+                                          </span>
                                       }
                                     </div>
                                     <div className='m-nav-grid__row'>
@@ -709,25 +709,25 @@ class Header extends React.Component {
 
                                       {
                                         (!window.location.hostname.toLowerCase().includes('KiboLite'))
-                                          ? <a href='#KiboLite' onClick={() => { this.goToSubProduct('KiboLite') }} className='m-nav-grid__item'>
+                                          ? <a href={this.goToSubProduct('KiboLite')} className='m-nav-grid__item'>
                                             <i className='m-nav-grid__icon flaticon-truck' />
                                             <span className='m-nav-grid__text'>KiboLite</span>
                                           </a>
-                                          : <a href='#/' style={{ backgroundColor: 'aliceblue' }} className='m-nav-grid__item' disabled>
+                                          : <span style={{ backgroundColor: 'aliceblue' }} className='m-nav-grid__item' disabled>
                                             <i className='m-nav-grid__icon flaticon-truck' />
                                             <span className='m-nav-grid__text'>KiboLite</span>
-                                          </a>
+                                          </span>
                                       }
                                       {
                                         (!window.location.hostname.toLowerCase().includes('kiboapi'))
-                                          ? <a href='#KiboAPI' onClick={() => { this.goToSubProduct('KiboAPI') }} className='m-nav-grid__item'>
+                                          ? <a href={this.goToSubProduct('KiboAPI')} className='m-nav-grid__item'>
                                             <i className='m-nav-grid__icon flaticon-share' />
                                             <span className='m-nav-grid__text'>KiboAPI</span>
                                           </a>
-                                          : <a href='#/' style={{ backgroundColor: 'aliceblue' }} className='m-nav-grid__item' disabled>
+                                          : <span style={{ backgroundColor: 'aliceblue' }} className='m-nav-grid__item' disabled>
                                             <i className='m-nav-grid__icon flaticon-share' />
                                             <span className='m-nav-grid__text'>KiboAPI</span>
-                                          </a>
+                                          </span>
                                       }
                                     </div>
                                   </div>

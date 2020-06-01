@@ -32,7 +32,14 @@ class CreateURL extends React.Component {
     let currentFiles = getFileIdsOfBroadcast(this.props.messengerCode.optInMessage)
     deleteInitialFiles(initialFiles, currentFiles)
     this.setState({newFiles: [], initialFiles: currentFiles})
-    this.props.updateData(this.props.messengerCode, 'newFiles', [])
+    var edit = {
+      page_id: this.props.messengerCode.pageId,
+      pageId: this.props.messengerCode.pageId,
+      optInMessage: this.props.messengerCode.optInMessage,
+      QRCode: this.props.messengerCode.QRCode,
+      newFiles: []
+    }
+    this.props.updateData(this.props.messengerCode, edit)
     if (this.props.location.state.module && this.props.location.state.module === 'edit') {
       this.props.editCode(this.props.location.state.messengerCode, this.msg)
     }
