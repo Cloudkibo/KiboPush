@@ -82,7 +82,8 @@ class App extends Component {
       '/resendVerificationEmail',
       '/connectFb',
       '/sessionInvalidated',
-      '/addfbpages'
+      '/addfbpages',
+      '/configureChatbot'
     ].includes(path)) {
       return true
     }
@@ -127,7 +128,7 @@ class App extends Component {
             this.state.showContent &&
             <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
               {
-                auth.loggedIn() && ['/addfbpages', '/facebookIntegration', '/integrations', '/configureChatbot'].indexOf(this.state.path) === -1 &&
+                auth.loggedIn() && ['/addfbpages', '/facebookIntegration', '/integrations'].indexOf(this.state.path) === -1 &&
                 <Sidebar history={this.props.history} location={this.props.location} />
               }
               { this.props.children }
