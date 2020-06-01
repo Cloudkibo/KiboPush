@@ -79,7 +79,7 @@ class TextArea extends React.Component {
 
   setEmoji (emoji) {
     let text = `${this.state.text}${emoji.native}`
-    this.setState({text})
+    this.setState({text:text, showPopover: false })
     this.props.updateParentState({
       id: 0,
       componentName: 'text',
@@ -99,7 +99,7 @@ class TextArea extends React.Component {
 
   appendUserName (nameType) {
     let text = `${this.state.text}{{user_${nameType}_name}}`
-    this.setState({text})
+    this.setState({text:text, showPopover: false })
     this.props.updateParentState({
       id: 0,
       componentName: 'text',
