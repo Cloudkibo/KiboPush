@@ -32,6 +32,7 @@ class CardBoxesContainer extends React.Component {
                 style='brand'
                 value={(this.props.data && this.props.data.totalComments) ? this.props.data.totalComments : 0}
                 label='Total Users Comments'
+                deletedComments={this.props.data && this.props.data.deletedComments ? this.props.data.deletedComments : 0}
                 id='totalComments'
               />
           </div>
