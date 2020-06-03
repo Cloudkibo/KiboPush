@@ -16,7 +16,7 @@ class CardBox extends React.Component {
   render () {
     return (
       <div className={`m-portlet m-portlet--border-bottom-${this.props.style}`}>
-        <div className='m-portlet__body' style={{minHeight:'205px'}}>
+        <div className='m-portlet__body' style={{minHeight:'180px'}}>
           <div className='m-widget26' id={this.props.id}>
             <div className='m-widget26__number'>
               {this.props.value}
@@ -25,10 +25,6 @@ class CardBox extends React.Component {
               </small>
             </div>
           </div>
-          {
-          this.props.id === 'totalComments' && this.props.deletedComments > 0 && 
-          <div style={{fontSize: '0.9rem', marginTop: '10px'}}>No.of comments removed: {this.props.deletedComments} </div>
-          }
         </div>
       </div>
     )
