@@ -6,6 +6,7 @@
 import React from 'react'
 import PostMetric from './PostMetric'
 import { UncontrolledTooltip } from 'reactstrap'
+import ProgressBar from '../../components/Dashboard/ProgressBar'
 
 /* card box style must be any of these
   band
@@ -102,6 +103,17 @@ class PostAnalytics extends React.Component {
                     />
                 </div>
             </div>
+            { this.props.data.conversions > 0 || this.props.data.waitingConversions > 0 ?         
+            <div className='col-12'>
+                <div className='m--space-30' />
+                  <ProgressBar
+                    rate={ this.props.data.conversions > 0 || this.props.data.waitingConversions > 0 ? ((this.props.data.conversions / (this.props.data.conversions + this.props.data.waitingConversions)) * 100).toFixed(1) + '%' : '0%'}
+                    label='Coversion Rate'
+                    progressStyle='success'
+                  />
+            </div>
+            : <div />
+            }
         </div>
     </div>
     )
