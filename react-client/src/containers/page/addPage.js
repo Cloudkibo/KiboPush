@@ -9,8 +9,10 @@ import AlertContainer from 'react-alert'
 import {
   addPages,
   enablePage,
-  removePageInAddPage
+  removePageInAddPage,
+  refreshPages
 } from '../../redux/actions/pages.actions'
+import { RingLoader } from 'halogenium'
 import { bindActionCreators } from 'redux'
 
 class AddPage extends React.Component {
@@ -22,10 +24,12 @@ class AddPage extends React.Component {
       showAlert: false,
       alertmsg: '',
       timeout: 2000,
+      loading: false,
       descriptionMsg: (props.location.state && props.location.state.showMsg) ? props.location.state.showMsg : ''
     }
     this.onDismissAlert = this.onDismissAlert.bind(this)
     this.showErrorDialog = this.showErrorDialog.bind(this)
+    this.stopLoading = this.stopLoading.bind(this)
   }
 
   gotoView() {
@@ -35,7 +39,11 @@ class AddPage extends React.Component {
     })
     // this.props.history.push(`/pollResult/${poll._id}`)
   }
-
+  stopLoading() {
+    this.setState({
+      loading:false
+    })
+  }
   showErrorDialog() {
     this.refs.permission.click()
   }
@@ -86,6 +94,14 @@ class AddPage extends React.Component {
     }
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+        { this.state.loading &&
+        <div style={{ width: '100vw', height: '100vh', background: 'rgba(33, 37, 41, 0.6)', position: 'fixed', zIndex: '99999', top: '0px' }}>
+            <div style={{ position: 'fixed', top: '50%', left: '50%', width: '30em', height: '18em', marginLeft: '-10em' }}
+              className='align-center'>
+              <center><RingLoader color='#716aca' /></center>
+            </div>
+          </div>
+        }
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <a href='#/' style={{ display: 'none' }} ref='permission' data-toggle="modal" data-target="#permission">permission</a>
         <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="permission" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -183,6 +199,12 @@ class AddPage extends React.Component {
                   <div className='m-portlet__head-tools'>
                     <ul className='nav nav-pills nav-pills--brand m-nav-pills--align-right m-nav-pills--btn-pill m-nav-pills--btn-sm' role='tablist'>
                       <li className='nav-item m-tabs__item'>
+                        <Link className='btn m-btn--pill btn-primary' style={{marginRight: '10px'}} onClick={() => {
+                          this.setState({loading: true})
+                          this.props.refreshPages(this.stopLoading, this.msg)
+                        }}>Refresh Pages</Link>
+                      </li>
+                      <li className='nav-item m-tabs__item'>
                         {this.props.location.state && this.props.location.state.module === 'page'
                           ? <Link to='/pages' className='btn m-btn--pill btn-success'>
                             Done
@@ -253,7 +275,8 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators({
     enablePage: enablePage,
     removePageInAddPage: removePageInAddPage,
-    addPages: addPages
+    addPages: addPages,
+    refreshPages: refreshPages
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(AddPage)
