@@ -93,9 +93,10 @@ class AudioModal extends React.Component {
                     file={this.state.file} 
                     initialFile={this.state.initialFile} 
                     initialFiles={this.props.initialFiles} 
-                    updateFile={this.updateFile} 
-                    pages= {this.props.pages} 
-                    showValidationModal= {this.props.showValidationModal} 
+                    updateFile={this.updateFile}
+                    pages={this.props.pages}
+                    showValidationModal= {this.props.showValidationModal}
+                    onFilesError={this.props.onFilesError} 
                   />
                 </div>
                 <div className='col-1'>

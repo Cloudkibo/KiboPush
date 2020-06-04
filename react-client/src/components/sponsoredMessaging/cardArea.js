@@ -109,29 +109,6 @@ class CardArea extends React.Component {
   }
 
   _onChange (images) {
-  // Assuming only image
-    // if (this.state.file && this.state.file.fileurl && this.state.file.fileurl.id) {
-    //   let canBeDeleted = true
-    //   for (let i = 0; i < this.props.initialFiles.length; i++) {
-    //     if (this.state.file.fileurl.id === this.props.initialFiles[i]) {
-    //       canBeDeleted = false
-    //       break
-    //     }
-    //   }
-    //   for (let i = 0; i < this.props.initialModalFiles.length; i++) {
-    //     if (this.state.file.fileurl.id === this.props.initialModalFiles[i]) {
-    //       canBeDeleted = false
-    //       break
-    //     }
-    //   }
-    //   if (canBeDeleted) {
-    //     this.props.setTempFiles(null, [this.state.file.fileurl.id])
-    //     deleteFile(this.state.file.fileurl.id)
-    //   }
-    // }
-    // if (this.props.onSelect) {
-    //   this.props.onSelect(images)
-    // }
     var file = this.file.files[0]
     if (file) {
       if (file && file.type !== 'image/bmp' && file.type !== 'image/jpeg' && file.type !== 'image/png' && file.type !== 'image/gif') {
@@ -144,7 +121,6 @@ class CardArea extends React.Component {
         this.setState({
           imgSrc: [reader.result], fileName: file.name
         }, () => {
-          // this.props.updateImage(this.state.imgSrc)
         })
       }
 
@@ -165,7 +141,6 @@ class CardArea extends React.Component {
   }
 
   handleImage (fileInfo) {
-    // this.props.updateFile(fileInfo)
     this.setState({file: fileInfo})
     this.props.updateParentState({
       id: 1,
@@ -257,4 +232,5 @@ function mapDispatchToProps (dispatch) {
     uploadTemplate
   }, dispatch)
 }
+
 export default connect(null, mapDispatchToProps)(CardArea)
