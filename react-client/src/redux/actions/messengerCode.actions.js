@@ -78,7 +78,7 @@ export function requestMessengerCode (messengerCode) {
 export function updateData (messengerCodeData, edit) {
   return (dispatch) => {
       messengerCodeData = {
-        pageId: edit.page_id ? edit.page_id : edit.pageId._id ? edit.pageId._id : edit.pageId,
+        pageId: edit.pageId,
         optInMessage: edit.optInMessage,
         QRCode: edit.QRCode,
         _id: edit._id && edit._id,
@@ -93,7 +93,7 @@ export function editCode (data, msg) {
     if (data.newFiles) {
       delete data.newFiles
     }
-    callApi('messenger_code/edit/'+data._id, 'post', data)
+    callApi('messenger_code/edit/'+data.pageId, 'post', data)
     .then(res => {
       if (res.status === 'success') {
         msg.success('Messenger Code saved successfully')
