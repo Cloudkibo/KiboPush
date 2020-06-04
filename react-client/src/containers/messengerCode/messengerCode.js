@@ -125,11 +125,10 @@ class MessengerCode extends React.Component {
   }
 
   onEdit(messengerCode) {
-    let messengerCod = messengerCode
-     messengerCod.pageId = messengerCode.pageId._id
+     messengerCode.pageId = messengerCode.pageId._id
     this.props.history.push({
       pathname: `/editMessengerCode`,
-      state: { module: 'edit', messengerCode:messengerCod}
+      state: { module: 'edit', messengerCode}
     })
   }
 
