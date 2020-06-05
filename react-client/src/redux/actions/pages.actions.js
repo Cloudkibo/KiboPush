@@ -98,9 +98,12 @@ export function enablePage (page, showErrorDialog) {
       })
   }
 }
-export function addPages () {
+export function addPages (handleLoader) {
   return (dispatch) => {
     callApi(`pages/addpages/`).then(res => {
+      if (handleLoader) {
+        handleLoader()
+      }
       dispatch(updateOtherPages(res.payload))
       console.log('Response From Add Pages', res.payload)
     })
@@ -159,5 +162,21 @@ export function saveDomains () {
   return (dispatch) => {
     callApi('pages/whitelistDomain')
       .then(res => dispatch(updateOtherPages(res.payload)))
+  }
+}
+
+export function refreshPages (handleLoader, msg) {
+  return (dispatch) => {
+    callApi('pages/refreshPages', 'post')
+      .then(res => {
+        if (res.status === 'success') {
+          dispatch(addPages(handleLoader))
+        } else {
+          if(handleLoader) {
+            handleLoader()
+            msg.error('Unable to refresh pages')
+          }
+        }
+      })
   }
 }
