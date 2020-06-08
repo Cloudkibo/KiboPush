@@ -1,4 +1,3 @@
-
 /* eslint-disable no-return-assign */
 /**
  * Created by imran on 11/11/2017.
@@ -15,6 +14,7 @@ import ProgressBar from '../../components/Dashboard/ProgressBar'
   danger
   accent
  */
+/* eslint-disable */
 class PostAnalytics extends React.Component {
   render () {
     return (
@@ -119,5 +119,6 @@ class PostAnalytics extends React.Component {
     )
   }
 }
+/* eslint-enable */
 
 export default PostAnalytics

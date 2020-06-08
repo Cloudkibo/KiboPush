@@ -519,7 +519,7 @@ class QuickReplies extends React.Component {
                 worksheet={this.state.currentActions[index].worksheet}
                 worksheetName={this.state.currentActions[index].worksheetName}
                 spreadSheet={this.state.currentActions[index].spreadSheet}
-                mapping={this.state.currentActions[index].mapping}
+                mapping={this.state.currentActions[index].mapping ? this.state.currentActions[index].mapping :''}
                 lookUpValue={this.state.currentActions[index].lookUpValue}
                 lookUpColumn={this.state.currentActions[index].lookUpColumn}
                 toggleGSModal={this.props.toggleGSModal}
