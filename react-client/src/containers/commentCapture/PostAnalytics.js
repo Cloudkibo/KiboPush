@@ -14,9 +14,7 @@ import ProgressBar from '../../components/Dashboard/ProgressBar'
   danger
   accent
  */
-
 /* eslint-disable */
-
 class PostAnalytics extends React.Component {
   render () {
     return (
