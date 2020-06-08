@@ -59,7 +59,8 @@ class FacebookPosts extends React.Component {
       postType: '',
       showSuccessMessage: false,
       postId: '',
-      selectedRadio: 'existing',
+      selectedRadio: 'global',
+      selectedScopeRadio: 'false',
       postUrl: '',
       title: '',
       titleLengthValid: true,
@@ -93,6 +94,7 @@ class FacebookPosts extends React.Component {
     this.validationCommentCapture = this.validationCommentCapture.bind(this)
     this.closeDialogDelete = this.closeDialogDelete.bind(this)
     this.handleRadioButton = this.handleRadioButton.bind(this)
+    this.handleScopeRadioButton = this.handleScopeRadioButton.bind(this)
     this.handlePostUrlChange = this.handlePostUrlChange.bind(this)
     this.handleTitleChange = this.handleTitleChange.bind(this)
     this.isValidFacebookUrl = this.isValidFacebookUrl.bind(this)
@@ -119,6 +121,7 @@ class FacebookPosts extends React.Component {
   saveLinks (links, cards, seeMoreLink) {
     this.validationCommentCapture({
       selectedRadio: this.state.selectedRadio,
+      selectedScopeRadio: this.state.selectedScopeRadio,
       title: this.state.title,
       postUrl: this.state.postUrl,
       postText: this.state.postText,
@@ -190,6 +193,7 @@ class FacebookPosts extends React.Component {
       existingPostUrl: this.state.selectedRadio === 'existing' ? this.state.postUrl: '',
       reply: this.props.currentPost && this.props.currentPost.reply ? this.props.currentPost.reply : this.state.defaultReply,
       captureOption: this.state.selectedRadio,
+      sendOnlyToNewSubscribers: this.state.selectedScopeRadio === 'true' ? true : false,
       title : this.state.title,
       includedKeywords: this.state.includedKeywords !== '' ? this.state.includedKeywords.split(',') : [],
       excludedKeywords: this.state.excludedKeywords !== '' ? this.state.excludedKeywords.split(',') : [],
@@ -248,9 +252,25 @@ class FacebookPosts extends React.Component {
       selectedRadio: e.currentTarget.value,
     })
   }
+  handleScopeRadioButton (e) {
+    this.validationCommentCapture({
+      selectedScopeRadio: e.currentTarget.value,
+      selectedRadio: this.state.selectedRadio, 
+      title: e.currentTarget.value,
+      postUrl: this.state.postUrl,
+      postText: this.state.postText,
+      attachments: this.state.attachments,
+      cards: this.state.cards
+    })
+    this.setState({
+      selectedScopeRadio: e.currentTarget.value,
+    })
+  }
+
   handleTitleChange (e) {
     this.validationCommentCapture({
       selectedRadio: this.state.selectedRadio,
+      selectedScopeRadio: this.state.selectedScopeRadio === 'true' ? true : false,
       title: e.currentTarget.value,
       postUrl: this.state.postUrl,
       postText: this.state.postText,
@@ -267,6 +287,7 @@ class FacebookPosts extends React.Component {
   handlePostUrlChange (e) {
     this.validationCommentCapture({
       selectedRadio: this.state.selectedRadio,
+      selectedScopeRadio: this.state.selectedScopeRadio === 'true' ? true : false,
       title: this.state.title,
       postUrl:  e.currentTarget.value,
       postText: this.state.postText,
@@ -399,6 +420,11 @@ class FacebookPosts extends React.Component {
       } else {
         this.setState({ selectedRadio: 'global'})
       }
+      if (this.props.currentPost.sendOnlyToNewSubscribers) {
+        this.setState({ selectedScopeRadio: 'true' }) 
+      } else {
+        this.setState({ selectedScopeRadio: 'false' }) 
+      }
       if (this.props.currentPost.secondReply && this.props.currentPost.secondReply.action === 'reply') {
         this.setState({ secondReplyOption: 'reply'})
       } else if (this.props.currentPost.secondReply && this.props.currentPost.secondReply.action === 'subscribe') {
@@ -461,6 +487,7 @@ class FacebookPosts extends React.Component {
     }, () => {
       this.validationCommentCapture({
         selectedRadio: this.state.selectedRadio,
+        selectedScopeRadio: this.state.selectedScopeRadio === 'true' ? true : false,
         title: this.state.title,
         postUrl: this.state.postUrl,
         postText: this.state.postText,
@@ -510,6 +537,7 @@ class FacebookPosts extends React.Component {
     }
     this.validationCommentCapture({
       selectedRadio: this.state.selectedRadio,
+      selectedScopeRadio: this.state.selectedScopeRadio === 'true' ? true : false,
       title: this.state.title,
       postUrl: this.state.postUrl,
       postText: this.state.postText,
@@ -567,7 +595,7 @@ class FacebookPosts extends React.Component {
       postId: postId || '',
       showSuccessMessage: showSuccessMessage || false,
       postUrl: '',
-      selectedRadio: 'existing',
+      selectedRadio: 'global',
       title: '',
       isCorrectUrl: true,
       titleLengthValid: true,
@@ -636,6 +664,7 @@ class FacebookPosts extends React.Component {
   onFacebookPostChange (e) {
     this.validationCommentCapture({
       selectedRadio: this.state.selectedRadio,
+      selectedScopeRadio: this.state.selectedScopeRadio === 'true' ? true : false,
       title: this.state.title,
       postUrl: this.state.postUrl,
       postText:  e.target.value,
@@ -651,6 +680,7 @@ class FacebookPosts extends React.Component {
   setEmoji (emoji) {
     this.validationCommentCapture({
       selectedRadio: this.state.selectedRadio,
+      selectedScopeRadio: this.state.selectedScopeRadio === 'true' ? true : false,
       title: this.state.title,
       autoReply: this.props.currentPost && this.props.currentPost.reply ? this.props.currentPost.reply : [],
       postUrl: this.state.postUrl,
@@ -729,6 +759,7 @@ class FacebookPosts extends React.Component {
     }, () => {
       this.validationCommentCapture({
         selectedRadio: this.state.selectedRadio,
+        selectedScopeRadio: this.state.selectedScopeRadio === 'true' ? true : false,
         title: this.state.title,
         postUrl: this.state.postUrl,
         postText: this.state.postText,
@@ -748,6 +779,7 @@ class FacebookPosts extends React.Component {
           this.setState({seeMoreLink}, () => {
             this.validationCommentCapture({
               selectedRadio: this.state.selectedRadio,
+              selectedScopeRadio: this.state.selectedScopeRadio === 'true' ? true : false,
               title: this.state.title,
               postUrl: this.state.postUrl,
               postText: this.state.postText,
@@ -852,6 +884,35 @@ class FacebookPosts extends React.Component {
                       </div>
                     </div>
                       }
+                    </div>
+                    <div className='col-12'>
+                      <div className='form-group m-form__group'>
+                        <div className='col-12'>
+                          <label className='col-form-label'>Comment Capture Scope</label>
+                        </div>
+                        <div className='row' style={{marginLeft: '10px'}}>
+                          <div className='col-12'>
+                            <input id='global'
+                              type='radio'
+                              value='true'
+                              name='true'
+                              onChange={this.handleScopeRadioButton}
+                              checked={this.state.selectedScopeRadio === 'true'} />
+                            <span style={{marginLeft: '10px'}}>Only send comment capture reply to those who are not existing subscribers</span>
+                          </div>
+                        </div>
+                        <div className='row' style={{marginLeft: '10px'}}>
+                          <div className='col-12'>
+                            <input id='existing'
+                              type='radio'
+                              value='false'
+                              name='false'
+                              onChange={this.handleScopeRadioButton}
+                              checked={this.state.selectedScopeRadio === 'false'} />
+                            <span style={{marginLeft: '10px'}}>Send comment capture reply to both existing and new subscribers</span>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                     <div className='col-12'>
                       <div className='form-group m-form__group'>
