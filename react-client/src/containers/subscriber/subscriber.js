@@ -953,47 +953,68 @@ class Subscriber extends React.Component {
       }
     }
   }
-  prepareExportData() {
-    var data = []
-    var subscriberObj = {}
-    for (var i = 0; i < this.state.subscribersData.length; i++) {
-      var subscriber = this.state.subscribersData[i]
-      subscriberObj = {
-        'Profile Picture': subscriber.profilePic,
-        'Name': `${subscriber.firstName} ${subscriber.lastName}`,
-        'Page': subscriber.pageId.pageName,
-        'PhoneNumber': subscriber.phoneNumber ? subscriber.phoneNumber : '',
-        'Email': subscriber.email,
-        'Source': subscriber.source === 'customer_matching' ? 'PhoneNumber' : subscriber.source === 'direct_message' ? 'Direct Message' : 'Chat Plugin',
-        'Locale': subscriber.locale,
-        'Gender': subscriber.gender,
-        'tags': subscriber.tags.join(),
-        'SubscriberId': subscriber.senderId
-      }
-      for (var c = 0 ; c < subscriber.customFields.length; c++) {
-        subscriberObj[subscriber.customFields[c].name] = subscriber.customFields[c].value
-      }
+  prepareExportData(res) {
+    let msg = this.msg
+    if (res.status === 'success') {
+      var subscribersData = res.payload.subscribers
+      var data = []
+      var subscriberObj = {}
+      for (var i = 0; i < subscribersData.length; i++) {
+        var subscriber = subscribersData[i]
+        subscriberObj = {
+          'Profile Picture': subscriber.profilePic,
+          'Name': `${subscriber.firstName} ${subscriber.lastName}`,
+          'Page': subscriber.pageId.pageName,
+          'PhoneNumber': subscriber.phoneNumber ? subscriber.phoneNumber : '',
+          'Email': subscriber.email,
+          'Source': subscriber.source === 'customer_matching' ? 'PhoneNumber' : subscriber.source === 'direct_message' ? 'Direct Message' : 'Chat Plugin',
+          'Locale': subscriber.locale,
+          'Gender': subscriber.gender,
+          'tags': subscriber.tags.join(),
+          'SubscriberId': subscriber.senderId
+        }
+        for (var c = 0 ; c < subscriber.customFields.length; c++) {
+          subscriberObj[subscriber.customFields[c].name] = subscriber.customFields[c].value
+        }
 
-      data.push(subscriberObj)
+        data.push(subscriberObj)
+      }
+      var info = data
+      var keys = []
+      var val = info[0]
+
+      for (var j in val) {
+        var subKey = j
+        keys.push(subKey)
+      }
+      json2csv({ data: info, fields: keys }, function (err, csv) {
+        if (err) {
+        } else {
+          fileDownload(csv, 'SubscriberList.csv')
+          msg.success('Data Dowloaded Successfully')
+        }
+      })
+    } else {
+        msg.error('Failed to download the data')
     }
-    return data
   }
   exportRecords() {
-    var data = this.prepareExportData()
-    var info = data
-    var keys = []
-    var val = info[0]
-
-    for (var j in val) {
-      var subKey = j
-      keys.push(subKey)
-    }
-    json2csv({ data: info, fields: keys }, function (err, csv) {
-      if (err) {
-      } else {
-        fileDownload(csv, 'SubscriberList.csv')
+    this.props.loadAllSubscribersListNew({
+      last_id: 'none',
+      number_of_records: this.state.totalLength,
+      first_page: 'first',
+      filter: true,
+      filter_criteria: {
+        search_value: this.state.searchValue,
+        gender_value: this.state.filterByGender === 'all' ? '' : this.state.filterByGender,
+        page_value: this.state.filterByPage === 'all' ? '' : this.state.filterByPage,
+        locale_value: this.state.filterByLocale === 'all' ? '' : this.state.filterByLocale,
+        tag_value: this.state.filterByTag === 'all' ? '' : this.state.filterByTag,
+        status_value: this.state.status_value === 'all' ? '' : this.state.status_value,
+        source_value: this.state.filterSource === 'all' ? '' : this.state.filterBySource
       }
-    })
+    }, this.prepareExportData)
+    this.msg.info('DOWNLOADING DATA.... YOU WILL BE NOTIFIED WHEN IT IS DOWNLOAD.')
   }
   handlePageClick(data) {
     if (data.selected === 0) {
