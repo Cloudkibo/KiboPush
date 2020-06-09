@@ -163,13 +163,18 @@ export function updatePicture (subscriberData, callback) {
   }
 }
 
-export function loadAllSubscribersListNew (data) {
+export function loadAllSubscribersListNew (data, callback) {
   // here we will fetch list of subscribers from endpoint
   console.log('data', data)
   return (dispatch) => {
     callApi('subscribers/getAll', 'post', data).then(res => {
       console.log('response from subscribers', res)
+      if(callback) {
+        callback(res)
+      }
+      else {
       dispatch(updateAllSubscribersListNew(res.payload))
+      }
     })
   }
 }
