@@ -13,7 +13,7 @@ class MessageBlockUsage extends React.Component {
       <div id='_cb_ma_mo' className='row'>
         <div className='col-md-12'>
           <div className="form-group m-form__group">
-            <h4>Message Block Usage:</h4>
+            <span className='m--font-boldest'>Message Block Usage:</span>
             <div style={{paddingTop: '10px'}}>
               <span>
                 This message has been sent <b>{this.props.sentCount}</b> times

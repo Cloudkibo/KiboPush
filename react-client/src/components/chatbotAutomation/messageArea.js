@@ -476,7 +476,9 @@ class MessageArea extends React.Component {
               />
             }
             {
-              this.props.chatbot.published &&
+              this.props.chatbot.startingBlockId !== this.props.block._id &&
+              this.props.chatbot.published && this.props.block.stats &&
+              (this.props.block.stats.urlBtnClickedCount > 0 || this.props.block.stats.sentCount > 0) &&
               <MESSAGEBLOCKUSAGE
                 urlBtnClickedCount={this.props.block.stats ? this.props.block.stats.urlBtnClickedCount : 0}
                 sentCount={this.props.block.stats ? this.props.block.stats.sentCount : 0}
