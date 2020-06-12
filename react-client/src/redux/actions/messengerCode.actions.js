@@ -65,7 +65,7 @@ export function createCode (data, msg) {
 
 export function requestMessengerCode (messengerCode) {
   return (dispatch) => {
-    callApi('messenger_code/getQRCode/'+messengerCode.pageId, 'get')
+    callApi('messenger_code/getQRCode/'+messengerCode.page_id, 'get')
       .then(res => {
         if (res.status === 'success') {
           messengerCode.QRCode = res.payload
