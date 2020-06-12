@@ -1,6 +1,7 @@
 
 import React from 'react'
 import Slider from 'react-slick'
+import Text from '../SimplifiedBroadcastUI/PreviewComponents/Text'
 
 class PreviewQuickReplies extends React.Component {
   constructor (props) {
@@ -17,6 +18,8 @@ class PreviewQuickReplies extends React.Component {
   }
 
   render () {
+    console.log('this.props.quickReplies', this.props.quickReplies)
+    console.log('this.props.isEmailPhoneComponent', this.props.isEmailPhoneComponent)
     let settings = {
         dots: false,
         infinite: false,
@@ -59,6 +62,22 @@ class PreviewQuickReplies extends React.Component {
                   })
                 }
               </Slider>
+            </div>
+          }
+          {this.props.isEmailPhoneComponent &&
+            <div>
+              <div style={{marginLeft: '-10%', marginTop: '30px', marginBottom: '50px', width: '120%', height: '12px', borderBottom: '1px solid lightgray', textAlign: 'center'}}>
+                  <span style={{color: 'dimgray', backgroundColor: 'white', padding: '0 5px'}}>
+                      Waiting for a reply from the user
+                  </span>
+              </div>
+              <Text
+                id={'abc'}
+                message='Please share your Phone Number with us'
+                isEmailPhoneComponent={true} />
+              <button style={{margin: '5px', borderColor: 'black', borderWidth: '1px', 'color': 'black', }} className="btn m-btn--pill btn-sm m-btn btn-secondary">
+                Phone Number
+              </button>
             </div>
           }
         </div>
