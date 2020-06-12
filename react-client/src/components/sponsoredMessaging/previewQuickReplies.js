@@ -18,8 +18,6 @@ class PreviewQuickReplies extends React.Component {
   }
 
   render () {
-    console.log('this.props.quickReplies', this.props.quickReplies)
-    console.log('this.props.isEmailPhoneComponent', this.props.isEmailPhoneComponent)
     let settings = {
         dots: false,
         infinite: false,
