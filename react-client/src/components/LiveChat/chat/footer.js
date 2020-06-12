@@ -87,6 +87,9 @@ class Footer extends React.Component {
         fileurl: sticker.image.hdpi
       }
       const data = this.props.setMessageData(this.props.activeSession, payload)
+      if (this.props.showAgentName) {
+        this.sendAgentName()
+      }
       this.props.sendChatMessage(data)
       data.format = 'convos'
       this.updateChatData(data, payload)
