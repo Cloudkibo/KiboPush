@@ -45,15 +45,6 @@ class Footer extends React.Component {
     this.removeUrlMeta = this.removeUrlMeta.bind(this)
     this.sendMessage = this.sendMessage.bind(this)
     this.toggleAudioRecording = this.toggleAudioRecording.bind(this)
-    this.sendAgentName = this.sendAgentName.bind(this)
-  }
-
-  sendAgentName () {
-    let data = this.props.setMessageData(this.props.activeSession, {
-      componentType: 'text',
-      text: `${this.props.user.name} sent:`
-    })
-    this.props.sendChatMessage(data)
   }
 
   setEmoji (emoji) {
@@ -87,9 +78,6 @@ class Footer extends React.Component {
         fileurl: sticker.image.hdpi
       }
       const data = this.props.setMessageData(this.props.activeSession, payload)
-      if (this.props.showAgentName) {
-        this.sendAgentName()
-      }
       this.props.sendChatMessage(data)
       data.format = 'convos'
       this.updateChatData(data, payload)
@@ -107,9 +95,6 @@ class Footer extends React.Component {
         fileurl: gif.images.downsized.url
       }
       const data = this.props.setMessageData(this.props.activeSession, payload)
-      if (this.props.showAgentName) {
-        this.sendAgentName()
-      }
       this.props.sendChatMessage(data)
       data.format = 'convos'
       this.updateChatData(data, payload)
@@ -344,10 +329,7 @@ class Footer extends React.Component {
       if (this.state.text !== '' && /\S/gm.test(this.state.text)) {
         payload = this.setDataPayload('text')
         data = this.props.setMessageData(this.props.activeSession, payload)
-        let dataWithAgentName = JSON.parse(JSON.stringify(data))
-        dataWithAgentName.payload.text = (this.props.showAgentName ? `${this.props.user.name} sent:\r\n` : '') + data.payload.text
-        console.log('dataWithAgentName', dataWithAgentName)
-        this.props.sendChatMessage(dataWithAgentName)
+        this.props.sendChatMessage(data)
         this.setState({ text: '', urlmeta: {}, currentUrl: '' })
         this.props.updateChatAreaHeight('57vh')
         data.format = 'convos'
@@ -363,9 +345,6 @@ class Footer extends React.Component {
     if (data.isAllowed) {
       let payload = this.setDataPayload('thumbsUp')
       let data = this.props.setMessageData(this.props.activeSession, payload)
-      if (this.props.showAgentName) {
-        this.sendAgentName()
-      }
       this.props.sendChatMessage(data)
       data.format = 'convos'
       this.updateChatData(data, payload)
@@ -380,9 +359,6 @@ class Footer extends React.Component {
       this.setState({loading: true})
       let payload = this.setDataPayload('attachment')
       let data = this.props.setMessageData(this.props.activeSession, payload)
-      if (this.props.showAgentName) {
-        this.sendAgentName()
-      }
       this.props.sendAttachment(data, (res) => this.handleMessageResponse(res, data, payload))
     } else {
       this.props.alertMsg.error(data.errorMsg)
