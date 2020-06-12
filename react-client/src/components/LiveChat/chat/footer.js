@@ -344,10 +344,10 @@ class Footer extends React.Component {
       if (this.state.text !== '' && /\S/gm.test(this.state.text)) {
         payload = this.setDataPayload('text')
         data = this.props.setMessageData(this.props.activeSession, payload)
-        if (this.props.showAgentName) {
-          this.sendAgentName()
-        }
-        this.props.sendChatMessage(data)
+        let dataWithAgentName = JSON.parse(JSON.stringify(data))
+        dataWithAgentName.payload.text = (this.props.showAgentName ? `${this.props.user.name} sent:\r\n` : '') + data.payload.text
+        console.log('dataWithAgentName', dataWithAgentName)
+        this.props.sendChatMessage(dataWithAgentName)
         this.setState({ text: '', urlmeta: {}, currentUrl: '' })
         this.props.updateChatAreaHeight('57vh')
         data.format = 'convos'
