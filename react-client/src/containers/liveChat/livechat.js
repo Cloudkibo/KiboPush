@@ -48,7 +48,6 @@ import {
 } from '../../redux/actions/customFields.actions'
 import { handleSocketEvent } from './socket'
 import { clearSocketData } from '../../redux/actions/socket.actions'
-import { findResponseMethod } from '../../redux/actions/settings.actions'
 
 // components
 import HELPWIDGET from '../../components/extras/helpWidget'
@@ -120,7 +119,6 @@ class LiveChat extends React.Component {
     props.loadMembersList()
     props.loadTags()
     props.loadCustomFields()
-    props.findResponseMethod()
   }
 
   clearSearchResults () {
@@ -652,8 +650,7 @@ function mapStateToProps(state) {
     customFieldValues: (state.customFieldInfo.customFieldSubscriber),
     customFields: (state.customFieldInfo.customFields),
     searchChatMsgs: (state.liveChat.searchChat),
-    socketData: (state.socketInfo.socketData),
-    showAgentName: state.settingsInfo.showAgentName
+    socketData: (state.socketInfo.socketData)
   }
 }
 
@@ -694,8 +691,7 @@ function mapDispatchToProps(dispatch) {
     clearSearchResult,
     urlMetaData,
     getSMPStatus,
-    updateSessionProfilePicture,
-    findResponseMethod,
+    updateSessionProfilePicture
   }, dispatch)
 }
 
