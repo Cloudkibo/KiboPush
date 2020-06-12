@@ -143,26 +143,28 @@ class AutomationControls extends React.Component {
                   <p>Disable Live Chat entirely (No chat would be stored and you won’t be able to chat with subscribers)</p>
                 </div>
               </div>
-
-              <div className='row' style={{marginLeft: '5px', marginTop: '10px', marginBottom: '-10px'}}>
-                <div className='col-xl-12 col-md-12 col-sm-12'>
-                  <span className='m-widget4__sub'>
-                    <div className='m-form__group form-group row'>
-                      <span className='col-10 col-form-label'>
-                        Show agent name when sending messages
-                      </span>
-                      <div className='col-2'>
-                        <span className='m-switch m-switch--outline m-switch--icon m-switch--success'>
-                          <label>
-                            <input type='checkbox' data-switch='true' checked={this.state.showAgentName} onChange={this.changeAgentNameSetting} />
-                            <span></span>
-                          </label>
-                        </span>
-                      </div>
-                    </div>
-                  </span>
-                </div>
-              </div>
+              {
+                 (this.props.user.currentPlan.unique_ID === 'plan_C' || this.props.user.currentPlan.unique_ID === 'plan_D') &&
+                 <div className='row' style={{marginLeft: '5px', marginTop: '10px', marginBottom: '-10px'}}>
+                 <div className='col-xl-12 col-md-12 col-sm-12'>
+                   <span className='m-widget4__sub'>
+                     <div className='m-form__group form-group row'>
+                       <span className='col-10 col-form-label'>
+                         Show agent name when sending messages
+                       </span>
+                       <div className='col-2'>
+                         <span className='m-switch m-switch--outline m-switch--icon m-switch--success'>
+                           <label>
+                             <input type='checkbox' data-switch='true' checked={this.state.showAgentName} onChange={this.changeAgentNameSetting} />
+                             <span></span>
+                           </label>
+                         </span>
+                       </div>
+                     </div>
+                   </span>
+                 </div>
+               </div>
+              }
             </div>
             <div className='row'>
               <button className='btn btn-primary' style={{marginLeft: '20px', marginTop: '20px'}} disabled={this.state.responseMethod === ''} onClick={(e) => this.saveResponseMethod(e)}>Save</button>
@@ -175,6 +177,7 @@ class AutomationControls extends React.Component {
 }
 function mapStateToProps (state) {
   return {
+    user: (state.basicInfo.user),
     responseMethod: state.settingsInfo.responseMethod,
     showAgentName: state.settingsInfo.showAgentName
   }
