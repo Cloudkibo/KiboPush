@@ -163,8 +163,17 @@ class SubscriberSummary extends React.Component {
     this.setState({days: e.target.value})
   }
   showReport () {
+    if(this.state.days === '') {
+      this.props.msg.error('Number of Days should not be empty')
+    }
+    else if(this.state.days < 1) {
+      this.props.msg.error('Number of Days should be greater than zero')
+    }
+    else {
+    this.refs.report.click()
     this.setState({isShowingModal: false})
     this.props.loadSubscriberSummary({pageId: this.state.pageId, days: this.state.days})
+    }
   }
   render () {
     return (
@@ -197,7 +206,7 @@ class SubscriberSummary extends React.Component {
               </div>
               <div style={{width: '100%', textAlign: 'center'}}>
                 <div style={{display: 'inline-block', padding: '5px'}}>
-                  <button className='btn btn-primary' onClick={() => this.showReport()} data-dismiss='modal'>
+                  <button className='btn btn-primary' onClick={() => this.showReport()}>
                     Show Report
                   </button>
                 </div>
