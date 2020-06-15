@@ -78,11 +78,11 @@ export function handleMessageBlock (data, callback) {
   }
 }
 
-export function changeActiveStatus (data, callback) {
+export function updateChatbot (data, callback) {
   return (dispatch) => {
     callApi('chatbots', 'put', data)
       .then(res => {
-        console.log('response from changeActiveStatus', res)
+        console.log('response from updateChatbot', res)
         callback(res)
       })
   }

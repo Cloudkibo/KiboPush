@@ -69,7 +69,10 @@ class MoreOptions extends React.Component {
       <div id='_cb_ma_mo' className='row'>
         <div className='col-md-12'>
           <div className="form-group m-form__group">
-            <span className='m--font-boldest'>More Options:</span>
+            {
+              this.props.showLabel &&
+              <span className='m--font-boldest'>More Options:</span>
+            }
             <div style={{padding: '10px'}} className='row'>
               {
                 this.state.options.map((option, i) => (
@@ -120,9 +123,10 @@ class MoreOptions extends React.Component {
                   onUpdate={this.props.updateOption}
                   onRemove={this.props.removeOption}
                   showRemove={this.state.selectedOption.showRemove || false}
-                  action={this.state.selectedOption.action || 'create'}
+                  action={this.state.selectedOption.action || (this.props.isCreatable ? 'create' : 'link')}
                   payloadAction={this.state.selectedOption.payloadAction || ''}
                   alertMsg={this.props.alertMsg}
+                  isCreatable={this.props.isCreatable}
                 />
               }
             </PopoverBody>
@@ -133,14 +137,20 @@ class MoreOptions extends React.Component {
   }
 }
 
+MoreOptions.defaultProps = {
+  'showLabel': true,
+  'isCreatable': true
+}
+
 MoreOptions.propTypes = {
+  'showLabel': PropTypes.bool,
   'data': PropTypes.array.isRequired,
-  'chatbot': PropTypes.object.isRequired,
   'currentLevel': PropTypes.number.isRequired,
   'maxLevel': PropTypes.number.isRequired,
   'addOption': PropTypes.func.isRequired,
   'removeOption': PropTypes.func.isRequired,
-  'updateOption': PropTypes.func.isRequired
+  'updateOption': PropTypes.func.isRequired,
+  'isCreatable': PropTypes.bool
 }
 
 export default MoreOptions

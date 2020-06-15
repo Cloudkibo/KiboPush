@@ -6,7 +6,7 @@ import {
   uploadAttachment,
   handleAttachment,
   handleMessageBlock,
-  changeActiveStatus,
+  updateChatbot,
   deleteMessageBlock,
   fetchBackup,
   createBackup,
@@ -293,7 +293,7 @@ class ConfigureChatbot extends React.Component {
                 blocks={this.state.blocks}
                 handleMessageBlock={this.props.handleMessageBlock}
                 fbAppId={this.props.fbAppId}
-                changeActiveStatus={this.props.changeActiveStatus}
+                changeActiveStatus={this.props.updateChatbot}
                 deleteMessageBlock={this.props.deleteMessageBlock}
                 registerSocketAction={registerAction}
                 progress={this.state.progress}
@@ -337,7 +337,7 @@ function mapDispatchToProps (dispatch) {
     uploadAttachment,
     handleAttachment,
     handleMessageBlock,
-    changeActiveStatus,
+    updateChatbot,
     deleteMessageBlock,
     getFbAppId,
     fetchBackup,

@@ -105,7 +105,7 @@ class TextArea extends React.Component {
       <div id='_chatbot_message_area_text' className='row'>
         <div className='col-md-12'>
           <div style={{position: 'relative'}} className="form-group m-form__group">
-            <span className='m--font-boldest'>Text:</span>
+            <span className='m--font-boldest'>{`${this.props.label}:`}</span>
             <textarea
               id='_chatbot_message_area_text_input'
               placeholder='Please type here...'
@@ -113,19 +113,20 @@ class TextArea extends React.Component {
               value={this.state.text}
               onChange={this.onTextChange}
               className='form-control'
+              disabled={this.props.disabled}
             />
             <span style={{position: 'absolute', bottom: 0, right: '10px'}}>
               <i
                 style={{fontSize: '20px', margin: '5px', cursor: 'pointer'}}
                 className='fa fa-user'
                 id='_user_picker_chatbot'
-                onClick={() => this.openPicker('user')}
+                onClick={() => {!this.props.disabled && this.openPicker('user')}}
               />
               <i
                 style={{fontSize: '20px', margin: '5px', cursor: 'pointer'}}
                 className='fa fa-smile-o'
                 id='_emoji_picker_chatbot'
-                onClick={() => this.openPicker('emoji')}
+                onClick={() => {!this.props.disabled && this.openPicker('emoji')}}
               />
             </span>
           </div>
@@ -148,9 +149,16 @@ class TextArea extends React.Component {
   }
 }
 
+TextArea.defaultProps = {
+  'label': 'Text',
+  'disabled': false
+}
+
 TextArea.propTypes = {
   'text': PropTypes.string.isRequired,
-  'updateParentState': PropTypes.func.isRequired
+  'updateParentState': PropTypes.func.isRequired,
+  'label': PropTypes.string,
+  'disabled': PropTypes.bool
 }
 
 export default TextArea
