@@ -33,7 +33,7 @@ const headerStyle = {
 }
 
 const innerColumnStyle = {
-  paddingLeft: '20px', 
+  paddingLeft: '20px',
   paddingRight: '20px'
 }
 
