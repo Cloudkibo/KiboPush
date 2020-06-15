@@ -465,7 +465,6 @@ class MessageArea extends React.Component {
               (this.state.text || Object.keys(this.state.attachment).length > 0) &&
               <MOREOPTIONS
                 data={this.state.quickReplies}
-                chatbot={this.props.chatbot}
                 alertMsg={this.props.alertMsg}
                 currentLevel={this.props.currentLevel}
                 maxLevel={this.props.maxLevel}
