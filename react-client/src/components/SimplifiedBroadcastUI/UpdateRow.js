@@ -5,6 +5,7 @@ import { fetchWorksheets, fetchColumns, emptyFields } from '../../redux/actions/
 import { RingLoader } from 'halogenium'
 import AlertContainer from 'react-alert'
 import Mapping from './Mapping'
+import { Link } from 'react-router-dom'
 
 class UpdateRow extends React.Component {
   constructor (props, context) {
@@ -109,6 +110,9 @@ class UpdateRow extends React.Component {
         dataValues[index] = e.target.value
         this.setState({mappingData: data, mappingDataValues: dataValues})
       }
+      if (this.state.lookUpValue !== '' && this.state.spreadSheetValue !== '' && this.state.workSheetValue !== '' && this.state.lookUpColumn !== '' && dataValues !== '' && dataValues.filter(val => val !== '').length > 0) {
+        this.setState({buttonDisabled: false})
+      }
       console.log('data in updateMappingData', data)
     }
   }
@@ -124,13 +128,11 @@ class UpdateRow extends React.Component {
       lookUpColumn: '',
       lookUpValue: '',
       showLookUpValue: false,
-      showMapping: false
+      showMapping: false,
+      buttonDisabled: true
     })
     this.props.emptyFields()
     this.props.fetchWorksheets({spreadsheetId: event.target.value})
-    if (event.target.value !== '' && this.state.workSheetValue && this.state.lookUpColumn && this.state.lookUpValue ) {
-      this.setState({buttonDisabled: false})
-    }
   }
 
   onWorkSheetChange (event) {
@@ -144,18 +146,18 @@ class UpdateRow extends React.Component {
       lookUpColumn: '',
       lookUpValue: '',
       showLookUpValue: false,
-      showMapping: false
+      showMapping: false,
+      buttonDisabled: true
     })
     this.props.fetchColumns({spreadsheetId: this.state.spreadSheetValue, sheetId: event.target.value})
-    if (event.target.value !== '' && this.state.spreadSheetValue && this.state.lookUpColumn && this.state.lookUpValue) {
-      this.setState({buttonDisabled: false})
-    }
   }
 
   onLookUpColumnChange (event) {
     this.setState({lookUpColumn: event.target.value, showLookUpValue: true})
-    if (event.target.value !== '' && this.state.spreadSheetValue && this.state.workSheetValue && this.state.lookUpValue) {
+    if (event.target.value !== '' && this.state.lookUpValue !== '' && this.state.mappingDataValues !== '' && this.state.mappingDataValues.filter(val => val !== '').length > 0) {
       this.setState({buttonDisabled: false})
+    } else {
+      this.setState({buttonDisabled: true})
     }
   }
 
@@ -164,8 +166,10 @@ class UpdateRow extends React.Component {
     if (event.target.value === '') {
       this.setState({buttonDisabled: true})
     } else {
-      if (event.target.value !== '' && this.state.spreadSheetValue && this.state.workSheetValue && this.state.lookUpColumn) {
+      if (event.target.value !== '' && this.state.lookUpColumn !== '' && this.state.mappingDataValues !== '' && this.state.mappingDataValues.filter(val => val !== '').length > 0) {
         this.setState({buttonDisabled: false})
+      } else {
+        this.setState({buttonDisabled: true})
       }
     }
   }
@@ -325,52 +329,40 @@ class UpdateRow extends React.Component {
                 </span>
           </button>
         </div>
-        { this.props.reconnectWarning && this.props.reconnectWarning !== '' && 
-         <div style={{margin: '10px'}} className="alert alert-danger alert-dismissible fade show   m-alert m-alert--air" role="alert">
-         { this.props.reconnectWarning }
-       </div>
-        }
-        <div style={{ textAlign: 'left' }} className="modal-body">
-          <h6>Google Sheets: Update Row</h6><br />
-          <span style={{color: '#575962'}}>The first row of the table is used for your column titles. In case two or more matches with lookup value, the first row will be updated. Please note, if the match won't be found we'll insert a new row to your spreadsheet.</span>
-          <br /><br />
-        <label style={{fontWeight: 'normal'}}>Spreadsheet:</label>
-          {this.props.spreadsheets && this.props.spreadsheets.length > 0 &&
-            <select className='form-control m-input m-input--square' value={this.state.spreadSheetValue} onChange={this.onSpreadSheetChange}>
-              <option key='' value='' disabled>Select a Spreadsheet...</option>
-              {
-                this.props.spreadsheets.map((spreadSheet, i) => (
-                  <option key={i} value={spreadSheet.id}>{spreadSheet.name}</option>
-                ))
-              }
-            </select>
-          }
-          <br />
-          {this.state.loadingWorkSheet
-          ? <div className='align-center'><center><RingLoader color='#FF5E3A' /></center></div>
-          : (this.props.worksheets && this.props.worksheets.length > 0 &&
-            <div><label style={{fontWeight: 'normal'}}>Worksheet:</label>
-            <select className='form-control m-input m-input--square' value={this.state.workSheetValue} onChange={this.onWorkSheetChange}>
-              <option key='' value='' disabled>Select a Worksheet...</option>
-              {
-                this.props.worksheets.map((worksheet, i) => (
-                  <option key={i} value={worksheet.sheetId.toString()}>{worksheet.title}</option>
-                ))
-              }
-            </select>
-            </div>
-          )
-          }
-          <br />
-            {this.state.loadingColumns
-            ? <div className='align-center'><center><RingLoader color='#FF5E3A' /></center></div>
-            : (this.props.columns && this.props.columns.googleSheetColumns.length > 0 &&
-              <div><label style={{fontWeight: 'normal'}}>Lookup Column:</label>
-              <select className='form-control m-input m-input--square' value={this.state.lookUpColumn} onChange={this.onLookUpColumnChange}>
-                <option key='' value='' disabled>Select a Column...</option>
+        {this.props.reconnectWarning && this.props.reconnectWarning !== ''
+        ? <div>
+          <div style={{margin: '20px',height: 'auto'}} className="alert alert-danger alert-dismissible fade show   m-alert m-alert--air" role="alert">
+          { this.props.reconnectWarning }
+            <br />
+            Go to Integraions in <Link to='/settings' style={{color:'white', textDecoration: 'underline'}}>Settings</Link> to view google sheet integration status.
+          </div>
+        </div>
+       : <div>
+          <div style={{ textAlign: 'left',maxHeight: '500px', overflow: 'scroll' }} className="modal-body">
+            <h6>Google Sheets: Update Row</h6><br />
+            <span style={{color: '#575962'}}>The first row of the table is used for your column titles. In case two or more matches with lookup value, the first row will be updated. Please note, if the match won't be found we'll insert a new row to your spreadsheet.</span>
+            <br /><br />
+          <label style={{fontWeight: 'normal'}}>Spreadsheet:</label>
+            {this.props.spreadsheets && this.props.spreadsheets.length > 0 &&
+              <select className='form-control m-input m-input--square' value={this.state.spreadSheetValue} onChange={this.onSpreadSheetChange}>
+                <option key='' value='' disabled>Select a Spreadsheet...</option>
                 {
-                  this.props.columns.googleSheetColumns.filter(column => { return column }).map((column, i) => (
-                    <option key={i} value={column}>{column}</option>
+                  this.props.spreadsheets.map((spreadSheet, i) => (
+                    <option key={i} value={spreadSheet.id}>{spreadSheet.name}</option>
+                  ))
+                }
+              </select>
+            }
+            <br />
+            {this.state.loadingWorkSheet
+            ? <div className='align-center'><center><RingLoader color='#FF5E3A' /></center></div>
+            : (this.props.worksheets && this.props.worksheets.length > 0 &&
+              <div><label style={{fontWeight: 'normal'}}>Worksheet:</label>
+              <select className='form-control m-input m-input--square' value={this.state.workSheetValue} onChange={this.onWorkSheetChange}>
+                <option key='' value='' disabled>Select a Worksheet...</option>
+                {
+                  this.props.worksheets.map((worksheet, i) => (
+                    <option key={i} value={worksheet.sheetId.toString()}>{worksheet.title}</option>
                   ))
                 }
               </select>
@@ -378,65 +370,91 @@ class UpdateRow extends React.Component {
             )
             }
             <br />
-            {this.state.showLookUpValue && this.props.columns &&
-              <div><label style={{fontWeight: 'normal'}}>Lookup Value:</label>
-                <select value={this.state.lookUpValue} className='form-control m-bootstrap-select m_selectpicker' style={{height: '40px', opacity: '1'}} onChange={this.onLookUpValueChange}>
-                  <option key='' value='' disabled>Select a Value...</option>
-                  <optgroup label='System Fields'>
-                    {this.props.columns.kiboPushColumns.map((kibopush, i) => (
-                        <option key={i} value={kibopush.fieldName}>{kibopush.title}</option>
-                      ))
-                    }
-                  </optgroup>
-                  {this.props.columns && this.props.columns.customFieldColumns.length > 0 &&
-                    <optgroup label='Custom Fields'>
-                    {this.props.columns.customFieldColumns.map((custom, i) => (
-                        <option key={i} value={custom.customFieldId}>{custom.title}</option>
-                      ))
-                    }
-                  </optgroup>
-                  }
-                  </select>
-              </div>
-            }
-            <br />
-          {this.state.showMapping &&
-          (this.props.columns && this.props.columns.googleSheetColumns.length > 0 &&
-            <Mapping 
-              leftColumns = {
-                this.props.questions ? 
-                {
-                  groups: false,
-                  data: this.props.questions.map(question => { return {value: question, title: question} })
-                } 
-                :
-                {
-                  groups: true,
-                  data: {
-                    'System fields': this.props.columns.kiboPushColumns.map(column => { return {value: column.fieldName, title: column.title} }),
-                    'Custom fields': this.props.columns.customFieldColumns.map(column => { return {value: column.customFieldId, title: column.title} })
-                  }
-                } 
+              { 
+              this.props.columns  && 
+              this.props.columns.googleSheetColumns &&
+              (this.props.columns.googleSheetColumns.length < 1 || (this.props.columns.googleSheetColumns.length > 0 
+                && this.props.columns.googleSheetColumns.filter(col => col !== null).length < 1)) &&
+              <div>Selected worksheet has no columns</div>
               }
-              rightColumns = {{
-                groups: false,
-                data: this.props.columns.googleSheetColumns.filter(column => { return column }).map(column => {return {value: column, title: column}})
-              }}
-              defaultLeftOption = {'Select a Field...'}
-              defaultRightOption = {'Select a Google Sheet Column...'}
-              leftLabel = {this.props.questions ? 'Questions' : 'KiboPush Data'}
-              rightLabel = {'Google Column Titles'}
-              mappingData = {this.getMappingData()}
-              updateRightColumn = {this.props.questions ? this.updateMappingData : null}
-              updateLeftColumn = {this.props.questions ? null : this.updateMappingData}
-            />
-            //this.showMappingData(this.props.columns.googleSheetColumns, this.props.columns.kiboPushColumns, this.props.columns.customFieldColumns)
-          )
-          }
-      </div>
-      <div className="m-portlet__foot m-portlet__foot--fit">
-        <button className="btn btn-primary" disabled={this.state.buttonDisabled} style={{float: 'right', margin: '10px'}} onClick={this.save}>Save</button>
-      </div>
+              {this.state.loadingColumns
+              ? <div className='align-center'><center><RingLoader color='#FF5E3A' /></center></div>
+              : (this.props.columns && this.props.columns.googleSheetColumns.length > 0 && this.props.columns.googleSheetColumns.filter(col => col !== null).length > 1 &&
+                <div><label style={{fontWeight: 'normal'}}>Lookup Column:</label>
+                <select className='form-control m-input m-input--square' value={this.state.lookUpColumn} onChange={this.onLookUpColumnChange}>
+                  <option key='' value='' disabled>Select a Column...</option>
+                  {
+                    this.props.columns.googleSheetColumns.filter(column => { return column }).map((column, i) => (
+                      <option key={i} value={column}>{column}</option>
+                    ))
+                  }
+                </select>
+                </div>
+              )
+              }
+              <br />
+              {this.state.showLookUpValue && this.props.columns &&
+                <div><label style={{fontWeight: 'normal'}}>Lookup Value:</label>
+                  <select value={this.state.lookUpValue} className='form-control m-bootstrap-select m_selectpicker' style={{height: '40px', opacity: '1'}} onChange={this.onLookUpValueChange}>
+                    <option key='' value='' disabled>Select a Value...</option>
+                    <optgroup label='System Fields'>
+                      {this.props.columns.kiboPushColumns.map((kibopush, i) => (
+                          <option key={i} value={kibopush.fieldName}>{kibopush.title}</option>
+                        ))
+                      }
+                    </optgroup>
+                    {this.props.columns && this.props.columns.customFieldColumns.length > 0 &&
+                      <optgroup label='Custom Fields'>
+                      {this.props.columns.customFieldColumns.map((custom, i) => (
+                          <option key={i} value={custom.customFieldId}>{custom.title}</option>
+                        ))
+                      }
+                    </optgroup>
+                    }
+                    </select>
+                </div>
+              }
+              <br />
+            {this.state.showMapping &&
+            (this.props.columns && this.props.columns.googleSheetColumns.length > 0 &&
+              <Mapping 
+                leftColumns = {
+                  this.props.questions ? 
+                  {
+                    groups: false,
+                    data: this.props.questions.map(question => { return {value: question, title: question} })
+                  } 
+                  :
+                  {
+                    groups: true,
+                    data: {
+                      'System fields': this.props.columns.kiboPushColumns.map(column => { return {value: column.fieldName, title: column.title} }),
+                      'Custom fields': this.props.columns.customFieldColumns.map(column => { return {value: column.customFieldId, title: column.title} })
+                    }
+                  } 
+                }
+                rightColumns = {{
+                  groups: false,
+                  data: this.props.columns.googleSheetColumns.filter(column => { return column }).map(column => {return {value: column, title: column}})
+                }}
+                defaultLeftOption = {'Select a Field...'}
+                defaultRightOption = {'Select a Google Sheet Column...'}
+                leftLabel = {this.props.questions ? 'Questions' : 'KiboPush Data'}
+                rightLabel = {'Google Column Titles'}
+                mappingData = {this.getMappingData()}
+                updateRightColumn = {this.props.questions ? this.updateMappingData : null}
+                updateLeftColumn = {this.props.questions ? null : this.updateMappingData}
+              />
+              //this.showMappingData(this.props.columns.googleSheetColumns, this.props.columns.kiboPushColumns, this.props.columns.customFieldColumns)
+            )
+            }
+        </div>
+        <div className="m-portlet__foot m-portlet__foot--fit">
+          <button className="btn btn-primary" disabled={this.state.buttonDisabled} style={{float: 'right', margin: '10px'}} onClick={this.save}>Save</button>
+        </div>
+       </div>
+        }
+        
     </div>
     )
   }
