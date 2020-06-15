@@ -971,7 +971,8 @@ class Subscriber extends React.Component {
           'Locale': subscriber.locale,
           'Gender': subscriber.gender,
           'tags': subscriber.tags.join(),
-          'SubscriberId': subscriber.senderId
+          'SubscriberId': subscriber.senderId,
+          'subscriptionDateTime' : new Date(subscriber.datetime).toUTCString() 
         }
         for (var c = 0 ; c < subscriber.customFields.length; c++) {
           subscriberObj[subscriber.customFields[c].name] = subscriber.customFields[c].value
