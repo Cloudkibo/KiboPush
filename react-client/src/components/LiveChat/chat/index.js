@@ -227,6 +227,7 @@ class Chat extends React.Component {
             showThumbsUp={this.props.showThumbsUp}
             setMessageData={this.props.setMessageData}
             filesAccepted={this.props.filesAccepted}
+            showAgentName={this.props.showAgentName}
           />
         }
 
