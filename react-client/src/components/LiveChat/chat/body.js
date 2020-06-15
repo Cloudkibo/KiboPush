@@ -106,6 +106,14 @@ class Body extends React.Component {
   }
 
   componentDidUpdate (prevProps) {
+    setTimeout(() => {
+      if (this.refs.chatScroll && this.previousScrollHeight) {
+        if (this.refs.chatScroll.scrollHeight > this.previousScrollHeight) {
+          this.refs.chatScroll.scrollTop += this.refs.chatScroll.scrollHeight - this.previousScrollHeight
+          this.previousScrollHeight = this.refs.chatScroll.scrollHeight
+        }
+      }
+    }, 100)
     if (!this.state.scrollEventAdded && this.refs.chatScroll) {
       this.addScrollEvent()
       if (this.refs.chatScroll.scrollHeight <= this.refs.chatScroll.clientHeight) {
