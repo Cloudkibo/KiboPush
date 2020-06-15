@@ -30,7 +30,8 @@ class OptInActions extends React.Component {
       }
       this.props.history.push({
           pathname: `/editMessageCodeMessage`,
-          state: { newFiles: this.props.newFiles, initialFiles, realInitialFiles: this.props.initialFiles, module: this.props.module, selectedMessengerCode: this.props.messengerCode }
+          state: { newFiles: this.props.newFiles, initialFiles, realInitialFiles: this.props.initialFiles, module: this.props.module, selectedMessengerCode: this.props.messengerCode
+        }
       })
     }
     render() {

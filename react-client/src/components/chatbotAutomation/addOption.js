@@ -115,17 +115,20 @@ class AddOption extends React.Component {
             <div className="form-group m-form__group">
               <label>Action:</label>
               <div className="m-radio-list">
-                <label className="m-radio m-radio--bold m-radio--state-brand">
-                  <input
-                    type="radio"
-                    onClick={this.onRadioClick}
-                    onChange={() => {}}
-                    value='create'
-                    checked={this.state.selectedRadio === 'create'}
-                  />
-                    Create new block
-                  <span />
-                </label>
+                {
+                  this.props.isCreatable &&
+                  <label className="m-radio m-radio--bold m-radio--state-brand">
+                    <input
+                      type="radio"
+                      onClick={this.onRadioClick}
+                      onChange={() => {}}
+                      value='create'
+                      checked={this.state.selectedRadio === 'create'}
+                    />
+                      Create new block
+                    <span />
+                  </label>
+                }
                 <label className="m-radio m-radio--bold m-radio--state-brand">
                   <input
                     type="radio"
@@ -178,6 +181,10 @@ class AddOption extends React.Component {
   }
 }
 
+AddOption.defaultProps = {
+  'isCreatable': true
+}
+
 AddOption.propTypes = {
   'title': PropTypes.string.isRequired,
   'blockId': PropTypes.oneOfType([
@@ -191,7 +198,8 @@ AddOption.propTypes = {
   'showRemove': PropTypes.bool.isRequired,
   'action': PropTypes.string.isRequired,
   'payloadAction': PropTypes.string.isRequired,
-  'onUpdate': PropTypes.func.isRequired
+  'onUpdate': PropTypes.func.isRequired,
+  'isCreatable': PropTypes.bool
 }
 
 export default AddOption

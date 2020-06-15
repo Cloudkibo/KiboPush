@@ -102,10 +102,13 @@ class MessengerCode extends React.Component {
   }
 
   changePage(e) {
+    console.log('Called change change Method')
+    let pageId = this.state.pages.filter(page => page._id === e.target.value)[0]
+    console.log('Called change change Method', pageId.pageId)
     this.setState({ pageSelected: e.target.value })
     this.props.resetState()
     var edit = {
-      page_id: e.target.value,
+      page_id: pageId.pageId,
       pageId: e.target.value,
       optInMessage: [{
         id: new Date().getTime(),
@@ -125,9 +128,10 @@ class MessengerCode extends React.Component {
   }
 
   onEdit(messengerCode) {
+     messengerCode.pageId = messengerCode.pageId._id
     this.props.history.push({
       pathname: `/editMessengerCode`,
-      state: { module: 'edit', messengerCode }
+      state: { module: 'edit', messengerCode}
     })
   }
 
@@ -146,8 +150,8 @@ class MessengerCode extends React.Component {
 
   UNSAFE_componentWillMount() {
     var edit = {
-      page_id: this.props.pages[0]._id,
-      pageId: this.props.pages[0].pageId,
+      page_id: this.props.pages[0].pageId,
+      pageId: this.props.pages[0]._id,
       optInMessage: [{
         id: new Date().getTime(),
         text: 'Welcome! Thank you for subscribing. The next post is coming soon, stay tuned!\nP.S. If you ever want to unsubscribe just type "stop".',
@@ -190,10 +194,11 @@ class MessengerCode extends React.Component {
       }
       return true
     })
+    console.log('updateAllowedPages', temp)
     this.setState({ pages: temp, pageSelected: temp && temp.length > 0 ? temp[0]._id : ''  })
     if (temp.length > 0) {
       var edit = {
-        page_id: temp[0]._id,
+        page_id: temp[0].pageId,
         pageId: temp[0]._id,
         optInMessage: [{
           id: new Date().getTime(),

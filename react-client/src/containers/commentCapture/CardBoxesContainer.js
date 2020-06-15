@@ -21,11 +21,7 @@ class CardBoxesContainer extends React.Component {
       <div className='col-xl-12'>
         <div className='row m-row--full-height'>
           <UncontrolledTooltip style={{minWidth: '100px', opacity: '1.0'}} target='totalComments'>
-            {
-              this.props.singlePostResult ?
-              <span> Number of comments received on the post by the users</span>:
               <span> Number of comments received on the posts by the users</span>
-            }
           </UncontrolledTooltip>
           <div className='col-sm-3 col-md-3 col-lg-3'  style={this.props.singlePostResult ? {maxWidth: '20%'} : {maxWidth: '25%'}}>
               <CardBox
@@ -59,7 +55,6 @@ class CardBoxesContainer extends React.Component {
           </div>
           <UncontrolledTooltip style={{minWidth: '100px', opacity: '1.0'}} target='waitingConversion'>
           <span> Number of commentors who have yet not responded to the auto reply in messenger</span>
-
           </UncontrolledTooltip>
           <div className='col-sm-3 col-md-3 col-lg-3' style={this.props.singlePostResult ? {maxWidth: '20%'} : {maxWidth: '25%'}}>
               <CardBox
@@ -69,21 +64,6 @@ class CardBoxesContainer extends React.Component {
                 id='waitingConversion'
               />
           </div>
-          {this.props.singlePostResult &&
-          <UncontrolledTooltip style={{minWidth: '100px', opacity: '1.0'}} target='negativeMatch'>
-            <span>Number of comments for which an auto reply was not sent in the messenger</span>
-          </UncontrolledTooltip>
-          }
-          {this.props.singlePostResult &&
-          <div className='col-sm-3 col-md-3 col-lg-3' style={{maxWidth: '20%'}}>
-              <CardBox
-                style='danger'
-                value={(this.props.data && this.props.data.negativeMatch) ? this.props.data.negativeMatch : 0}
-                label='Negative Match'
-                id='negativeMatch'
-              />
-          </div>
-        }
         </div>
       </div>
     )

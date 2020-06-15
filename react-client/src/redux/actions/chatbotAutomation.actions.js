@@ -78,11 +78,11 @@ export function handleMessageBlock (data, callback) {
   }
 }
 
-export function changeActiveStatus (data, callback) {
+export function updateChatbot (data, callback) {
   return (dispatch) => {
     callApi('chatbots', 'put', data)
       .then(res => {
-        console.log('response from changeActiveStatus', res)
+        console.log('response from updateChatbot', res)
         callback(res)
       })
   }
@@ -133,6 +133,17 @@ export function restoreBackup (data, callback) {
     callApi(`chatbots/restoreBackup`, 'post', data)
       .then(res => {
         console.log('response from restoreBackup', res)
+        callback(res)
+      })
+  }
+}
+
+export function fetchAnalytics (id, days, callback) {
+  console.log('data for fetchAnalytics', id, days)
+  return (dispatch) => {
+    callApi(`chatbots/${id}/stats/${days}`, 'get')
+      .then(res => {
+        console.log('response from fetchAnalytics', res)
         callback(res)
       })
   }
