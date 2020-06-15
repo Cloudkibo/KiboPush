@@ -565,6 +565,7 @@ class LiveChat extends React.Component {
                     showThumbsUp={true}
                     setMessageData={this.setMessageData}
                     filesAccepted={'image/*, audio/*, video/*, application/*, text/*'}
+                    showAgentName={this.props.showAgentName}
                   />
                 }
                 {

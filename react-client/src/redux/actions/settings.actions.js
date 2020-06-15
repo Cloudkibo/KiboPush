@@ -250,6 +250,7 @@ export function findResponseMethod () {
     callApi('company/getAutomatedOptions')
       .then(res => {
         if (res.status === 'success') {
+          console.log('response method', res.payload)
           dispatch(getResponseMethod(res.payload))
         } else if (res.status === 'failed') {
           console.log(`Getting response method fails. ${res.description}`)

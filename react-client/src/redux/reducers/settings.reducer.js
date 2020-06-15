@@ -55,7 +55,8 @@ export function settingsInfo (state = initialState, action) {
       })
     case ActionTypes.RESPONSE_METHOD:
       return Object.assign({}, state, {
-        responseMethod: action.data.automated_options
+        responseMethod: action.data.automated_options,
+        showAgentName: action.data.showAgentName
       })
     case ActionTypes.SHOW_WEBHOOK:
       return Object.assign({}, state, {
