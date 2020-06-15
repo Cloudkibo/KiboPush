@@ -55,8 +55,16 @@ class ConfigureChatbot extends React.Component {
     this.handleChatbot = this.handleChatbot.bind(this)
     this.toggleWhitelistModal = this.toggleWhitelistModal.bind(this)
     this.getWhitelistModalContent = this.getWhitelistModalContent.bind(this)
+    this.onAnalytics = this.onAnalytics.bind(this)
 
     props.getFbAppId()
+  }
+
+  onAnalytics () {
+    this.props.history.push({
+      pathname: '/chatbotAnalytics',
+      state: {chatbot: this.state.chatbot, page: this.props.location.state.page}
+    })
   }
 
   componentDidMount () {
@@ -301,6 +309,7 @@ class ConfigureChatbot extends React.Component {
                 sidebarItems={this.state.sidebarItems}
                 checkWhitelistedDomains={this.props.checkWhitelistedDomains}
                 toggleWhitelistModal={this.toggleWhitelistModal}
+                onAnalytics={this.onAnalytics}
               />
             </div>
             <PROGRESS progress={`${this.state.progress}%`} />

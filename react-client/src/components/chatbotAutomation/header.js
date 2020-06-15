@@ -183,6 +183,20 @@ class Header extends React.Component {
               <span>Test</span>
             </span>
           </button>
+          {this.props.showAnalytics &&
+          <button
+            id='_chatbot_message_area_header_analytics'
+            style={{marginLeft: '10px'}}
+            type='button'
+            className='btn btn-info pull-right m-btn m-btn--icon'
+            onClick={this.props.onAnalytics}
+          >
+            <span>
+              <i className='fa flaticon-analytics' />
+              <span>Analytics</span>
+            </span>
+          </button>
+        }
           {
             this.props.showDelete &&
             <button

@@ -83,7 +83,8 @@ class App extends Component {
       '/connectFb',
       '/sessionInvalidated',
       '/addfbpages',
-      '/configureChatbot'
+      '/configureChatbot',
+      '/chatbotAnalytics'
     ].includes(path)) {
       return true
     }
@@ -119,10 +120,10 @@ class App extends Component {
         }
         <div>
           {
-            auth.loggedIn() && ['/addfbpages', '/facebookIntegration', '/integrations', '/configureChatbot'].indexOf(this.state.path) === -1
+            auth.loggedIn() && ['/addfbpages', '/facebookIntegration', '/integrations', '/configureChatbot', '/chatbotAnalytics'].indexOf(this.state.path) === -1
             ? <Header history={this.props.history} location={this.props.location} />
-            : ['/addfbpages', '/facebookIntegration', '/integrations', '/configureChatbot'].indexOf(this.state.path) > -1 &&
-            <SimpleHeader showTitle={['/configureChatbot'].indexOf(this.state.path) > -1} history={this.props.history} location={this.props.location} />
+          : ['/addfbpages', '/facebookIntegration', '/integrations', '/configureChatbot', '/chatbotAnalytics'].indexOf(this.state.path) > -1 &&
+            <SimpleHeader showTitle={['/configureChatbot', '/chatbotAnalytics'].indexOf(this.state.path) > -1} history={this.props.history} location={this.props.location} />
           }
           {
             this.state.showContent &&
