@@ -33,18 +33,20 @@ class EditTemplate extends React.Component {
   }
 
   handleChange (broadcast) {
+    let array = broadcast.broadcast
     this.setState(broadcast)
-    if (broadcast.length > 0) {
-      if (broadcast[broadcast.length -1].isEmailPhoneComponent) {
-        this.setState({linkedMessages: this.getLinkedMessage(broadcast)})
+    if (array && array.length > 0) {
+      if (array[array.length -1].isEmailPhoneComponent && array[array.length - 1].quickReplies[0]) {
+        this.setState({linkedMessages: this.getLinkedMessage(array)})
       } else {
         this.setState({linkedMessages: undefined})
       }
+    } else {
+      this.setState({linkedMessages: undefined})
     }
   }
 
   saveMessage () {
-    console.log('this.state.broadcast in welcome message', this.state.broadcast)
     if (!validateFields(this.state.broadcast, this.msg)) {
       return
     }
@@ -92,7 +94,6 @@ class EditTemplate extends React.Component {
 
   componentDidMount () {
     this.props.loadMyPagesList()
-    console.log('this.props.location.state.default_action', this.props.location.state.default_action)
     const hostname = window.location.hostname
     let title = ''
     if (hostname.includes('kiboengage.cloudkibo.com')) {
@@ -105,8 +106,6 @@ class EditTemplate extends React.Component {
     this.scrollToTop()
     if (this.props.location.state && this.props.location.state.payload) {
       var data = this.props.location.state.payload
-      console.log('data in did mount method', data)
-     // data[0].default_action = this.props.location.state.default_action
       this.setState({
         broadcast: this.props.location.state.payload,
         linkedMessages: data.length > 0 && data[data.length - 1].isEmailPhoneComponent ? this.getLinkedMessage(data) : undefined
@@ -117,7 +116,6 @@ class EditTemplate extends React.Component {
   UNSAFE_componentWillReceiveProps (nextProps) {
     if(nextProps.pages !== this.props.pages) {
     var pages= nextProps.pages.filter((page) => page._id === this.props.location.state.pages[0])
-    console.log('PageSelected', pages[0])
     this.setState({selectedPage: pages[0].welcomeMessage})
     }
   }
@@ -127,10 +125,6 @@ class EditTemplate extends React.Component {
   }
 
   render () {
-   // var broadcast = this.state.broadcast
-    console.log('pages ine edit template', this.props.pages)
-    console.log('this.state.selectedPage', this.state.selectedPage)
-    console.log('this.props.location.state.pages[0])',this.props.location.state.pages[0])
     var alertOptions = {
       offset: 14,
       position: 'top right',

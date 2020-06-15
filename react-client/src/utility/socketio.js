@@ -87,7 +87,7 @@ socket.on('message', (data) => {
     if (data.action === 'new_chat_whatsapp') data.showNotification = true
     store.dispatch(handleSocketEventWhatsapp(data))
   }
-  
+
   if (data.action === 'whatsapp_message_seen') {
     store.dispatch(whatsAppActions.socketUpdateWhatsAppSeen(data.payload))
   } else if (data.action === 'message_seen') {

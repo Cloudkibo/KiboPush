@@ -30,6 +30,7 @@ import QuickReplies from './QuickReplies'
 import PreviewQuickReplies from '../../components/sponsoredMessaging/previewQuickReplies'
 import VideoLinkModal from './VideoLinkModal'
 import MODAL from '../extras/modal'
+import ReactTooltip from 'react-tooltip'
 
 class GenericMessage extends React.Component {
   constructor (props, context) {
@@ -359,6 +360,8 @@ class GenericMessage extends React.Component {
       } else {
         if (obj.isEmailPhoneComponent) {
           temp.push({id: obj.id, text: obj.text, componentType: 'text', componentName: 'text', isEmailPhoneComponent: obj.isEmailPhoneComponent})
+        } else if (temp.length > 0 && temp[temp.length - 1].isEmailPhoneComponent) {
+          temp.splice( temp.length - 1, 0, {id: obj.id, text: obj.text, componentType: 'text', componentName: 'text'} )
         } else {
           temp.push({id: obj.id, text: obj.text, componentType: 'text', componentName: 'text'})
         }
@@ -411,7 +414,9 @@ class GenericMessage extends React.Component {
       }
     }
     if (!isPresent) {
-      temp.push(obj)
+      if (temp.length > 0 && temp[temp.length - 1].isEmailPhoneComponent) {
+       temp.splice( temp.length - 1, 0, obj )
+      } else temp.push(obj)
     }
 
     temp = this.appendQuickRepliesToEnd(temp, this.state.quickReplies)
@@ -455,7 +460,9 @@ class GenericMessage extends React.Component {
       }
     }
     if (!isPresent) {
-      temp.push(obj)
+      if (temp.length > 0 && temp[temp.length - 1].isEmailPhoneComponent) {
+       temp.splice( temp.length - 1, 0, obj )
+      } else temp.push(obj)
     }
 
     temp = this.appendQuickRepliesToEnd(temp, this.state.quickReplies)
@@ -483,7 +490,9 @@ class GenericMessage extends React.Component {
       }
     }
     if (!isPresent) {
-      temp.push(obj)
+      if (temp.length > 0 && temp[temp.length - 1].isEmailPhoneComponent) {
+       temp.splice( temp.length - 1, 0, obj )
+      } else temp.push(obj)
     }
 
     temp = this.appendQuickRepliesToEnd(temp, this.state.quickReplies)
@@ -503,7 +512,9 @@ class GenericMessage extends React.Component {
     }
 
     if (!isPresent) {
-      temp.push(obj)
+      if (temp.length > 0 && temp[temp.length - 1].isEmailPhoneComponent) {
+       temp.splice( temp.length - 1, 0, obj )
+      } else temp.push(obj)
     }
 
     temp = this.appendQuickRepliesToEnd(temp, this.state.quickReplies)
@@ -523,7 +534,9 @@ class GenericMessage extends React.Component {
     }
 
     if (!isPresent) {
-      temp.push(obj)
+      if (temp.length > 0 && temp[temp.length - 1].isEmailPhoneComponent) {
+       temp.splice( temp.length - 1, 0, obj )
+      } else temp.push(obj)
     }
 
     this.setState({broadcast: temp})
@@ -583,8 +596,8 @@ class GenericMessage extends React.Component {
         text: 'Please share your Email Address with us',
         isEmailPhoneComponent: true
       })
+      console.log('component got', component)
       this.updateList(component)
-      component.handler()
       let id = new Date().getTime() + (Math.floor(Math.random() * 100))
       let quickReply = [{
         id,
@@ -596,6 +609,7 @@ class GenericMessage extends React.Component {
       }]
       this.updateQuickReplies(quickReply)
       .then(result => {
+        component.handler()
         this.setState({quickRepliesComponent: {
           content:
             (<PreviewQuickReplies
@@ -632,7 +646,11 @@ class GenericMessage extends React.Component {
     if (componentIndex < 0) {
       console.log('adding new component')
       console.log({list: [...temp, {content: component.component}]})
-      this.setState({list: [...temp, {content: component.component}]})
+      if(temp.length > 0 && temp[temp.length - 1].content.props.isEmailPhoneComponent) {
+        temp.splice(temp.length - 1, 0, {content: component.component})
+        this.setState({list: temp})
+      }
+      else this.setState({list: [...temp, {content: component.component}]})
     } else {
       console.log('editing exisiting component')
       temp[componentIndex] = {content: component.component}
@@ -1102,6 +1120,11 @@ class GenericMessage extends React.Component {
 
   render () {
     console.log('render in genericMessage', this.state.broadcast)
+    let checkboxDisabled = this.state.broadcast.length === this.props.componentLimit && this.state.broadcast.length > 0 && !this.state.broadcast[this.state.broadcast.length - 1].isEmailPhoneComponent
+    let cursorStyle = this.state.broadcast.length === this.props.componentLimit && this.state.broadcast.length > 0 && !this.state.broadcast[this.state.broadcast.length - 1].isEmailPhoneComponent
+      ? {cursor: 'not-allowed'}
+      : {cursor: 'pointer'}
+    const tooltipText = `You can only add upto ${this.props.componentLimit} components per message!`
     var alertOptions = {
       offset: 75,
       position: 'top right',
@@ -1112,7 +1135,6 @@ class GenericMessage extends React.Component {
 
     return (
     <div className='m-grid__item m-grid__item--fluid m-wrapper'>
-
       <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
       <div style={{float: 'left', clear: 'both'}}
         ref={(el) => { this.top = el }} />
@@ -1136,16 +1158,26 @@ class GenericMessage extends React.Component {
                     }
                     <GenericMessageComponents hiddenComponents={this.state.hiddenComponents} addComponent={this.showAddComponentModal} addedComponents={this.state.list.length} module= {this.props.module} componentLimit = {this.props.componentLimit}/>
                     {this.props.module && this.props.module === 'welcomeMessage' &&
-                      <div className='m-checkbox-list row' style={{marginTop: '20px', marginLeft: '-12px'}}>
-                        <label className='m-checkbox m-checkbox--state-success'>
+                      <div>
+                        <ReactTooltip
+                        id='checkbox'
+                        place='right'
+                        type='info'
+                        multiline={true}
+                        disable={!(this.state.broadcast.length === this.props.componentLimit && this.state.broadcast.length > 0 && !this.state.broadcast[this.state.broadcast.length - 1].isEmailPhoneComponent)}
+                      />
+                      <div data-for='checkbox' data-tip={tooltipText} className='m-checkbox-list row' style={{marginTop: '20px', marginLeft: '-12px'}}>
+                        <label className='m-checkbox m-checkbox--state-success' style={{...cursorStyle}}>
         									<input type='checkbox'
                             onChange={this.handleCheckbox}
                             checked={this.state.broadcast && this.state.broadcast.length > 0 && this.state.broadcast[this.state.broadcast.length - 1].isEmailPhoneComponent}
+                            disabled={checkboxDisabled}
                           />
                         Ask for subscriber's Email Address and Phone Number
         									<span></span>
         								</label>
                       </div>
+                    </div>
                     }
                 </div>
                   <div className='col-lg-6 col-md-6 col-sm-12 col-xs-12'>
