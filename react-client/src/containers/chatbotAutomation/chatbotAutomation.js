@@ -21,6 +21,7 @@ class ChatbotAutomation extends React.Component {
     this.handleOnCreate = this.handleOnCreate.bind(this)
     this.modifyChatbot = this.modifyChatbot.bind(this)
     this.getPages = this.getPages.bind(this)
+    this.onSettingsClick = this.onSettingsClick.bind(this)
 
     props.fetchChatbots()
   }
@@ -76,6 +77,13 @@ class ChatbotAutomation extends React.Component {
     return pages
   }
 
+  onSettingsClick (chatbot) {
+    this.props.history.push({
+      pathname: '/chatbotSettings',
+      state: chatbot
+    })
+  }
+
   render () {
     var alertOptions = {
       offset: 75,
@@ -124,6 +132,7 @@ class ChatbotAutomation extends React.Component {
                                 profilePic={chatbot.pageId.pagePic}
                                 name={chatbot.pageId.pageName}
                                 onItemClick={() => this.modifyChatbot(chatbot)}
+                                onSettingsClick={() => this.onSettingsClick(chatbot)}
                               />
                             ))
                             : <p>No data to display</p>
