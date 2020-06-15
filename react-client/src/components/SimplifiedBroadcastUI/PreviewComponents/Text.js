@@ -87,7 +87,7 @@ class Text extends React.Component {
   render () {
     return (
       <div className='broadcast-component' style={{marginBottom: '50px', display: 'inline-block'}}>
-        {this.props.onRemove &&
+        {this.props.onRemove && !this.props.isEmailPhoneComponent &&
           <div onClick={() => { this.props.onRemove({id: this.props.id, deletePayload: this.getDeletePayload()}) }}
             style={{float: 'right', height: 20 + 'px', marginTop: '-4px', marginRight: '-10px'}}>
             <span style={{cursor: 'pointer'}} className='fa-stack'>
@@ -95,7 +95,7 @@ class Text extends React.Component {
             </span>
           </div>
         }
-        {this.props.editComponent &&
+        {this.props.editComponent && !this.props.isEmailPhoneComponent &&
           <i onClick={this.edit} style={{cursor: 'pointer', float: 'left', marginLeft: '-15px', height: '20px', marginRight: '15px'}} className='fa fa-pencil-square-o' aria-hidden='true' />
         }
         <div className='discussion' style={{display: 'inline-block'}} >

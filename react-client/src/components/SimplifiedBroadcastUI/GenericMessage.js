@@ -27,8 +27,10 @@ import AudioModal from './AudioModal'
 import MediaModal from './MediaModal'
 import LinkCarousel from './LinkCarousel';
 import QuickReplies from './QuickReplies'
+import PreviewQuickReplies from '../../components/sponsoredMessaging/previewQuickReplies'
 import VideoLinkModal from './VideoLinkModal'
 import MODAL from '../extras/modal'
+import ReactTooltip from 'react-tooltip'
 
 class GenericMessage extends React.Component {
   constructor (props, context) {
@@ -91,6 +93,7 @@ class GenericMessage extends React.Component {
     this.showValidationModal = this.showValidationModal.bind(this)
     this.getModalContent= this.getModalContent.bind(this)
     this.toggleModalContent = this.toggleModalContent.bind(this)
+    this.handleCheckbox = this.handleCheckbox.bind(this)
     this.GSModalContent = null
 
     if (props.setReset) {
@@ -143,7 +146,7 @@ class GenericMessage extends React.Component {
   toggleModalContent () {
     this.setState({showContent: !this.state.showContent})
   }
-      
+
   setTempFiles (files, filesToRemove) {
     let tempFiles = this.state.tempFiles
     if (files) {
@@ -355,7 +358,13 @@ class GenericMessage extends React.Component {
       if (obj.buttons.length > 0) {
         temp.push({id: obj.id, text: obj.text, componentType: 'text', componentName: 'text', buttons: obj.buttons})
       } else {
-        temp.push({id: obj.id, text: obj.text, componentType: 'text', componentName: 'text'})
+        if (obj.isEmailPhoneComponent) {
+          temp.push({id: obj.id, text: obj.text, componentType: 'text', componentName: 'text', isEmailPhoneComponent: obj.isEmailPhoneComponent})
+        } else if (temp.length > 0 && temp[temp.length - 1].isEmailPhoneComponent) {
+          temp.splice( temp.length - 1, 0, {id: obj.id, text: obj.text, componentType: 'text', componentName: 'text'} )
+        } else {
+          temp.push({id: obj.id, text: obj.text, componentType: 'text', componentName: 'text'})
+        }
       }
     }
     temp = this.appendQuickRepliesToEnd(temp, this.state.quickReplies)
@@ -405,7 +414,9 @@ class GenericMessage extends React.Component {
       }
     }
     if (!isPresent) {
-      temp.push(obj)
+      if (temp.length > 0 && temp[temp.length - 1].isEmailPhoneComponent) {
+       temp.splice( temp.length - 1, 0, obj )
+      } else temp.push(obj)
     }
 
     temp = this.appendQuickRepliesToEnd(temp, this.state.quickReplies)
@@ -449,7 +460,9 @@ class GenericMessage extends React.Component {
       }
     }
     if (!isPresent) {
-      temp.push(obj)
+      if (temp.length > 0 && temp[temp.length - 1].isEmailPhoneComponent) {
+       temp.splice( temp.length - 1, 0, obj )
+      } else temp.push(obj)
     }
 
     temp = this.appendQuickRepliesToEnd(temp, this.state.quickReplies)
@@ -477,7 +490,9 @@ class GenericMessage extends React.Component {
       }
     }
     if (!isPresent) {
-      temp.push(obj)
+      if (temp.length > 0 && temp[temp.length - 1].isEmailPhoneComponent) {
+       temp.splice( temp.length - 1, 0, obj )
+      } else temp.push(obj)
     }
 
     temp = this.appendQuickRepliesToEnd(temp, this.state.quickReplies)
@@ -497,7 +512,9 @@ class GenericMessage extends React.Component {
     }
 
     if (!isPresent) {
-      temp.push(obj)
+      if (temp.length > 0 && temp[temp.length - 1].isEmailPhoneComponent) {
+       temp.splice( temp.length - 1, 0, obj )
+      } else temp.push(obj)
     }
 
     temp = this.appendQuickRepliesToEnd(temp, this.state.quickReplies)
@@ -517,7 +534,9 @@ class GenericMessage extends React.Component {
     }
 
     if (!isPresent) {
-      temp.push(obj)
+      if (temp.length > 0 && temp[temp.length - 1].isEmailPhoneComponent) {
+       temp.splice( temp.length - 1, 0, obj )
+      } else temp.push(obj)
     }
 
     this.setState({broadcast: temp})
@@ -568,13 +587,70 @@ class GenericMessage extends React.Component {
     this.closeAddComponentModal(true)
   }
 
+  handleCheckbox (e) {
+    if (e.target.checked) {
+      let component = this.getComponent({
+        id: null,
+        componentName: 'text',
+        componentType: 'text',
+        text: 'Please share your Email Address with us',
+        isEmailPhoneComponent: true
+      })
+      console.log('component got', component)
+      this.updateList(component)
+      let id = new Date().getTime() + (Math.floor(Math.random() * 100))
+      let quickReply = [{
+        id,
+        content_type: 'user_email',
+        title:  'Email Address',
+        payload: JSON.stringify([
+          {action: 'set_subscriber_field', fieldName: 'email'},
+          {action: 'send_message_block', blockUniqueId: new Date().getTime() + (Math.floor(Math.random() * 100))}])
+      }]
+      this.updateQuickReplies(quickReply)
+      .then(result => {
+        component.handler()
+        this.setState({quickRepliesComponent: {
+          content:
+            (<PreviewQuickReplies
+              quickReplies={quickReply}
+              currentId={this.state.currentId}
+              isEmailPhoneComponent={true}
+            />)
+        }})
+      })
+    } else {
+      this.updateQuickReplies([])
+      .then(result => {
+        this.setState({quickRepliesComponent: {
+          content:
+            (<QuickReplies
+              toggleGSModal={this.toggleGSModal}
+              closeGSModal={this.closeGSModal}
+              customFields={this.props.customFields}
+              sequences={this.props.sequences}
+              tags={this.props.tags}
+              quickReplies={[]}
+              updateQuickReplies={this.updateQuickReplies}
+              currentId={this.state.currentId}
+            />)
+        }})
+        this.removeComponent({id: this.state.broadcast[this.state.broadcast.length - 1].id})
+      })
+    }
+  }
+
   updateList (component) {
     let temp = this.state.list
     let componentIndex = this.state.list.findIndex(item => item.content.props.id === component.component.props.id)
     if (componentIndex < 0) {
       console.log('adding new component')
       console.log({list: [...temp, {content: component.component}]})
-      this.setState({list: [...temp, {content: component.component}]})
+      if(temp.length > 0 && temp[temp.length - 1].content.props.isEmailPhoneComponent) {
+        temp.splice(temp.length - 1, 0, {content: component.component})
+        this.setState({list: temp})
+      }
+      else this.setState({list: [...temp, {content: component.component}]})
     } else {
       console.log('editing exisiting component')
       temp[componentIndex] = {content: component.component}
@@ -727,6 +803,7 @@ class GenericMessage extends React.Component {
           removeState
           buttonActions={this.props.buttonActions}
           replyWithMessage={this.props.replyWithMessage}
+          isEmailPhoneComponent={broadcast.isEmailPhoneComponent}
           hideUserOptions={this.props.hideUserOptions} />),
         handler: () => {
           this.handleText({
@@ -736,7 +813,8 @@ class GenericMessage extends React.Component {
             videoDescription: broadcast.videoDescription,
             text: broadcast.text,
             buttons: broadcast.buttons ? broadcast.buttons : [],
-            deletePayload: broadcast.deletePayload
+            deletePayload: broadcast.deletePayload,
+            isEmailPhoneComponent: broadcast.isEmailPhoneComponent
           })
         }
       },
@@ -993,19 +1071,31 @@ class GenericMessage extends React.Component {
     if (this.state.list.length > 0 && this.props.showQuickRelplies) {
       console.log('quick reply', this.state.list[this.state.list.length - 1])
       if (!this.state.quickRepliesComponent) {
-        this.setState({quickRepliesComponent: {
-          content:
-            (<QuickReplies
-              toggleGSModal={this.toggleGSModal}
-              closeGSModal={this.closeGSModal}
-              customFields={this.props.customFields}
-              sequences={this.props.sequences}
-              tags={this.props.tags}
-              quickReplies={this.state.quickReplies}
-              updateQuickReplies={this.updateQuickReplies}
-              currentId={this.state.currentId}
-            />)
-        }})
+        if (this.props.module && this.props.module === 'welcomeMessage' && this.state.broadcast[this.state.broadcast.length - 1].isEmailPhoneComponent) {
+          this.setState({quickRepliesComponent: {
+            content:
+              (<PreviewQuickReplies
+                quickReplies={this.state.quickReplies}
+                currentId={this.state.currentId}
+                isEmailPhoneComponent={this.state.broadcast[this.state.broadcast.length -1].isEmailPhoneComponent}
+              />)
+          }})
+        }
+        else {
+          this.setState({quickRepliesComponent: {
+            content:
+              (<QuickReplies
+                toggleGSModal={this.toggleGSModal}
+                closeGSModal={this.closeGSModal}
+                customFields={this.props.customFields}
+                sequences={this.props.sequences}
+                tags={this.props.tags}
+                quickReplies={this.state.quickReplies}
+                updateQuickReplies={this.updateQuickReplies}
+                currentId={this.state.currentId}
+              />)
+          }})
+        }
       } else {
         return this.state.list.concat([this.state.quickRepliesComponent])
       }
@@ -1029,7 +1119,12 @@ class GenericMessage extends React.Component {
   }
 
   render () {
-    console.log('render in genericMessage')
+    console.log('render in genericMessage', this.state.broadcast)
+    let checkboxDisabled = this.state.broadcast.length === this.props.componentLimit && this.state.broadcast.length > 0 && !this.state.broadcast[this.state.broadcast.length - 1].isEmailPhoneComponent
+    let cursorStyle = this.state.broadcast.length === this.props.componentLimit && this.state.broadcast.length > 0 && !this.state.broadcast[this.state.broadcast.length - 1].isEmailPhoneComponent
+      ? {cursor: 'not-allowed'}
+      : {cursor: 'pointer'}
+    const tooltipText = `You can only add upto ${this.props.componentLimit} components per message!`
     var alertOptions = {
       offset: 75,
       position: 'top right',
@@ -1040,7 +1135,6 @@ class GenericMessage extends React.Component {
 
     return (
     <div className='m-grid__item m-grid__item--fluid m-wrapper'>
-
       <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
       <div style={{float: 'left', clear: 'both'}}
         ref={(el) => { this.top = el }} />
@@ -1063,7 +1157,29 @@ class GenericMessage extends React.Component {
                       </div>
                     }
                     <GenericMessageComponents hiddenComponents={this.state.hiddenComponents} addComponent={this.showAddComponentModal} addedComponents={this.state.list.length} module= {this.props.module} componentLimit = {this.props.componentLimit}/>
-                  </div>
+                    {this.props.module && this.props.module === 'welcomeMessage' &&
+                      <div>
+                        <ReactTooltip
+                        id='checkbox'
+                        place='right'
+                        type='info'
+                        multiline={true}
+                        disable={!(this.state.broadcast.length === this.props.componentLimit && this.state.broadcast.length > 0 && !this.state.broadcast[this.state.broadcast.length - 1].isEmailPhoneComponent)}
+                      />
+                      <div data-for='checkbox' data-tip={tooltipText} className='m-checkbox-list row' style={{marginTop: '20px', marginLeft: '-12px'}}>
+                        <label className='m-checkbox m-checkbox--state-success' style={{...cursorStyle}}>
+        									<input type='checkbox'
+                            onChange={this.handleCheckbox}
+                            checked={this.state.broadcast && this.state.broadcast.length > 0 && this.state.broadcast[this.state.broadcast.length - 1].isEmailPhoneComponent}
+                            disabled={checkboxDisabled}
+                          />
+                        Ask for subscriber's Email Address and Phone Number
+        									<span></span>
+        								</label>
+                      </div>
+                    </div>
+                    }
+                </div>
                   <div className='col-lg-6 col-md-6 col-sm-12 col-xs-12'>
                     <a href='#/' style={{ display: 'none' }} ref='rename' data-toggle="modal" data-target="#rename">lossData</a>
                     <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="rename" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -1107,7 +1223,7 @@ class GenericMessage extends React.Component {
                     content={this.getModalContent()}
                     onClose={this.toggleModalContent}
                   />
-                    
+
                     <a href='#/' style={{ display: 'none' }} ref='lossData' data-toggle="modal" data-target="#lossData">lossData</a>
                     <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="lossData" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                       <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
