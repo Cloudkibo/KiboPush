@@ -159,18 +159,9 @@ class SubscriberSummary extends React.Component {
     return dataChart
   }
   onInputChange (e) {
-    console.log('called input change', e.target.value)
     let isNum = Number(e.target.value)
-    if(isNum) {
-      console.log('isNum called')
-      if(e.target.value > 0) {
-        console.log('value greater than 0')
-      this.setState({days: e.target.value})
-      }
-      else {
-        console.log('called else')
-        this.setState({days: ''})
-      }
+    if(isNum && isNum > 0) {
+      this.setState({days: isNum})
     }
     else if(e.target.value === '') {
       this.setState({days: ''})
