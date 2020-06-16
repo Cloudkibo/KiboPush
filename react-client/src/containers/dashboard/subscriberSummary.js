@@ -159,15 +159,16 @@ class SubscriberSummary extends React.Component {
     return dataChart
   }
   onInputChange (e) {
-    console.log('days:', e.target.value)
-    this.setState({days: e.target.value})
+    if(e.target.value < 1) {
+      this.setState({days: ''})
+    }
+    else {
+      this.setState({days: e.target.value})
+    }
   }
   showReport () {
     if(this.state.days === '') {
       this.props.msg.error('Number of Days should not be empty')
-    }
-    else if(this.state.days < 1) {
-      this.props.msg.error('Number of Days should be greater than zero')
     }
     else {
     this.refs.report.click()
