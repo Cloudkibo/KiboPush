@@ -159,11 +159,21 @@ class SubscriberSummary extends React.Component {
     return dataChart
   }
   onInputChange (e) {
-    if(e.target.value < 1) {
-      this.setState({days: ''})
-    }
-    else {
+    console.log('called input change', e.target.value)
+    let isNum = Number(e.target.value)
+    if(isNum) {
+      console.log('isNum called')
+      if(e.target.value > 0) {
+        console.log('value greater than 0')
       this.setState({days: e.target.value})
+      }
+      else {
+        console.log('called else')
+        this.setState({days: ''})
+      }
+    }
+    else if(e.target.value === '') {
+      this.setState({days: ''})
     }
   }
   showReport () {
@@ -199,7 +209,7 @@ class SubscriberSummary extends React.Component {
                   Show records for last:&nbsp;&nbsp;
                 </span>
                 <div>
-                  <input id='example-text-input' type='number' min='0' step='1' className='form-control' value={this.state.days !== 'all' && this.state.days} placeholder={this.state.days === 'all' && 'all'} onKeyDown={this.onKeyDown} onChange={this.onInputChange} />
+                  <input id='example-text-input' type='text' className='form-control' value={this.state.days !== 'all' ? this.state.days: ''} placeholder={this.state.days === 'all' && 'all'} onKeyDown={this.onKeyDown} onChange={this.onInputChange} />
                 </div>
                 <span htmlFor='example-text-input' className='col-form-label'>
                 &nbsp;&nbsp;days
