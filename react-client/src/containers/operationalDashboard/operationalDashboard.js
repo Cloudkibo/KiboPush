@@ -385,7 +385,8 @@ class OperationalDashboard extends React.Component {
 
   getFile () {
     console.log('getFile')
-    this.props.downloadFile()
+    this.msg.info('DOWNLOADING DATA.... YOU WILL BE NOTIFIED WHEN IT IS DOWNLOAD.')
+    this.props.downloadFile(this.msg)
   }
 
   onFilterByGender (e) {
