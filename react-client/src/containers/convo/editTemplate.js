@@ -23,19 +23,30 @@ class EditTemplate extends React.Component {
       selectedPage: [],
       convoTitle: 'Welcome Message',
       buttonActions: ['open website', 'open webview'],
-      pageId: this.props.pages.filter((page) => page._id === this.props.location.state.pages[0])[0].pageId
+      pageId: this.props.pages.filter((page) => page._id === this.props.location.state.pages[0])[0].pageId,
+      linkedMessages: undefined
     }
     this.goBack = this.goBack.bind(this)
     this.saveMessage = this.saveMessage.bind(this)
     this.handleChange = this.handleChange.bind(this)
+    this.getLinkedMessage = this.getLinkedMessage.bind(this)
   }
 
   handleChange (broadcast) {
+    let array = broadcast.broadcast
     this.setState(broadcast)
+    if (array && array.length > 0) {
+      if (array[array.length -1].isEmailPhoneComponent && array[array.length - 1].quickReplies[0]) {
+        this.setState({linkedMessages: this.getLinkedMessage(array)})
+      } else {
+        this.setState({linkedMessages: undefined})
+      }
+    } else {
+      this.setState({linkedMessages: undefined})
+    }
   }
 
   saveMessage () {
-    console.log('this.state.broadcast in welcome message', this.state.broadcast)
     if (!validateFields(this.state.broadcast, this.msg)) {
       return
     }
@@ -54,7 +65,7 @@ class EditTemplate extends React.Component {
         )
       )
     }
-    this.props.createWelcomeMessage({_id: this.props.location.state.pages[0], welcomeMessage: broadcast}, this.msg)
+    this.props.createWelcomeMessage({_id: this.props.location.state.pages[0], welcomeMessage: broadcast, linkedMessages: this.state.linkedMessages}, this.msg)
   }
 
   goBack () {
@@ -63,9 +74,26 @@ class EditTemplate extends React.Component {
     })
   }
 
+  getLinkedMessage(broadcast) {
+    return [{
+      id: JSON.parse(broadcast[broadcast.length-1].quickReplies[0].payload)[1].blockUniqueId,
+      messageContent: [{
+        componentName: 'text',
+        componentType: 'text',
+        id: new Date().getTime(),
+        quickReplies: [{
+          content_type: 'user_phone_number',
+          payload : JSON.stringify([{action: 'set_subscriber_field', fieldName: 'phoneNumber'}]),
+          title: 'Phone Number'
+        }],
+        text: 'Please share your Phone Number with us'
+      }],
+      title: 'Email Address'
+    }]
+  }
+
   componentDidMount () {
     this.props.loadMyPagesList()
-    console.log('this.props.location.state.default_action', this.props.location.state.default_action)
     const hostname = window.location.hostname
     let title = ''
     if (hostname.includes('kiboengage.cloudkibo.com')) {
@@ -78,16 +106,16 @@ class EditTemplate extends React.Component {
     this.scrollToTop()
     if (this.props.location.state && this.props.location.state.payload) {
       var data = this.props.location.state.payload
-      console.log('data in did mount method', data)
-     // data[0].default_action = this.props.location.state.default_action
-      this.setState({broadcast: this.props.location.state.payload})
+      this.setState({
+        broadcast: this.props.location.state.payload,
+        linkedMessages: data.length > 0 && data[data.length - 1].isEmailPhoneComponent ? this.getLinkedMessage(data) : undefined
+      })
     }
   }
 
   UNSAFE_componentWillReceiveProps (nextProps) {
     if(nextProps.pages !== this.props.pages) {
     var pages= nextProps.pages.filter((page) => page._id === this.props.location.state.pages[0])
-    console.log('PageSelected', pages[0])
     this.setState({selectedPage: pages[0].welcomeMessage})
     }
   }
@@ -97,10 +125,6 @@ class EditTemplate extends React.Component {
   }
 
   render () {
-   // var broadcast = this.state.broadcast
-    console.log('pages ine edit template', this.props.pages)
-    console.log('this.state.selectedPage', this.state.selectedPage)
-    console.log('this.props.location.state.pages[0])',this.props.location.state.pages[0])
     var alertOptions = {
       offset: 14,
       position: 'top right',
@@ -125,20 +149,16 @@ class EditTemplate extends React.Component {
                         </h3>
                     </div>
                   </div>
-                </div>
-                <div className='m-content' style={{marginBottom: '-30px'}}>
-                  <div className='row'>
-                    <div className='col-12'>
-                      <div className='pull-right'>
-                        <button className='btn btn-primary' style={{marginRight: '20px'}} onClick={this.goBack}>
-                        Back
-                      </button>
-                        <button className='btn btn-primary' disabled={(this.state.broadcast.length === 0)} onClick={this.saveMessage}>
-                        Save
-                      </button>
-                      </div>
+                  <div className='m-portlet__head-tools'>
+                    <div className='pull-right'>
+                      <button className='btn btn-primary' style={{marginRight: '20px'}} onClick={this.goBack}>
+                      Back
+                    </button>
+                      <button className='btn btn-primary' disabled={(this.state.broadcast.length === 0)} onClick={this.saveMessage}>
+                      Save
+                    </button>
                     </div>
-                  </div>
+                </div>
                 </div>
                 <GenericMessage
                   pageId={this.state.pageId}
@@ -150,6 +170,7 @@ class EditTemplate extends React.Component {
                   convoTitle={this.state.convoTitle}
                   buttonActions={this.state.buttonActions}
                   default_action={this.props.location.state.default_action ? this.props.location.state.default_action : ''}
+                  module='welcomeMessage'
                 />
               </div>
             </div>

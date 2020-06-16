@@ -7,6 +7,7 @@ import ATTACHMENTAREA from './attachmentArea'
 import MOREOPTIONS from './moreOptions'
 import MODAL from '../extras/modal'
 import TRIGGERAREA from './triggerArea'
+import MESSAGEBLOCKUSAGE from './messageBlockUsage'
 
 const MessengerPlugin = require('react-messenger-plugin').default
 
@@ -428,6 +429,8 @@ class MessageArea extends React.Component {
               alertMsg={this.props.alertMsg}
               onRename={this.renameBlock}
               blocks={this.props.blocks}
+              showAnalytics={this.props.chatbot.published}
+              onAnalytics={this.props.onAnalytics}
             />
             <div className='m--space-30' />
             {
@@ -469,6 +472,15 @@ class MessageArea extends React.Component {
                 addOption={this.addOption}
                 removeOption={this.removeOption}
                 updateOption={this.updateOption}
+              />
+            }
+            {
+              this.props.chatbot.startingBlockId !== this.props.block._id &&
+              this.props.chatbot.published && this.props.block.stats &&
+              (this.props.block.stats.urlBtnClickedCount > 0 || this.props.block.stats.sentCount > 0) &&
+              <MESSAGEBLOCKUSAGE
+                urlBtnClickedCount={this.props.block.stats ? this.props.block.stats.urlBtnClickedCount : 0}
+                sentCount={this.props.block.stats ? this.props.block.stats.sentCount : 0}
               />
             }
             <div className='m--space-10' />

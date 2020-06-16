@@ -137,3 +137,14 @@ export function restoreBackup (data, callback) {
       })
   }
 }
+
+export function fetchAnalytics (id, days, callback) {
+  console.log('data for fetchAnalytics', id, days)
+  return (dispatch) => {
+    callApi(`chatbots/${id}/stats/${days}`, 'get')
+      .then(res => {
+        console.log('response from fetchAnalytics', res)
+        callback(res)
+      })
+  }
+}
