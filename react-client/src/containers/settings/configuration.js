@@ -33,7 +33,6 @@ class Webhook extends React.Component {
     this.showDialogDisconnect = this.showDialogDisconnect.bind(this)
     this.handleResponse = this.handleResponse.bind(this)
     this.deleteWhatsApp = this.deleteWhatsApp.bind(this)
-    this.isFbConnected = this.isFbConnected.bind(this)
     this.handleDeleteWhatsAppResponse = this.handleDeleteWhatsAppResponse.bind(this)
     this.setType = this.setType.bind(this)
     props.getAutomatedOptions()
@@ -78,10 +77,6 @@ class Webhook extends React.Component {
     this.setState({type: type})
   }
 
- isFbConnected() {
-   let flag = this.props.user.role === 'buyer' ? !this.props.user.facebookInfo : false
-    return flag
-  }
   UNSAFE_componentWillReceiveProps (nextProps) {
     console.log('UNSAFE_componentWillReceiveProps', nextProps)
     if (nextProps.automated_options && nextProps.automated_options.twilio) {
@@ -104,7 +99,7 @@ class Webhook extends React.Component {
         pathname: '/integrations',
         state: 'whatsApp'
       })
-    } else if (nextProps.user && nextProps.user.platform === 'messenger' && this.isFbConnected()) {
+    } else if (nextProps.user && nextProps.user.platform === 'messenger' && (nextProps.user.role === 'buyer' && !nextProps.user.facebookInfo)) {
       this.props.history.push({
         pathname: '/integrations',
         state: 'messenger'
