@@ -716,7 +716,6 @@ class Sidebar extends Component {
     }
   }
   showRssIntegrationItem () {
-    if (this.props.user.isSuperUser) {
       if (this.state.rssIntegration) {
         return (
           <li className='m-menu__item' aria-haspopup='true' >
@@ -733,10 +732,8 @@ class Sidebar extends Component {
       } else {
         return (null)
       }
-    }
   }
   showNewsIntegrationItem () {
-    if (this.props.user.isSuperUser) {
       if (this.state.newsIntegration) {
         return (
           <li className='m-menu__item' aria-haspopup='true' >
@@ -753,11 +750,9 @@ class Sidebar extends Component {
       } else {
         return (null)
       }
-    }
   }
   showSequenceMessaging () {
     if (this.props.user && this.state.sequenceMessaging) {
-      if (this.props.user.isSuperUser || this.props.user.companyId === "5d56acdabb04900ef9839dde") {
         return (
           <li className='m-menu__item' aria-haspopup='true' >
             <Link to='/sequenceMessaging' className='m-menu__link'>
@@ -773,7 +768,6 @@ class Sidebar extends Component {
       } else {
         return (null)
       }
-    }
   }
 
   showCommentCapture () {
