@@ -99,7 +99,7 @@ class Webhook extends React.Component {
         pathname: '/integrations',
         state: 'whatsApp'
       })
-    } else if (nextProps.user && nextProps.user.platform === 'messenger' && !nextProps.user.facebookInfo) {
+    } else if (nextProps.user && nextProps.user.platform === 'messenger' && (nextProps.user.role === 'buyer' ? !nextProps.user.facebookInfo : false)) {
       this.props.history.push({
         pathname: '/integrations',
         state: 'messenger'
