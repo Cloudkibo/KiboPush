@@ -716,65 +716,59 @@ class Sidebar extends Component {
     }
   }
   showRssIntegrationItem () {
-    if (this.props.user.isSuperUser) {
-      if (this.state.rssIntegration) {
-        return (
-          <li className='m-menu__item' aria-haspopup='true' >
-            <Link to='/rssIntegration' className='m-menu__link'>
-              <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
-                <span />
-              </i>
-              <span className='m-menu__link-text'>
-                Rss Integration
-              </span>
-            </Link>
-          </li>
-        )
-      } else {
-        return (null)
-      }
+    if (this.state.rssIntegration) {
+      return (
+        <li className='m-menu__item' aria-haspopup='true' >
+          <Link to='/rssIntegration' className='m-menu__link'>
+            <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
+              <span />
+            </i>
+            <span className='m-menu__link-text'>
+              Rss Integration
+            </span>
+          </Link>
+        </li>
+      )
+    } else {
+      return (null)
     }
-  }
-  showNewsIntegrationItem () {
-    if (this.props.user.isSuperUser) {
-      if (this.state.newsIntegration) {
-        return (
-          <li className='m-menu__item' aria-haspopup='true' >
-            <Link to='/newsIntegration' className='m-menu__link'>
-              <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
-                <span />
-              </i>
-              <span className='m-menu__link-text'>
-                News Integration
-              </span>
-            </Link>
-          </li>
-        )
-      } else {
-        return (null)
-      }
+}
+showNewsIntegrationItem () {
+    if (this.state.newsIntegration) {
+      return (
+        <li className='m-menu__item' aria-haspopup='true' >
+          <Link to='/newsIntegration' className='m-menu__link'>
+            <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
+              <span />
+            </i>
+            <span className='m-menu__link-text'>
+              News Integration
+            </span>
+          </Link>
+        </li>
+      )
+    } else {
+      return (null)
     }
-  }
-  showSequenceMessaging () {
-    if (this.props.user && this.state.sequenceMessaging) {
-      if (this.props.user.isSuperUser || this.props.user.companyId === "5d56acdabb04900ef9839dde") {
-        return (
-          <li className='m-menu__item' aria-haspopup='true' >
-            <Link to='/sequenceMessaging' className='m-menu__link'>
-              <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
-                <span />
-              </i>
-              <span className='m-menu__link-text'>
-                Sequence Messaging
-              </span>
-            </Link>
-          </li>
-        )
-      } else {
-        return (null)
-      }
+}
+showSequenceMessaging () {
+  if (this.props.user && this.state.sequenceMessaging) {
+      return (
+        <li className='m-menu__item' aria-haspopup='true' >
+          <Link to='/sequenceMessaging' className='m-menu__link'>
+            <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
+              <span />
+            </i>
+            <span className='m-menu__link-text'>
+              Sequence Messaging
+            </span>
+          </Link>
+        </li>
+      )
+    } else {
+      return (null)
     }
-  }
+}
 
   showCommentCapture () {
     if (this.props.user) {
