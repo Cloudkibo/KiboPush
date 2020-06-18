@@ -306,20 +306,20 @@ class Sidebar extends Component {
     if (!this.state.isKiboChat && !this.state.isKiboLite) {
       return (
         <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-          <a href='#/' className='m-menu__link m-menu__toggle'>
+          <span className='m-menu__link m-menu__toggle'>
             <i className='m-menu__link-icon flaticon-paper-plane' title='Broadcasting' />
             <span className='m-menu__link-text'>Broadcasting</span>
             <i className='m-menu__ver-arrow la la-angle-right' />
-          </a>
+          </span>
           <div className='m-menu__submenu'>
             <span className='m-menu__arrow' />
             <ul className='m-menu__subnav'>
               <li className='m-menu__item  m-menu__item--parent' aria-haspopup='true' >
-                <a href='#/' className='m-menu__link'>
+                <span className='m-menu__link'>
                   <span className='m-menu__link-text'>
                     Broadcasting
                   </span>
-                </a>
+                </span>
               </li>
               {this.showBroadcastsItem()}
               {this.props.user && this.props.user.platform === 'messenger' && this.showSurveysItem()}
@@ -361,20 +361,20 @@ class Sidebar extends Component {
     if (!this.state.isKiboLite && this.props.user && this.props.user.platform === 'messenger') {
       return (
         <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-          <a href='#/' className='m-menu__link m-menu__toggle'>
+          <span className='m-menu__link m-menu__toggle'>
             <i className='m-menu__link-icon flaticon-share' title='Automation' />
             <span className='m-menu__link-text'>Automation</span>
             <i className='m-menu__ver-arrow la la-angle-right' />
-          </a>
+          </span>
           <div className='m-menu__submenu'>
             <span className='m-menu__arrow' />
             <ul className='m-menu__subnav'>
               <li className='m-menu__item  m-menu__item--parent' aria-haspopup='true' >
-                <a href='#/' className='m-menu__link'>
+                <span className='m-menu__link'>
                   <span className='m-menu__link-text'>
                     Automation
                   </span>
-                </a>
+                </span>
               </li>
               {this.showSmartRespliesItem()}
               {this.showChatbotAutomation()}
@@ -397,20 +397,20 @@ class Sidebar extends Component {
     if (!this.state.isKiboLite && this.props.user && this.props.user.platform === 'messenger') {
       return (
         <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-          <a href='#/' className='m-menu__link m-menu__toggle'>
+          <span className='m-menu__link m-menu__toggle'>
             <i className='m-menu__link-icon flaticon-users' title='Subscriptions' />
             <span className='m-menu__link-text'>Subscriptions</span>
             <i className='m-menu__ver-arrow la la-angle-right' />
-          </a>
+          </span>
           <div className='m-menu__submenu'>
             <span className='m-menu__arrow' />
             <ul className='m-menu__subnav'>
               <li className='m-menu__item  m-menu__item--parent' aria-haspopup='true' >
-                <a href='#/' className='m-menu__link'>
+                <span className='m-menu__link'>
                   <span className='m-menu__link-text'>
                     Subscriptions
                   </span>
-                </a>
+                </span>
               </li>
               {this.showSubscribersItem()}
               {this.showCustomFields()}
@@ -432,20 +432,20 @@ class Sidebar extends Component {
     if (this.props.user && this.props.user.platform === 'messenger' && (window.location.host.includes('kiboengage.cloudkibo.com') || window.location.host === 'localhost:3021' || window.location.host === 'localhost:3000')) {
       return (
         <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-          <a href='#/' className='m-menu__link m-menu__toggle'>
+          <span className='m-menu__link m-menu__toggle'>
             <i className='m-menu__link-icon flaticon-diagram' title='Growth Tools' />
             <span className='m-menu__link-text'>Growth Tools</span>
             <i className='m-menu__ver-arrow la la-angle-right' />
-          </a>
+          </span>
           <div className='m-menu__submenu'>
             <span className='m-menu__arrow' />
             <ul className='m-menu__subnav'>
               <li className='m-menu__item  m-menu__item--parent' aria-haspopup='true' >
-                <a href='#/' className='m-menu__link'>
+                <span className='m-menu__link'>
                   <span className='m-menu__link-text'>
                     Growth Tools
                   </span>
-                </a>
+                </span>
               </li>
               {this.showCommentCapture()}
               {this.showInviteUsingPhoneNumber()}
@@ -470,20 +470,20 @@ class Sidebar extends Component {
     if (this.props.user && this.props.user.platform === 'messenger') {
       return (
         <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-          <a href='#/' className='m-menu__link m-menu__toggle'>
+          <span className='m-menu__link m-menu__toggle'>
             <i className='m-menu__link-icon flaticon-add' title='Manage Pages' />
             <span className='m-menu__link-text'>Manage Pages</span>
             <i className='m-menu__ver-arrow la la-angle-right' />
-          </a>
+          </span>
           <div className='m-menu__submenu'>
             <span className='m-menu__arrow' />
             <ul className='m-menu__subnav'>
               <li className='m-menu__item  m-menu__item--parent' aria-haspopup='true' >
-                <a href='#/' className='m-menu__link'>
+                <span className='m-menu__link'>
                   <span className='m-menu__link-text'>
                     Manage Pages
                   </span>
-                </a>
+                </span>
               </li>
               {this.showPagesItem()}
               {this.showPersistentMenuItem()}
@@ -500,20 +500,20 @@ class Sidebar extends Component {
     if (this.props.user && (this.props.user.currentPlan.unique_ID === 'plan_C' || this.props.user.currentPlan.unique_ID === 'plan_D')) {
       return (
         <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-          <a href='#/' className='m-menu__link m-menu__toggle'>
+          <span className='m-menu__link m-menu__toggle'>
             <i className='m-menu__link-icon flaticon-share' title='Organization' />
             <span className='m-menu__link-text'>Organization</span>
             <i className='m-menu__ver-arrow la la-angle-right' />
-          </a>
+          </span>
           <div className='m-menu__submenu'>
             <span className='m-menu__arrow' />
             <ul className='m-menu__subnav'>
               <li className='m-menu__item  m-menu__item--parent' aria-haspopup='true' >
-                <a href='#/' className='m-menu__link'>
+                <span className='m-menu__link'>
                   <span className='m-menu__link-text'>
                     Organization
                   </span>
-                </a>
+                </span>
               </li>
               {this.showInviteMembersItem()}
               {this.showMembersItem()}
@@ -1027,14 +1027,14 @@ class Sidebar extends Component {
   showHTMLWidget () {
     return (
       <li className='m-menu__item' aria-haspopup='true' >
-        <a href='#/' className='m-menu__link'>
+        <span className='m-menu__link'>
           <i className='m-mesing Phone Numbersnu__link-bullet m-menu__link-bullet--dot'>
             <span />
           </i>
           <span className='m-menu__link-text'>
             HTML Widget
           </span>
-        </a>
+        </span>
       </li>
     )
   }
@@ -1042,14 +1042,14 @@ class Sidebar extends Component {
   showKiboPushWidget () {
     return (
       <li className='m-menu__item' aria-haspopup='true' >
-        <a href='#/' className='m-menu__link'>
+        <span className='m-menu__link'>
           <i className='m-mesing Phone Numbersnu__link-bullet m-menu__link-bullet--dot'>
             <span />
           </i>
           <span className='m-menu__link-text'>
             KiboPush Widget
           </span>
-        </a>
+        </span>
       </li>
     )
   }

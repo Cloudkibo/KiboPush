@@ -84,7 +84,8 @@ class App extends Component {
       '/sessionInvalidated',
       '/addfbpages',
       '/configureChatbot',
-      '/chatbotAnalytics'
+      '/chatbotAnalytics',
+      '/integrations'
     ].includes(path)) {
       return true
     }
@@ -129,7 +130,7 @@ class App extends Component {
             this.state.showContent &&
             <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
               {
-                auth.loggedIn() && ['/addfbpages', '/facebookIntegration', '/integrations'].indexOf(this.state.path) === -1 &&
+                auth.loggedIn() &&
                 <Sidebar history={this.props.history} location={this.props.location} />
               }
               { this.props.children }

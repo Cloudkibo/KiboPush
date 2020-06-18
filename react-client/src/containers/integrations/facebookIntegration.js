@@ -47,8 +47,10 @@ class FacebookIntegration extends React.Component {
     } else if (hostname.includes('kibochat.cloudkibo.com')) {
       title = 'KiboChat'
     }
-
     document.title = `${title} | Facebook Connect`
+    /* eslint-disable */
+    $('#sidebarDiv').addClass('hideSideBar')
+    /* eslint-enable */
   }
 
   render () {
