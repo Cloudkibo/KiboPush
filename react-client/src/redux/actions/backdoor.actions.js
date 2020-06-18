@@ -249,12 +249,17 @@ export function loadPageTags (pageId) {
   }
 }
 
-export function downloadFile () {
+export function downloadFile (msg) {
   return (dispatch) => {
     callApi(`backdoor/uploadFile`)
     .then(function (data) {
-      console.log('response ftom downloadFile', data.status)
-      fileDownload(data.payload, 'users.csv')
+      if(data.status === 'success') {
+        fileDownload(data.payload, 'users.csv')
+        msg.success('File Download Successfully')
+      }
+      else {
+        msg.error('Fail to download file')
+      }
     })
   }
 }
