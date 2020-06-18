@@ -5,6 +5,7 @@ import { fetchWorksheets, fetchColumns, emptyFields } from '../../redux/actions/
 import { RingLoader } from 'halogenium'
 import Mapping from './Mapping'
 import AlertContainer from 'react-alert'
+import { Link } from 'react-router-dom'
 
 class InsertRow extends React.Component {
   constructor (props, context) {
@@ -102,6 +103,9 @@ class InsertRow extends React.Component {
         dataValues[index] = e.target.value
         this.setState({mappingData: data, mappingDataValues: dataValues})
       }
+      if (this.state.spreadSheetValue !== '' && this.state.workSheetValue !== '' && dataValues !== '' && dataValues.filter(val => val !== '').length > 0) {
+        this.setState({buttonDisabled: false})
+      }
       console.log('data in updateMappingData', data)
     }
   }
@@ -113,13 +117,11 @@ class InsertRow extends React.Component {
       loadingColumns: false,
       workSheetValue: '', 
       mappingData: this.props.questions ? this.state.mappingData : '', 
-      mappingDataValues: ''
+      mappingDataValues: '',
+      buttonDisabled: true
     })
     this.props.emptyFields()
     this.props.fetchWorksheets({spreadsheetId: event.target.value})
-    if (event.target.value !== '' && this.state.workSheetValue !== '') {
-      this.setState({buttonDisabled: false})
-    }
   }
 
   onWorkSheetChange (event) {
@@ -129,12 +131,10 @@ class InsertRow extends React.Component {
       workSheetName: worksheetName[0].title, 
       loadingColumns: true,
       mappingData: this.props.questions ? this.state.mappingData : '',  
-      mappingDataValues: ''
+      mappingDataValues: '',
+      buttonDisabled: true
     })
     this.props.fetchColumns({spreadsheetId: this.state.spreadSheetValue, sheetId: event.target.value})
-    if (event.target.value !== '' && this.state.spreadSheetValue !== '') {
-      this.setState({buttonDisabled: false})
-    }
   }
 
   componentWillMount () {
@@ -296,12 +296,16 @@ class InsertRow extends React.Component {
                 </span>
           </button>
         </div>
-        { this.props.reconnectWarning && this.props.reconnectWarning !== '' && 
-         <div style={{margin: '10px'}} className="alert alert-danger alert-dismissible fade show   m-alert m-alert--air" role="alert">
-         { this.props.reconnectWarning }
-       </div>
-        }
-        <div style={{ textAlign: 'left' }} className="modal-body">
+        {this.props.reconnectWarning && this.props.reconnectWarning !== '' 
+        ? <div>
+        <div style={{margin: '20px',height: 'auto'}} className="alert alert-danger alert-dismissible fade show   m-alert m-alert--air" role="alert">
+        { this.props.reconnectWarning }
+          <br />
+          Go to Integraions in <Link to='/settings' style={{color:'white', textDecoration: 'underline'}}>Settings</Link> to view google sheet integration status.
+        </div>
+        </div>
+       : <div>
+         <div style={{ textAlign: 'left',maxHeight: '500px', overflow: 'scroll'}} className="modal-body">
           <h6>Google Sheets: Insert Row</h6><br />
           <span style={{color: '#575962'}}>The first row of the table is used for your column titles. You could easily match KiboPush subscriber data with your columns by titles names.</span>
           <br /><br />
@@ -333,9 +337,16 @@ class InsertRow extends React.Component {
           )
           }
           <br />
+          { 
+            this.props.columns  && 
+            this.props.columns.googleSheetColumns &&
+            (this.props.columns.googleSheetColumns.length < 1 || (this.props.columns.googleSheetColumns.length > 0 
+              && this.props.columns.googleSheetColumns.filter(col => col !== null).length < 1)) &&
+            <div>Selected worksheet has no columns</div>
+          }
           {this.state.loadingColumns
           ? <div className='align-center'><center><RingLoader color='#FF5E3A' /></center></div>
-          : (this.props.columns && this.props.columns.googleSheetColumns.length > 0 &&
+          : (this.props.columns && this.props.columns.googleSheetColumns.length > 0 && this.props.columns.googleSheetColumns.filter(col => col !== null).length > 1 &&
             <Mapping 
               leftColumns = {
                 this.props.questions ? 
@@ -368,9 +379,12 @@ class InsertRow extends React.Component {
           )
           }
       </div>
-      <div className="m-portlet__foot m-portlet__foot--fit">
-        <button className="btn btn-primary" disabled={this.state.buttonDisabled} style={{float: 'right', margin: '10px'}} onClick={this.save}>Save</button>
-      </div>
+        <div className="m-portlet__foot m-portlet__foot--fit">
+          <button className="btn btn-primary" disabled={this.state.buttonDisabled} style={{float: 'right', margin: '10px'}} onClick={this.save}>Save</button>
+        </div>
+       </div>
+        }
+        
     </div>
     )
   }

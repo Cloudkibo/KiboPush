@@ -232,8 +232,8 @@ class Button extends React.Component {
       this.scrollToElement(this.buttonId)
     }
     if (nextProps.integrations && nextProps.integrations.length > 0) {
-      let googleIntegration = nextProps.integrations.filter(integration => integration.integrationName === 'Google Sheets')
-      let hubspotIntegration = nextProps.integrations.filter(integration => integration.integrationName === 'Hubspot')
+      let googleIntegration = nextProps.integrations.filter(integration => integration.integrationName === 'Google Sheets' && integration.enabled)
+      let hubspotIntegration = nextProps.integrations.filter(integration => integration.integrationName === 'Hubspot'&& integration.enabled)
       if (googleIntegration && googleIntegration.length > 0) {
         this.setState({ googleIntegration: googleIntegration[0] })
       }
