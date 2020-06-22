@@ -98,7 +98,7 @@ class SessionsHeader extends React.Component {
                       <span className='m-dropdown__arrow m-dropdown__arrow--right m-dropdown__arrow--adjust' />
                       <div className='m-dropdown__inner'>
                         <div className='m-dropdown__body'>
-                          <div className='m-dropdown__content'>
+                          <div className='m-dropdown__content' style={{maxHeight: '500px', overflowY: 'auto'}}>
                             <ul className='m-nav'>
                                 <li className='m-nav__section m-nav__section--first'>
                                     <span className='m-nav__section-text'>
