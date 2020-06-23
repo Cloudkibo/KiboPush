@@ -4,6 +4,7 @@
 
 import React from 'react'
 import { connect } from 'react-redux'
+import auth from '../../utility/auth.service'
 import { bindActionCreators } from 'redux'
 import { Link } from 'react-router-dom'
 import { skip } from '../../redux/actions/signup.actions'
@@ -99,6 +100,12 @@ class InvalidatedSession extends React.Component {
                             </div>
                           </div>
                         </div>
+                        <br /><br />
+                        <button className='btn btn-focus m-btn m-btn--pill m-btn--custom m-btn--air' onClick={() => { auth.logout() }}>
+                              <span>
+                                Logout
+                              </span>
+                          </button>
                       </div>
                     </div>
                   }
