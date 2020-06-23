@@ -53,7 +53,7 @@ class LandingPage extends React.Component {
     this.setState({
       openVideo: true
     })
-    //this.refs.videoLandingPage.click()
+    this.refs.videoLandingPage.click()
   }
 
   activateLandingPage (landingPage) {
@@ -201,7 +201,7 @@ class LandingPage extends React.Component {
               </div>
               <div style={{ color: 'black' }} className="modal-body">
               {this.state.openVideo && <YouTube
-                  videoId='DpcqcTdguTg'
+                  videoId='uiIiA-tiN4I'
                   opts={{
                     height: '390',
                     width: '640',
@@ -350,7 +350,7 @@ class LandingPage extends React.Component {
               <i className='flaticon-technology m--font-accent' />
             </div>
             <div className='m-alert__text'>
-              Need help in understanding Landing Pages? Here is the <a href='http://kibopush.com/comment-capture' target='_blank' rel='noopener noreferrer'>documentation</a>.
+              Need help in understanding Landing Pages? Here is the <a href='https://kibopush.com/landing-page' target='_blank' rel='noopener noreferrer'>documentation</a>.
               Or check out this <a href='#/' onClick={this.openVideoTutorial}>video tutorial</a>
             </div>
           </div>
