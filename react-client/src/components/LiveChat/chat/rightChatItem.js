@@ -94,6 +94,7 @@ class RightChatItem extends React.Component {
     } else if (type === 'card') {
       return (
         <CARD
+          type={type}
           card={message}
         />
       )
