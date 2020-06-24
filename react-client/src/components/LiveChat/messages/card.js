@@ -84,7 +84,7 @@ class Card extends React.Component {
         }
         {
           this.props.type === 'url-card' ?
-          <a href={this.getFirstUrl()}>
+          <a href={this.getFirstUrl()} style={{color: 'inherit'}} target='_blank' rel='noopener noreferrer'>
             {card}
           </a> :
           card
