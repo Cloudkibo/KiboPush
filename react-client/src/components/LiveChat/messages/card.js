@@ -1,11 +1,14 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import TEXT from '../messages/text'
+import { validURL } from '../../../containers/liveChat/utilities'
 
 class Card extends React.Component {
   constructor(props, context) {
     super(props, context)
     this.state = {}
     this.getSubtitle = this.getSubtitle.bind(this)
+    this.getFirstUrl = this.getFirstUrl.bind(this)
   }
 
   getSubtitle (card) {
@@ -16,54 +19,76 @@ class Card extends React.Component {
     return subtitle
   }
 
+  getFirstUrl () {
+    let words = this.props.card.text.replace(/\n/g, " \r\n").split(" ")
+    for (let i = 0; i < words.length; i++) {
+      if (validURL(words[i].trim())) {
+        return words[i].trim()
+      }
+    }
+  }
+
   render() {
+    let card = (
+      <div
+        style={{
+          border: '1px solid rgba(0,0,0,.1)',
+          borderRadius: (this.props.card.buttons && this.props.card.buttons.length > 0) ? '10px 10px 0px 0px' : '10px',
+          backgroundColor: 'white'
+        }}
+        className='carousel-item carousel-item-preview active'
+      >
+      {
+        (this.props.card.image_url || this.props.card.imageUrl) &&
+        <img
+          src={this.props.card.image_url || this.props.card.imageUrl}
+          alt=''
+          style={{
+            objectFit: 'cover',
+            paddingRight: '2px',
+            minHeight: '105px',
+            minWidth: '150px',
+            paddingTop: '15px',
+            margin: '-10px auto',
+            width: '100%',
+            height: '100%'
+          }}
+        />
+      }
+      {
+        (this.props.card.image_url || this.props.card.imageUrl)  &&
+        <hr style={{marginBottom: '5px'}} />
+      }
+      <div style={{textAlign: 'left', margin: '0px 10px', minHeight: '25px'}}>
+        <span className='m--font-boldest'>
+          {this.props.card.title.length > 20 ? `${this.props.card.title.substring(0, 20)}...` : this.props.card.title}
+        </span>
+      </div>
+      {
+        (this.props.card.subtitle || this.props.card.description) &&
+        <div style={{textAlign: 'left', margin: '0px 10px', minHeight: '20px'}}>
+          <span>
+            {this.getSubtitle(this.props.card)}
+          </span>
+        </div>
+      }
+      </div>
+    )
     return (
       <div style={{width: '215px', color: this.props.color}}>
-        <div
-          style={{
-            border: '1px solid rgba(0,0,0,.1)',
-            borderRadius: (this.props.card.buttons && this.props.card.buttons.length > 0) ? '10px 10px 0px 0px' : '10px',
-            backgroundColor: 'white'
-          }}
-          className='carousel-item carousel-item-preview active'
-        >
-          {
-            (this.props.card.image_url || this.props.card.imageUrl) &&
-            <img
-              src={this.props.card.image_url || this.props.card.imageUrl}
-              alt=''
-              style={{
-                objectFit: 'cover',
-                paddingRight: '2px',
-                minHeight: '105px',
-                minWidth: '150px',
-                maxHeight: '105px',
-                maxWidth: '150px',
-                paddingTop: '15px',
-                margin: '-10px auto',
-                width: '100%',
-                height: '100%'
-              }}
-            />
-          }
-          {
-            (this.props.card.image_url || this.props.card.imageUrl)  &&
-            <hr style={{marginBottom: '5px'}} />
-          }
-          <div style={{textAlign: 'left', margin: '0px 10px', minHeight: '25px'}}>
-            <span className='m--font-boldest'>
-              {this.props.card.title.length > 20 ? `${this.props.card.title.substring(0, 20)}...` : this.props.card.title}
-            </span>
-          </div>
-          {
-            (this.props.card.subtitle || this.props.card.description) &&
-            <div style={{textAlign: 'left', margin: '0px 10px', minHeight: '20px'}}>
-              <span>
-                {this.getSubtitle(this.props.card)}
-              </span>
-            </div>
-          }
-        </div>
+        {
+          this.props.type === 'url-card' && this.props.card.text &&
+          <TEXT
+            text={{text: this.props.card.text}}
+          />
+        }
+        {
+          this.props.type === 'url-card' ?
+          <a href={this.getFirstUrl()}>
+            {card}
+          </a> :
+          card
+        }
         {
           this.props.card.buttons &&
           this.props.card.buttons.length > 0 &&
