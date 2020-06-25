@@ -32,9 +32,24 @@ class TriggerArea extends React.Component {
   handleChange (value, actionMeta) {
     console.log('value', value)
     console.log('actionMeta', actionMeta)
+    if (actionMeta.action === 'remove-value') {
+      let allTriggers = this.props.allTriggers
+      const removeIndex = allTriggers.indexOf(actionMeta.removedValue.value)
+      allTriggers.splice(removeIndex, 1)
+      this.props.updateGrandParentState({allTriggers})
+    } else if (actionMeta.action === 'clear') {
+      let allTriggers = this.props.allTriggers
+      const removedElements = this.state.value.map((item) => item.value)
+      for (let i = 0; i < removedElements.length; i++) {
+        let index = allTriggers.indexOf(removedElements[i])
+        allTriggers.splice(index, 1)
+      }
+      this.props.updateGrandParentState({allTriggers})
+    }
     const triggers = value || []
-    this.setState({value: triggers})
-    this.props.updateParentState({triggers: triggers.map((item) => item.value)})
+    this.setState({value: triggers}, () => {
+      this.props.updateParentState({triggers: triggers.map((item) => item.value)})
+    })
   }
 
   handleInputChange (inputValue) {
@@ -49,13 +64,15 @@ class TriggerArea extends React.Component {
       case 'Tab':
         if (value.map((item) => item.value).includes(inputValue.toLowerCase())) {
           this.props.alertMsg.error('Cannot add the same trigger twice.')
+        } else if (this.props.allTriggers.indexOf(inputValue.toLowerCase()) !== -1) {
+          this.props.alertMsg.error('This trigger is already being used in one of other blocks')
         } else {
           this.setState({
             inputValue: '',
             value: [...value, createOption(inputValue)]
           },
           () => {
-            this.props.updateParentState({triggers: this.state.value.map((item) => item.value)})
+            this.props.updateParentState({triggers: this.state.value.map((item) => item.value)}, [...this.props.allTriggers, inputValue])
           })
         }
         event.preventDefault()
@@ -96,7 +113,9 @@ class TriggerArea extends React.Component {
 }
 
 TriggerArea.propTypes = {
-  'updateParentState': PropTypes.func.isRequired
+  'updateParentState': PropTypes.func.isRequired,
+  'updateGrandParentState': PropTypes.func.isRequired,
+  'allTriggers': PropTypes.array.isRequired
 }
 
 export default TriggerArea
