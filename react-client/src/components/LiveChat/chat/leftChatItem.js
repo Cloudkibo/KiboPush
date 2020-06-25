@@ -35,6 +35,7 @@ class LeftChatItem extends React.Component {
     if (type === 'url-card') {
       return (
         <CARD
+          type={type}
           card={message}
         />
       )

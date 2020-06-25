@@ -22,24 +22,32 @@ class Text extends React.Component {
   }
 
   getText (text) {
-    if (validURL(text)) {
-      return (
-        <div style={{wordBreak: 'break-all', display: 'block', overflow: 'hidden'}}>
-          <a style={{color: this.props.color}} href={text} target='_blank' rel='noopener noreferrer'>
-            {text}
-          </a>
-        </div>
-      )
-    } else if (text.length === 2 && isEmoji(text)) {
+    if (text.length === 2 && isEmoji(text)) {
       return (
         <div style={{fontSize: '30px'}}>
           {text}
         </div>
       )
     } else {
+      let words = text.replace(/\n/g, " \r\n").split(" ")
+      let wordElements = words.map((word, index) => {
+        if (validURL(word.trim())) {
+          return (
+            <a style={{color: this.props.color, whiteSpace: 'break-spaces'}} href={text} target='_blank' rel='noopener noreferrer'>
+              {word + (index < words.length - 1 ? " " : "")}
+            </a>
+          )
+        } else {
+          return (
+            <span style={{whiteSpace: 'break-spaces'}}>
+              {word + (index < words.length - 1 ? " " : "")}
+            </span>
+          )
+        }
+      })
       return (
         <div style={{wordBreak: 'break-all', display: 'block', overflow: 'hidden'}}>
-          {text}
+          {wordElements}
         </div>
       )
     }
