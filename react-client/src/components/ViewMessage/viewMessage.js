@@ -250,7 +250,7 @@ class ViewMessage extends React.Component {
                                         ))
                                         }
                                       </div>
-                                  } 
+                                  }
                                     </div>
                                     </div>
                                   ))
@@ -310,6 +310,20 @@ class ViewMessage extends React.Component {
                                       return null
                                     }
                                   })
+                                }
+                                {this.state.payload[this.state.payload.length - 1].isEmailPhoneComponent &&
+                                  <div>
+                                    <div className='m-messenger__message-content' style={{width: '200px'}}>
+                                    <div className='m-messenger__message-text'>
+                                      Please share your Phone Number with us
+                                    </div>
+                                  </div>
+                                  <div className='btn-toolbar' style={{padding: '10px', marginLeft: '13px'}}>
+                                    <button style={{margin: '5px', borderColor: 'black', borderWidth: '1px', 'color': 'black', }} className="btn m-btn--pill btn-sm m-btn btn-secondary">
+                                      Phone Number
+                                    </button>
+                                  </div>
+                                  </div>
                                 }
                             </div>
                           </div>
