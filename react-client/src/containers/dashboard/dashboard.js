@@ -461,17 +461,6 @@ class Dashboard extends React.Component {
   }
   componentDidMount () {
     console.log('location', this.props.location)
-    if (this.props.location && this.props.location.state && this.props.location.state.loadScript) {
-      console.log('in loadScript')
-      // TODO We need to correct this in future.
-      window.location.reload()
-      // let addScript = document.createElement('script')
-      // addScript.setAttribute('src', 'https://cdn.cloudkibo.com/public/assets/vendors/base/vendors.bundle.js')
-      // document.body.appendChild(addScript)
-      // let addScript1 = document.createElement('script')
-      // addScript1.setAttribute('src', 'https://cdn.cloudkibo.com/public/assets/demo/default/base/scripts.bundle.js')
-      // document.body.appendChild(addScript1)
-    }
     // if (this.props.currentPage) {
     //   console.log('updating sentVsSeen currentPage')
     //   this.props.sentVsSeen(this.props.currentPage.pageId)
@@ -535,7 +524,7 @@ class Dashboard extends React.Component {
   render () {
     var alertOptions = {
       offset: 14,
-      position: 'bottom right',
+      position: 'top right',
       theme: 'dark',
       time: 5000,
       transition: 'scale'
@@ -659,7 +648,7 @@ class Dashboard extends React.Component {
             {
               (url.includes('kibochat.cloudkibo.com') || url.includes('kiboengage.cloudkibo.com')) &&
             <div className='row'>
-              <SubscriberSummary includeZeroCounts={this.includeZeroCounts} />
+              <SubscriberSummary includeZeroCounts={this.includeZeroCounts} msg = {this.msg}/>
             </div>
             }
             {

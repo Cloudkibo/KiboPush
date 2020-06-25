@@ -302,20 +302,20 @@ class Header extends React.Component {
                     KIBOPUSH</h4>
                 </div>
                 <div className='m-stack__item m-stack__item--middle m-brand__tools'>
-                  <a href='#/' onClick={this.toggleSidebar} id='m_aside_left_minimize_toggle' className='m-brand__icon m-brand__toggler m-brand__toggler--left m--visible-desktop-inline-block'>
+                  <span onClick={this.toggleSidebar} id='m_aside_left_minimize_toggle' className='m-brand__icon m-brand__toggler m-brand__toggler--left m--visible-desktop-inline-block'>
                     <span />
-                  </a>
-                  <a href='#/' id='m_aside_left_offcanvas_toggle' className='m-brand__icon m-brand__toggler m-brand__toggler--left m--visible-tablet-and-mobile-inline-block'>
+                  </span>
+                  <span id='m_aside_left_offcanvas_toggle' className='m-brand__icon m-brand__toggler m-brand__toggler--left m--visible-tablet-and-mobile-inline-block'>
                     <span />
-                  </a>
+                  </span>
 
-                  <a id='m_aside_header_menu_mobile_toggle' href='#/' className='m-brand__icon m-brand__toggler m--visible-tablet-and-mobile-inline-block'>
+                  <span id='m_aside_header_menu_mobile_toggle' className='m-brand__icon m-brand__toggler m--visible-tablet-and-mobile-inline-block'>
                     <span />
-                  </a>
+                  </span>
 
-                  <a id='m_aside_header_topbar_mobile_toggle' href='#/' className='m-brand__icon m--visible-tablet-and-mobile-inline-block'>
+                  <span id='m_aside_header_topbar_mobile_toggle' className='m-brand__icon m--visible-tablet-and-mobile-inline-block'>
                     <i className='flaticon-more' />
-                  </a>
+                  </span>
                 </div>
               </div>
             </div>
@@ -329,9 +329,9 @@ class Header extends React.Component {
                     this.props.user && !this.state.url &&
                     <li className='m-menu__item  m-menu__item--submenu m-menu__item--relm-portlet__nav-item m-dropdown m-dropdown--inline m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push' data-dropdown-toggle='click'>
                       <span>Select Platform: </span>&nbsp;&nbsp;&nbsp;
-                      <a href='#/' onClick={this.showDropDown} className='m-portlet__nav-link m-dropdown__toggle dropdown-toggle btn btn--sm m-btn--pill btn-secondary m-btn m-btn--label-brand'>
+                      <span onClick={this.showDropDown} className='m-portlet__nav-link m-dropdown__toggle dropdown-toggle btn btn--sm m-btn--pill btn-secondary m-btn m-btn--label-brand'>
                         {this.props.user && this.props.user.platform === 'messenger' ? 'Messenger' : this.props.user.platform === 'sms' ? 'SMS' : 'WhatsApp'}
-                      </a>
+                      </span>
                       {
                         this.state.showDropDown &&
                         <div className='m-dropdown__wrapper'>
@@ -341,28 +341,28 @@ class Header extends React.Component {
                               <div className='m-dropdown__content'>
                                 <ul className='m-nav'>
                                   <li key={'messenger'} className='m-nav__item'>
-                                    <a href='#/' onClick={(e) => this.updatePlatformValue(e, 'messenger')} className='m-nav__link' style={{cursor: 'pointer'}}>
+                                    <span  onClick={(e) => this.updatePlatformValue(e, 'messenger')} className='m-nav__link' style={{cursor: 'pointer'}}>
                                       <i className='m-nav__link-icon fa fa-facebook-square' />
                                       <span className='m-nav__link-text'>
                                         Messenger
                                       </span>
-                                    </a>
+                                    </span>
                                   </li>
                                   <li key={'sms'} className='m-nav__item'>
-                                    <a href='#/' onClick={(e) => this.updatePlatformValue(e, 'sms')} className='m-nav__link' style={{cursor: 'pointer'}}>
+                                    <span onClick={(e) => this.updatePlatformValue(e, 'sms')} className='m-nav__link' style={{cursor: 'pointer'}}>
                                       <i className='m-nav__link-icon flaticon flaticon-chat-1' />
                                       <span className='m-nav__link-text'>
                                         SMS
                                       </span>
-                                    </a>
+                                    </span>
                                   </li>
                                   <li key={'whatsApp'} className='m-nav__item'>
-                                    <a href='#/' onClick={(e) => this.updatePlatformValue(e, 'whatsApp')} className='m-nav__link' style={{cursor: 'pointer'}}>
+                                    <span onClick={(e) => this.updatePlatformValue(e, 'whatsApp')} className='m-nav__link' style={{cursor: 'pointer'}}>
                                       <i className='m-nav__link-icon socicon socicon-whatsapp' />
                                       <span className='m-nav__link-text'>
                                         WhatsApp
                                       </span>
-                                    </a>
+                                    </span>
                                   </li>
                                 </ul>
                               </div>
@@ -375,14 +375,14 @@ class Header extends React.Component {
                   {
                     this.props.user && this.props.user.isSuperUser
                       ? <li className='m-menu__item  m-menu__item--submenu m-menu__item--rel' data-menu-submenu-toggle='click' data-redirect='true' aria-haspopup='true'>
-                        <a href='#/' className='m-menu__link m-menu__toggle'>
+                        <span className='m-menu__link m-menu__toggle'>
                           <i className='m-menu__link-icon flaticon-settings' />
                           <span className='m-menu__link-text'>
                             Plans & Permissions
                         </span>
                           <i className='m-menu__hor-arrow la la-angle-down' />
                           <i className='m-menu__ver-arrow la la-angle-right' />
-                        </a>
+                        </span>
                         <div className='m-menu__submenu m-menu__submenu--classic m-menu__submenu--left'>
                           <span className='m-menu__arrow m-menu__arrow--adjust' />
                           <ul className='m-menu__subnav'>
@@ -444,9 +444,9 @@ class Header extends React.Component {
 
                                 <span className='m-nav__link-text' style={{ lineHeight: '41px', verticalAlign: 'middle', textAlign: 'center' }}>
                                 <li className='m-menu__item  m-menu__item--submenu m-menu__item--relm-portlet__nav-item m-dropdown m-dropdown--inline m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push' data-dropdown-toggle='click'>
-                                  <a href='#/' style={{fontSize: '0.85em'}} onClick={this.showViewingAsDropDown} className='m-portlet__nav-link m-dropdown__toggle dropdown-toggle btn btn--sm m-btn--pill btn-secondary m-btn m-btn--label-brand'>
+                                  <span style={{fontSize: '0.85em'}} onClick={this.showViewingAsDropDown} className='m-portlet__nav-link m-dropdown__toggle dropdown-toggle btn btn--sm m-btn--pill btn-secondary m-btn m-btn--label-brand'>
                                     Viewing As...
-                                  </a>
+                                  </span>
                                   {
                                     this.state.showViewingAsDropDown &&
                                     <div className='m-dropdown__wrapper'>
@@ -461,11 +461,11 @@ class Header extends React.Component {
                                                 </span>
                                               </li>
                                               <li style={{textAlign: 'center'}} className='m-nav__item'>
-                                                <a href='#/' onClick={this.removeActingAsUser} className='m-btn m-btn--pill m-btn--hover-brand btn btn-secondary' style={{cursor: 'pointer'}}>
+                                                <span onClick={this.removeActingAsUser} className='m-btn m-btn--pill m-btn--hover-brand btn btn-secondary' style={{cursor: 'pointer'}}>
                                                   <span className='m-nav__link-text'>
                                                     Switch back to my view
                                                   </span>
-                                                </a>
+                                                </span>
                                               </li>
                                             </ul>
                                           </div>
@@ -481,7 +481,7 @@ class Header extends React.Component {
                         </li>
                       }
                       <li style={{marginRight: '10px', padding: '0'}} className='m-nav__item m-topbar__notifications m-topbar__notifications--img m-dropdown m-dropdown--large m-dropdown--header-bg-fill m-dropdown--arrow m-dropdown--align-center m-dropdown--mobile-full-width' data-dropdown-toggle='click' data-dropdown-persistent='true' aria-expanded='true'>
-                        <a href='#/' className='m-nav__link m-dropdown__toggle' id='m_topbar_notification_icon'>
+                        <span className='m-nav__link m-dropdown__toggle' id='m_topbar_notification_icon'>
                           {this.props.notifications && this.state.unseenNotifications.length > 0 &&
                             <span className='m-nav__link-badge m-badge m-badge--dot m-badge--dot-small m-badge--danger' />
                           }
@@ -493,7 +493,7 @@ class Header extends React.Component {
                               <i className='flaticon-music-2' />
                             </span>
                           }
-                        </a>
+                        </span>
                         <div className='m-dropdown__wrapper'>
                           <span className='m-dropdown__arrow m-dropdown__arrow--center' />
                           <div className='m-dropdown__inner'>
@@ -564,12 +564,12 @@ class Header extends React.Component {
                       </li>
                       {this.props.user && this.props.user.isSuperUser && this.props.user.facebookInfo &&
                       <li style={{marginRight: '10px', padding: '0'}} className='m-nav__item m-topbar__quick-actions m-topbar__quick-actions--img m-dropdown m-dropdown--large m-dropdown--header-bg-fill m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push m-dropdown--mobile-full-width m-dropdown--skin-light' data-dropdown-toggle='click'>
-                        <a href='#/' className='m-nav__link m-dropdown__toggle'>
+                        <span className='m-nav__link m-dropdown__toggle'>
                           <span className='m-nav__link-badge m-badge m-badge--dot m-badge--info m--hide' />
                           <span className='m-nav__link-icon'>
                             <i className='flaticon-share' />
                           </span>
-                        </a>
+                        </span>
                         <div className='m-dropdown__wrapper'>
                           <span className='m-dropdown__arrow m-dropdown__arrow--right m-dropdown__arrow--adjust' />
                           <div className='m-dropdown__inner'>
@@ -739,7 +739,7 @@ class Header extends React.Component {
                       </li>
 
                       <li className='m-nav__item m-topbar__user-profile m-topbar__user-profile--img  m-dropdown m-dropdown--medium m-dropdown--arrow m-dropdown--header-bg-fill m-dropdown--align-right m-dropdown--mobile-full-width m-dropdown--skin-light' data-dropdown-toggle='click'>
-                        <a href='#/' className='m-nav__link m-dropdown__toggle'>
+                        <span className='m-nav__link m-dropdown__toggle'>
                           <span className='m-topbar__userpic'>
                             <div style={{ display: 'inline-block', marginRight: '5px' }}>
                               <img onError={this.profilePicError} src={(this.props.user && this.props.user.facebookInfo && this.props.user.facebookInfo.profilePic) ? this.props.user.facebookInfo.profilePic : 'https://cdn.cloudkibo.com/public/icons/users.jpg'} className='m--img-rounded m--marginless m--img-centered' alt='' />
@@ -752,7 +752,7 @@ class Header extends React.Component {
                           <span className='m-topbar__username m--hide'>
                             {(this.props.user) ? this.props.user.name : ''}
                           </span>
-                        </a>
+                        </span>
                         <div className='m-dropdown__wrapper'>
                           <span className='m-dropdown__arrow m-dropdown__arrow--right m-dropdown__arrow--adjust' />
                           <div className='m-dropdown__inner'>
@@ -789,12 +789,8 @@ class Header extends React.Component {
                                     </li>
                                   }
                                   <li className='m-nav__item'>
-                                    {window.location.hostname.toLowerCase().includes('kiboengage')
-                                    ? <a href={liveChatLink} target='_blank' rel='noopener noreferrer' className='m-nav__link'>
-                                      <i className='m-nav__link-icon flaticon-chat-1' />
-                                      <span className='m-nav__link-text'>Messages</span>
-                                    </a>
-                                    : <Link to='/liveChat' className='m-nav__link'>
+                                    {window.location.hostname.toLowerCase().includes('kibochat')
+                                    && <Link to='/liveChat' className='m-nav__link'>
                                       <i className='m-nav__link-icon flaticon-chat-1' />
                                       <span className='m-nav__link-text'>Messages</span>
                                     </Link>
@@ -802,10 +798,10 @@ class Header extends React.Component {
                                   </li>
                                   {this.props.user && this.props.user.role === 'buyer' &&
                                     <li className='m-nav__item'>
-                                      <a href='#/' data-toggle="modal" data-target="#disconnectFacebook" className='m-nav__link'>
+                                      <span data-toggle="modal" data-target="#disconnectFacebook" className='m-nav__link'>
                                         <i className='m-nav__link-icon la la-unlink' />
                                         <span className='m-nav__link-text'>Disconnect Facebook</span>
-                                      </a>
+                                      </span>
                                     </li>
                                   }
                                   <li className='m-nav__separator m-nav__separator--fit' />
@@ -823,9 +819,9 @@ class Header extends React.Component {
                                   </li>
                                   <li className='m-nav__separator m-nav__separator--fit' />
                                   <li className='m-nav__item'>
-                                    <a href='#/' onClick={() => { auth.logout() }} className='btn m-btn--pill    btn-secondary m-btn m-btn--custom m-btn--label-brand m-btn--bolder'>
+                                    <span onClick={() => { auth.logout() }} className='btn m-btn--pill    btn-secondary m-btn m-btn--custom m-btn--label-brand m-btn--bolder'>
                                       Logout
-                                  </a>
+                                    </span>
                                   </li>
                                 </ul>
                               </div>
