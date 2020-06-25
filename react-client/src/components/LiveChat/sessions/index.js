@@ -86,14 +86,14 @@ class Sessions extends React.Component {
           <div style={{padding: '0rem 2.2rem'}}>
             <ul className='nav nav-tabs m-tabs-line' role='tablist'>
               <li className='nav-item m-tabs__item'>
-                <a href='#/' className={`nav-link m-tabs__link ${this.props.tabValue === 'open' ? 'active' : ''}`} data-toggle='tab' role='tab' style={{cursor: 'pointer'}} onClick={() => this.props.changeTab('open')}>
+                <span className={`nav-link m-tabs__link ${this.props.tabValue === 'open' ? 'active' : ''}`} data-toggle='tab' role='tab' style={{cursor: 'pointer'}} onClick={() => this.props.changeTab('open')}>
                   Open
-                </a>
+                </span>
               </li>
               <li className='nav-item m-tabs__item'>
-                <a href='#/' className={`nav-link m-tabs__link ${this.props.tabValue === 'close' ? 'active' : ''}`} data-toggle='tab' role='tab' style={{cursor: 'pointer'}} onClick={() => this.props.changeTab('close')}>
+                <span className={`nav-link m-tabs__link ${this.props.tabValue === 'close' ? 'active' : ''}`} data-toggle='tab' role='tab' style={{cursor: 'pointer'}} onClick={() => this.props.changeTab('close')}>
                   Closed
-                </a>
+                </span>
               </li>
             </ul>
           </div>
