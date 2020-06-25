@@ -18,11 +18,6 @@ class Sessions extends React.Component {
     this.addToBulkAction = this.addToBulkAction.bind(this)
     this.markSessionsRead = this.markSessionsRead.bind(this)
     this.selectAllSessions = this.selectAllSessions.bind(this)
-    this.changeTab = this.changeTab.bind(this)
-  }
-
-  changeTab (type) {
-    this.props.changeTab(type)
   }
 
   onLoadMore () {
