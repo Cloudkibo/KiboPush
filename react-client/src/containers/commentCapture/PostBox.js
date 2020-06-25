@@ -51,7 +51,7 @@ class PostBox extends React.Component {
           { this.props.getComments 
           ?<div style={{float: 'right', display: 'inline'}}>
             { this.props.commentsCount(this.props.post) > 0 &&
-              <a href="#/" style={{marginRight: '5px', textDecoration: 'underline'}} onClick={() => {this.props.hideComments(this.props.post)}}><i className='fa fa-chevron-down' />Hide Comments</a>
+              <span style={{cursor: 'pointer', color: '#5867dd', marginRight: '5px', textDecoration: 'underline'}} onClick={() => {this.props.hideComments(this.props.post)}}><i className='fa fa-chevron-down' />Hide Comments</span>
             }
             {this.props.commentsCount(this.props.post) < 1 && this.props.post.commentsCount > 0 && <a href='#/' style={{marginRight: '5px', textDecoration: 'underline'}} onClick={() => this.props.getComments(this.props.post.postId, true)}>{this.props.post.commentsCount} Comments</a>}
             <a style={{textDecoration: 'underline'}} target='_blank' rel='noopener noreferrer' href={`https://facebook.com/${this.props.post.postId}`}>View on Facebook</a>

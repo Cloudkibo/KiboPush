@@ -715,6 +715,7 @@ class Sidebar extends Component {
       }
     }
   }
+
   showRssIntegrationItem () {
       if (this.state.rssIntegration) {
         return (
@@ -733,6 +734,7 @@ class Sidebar extends Component {
         return (null)
       }
   }
+
   showNewsIntegrationItem () {
       if (this.state.newsIntegration) {
         return (
@@ -751,6 +753,7 @@ class Sidebar extends Component {
         return (null)
       }
   }
+
   showSequenceMessaging () {
     if (this.props.user && this.state.sequenceMessaging) {
         return (

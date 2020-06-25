@@ -54,11 +54,11 @@ class CommentBox extends React.Component {
             <span className='m-widget3__time' style={{marginLeft: '10px'}}>
                 {this.props.comment.datetime && formatDateTime(this.props.comment.datetime) }
                 {this.props.repliesCount(this.props.comment) < 1 && this.props.comment.childCommentCount > 0 && <span>
-                <a href="#/" style={{marginLeft: '10px'}} onClick={() => {this.props.getCommentReplies(this.props.comment._id, true)}}><i className='fa fa-reply' /> {this.props.comment.childCommentCount} {this.props.comment.childCommentCount > 1 ? 'replies' : 'reply' }</a>
+                <span style={{cursor: 'pointer', color: '#5867dd', textDecoration: 'underline', marginLeft: '10px'}} onClick={() => {this.props.getCommentReplies(this.props.comment._id, true)}}><i className='fa fa-reply' /> {this.props.comment.childCommentCount} {this.props.comment.childCommentCount > 1 ? 'replies' : 'reply' }</span>
                 </span>
                 }
                 { this.props.repliesCount(this.props.comment) > 0 && <span>
-                <a href="#/" style={{marginLeft: '10px'}} onClick={() => {this.props.hideCommentReplies(this.props.comment._id)}}><i className='fa fa-chevron-down' />Hide Replies</a>
+                <span style={{cursor: 'pointer', color: '#5867dd', textDecoration: 'underline', marginLeft: '10px'}} onClick={() => {this.props.hideCommentReplies(this.props.comment._id)}}><i className='fa fa-chevron-down' />Hide Replies</span>
                 </span>
                 }
               </span>

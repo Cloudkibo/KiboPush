@@ -159,12 +159,23 @@ class SubscriberSummary extends React.Component {
     return dataChart
   }
   onInputChange (e) {
-    console.log('days:', e.target.value)
-    this.setState({days: e.target.value})
+    let isNum = Number(e.target.value)
+    if(isNum && isNum > 0) {
+      this.setState({days: isNum})
+    }
+    else if(e.target.value === '') {
+      this.setState({days: ''})
+    }
   }
   showReport () {
+    if(this.state.days === '') {
+      this.props.msg.error('Number of Days should not be empty')
+    }
+    else {
+    this.refs.report.click()
     this.setState({isShowingModal: false})
     this.props.loadSubscriberSummary({pageId: this.state.pageId, days: this.state.days})
+    }
   }
   render () {
     return (
@@ -189,7 +200,7 @@ class SubscriberSummary extends React.Component {
                   Show records for last:&nbsp;&nbsp;
                 </span>
                 <div>
-                  <input id='example-text-input' type='number' min='0' step='1' className='form-control' value={this.state.days !== 'all' && this.state.days} placeholder={this.state.days === 'all' && 'all'} onKeyDown={this.onKeyDown} onChange={this.onInputChange} />
+                  <input id='example-text-input' type='text' className='form-control' value={this.state.days !== 'all' ? this.state.days: ''} placeholder={this.state.days === 'all' && 'all'} onKeyDown={this.onKeyDown} onChange={this.onInputChange} />
                 </div>
                 <span htmlFor='example-text-input' className='col-form-label'>
                 &nbsp;&nbsp;days
@@ -197,7 +208,7 @@ class SubscriberSummary extends React.Component {
               </div>
               <div style={{width: '100%', textAlign: 'center'}}>
                 <div style={{display: 'inline-block', padding: '5px'}}>
-                  <button className='btn btn-primary' onClick={() => this.showReport()} data-dismiss='modal'>
+                  <button className='btn btn-primary' onClick={() => this.showReport()}>
                     Show Report
                   </button>
                 </div>
