@@ -158,7 +158,7 @@ class Comments extends React.Component {
               ))
             }
             { this.props.comments && this.props.commentsCount > this.props.comments.length && <span>
-              <span style={{cursor: 'pointer', color: '5867dd', textDecoration: 'underline', marginLeft: '10px', fontSize:'0.9rem'}} onClick={this.getComments}>View More Comments</span>
+              <span style={{cursor: 'pointer', color: '#5867dd', textDecoration: 'underline', marginLeft: '10px', fontSize:'0.9rem'}} onClick={this.getComments}>View More Comments</span>
             </span>
             }
             </div>
