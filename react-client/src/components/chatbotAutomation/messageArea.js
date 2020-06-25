@@ -15,7 +15,7 @@ class MessageArea extends React.Component {
   constructor(props, context) {
     super(props, context)
     this.state = {
-      triggers: undefined,
+      triggers: [],
       text: '',
       attachment: {},
       quickReplies: [],
@@ -98,28 +98,33 @@ class MessageArea extends React.Component {
         text: textComponent ? textComponent.text : '',
         attachment,
         quickReplies: block.payload[block.payload.length - 1].quickReplies || [],
-        triggers: this.props.chatbot.startingBlockId === block._id ? this.props.chatbot.triggers : undefined
+        triggers: block.triggers || []
       })
     } else {
       this.setState({
         text: '',
         attachment: {},
-        triggers: this.props.chatbot.startingBlockId === block._id ? this.props.chatbot.triggers : block.triggers,
+        triggers: block.triggers || [],
         quickReplies: []
       })
     }
   }
 
-  updateState (state) {
+  updateState (state, allTriggers) {
     this.setState(state, () => {
       const currentBlock = this.props.block
       const payload = this.preparePayload(this.state)
       currentBlock.payload = payload
+      currentBlock.triggers = this.state.triggers
       const chatbot = this.props.chatbot
-      if (this.state.triggers) {
-        chatbot.triggers = this.state.triggers
+      // if (this.state.triggers) {
+      //   chatbot.triggers = this.state.triggers
+      // }
+      let parentState = {currentBlock, chatbot, unsavedChanges: true}
+      if (allTriggers) {
+        parentState.allTriggers = allTriggers
       }
-      this.props.updateParentState({currentBlock, chatbot, unsavedChanges: true})
+      this.props.updateParentState(parentState)
     })
   }
 
@@ -183,17 +188,18 @@ class MessageArea extends React.Component {
       let blocks = this.props.blocks
       const index = blocks.findIndex((item) => item.uniqueId.toString() === data.uniqueId.toString())
       if (index !== -1) {
-        const deletedItem = blocks.splice(index, 1)
-        if (res.payload.upserted && res.payload.upserted.length > 0) {
-          data._id = res.payload.upserted[0]._id
-        } else {
-          data._id = deletedItem[0]._id
-        }
+        blocks.splice(index, 1)
+        // const deletedItem = blocks.splice(index, 1)
+        // if (res.payload.upserted && res.payload.upserted.length > 0) {
+        //   data._id = res.payload.upserted[0]._id
+        // } else {
+        //   data._id = deletedItem[0]._id
+        // }
       }
-      const chatbot = this.props.chatbot
-      if (data.triggers && data._id) {
-        chatbot.startingBlockId = data._id
-      }
+      // const chatbot = this.props.chatbot
+      // if (data.triggers && data._id) {
+      //   chatbot.startingBlockId = data._id
+      // }
       blocks = [...blocks, data]
       const completed = blocks.filter((item) => item.payload.length > 0).length
       const progress = Math.floor((completed / blocks.length) * 100)
@@ -301,7 +307,7 @@ class MessageArea extends React.Component {
         options.push(option)
       } else if (action === 'create') {
         const id = new Date().getTime()
-        const newBlock = {title, payload: [], uniqueId: id}
+        const newBlock = {title, payload: [], uniqueId: id, triggers: [title.toLowerCase()]}
         const sidebarItems = this.props.sidebarItems
         const index = sidebarItems.findIndex((item) => item.id.toString() === this.props.block.uniqueId.toString())
         sidebarItems[index].isParent = true
@@ -433,18 +439,14 @@ class MessageArea extends React.Component {
               onAnalytics={this.props.onAnalytics}
             />
             <div className='m--space-30' />
-            {
-              this.props.chatbot.startingBlockId === this.props.block._id &&
-              <TRIGGERAREA
-                triggers={this.state.triggers}
-                updateParentState={this.updateState}
-                alertMsg={this.props.alertMsg}
-              />
-            }
-            {
-              this.props.chatbot.startingBlockId === this.props.block._id &&
-              <div className='m--space-10' />
-            }
+            <TRIGGERAREA
+              triggers={this.state.triggers}
+              updateParentState={this.updateState}
+              updateGrandParentState={this.props.updateParentState}
+              alertMsg={this.props.alertMsg}
+              allTriggers={this.props.allTriggers}
+            />
+            <div className='m--space-10' />
             <TEXTAREA
               text={this.state.text}
               updateParentState={this.updateState}
@@ -523,7 +525,8 @@ MessageArea.propTypes = {
   'progress': PropTypes.number.isRequired,
   'updateParentState': PropTypes.func.isRequired,
   'checkWhitelistedDomains': PropTypes.func.isRequired,
-  'toggleWhitelistModal': PropTypes.func.isRequired
+  'toggleWhitelistModal': PropTypes.func.isRequired,
+  'allTriggers': PropTypes.array.isRequired
 }
 
 export default MessageArea
