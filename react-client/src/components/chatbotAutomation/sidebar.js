@@ -121,7 +121,7 @@ class Sidebar extends React.Component {
         this.props.alertMsg.error('Text or attachment is required')
       } else {
         const data = {
-          triggers: this.props.currentBlock._id === this.props.chatbot.startingBlockId ? this.props.chatbot.triggers : undefined,
+          triggers: this.props.currentBlock.triggers,
           uniqueId: `${this.props.currentBlock.uniqueId}`,
           title: this.props.currentBlock.title,
           chatbotId: this.props.chatbot._id,
@@ -194,17 +194,18 @@ class Sidebar extends React.Component {
       let blocks = this.props.blocks
       const index = blocks.findIndex((item) => item.uniqueId.toString() === data.uniqueId.toString())
       if (index !== -1) {
-        const deletedItem = blocks.splice(index, 1)
-        if (res.payload.upserted && res.payload.upserted.length > 0) {
-          data._id = res.payload.upserted[0]._id
-        } else {
-          data._id = deletedItem[0]._id
-        }
+        blocks.splice(index, 1)
+        // const deletedItem = blocks.splice(index, 1)
+        // if (res.payload.upserted && res.payload.upserted.length > 0) {
+        //   data._id = res.payload.upserted[0]._id
+        // } else {
+        //   data._id = deletedItem[0]._id
+        // }
       }
-      const chatbot = this.props.chatbot
-      if (data.triggers && data._id) {
-        chatbot.startingBlockId = data._id
-      }
+      // const chatbot = this.props.chatbot
+      // if (data.triggers && data._id) {
+      //   chatbot.startingBlockId = data._id
+      // }
       blocks = [...blocks, data]
       const completed = blocks.filter((item) => item.payload.length > 0).length
       const progress = Math.floor((completed / blocks.length) * 100)

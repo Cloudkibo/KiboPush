@@ -145,14 +145,14 @@ class Sessions extends React.Component {
                 <input checked={this.props.allSelected} onChange={this.selectAllSessions} type='checkbox' />
               </li>
               <li className='nav-item m-tabs__item'>
-                <a href='#/' className={`nav-link m-tabs__link ${this.props.tabValue === 'open' ? 'active' : ''}`} data-toggle='tab' role='tab' style={{cursor: 'pointer'}} onClick={() => this.changeTab('open')}>
+                <span className={`nav-link m-tabs__link ${this.props.tabValue === 'open' ? 'active' : ''}`} data-toggle='tab' role='tab' style={{cursor: 'pointer'}} onClick={() => this.props.changeTab('open')}>
                   Open
-                </a>
+                </span>
               </li>
               <li className='nav-item m-tabs__item'>
-                <a href='#/' className={`nav-link m-tabs__link ${this.props.tabValue === 'close' ? 'active' : ''}`} data-toggle='tab' role='tab' style={{cursor: 'pointer'}} onClick={() => this.changeTab('close')}>
+                <span className={`nav-link m-tabs__link ${this.props.tabValue === 'close' ? 'active' : ''}`} data-toggle='tab' role='tab' style={{cursor: 'pointer'}} onClick={() => this.props.changeTab('close')}>
                   Closed
-                </a>
+                </span>
               </li>
             </ul>
           </div>
