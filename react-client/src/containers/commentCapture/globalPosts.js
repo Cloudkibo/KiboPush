@@ -196,7 +196,7 @@ class GlobalPosts extends React.Component {
                 { this.showReplies(comment) && (comment.childCommentCount - this.repliesCount(comment) > 0) &&
                   <div className='col-12'>
                     <span>
-                      <a href="#/" style={{marginLeft: '75px', fontSize:'0.9rem'}} onClick={() => this.getCommentReplies(comment._id, false)}><i className='fa fa-reply' /> {(comment.childCommentCount -  this.repliesCount(comment) > 1) ? 'View ' + comment.childCommentCount -  this.repliesCount(comment) + ' more replies': 'View 1 more reply'}</a>
+                      <span style={{cursor: 'pointer', color: '#5867dd', textDecoration: 'underline', marginLeft: '75px', fontSize:'0.9rem'}} onClick={() => this.getCommentReplies(comment._id, false)}><i className='fa fa-reply' /> {(comment.childCommentCount -  this.repliesCount(comment) > 1) ? 'View ' + comment.childCommentCount -  this.repliesCount(comment) + ' more replies': 'View 1 more reply'}</span>
                     </span>
                   </div>
                 }
@@ -206,7 +206,7 @@ class GlobalPosts extends React.Component {
             { this.showComments(post) && (post.commentsCount - this.commentsCount(post) > 0) &&
             <div className='col-12'>
               <span>
-                <a href="#/" style={{marginLeft: '10px', fontSize:'0.9rem'}} onClick={() => this.getComments(post.postId, false)}>View More Comments</a>
+                <span style={{cursor: 'pointer', color: '#5867dd', textDecoration: 'underline', marginLeft: '10px', fontSize:'0.9rem'}} onClick={() => this.getComments(post.postId, false)}>View More Comments</span>
               </span>
             </div>
             }
@@ -215,7 +215,7 @@ class GlobalPosts extends React.Component {
           } { this.props.postsAfter && this.props.postsAfter !== '' &&
             <div className='col-12'>
               <span>
-                <a href="#/" onClick={this.fetchPosts}>Show More Posts</a>
+                <span style={{cursor: 'pointer', color: '#5867dd', textDecoration: 'underline'}} onClick={this.fetchPosts}>Show More Posts</span>
               </span>
             </div>
             }
