@@ -76,8 +76,17 @@ class SessionsHeader extends React.Component {
   render () {
     return (
       <div className='m-portlet__head'>
-        <div style={{paddingTop: '20px'}} className='row'>
-          <div className='col-md-10'>
+
+          {
+            this.props.showingBulkActions ?
+            <div style={{paddingTop: '20px'}} className='row'>
+              <span onClick={this.props.markSessionsRead} style={{borderColor: '#f4516c', color: '#f4516c'}}
+                className='btn btn-outline-danger m-btn m-btn--pill m-btn--wide btn-sm'>
+                    Mark Selected Sessions as Read
+              </span>
+            </div> :
+            <div style={{paddingTop: '20px'}} className='row'>
+                        <div className='col-md-10'>
             <div className='m-input-icon m-input-icon--left'>
               <input type='text' value={this.state.filterSearch} onChange={this.handleSearch} className='form-control m-input m-input--solid' placeholder='Search...' id='generalSearch' />
               <span className='m-input-icon__icon m-input-icon__icon--left'>
@@ -162,7 +171,9 @@ class SessionsHeader extends React.Component {
               </ul>
             </div>
           </div>
-        </div>
+
+            </div>
+          }
       </div>
     )
   }
