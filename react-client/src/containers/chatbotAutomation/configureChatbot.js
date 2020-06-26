@@ -40,7 +40,8 @@ class ConfigureChatbot extends React.Component {
       currentLevel: 1,
       progress: 0,
       showWhitelistDomains: false,
-      unsavedChanges: false
+      unsavedChanges: false,
+      allTriggers: []
     }
 
     this.fetchChatbotDetails = this.fetchChatbotDetails.bind(this)
@@ -113,6 +114,7 @@ class ConfigureChatbot extends React.Component {
 
   preparePayload (data) {
     let blocks = data
+    let allTriggers = []
     let sidebarItems = []
     let completed = 0
     let progress = 0
@@ -124,6 +126,8 @@ class ConfigureChatbot extends React.Component {
           isParent: this.isItParent(data[i]),
           parentId: this.getParentId(data, data[i])
         })
+        let triggers = data[i].triggers || []
+        allTriggers = [...allTriggers, ...triggers]
         if (data[i].payload.length > 0) {
           completed = completed + 1
         }
@@ -149,7 +153,8 @@ class ConfigureChatbot extends React.Component {
       sidebarItems,
       currentBlock: blocks[0],
       loading: false,
-      progress
+      progress,
+      allTriggers
     })
   }
 
@@ -310,6 +315,7 @@ class ConfigureChatbot extends React.Component {
                 checkWhitelistedDomains={this.props.checkWhitelistedDomains}
                 toggleWhitelistModal={this.toggleWhitelistModal}
                 onAnalytics={this.onAnalytics}
+                allTriggers={this.state.allTriggers}
               />
             </div>
             <PROGRESS progress={`${this.state.progress}%`} />
