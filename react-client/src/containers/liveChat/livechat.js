@@ -424,7 +424,15 @@ class LiveChat extends React.Component {
     } else if (this.state.tabValue === 'close') {
       this.props.fetchCloseSessions(data)
     }
-    this.setState({allSelected: false, selected: [], showingBulkActions: false})
+    if (firstPage) {
+      let sessions = this.state.sessions
+      for (let i = 0; i < sessions.length; i++) {
+        sessions[i].selected = false
+      }
+      this.setState({sessions, allSelected: false, selected: [], showingBulkActions: false})
+    } else {
+      this.setState({allSelected: false})
+    }
   }
 
   getAgents (members) {
