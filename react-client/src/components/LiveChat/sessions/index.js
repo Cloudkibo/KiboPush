@@ -93,6 +93,9 @@ class Sessions extends React.Component {
       showingBulkActions: false,
       allSelected: false
     })
+    for (let i = 0; i < this.props.sessions.length; i++) {
+      this.props.sessions[i].selected = false
+    }
   }
 
   selectAllSessions (e) {
