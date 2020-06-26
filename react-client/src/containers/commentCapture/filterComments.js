@@ -267,7 +267,7 @@ class FilterComment extends React.Component {
               ))
             }
             { this.props.searchCount && this.props.searchCount > this.props.searchResult.length && <span>
-              <a href="#/" style={{marginLeft: '10px', fontSize:'0.9rem'}} onClick={() => this.loadMore()}>Load More..</a>
+              <span style={{cursor: 'pointer', color: '#5867dd', textDecoration: 'underline', marginLeft: '10px', fontSize:'0.9rem'}} onClick={() => this.loadMore()}>Load More..</span>
             </span>
             }
             </div>

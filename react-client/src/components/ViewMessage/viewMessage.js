@@ -311,7 +311,7 @@ class ViewMessage extends React.Component {
                                     }
                                   })
                                 }
-                                {this.state.payload[this.state.payload.length - 1].isEmailPhoneComponent &&
+                                {this.state.payload[this.state.payload.length - 1] && this.state.payload[this.state.payload.length - 1].isEmailPhoneComponent &&
                                   <div>
                                     <div className='m-messenger__message-content' style={{width: '200px'}}>
                                     <div className='m-messenger__message-text'>

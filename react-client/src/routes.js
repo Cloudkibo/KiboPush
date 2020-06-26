@@ -391,6 +391,7 @@ const Routes = () => (
     <Route path='/customFields' component={CustomFields} onEnter={requireAuth} />
     <Route path='/chatbotAutomation' component={ChatbotAutomation} onEnter={requireAuth} />
     <Route path='/configureChatbot' component={ConfigureChatbot} onEnter={requireAuth} />
+    <Route path='/chatbotSettings' component={ChatbotSettings} onEnter={requireAuth} />
     <Route path='/chatbotAnalytics' component={ChatbotAnalytics} onEnter={requireAuth} />
     <Route path='/chatbotSettings' component={ChatbotSettings} onEnter={requireAuth} />
     <Route path='/tags' component={Tags} onEnter={requireAuth} />

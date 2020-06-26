@@ -316,7 +316,7 @@ class Bot extends React.Component {
     } else if (this.state.name.length > 25) {
       this.setState({ error: true, errorMessage: 'Please enter a valid name (Name must be at most 25 charachters long)' })
     } else if (!/^[a-zA-Z]*$/g.test(this.state.name)) {
-      this.setState({ error: true, errorMessage: 'Please enter a valid name (Name should not contain any number)' })
+      this.setState({ error: true, errorMessage: 'Please enter a valid name (Name should not contain any number or special character)' })
     } else {
       this.setState({ loader: true })
       var botName = this.state.name.trim()

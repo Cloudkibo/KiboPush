@@ -789,12 +789,8 @@ class Header extends React.Component {
                                     </li>
                                   }
                                   <li className='m-nav__item'>
-                                    {window.location.hostname.toLowerCase().includes('kiboengage')
-                                    ? <a href={liveChatLink} target='_blank' rel='noopener noreferrer' className='m-nav__link'>
-                                      <i className='m-nav__link-icon flaticon-chat-1' />
-                                      <span className='m-nav__link-text'>Messages</span>
-                                    </a>
-                                    : <Link to='/liveChat' className='m-nav__link'>
+                                    {window.location.hostname.toLowerCase().includes('kibochat')
+                                    && <Link to='/liveChat' className='m-nav__link'>
                                       <i className='m-nav__link-icon flaticon-chat-1' />
                                       <span className='m-nav__link-text'>Messages</span>
                                     </Link>
