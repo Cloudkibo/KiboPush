@@ -36,7 +36,7 @@ class EditTemplate extends React.Component {
     let array = broadcast.broadcast
     this.setState(broadcast)
     if (array && array.length > 0) {
-      if (array[array.length -1].isEmailPhoneComponent && array[array.length - 1].quickReplies[0]) {
+      if (array[array.length -1].isEmailPhoneComponent && array[array.length - 1].quickReplies && array[array.length - 1].quickReplies[0]) {
         this.setState({linkedMessages: this.getLinkedMessage(array)})
       } else {
         this.setState({linkedMessages: undefined})

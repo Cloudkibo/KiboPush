@@ -30,6 +30,7 @@ import QuickReplies from './QuickReplies'
 import PreviewQuickReplies from '../../components/sponsoredMessaging/previewQuickReplies'
 import VideoLinkModal from './VideoLinkModal'
 import MODAL from '../extras/modal'
+import ConfirmationModal from '../extras/confirmationModal'
 import ReactTooltip from 'react-tooltip'
 
 class GenericMessage extends React.Component {
@@ -58,8 +59,10 @@ class GenericMessage extends React.Component {
       tempFiles: [],
       newFiles: [],
       showContent: false,
-      errorMessage: ''
+      errorMessage: '',
+      checkboxValue: props.broadcast && props.broadcast.length > 0 && props.broadcast[this.props.broadcast.length - 1].isEmailPhoneComponent
     }
+
     this.defaultTitle = this.props.convoTitle
     this.reset = this.reset.bind(this)
     this.showResetAlertDialog = this.showResetAlertDialog.bind(this)
@@ -94,6 +97,8 @@ class GenericMessage extends React.Component {
     this.getModalContent= this.getModalContent.bind(this)
     this.toggleModalContent = this.toggleModalContent.bind(this)
     this.handleCheckbox = this.handleCheckbox.bind(this)
+    this.enableChecbox = this.enableChecbox.bind(this)
+    this.onConfirmationClose = this.onConfirmationClose.bind(this)
     this.GSModalContent = null
 
     if (props.setReset) {
@@ -214,7 +219,10 @@ class GenericMessage extends React.Component {
     }
     if (this.props.broadcast !== nextProps.broadcast) {
       if (nextProps.broadcast.length > 0) {
-        this.setState({quickReplies: nextProps.broadcast[nextProps.broadcast.length-1].quickReplies})
+        this.setState({
+          quickReplies: nextProps.broadcast[nextProps.broadcast.length-1].quickReplies,
+          checkboxValue: nextProps.broadcast[nextProps.broadcast.length-1].isEmailPhoneComponent
+        })
       }
       this.initializeList(nextProps.broadcast)
     }
@@ -587,29 +595,30 @@ class GenericMessage extends React.Component {
     this.closeAddComponentModal(true)
   }
 
-  handleCheckbox (e) {
-    if (e.target.checked) {
-      let component = this.getComponent({
-        id: null,
-        componentName: 'text',
-        componentType: 'text',
-        text: 'Please share your Email Address with us',
-        isEmailPhoneComponent: true
-      })
-      console.log('component got', component)
-      this.updateList(component)
-      let id = new Date().getTime() + (Math.floor(Math.random() * 100))
-      let quickReply = [{
-        id,
-        content_type: 'user_email',
-        title:  'Email Address',
-        payload: JSON.stringify([
-          {action: 'set_subscriber_field', fieldName: 'email'},
-          {action: 'send_message_block', blockUniqueId: new Date().getTime() + (Math.floor(Math.random() * 100))}])
-      }]
+  enableChecbox() {
+    this.setState({checkboxValue: true})
+    let component = this.getComponent({
+      id: null,
+      componentName: 'text',
+      componentType: 'text',
+      text: 'Please share your Email Address with us',
+      isEmailPhoneComponent: true
+    })
+    this.updateList(component)
+    let id = new Date().getTime() + (Math.floor(Math.random() * 100))
+    let quickReply = [{
+      id,
+      content_type: 'user_email',
+      title:  'Email Address',
+      payload: JSON.stringify([
+        {action: 'set_subscriber_field', fieldName: 'email'},
+        {action: 'send_message_block', blockUniqueId: new Date().getTime() + (Math.floor(Math.random() * 100))}])
+    }]
+    this.setState({quickReplies: quickReply}, () => {
+      component.handler()
       this.updateQuickReplies(quickReply)
       .then(result => {
-        component.handler()
+        // component.handler()
         this.setState({quickRepliesComponent: {
           content:
             (<PreviewQuickReplies
@@ -619,7 +628,21 @@ class GenericMessage extends React.Component {
             />)
         }})
       })
+    })
+  }
+
+
+
+  handleCheckbox (e) {
+    if (e.target.checked) {
+      if (this.state.quickReplies && this.state.quickReplies.length > 0) {
+        this.setState({checkboxValue: false})
+        this.refs.removeQuickReplies.click()
+      } else {
+        this.enableChecbox()
+      }
     } else {
+      this.setState({checkboxValue: false})
       this.updateQuickReplies([])
       .then(result => {
         this.setState({quickRepliesComponent: {
@@ -967,7 +990,7 @@ class GenericMessage extends React.Component {
           this.handleFile({id: componentId,
             fileurl: broadcast.file ? broadcast.file.fileurl : '',
             componentType: 'file',
-            componentName: 'fi le',
+            componentName: 'file',
             file: broadcast.file ? broadcast.file : ''
           })
         }
@@ -1105,6 +1128,10 @@ class GenericMessage extends React.Component {
   }
 
 
+  onConfirmationClose () {
+    this.setState({checkboxValue: false})
+  }
+
   componentWillUnmount () {
     if (this.state.tempFiles.length > 0) {
       for (let i = 0; i < this.state.tempFiles.length; i++) {
@@ -1119,7 +1146,6 @@ class GenericMessage extends React.Component {
   }
 
   render () {
-    console.log('render in genericMessage', this.state.broadcast)
     let checkboxDisabled = this.state.broadcast.length === this.props.componentLimit && this.state.broadcast.length > 0 && !this.state.broadcast[this.state.broadcast.length - 1].isEmailPhoneComponent
     let cursorStyle = this.state.broadcast.length === this.props.componentLimit && this.state.broadcast.length > 0 && !this.state.broadcast[this.state.broadcast.length - 1].isEmailPhoneComponent
       ? {cursor: 'not-allowed'}
@@ -1138,6 +1164,14 @@ class GenericMessage extends React.Component {
       <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
       <div style={{float: 'left', clear: 'both'}}
         ref={(el) => { this.top = el }} />
+      <button ref='removeQuickReplies' style={{display: 'none'}} data-toggle="modal" data-target="#removeQuickReplies"></button>
+        <ConfirmationModal
+          id='removeQuickReplies'
+          title='Remove Quick Replies'
+          description='Are you sure you want to add email and phone number quick replies? Doing so would remove all the quick replies that you have already created.'
+          onConfirm={this.enableChecbox}
+          onClose={this.onConfirmationClose}
+        />
       <div className='m-content'>
         <div className='row'>
           <div className='col-lg-12 col-md-12 col-sm-12 col-xs-12'>
@@ -1170,7 +1204,7 @@ class GenericMessage extends React.Component {
                         <label className='m-checkbox m-checkbox--state-success' style={{...cursorStyle}}>
         									<input type='checkbox'
                             onChange={this.handleCheckbox}
-                            checked={this.state.broadcast && this.state.broadcast.length > 0 && this.state.broadcast[this.state.broadcast.length - 1].isEmailPhoneComponent}
+                            checked={this.state.checkboxValue}
                             disabled={checkboxDisabled}
                           />
                         Ask for subscriber's Email Address and Phone Number

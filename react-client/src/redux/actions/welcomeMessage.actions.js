@@ -16,9 +16,9 @@ export function isWelcomeMessageEnabled (data) {
 }
 export function createWelcomeMessage (messageData, msg) {
   console.log('messageData', messageData)
-  let dataToSend = {_id: messageData._id, welcomeMessage: messageData.welcomeMessage}
+  // let dataToSend = {_id: messageData._id, welcomeMessage: messageData.welcomeMessage}
   return (dispatch) => {
-    callApi(`pages/createWelcomeMessage/`, 'post', dataToSend)
+    callApi(`pages/createWelcomeMessage/`, 'post', messageData)
       .then(res => {
         console.log('response from createWelcomeMessage', res)
         if (res.status === 'success') {
