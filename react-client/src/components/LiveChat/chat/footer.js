@@ -7,6 +7,7 @@ import MODAL from '../../extras/modal'
 import AUDIORECORDER from '../../audioRecorder'
 import CARD from '../messages/horizontalCard'
 
+
 class Footer extends React.Component {
   constructor(props, context) {
     super(props, context)
@@ -45,6 +46,15 @@ class Footer extends React.Component {
     this.removeUrlMeta = this.removeUrlMeta.bind(this)
     this.sendMessage = this.sendMessage.bind(this)
     this.toggleAudioRecording = this.toggleAudioRecording.bind(this)
+    this.getZoomIntegrationContent = this.getZoomIntegrationContent.bind(this)
+    this.goToIntegrations = this.goToIntegrations.bind(this)
+  }
+
+  goToIntegrations () {
+    this.props.history.push({
+      pathname: '/settings',
+      state: {tab: 'integrations'}
+    })
   }
 
   setEmoji (emoji) {
@@ -179,6 +189,27 @@ class Footer extends React.Component {
           onDoneRecording={this.onDoneRecording}
           closeModalOnStop={true}
         />
+      )
+    } else {
+      return (<div />)
+    }
+  }
+
+  getZoomIntegrationContent () {
+    if (!this.props.zoomIntegration) {
+      return (
+        <div>
+          <div>
+            <span>
+              You have not integrated Zoom Meetings with KiboPush. Please integrate Zoom to continue.
+            </span>
+          </div>
+          <div style={{marginTop: '25px', textAlign: 'center'}}>
+            <div onClick={this.goToIntegrations} className='btn btn-primary'>
+              Integrate
+            </div>
+          </div>
+        </div>
       )
     } else {
       return (<div />)
@@ -402,6 +433,11 @@ class Footer extends React.Component {
           content={this.getRecordAudioContent()}
           onClose={() => {this.toggleAudioRecording(false)}}
         />
+        <MODAL
+          id='_zoom_integration'
+          title='Zoom Integration'
+          content={this.getZoomIntegrationContent()}
+        />
         <div className='m-messenger__form'>
           <div className='m-messenger__form-controls'>
             {
@@ -561,6 +597,21 @@ class Footer extends React.Component {
               onClick={() => this.openPicker('gif')}
             />
           }
+          {
+            this.props.showGif &&
+            <img
+              style={{cursor: 'pointer', height: '30px', margin: '-5px 5px 0px 5px'}}
+              data-tip='Zoom'
+              alt='Zoom'
+              src='https://cdn.cloudkibo.com/public/img/zoom.png'
+              id='_gif_picker'
+              className='fa fa-video-camera'
+              data-target='#_zoom_integration'
+              data-backdrop="static"
+              data-keyboard="false"
+              data-toggle='modal'
+            />
+          }
         </div>
       </div>
     )
@@ -589,7 +640,7 @@ Footer.propTypes = {
   'showEmoji': PropTypes.bool.isRequired,
   'showGif': PropTypes.bool.isRequired,
   'showThumbsUp': PropTypes.bool.isRequired,
-  'filesAccepted': PropTypes.string
+  'filesAccepted': PropTypes.string,
 }
 
 export default Footer

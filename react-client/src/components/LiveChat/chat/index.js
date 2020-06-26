@@ -228,6 +228,8 @@ class Chat extends React.Component {
             setMessageData={this.props.setMessageData}
             filesAccepted={this.props.filesAccepted}
             showAgentName={this.props.showAgentName}
+            history={this.props.history}
+            zoomIntegration={this.props.zoomIntegration}
           />
         }
 

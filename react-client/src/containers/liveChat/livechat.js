@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import AlertContainer from 'react-alert'
 import { RingLoader } from 'halogenium'
+import { getZoomIntegration } from '../../redux/actions/settings.actions'
 
 // actions
 import {
@@ -123,6 +124,7 @@ class LiveChat extends React.Component {
     props.loadMembersList()
     props.loadTags()
     props.loadCustomFields()
+    props.getZoomIntegration()
   }
 
   clearSearchResults () {
@@ -599,6 +601,8 @@ class LiveChat extends React.Component {
                     setMessageData={this.setMessageData}
                     filesAccepted={'image/*, audio/*, video/*, application/*, text/*'}
                     showAgentName={this.props.showAgentName}
+                    history={this.props.history}
+                    zoomIntegration={this.props.zoomIntegration}
                   />
                 }
                 {
@@ -683,7 +687,8 @@ function mapStateToProps(state) {
     customFieldValues: (state.customFieldInfo.customFieldSubscriber),
     customFields: (state.customFieldInfo.customFields),
     searchChatMsgs: (state.liveChat.searchChat),
-    socketData: (state.socketInfo.socketData)
+    socketData: (state.socketInfo.socketData),
+    zoomIntegration: (state.settingsInfo.zoomIntegration)
   }
 }
 
@@ -724,7 +729,8 @@ function mapDispatchToProps(dispatch) {
     clearSearchResult,
     urlMetaData,
     getSMPStatus,
-    updateSessionProfilePicture
+    updateSessionProfilePicture,
+    getZoomIntegration,
   }, dispatch)
 }
 
