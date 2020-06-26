@@ -15,6 +15,9 @@ class Sessions extends React.Component {
     this.updateFilterPending = this.updateFilterPending.bind(this)
     this.updateFilterUnread = this.updateFilterUnread.bind(this)
     this.onLoadMore = this.onLoadMore.bind(this)
+    this.addToBulkAction = this.addToBulkAction.bind(this)
+    this.markSessionsRead = this.markSessionsRead.bind(this)
+    this.selectAllSessions = this.selectAllSessions.bind(this)
   }
 
   onLoadMore () {
@@ -64,6 +67,52 @@ class Sessions extends React.Component {
     })
   }
 
+  addToBulkAction (e, session) {
+    let showingBulkActions = this.props.showingBulkActions
+    let selected = this.props.selected
+    if (e.target.checked) {
+      session.selected = true
+      selected.push(session)
+      showingBulkActions = true
+    } else {
+      session.selected = false
+      let selectedIndex = selected.findIndex(s => s._id === session._id)
+      selected.splice(selectedIndex, 1)
+      if (selected.length === 0) {
+        showingBulkActions = false
+      }
+      this.props.updateState({allSelected: false})
+    }
+    this.props.updateState({showingBulkActions, selected})
+  }
+
+  markSessionsRead () {
+    this.props.markSessionsRead(this.props.selected)
+    this.props.updateState({
+      selected: [],
+      showingBulkActions: false,
+      allSelected: false
+    })
+  }
+
+  selectAllSessions (e) {
+    if (e.target.checked) {
+      let selected = this.props.selected
+      for (let i = 0; i < this.props.sessions.length; i++) {
+        if (!this.props.sessions[i].selected) {
+          this.props.sessions[i].selected = true
+          selected.push(this.props.sessions[i])
+        }
+      }
+      this.props.updateState({selected, showingBulkActions: true, allSelected: true})
+    } else {
+      for (let i = 0; i < this.props.sessions.length; i++) {
+        this.props.sessions[i].selected = false
+      }
+      this.props.updateState({selected: [], showingBulkActions: false, allSelected: false})
+    }
+  }
+
   render() {
     return (
       <div style={{padding: '0px', border: '1px solid #F2F3F8'}} className='col-xl-4'>
@@ -82,9 +131,19 @@ class Sessions extends React.Component {
               filterPending={this.props.filterPending}
               filterUnread={this.props.filterUnread}
               showPageInfo={this.props.showPageInfo}
+              showingBulkActions={this.props.showingBulkActions}
+              markSessionsRead={this.markSessionsRead}
           />
           <div style={{padding: '0rem 2.2rem'}}>
             <ul className='nav nav-tabs m-tabs-line' role='tablist'>
+              <li style={{   
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                marginRight: '30px'
+              }}>
+                <input checked={this.props.allSelected} onChange={this.selectAllSessions} type='checkbox' />
+              </li>
               <li className='nav-item m-tabs__item'>
                 <span className={`nav-link m-tabs__link ${this.props.tabValue === 'open' ? 'active' : ''}`} data-toggle='tab' role='tab' style={{cursor: 'pointer'}} onClick={() => this.props.changeTab('open')}>
                   Open
@@ -123,6 +182,8 @@ class Sessions extends React.Component {
                           changeStatus={this.props.changeStatus}
                           getChatPreview={this.props.getChatPreview}
                           showPageInfo={this.props.showPageInfo}
+                          addToBulkAction={this.addToBulkAction}
+                          showingBulkActions={this.props.showingBulkActions}
                         />
                       ))
                       : <p style={{marginLeft: '30px'}}>No data to display</p>
