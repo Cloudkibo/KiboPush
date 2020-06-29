@@ -145,11 +145,11 @@ class Settings extends React.Component {
       planInfo = 'Individual, Premium Account'
     } else if (plan === 'plan_B') {
       planInfo = 'Individual, Free Account'
-      this.setState({showAPIbyPlan: false, openTab: 'resetPassword'})
+      this.setState({showAPIbyPlan: false})
     } else if (plan === 'plan_C') {
       planInfo = 'Team, Premium Account'
     } else if (plan === 'plan_D') {
-      this.setState({showAPIbyPlan: false, openTab: 'resetPassword'})
+      this.setState({showAPIbyPlan: false})
       planInfo = 'Team, Free Account)'
     } else {
       planInfo = ''
@@ -418,7 +418,6 @@ class Settings extends React.Component {
       time: 5000,
       transition: 'scale'
     }
-    const url = window.location.hostname
     console.log('buttonState in render function', this.state.buttonState)
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>

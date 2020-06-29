@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import AlertContainer from 'react-alert'
 import { RingLoader } from 'halogenium'
-import { getZoomIntegration } from '../../redux/actions/settings.actions'
+import { getZoomIntegration, createZoomMeeting } from '../../redux/actions/settings.actions'
 
 // actions
 import {
@@ -603,6 +603,7 @@ class LiveChat extends React.Component {
                     showAgentName={this.props.showAgentName}
                     history={this.props.history}
                     zoomIntegration={this.props.zoomIntegration}
+                    createZoomMeeting={this.props.createZoomMeeting}
                   />
                 }
                 {
@@ -731,6 +732,7 @@ function mapDispatchToProps(dispatch) {
     getSMPStatus,
     updateSessionProfilePicture,
     getZoomIntegration,
+    createZoomMeeting
   }, dispatch)
 }
 

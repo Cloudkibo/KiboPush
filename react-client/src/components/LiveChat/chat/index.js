@@ -230,6 +230,7 @@ class Chat extends React.Component {
             showAgentName={this.props.showAgentName}
             history={this.props.history}
             zoomIntegration={this.props.zoomIntegration}
+            createZoomMeeting={this.props.createZoomMeeting}
           />
         }
 
