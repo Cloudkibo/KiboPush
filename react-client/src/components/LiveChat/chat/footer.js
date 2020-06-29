@@ -12,7 +12,7 @@ class Footer extends React.Component {
   constructor(props, context) {
     super(props, context)
     this.initialZoomCountdown = 3
-    this.initialZoomInvitationMessage = 'Please join Zoom meeting to discuss this in detail. [invitation url]'
+    this.initialZoomInvitationMessage = 'Please join Zoom meeting to discuss this in detail. [invite_url]'
     this.state = {
       text: '',
       attachment: {},
@@ -74,7 +74,8 @@ class Footer extends React.Component {
       zoomMeetingCreated: false,
       zoomCountdown: this.initialZoomCountdown,
       zoomMeetingUrl: '',
-      zoomMeetingCreationError: false
+      zoomMeetingCreationError: false,
+      text: this.state.text === this.state.invitationMessage ? '' : this.state.text
     })
   }
 
@@ -87,7 +88,7 @@ class Footer extends React.Component {
         invitationMessage: this.state.zoomInvitationMessage
     }, (res) => {
       if (res.status === 'success' && res.payload) {
-        this.setState({zoomMeetingUrl: res.payload.joinUrl})
+        this.setState({zoomMeetingUrl: res.payload.joinUrl, text: this.state.invitationMessage})
       } else {
         this.setState({zoomMeetingCreationError: true})
       }
@@ -97,6 +98,7 @@ class Footer extends React.Component {
           if (this.state.zoomCountdown <= 1) {
             if (this.state.zoomMeetingUrl) {
               clearInterval(this.zoomCountdownTimer)
+              this.sendMessage()
               window.open(this.state.zoomMeetingUrl, '_blank')
               document.getElementById('_close_zoom_integration').click()
             }
@@ -261,6 +263,13 @@ class Footer extends React.Component {
   }
 
   setZoomInvitationMessage (e) {
+    if (!e.target.value) {
+      e.target.setCustomValidity("Please fill in this field.")
+    } else if (!e.target.value.includes('[invite_url]')) {
+      e.target.setCustomValidity("[invite_url] is required in the invitation message.")
+    } else {
+      e.target.setCustomValidity("")
+    }
     this.setState({zoomInvitationMessage: e.target.value})
   }
 
@@ -269,7 +278,7 @@ class Footer extends React.Component {
   }
 
   getZoomIntegrationContent () {
-    if (!this.props.zoomIntegration) {
+    if (this.props.zoomIntegration) {
       return (
         <div>
           <div>
