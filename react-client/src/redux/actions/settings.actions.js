@@ -508,6 +508,17 @@ export function disconnectZoom () {
   }
 }
 
+export function createZoomMeeting (data, callback) {
+  return (dispatch) => {
+    callApi('/zoom/meetings', 'post', data)
+      .then(res => {
+        if (callback) {
+          callback(res)
+        }
+      })
+  }
+}
+
 export function getIntegrations () {
   return (dispatch) => {
     callApi('integrations')

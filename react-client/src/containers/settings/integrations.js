@@ -63,11 +63,7 @@ class Integrations extends React.Component {
   }
 
   disconnect (id) {
-    if (id === 'zoomIntegration') {
-
-    } else {
-      this.props.updateIntegration(id, {enabled: false})
-    }
+    this.props.updateIntegration(id, {enabled: false})
   }
 
   connect (id) {
@@ -105,7 +101,6 @@ class Integrations extends React.Component {
   }
 
   render () {
-    const url = window.location.hostname
     var alertOptions = {
       offset: 75,
       position: 'bottom right',
@@ -214,9 +209,9 @@ class Integrations extends React.Component {
                           </div>
                           <span className='m-widget4__ext' style={{width: '140px'}}>
                             {this.state.zoomIntegration.enabled
-                              ? <button className='m-btn m-btn--pill m-btn--hover-danger btn btn-danger' data-target="#deleteIntegeration" data-toggle="modal" style={{borderColor: '#f4516c', color: '#f4516c', marginRight: '10px'}} onClick={() => this.saveIntegerationId('zoomIntegration')}>
+                              ? <a target='_blank' rel='noopener noreferrer' href={`https://marketplace.zoom.us/user/installed`} className='m-btn m-btn--pill m-btn--hover-danger btn btn-danger' data-target="#deleteIntegeration" data-toggle="modal" style={{borderColor: '#f4516c', color: '#f4516c', marginRight: '10px'}}>
                                 Disconnect
-                              </button>
+                              </a>
                               : <a href= {`/auth/zoom?userId=${this.props.user._id}&companyId=${this.props.user.companyId}`} className='m-btn m-btn--pill m-btn--hover-success btn btn-success' style={{borderColor: '#34bfa3', color: '#34bfa3', marginRight: '10px'}}>
                               Connect
                             </a>
