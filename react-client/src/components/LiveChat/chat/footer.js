@@ -278,7 +278,7 @@ class Footer extends React.Component {
   }
 
   getZoomIntegrationContent () {
-    if (this.props.zoomIntegration) {
+    if (!this.props.zoomIntegration) {
       return (
         <div>
           <div>
