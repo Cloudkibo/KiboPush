@@ -418,10 +418,11 @@ class MessageArea extends React.Component {
   }
 
   render () {
+    console.log('this.props.block', this.props.block)
     return (
       <div style={{border: '1px solid #ccc', backgroundColor: 'white', padding: '0px'}} className='col-md-9'>
         <div style={{margin: '0px'}} className='m-portlet m-portlet-mobile'>
-          <div id='_chatbot_message_area' style={{height: '80vh', position: 'relative', padding: '15px'}} className='m-portlet__body'>
+          <div id='_chatbot_message_area' style={{height: '80vh', position: 'relative', padding: '15px', overflowY: 'scroll'}} className='m-portlet__body'>
             <HEADER
               title={this.props.block.title}
               showDelete={this.isOrphanBlock()}
@@ -477,7 +478,6 @@ class MessageArea extends React.Component {
               />
             }
             {
-              this.props.chatbot.startingBlockId !== this.props.block._id &&
               this.props.chatbot.published && this.props.block.stats &&
               (this.props.block.stats.urlBtnClickedCount > 0 || this.props.block.stats.sentCount > 0) &&
               <MESSAGEBLOCKUSAGE
