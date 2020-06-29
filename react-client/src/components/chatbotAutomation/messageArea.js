@@ -178,7 +178,7 @@ class MessageArea extends React.Component {
         payload: this.preparePayload(this.state)
       }
       const dataToShow = data
-      dataToShow.stats = this.props.stats
+      dataToShow.stats = this.props.block.stats
       console.log('data to save for message block', data)
       this.props.handleMessageBlock(data, (res) => this.afterNext(res, dataToShow, callback))
     }
