@@ -385,7 +385,8 @@ class OperationalDashboard extends React.Component {
 
   getFile () {
     console.log('getFile')
-    this.props.downloadFile()
+    this.msg.info('DOWNLOADING DATA.... YOU WILL BE NOTIFIED WHEN IT IS DOWNLOAD.')
+    this.props.downloadFile(this.msg)
   }
 
   onFilterByGender (e) {
@@ -504,13 +505,13 @@ class OperationalDashboard extends React.Component {
                               <div>
                                 <label style={{color: '#716aca'}}>Actions:</label>
                                 <br />
-                                <i className='la la-download' />&nbsp;<a href='#/' onClick={this.getFile} className='m-card-profile__email m-link' style={{cursor: 'pointer'}}>
+                                <i className='la la-download' />&nbsp;<div onClick={this.getFile} className='m-card-profile__email m-link' style={{cursor: 'pointer'}}>
                                 Download Data
-                              </a>
+                              </div>
                                 <br />
-                                <i className='la la-envelope-o' />&nbsp;<a href='#/' onClick={this.sendEmail} className='m-card-profile__email m-link' style={{cursor: 'pointer', marginTop: '5px'}}>
+                                <i className='la la-envelope-o' />&nbsp;<div onClick={this.sendEmail} className='m-card-profile__email m-link' style={{cursor: 'pointer', marginTop: '5px'}}>
                                 Send Weekly Email
-                              </a>
+                              </div>
                                 <br />
                               </div>
                             </div>
