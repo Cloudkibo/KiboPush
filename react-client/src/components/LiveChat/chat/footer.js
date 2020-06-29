@@ -724,7 +724,7 @@ class Footer extends React.Component {
             />
           }
           {
-            this.props.showGif &&
+            this.props.showZoom &&
             <img
               style={{cursor: 'pointer', height: '30px', margin: '-5px 5px 0px 5px'}}
               alt='Zoom'
