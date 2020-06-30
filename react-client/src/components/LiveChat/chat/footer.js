@@ -33,8 +33,7 @@ class Footer extends React.Component {
       zoomMeetingCreated: false,
       zoomCountdown: this.initialZoomCountdown,
       zoomMeetingUrl: '',
-      zoomMeetingCreationError: false,
-      showAppendInvitationUrl: false
+      zoomMeetingCreationError: false
     }
     this.onInputChange = this.onInputChange.bind(this)
     this.onEnter = this.onEnter.bind(this)
@@ -65,7 +64,6 @@ class Footer extends React.Component {
     this.createZoomMeeting = this.createZoomMeeting.bind(this)
     this.checkZoomDisabled = this.checkZoomDisabled.bind(this)
     this.resetZoomValues = this.resetZoomValues.bind(this)
-    this.toggleAppendInvitationUrl = this.toggleAppendInvitationUrl.bind(this)
     this.appendInvitationUrl = this.appendInvitationUrl.bind(this)
   }
 
@@ -85,14 +83,9 @@ class Footer extends React.Component {
     })
   }
 
-  toggleAppendInvitationUrl () {
-    this.setState({showAppendInvitationUrl: !this.state.showAppendInvitationUrl})
-  }
-
   appendInvitationUrl () {
     this.setState({
-      zoomInvitationMessage: this.state.zoomInvitationMessage + " [invite_url]",
-      showAppendInvitationUrl: false
+      zoomInvitationMessage: this.state.zoomInvitationMessage + " [invite_url]"
     })
   }
 
@@ -305,7 +298,7 @@ class Footer extends React.Component {
   }
 
   getZoomIntegrationContent () {
-    if (this.props.zoomIntegration) {
+    if (!this.props.zoomIntegration) {
       return (
         <div>
           <div>
@@ -354,8 +347,8 @@ class Footer extends React.Component {
             </div>
             
             <div className='m-messenger__form-tools pull-right messengerTools' style={{ backgroundColor: '#F1F0F0', marginTop: '-40px', marginRight: '10px' }}>
-              <div id='_appendInvitationUrl' data-tip='options' style={{ display: 'inline-block', float: 'left' }}>
-                <i onClick={this.toggleAppendInvitationUrl} style={{
+              <div id='_appendInvitationUrl' style={{ display: 'inline-block', float: 'left' }}>
+                <i data-tip='Append Invitation Url' onClick={this.appendInvitationUrl} style={{
                   height: '24px',
                   width: '24px',
                   position: 'relative',
@@ -374,14 +367,6 @@ class Footer extends React.Component {
               </div>
             </div>
               
-
-            <Popover container={document.getElementsByClassName('narcissus_17w311v')[0]} placement='left' isOpen={this.state.showAppendInvitationUrl} className='greetingPopover' target='_appendInvitationUrl' toggle={this.toggleAppendInvitationUrl}>
-              <PopoverBody>
-                <div className='col-12 nameOptions' onClick={this.appendInvitationUrl}>Invitation Url</div>
-              </PopoverBody>
-            </Popover>
-              
-
             <div style={{paddingBottom: '0', paddingRight: '0', paddingLeft: '0', float: 'right'}} className="m-form__actions">
               <button disabled={this.state.zoomMeetingLoading} style={{float: 'right', marginLeft: '30px'}} type='submit' className="btn btn-primary">
                 {
