@@ -197,13 +197,12 @@ class AddPage extends React.Component {
                     </div>
                   </div>
                   <div className='m-portlet__head-tools'>
-                      { this.props.user && this.props.user.role === 'buyer' && <span>
+                      <span>
                         <Link className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' style={{marginRight: '10px'}} onClick={() => {
                           this.setState({loading: true})
                           this.props.refreshPages(this.stopLoading, this.msg)
                         }}>Refresh Pages</Link>
                       </span>
-                      }
                       <span>
                         {this.props.location.state && this.props.location.state.module === 'page'
                           ? <Link to='/pages' className='btn btn-success m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
