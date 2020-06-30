@@ -337,7 +337,7 @@ class Footer extends React.Component {
             </div>
 
             <div style={{paddingBottom: '0', paddingRight: '0', paddingLeft: '0', float: 'right'}} className="m-form__actions">
-              <button style={{float: 'right', marginLeft: '30px'}} type='submit' className="btn btn-primary">
+              <button disabled={this.state.zoomMeetingLoading} style={{float: 'right', marginLeft: '30px'}} type='submit' className="btn btn-primary">
                 {
                   this.state.zoomMeetingLoading ? 
                   <div>
