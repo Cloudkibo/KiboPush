@@ -91,7 +91,8 @@ class Footer extends React.Component {
 
   appendInvitationUrl () {
     this.setState({
-      zoomInvitationMessage: this.state.zoomInvitationMessage + " [invite_url]"
+      zoomInvitationMessage: this.state.zoomInvitationMessage + " [invite_url]",
+      showAppendInvitationUrl: false
     })
   }
 
@@ -304,7 +305,7 @@ class Footer extends React.Component {
   }
 
   getZoomIntegrationContent () {
-    if (!this.props.zoomIntegration) {
+    if (this.props.zoomIntegration) {
       return (
         <div>
           <div>
