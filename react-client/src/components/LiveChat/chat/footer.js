@@ -102,7 +102,12 @@ class Footer extends React.Component {
               if (this.state.zoomCountdown <= 1) {
                 if (this.state.zoomMeetingUrl) {
                   clearInterval(this.zoomCountdownTimer)
-                  window.open(this.state.zoomMeetingUrl, '_blank')
+                  let link = document.createElement('a')
+                  link.id = '_zoomMeetingLink'
+                  link.href = this.state.zoomMeetingUrl
+                  link.target = '_blank'
+                  document.getElementById('_zoomMeetingLink').click()
+                  //window.open(this.state.zoomMeetingUrl, '_blank')
                   document.getElementById('_close_zoom_integration').style.display = 'block'
                   document.getElementById('_close_zoom_integration').click()
                 }
