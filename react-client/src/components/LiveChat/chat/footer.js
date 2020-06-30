@@ -6,6 +6,7 @@ import { getmetaurl } from '../../../containers/liveChat/utilities'
 import MODAL from '../../extras/modal'
 import AUDIORECORDER from '../../audioRecorder'
 import CARD from '../messages/horizontalCard'
+import { Popover, PopoverBody } from 'reactstrap'
 
 
 class Footer extends React.Component {
@@ -32,7 +33,8 @@ class Footer extends React.Component {
       zoomMeetingCreated: false,
       zoomCountdown: this.initialZoomCountdown,
       zoomMeetingUrl: '',
-      zoomMeetingCreationError: false
+      zoomMeetingCreationError: false,
+      showAppendInvitationUrl: false
     }
     this.onInputChange = this.onInputChange.bind(this)
     this.onEnter = this.onEnter.bind(this)
@@ -63,6 +65,8 @@ class Footer extends React.Component {
     this.createZoomMeeting = this.createZoomMeeting.bind(this)
     this.checkZoomDisabled = this.checkZoomDisabled.bind(this)
     this.resetZoomValues = this.resetZoomValues.bind(this)
+    this.toggleAppendInvitationUrl = this.toggleAppendInvitationUrl.bind(this)
+    this.appendInvitationUrl = this.appendInvitationUrl.bind(this)
   }
 
   resetZoomValues () {
@@ -76,7 +80,18 @@ class Footer extends React.Component {
       zoomMeetingUrl: '',
       zoomMeetingCreationError: false,
       text: this.state.text === this.state.zoomInvitationMessage ? '' : this.state.text,
-      zoomMeetingLoading: false
+      zoomMeetingLoading: false,
+      showAppendInvitationUrl: false
+    })
+  }
+
+  toggleAppendInvitationUrl () {
+    this.setState({showAppendInvitationUrl: !this.state.showAppendInvitationUrl})
+  }
+
+  appendInvitationUrl () {
+    this.setState({
+      zoomInvitationMessage: this.state.zoomInvitationMessage + " [invite_url]"
     })
   }
 
@@ -293,7 +308,7 @@ class Footer extends React.Component {
   }
 
   getZoomIntegrationContent () {
-    if (!this.props.zoomIntegration) {
+    if (this.props.zoomIntegration) {
       return (
         <div>
           <div>
@@ -340,6 +355,35 @@ class Footer extends React.Component {
               <textarea required onChange={this.setZoomInvitationMessage} className="form-control m-input" value={this.state.zoomInvitationMessage} id="_zoom_invitation_message" rows="3"></textarea>
               {/* <div style={{color: 'red'}}>{'*Required'}</div> */}
             </div>
+            
+            <div className='m-messenger__form-tools pull-right messengerTools' style={{ backgroundColor: '#F1F0F0', marginTop: '-40px', marginRight: '10px' }}>
+              <div id='_appendInvitationUrl' data-tip='options' style={{ display: 'inline-block', float: 'left' }}>
+                <i onClick={this.toggleAppendInvitationUrl} style={{
+                  height: '24px',
+                  width: '24px',
+                  position: 'relative',
+                  display: 'inline-block',
+                  cursor: 'pointer'
+                }}>
+                  <i className='greetingMessage fa fa-link' style={{
+                    fontSize: '20px',
+                    left: '0px',
+                    width: '100%',
+                    height: '2em',
+                    textAlign: 'center',
+                    color: 'rgb(120, 120, 120)'
+                  }} />
+                </i>
+              </div>
+            </div>
+              
+
+            <Popover container={document.getElementsByClassName('narcissus_17w311v')[0]} placement='left' isOpen={this.state.showAppendInvitationUrl} className='greetingPopover' target='_appendInvitationUrl' toggle={this.toggleAppendInvitationUrl}>
+              <PopoverBody>
+                <div className='col-12 nameOptions' onClick={this.appendInvitationUrl}>Invitation Url</div>
+              </PopoverBody>
+            </Popover>
+              
 
             <div style={{paddingBottom: '0', paddingRight: '0', paddingLeft: '0', float: 'right'}} className="m-form__actions">
               <button disabled={this.state.zoomMeetingLoading} style={{float: 'right', marginLeft: '30px'}} type='submit' className="btn btn-primary">
