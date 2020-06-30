@@ -75,7 +75,7 @@ class Footer extends React.Component {
       zoomCountdown: this.initialZoomCountdown,
       zoomMeetingUrl: '',
       zoomMeetingCreationError: false,
-      text: this.state.text === this.state.invitationMessage ? '' : this.state.text,
+      text: this.state.text === this.state.zoomInvitationMessage ? '' : this.state.text,
       zoomMeetingLoading: false
     })
   }
