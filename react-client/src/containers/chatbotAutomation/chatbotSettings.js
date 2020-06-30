@@ -94,13 +94,17 @@ class ChatbotSettings extends React.Component {
     this.setState({options})
   }
 
-  updateOption (uniqueId, index, title, action) {
+  updateOption (uniqueId, index, title) {
     const quickReplies = this.state.options
     quickReplies[index].title = title
+    const payload = JSON.parse(quickReplies[index].payload)
+    payload[0].blockUniqueId = uniqueId
+    quickReplies[index].payload = JSON.stringify(payload)
+
     this.setState({options: quickReplies})
   }
 
-  removeOption (uniqueId, index, action) {
+  removeOption (uniqueId, index) {
     const quickReplies = this.state.options
     quickReplies.splice(index, 1)
     this.setState({options: quickReplies})

@@ -543,7 +543,7 @@ class FacebookPosts extends React.Component {
                                 <Link to='/editPost' state={{post: post}} className='btn btn-primary btn-sm' style={{float: 'left', margin: 2, marginLeft: '40px'}} onClick={() => this.onEdit(post)}>
                                     Edit
                                 </Link>
-                                      <button className='btn btn-primary btn-sm' style={{ float: 'left', margin: 2 }} data-toggle="modal" data-target="#delete" onClick={() => this.showDialogDelete(post._id)}>
+                                      <button className='btn btn-primary btn-sm' style={{ float: 'left', margin: 2, marginLeft: '40px' }} data-toggle="modal" data-target="#delete" onClick={() => this.showDialogDelete(post._id)}>
                                         Delete
                                 </button>
                                     </span>

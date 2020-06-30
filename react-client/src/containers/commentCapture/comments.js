@@ -150,7 +150,7 @@ class Comments extends React.Component {
               { this.showReplies(comment) && (comment.childCommentCount - this.repliesCount(comment) > 0) &&
                 <div className='col-12'>
                   <span>
-                    <a href="#/" style={{marginLeft: '75px', fontSize:'0.9rem'}} onClick={() => this.getCommentReplies(comment._id, false)}><i className='fa fa-reply' /> {(comment.childCommentCount -  this.repliesCount(comment) > 1) ? 'View ' + comment.childCommentCount -  this.repliesCount(comment) + ' more replies': 'View 1 more reply'}</a>
+                    <span style={{cursor: 'pointer', color: '#5867dd', textDecoration: 'underline', marginLeft: '75px', fontSize:'0.9rem'}} onClick={() => this.getCommentReplies(comment._id, false)}><i className='fa fa-reply' /> {(comment.childCommentCount -  this.repliesCount(comment) > 1) ? 'View ' + comment.childCommentCount -  this.repliesCount(comment) + ' more replies': 'View 1 more reply'}</span>
                   </span>
                 </div>
               }
@@ -158,7 +158,7 @@ class Comments extends React.Component {
               ))
             }
             { this.props.comments && this.props.commentsCount > this.props.comments.length && <span>
-              <a href="#/" style={{marginLeft: '10px', fontSize:'0.9rem'}} onClick={this.getComments}>View More Comments</a>
+              <span style={{cursor: 'pointer', color: '#5867dd', textDecoration: 'underline', marginLeft: '10px', fontSize:'0.9rem'}} onClick={this.getComments}>View More Comments</span>
             </span>
             }
             </div>

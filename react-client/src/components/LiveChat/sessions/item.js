@@ -18,20 +18,45 @@ class SessionItem extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      showingQuickAction: false
+      showingQuickAction: false,
+      showingCheckbox: false,
+      checked: this.props.checked
     }
 
     this.showQuickAction = this.showQuickAction.bind(this)
     this.hideQuickAction = this.hideQuickAction.bind(this)
     this.getChatPreview = this.getChatPreview.bind(this)
+    this.showCheckbox = this.showCheckbox.bind(this)
+    this.hideCheckbox = this.hideCheckbox.bind(this)
+  }
+
+  componentWillReceiveProps (nextProps) {
+    if (nextProps.showingBulkActions) {
+      this.setState({showingQuickAction: false})
+    }
+    if (nextProps.checked) {
+      this.setState({checked: true})
+    } 
+  }
+
+  hideCheckbox (e) {
+    this.setState({showingCheckbox: false})
+  }
+
+  showCheckbox (e) {
+    this.setState({showingCheckbox: true})
   }
 
   showQuickAction (e) {
-    this.setState({showingQuickAction: true})
+    if (!this.props.showingBulkActions) {
+      this.setState({showingQuickAction: true}) 
+    }
   }
 
   hideQuickAction (e) {
-    this.setState({showingQuickAction: false})
+    if (!this.props.showingBulkActions) {
+      this.setState({showingQuickAction: false})
+    }
   }
 
   getChatPreview () {
@@ -50,11 +75,26 @@ class SessionItem extends React.Component {
           style={(this.props.session._id === this.props.activeSession._id) ? styles.activeSessionStyle : styles.sessionStyle}
           onMouseEnter={this.showQuickAction}
           onMouseLeave={this.hideQuickAction}
-          onClick={() => this.props.changeActiveSession(this.props.session)}
+          onClick={(e) => this.props.changeActiveSession(this.props.session, e)}
           className='m-widget4__item'
         >
-          <div className='m-widget4__img m-widget4__img--pic'>
-            <img onError={(e) => this.props.profilePicError(e, this.props.session)} style={{width: '56px', height: '56px'}} src={this.props.session.profilePic} alt='' />
+          <div 
+            style={{
+              minWidth: '50px', 
+              minHeight: '50px', 
+              width: '50px', 
+              height: '50px', 
+              textAlign: 'center'
+            }}
+            onMouseEnter={this.showCheckbox}
+            onMouseLeave={this.hideCheckbox}
+            className='m-widget4__img m-widget4__img--pic'>
+              {
+                !this.state.showingCheckbox && !this.props.showingBulkActions ? 
+                <img 
+                style={{width: 'inherit', height: 'inherit'}} onError={(e) => this.props.profilePicError(e, this.props.session)} src={this.props.session.profilePic} alt='' />
+                : <input checked={this.props.session.selected} onChange={(e) => this.props.addToBulkAction(e, this.props.session)} type='checkbox' />
+              }
           </div>
           <div className='m-widget4__info'>
             <div style={{marginBottom: '-10px'}} className='row'>

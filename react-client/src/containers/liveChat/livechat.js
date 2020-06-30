@@ -85,7 +85,10 @@ class LiveChat extends React.Component {
       showSearch: false,
       customFieldOptions: [],
       showingCustomFieldPopover: false,
-      smpStatus: []
+      smpStatus: [],
+      selected: [], 
+      showingBulkActions: false, 
+      allSelected: false
     }
 
     this.fetchSessions = this.fetchSessions.bind(this)
@@ -113,8 +116,9 @@ class LiveChat extends React.Component {
     this.handleSMPStatus = this.handleSMPStatus.bind(this)
     this.isSMPApproved = this.isSMPApproved.bind(this)
     this.setMessageData = this.setMessageData.bind(this)
+    this.markSessionsRead = this.markSessionsRead.bind(this)
 
-    this.fetchSessions(true, 'none', true)
+    this.fetchSessions(true, 'none')
     props.getSMPStatus(this.handleSMPStatus)
     props.loadMembersList()
     props.loadTags()
@@ -219,10 +223,10 @@ class LiveChat extends React.Component {
   changeTab (value) {
     this.setState({
       tabValue: value,
-      sessions: value === 'open' ? this.props.openSessions : this.props.closeSessions,
-      sessionsCount: value === 'open' ? this.props.openCount : this.props.closeCount,
       userChat: [],
       activeSession: {}
+    }, () => {
+      this.fetchSessions(true, 'none')
     })
   }
 
@@ -345,8 +349,11 @@ class LiveChat extends React.Component {
     }
   }
 
-  changeActiveSession (session) {
+  changeActiveSession (session, e) {
     console.log('changeActiveSession', session)
+    if (e && e.target.type === 'checkbox') {
+      return
+    }
     if (session._id !== this.state.activeSession._id) {
       this.setState({
         activeSession: session,
@@ -382,6 +389,19 @@ class LiveChat extends React.Component {
     this.setState({activeSession: session})
   }
 
+  markSessionsRead (selectedSessions) {
+    let sessions = this.state.sessions
+    for (let i = 0; i < selectedSessions.length; i++) {
+      let session = selectedSessions[i]
+      let sessionIndex = sessions.findIndex(s => s._id === session._id)
+      if (session.unreadCount > 0) {
+        sessions[sessionIndex].unreadCount = 0
+        this.props.markRead(session._id)
+      }
+    }
+    this.setState({sessions})
+  }
+
   fetchSessions(firstPage, lastId, fetchBoth) {
     const data = {
       first_page: firstPage,
@@ -403,6 +423,15 @@ class LiveChat extends React.Component {
       this.props.fetchOpenSessions(data)
     } else if (this.state.tabValue === 'close') {
       this.props.fetchCloseSessions(data)
+    }
+    if (firstPage) {
+      let sessions = this.state.sessions
+      for (let i = 0; i < sessions.length; i++) {
+        sessions[i].selected = false
+      }
+      this.setState({sessions, allSelected: false, selected: [], showingBulkActions: false})
+    } else {
+      this.setState({allSelected: false})
     }
   }
 
@@ -531,6 +560,10 @@ class LiveChat extends React.Component {
                   updateState={this.updateState}
                   fetchSessions={this.fetchSessions}
                   getChatPreview={this.getChatPreview}
+                  markSessionsRead={this.markSessionsRead}
+                  selected={this.state.selected}
+                  showingBulkActions={this.state.showingBulkActions}
+                  allSelected={this.state.allSelected}
                 />
                 {
                   this.state.activeSession.constructor === Object && Object.keys(this.state.activeSession).length > 0 &&
