@@ -107,8 +107,8 @@ class Footer extends React.Component {
         if (res.status === 'success' && res.payload) {
           this.setState({
             zoomMeetingLoading: false,
-            zoomMeetingCreated: true, 
-            zoomMeetingUrl: res.payload.joinUrl, 
+            zoomMeetingCreated: true,
+            zoomMeetingUrl: res.payload.joinUrl,
             text: this.state.zoomInvitationMessage.replace('[invite_url]', res.payload.joinUrl)
           }, () => {
             document.getElementById('_close_zoom_integration').style.display = 'none'
@@ -117,10 +117,6 @@ class Footer extends React.Component {
               if (this.state.zoomCountdown <= 1) {
                 if (this.state.zoomMeetingUrl) {
                   clearInterval(this.zoomCountdownTimer)
-                  let link = document.createElement('a')
-                  link.id = '_zoomMeetingLink'
-                  link.href = this.state.zoomMeetingUrl
-                  link.target = '_blank'
                   document.getElementById('_zoomMeetingLink').click()
                   //window.open(this.state.zoomMeetingUrl, '_blank')
                   document.getElementById('_close_zoom_integration').style.display = 'block'
@@ -388,7 +384,7 @@ class Footer extends React.Component {
             <div style={{paddingBottom: '0', paddingRight: '0', paddingLeft: '0', float: 'right'}} className="m-form__actions">
               <button disabled={this.state.zoomMeetingLoading} style={{float: 'right', marginLeft: '30px'}} type='submit' className="btn btn-primary">
                 {
-                  this.state.zoomMeetingLoading ? 
+                  this.state.zoomMeetingLoading ?
                   <div>
                     <div className="m-loader" style={{height: '10px', width: "30px", display: "inline-block"}}></div>
                     <span>Loading...</span>
@@ -639,6 +635,7 @@ class Footer extends React.Component {
           content={this.getZoomIntegrationContent()}
           onClose={this.resetZoomValues}
         />
+        <a id='_zoomMeetingLink' style={{display: 'none'}} href={this.state.zoomMeetingUrl} target='_blank' />
         <div className='m-messenger__form'>
           <div className='m-messenger__form-controls'>
             {
