@@ -75,37 +75,47 @@ class Footer extends React.Component {
       zoomCountdown: this.initialZoomCountdown,
       zoomMeetingUrl: '',
       zoomMeetingCreationError: false,
-      text: this.state.text === this.state.invitationMessage ? '' : this.state.text
+      text: this.state.text === this.state.zoomInvitationMessage ? '' : this.state.text,
+      zoomMeetingLoading: false
     })
   }
 
   createZoomMeeting (event) {
     event.preventDefault()
-    this.props.createZoomMeeting({
-        subscriberId: this.props.activeSession._id,
-        topic: this.state.zoomTopic,
-        agenda: this.state.zoomTopic,
-        invitationMessage: this.state.zoomInvitationMessage
-    }, (res) => {
-      if (res.status === 'success' && res.payload) {
-        this.setState({zoomMeetingUrl: res.payload.joinUrl, text: this.state.invitationMessage})
-      } else {
-        this.setState({zoomMeetingCreationError: true})
-      }
-    })
-    this.setState({zoomMeetingCreated: true}, () => {  
-      this.zoomCountdownTimer= setInterval(() => {
-          if (this.state.zoomCountdown <= 1) {
-            if (this.state.zoomMeetingUrl) {
-              clearInterval(this.zoomCountdownTimer)
-              this.sendMessage()
-              window.open(this.state.zoomMeetingUrl, '_blank')
-              document.getElementById('_close_zoom_integration').click()
-            }
-          } else {
-            this.setState({zoomCountdown: this.state.zoomCountdown - 1})
-          }
-        }, 1000)
+    this.setState({zoomMeetingLoading: true}, () => {
+      this.props.createZoomMeeting({
+          subscriberId: this.props.activeSession._id,
+          topic: this.state.zoomTopic,
+          agenda: this.state.zoomAgenda,
+          invitationMessage: this.state.zoomInvitationMessage
+      }, (res) => {
+        if (res.status === 'success' && res.payload) {
+          this.setState({
+            zoomMeetingLoading: false,
+            zoomMeetingCreated: true, 
+            zoomMeetingUrl: res.payload.joinUrl, 
+            text: this.state.zoomInvitationMessage.replace('[invite_url]', res.payload.joinUrl)
+          }, () => {
+            document.getElementById('_close_zoom_integration').style.display = 'none'
+            this.sendMessage()
+            this.zoomCountdownTimer= setInterval(() => {
+              if (this.state.zoomCountdown <= 1) {
+                if (this.state.zoomMeetingUrl) {
+                  clearInterval(this.zoomCountdownTimer)
+                  window.open(this.state.zoomMeetingUrl, '_blank')
+                  document.getElementById('_close_zoom_integration').style.display = 'block'
+                  document.getElementById('_close_zoom_integration').click()
+                }
+              } else {
+                this.setState({zoomCountdown: this.state.zoomCountdown - 1})
+              }
+            }, 1000)
+          })
+        } else {
+          console.log('error creating zoom meeting', res.description)
+          this.setState({zoomMeetingCreationError: true, zoomMeetingLoading: false})
+        }
+      })
     })
   }
 
@@ -326,10 +336,21 @@ class Footer extends React.Component {
               {/* <div style={{color: 'red'}}>{'*Required'}</div> */}
             </div>
 
-            <div style={{paddingBottom: '0', paddingRight: '0', float: 'right'}} className="m-form__actions">
-              <button type='submit' className="btn btn-primary">
-                Create and Invite
+            <div style={{paddingBottom: '0', paddingRight: '0', paddingLeft: '0', float: 'right'}} className="m-form__actions">
+              <button disabled={this.state.zoomMeetingLoading} style={{float: 'right', marginLeft: '30px'}} type='submit' className="btn btn-primary">
+                {
+                  this.state.zoomMeetingLoading ? 
+                  <div>
+                    <div className="m-loader" style={{height: '10px', width: "30px", display: "inline-block"}}></div>
+                    <span>Loading...</span>
+                  </div>
+                  : <span>Create and Invite</span>
+                }
               </button>
+              {
+                this.state.zoomMeetingCreationError &&
+                <span style={{color: 'red'}}>There was an error creating the meeting. Please try again.</span>
+              }
             </div>
           </div>
         </form>
@@ -339,11 +360,7 @@ class Footer extends React.Component {
         <div>
           <span>{`Zoom meeting has been successfully created and invitation has been sent to ${this.props.activeSession.firstName}. Redirecting you to Zoom Meetings in:`}</span>
           <div style={{display: 'flex', justifyContent: 'center', marginTop: '50px', marginBottom: '50px'}}>
-            {
-              this.state.zoomMeetingCreationError ?
-              <div style={{color: 'red'}}>There was an error creating the meeting. Please try again.</div> :
-              <div className="numberCircle">{this.state.zoomCountdown}</div>
-            }
+            <div className="numberCircle">{this.state.zoomCountdown}</div>
           </div>
         </div>
       )
