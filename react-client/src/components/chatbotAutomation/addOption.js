@@ -69,8 +69,7 @@ class AddOption extends React.Component {
     this.props.onUpdate(
       this.state.selectedBlock.value,
       this.props.index,
-      this.state.title,
-      this.props.payloadAction
+      this.state.title
     )
     this.props.onCancel()
   }
@@ -78,8 +77,7 @@ class AddOption extends React.Component {
   onRemove () {
     this.props.onRemove(
       this.state.selectedBlock.value,
-      this.props.index,
-      this.props.payloadAction
+      this.props.index
     )
     this.props.onCancel()
   }
@@ -110,10 +108,10 @@ class AddOption extends React.Component {
             />
           </div>
           <div className='m--space-10' />
-          {
-            !this.props.showRemove &&
-            <div className="form-group m-form__group">
-              <label>Action:</label>
+          <div className="form-group m-form__group">
+            <label>{this.props.showRemove ? 'Linked to block:' : 'Action:'}</label>
+            {
+              !this.props.showRemove &&
               <div className="m-radio-list">
                 {
                   this.props.isCreatable &&
@@ -141,20 +139,20 @@ class AddOption extends React.Component {
                   <span />
                 </label>
               </div>
-              {
-                this.state.selectedRadio === 'link' &&
-                <Select
-                  className="basic-single"
-                  classNamePrefix="select"
-                  isClearable={true}
-                  isSearchable={true}
-                  options={this.getSelectOptions()}
-                  value={this.state.selectedBlock}
-                  onChange={this.onBlockChange}
-                />
-              }
-            </div>
-          }
+            }
+            {
+              this.state.selectedRadio === 'link' &&
+              <Select
+                className="basic-single"
+                classNamePrefix="select"
+                isClearable={true}
+                isSearchable={true}
+                options={this.getSelectOptions()}
+                value={this.state.selectedBlock}
+                onChange={this.onBlockChange}
+              />
+            }
+          </div>
           {
             this.props.showRemove &&
             <button

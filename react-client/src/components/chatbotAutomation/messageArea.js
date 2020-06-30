@@ -337,29 +337,17 @@ class MessageArea extends React.Component {
     }
   }
 
-  updateOption (uniqueId, index, title, action) {
+  updateOption (uniqueId, index, title) {
     const quickReplies = this.state.quickReplies
     quickReplies[index].title = title
-
-    if (action === 'create') {
-      const {blocks, sidebarItems} = this.props
-      const blockIndex = blocks.findIndex((item) => item.uniqueId.toString() === uniqueId.toString())
-      const sidebarIndex = sidebarItems.findIndex((item) => item.id.toString() === uniqueId.toString())
-      blocks[blockIndex].title = title
-      sidebarItems[sidebarIndex].title = title
-      const currentBlock = this.props.block
-      if (currentBlock.payload.length > 0) {
-        currentBlock.payload[currentBlock.payload.length - 1].quickReplies = quickReplies
-      } else {
-        currentBlock.payload.push({quickReplies})
-      }
-      this.props.updateParentState({blocks, currentBlock, sidebarItems, unsavedChanges: true})
-    }
+    const payload = JSON.parse(quickReplies[index].payload)
+    payload[0].blockUniqueId = uniqueId
+    quickReplies[index].payload = JSON.stringify(payload)
 
     this.setState({quickReplies})
   }
 
-  removeOption (uniqueId, index, action) {
+  removeOption (uniqueId, index) {
     const quickReplies = this.state.quickReplies
     quickReplies.splice(index, 1)
 
