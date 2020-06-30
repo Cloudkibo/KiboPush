@@ -197,24 +197,23 @@ class AddPage extends React.Component {
                     </div>
                   </div>
                   <div className='m-portlet__head-tools'>
-                    <ul className='nav nav-pills nav-pills--brand m-nav-pills--align-right m-nav-pills--btn-pill m-nav-pills--btn-sm' role='tablist'>
-                      <li className='nav-item m-tabs__item'>
-                        <Link className='btn m-btn--pill btn-primary' style={{marginRight: '10px'}} onClick={() => {
+                      { this.props.user && this.props.user.role === 'buyer' && <span>
+                        <Link className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' style={{marginRight: '10px'}} onClick={() => {
                           this.setState({loading: true})
                           this.props.refreshPages(this.stopLoading, this.msg)
                         }}>Refresh Pages</Link>
-                      </li>
-                      <li className='nav-item m-tabs__item'>
+                      </span>
+                      }
+                      <span>
                         {this.props.location.state && this.props.location.state.module === 'page'
-                          ? <Link to='/pages' className='btn m-btn--pill btn-success'>
+                          ? <Link to='/pages' className='btn btn-success m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
                             Done
                             </Link>
-                          : <Link to='/dashboard' className='btn m-btn--pill btn-success'>
+                          : <Link to='/dashboard' className='btn btn-success m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
                             Done
                               </Link>
                         }
-                      </li>
-                    </ul>
+                      </span>
                   </div>
                 </div>
                 <div className='m-portlet__body'>
