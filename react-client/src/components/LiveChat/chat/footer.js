@@ -84,9 +84,11 @@ class Footer extends React.Component {
   }
 
   appendInvitationUrl () {
-    this.setState({
-      zoomInvitationMessage: this.state.zoomInvitationMessage + " [invite_url]"
-    })
+    if (!this.state.zoomInvitationMessage.includes('invite_url')) {
+      this.setState({zoomInvitationMessage: this.state.zoomInvitationMessage + " [invite_url]"}, () => {
+        document.getElementById('_zoom_invitation_message').setCustomValidity('')
+      })
+    }
   }
 
   createZoomMeeting (event) {
@@ -348,7 +350,7 @@ class Footer extends React.Component {
             
             <div className='m-messenger__form-tools pull-right messengerTools' style={{ backgroundColor: '#F1F0F0', marginTop: '-40px', marginRight: '10px' }}>
               <div id='_appendInvitationUrl' style={{ display: 'inline-block', float: 'left' }}>
-                <i data-tip='Append Invitation Url' onClick={this.appendInvitationUrl} style={{
+                <i data-tip={this.state.zoomInvitationMessage.includes('invite_url') ? 'Invitation URL is already present' : 'Append invitation URL'} onClick={this.appendInvitationUrl} style={{
                   height: '24px',
                   width: '24px',
                   position: 'relative',
