@@ -206,26 +206,6 @@ class Autoposting extends React.Component {
         <Header />
         <div style={{ float: 'left', clear: 'both' }}
           ref={(el) => { this.top = el }} />
-
-        {/* <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="addFeed" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-          <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
-            <div className="modal-content">
-              <div style={{ display: 'block' }} className="modal-header">
-                <h5 className="modal-title" id="exampleModalLabel">
-                  Add Feed
-									          </h5>
-                <button ref='addFeedClose' style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">
-                    &times;
-											        </span>
-                </button>
-              </div>
-              <div style={{ color: 'black' }} className="modal-body">
-                <AddChannel module='wizard' addFeedClose={this.refs.addFeedClose} onClose={this.closeDialog} data-toggle="modal" data-target="#guide" openGuidelines={this.viewGuide} msg={this.msg} />
-              </div>
-            </div>
-          </div>
-        </div> */}
          <AddChannel module='wizard' addFeedClose={this.refs.addFeedClose} onClose={this.closeDialog} data-toggle="modal" data-target="#guide" openGuidelines={this.viewGuide} msg={this.msg} />
         <a href='#/' style={{ display: 'none' }} ref='delete' data-toggle="modal" data-target="#delete">delete</a>
         <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="delete" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
