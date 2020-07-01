@@ -492,7 +492,7 @@ export function updatePlatformWhatsApp (data, msg, clearFields, handleResponse) 
 
 export function getZoomIntegration () {
   return (dispatch) => {
-    callApi('/zoom/users')
+    callApi('zoom/users')
       .then(res => {
         dispatch(updateZoomIntegration(res.payload))
       })
@@ -501,7 +501,7 @@ export function getZoomIntegration () {
 
 export function disconnectZoom () {
   return (dispatch) => {
-    callApi('/zoom/disconnect')
+    callApi('zoom/disconnect')
       .then(res => {
         dispatch(updateZoomIntegration(null))
       })
@@ -510,7 +510,7 @@ export function disconnectZoom () {
 
 export function createZoomMeeting (data, callback) {
   return (dispatch) => {
-    callApi('/zoom/meetings', 'post', data)
+    callApi('zoom/meetings', 'post', data)
       .then(res => {
         if (callback) {
           callback(res)
