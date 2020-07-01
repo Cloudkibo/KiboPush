@@ -96,8 +96,7 @@ class Dashboard extends React.Component {
   }
 
   checkFacebookConnected (response) {
-    console.log('this.props.userCheck', this.props.user)
-    if(response.payload.role !== 'buyer' && !response.payload.buyerInfo.connectFacebook) {
+    if(this.props.user && this.props.user.role!== 'buyer' && !response.payload.buyerInfo.connectFacebook) {
       this.props.history.push({
         pathname: '/sessionInvalidated',
         state: { session_inavalidated: false, role: response.payload.role, buyerInfo: response.payload.buyerInfo }
