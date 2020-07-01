@@ -373,7 +373,7 @@ class Footer extends React.Component {
                fontSize: '12px',
                marginTop: '-10px',
                fontStyle: 'italic'
-             }}>{'[invite_url] refers to the zoom meeting invitation link that will be generated'}</div>
+             }}>{'Note: [invite_url] will be replaced by the generated zoom meeting invitation link'}</div>
               
             <div style={{paddingBottom: '0', paddingRight: '0', paddingLeft: '0', float: 'right'}} className="m-form__actions">
               <button disabled={this.state.zoomMeetingLoading} style={{float: 'right', marginLeft: '30px'}} type='submit' className="btn btn-primary">
