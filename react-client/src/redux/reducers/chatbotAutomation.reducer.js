@@ -1,7 +1,7 @@
 import * as ActionTypes from '../constants/constants'
 
 const initialState = {
-  chatbots: []
+  chatbots: null
 }
 
 export function chatbotsInfo (state = initialState, action) {
