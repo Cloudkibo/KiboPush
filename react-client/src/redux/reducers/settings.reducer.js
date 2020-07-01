@@ -75,6 +75,10 @@ export function settingsInfo (state = initialState, action) {
       return Object.assign({}, state, {
         whitelistDomains: action.data
       })
+    case ActionTypes.UPDATE_ZOOM_INTEGRATION:
+      return Object.assign({}, state, {
+        zoomIntegration: action.data
+      })
     default:
       return state
   }

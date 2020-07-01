@@ -28,7 +28,7 @@ import { RingLoader } from 'halogenium'
 //  import GettingStarted from './gettingStarted'
 import { registerAction } from '../../utility/socketio'
 import { readShopifyInstallRequest } from '../../utility/utils'
-import { validateUserAccessToken } from '../../redux/actions/basicinfo.actions'
+import { validateUserAccessToken, isFacebookConnected} from '../../redux/actions/basicinfo.actions'
 // import Reports from './reports'
 // import TopPages from './topPages'
 import moment from 'moment'
@@ -71,6 +71,7 @@ class Dashboard extends React.Component {
     this.openVideoTutorial = this.openVideoTutorial.bind(this)
     this.getNewsPages = this.getNewsPages.bind(this)
     this.handlePermissions = this.handlePermissions.bind(this)
+    this.checkFacebookConnected = this.checkFacebookConnected.bind(this)
     if(window.location.hostname.includes('kiboengage.cloudkibo.com')) {
       this.props.checkSubscriptionPermissions(this.handlePermissions)
     }
@@ -93,9 +94,19 @@ class Dashboard extends React.Component {
     })
     this.refs.videoDashboard.click()
   }
+
+  checkFacebookConnected (response) {
+    if(this.props.user && this.props.user.role!== 'buyer' && !response.payload.buyerInfo.connectFacebook) {
+      this.props.history.push({
+        pathname: '/sessionInvalidated',
+        state: { session_inavalidated: false, role: response.payload.role, buyerInfo: response.payload.buyerInfo }
+      })
+    }
+  }
   UNSAFE_componentWillMount () {
 
     this.props.validateUserAccessToken(this.checkUserAccessToken)
+    this.props.isFacebookConnected(this.checkFacebookConnected)
     this.props.loadDashboardData()
     this.props.updateSubscriptionPermission()
     if (window.location.hostname.includes('kiboengage.cloudkibo.com')) {
@@ -775,7 +786,8 @@ function mapDispatchToProps (dispatch) {
       loadTopPages: loadTopPages,
       loadSubscriberSummary: loadSubscriberSummary,
       loadSentSeen: loadSentSeen,
-      validateUserAccessToken
+      validateUserAccessToken,
+      isFacebookConnected
     },
     dispatch)
 }

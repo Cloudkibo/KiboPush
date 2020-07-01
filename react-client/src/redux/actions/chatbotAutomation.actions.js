@@ -17,6 +17,8 @@ export function fetchChatbots () {
         console.log('response from fetchChatbots', res)
         if (res.status === 'success') {
           dispatch(showChatbots(res.payload))
+        } else {
+          dispatch(showChatbots([]))
         }
       })
   }
