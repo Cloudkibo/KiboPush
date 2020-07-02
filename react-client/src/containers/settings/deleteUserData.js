@@ -43,16 +43,19 @@ class DeleteUserData extends React.Component {
   onCancel () {
     if (this.state.selectedRadio === 'delAccount') {
       this.setState({
+        cancelRequest: true,
         showEmailAlert: `Your cancellation request to delete account has been sent to the admin.`
       })
     }
     if (this.state.selectedRadio === 'delChat') {
       this.setState({
+        cancelRequest: true,
         showEmailAlert: `Your cancellation request to delete chat sessions has been sent to the admin.`
       })
     }
     if (this.state.selectedRadio === 'delSubscribers') {
       this.setState({
+        cancelRequest: true,
         showEmailAlert: `Your cancellation request to delete subscribers has been sent to the admin.`
       })
     }
