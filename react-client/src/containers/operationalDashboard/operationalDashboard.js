@@ -384,8 +384,7 @@ class OperationalDashboard extends React.Component {
   }
 
   getFile () {
-    console.log('getFile')
-    this.msg.info('DOWNLOADING DATA.... YOU WILL BE NOTIFIED WHEN IT IS DOWNLOAD.')
+    this.msg.info('IT WILL TAKE UP TO 5 MINTUES ... ONCE DATA WILL READY IT WILL SENT ON YOUR EMAIL.')
     this.props.downloadFile(this.msg)
   }
 
