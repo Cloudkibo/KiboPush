@@ -62,7 +62,6 @@ class DeleteUserData extends React.Component {
     this.setState({
       selectedRadio: '',
       deleteOption: '',
-      cancelRequest: false
     })
     this.props.cancelDeletion(this.msg, this.handleSave)
   }
@@ -278,7 +277,7 @@ class DeleteUserData extends React.Component {
             </div>
             {this.state.showEmailAlert !== '' && <div className='row alert alert-email'>
               <p>{this.state.showEmailAlert}</p>
-              {this.state.cancelRequest &&
+              {!this.state.cancelRequest &&
               <span>Click on 'Cancel Deletion Process' if you want to stop the deletion process.</span>
               }
               </div>
