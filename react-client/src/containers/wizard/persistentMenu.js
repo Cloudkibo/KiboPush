@@ -502,6 +502,9 @@ class Menu extends React.Component {
         this.msg.error(errorMessage)
       }
     }
+    else {
+      this.msg.error('Please add at least one Main menu')
+    }
   }
   handleSaveMenu (res) {
     if (res.status === 'success' && res.payload) {
