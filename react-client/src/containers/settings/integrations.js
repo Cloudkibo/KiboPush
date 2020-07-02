@@ -93,7 +93,7 @@ class Integrations extends React.Component {
       let zoomIntegration = this.state.zoomIntegration
       zoomIntegration.enabled = true
       this.setState({zoomIntegration})
-    } else if ((!nextProps.zoomIntegration && this.props.zoomIntegration) || (!nextProps.zoomIntegration.connected)) {
+    } else if (!nextProps.zoomIntegration || !nextProps.zoomIntegration.connected) {
       let zoomIntegration = this.state.zoomIntegration
       zoomIntegration.enabled = false
       this.setState({zoomIntegration})
