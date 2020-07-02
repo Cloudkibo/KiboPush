@@ -130,6 +130,8 @@ class DeleteUserData extends React.Component {
   }
   saveDeleteOption () {
     this.setState({cancelRequest: true})
+    this.refs.confirmation.click()
+    this.refs.authentication.click()
     var deletionDate = moment().add(14, 'day')
     this.props.saveDeleteOption({delete_option: this.state.deleteOption, deletion_date: deletionDate}, this.msg, this.handleSave)
   }
@@ -162,6 +164,7 @@ class DeleteUserData extends React.Component {
     }
     return (
       <div id='target' className='col-lg-8 col-md-8 col-sm-8 col-xs-12'>
+        <a href='#/' style={{ display: 'none' }} ref='confirmation' data-toggle='modal' data-backdrop='static' data-keyboard='false' data-target="#confirmation">confirmation</a>
         <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="confirmation" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
             <div className="modal-content">
@@ -190,6 +193,7 @@ class DeleteUserData extends React.Component {
             </div>
           </div>
         </div>
+        <a href='#/' style={{ display: 'none' }} ref='authentication' data-toggle='modal' data-backdrop='static' data-keyboard='false' data-target="#authentication">authentication</a>
         <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="authentication" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
             <div className="modal-content">
