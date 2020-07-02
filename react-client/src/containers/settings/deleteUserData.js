@@ -15,7 +15,8 @@ class DeleteUserData extends React.Component {
       deleteOption: '',
       confirmationMessage: '',
       password: '',
-      showEmailAlert: ''
+      showEmailAlert: '',
+      cancelRequest: true
     }
     this.handleRadioChange = this.handleRadioChange.bind(this)
     this.saveDeleteOption = this.saveDeleteOption.bind(this)
@@ -40,9 +41,25 @@ class DeleteUserData extends React.Component {
     })
   }
   onCancel () {
+    if (this.state.selectedRadio === 'delAccount') {
+      this.setState({
+        showEmailAlert: `Your cancellation request to delete account has been sent to the admin.`
+      })
+    }
+    if (this.state.selectedRadio === 'delChat') {
+      this.setState({
+        showEmailAlert: `Your cancellation request to delete chat sessions has been sent to the admin.`
+      })
+    }
+    if (this.state.selectedRadio === 'delSubscribers') {
+      this.setState({
+        showEmailAlert: `Your cancellation request to delete subscribers has been sent to the admin.`
+      })
+    }
     this.setState({
       selectedRadio: '',
-      deleteOption: ''
+      deleteOption: '',
+      cancelRequest: false
     })
     this.props.cancelDeletion(this.msg, this.handleSave)
   }
@@ -80,18 +97,21 @@ class DeleteUserData extends React.Component {
       var deletionDate = moment(user.deleteInformation.deletion_date).format('dddd, MMMM Do YYYY')
       if (user.deleteInformation.delete_option === 'DEL_ACCOUNT') {
         this.setState({
+          cancelRequest : false,
           deleteOption: 'DEL_ACCOUNT',
           selectedRadio: 'delAccount',
           showEmailAlert: `Your request to delete account has been sent to the admin. Your account will be deleted by ${deletionDate}`
         })
       } else if (user.deleteInformation.delete_option === 'DEL_CHAT') {
         this.setState({
+          cancelRequest : false,
           deleteOption: 'DEL_CHAT',
           selectedRadio: 'delChat',
           showEmailAlert: `Your request to delete chat sessions has been sent to the admin. Your data will be deleted by ${deletionDate}`
         })
       } else if (user.deleteInformation.delete_option === 'DEL_SUBSCRIBER') {
         this.setState({
+          cancelRequest : false,
           deleteOption: 'DEL_SUBSCRIBER',
           selectedRadio: 'delSubscribers',
           showEmailAlert: `Your request to delete subscribers has been sent to the admin. Your data will be deleted by ${deletionDate}`
@@ -100,12 +120,14 @@ class DeleteUserData extends React.Component {
         this.setState({
           deleteOption: '',
           selectedRadio: '',
-          showEmailAlert: ''
+          showEmailAlert: '',
+          cancelRequest: true
         })
       }
     }
   }
   saveDeleteOption () {
+    this.setState({cancelRequest: true})
     var deletionDate = moment().add(14, 'day')
     this.props.saveDeleteOption({delete_option: this.state.deleteOption, deletion_date: deletionDate}, this.msg, this.handleSave)
   }
@@ -249,12 +271,14 @@ class DeleteUserData extends React.Component {
             </div>
             <div className='row' style={{marginBottom: '20px'}}>
               <button className='btn btn-primary' style={{marginLeft: '20px', marginTop: '20px'}} disabled={this.state.deleteOption === ''} data-toggle="modal" data-target="#confirmation" onClick={(e) => this.onSaveOption(e)}>Start Deletion Process</button>
-              <button className='btn btn-secondary' style={{marginLeft: '10px', marginTop: '20px'}} disabled={this.state.showEmailAlert === ''} onClick={(e) => this.onCancel(e)}>Cancel Deletion Process</button>
+              <button className='btn btn-secondary' style={{marginLeft: '10px', marginTop: '20px'}} disabled={this.state.cancelRequest} onClick={(e) => this.onCancel(e)}>Cancel Deletion Process</button>
             </div>
             {this.state.showEmailAlert !== '' && <div className='row alert alert-email'>
               <p>{this.state.showEmailAlert}</p>
+              {this.state.cancelRequest &&
               <span>Click on 'Cancel Deletion Process' if you want to stop the deletion process.</span>
-            </div>
+              }
+              </div>
             }
           </div>
         </div>
