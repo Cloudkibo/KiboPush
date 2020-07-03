@@ -471,7 +471,7 @@ export function updatePlatformWhatsApp (data, msg, clearFields, handleResponse) 
       .then(res => {
         console.log('response from updatePlatformWhatsApp', res)
         if (res.status === 'success') {
-          if (!data.changeWhatsAppTwilio) {
+          if (!data.changeWhatsAppFlockSend) {
             dispatch(getAutomatedOptions())
             dispatch(getuserdetails())
           }
