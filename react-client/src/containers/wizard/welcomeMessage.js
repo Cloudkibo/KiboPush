@@ -219,7 +219,9 @@ class EditTemplate extends React.Component {
                           broadcast={this.state.broadcast}
                           handleChange={this.handleChange}
                           convoTitle={this.state.convoTitle}
-                          buttonActions={this.state.buttonActions} />
+                          buttonActions={this.state.buttonActions} 
+                          module='welcomeMessage'
+                          />
                       </center>
                       <div className='row'>
                         <div className='col-lg-6 m--align-left' >
