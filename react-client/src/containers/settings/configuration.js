@@ -15,12 +15,14 @@ class Webhook extends React.Component {
       token: '',
       SIDWapp: '',
       tokenWapp: '',
-      number: '+14155238886',
+      // number: '+14155238886',
+      number: '',
       code: '',
       type: '',
       deleteType: ''
     }
     this.updateToken = this.updateToken.bind(this)
+    this.updateNumber = this.updateNumber.bind(this)
     this.updateSID = this.updateSID.bind(this)
     this.updateTokenWapp = this.updateTokenWapp.bind(this)
     this.updateSIDWapp = this.updateSIDWapp.bind(this)
@@ -38,6 +40,10 @@ class Webhook extends React.Component {
     props.getAutomatedOptions()
   }
 
+  updateNumber (e) {
+    this.setState({number: e.target.value})
+  }
+
   setType (type) {
     this.setState({deleteType: type}, () => {
       if (type === 'Disconnect') {
@@ -53,10 +59,11 @@ class Webhook extends React.Component {
       this.props.deleteWhatsApp({type: this.state.deleteType, password: password}, this.handleDeleteWhatsAppResponse)
     } else {
       let data = {
-        accountSID: this.state.SIDWapp,
-        authToken: this.state.tokenWapp,
-        sandboxNumber: this.state.number,
-        sandboxCode: this.state.code,
+        accessToken: this.state.tokenWapp,
+        // accountSID: this.state.SIDWapp,
+        // authToken: this.state.tokenWapp,
+        // sandboxNumber: this.state.number,
+        // sandboxCode: this.state.code,
         type: this.state.deleteType,
         password: password
       }
@@ -82,11 +89,13 @@ class Webhook extends React.Component {
     if (nextProps.automated_options && nextProps.automated_options.twilio) {
       this.setState({SID: nextProps.automated_options.twilio.accountSID, token: nextProps.automated_options.twilio.authToken})
     }
-    if (nextProps.automated_options && nextProps.automated_options.twilioWhatsApp) {
-      this.setState({SIDWapp: nextProps.automated_options.twilioWhatsApp.accountSID,
-        tokenWapp: nextProps.automated_options.twilioWhatsApp.authToken,
-        number: nextProps.automated_options.twilioWhatsApp.sandboxNumber,
-        code: nextProps.automated_options.twilioWhatsApp.sandboxCode
+    if (nextProps.automated_options && nextProps.automated_options.flockSendWhatsApp) {
+      this.setState({
+        // SIDWapp: nextProps.automated_options.twilioWhatsApp.accountSID,
+        // tokenWapp: nextProps.automated_options.twilioWhatsApp.authToken,
+        // number: nextProps.automated_options.twilioWhatsApp.sandboxNumber,
+        // code: nextProps.automated_options.twilioWhatsApp.sandboxCode
+        tokenWapp: nextProps.automated_options.flockSendWhatsApp.authToken
       })
     }
     if (nextProps.user && nextProps.user.platform === 'sms' && nextProps.automated_options && !nextProps.automated_options.twilio) {
@@ -94,7 +103,7 @@ class Webhook extends React.Component {
         pathname: '/integrations',
         state: 'sms'
       })
-    } else if (nextProps.user && nextProps.user.platform === 'whatsApp' && nextProps.automated_options && !nextProps.automated_options.twilioWhatsApp) {
+    } else if (nextProps.user && nextProps.user.platform === 'whatsApp' && nextProps.automated_options && !nextProps.automated_options.flockSendWhatsApp) {
       this.props.history.push({
         pathname: '/integrations',
         state: 'whatsApp'
@@ -150,22 +159,34 @@ class Webhook extends React.Component {
 
   submitWapp () {
     const regex = /\+(9[976]\d|8[987530]\d|6[987]\d|5[90]\d|42\d|3[875]\d|2[98654321]\d|9[8543210]|8[6421]|6[6543210]|5[87654321]|4[987654310]|3[9643210]|2[70]|7|1)\W*\d\W*\d\W*\d\W*\d\W*\d\W*\d\W*\d\W*\d\W*(\d{1,14})$/g
-    if (this.state.SIDWapp === '') {
-      this.msg.error('Account SID cannot be empty')
-    } else if (this.state.tokenWapp === '') {
-      this.msg.error('Auth Token cannot be empty')
-    } else if (!this.state.number.match(regex)) {
-      this.msg.error('Invalid Sandbox Number')
-    } else if (this.state.code === '') {
-      this.msg.error('Sandbox code cannot be empty')
-    } else {
-      let data = {
-        changeWhatsAppTwilio: this.props.automated_options.twilioWhatsApp ? true : false,
-        accountSID: this.state.SIDWapp,
-        authToken: this.state.tokenWapp,
-        sandboxNumber: this.state.number,
-        sandboxCode: this.state.code
-      }
+    // if (this.state.SIDWapp === '') {
+    //   this.msg.error('Account SID cannot be empty')
+    // } else if (this.state.tokenWapp === '') {
+    //   this.msg.error('Auth Token cannot be empty')
+    // } else if (!this.state.number.match(regex)) {
+    //   this.msg.error('Invalid Sandbox Number')
+    // } else if (this.state.code === '') {
+    //   this.msg.error('Sandbox code cannot be empty')
+    // } else {
+    //   let data = {
+    //     changeWhatsAppTwilio: this.props.automated_options.twilioWhatsApp ? true : false,
+    //     accountSID: this.state.SIDWapp,
+    //     authToken: this.state.tokenWapp,
+    //     sandboxNumber: this.state.number,
+    //     sandboxCode: this.state.code
+    //   }
+    // }
+
+      if (this.state.tokenWapp === '') {
+        this.msg.error('Access Token cannot be empty')
+      } else if (!this.state.number.match(regex)) {
+        this.msg.error('Invalid Number')
+      } else {
+        let data = {
+          changeWhatsAppFlockSend: this.props.automated_options.flockSendWhatsApp ? true : false,
+          accessToken: this.state.tokenWapp,
+          number: this.state.number
+        }
       this.props.updatePlatformWhatsApp(data, this.msg, this.clearFieldsWapp, this.handleResponse)
     }
   }
@@ -179,11 +200,13 @@ class Webhook extends React.Component {
   }
 
   clearFieldsWapp () {
-    if (this.props.automated_options && this.props.automated_options.twilioWhatsApp) {
-      this.setState({SIDWapp: this.props.automated_options.twilioWhatsApp.accountSID,
-        tokenWapp: this.props.automated_options.twilioWhatsApp.authToken,
-        number: this.props.automated_options.twilioWhatsApp.sandboxNumber,
-        code: this.props.automated_options.twilioWhatsApp.sandboxCode
+    if (this.props.automated_options && this.props.automated_options.flockSendWhatsApp) {
+      this.setState({
+        // SIDWapp: this.props.automated_options.twilioWhatsApp.accountSID,
+        // tokenWapp: this.props.automated_options.twilioWhatsApp.authToken,
+        // number: this.props.automated_options.twilioWhatsApp.sandboxNumber,
+        // code: this.props.automated_options.twilioWhatsApp.sandboxCode,
+        tokenWapp: this.props.automated_options.flockSendWhatsApp.accessToken
       })
     } else {
       this.setState({SIDWapp: '', tokenWapp: '', code: '', number: ''})
@@ -204,7 +227,7 @@ class Webhook extends React.Component {
         <button ref='disconnectWhatsApp' style={{ marginTop: '-10px', opacity: '0.5', color: 'black', display: 'none'}} type="button" className="close" data-toggle="modal" data-target="#disconnectWhatsApp" aria-label="Close">
           <span aria-hidden="true">
             &times;
-                      </span>
+          </span>
         </button>
         <button ref='connectWapp' style={{ marginTop: '-10px', opacity: '0.5', color: 'black', display: 'none' }} type="button" className="close" data-toggle="modal" data-target="#connectWapp" aria-label="Close">
           <span aria-hidden="true">
@@ -213,8 +236,8 @@ class Webhook extends React.Component {
         </button>
         <WhatsAppDeleteModal
           id='disconnectWhatsApp'
-          title={`${this.state.deleteType} WhatsApp Twilio Account`}
-          content={`Are you sure you want to ${this.state.deleteType} your WhatsApp Twilio Account? Doing so will remove all of your subscribers, their chat history and the broadcasts you have created.`}
+          title={`${this.state.deleteType} WhatsApp FlockSend Account`}
+          content={`Are you sure you want to ${this.state.deleteType} your WhatsApp FlockSend Account? Doing so will remove all of your subscribers, their chat history and the broadcasts you have created.`}
           deleteWithPassword={this.deleteWhatsApp}
         />
         <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="disconnect" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -322,7 +345,7 @@ class Webhook extends React.Component {
 											</span>
                 </button>
               </div>
-              <div style={{ color: 'black' }} className="modal-body">
+              {/* <div style={{ color: 'black' }} className="modal-body">
                 <div className='m-form'>
                   <span>Please enter your Twilio credentials here:</span>
                   <div className='form-group m-form__group'>
@@ -344,6 +367,30 @@ class Webhook extends React.Component {
                       <input className='form-control' value={this.state.code} onChange={(e) => this.updateCode(e)} />
                     </div>
                     <span><b>Note:</b> You can find your sandbox number and code <a href='https://www.twilio.com/console/sms/whatsapp/sandbox' target='_blank' rel='noopener noreferrer'>here</a></span>
+                  </div>
+                  <div className='m-portlet__foot m-portlet__foot--fit' style={{ 'overflow': 'auto' }}>
+                    <div className='m-form__actions' style={{ 'float': 'right' }}>
+                      <button className='btn btn-primary'
+                        onClick={this.submitWapp}> Submit
+                  </button>
+                    </div>
+                  </div>
+                </div>
+              </div> */}
+
+
+              <div style={{ color: 'black' }} className="modal-body">
+                <div className='m-form'>
+                  <span>Please enter your FlockSend credentials here:</span>
+                  <div className='form-group m-form__group'>
+                    <div id='question' className='form-group m-form__group'>
+                      <label className='control-label'>FlockSend Access Token:</label>
+                      <input className='form-control' value={this.state.tokenWapp} onChange={(e) => this.updateTokenWapp(e)} />
+                    </div>
+                    <div id='question' className='form-group m-form__group'>
+                      <label className='control-label'>WhatsApp Number:</label>
+                      <input className='form-control' value={this.state.number} onChange={(e) => this.updateNumber(e)} />
+                    </div>
                   </div>
                   <div className='m-portlet__foot m-portlet__foot--fit' style={{ 'overflow': 'auto' }}>
                     <div className='m-form__actions' style={{ 'float': 'right' }}>
@@ -409,7 +456,7 @@ class Webhook extends React.Component {
                                         </div>
                                       </div>
                                     }
-                                    { (url.includes('kiboengage.cloudkibo.com') || url.includes('kibochat.cloudkibo.com') ) &&
+                                    { (url.includes('kiboengage.cloudkibo.com') || url.includes('kibochat.cloudkibo.com') || url.includes('localhost') ) &&
                                     <div className='m-widget4__item'>
                                       <div className='m-widget4__info'>
                                         <span className='m-widget4__title'>
@@ -434,7 +481,7 @@ class Webhook extends React.Component {
                                     }
                                     </div>
                                     }
-                                    { (url.includes('kiboengage.cloudkibo.com') || url.includes('kibochat.cloudkibo.com') ) &&
+                                    { (url.includes('kiboengage.cloudkibo.com') || url.includes('kibochat.cloudkibo.com') || url.includes('localhost') ) &&
                                     <div className='m-widget4__item'>
                                       <div className='m-widget4__info'>
                                         <span className='m-widget4__title'>
@@ -449,10 +496,10 @@ class Webhook extends React.Component {
                                         <button className='m-btn m-btn--pill m-btn--hover-success btn btn-success'
                                           style={{borderColor: '#34bfa3', color: '#34bfa3', marginRight: '10px'}}
                                           onClick={() => this.setType('Change')}>
-                                          {this.props.automated_options && this.props.automated_options.twilioWhatsApp ? 'Edit' : 'Connect'}
+                                          {this.props.automated_options && this.props.automated_options.flockSendWhatsApp ? 'Edit' : 'Connect'}
                                         </button>
                                       </div>
-                                      {this.props.automated_options && this.props.automated_options.twilioWhatsApp &&
+                                      {this.props.automated_options && this.props.automated_options.flockSendWhatsApp &&
                                       <div className='m-widget4__ext'>
                                         <button className='m-btn m-btn--pill m-btn--hover-danger btn btn-danger'
                                           style={{borderColor: '#d9534f', color: '#d9534f', marginRight: '10px'}}
