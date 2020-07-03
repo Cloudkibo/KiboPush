@@ -1,5 +1,6 @@
 /* eslint-disable no-useless-constructor */
 import React from 'react'
+import IconStack from '../../components/Dashboard/IconStack'
 
 class PlatformStats extends React.Component {
   constructor (props, context) {
@@ -82,66 +83,63 @@ class PlatformStats extends React.Component {
                   </h3>
                 </div>
               </div>
+              <div className='m-portlet__head-tools'>
+                <div style={{display: 'flex', float: 'right'}}>
+                <span htmlFor='example-text-input' className='col-form-label'>
+                  Show records for last:&nbsp;&nbsp;
+                </span>
+                <div style={{width: '200px'}}>
+                  <input placeholder='Enter number of days' type='number' min='1' step='1' value={this.props.days} className='form-control' onChange={this.props.onDaysChange} />
+                </div>
+                <span htmlFor='example-text-input' className='col-form-label'>
+                &nbsp;&nbsp;days
+                </span>
+              </div>
+            </div>
             </div>
             <div className='m-portlet__body'>
-              <div className='m-widget21'>
                 <div className='row'>
-                  <div className='col'>
-                    <div className='m-widget21__item'>
-                      <span className='m-widget21__icon'>
-                        <a href='#/' className='btn btn-brand m-btn m-btn--icon m-btn--icon-only m-btn--custom m-btn--pill'>
-                          <i className='fa fa-facebook m--font-light' />
-                        </a>
-                      </span>
-                      <div className='m-widget21__info'>
-                        <span className='m-widget21__title'>
-                          {(this.props.platformStats) ? this.props.platformStats.totalPages : 0}
-                        </span>
-                        <br />
-                        <span className='m-widget21__sub'>
-                          Total Pages
-                        </span>
-                      </div>
-                    </div>
+                  <div className='col-md-6'>
+                    <IconStack
+                      icon='fa fa-facebook'
+                      title={this.props.platformStats.totalPages}
+                      subtitle='Total Pages'
+                      iconStyle='danger'
+                      id='totalPages'
+                    />
                   </div>
-                  <div className='col'>
-                    <div className='m-widget21__item'>
-                      <span className='m-widget21__icon'>
-                        <a href='#/' className='btn btn-warning m-btn m-btn--icon m-btn--icon-only m-btn--custom m-btn--pill'>
-                          <i className='fa fa-facebook m--font-light' />
-                        </a>
-                      </span>
-                      <div className='m-widget21__info'>
-                        <span className='m-widget21__title'>
-                          {(this.props.platformStats) ? this.props.platformStats.totalConnectedPages : 0}
-                        </span>
-                        <br />
-                        <span className='m-widget21__sub'>
-                          Connected Pages
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                  <div className='col'>
-                    <div className='m-widget21__item'>
-                      <span className='m-widget21__icon'>
-                        <a href='#/' className='btn btn-accent m-btn m-btn--icon m-btn--icon-only m-btn--custom m-btn--pill'>
-                          <i className='fa flaticon-users m--font-light' />
-                        </a>
-                      </span>
-                      <div className='m-widget21__info'>
-                        <span className='m-widget21__title'>
-                          {(this.props.platformStats) ? this.props.platformStats.totalSubscribers : 0}
-                        </span>
-                        <br />
-                        <span className='m-widget21__sub'>
-                          Subscribers
-                        </span>
-                      </div>
-                    </div>
+                  <div className='col-md-6'>
+                    <IconStack
+                      icon='fa fa-facebook'
+                      title={this.props.platformStats.totalConnectedPages}
+                      subtitle='Connected Pages'
+                      iconStyle='success'
+                      id='connectedPages'
+                    />
                   </div>
                 </div>
-                <div className='m--space-30' />
+                <div className='m--space-30'></div>
+                <div className='row'>
+                  <div className='col-md-6'>
+                    <IconStack
+                      icon='fa fa-users'
+                      title={this.props.platformStats.totalSubscribers}
+                      subtitle='Subscribers'
+                      iconStyle='primary'
+                      id='subscribers'
+                    />
+                  </div>
+                  <div className='col-md-6'>
+                    <IconStack
+                      icon='fa fa-send-o'
+                      title={this.props.platformStats.totalMessagesSent}
+                      subtitle='Messages Sent'
+                      iconStyle='warning'
+                      id='messagesSent'
+                    />
+                  </div>
+                </div>
+                <div className='m--space-30'></div>
                 <div className='m-widget15'>
                   <div className='m-widget15__item'>
                     <span style={{fontSize: '1.1rem', fontWeight: '600', color: '#6f727d'}}>
@@ -150,7 +148,7 @@ class PlatformStats extends React.Component {
                     <span style={{fontSize: '0.85rem', float: 'right', marginTop: '0.3rem', color: '#9699a2'}}>
                       Pages Connected
                     </span>
-                    <div className='m--space-10' />
+                    <div className='m--space-10'></div>
                     <div className='progress m-progress--sm' style={{height: '6px'}}>
                       {
                       (this.props.platformStats)
@@ -161,7 +159,6 @@ class PlatformStats extends React.Component {
                   </div>
                 </div>
                 <a href="http://167.71.253.114:8080/dashbuilder/" target="_blank" rel='noopener noreferrer'><strong>Performance Dashboard</strong> (Username: root Password: root) </a>
-              </div>
             </div>
           </div>
         : <p>No data to display </p>

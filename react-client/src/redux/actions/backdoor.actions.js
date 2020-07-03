@@ -27,7 +27,8 @@ import {
   updatePageAdmins,
   updateCompanyInfo,
   updateCurrentPageOwners,
-  updateLocales
+  updateLocales,
+  updateCommentCaptures
     } from './../dispatchers/backdoor.dispatcher'
 import * as ActionTypes from '../constants/constants'
 import {LANGUAGE_BY_LOCALE} from '../../utility/utils'
@@ -86,6 +87,17 @@ export function loadPollsByDays (data) {
       .then(res => {
         console.log('response from loadPollsByDays', res)
         dispatch(updatePollsByDays(res.payload))
+      })
+  }
+}
+
+export function loadCommentCaptures (data) {
+  console.log('data for loadCommentCaptures', data)
+  return (dispatch) => {
+    callApi(`backdoor/getAllCommentCaptures`, 'post', data)
+      .then(res => {
+        console.log('response from loadCommentCaptures', res)
+        dispatch(updateCommentCaptures(res.payload))
       })
   }
 }
@@ -277,7 +289,7 @@ export function sendEmail (msg) {
 }
 export function allLocales (id) {
   return (dispatch) => {
-    callApi(`backdoor/allLocales/${id}`).then(res => dispatch(updateAllLocales(res.payload))) 
+    callApi(`backdoor/allLocales/${id}`).then(res => dispatch(updateAllLocales(res.payload)))
   }
 }
 
@@ -338,9 +350,9 @@ export function deleteLiveChat (id, msg) {
 }
 
 // Fetch Platform Stats
-export function fetchPlatformStats (id) {
+export function fetchPlatformStats (data) {
   return (dispatch) => {
-    callApi(`operational/platformwise`)
+    callApi(`backdoor/platformwise`, 'post', data)
       .then(res => {
         console.log('response from fetchPlatformStats', res)
         dispatch(handleAction(ActionTypes.UPDATE_PLATFORM_STATS, res.payload))

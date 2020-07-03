@@ -220,6 +220,11 @@ export function backdoorInfo (state = initialState, action) {
       return Object.assign({}, state, {
         error: action.data
       })
+    case ActionTypes.UPDATE_COMMENT_CAPTURES:
+      return Object.assign({}, state, {
+        commentCaptures: action.commentCaptures,
+        commentCaptureCount: action.count
+      })
     default:
       return state
   }
