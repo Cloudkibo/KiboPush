@@ -220,6 +220,10 @@ export function backdoorInfo (state = initialState, action) {
       return Object.assign({}, state, {
         error: action.data
       })
+      case ActionTypes.SAVE_USER_VIEW:
+      return Object.assign({}, state, {
+        userView: action.data
+      })
     default:
       return state
   }

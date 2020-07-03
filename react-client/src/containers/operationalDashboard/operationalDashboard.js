@@ -42,7 +42,8 @@ import {
   fetchAutopostingUserWiseDateWise,
   fetchPlatformStatsMonthly,
   fetchPlatformStatsWeekly,
-  alUserslLocales
+  alUserslLocales,
+  saveUserView
 } from '../../redux/actions/backdoor.actions'
 import { saveUserInformation } from '../../redux/dispatchers/backdoor.dispatcher'
 import { bindActionCreators } from 'redux'
@@ -115,7 +116,10 @@ class OperationalDashboard extends React.Component {
 
   setUsersView (user) {
     auth.putActingAsUser(user.domain_email, user.name)
-    window.location.reload()
+    this.props.saveUserView(true)
+    this.props.history.push({
+      pathname: `/dashboard`
+    })
   }
 
   loadMore () {
@@ -676,7 +680,8 @@ function mapDispatchToProps (dispatch) {
     fetchAutopostingUserWiseDateWise,
     fetchPlatformStatsMonthly,
     fetchPlatformStatsWeekly,
-    alUserslLocales
+    alUserslLocales,
+    saveUserView
   },
     dispatch)
 }
