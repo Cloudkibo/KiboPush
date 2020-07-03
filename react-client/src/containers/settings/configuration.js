@@ -95,7 +95,8 @@ class Webhook extends React.Component {
         // tokenWapp: nextProps.automated_options.twilioWhatsApp.authToken,
         // number: nextProps.automated_options.twilioWhatsApp.sandboxNumber,
         // code: nextProps.automated_options.twilioWhatsApp.sandboxCode
-        tokenWapp: nextProps.automated_options.flockSendWhatsApp.authToken
+        tokenWapp: nextProps.automated_options.flockSendWhatsApp.accessToken,
+        number: nextProps.automated_options.flockSendWhatsApp.number
       })
     }
     if (nextProps.user && nextProps.user.platform === 'sms' && nextProps.automated_options && !nextProps.automated_options.twilio) {
