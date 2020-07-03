@@ -65,7 +65,6 @@ export function updateAllLocales (data) {
     data: convertedData
   }
 }
-
 export function updateDataObjectsCount (data) {
   return {
     type: ActionTypes.LOAD_DATA_OBJECTS_LIST,
