@@ -13,16 +13,24 @@ class AutomationControls extends React.Component {
     super(props, context)
     this.state = {
       selectedRadio: 'mixResponse',
-      responseMethod: 'MIX_CHAT'
+      responseMethod: 'MIX_CHAT',
+      showAgentName: false
     }
     props.findResponseMethod()
     this.handleRadioChange = this.handleRadioChange.bind(this)
     this.saveResponseMethod = this.saveResponseMethod.bind(this)
     this.updateResponseMethod = this.updateResponseMethod.bind(this)
+    this.changeAgentNameSetting = this.changeAgentNameSetting.bind(this)
+  }
+
+  changeAgentNameSetting (e) {
+    this.setState({
+      showAgentName: e.target.checked
+    })
   }
 
   componentDidMount () {
-    this.updateResponseMethod(this.props.responseMethod)
+    this.updateResponseMethod(this.props.responseMethod, this.props.showAgentName)
     const hostname = window.location.hostname
     let title = ''
     if (hostname.includes('kiboengage.cloudkibo.com')) {
@@ -34,9 +42,9 @@ class AutomationControls extends React.Component {
     document.title = `${title} | Response Methods`
   }
   UNSAFE_componentWillReceiveProps (nextProps) {
-    this.updateResponseMethod(nextProps.responseMethod)
+    this.updateResponseMethod(nextProps.responseMethod,  nextProps.showAgentName)
   }
-  updateResponseMethod (responseMethod) {
+  updateResponseMethod (responseMethod, showAgentName) {
     if (responseMethod) {
       var response = ''
       if (responseMethod === 'MIX_CHAT') {
@@ -55,9 +63,12 @@ class AutomationControls extends React.Component {
         selectedRadio: response
       })
     }
+    if (showAgentName) {
+      this.setState({showAgentName})
+    }
   }
   saveResponseMethod () {
-    this.props.saveResponseMethod({automated_options: this.state.responseMethod}, this.msg)
+    this.props.saveResponseMethod({automated_options: this.state.responseMethod, showAgentName: this.state.showAgentName}, this.msg)
   }
   handleRadioChange (e) {
     this.setState({
@@ -145,6 +156,28 @@ class AutomationControls extends React.Component {
                           </div>
                         </div>
                       </div>
+                      {
+                        (this.props.user.currentPlan.unique_ID === 'plan_C' || this.props.user.currentPlan.unique_ID === 'plan_D') &&
+                        <div className='row' style={{ marginTop: '10px', marginBottom: '-10px'}}>
+                        <div className='col-xl-12 col-md-12 col-sm-12'>
+                          <span className='m-widget4__sub'>
+                            <div className='m-form__group form-group row'>
+                              <span className='col-5 col-form-label'>
+                                Show agent name when sending messages
+                              </span>
+                              <div className='col-2'>
+                                <span className='m-switch m-switch--outline m-switch--icon m-switch--success'>
+                                  <label>
+                                    <input type='checkbox' data-switch='true' checked={this.state.showAgentName} onChange={this.changeAgentNameSetting} />
+                                    <span></span>
+                                  </label>
+                                </span>
+                              </div>
+                            </div>
+                          </span>
+                        </div>
+                      </div>
+                      }
                       <div className='row'>
                         <button className='btn btn-primary' style={{ marginLeft: '20px', marginTop: '20px' }} disabled={this.state.responseMethod === ''} onClick={(e) => this.saveResponseMethod(e)}>Save</button>
                       </div>
@@ -192,7 +225,8 @@ class AutomationControls extends React.Component {
 function mapStateToProps (state) {
   return {
     responseMethod: (state.settingsInfo.responseMethod),
-    user: (state.basicInfo.user)
+    user: (state.basicInfo.user),
+    showAgentName: state.settingsInfo.showAgentName
   }
 }
 function mapDispatchToProps (dispatch) {
