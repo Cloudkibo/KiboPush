@@ -635,3 +635,9 @@ export function loadPagePermissions (id) {
       })
   }
 }
+export function saveUserView (data) {
+  return {
+    type: ActionTypes.SAVE_USER_VIEW,
+    data: data
+  }
+}

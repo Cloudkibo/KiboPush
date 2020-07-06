@@ -30,6 +30,7 @@ class Header extends React.Component {
       showDropDown: false,
       showViewingAsDropDown: false,
       mode: 'All',
+      userView: false
     }
     this.toggleSidebar = this.toggleSidebar.bind(this)
     this.getPlanInfo = this.getPlanInfo.bind(this)
@@ -137,6 +138,9 @@ class Header extends React.Component {
 
   UNSAFE_componentWillReceiveProps (nextProps) {
     console.log('nextProps in header', nextProps)
+    if(nextProps.userView) {
+      this.setState({userView: nextProps.userView})
+    }
     if (nextProps.user) {
       let mode = nextProps.user.uiMode && nextProps.user.uiMode.mode === 'kiboengage' ? 'Customer Engagement' : nextProps.user.uiMode.mode === 'kibochat' ? 'Customer Chat' : nextProps.user.uiMode.mode === 'kibocommerce' ? 'E-Commerce' : 'All'
       this.setState({ mode: mode })
@@ -436,7 +440,7 @@ class Header extends React.Component {
                 <div className='m-stack__item m-topbar__nav-wrapper'>
                   {this.props.user &&
                     <ul className='m-topbar__nav m-nav m-nav--inline'>
-                      {this.props.user.isSuperUser && auth.getActingAsUser() !== undefined &&
+                      {this.props.user.isSuperUser && (auth.getActingAsUser() !== undefined || this.state.userView) &&
                         <li style={{marginRight: '20px', padding: '0'}} className='m-nav__item m-topbar__user-profile m-topbar__user-profile--img  m-dropdown m-dropdown--medium m-dropdown--arrow m-dropdown--header-bg-fill m-dropdown--align-right m-dropdown--mobile-full-width m-dropdown--skin-light' data-dropdown-toggle='click'>
                           <div style={{marginTop: '15px'}}>
                             <span className='m-topbar__userpic'>
@@ -879,7 +883,9 @@ function mapStateToProps (state) {
     subscribers: (state.subscribersInfo.subscribers),
     notifications: (state.notificationsInfo.notifications),
     updatedUser: (state.basicInfo.updatedUser),
-    automated_options: (state.basicInfo.automated_options)
+    automated_options: (state.basicInfo.automated_options),
+    userView: (state.backdoorInfo.userView),
+
   }
 }
 
