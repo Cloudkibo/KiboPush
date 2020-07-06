@@ -48,6 +48,7 @@ class EditTemplate extends React.Component {
     this.setWelcomeMessage = this.setWelcomeMessage.bind(this)
   }
   UNSAFE_componentWillReceiveProps (nextprops) {
+    console.log('UNSAFE_componentWillReceiveProps called in welcomeWizard')
     if (this.state.pageValue === '') {
       this.setState({pageValue: nextprops.pages[0]._id, welcomeMessage: nextprops.pages[0].isWelcomeMessageEnabled, broadcast: nextprops.pages[0].welcomeMessage })
     }
