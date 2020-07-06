@@ -338,7 +338,7 @@ class Webhook extends React.Component {
             <div className="modal-content">
               <div style={{ display: 'block' }} className="modal-header">
                 <h5 className="modal-title" id="exampleModalLabel">
-                  Connect with Twilio WhatsApp
+                  Connect with FlockSend WhatsApp
 									</h5>
                 <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
                   <span aria-hidden="true">
