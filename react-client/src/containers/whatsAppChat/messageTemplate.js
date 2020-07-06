@@ -18,7 +18,8 @@ class MessageTemplate extends React.Component {
         {title: 'Explore Options'},
         {title: 'Speak to Support'}
       ],
-      isTemplateValid: true
+      isTemplateValid: true,
+      templateArguments: ''
     }
     this.resetTemplate = this.resetTemplate.bind(this)
     this.onTextChange = this.onTextChange.bind(this)
@@ -38,19 +39,30 @@ class MessageTemplate extends React.Component {
      $('#templateText').removeClass('border border-danger')
      /* eslint-enable */
   }
+
   validateTemplate(msg) {
     var isValid= false
-    var regex1 = new RegExp(/Hi .*.\n\nThank you for contacting .*.\n\nPlease choose from the options below to continue:/, 'i')
-    var regex2 = new RegExp(/your .* appointment is coming up on .*/, 'i')
-    var regex3 = new RegExp(/your .* order of .* has shipped and should be delivered on .*. Details : .*/, 'i')
+    var regex1 = new RegExp(/^Hi (.*).\n\nThank you for contacting (.*).\n\nPlease choose from the options below to continue:$/, 'i')
+    var regex2 = new RegExp(/^Hello (.*)! Your (.*) account is ready to go! If you need help getting started you can:$/, 'i')
+    var regex3 = new RegExp(/^Hi (.*),\nWelcome to (.*),\nYour account has been registered and you agree to receive messages on WhatsApp! A copy of your terms and conditions can be found here: (.*)\n\nBest$/, 'i')
+    let templateArguments = ''
     if (this.state.selectedRadio === 'contactReminder') {
       isValid = regex1.test(msg)
+      if (isValid) {
+        templateArguments = regex1.exec(msg).slice(1).join(',')
+      }
     }
     if (this.state.selectedRadio === 'signUpConfirmation') {
-      isValid = regex3.test(msg)
+      isValid = regex2.test(msg)
+      if (isValid) {
+        templateArguments = regex2.exec(msg).slice(1).join(',')
+      }
     }
     if (this.state.selectedRadio === 'registrationMessage') {
-      isValid = regex1.test(msg)
+      isValid = regex3.test(msg)
+      if (isValid) {
+        templateArguments = regex3.exec(msg).slice(1).join(',')
+      }
     }
     if (!isValid) {
       /* eslint-disable */
@@ -62,7 +74,8 @@ class MessageTemplate extends React.Component {
       /* eslint-enable */
     }
     this.setState({
-      isTemplateValid: isValid
+      isTemplateValid: isValid,
+      templateArguments
     })
   }
   onTextChange (e) {
@@ -106,7 +119,9 @@ class MessageTemplate extends React.Component {
     let payload = {
       componentType: 'text',
       text: this.state.templateMessage,
-      buttons: this.state.buttons
+      buttons: this.state.buttons,
+      templateArguments: this.state.templateArguments,
+      templateName: this.state.selectedRadio
     }
     let data = this.props.setMessageData(this.props.activeSession, payload)
     this.props.sendChatMessage(data)
