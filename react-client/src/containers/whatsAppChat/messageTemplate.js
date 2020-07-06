@@ -12,14 +12,14 @@ class MessageTemplate extends React.Component {
     super(props, context)
     this.state = {
       templateMessage: 'Hi {{1}}.\n\nThank you for contacting {{2}}.\n\nPlease choose from the options below to continue:',
-      selectedRadio: 'contactReminder',
+      selectedRadio: 'contact_reminder',
       buttons: [
         {title: 'Get in Touch'},
         {title: 'Explore Options'},
         {title: 'Speak to Support'}
       ],
       isTemplateValid: true,
-      templateArguments: ''
+      templateArguments: '{{1}},{{2}}'
     }
     this.resetTemplate = this.resetTemplate.bind(this)
     this.onTextChange = this.onTextChange.bind(this)
@@ -32,7 +32,7 @@ class MessageTemplate extends React.Component {
   resetTemplate () {
     this.setState({
       templateMessage: 'Hi {{1}}.\n\nThank you for contacting {{2}}.\n\nPlease choose from the options below to continue:',
-      selectedRadio: 'contactReminder',
+      selectedRadio: 'contact_reminder',
       isTemplateValid: true
     })
      /* eslint-disable */
@@ -46,19 +46,19 @@ class MessageTemplate extends React.Component {
     var regex2 = new RegExp(/^Hello (.*)! Your (.*) account is ready to go! If you need help getting started you can:$/, 'i')
     var regex3 = new RegExp(/^Hi (.*),\nWelcome to (.*),\nYour account has been registered and you agree to receive messages on WhatsApp! A copy of your terms and conditions can be found here: (.*)\n\nBest$/, 'i')
     let templateArguments = ''
-    if (this.state.selectedRadio === 'contactReminder') {
+    if (this.state.selectedRadio === 'contact_reminder') {
       isValid = regex1.test(msg)
       if (isValid) {
         templateArguments = regex1.exec(msg).slice(1).join(',')
       }
     }
-    if (this.state.selectedRadio === 'signUpConfirmation') {
+    if (this.state.selectedRadio === 'sign_up_confirmation') {
       isValid = regex2.test(msg)
       if (isValid) {
         templateArguments = regex2.exec(msg).slice(1).join(',')
       }
     }
-    if (this.state.selectedRadio === 'registrationMessage') {
+    if (this.state.selectedRadio === 'registration_message') {
       isValid = regex3.test(msg)
       if (isValid) {
         templateArguments = regex3.exec(msg).slice(1).join(',')
@@ -87,27 +87,32 @@ class MessageTemplate extends React.Component {
   handleRadioButton (e) {
     let textValue = ''
     let buttons = []
-    if (e.currentTarget.value === 'contactReminder') {
+    let templateArguments = ''
+    if (e.currentTarget.value === 'contact_reminder') {
       buttons = [
         {title: 'Get in Touch'},
         {title: 'Explore Options'},
         {title: 'Speak to Support'}
       ]
       textValue = 'Hi {{1}}.\n\nThank you for contacting {{2}}.\n\nPlease choose from the options below to continue:'
-    } else if (e.currentTarget.value === 'signUpConfirmation') {
+      templateArguments = '{{1}},{{2}}'
+    } else if (e.currentTarget.value === 'sign_up_confirmation') {
       buttons = [
         {title: 'Schedule Demo'},
         {title: 'Contact Support'},
         {title: 'Upgrade Plan'}
       ]
       textValue = 'Hello {{1}}! Your {{2}} account is ready to go! If you need help getting started you can:'
-    } else if (e.currentTarget.value === 'registrationMessage') {
+      templateArguments = '{{1}},{{2}}'
+    } else if (e.currentTarget.value === 'registration_message') {
       textValue = 'Hi {{1}},\nWelcome to {{2}},\nYour account has been registered and you agree to receive messages on WhatsApp! A copy of your terms and conditions can be found here: {{3}}\n\nBest'
+      templateArguments = '{{1}},{{2}},{{3}}'
     }
     this.setState({
       selectedRadio: e.currentTarget.value,
       templateMessage: textValue,
       isTemplateValid: true,
+      templateArguments,
       buttons
     })
     /* eslint-disable */
@@ -124,10 +129,16 @@ class MessageTemplate extends React.Component {
       templateName: this.state.selectedRadio
     }
     let data = this.props.setMessageData(this.props.activeSession, payload)
-    this.props.sendChatMessage(data)
-    this.props.updateChatAreaHeight('57vh')
-    data.format = 'convos'
-    this.updateChatData(data, payload)
+    this.props.sendChatMessage(data, (res) => {
+      if (res.status === 'success') {
+        this.props.updateChatAreaHeight('57vh')
+        data.format = 'convos'
+        this.updateChatData(data, payload)
+        document.getElementById('_close_message_templates').click()
+      } else {
+        this.props.alertMsg.error(res.payload)
+      }
+    })
   }
 
   updateChatData (data, payload) {
@@ -157,7 +168,7 @@ class MessageTemplate extends React.Component {
               <h5 className="modal-title" id="exampleModalLabel">
                 Message Templates
               </h5>
-              <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" aria-label="Close" data-dismiss='modal'>
+              <button id='_close_message_templates' style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" aria-label="Close" data-dismiss='modal'>
                 <span aria-hidden="true">
                   &times;
                 </span>
@@ -174,30 +185,30 @@ class MessageTemplate extends React.Component {
               <label>Select templates</label>
                 <div className='radio-buttons' style={{marginLeft: '37px'}}>
                   <div className='radio'>
-                    <input id='contactReminder'
+                    <input id='contact_reminder'
                       type='radio'
-                      value='contactReminder'
-                      name='contactReminder'
+                      value='contact_reminder'
+                      name='contact_reminder'
                       onChange={this.handleRadioButton}
-                      checked={this.state.selectedRadio === 'contactReminder'} />
+                      checked={this.state.selectedRadio === 'contact_reminder'} />
                     <span><i style={{marginRight: '5px', color: '#e1e14078'}} className='fa fa-times fa-calendar' />Contact Reminder</span>
                   </div>
                   <div className='radio'>
-                    <input id='signUpConfirmation'
+                    <input id='sign_up_confirmation'
                       type='radio'
-                      value='signUpConfirmation'
-                      name='signUpConfirmation'
+                      value='sign_up_confirmation'
+                      name='sign_up_confirmation'
                       onChange={this.handleRadioButton}
-                      checked={this.state.selectedRadio === 'signUpConfirmation'} />
+                      checked={this.state.selectedRadio === 'sign_up_confirmation'} />
                     <span><i style={{marginRight: '5px', color: '#34bf9f'}} className='fa fa-times fa-truck' />Sign Up Confirmation</span>
                   </div>
                   <div className='radio'>
-                    <input id='registrationMessage'
+                    <input id='registration_message'
                       type='radio'
-                      value='registrationMessage'
-                      name='registrationMessage'
+                      value='registration_message'
+                      name='registration_message'
                       onChange={this.handleRadioButton}
-                      checked={this.state.selectedRadio === 'registrationMessage'} />
+                      checked={this.state.selectedRadio === 'registration_message'} />
                     <span><i style={{marginRight: '5px', color: '#5867ddb5'}} className='fa fa-times fa-commenting' />Registration Message</span>
                   </div>
                 </div>
@@ -260,7 +271,7 @@ class MessageTemplate extends React.Component {
                     </button>
                 </div>
                 <div style={{ display: 'inline-block', padding: '5px' }}>
-                  <button className='btn btn-primary' disabled={!this.state.isTemplateValid} onClick={() => { this.sendTemplate(this.state.templateMessage)}} data-dismiss='modal'>
+                  <button className='btn btn-primary' disabled={!this.state.isTemplateValid} onClick={() => { this.sendTemplate(this.state.templateMessage)}}>
                     Send
                   </button>
                 </div>
