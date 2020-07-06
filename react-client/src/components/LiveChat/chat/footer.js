@@ -549,7 +549,7 @@ class Footer extends React.Component {
       let data = {}
       console.log('sending message', this.state.text)
       if (this.state.text !== '' && /\S/gm.test(this.state.text)) {
-        console.log('updating chat data', this.state.text)
+        console.log('updating chat data', data)
         payload = this.setDataPayload('text')
         data = this.props.setMessageData(this.props.activeSession, payload)
         this.props.sendChatMessage(data)

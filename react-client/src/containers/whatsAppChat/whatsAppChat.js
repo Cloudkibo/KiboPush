@@ -194,7 +194,7 @@ class WhatsAppChat extends React.Component {
   updateState (state, callback) {
     if (state.reducer) {
       const data = {
-        userChat: state.userChat,
+        chat: state.userChat,
         openSessions: this.state.tabValue === 'open' ? state.sessions : this.props.openSessions,
         closeSessions: this.state.tabValue === 'close' ? state.sessions : this.props.closeSessions
       }
