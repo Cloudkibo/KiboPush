@@ -173,7 +173,7 @@ class MessageTemplate extends React.Component {
                       name='signUpConfirmation'
                       onChange={this.handleRadioButton}
                       checked={this.state.selectedRadio === 'signUpConfirmation'} />
-                    <span><i style={{marginRight: '5px', color: '#34bf9f'}} className='fa fa-times fa-truck' />Sign Up signUpConfirmation</span>
+                    <span><i style={{marginRight: '5px', color: '#34bf9f'}} className='fa fa-times fa-truck' />Sign Up Confirmation</span>
                   </div>
                   <div className='radio'>
                     <input id='registrationMessage'
@@ -186,7 +186,7 @@ class MessageTemplate extends React.Component {
                   </div>
                 </div>
                 <div style={{textAlign: 'center', display: 'flex'}}>
-                  <textarea id='templateText' onChange={this.onTextChange} value={this.state.templateMessage}  className='form-control m-messenger__form-input' style={{resize: 'none', width: '95%', marginTop: '25px', borderRadius: '5px'}} maxLength='200' />
+                  <textarea rows='8' id='templateText' onChange={this.onTextChange} value={this.state.templateMessage}  className='form-control m-messenger__form-input' style={{resize: 'none', width: '95%', marginTop: '25px', borderRadius: '5px'}} maxLength='200' />
                   { !this.state.isTemplateValid &&
                   <div style={{marginTop: '25px', marginLeft: '5px'}}>
                     <UncontrolledTooltip style={{minWidth: '100px', opacity: '1.0'}} target='templateWarning'>

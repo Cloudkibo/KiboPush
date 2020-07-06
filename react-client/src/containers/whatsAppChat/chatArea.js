@@ -63,7 +63,7 @@ class ChatArea extends React.Component {
     var sessionValid = true
     for (let a = 0; a < chats.length; a++) {
       let msg = chats[a]
-      if (msg.format === 'twilio') {
+      if (msg.format === 'whatsApp') {
         userMessages.push(msg)
       }
     }

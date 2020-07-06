@@ -171,7 +171,7 @@ class WhatsAppChat extends React.Component {
 
   getChatPreview (message, repliedBy, subscriberName) {
     let chatPreview = ''
-    if (message.format === 'twilio') {
+    if (message.format === 'whatsApp') {
       // subscriber
       chatPreview = `${subscriberName}`
       if (message.componentType !== 'text') {
