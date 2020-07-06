@@ -139,14 +139,17 @@ class Sessions extends React.Component {
           />
           <div style={{padding: '0rem 2.2rem'}}>
             <ul className='nav nav-tabs m-tabs-line' role='tablist'>
-              <li style={{   
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                marginRight: '30px'
-              }}>
-                <input checked={this.props.allSelected} onChange={this.selectAllSessions} type='checkbox' />
-              </li>
+              {
+                this.props.markSessionsRead &&
+                <li style={{   
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  marginRight: '30px'
+                }}>
+                  <input checked={this.props.allSelected} onChange={this.selectAllSessions} type='checkbox' />
+                </li>
+              }
               <li className='nav-item m-tabs__item'>
                 <span className={`nav-link m-tabs__link ${this.props.tabValue === 'open' ? 'active' : ''}`} data-toggle='tab' role='tab' style={{cursor: 'pointer'}} onClick={() => this.props.changeTab('open')}>
                   Open
