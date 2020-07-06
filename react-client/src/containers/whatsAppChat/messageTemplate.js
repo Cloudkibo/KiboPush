@@ -90,7 +90,8 @@ class MessageTemplate extends React.Component {
   sendTemplate () {
     let payload = {
       componentType: 'text',
-      text: this.state.templateMessage
+      text: this.state.templateMessage,
+      buttons: this.state.buttons
     }
     let data = this.props.setMessageData(this.props.activeSession, payload)
     this.props.sendChatMessage(data)
