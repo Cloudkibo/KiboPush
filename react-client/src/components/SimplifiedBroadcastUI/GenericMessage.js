@@ -1201,7 +1201,7 @@ class GenericMessage extends React.Component {
                         disable={!(this.state.broadcast.length === this.props.componentLimit && this.state.broadcast.length > 0 && !this.state.broadcast[this.state.broadcast.length - 1].isEmailPhoneComponent)}
                       />
                       <div data-for='checkbox' data-tip={tooltipText} className='m-checkbox-list row' style={{marginTop: '20px', marginLeft: '-12px'}}>
-                        <label className='m-checkbox m-checkbox--state-success' style={{...cursorStyle}}>
+                        <label className='m-checkbox m-checkbox--state-success' style={{...cursorStyle, textAlign: 'left'}}>
         									<input type='checkbox'
                             onChange={this.handleCheckbox}
                             checked={this.state.checkboxValue}

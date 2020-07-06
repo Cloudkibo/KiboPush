@@ -45,17 +45,21 @@ class EditTemplate extends React.Component {
     this.pageChange = this.pageChange.bind(this)
     this.handleChange = this.handleChange.bind(this)
     this.handleEnableWelMessage = this.handleEnableWelMessage.bind(this)
+    this.setWelcomeMessage = this.setWelcomeMessage.bind(this)
   }
   UNSAFE_componentWillReceiveProps (nextprops) {
     if (this.state.pageValue === '') {
       this.setState({pageValue: nextprops.pages[0]._id, welcomeMessage: nextprops.pages[0].isWelcomeMessageEnabled, broadcast: nextprops.pages[0].welcomeMessage })
     }
   }
+  setWelcomeMessage(enable) {
+    this.setState({welcomeMessage:enable})
+  }
   handleEnableWelMessage (pageId, enable) {
     if (enable === true) {
-      this.props.isWelcomeMessageEnabled({_id: pageId, isWelcomeMessageEnabled: true})
+      this.props.isWelcomeMessageEnabled({_id: pageId, isWelcomeMessageEnabled: true}, this.setWelcomeMessage)
     } else {
-      this.props.isWelcomeMessageEnabled({_id: pageId, isWelcomeMessageEnabled: false})
+      this.props.isWelcomeMessageEnabled({_id: pageId, isWelcomeMessageEnabled: false}, this.setWelcomeMessage)
     }
   }
 
