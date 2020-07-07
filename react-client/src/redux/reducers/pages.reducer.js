@@ -17,6 +17,14 @@ export function pagesInfo (state = [], action) {
       return Object.assign({}, state, {
         pages: action.data
       })
+      case ActionTypes.SAVE_WELCOME_MESSAGE:
+      console.log('ActionTypes.WelcomeMessage in Pages.reducer')
+      let pages = state.pages
+      let pageIndex = pages.findIndex(page => page._id === action.data._id)
+      pages[pageIndex].welcomeMessage = action.data.welcomeMessage
+      return Object.assign({}, state, {
+        pages: pages
+      })
     case ActionTypes.LOAD_PAGES_LIST_NEW:
       return Object.assign({}, state, {
         pages: action.pages,

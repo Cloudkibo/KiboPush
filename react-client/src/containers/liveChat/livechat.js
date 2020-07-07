@@ -87,8 +87,8 @@ class LiveChat extends React.Component {
       customFieldOptions: [],
       showingCustomFieldPopover: false,
       smpStatus: [],
-      selected: [], 
-      showingBulkActions: false, 
+      selected: [],
+      showingBulkActions: false,
       allSelected: false
     }
 
@@ -379,7 +379,7 @@ class LiveChat extends React.Component {
       this.props.markRead(session._id)
     }
     this.props.clearSearchResult()
-    this.props.fetchUserChats(session._id, { page: 'first', number: 25 })
+    this.props.fetchUserChats(session._id, { page: 'first', number: 25 }, session.messagesCount)
     this.props.getSubscriberTags(session._id, this.alertMsg)
     this.props.getCustomFieldValue(session._id)
     if (session.is_assigned && session.assigned_to.type === 'team') {

@@ -134,6 +134,7 @@ class Chat extends React.Component {
           sessions={this.props.sessions}
           updateNewMessage={this.updateNewMessage}
           updateChatAreaHeight={this.updateChatAreaHeight}
+          alertMsg={this.props.alertMsg}
         />
 
         <HEADER

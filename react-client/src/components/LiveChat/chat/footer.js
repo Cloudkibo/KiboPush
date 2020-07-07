@@ -373,7 +373,7 @@ class Footer extends React.Component {
                fontSize: '12px',
                marginTop: '-10px',
                fontStyle: 'italic'
-             }}>{'[invite_url] refers to the zoom meeting invitation link that will be generated'}</div>
+             }}>{'Note: [invite_url] will be replaced by the generated zoom meeting invitation link'}</div>
               
             <div style={{paddingBottom: '0', paddingRight: '0', paddingLeft: '0', float: 'right'}} className="m-form__actions">
               <button disabled={this.state.zoomMeetingLoading} style={{float: 'right', marginLeft: '30px'}} type='submit' className="btn btn-primary">
@@ -547,7 +547,9 @@ class Footer extends React.Component {
     if (data.isAllowed) {
       let payload = {}
       let data = {}
+      console.log('sending message', this.state.text)
       if (this.state.text !== '' && /\S/gm.test(this.state.text)) {
+        console.log('updating chat data', data)
         payload = this.setDataPayload('text')
         data = this.props.setMessageData(this.props.activeSession, payload)
         this.props.sendChatMessage(data)

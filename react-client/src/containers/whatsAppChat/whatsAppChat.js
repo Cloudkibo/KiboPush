@@ -171,7 +171,7 @@ class WhatsAppChat extends React.Component {
 
   getChatPreview (message, repliedBy, subscriberName) {
     let chatPreview = ''
-    if (message.format === 'twilio') {
+    if (message.format === 'whatsApp') {
       // subscriber
       chatPreview = `${subscriberName}`
       if (message.componentType !== 'text') {
@@ -194,7 +194,7 @@ class WhatsAppChat extends React.Component {
   updateState (state, callback) {
     if (state.reducer) {
       const data = {
-        userChat: state.userChat,
+        chat: state.userChat,
         openSessions: this.state.tabValue === 'open' ? state.sessions : this.props.openSessions,
         closeSessions: this.state.tabValue === 'close' ? state.sessions : this.props.closeSessions
       }
@@ -284,7 +284,7 @@ class WhatsAppChat extends React.Component {
 
   setMessageData(session, payload) {
     const data = {
-      senderNumber: this.props.automated_options.twilioWhatsApp.sandboxNumber,
+      senderNumber: this.props.automated_options.flockSendWhatsApp.number,
       recipientNumber: this.state.activeSession.number,
       contactId: session._id,
       payload,
