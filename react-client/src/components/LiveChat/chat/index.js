@@ -134,6 +134,7 @@ class Chat extends React.Component {
           sessions={this.props.sessions}
           updateNewMessage={this.updateNewMessage}
           updateChatAreaHeight={this.updateChatAreaHeight}
+          alertMsg={this.props.alertMsg}
         />
 
         <HEADER
@@ -225,9 +226,13 @@ class Chat extends React.Component {
             showEmoji={this.props.showEmoji}
             showGif={this.props.showGif}
             showThumbsUp={this.props.showThumbsUp}
+            showZoom={this.props.showZoom}
             setMessageData={this.props.setMessageData}
             filesAccepted={this.props.filesAccepted}
             showAgentName={this.props.showAgentName}
+            history={this.props.history}
+            zoomIntegration={this.props.zoomIntegration}
+            createZoomMeeting={this.props.createZoomMeeting}
           />
         }
 

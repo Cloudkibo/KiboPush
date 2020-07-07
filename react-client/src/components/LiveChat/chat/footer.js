@@ -7,9 +7,12 @@ import MODAL from '../../extras/modal'
 import AUDIORECORDER from '../../audioRecorder'
 import CARD from '../messages/horizontalCard'
 
+
 class Footer extends React.Component {
   constructor(props, context) {
     super(props, context)
+    this.initialZoomCountdown = 3
+    this.initialZoomInvitationMessage = 'Please join Zoom meeting to discuss this in detail. [invite_url]'
     this.state = {
       text: '',
       attachment: {},
@@ -22,7 +25,14 @@ class Footer extends React.Component {
       loading: false,
       loadingUrlMeta: false,
       currentUrl: '',
-      showAudioRecording: false
+      showAudioRecording: false,
+      zoomTopic: '',
+      zoomAgenda: '',
+      zoomInvitationMessage: this.initialZoomInvitationMessage,
+      zoomMeetingCreated: false,
+      zoomCountdown: this.initialZoomCountdown,
+      zoomMeetingUrl: '',
+      zoomMeetingCreationError: false
     }
     this.onInputChange = this.onInputChange.bind(this)
     this.onEnter = this.onEnter.bind(this)
@@ -45,6 +55,86 @@ class Footer extends React.Component {
     this.removeUrlMeta = this.removeUrlMeta.bind(this)
     this.sendMessage = this.sendMessage.bind(this)
     this.toggleAudioRecording = this.toggleAudioRecording.bind(this)
+    this.getZoomIntegrationContent = this.getZoomIntegrationContent.bind(this)
+    this.goToIntegrations = this.goToIntegrations.bind(this)
+    this.setZoomTopic = this.setZoomTopic.bind(this)
+    this.setZoomAgenda = this.setZoomAgenda.bind(this)
+    this.setZoomInvitationMessage = this.setZoomInvitationMessage.bind(this)
+    this.createZoomMeeting = this.createZoomMeeting.bind(this)
+    this.checkZoomDisabled = this.checkZoomDisabled.bind(this)
+    this.resetZoomValues = this.resetZoomValues.bind(this)
+    this.appendInvitationUrl = this.appendInvitationUrl.bind(this)
+  }
+
+  resetZoomValues () {
+    clearInterval(this.zoomCountdownTimer)
+    this.setState({
+      zoomTopic: '',
+      zoomAgenda: '',
+      zoomInvitationMessage: this.initialZoomInvitationMessage,
+      zoomMeetingCreated: false,
+      zoomCountdown: this.initialZoomCountdown,
+      zoomMeetingUrl: '',
+      zoomMeetingCreationError: false,
+      text: this.state.text === this.state.zoomInvitationMessage ? '' : this.state.text,
+      zoomMeetingLoading: false,
+      showAppendInvitationUrl: false
+    })
+  }
+
+  appendInvitationUrl () {
+    if (!this.state.zoomInvitationMessage.includes('invite_url')) {
+      this.setState({zoomInvitationMessage: this.state.zoomInvitationMessage + " [invite_url]"}, () => {
+        document.getElementById('_zoom_invitation_message').setCustomValidity('')
+      })
+    }
+  }
+
+  createZoomMeeting (event) {
+    event.preventDefault()
+    this.setState({zoomMeetingLoading: true}, () => {
+      this.props.createZoomMeeting({
+          subscriberId: this.props.activeSession._id,
+          topic: this.state.zoomTopic,
+          agenda: this.state.zoomAgenda,
+          invitationMessage: this.state.zoomInvitationMessage
+      }, (res) => {
+        if (res.status === 'success' && res.payload) {
+          this.setState({
+            zoomMeetingLoading: false,
+            zoomMeetingCreated: true,
+            zoomMeetingUrl: res.payload.joinUrl,
+            text: this.state.zoomInvitationMessage.replace('[invite_url]', res.payload.joinUrl)
+          }, () => {
+            document.getElementById('_close_zoom_integration').style.display = 'none'
+            this.sendMessage()
+            this.zoomCountdownTimer= setInterval(() => {
+              if (this.state.zoomCountdown <= 1) {
+                if (this.state.zoomMeetingUrl) {
+                  clearInterval(this.zoomCountdownTimer)
+                  document.getElementById('_zoomMeetingLink').click()
+                  //window.open(this.state.zoomMeetingUrl, '_blank')
+                  document.getElementById('_close_zoom_integration').style.display = 'block'
+                  document.getElementById('_close_zoom_integration').click()
+                }
+              } else {
+                this.setState({zoomCountdown: this.state.zoomCountdown - 1})
+              }
+            }, 1000)
+          })
+        } else {
+          console.log('error creating zoom meeting', res.description)
+          this.setState({zoomMeetingCreationError: true, zoomMeetingLoading: false})
+        }
+      })
+    })
+  }
+
+  goToIntegrations () {
+    this.props.history.push({
+      pathname: '/settings',
+      state: {tab: 'integrations'}
+    })
   }
 
   setEmoji (emoji) {
@@ -182,6 +272,136 @@ class Footer extends React.Component {
       )
     } else {
       return (<div />)
+    }
+  }
+
+  setZoomTopic (e) {
+    this.setState({zoomTopic: e.target.value})
+  }
+
+  setZoomAgenda (e) {
+    this.setState({zoomAgenda: e.target.value})
+  }
+
+  setZoomInvitationMessage (e) {
+    if (!e.target.value) {
+      e.target.setCustomValidity("Please fill in this field.")
+    } else if (!e.target.value.includes('[invite_url]')) {
+      e.target.setCustomValidity("[invite_url] is required in the invitation message.")
+    } else {
+      e.target.setCustomValidity("")
+    }
+    this.setState({zoomInvitationMessage: e.target.value})
+  }
+
+  checkZoomDisabled () {
+    return !this.state.zoomTopic || !this.state.zoomAgenda || !this.state.zoomInvitationMessage
+  }
+
+  getZoomIntegrationContent () {
+    if (!this.props.zoomIntegration) {
+      return (
+        <div>
+          <div>
+            <span>
+              You have not integrated Zoom Meetings with KiboPush. Please integrate Zoom to continue.
+            </span>
+          </div>
+          <div style={{marginTop: '25px', textAlign: 'center'}}>
+            <div onClick={this.goToIntegrations} className='btn btn-primary'>
+              Integrate
+            </div>
+          </div>
+        </div>
+      )
+    } else if (!this.state.zoomMeetingCreated) {
+      return (
+        <form onSubmit={this.createZoomMeeting}>
+          <div className="m-form m-form--fit m-form--label-align-right">
+            <span>{`Please provide the following information to create a zoom meeting and send invitation to ${this.props.activeSession.firstName}.`}</span>
+            <div style={{marginTop: '20px', paddingLeft: '0', paddingRight: '0'}} className="form-group m-form__group row">
+              <label for="_zoom_topic" className="col-2 col-form-label">
+                Topic:
+              </label>
+              <div className="col-10">
+                <input required onChange={this.setZoomTopic} className="form-control m-input" type="text" value={this.state.zoomTopic} id="_zoom_topic" />
+                {/* <div style={{color: 'red'}}>{'*Required'}</div> */}
+              </div>
+            </div>
+
+            <div style={{paddingLeft: '0', paddingRight: '0'}} className="form-group m-form__group row">
+              <label for="_zoom_agenda" className="col-2 col-form-label">
+                Agenda:
+              </label>
+              <div className="col-10">
+                <input required onChange={this.setZoomAgenda} className="form-control m-input" type="text" value={this.state.zoomAgenda} id="_zoom_agenda" />
+                {/* <div style={{color: 'red'}}>{'*Required'}</div> */}
+              </div>
+            </div>
+
+            <div style={{paddingLeft: '0', paddingRight: '0'}} className="form-group m-form__group">
+              <label for="_zoom_invitation_message">
+                Invitation Message:
+              </label>
+              <textarea required onChange={this.setZoomInvitationMessage} className="form-control m-input" value={this.state.zoomInvitationMessage} id="_zoom_invitation_message" rows="3"></textarea>
+              {/* <div style={{color: 'red'}}>{'*Required'}</div> */}
+            </div>
+            
+            <div className='m-messenger__form-tools pull-right messengerTools' style={{ backgroundColor: '#F1F0F0', marginTop: '-40px', marginRight: '10px' }}>
+              <div id='_appendInvitationUrl' style={{ display: 'inline-block', float: 'left' }}>
+                <i data-tip={this.state.zoomInvitationMessage.includes('invite_url') ? 'Invitation URL is already present' : 'Append invitation URL'} onClick={this.appendInvitationUrl} style={{
+                  height: '24px',
+                  width: '24px',
+                  position: 'relative',
+                  display: 'inline-block',
+                  cursor: 'pointer'
+                }}>
+                  <i className='greetingMessage fa fa-link' style={{
+                    fontSize: '20px',
+                    left: '0px',
+                    width: '100%',
+                    height: '2em',
+                    textAlign: 'center',
+                    color: 'rgb(120, 120, 120)'
+                  }} />
+                </i>
+              </div>
+            </div>
+
+             <div style={{
+               fontSize: '12px',
+               marginTop: '-10px',
+               fontStyle: 'italic'
+             }}>{'Note: [invite_url] will be replaced by the generated zoom meeting invitation link'}</div>
+              
+            <div style={{paddingBottom: '0', paddingRight: '0', paddingLeft: '0', float: 'right'}} className="m-form__actions">
+              <button disabled={this.state.zoomMeetingLoading} style={{float: 'right', marginLeft: '30px'}} type='submit' className="btn btn-primary">
+                {
+                  this.state.zoomMeetingLoading ?
+                  <div>
+                    <div className="m-loader" style={{height: '10px', width: "30px", display: "inline-block"}}></div>
+                    <span>Loading...</span>
+                  </div>
+                  : <span>Create and Invite</span>
+                }
+              </button>
+              {
+                this.state.zoomMeetingCreationError &&
+                <span style={{color: 'red'}}>There was an error creating the meeting. Please try again.</span>
+              }
+            </div>
+          </div>
+        </form>
+      )
+    } else {
+      return (
+        <div>
+          <span>{`Zoom meeting has been successfully created and invitation has been sent to ${this.props.activeSession.firstName}. Redirecting you to Zoom Meetings in:`}</span>
+          <div style={{display: 'flex', justifyContent: 'center', marginTop: '50px', marginBottom: '50px'}}>
+            <div className="numberCircle">{this.state.zoomCountdown}</div>
+          </div>
+        </div>
+      )
     }
   }
 
@@ -326,7 +546,9 @@ class Footer extends React.Component {
     if (data.isAllowed) {
       let payload = {}
       let data = {}
+      console.log('sending message', this.state.text)
       if (this.state.text !== '' && /\S/gm.test(this.state.text)) {
+        console.log('updating chat data', data)
         payload = this.setDataPayload('text')
         data = this.props.setMessageData(this.props.activeSession, payload)
         this.props.sendChatMessage(data)
@@ -402,6 +624,13 @@ class Footer extends React.Component {
           content={this.getRecordAudioContent()}
           onClose={() => {this.toggleAudioRecording(false)}}
         />
+        <MODAL
+          id='_zoom_integration'
+          title={this.props.zoomIntegration ? 'Zoom Meeting' : 'Zoom Integration'}
+          content={this.getZoomIntegrationContent()}
+          onClose={this.resetZoomValues}
+        />
+        <a id='_zoomMeetingLink' style={{display: 'none'}} href={this.state.zoomMeetingUrl} target='_blank' rel="noopener noreferrer"> </a>
         <div className='m-messenger__form'>
           <div className='m-messenger__form-controls'>
             {
@@ -561,6 +790,20 @@ class Footer extends React.Component {
               onClick={() => this.openPicker('gif')}
             />
           }
+          {
+            this.props.showZoom &&
+            <img
+              style={{cursor: 'pointer', height: '30px', margin: '-5px 5px 0px 5px'}}
+              alt='Zoom'
+              src='https://cdn.cloudkibo.com/public/img/zoom.png'
+              id='_zoom_integration'
+              className='fa fa-video-camera'
+              data-target='#_zoom_integration'
+              data-backdrop="static"
+              data-keyboard="false"
+              data-toggle='modal'
+            />
+          }
         </div>
       </div>
     )
@@ -589,7 +832,7 @@ Footer.propTypes = {
   'showEmoji': PropTypes.bool.isRequired,
   'showGif': PropTypes.bool.isRequired,
   'showThumbsUp': PropTypes.bool.isRequired,
-  'filesAccepted': PropTypes.string
+  'filesAccepted': PropTypes.string,
 }
 
 export default Footer
