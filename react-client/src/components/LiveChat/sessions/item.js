@@ -86,8 +86,8 @@ class SessionItem extends React.Component {
               height: '50px', 
               textAlign: 'center'
             }}
-            onMouseEnter={this.showCheckbox}
-            onMouseLeave={this.hideCheckbox}
+            onMouseEnter={this.props.showingBulkActions ? this.showCheckbox : null}
+            onMouseLeave={this.props.showingBulkActions ? this.hideCheckbox : null}
             className='m-widget4__img m-widget4__img--pic'>
               {
                 !this.state.showingCheckbox && !this.props.showingBulkActions ? 
