@@ -74,7 +74,9 @@ class SearchArea extends React.Component {
             page: 'next',
             number: 25,
             last_id: this.props.userChat[0]._id,
-          })
+          },
+          this.props.activeSession.messagesCount
+        )
       })
     }
   }
