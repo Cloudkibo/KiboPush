@@ -366,28 +366,36 @@ class FacebookIntegration extends React.Component {
 											</span>
                   </button>
                 </div>
-                <div style={{color: 'black'}} className="modal-body">
-                <div className='m-form'>
-                <span>Please enter your FlockSend credentials here:</span>
-                <div className='form-group m-form__group'>
-
-                  <div id='_flocksend_access_token' className='form-group m-form__group'>
-                    <label className='control-label'>FlockSend Access Token:</label>
-                    <input className='form-control' value={this.state.whatsAppToken} onChange={(e) => this.updateWhatsAppValues(e, 'whatsAppToken')} />
+                <div style={{color: 'black', maxHeight: '500px', overflowY: 'auto'}} className="modal-body">
+                  <div className='m-form'>
+                    <span>Please enter your FlockSend credentials here:</span>
+                    <div className='form-group m-form__group'>
+                      <div id='_flocksend_access_token' className='form-group m-form__group'>
+                        <label className='control-label'>FlockSend Access Token:</label>
+                        <input className='form-control' value={this.state.whatsAppToken} onChange={(e) => this.updateWhatsAppValues(e, 'whatsAppToken')} />
+                      </div>
+                      <div id='_flocksend_whatsapp_number' className='form-group m-form__group'>
+                        <label className='control-label'>FlockSend WhatsApp Number:</label>
+                        <input className='form-control' onChange={this.updateFlockSendNumber} value={this.state.flockSendNumber} />
+                      </div>
+                    </div>
+                    <div className='m-portlet__foot m-portlet__foot--fit' style={{'overflow': 'auto'}}>
+                      <div className='m-form__actions' style={{'float': 'right'}}>
+                        <button className='btn btn-primary' data-dismiss="modal" aria-label="Close"
+                          onClick={this.submitWapp}> Submit
+                        </button>
+                      </div>
+                    </div>
                   </div>
-                  <div id='_flocksend_whatsapp_number' className='form-group m-form__group'>
-                    <label className='control-label'>FlockSend WhatsApp Number:</label>
-                    <input className='form-control' onChange={this.updateFlockSendNumber} value={this.state.flockSendNumber} />
+                  <div className='row'>
+                    <div className='col-12'>
+                      In order to send broadcasts and chat with your WhatsApp customers, you need to make them subscribers. In order to do so, please follow the instructions below:
+                      <br /><br />
+                      <b>1. Setup Webhook:</b> Go to <a href='https://flocksend.com/user/profile' target='_blank' rel='noopener noreferrer'>https://flocksend.com/user/profile</a> and click on the Webhook Setting from the Sidebar. Set this URL <i>https://webhook.cloudkibo.com/webhooks/flockSend</i> in the Webhook URL and click on save changes.
+                      <br /><br />
+                      <b>2. Get Subscribers:</b> Now ask your customers to send any WhatsApp message to your FlockSend WhatsApp number {this.state.number}. When they message, they will become a subscriber.
+                    </div>
                   </div>
-                </div>
-                <div className='m-portlet__foot m-portlet__foot--fit' style={{'overflow': 'auto'}}>
-                  <div className='m-form__actions' style={{'float': 'right'}}>
-                    <button className='btn btn-primary' data-dismiss="modal" aria-label="Close"
-                      onClick={this.submitWapp}> Submit
-                    </button>
-                  </div>
-                </div>
-              </div>
                 </div>
               </div>
             </div>

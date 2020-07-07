@@ -1218,15 +1218,31 @@ class Sidebar extends Component {
   }
 
   uploadContacts () {
-    if (this.props.user && this.props.user.platform !== 'messenger') {
+    // if (this.props.user && this.props.user.platform !== 'messenger') {
+    //   return (
+    //     <li className='m-menu__item' aria-haspopup='true' >
+    //       <Link to={this.props.user.platform === 'sms' ? '/uploadContacts' : '/uploadContactsWhatsApp'} className='m-menu__link'>
+    //         <i className='m-menu__link-icon fa fa-id-card-o'>
+    //           <span />
+    //         </i>
+    //         <span className='m-menu__link-text'>
+    //           {this.props.user.platform === 'whatsApp' ? 'Invite Subscribers' : 'Upload Contacts'}
+    //         </span>
+    //       </Link>
+    //     </li>
+    //   )
+    // } else {
+    //   return (null)
+    // }
+    if (this.props.user && this.props.user.platform === 'sms') {
       return (
         <li className='m-menu__item' aria-haspopup='true' >
-          <Link to={this.props.user.platform === 'sms' ? '/uploadContacts' : '/uploadContactsWhatsApp'} className='m-menu__link'>
+          <Link to={'/uploadContacts'} className='m-menu__link'>
             <i className='m-menu__link-icon fa fa-id-card-o'>
               <span />
             </i>
             <span className='m-menu__link-text'>
-              {this.props.user.platform === 'whatsApp' ? 'Invite Subscribers' : 'Upload Contacts'}
+              {'Upload Contacts'}
             </span>
           </Link>
         </li>
