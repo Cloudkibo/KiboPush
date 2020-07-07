@@ -514,7 +514,7 @@ class WhatsAppChat extends React.Component {
                     sendAttachment={this.props.sendAttachment}
                     deletefile={this.props.deletefile}
                     showTemplates={true}
-                    filesAccepted={'image/*, audio/*, video/*, application/pdf'}
+                    filesAccepted={'image/*, audio/*, video/mp4, application/pdf'}
                   />
                 }
                 {
