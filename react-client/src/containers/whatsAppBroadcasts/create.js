@@ -296,7 +296,9 @@ class CreateWhatsAppBroadcast extends React.Component {
                               noButtons
                               pageId={''}
                               pages={undefined}
-                              buttonActions={this.state.buttonActions} />
+                              buttonActions={this.state.buttonActions}
+                              showQuickReplies={false}
+                              />
                           </div>
                           <div className='tab-pane' id='tab_2'>
                             <span style={{marginLeft: '20px'}}>
