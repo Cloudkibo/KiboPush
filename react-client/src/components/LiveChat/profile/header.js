@@ -29,7 +29,7 @@ class ProfileHeader extends React.Component {
   }
 
   render() {
-    console.log('state in profile header', this.state)
+    console.log('props in profile header', this.props)
     return (
       <div>
         <div className='m-card-profile__pic'>

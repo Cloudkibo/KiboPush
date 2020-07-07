@@ -455,8 +455,11 @@ export function assignToAgent (data, handleResponse) {
 }
 
 export function sendNotifications (data) {
+  console.log('data for notifications', data)
   return (dispatch) => {
-    callApi('notifications/create', 'post', data).then(res => {})
+    callApi('notifications/create', 'post', data).then(res => {
+      console.log('response from notifications', res)
+    })
   }
 }
 
