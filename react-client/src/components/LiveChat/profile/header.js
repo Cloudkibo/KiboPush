@@ -21,6 +21,12 @@ class ProfileHeader extends React.Component {
 
   handleUnsubscribe (res) {
     if (res.status === 'success') {
+      this.props.sendNotifications({
+        message: `Subscriber ${this.props.activeSession.firstName + ' ' + this.props.activeSession.lastName} has been blocked by ${this.props.user.name}`,
+        category: { type: 'unsubscribe', id: this.props.activeSession._id },
+        agentIds: this.props.agents.length > 0 ? this.props.agents.filter(a => a._id !== this.props.user._id).map(b => b._id): [],
+        companyId: this.props.activeSession.companyId
+      })
       this.props.alertMsg.success('Unsubscribed successfully')
       this.props.updateState({activeSession: {}})
     } else {
@@ -29,7 +35,6 @@ class ProfileHeader extends React.Component {
   }
 
   render() {
-    console.log('props in profile header', this.props)
     return (
       <div>
         <div className='m-card-profile__pic'>

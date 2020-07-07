@@ -86,8 +86,8 @@ class LiveChat extends React.Component {
       customFieldOptions: [],
       showingCustomFieldPopover: false,
       smpStatus: [],
-      selected: [], 
-      showingBulkActions: false, 
+      selected: [],
+      showingBulkActions: false,
       allSelected: false
     }
 
@@ -194,16 +194,21 @@ class LiveChat extends React.Component {
     return data
   }
 
-  handleAgents(teamAgents) {
+  handleAgents(teamAgents, type) {
+    console.log('in handle agents', type)
     let agentIds = []
     for (let i = 0; i < teamAgents.length; i++) {
-      if (teamAgents[i].agentId !== this.props.user._id) {
-        agentIds.push(teamAgents[i].agentId)
+      if (teamAgents[i].agentId._id !== this.props.user._id) {
+        agentIds.push(teamAgents[i].agentId._id)
       }
     }
+    console.log('agentIds got', agentIds)
     if (agentIds.length > 0) {
+      let message = type && type === 'assigned'
+      ? `Session of subscriber ${this.state.activeSession.firstName + ' ' + this.state.activeSession.lastName} has been assigned to your team ${teamAgents[0].teamId.name}`
+      : `Session of subscriber ${this.state.activeSession.firstName + ' ' + this.state.activeSession.lastName} has been unassigned from your team ${teamAgents[0].teamId.name}`
       let notificationsData = {
-        message: `Session of subscriber ${this.state.activeSession.firstName + ' ' + this.state.activeSession.lastName} has been assigned to your team.`,
+        message: message,
         category: { type: 'chat_session', id: this.state.activeSession._id },
         agentIds: agentIds,
         companyId: this.state.activeSession.companyId
@@ -212,8 +217,8 @@ class LiveChat extends React.Component {
     }
   }
 
-  fetchTeamAgents(id) {
-    this.props.fetchTeamAgents(id, this.handleAgents)
+  fetchTeamAgents(id, type) {
+    this.props.fetchTeamAgents(id, this.handleAgents, type)
   }
 
   showFetchingChat (fetchingChat) {
@@ -280,12 +285,28 @@ class LiveChat extends React.Component {
   }
 
   handleStatusChange (session, status) {
-    const message = (status === 'resolved') ? 'Session has been marked as resoleved successfully' : 'Session has been reopened successfully'
+    console.log('session in handleStatusChange', this.props.members)
+    console.log('this.props.user', this.props.user)
+    const message = (status === 'resolved') ? 'Session has been marked as resolved successfully' : 'Session has been reopened successfully'
     this.setState({
       userChat: [],
       activeSession: (session._id === this.state.activeSession._id) ? {} : this.state.activeSession
     })
     this.alertMsg.success(message)
+    let notificationMessage = (status === 'resolved')
+      ? `Session of subscriber ${session.firstName + ' ' + session.lastName} has been marked as resolved by ${this.props.user.name}`
+      : `Session of subscriber ${session.firstName + ' ' + session.lastName} has been reopened by ${this.props.user.name}`
+    if (!session.assigned_to) {
+        let notificationsData = {
+          message: notificationMessage,
+          category: { type: 'session_status', id: session._id },
+          agentIds: this.props.members.length > 0 ? this.props.members.filter(a => a.userId._id !== this.props.user._id).map(b => b.userId._id): [],
+          companyId: session.companyId
+        }
+        this.props.sendNotifications(notificationsData)
+    } else {
+
+    }
   }
 
   handleTeamAgents (agents) {
