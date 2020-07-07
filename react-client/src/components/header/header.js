@@ -269,13 +269,6 @@ class Header extends React.Component {
 
   render () {
     console.log('this.props.socketData', this.props.socketData)
-    let liveChatLink = ''
-    let hostname = window.location.hostname
-    if (hostname === 'skiboengage.cloudkibo.com') {
-      liveChatLink = 'https://skibochat.cloudkibo.com/liveChat'
-    } else if (hostname === 'kiboengage.cloudkibo.com') {
-      liveChatLink = 'https://kibochat.cloudkibo.com/liveChat'
-    }
     var alertOptions = {
       offset: 14,
       position: 'top right',

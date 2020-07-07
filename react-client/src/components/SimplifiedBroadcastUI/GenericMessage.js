@@ -130,28 +130,6 @@ class GenericMessage extends React.Component {
     this.setState({showContent: !this.state.showContent})
   }
 
-
-
-   showValidationModal (errorMessage) {
-    this.setState({showContent: true, errorMessage: errorMessage}, () => {
-      this.refs.openValidationModal.click()
-    })
-  }
-
-  getModalContent () {
-    if (this.state.showContent) {
-      return (
-        <h6>{this.state.errorMessage}</h6>
-      )
-    } else {
-      return (<div />)
-    }
-  }
-
-  toggleModalContent () {
-    this.setState({showContent: !this.state.showContent})
-  }
-
   setTempFiles (files, filesToRemove) {
     let tempFiles = this.state.tempFiles
     if (files) {

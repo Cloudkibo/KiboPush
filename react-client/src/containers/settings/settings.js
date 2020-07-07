@@ -419,6 +419,7 @@ class Settings extends React.Component {
       transition: 'scale'
     }
     console.log('buttonState in render function', this.state.buttonState)
+    const url = window.location.hostname
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
@@ -500,7 +501,7 @@ class Settings extends React.Component {
                         <span className='m-nav__link-text'>Configuration</span>
                       </a>
                     </li>
-                    { (this.props.user.role === 'admin' || this.props.user.role === 'buyer') &&
+                    { url.includes('kiboengage.cloudkibo.com') && (this.props.user.role === 'admin' || this.props.user.role === 'buyer') &&
                     <li className='m-nav__item'>
                       <a href='#/' className='m-nav__link' onClick={this.setIntegrations} style={{cursor: 'pointer'}} >
                         <i className='m-nav__link-icon flaticon-network' />
