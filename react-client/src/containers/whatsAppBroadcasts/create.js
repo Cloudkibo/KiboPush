@@ -288,7 +288,7 @@ class CreateWhatsAppBroadcast extends React.Component {
                             <GenericMessage
                               module = 'whatsapp'
                               hideUserOptions
-                              hiddenComponents={['link', 'card']}
+                              hiddenComponents={['link', 'card', 'audio']}
                               handleChange={this.handleChange}
                               setReset={reset => { this.reset = reset }}
                               convoTitle={this.state.convoTitle}

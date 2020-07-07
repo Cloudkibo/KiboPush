@@ -131,6 +131,7 @@ class MessageTemplate extends React.Component {
     let data = this.props.setMessageData(this.props.activeSession, payload)
     this.props.sendChatMessage(data, (res) => {
       if (res.status === 'success') {
+        this.resetTemplate()
         this.props.updateChatAreaHeight('57vh')
         data.format = 'convos'
         this.updateChatData(data, payload)
