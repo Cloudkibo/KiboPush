@@ -16,7 +16,7 @@ class File extends React.Component {
         href={this.props.file.fileurl.url}
       >
         <h6 style={{wordBreak: 'break-all', color: this.props.textColor}}>
-          <i className='fa fa-file-text-o' /> {this.props.file.fileName}
+          <i className='fa fa-file-text-o' /> {this.props.file.fileName || this.props.file.fileurl.name}
         </h6>
       </a>
     )
