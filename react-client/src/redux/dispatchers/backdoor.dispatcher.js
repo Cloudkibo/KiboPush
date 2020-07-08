@@ -119,6 +119,14 @@ export function updateCommentCaptures (data) {
   }
 }
 
+export function updateChatBots (data) {
+  return {
+    type: ActionTypes.UPDATE_CHAT_BOTS,
+    chatbots: data.chatbots,
+    count: data.count
+  }
+}
+
 export function updateSurveysByDays (data) {
   return {
     type: ActionTypes.UPDATE_SURVEYS_BY_DAYS,

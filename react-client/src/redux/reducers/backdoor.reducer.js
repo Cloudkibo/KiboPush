@@ -225,6 +225,11 @@ export function backdoorInfo (state = initialState, action) {
         commentCaptures: action.commentCaptures,
         commentCaptureCount: action.count
       })
+    case ActionTypes.UPDATE_CHAT_BOTS:
+      return Object.assign({}, state, {
+        chatbots: action.chatbots,
+        chatbotCount: action.count
+      })
     default:
       return state
   }

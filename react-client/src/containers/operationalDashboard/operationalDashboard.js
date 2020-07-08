@@ -10,6 +10,7 @@ import PollsByDays from './pollsByDays'
 import Top10pages from './top10pages'
 import UniquePages from './uniquePages'
 import CommentCaptures from './commentCaptures'
+import ChatBots from './chatbots'
 import Reports from './reports'
 import AutopostingSummary from '../dashboard/autopostingSummary'
 import IntegrationsSummary from '../dashboard/integrationsSummary'
@@ -647,6 +648,7 @@ class OperationalDashboard extends React.Component {
           <PollsByDays history={this.props.history} location={this.props.location} />
           <UniquePages history={this.props.history} location={this.props.location} />
           <CommentCaptures history={this.props.history} location={this.props.location} />
+          <ChatBots history={this.props.history} location={this.props.location} />
         </div>
       </div>
     )

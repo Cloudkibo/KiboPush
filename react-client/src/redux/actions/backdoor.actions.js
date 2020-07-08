@@ -28,7 +28,8 @@ import {
   updateCompanyInfo,
   updateCurrentPageOwners,
   updateLocales,
-  updateCommentCaptures
+  updateCommentCaptures,
+  updateChatBots
     } from './../dispatchers/backdoor.dispatcher'
 import * as ActionTypes from '../constants/constants'
 import {LANGUAGE_BY_LOCALE} from '../../utility/utils'
@@ -98,6 +99,17 @@ export function loadCommentCaptures (data) {
       .then(res => {
         console.log('response from loadCommentCaptures', res)
         dispatch(updateCommentCaptures(res.payload))
+      })
+  }
+}
+
+export function loadChatbots (data) {
+  console.log('data for loadChatbots', data)
+  return (dispatch) => {
+    callApi(`backdoor/getAllChatBots`, 'post', data)
+      .then(res => {
+        console.log('response from loadChatbots', res)
+        dispatch(updateChatBots(res.payload))
       })
   }
 }
