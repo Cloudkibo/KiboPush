@@ -490,4 +490,4 @@ export const SHOW_CHATBOTS = 'SHOW_CHATBOTS'
 // constants for Scanned Responses
 
 
-export const GET_SCANNED_RESPONSES = 'GET_SCANNED_RESPONSES'
+export const GET_CANNED_RESPONSES = 'GET_CANNED_RESPONSES'

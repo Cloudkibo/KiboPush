@@ -31,9 +31,9 @@ export function showAdvancedSettings (data) {
     data
   }
 }
-export function showScannedResponses (data) {
+export function showcannedResponses (data) {
   return {
-    type: ActionTypes.GET_SCANNED_RESPONSES,
+    type: ActionTypes.GET_CANNED_RESPONSES,
     data
   }
 }
@@ -576,19 +576,10 @@ export function getAdvancedSettings () {
 
 export function loadcannedResponses () {
   return (dispatch) => {
-    callApi('company/getScannedResponses')
+    callApi('cannedResponses')
       .then(res => {
-        let data = [{
-          responseCode: 'abcd', 
-          responseMessage: 1
-        },
-        {
-          responseCode: 'abcdef', 
-          responseMessage: 2
-        }
-      ]
-        
-        dispatch(showcannedResponses(data))
+        console.log('res.payload', res.payload)
+        dispatch(showcannedResponses(res.payload))
       })
   }
 }
