@@ -1,7 +1,9 @@
 /* eslint-disable no-useless-constructor */
 import React from 'react'
+import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
 import IconStack from '../../components/Dashboard/IconStack'
-
+import { fetchOtherAnalytics } from '../../redux/actions/backdoor.actions'
 class PlatformStats extends React.Component {
   constructor (props, context) {
     super(props, context)
@@ -50,22 +52,27 @@ class PlatformStats extends React.Component {
 
   onChange (event) {
     this.setState({selectedValue: event.target.value})
-    switch (event.target.value) {
-      case 'all':
-        this.updateCurrentState(this.props.platformStats)
-        break
-      case '10':
-        let weeklyStats = this.aggregateStats(this.props.weeklyPlatformStats)
-        this.updateCurrentState(weeklyStats)
-        break
-      case '30':
-        let monthlyStats = this.aggregateStats(this.props.monthlyPlatformStats)
-        this.updateCurrentState(monthlyStats)
-        break
-
-      default:
-        break
+    if (event.target.value === 'all') {
+      this.props.fetchOtherAnalytics({days: 'all'})
+    } else {
+      this.props.fetchOtherAnalytics({days: parseInt(event.target.value)})
     }
+    // switch (event.target.value) {
+    //   case 'all':
+    //     this.updateCurrentState(this.props.platformStats)
+    //     break
+    //   case '10':
+    //     let weeklyStats = this.aggregateStats(this.props.weeklyPlatformStats)
+    //     this.updateCurrentState(weeklyStats)
+    //     break
+    //   case '30':
+    //     let monthlyStats = this.aggregateStats(this.props.monthlyPlatformStats)
+    //     this.updateCurrentState(monthlyStats)
+    //     break
+    //
+    //   default:
+    //     break
+    // }
   }
 
   render () {
@@ -192,7 +199,7 @@ class PlatformStats extends React.Component {
                   <div className='m-portlet__body'>
                     <div className='m-widget26'>
                       <div className='m-widget26__number'>
-                        {this.state.users}
+                        {this.props.otherAnalytics.totalUsers}
                         <small>
                           Users
                         </small>
@@ -205,7 +212,7 @@ class PlatformStats extends React.Component {
                   <div className='m-portlet__body'>
                     <div className='m-widget26'>
                       <div className='m-widget26__number'>
-                        {this.state.polls}
+                        {this.props.otherAnalytics.totalPolls}
                         <small>
                           Polls
                         </small>
@@ -219,7 +226,7 @@ class PlatformStats extends React.Component {
                   <div className='m-portlet__body'>
                     <div className='m-widget26'>
                       <div className='m-widget26__number'>
-                        {this.state.broadcasts}
+                        {this.props.otherAnalytics.totalBroadcasts}
                         <small>
                           Broadcasts
                         </small>
@@ -232,7 +239,7 @@ class PlatformStats extends React.Component {
                   <div className='m-portlet__body'>
                     <div className='m-widget26'>
                       <div className='m-widget26__number'>
-                        {this.state.surveys}
+                        {this.props.otherAnalytics.totalSurveys}
                         <small>
                           Surveys
                         </small>
@@ -249,4 +256,17 @@ class PlatformStats extends React.Component {
   }
 }
 
-export default PlatformStats
+function mapStateToProps (state) {
+  console.log('in mapStateToProps', state)
+  return {
+    otherAnalytics: state.backdoorInfo.otherAnalytics
+  }
+}
+
+function mapDispatchToProps (dispatch) {
+  return bindActionCreators({
+    fetchOtherAnalytics
+  },
+    dispatch)
+}
+export default connect(mapStateToProps, mapDispatchToProps)(PlatformStats)

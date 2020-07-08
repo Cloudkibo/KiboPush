@@ -33,7 +33,7 @@ class CommentCaptures extends React.Component {
   toggle () {
     this.setState({showCommentCaptures: !this.state.showCommentCaptures}, () => {
       if (this.state.showCommentCaptures) {
-        this.props.loadCommentCaptures({last_id: 'none', number_of_records: 10, first_page: 'first', days: 10})
+        this.props.loadCommentCaptures({last_id: 'none', number_of_records: 10, first_page: 'first', days: this.state.selectedDays})
       }
     })
   }

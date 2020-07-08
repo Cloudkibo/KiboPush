@@ -202,6 +202,10 @@ export function backdoorInfo (state = initialState, action) {
       return Object.assign({}, state, {
         monthlyPlatformStats: action.data
       })
+    case ActionTypes.UPDATE_OTHER_ANALYTICS:
+      return Object.assign({}, state, {
+        otherAnalytics: action.data
+      })
     case ActionTypes.UPDATE_TOP_PAGES_KIBODASH:
       return Object.assign({}, state, {
         kiboTopPages: action.data

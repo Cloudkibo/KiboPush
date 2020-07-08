@@ -27,23 +27,11 @@ import {
   loadSessionsGraphData,
   sendEmail,
   allLocales,
-  fetchPlatformStats,
-  fetchPlatformStatsDateWise,
-  fetchUserStats,
-  fetchUserStatsDateWise,
-  fetchOneUserStats,
-  fetchOneUserStatsDateWise,
-  fetchPageStats,
-  fetchPageStatsDateWise,
-  fetchOnePageStats,
-  fetchOnePageStatsDateWise,
   fetchTopPages,
   fetchAutopostingPlatformWise,
   fetchAutopostingPlatformWiseDateWise,
-  fetchAutopostingUserWise,
-  fetchAutopostingUserWiseDateWise,
-  fetchPlatformStatsMonthly,
-  fetchPlatformStatsWeekly,
+  fetchOtherAnalytics,
+  fetchPageAnalytics,
   alUserslLocales
 } from '../../redux/actions/backdoor.actions'
 import { saveUserInformation } from '../../redux/dispatchers/backdoor.dispatcher'
@@ -92,10 +80,9 @@ class OperationalDashboard extends React.Component {
     // props.loadPollsGraphData(0)
     // props.loadSurveysGraphData(0)
     // props.loadSessionsGraphData(0)
-    props.fetchPlatformStats({days: 10})
+    props.fetchPageAnalytics({days: 10})
     // props.fetchAutopostingPlatformWise()
-    props.fetchPlatformStatsMonthly()
-    props.fetchPlatformStatsWeekly()
+    props.fetchOtherAnalytics({days: 'all'})
     props.fetchTopPages(10)
 
     this.displayData = this.displayData.bind(this)
@@ -121,9 +108,9 @@ class OperationalDashboard extends React.Component {
     var value = e.target.value
     this.setState({days: value})
     if (value === '') {
-      this.props.fetchPlatformStats({days: ''})
+      this.props.fetchPageAnalytics({days: ''})
     } else if (parseInt(value) > 0) {
-      this.props.fetchPlatformStats({days: parseInt(value)})
+      this.props.fetchPageAnalytics({days: parseInt(value)})
     }
   }
 
@@ -440,11 +427,10 @@ class OperationalDashboard extends React.Component {
         <div style={{float: 'left', clear: 'both'}}
           ref={(el) => { this.top = el }} />
         <div className='m-content'>
-          { this.props.platformStats &&
+          { this.props.platformStats && this.props.otherAnalytics &&
             <PlatformStats
               platformStats={this.props.platformStats}
-              monthlyPlatformStats={this.props.platformStatsMonthly}
-              weeklyPlatformStats={this.props.platformStatsWeekly}
+              otherAnalytics={this.props.otherAnalytics}
               history={this.props.history} location={this.props.location}
               days={this.state.days}
               onDaysChange={this.onDaysChangePlatform}
@@ -670,7 +656,8 @@ function mapStateToProps (state) {
     platformStats: state.backdoorInfo.platformStatsInfo,
     autopostingStats: state.backdoorInfo.autopostingStatsInfo,
     platformStatsWeekly: state.backdoorInfo.weeklyPlatformStats,
-    platformStatsMonthly: state.backdoorInfo.monthlyPlatformStats
+    platformStatsMonthly: state.backdoorInfo.monthlyPlatformStats,
+    otherAnalytics: state.backdoorInfo.otherAnalytics
   }
 }
 
@@ -685,24 +672,12 @@ function mapDispatchToProps (dispatch) {
     loadSessionsGraphData,
     sendEmail,
     allLocales,
-    fetchPlatformStats,
-    fetchPlatformStatsDateWise,
-    fetchUserStats,
-    fetchUserStatsDateWise,
-    fetchOneUserStats,
-    fetchOneUserStatsDateWise,
-    fetchPageStats,
-    fetchPageStatsDateWise,
-    fetchOnePageStats,
-    fetchOnePageStatsDateWise,
     fetchTopPages,
     fetchAutopostingPlatformWise,
     fetchAutopostingPlatformWiseDateWise,
-    fetchAutopostingUserWise,
-    fetchAutopostingUserWiseDateWise,
-    fetchPlatformStatsMonthly,
-    fetchPlatformStatsWeekly,
-    alUserslLocales
+    alUserslLocales,
+    fetchOtherAnalytics,
+    fetchPageAnalytics
   },
     dispatch)
 }

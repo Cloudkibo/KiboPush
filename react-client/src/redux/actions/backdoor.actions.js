@@ -362,9 +362,9 @@ export function deleteLiveChat (id, msg) {
 }
 
 // Fetch Platform Stats
-export function fetchPlatformStats (data) {
+export function fetchPageAnalytics (data) {
   return (dispatch) => {
-    callApi(`backdoor/platformwise`, 'post', data)
+    callApi(`backdoor/pageAnalytics`, 'post', data)
       .then(res => {
         console.log('response from fetchPlatformStats', res)
         dispatch(handleAction(ActionTypes.UPDATE_PLATFORM_STATS, res.payload))
@@ -492,14 +492,12 @@ export function fetchAutopostingUserWiseDateWise (startDate, companyId) {
 
 // -- Custom Actions ---
 
-export function fetchPlatformStatsWeekly () {
-  let date = new Date()
-  date.setDate(date.getDate() - 10)
+export function fetchOtherAnalytics (data) {
   return (dispatch) => {
-    callApi(`operational/platformwise/ranged`, 'post', {startDate: date.toISOString()})
+    callApi(`backdoor/otherAnalytics`, 'post', data)
       .then(res => {
         console.log('response from fetchPlatformStatsWeekly', res)
-        dispatch(handleAction(ActionTypes.UPDATE_WEEKLY_PLATFORM_STATS, res.payload))
+        dispatch(handleAction(ActionTypes.UPDATE_OTHER_ANALYTICS, res.payload))
       })
   }
 }
