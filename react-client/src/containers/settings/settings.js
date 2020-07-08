@@ -22,7 +22,7 @@ import UploadCustomerInformation from './uploadCustomerInformation'
 import WhiteListDomains from './whitelistDomains'
 import Integrations from './integrations'
 import AdvancedSetting from './advancedSettings'
-
+import CannedResponses from './cannedResponses/cannedResponses'
 class Settings extends React.Component {
   constructor (props, context) {
     super(props, context)
@@ -76,6 +76,7 @@ class Settings extends React.Component {
     this.setDeleteUserData = this.setDeleteUserData.bind(this)
     this.goToSettings = this.goToSettings.bind(this)
     this.setUploadCustomerFile = this.setUploadCustomerFile.bind(this)
+    this.setCannedResponses = this.setCannedResponses.bind(this)
   }
 
   UNSAFE_componentWillMount () {
@@ -186,6 +187,12 @@ class Settings extends React.Component {
   setIntegrations () {
     this.setState({
       openTab: 'integrations'
+    })
+  }
+
+  setCannedResponses () {
+    this.setState({
+      openTab: 'cannedResponses'
     })
   }
 
@@ -509,6 +516,14 @@ class Settings extends React.Component {
                       </a>
                     </li>
                     }
+                    { (this.props.user.role === 'admin' || this.props.user.role === 'buyer') &&
+                    <li className='m-nav__item'>
+                      <a href='#/' className='m-nav__link' onClick={this.setCannedResponses} style={{cursor: 'pointer'}} >
+                        <i className='m-nav__link-icon flaticon-network' />
+                        <span className='m-nav__link-text'>Canned Responses</span>
+                      </a>
+                    </li>
+                    }
                     {this.props.user && !(this.props.user.role === 'admin' || this.props.user.role === 'agent') &&
                     <li className='m-nav__item'>
                       <a href='#/' className='m-nav__link' onClick={this.setNGP} style={{cursor: 'pointer'}}>
@@ -725,6 +740,9 @@ class Settings extends React.Component {
             }
             { this.state.openTab === 'advancedSettings' &&
               <AdvancedSetting />
+            }
+            { this.state.openTab === 'cannedResponses' &&
+              <CannedResponses history= {this.props.history}/>
             }
           </div>
         </div>

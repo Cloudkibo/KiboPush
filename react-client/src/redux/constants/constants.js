@@ -487,3 +487,7 @@ export const CLEAR_SOCKET_DATA_WHATSAPP = 'CLEAR_SOCKET_DATA_WHATSAPP'
 // constants for chatbot automation
 export const SHOW_CHATBOTS = 'SHOW_CHATBOTS'
 
+// constants for Scanned Responses
+
+
+export const GET_SCANNED_RESPONSES = 'GET_SCANNED_RESPONSES'

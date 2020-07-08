@@ -31,6 +31,12 @@ export function showAdvancedSettings (data) {
     data
   }
 }
+export function showScannedResponses (data) {
+  return {
+    type: ActionTypes.GET_SCANNED_RESPONSES,
+    data
+  }
+}
 
 export function getResponseMethod (data) {
   return {
@@ -564,6 +570,25 @@ export function getAdvancedSettings () {
     callApi('company/getAdvancedSettings')
       .then(res => {
         dispatch(showAdvancedSettings(res.payload))
+      })
+  }
+}
+
+export function loadcannedResponses () {
+  return (dispatch) => {
+    callApi('company/getScannedResponses')
+      .then(res => {
+        let data = [{
+          responseCode: 'abcd', 
+          responseMessage: 1
+        },
+        {
+          responseCode: 'abcdef', 
+          responseMessage: 2
+        }
+      ]
+        
+        dispatch(showcannedResponses(data))
       })
   }
 }
