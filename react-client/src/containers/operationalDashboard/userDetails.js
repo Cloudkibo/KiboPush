@@ -1,6 +1,8 @@
 import React from 'react'
 import PagesInfo from './userPages'
 import BroadcastsInfo from './userBroadcasts'
+import CommentCaptures from './commentCaptures'
+import ChatBots from './chatbots'
 import SurveysInfo from './userSurveys'
 import PollsInfo from './userPolls'
 import { loadPagesList, deleteAccount, deleteLiveChat, deleteSubscribers } from '../../redux/actions/backdoor.actions'
@@ -236,6 +238,8 @@ class UserDetails extends React.Component {
           <BroadcastsInfo history={this.props.history} location={this.props.location} userID={this.props.location.state._id} />
           <SurveysInfo history={this.props.history} location={this.props.location} userID={this.props.location.state._id} />
           <PollsInfo history={this.props.history} location={this.props.location} userID={this.props.location.state._id} />
+          <CommentCaptures history={this.props.history} location={this.props.location} userId={this.props.location.state._id} />
+          <ChatBots history={this.props.history} location={this.props.location} userId={this.props.location.state._id} />
           <div style={{'overflow': 'auto'}}>
             <Link to='/operationalDashboard' className='btn btn-primary btn-sm' style={{ float: 'right', margin: '20px' }}>Back
             </Link>

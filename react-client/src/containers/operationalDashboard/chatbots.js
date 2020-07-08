@@ -31,9 +31,16 @@ class ChatBots extends React.Component {
     document.title = `${title} | Chat Bots by Days`
   }
   toggle () {
+    console.log('this.props.chatbots', this.props)
     this.setState({showChatBots: !this.state.showChatBots}, () => {
       if (this.state.showChatBots) {
-        this.props.loadChatbots({last_id: 'none', number_of_records: 10, first_page: 'first', days: this.state.selectedDays})
+        this.props.loadChatbots({last_id: 'none',
+          number_of_records: 10,
+          first_page: 'first',
+          days: this.state.selectedDays,
+          userId: this.props.userId,
+          companyId: this.props.companyId
+        })
       }
     })
   }
@@ -56,7 +63,12 @@ class ChatBots extends React.Component {
 
   handlePageClick (data) {
     if (data.selected === 0) {
-      this.props.loadChatbots({last_id: 'none', number_of_records: 10, first_page: 'first', days: parseInt(this.state.selectedDays)})
+      this.props.loadChatbots({last_id: 'none',
+        number_of_records: 10, first_page: 'first',
+        days: parseInt(this.state.selectedDays),
+        userId: this.props.userId,
+        companyId: this.props.companyId
+      })
     } else if (this.state.pageNumber < data.selected) {
       this.props.loadChatbots({
         current_page: this.state.pageNumber,
@@ -64,6 +76,8 @@ class ChatBots extends React.Component {
         last_id: this.props.chatbots.length > 0 ? this.props.chatbots[this.props.chatbots.length - 1]._id : 'none',
         number_of_records: 10,
         first_page: 'next',
+        userId: this.props.userId,
+        companyId: this.props.companyId,
         days: parseInt(this.state.selectedDays)})
     } else {
       this.props.loadChatbots({
@@ -72,6 +86,8 @@ class ChatBots extends React.Component {
         last_id: this.props.chatbots.length > 0 ? this.props.chatbots[0]._id : 'none',
         number_of_records: 10,
         first_page: 'previous',
+        userId: this.props.userId,
+        companyId: this.props.companyId,
         days: parseInt(this.state.selectedDays)})
     }
     this.setState({pageNumber: data.selected})
@@ -93,12 +109,16 @@ class ChatBots extends React.Component {
         last_id: this.props.chatbots.length > 0 ? this.props.chatbots[this.props.chatbots.length - 1]._id : 'none',
         number_of_records: 10,
         first_page: 'first',
+        userId: this.props.userId,
+        companyId: this.props.companyId,
         days: ''})
     } else if (parseInt(event.target.value) > 0) {
       this.props.loadChatbots({
         last_id: this.props.chatbots.length > 0 ? this.props.chatbots[this.props.chatbots.length - 1]._id : 'none',
         number_of_records: 10,
         first_page: 'first',
+        userId: this.props.userId,
+        companyId: this.props.companyId,
         days: parseInt(event.target.value)
       })
     }

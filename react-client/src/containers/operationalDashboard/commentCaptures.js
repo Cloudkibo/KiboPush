@@ -33,7 +33,13 @@ class CommentCaptures extends React.Component {
   toggle () {
     this.setState({showCommentCaptures: !this.state.showCommentCaptures}, () => {
       if (this.state.showCommentCaptures) {
-        this.props.loadCommentCaptures({last_id: 'none', number_of_records: 10, first_page: 'first', days: this.state.selectedDays})
+        this.props.loadCommentCaptures({last_id: 'none',
+          number_of_records: 10,
+          first_page: 'first',
+          days: this.state.selectedDays,
+          userId: this.props.userId,
+          companyId: this.props.companyId
+        })
       }
     })
   }
@@ -56,7 +62,13 @@ class CommentCaptures extends React.Component {
 
   handlePageClick (data) {
     if (data.selected === 0) {
-      this.props.loadCommentCaptures({last_id: 'none', number_of_records: 10, first_page: 'first', days: parseInt(this.state.selectedDays)})
+      this.props.loadCommentCaptures({
+        last_id: 'none',
+        number_of_records: 10,
+        first_page: 'first',
+        userId: this.props.userId,
+        companyId: this.props.companyId,
+        days: parseInt(this.state.selectedDays)})
     } else if (this.state.pageNumber < data.selected) {
       this.props.loadCommentCaptures({
         current_page: this.state.pageNumber,
@@ -64,6 +76,8 @@ class CommentCaptures extends React.Component {
         last_id: this.props.commentCaptures.length > 0 ? this.props.commentCaptures[this.props.commentCaptures.length - 1]._id : 'none',
         number_of_records: 10,
         first_page: 'next',
+        userId: this.props.userId,
+        companyId: this.props.companyId,
         days: parseInt(this.state.selectedDays)})
     } else {
       this.props.loadCommentCaptures({
@@ -72,6 +86,8 @@ class CommentCaptures extends React.Component {
         last_id: this.props.commentCaptures.length > 0 ? this.props.commentCaptures[0]._id : 'none',
         number_of_records: 10,
         first_page: 'previous',
+        userId: this.props.userId,
+        companyId: this.props.companyId,
         days: parseInt(this.state.selectedDays)})
     }
     this.setState({pageNumber: data.selected})
@@ -93,12 +109,16 @@ class CommentCaptures extends React.Component {
         last_id: this.props.commentCaptures.length > 0 ? this.props.commentCaptures[this.props.commentCaptures.length - 1]._id : 'none',
         number_of_records: 10,
         first_page: 'first',
+        userId: this.props.userId,
+        companyId: this.props.companyId,
         days: ''})
     } else if (parseInt(event.target.value) > 0) {
       this.props.loadCommentCaptures({
         last_id: this.props.commentCaptures.length > 0 ? this.props.commentCaptures[this.props.commentCaptures.length - 1]._id : 'none',
         number_of_records: 10,
         first_page: 'first',
+        userId: this.props.userId,
+        companyId: this.props.companyId,
         days: parseInt(event.target.value)
       })
     }
