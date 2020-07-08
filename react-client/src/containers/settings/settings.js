@@ -85,6 +85,11 @@ class Settings extends React.Component {
       console.log('kibochat')
       this.setState({isKiboChat: true})
     }
+    if (this.props.location && this.props.location.state && this.props.location.state === 'payment_methods') {
+      this.setState({
+        openTab: 'paymentMethods'
+      })
+    }
     if (this.props.location && this.props.location.state && this.props.location.state.module === 'addPages') {
       this.setState({
         openTab: 'connectFb'

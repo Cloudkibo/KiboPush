@@ -11,11 +11,14 @@ class Modal extends React.Component {
               <h5 className="modal-title" id="exampleModalLabel">
                 {this.props.title}
               </h5>
-              <button id={`_close${this.props.id}`} onClick={this.props.onClose} style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">
-                  &times;
-                </span>
-              </button>
+              {
+                this.props.closeModal &&
+                <button id={`_close${this.props.id}`} onClick={this.props.onClose} style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">
+                    &times;
+                  </span>
+                </button>
+              }
             </div>
             <div style={{ color: 'black' }} className="modal-body">
               {this.props.content}
@@ -28,7 +31,8 @@ class Modal extends React.Component {
 }
 
 Modal.defaultPropTypes = {
-  'zIndex': 1050
+  'zIndex': 1050,
+  'closeModal': true
 }
 
 Modal.propTypes = {
@@ -36,7 +40,8 @@ Modal.propTypes = {
   'id': PropTypes.string.isRequired,
   'title': PropTypes.string.isRequired,
   'content': PropTypes.element.isRequired,
-  'onClose': PropTypes.func
+  'onClose': PropTypes.func,
+  'closeModal': PropTypes.bool
 }
 
 export default Modal
