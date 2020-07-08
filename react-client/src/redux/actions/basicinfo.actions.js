@@ -26,6 +26,12 @@ export function showuserdetails (data) {
   }
 }
 
+export function updateTrialPeriod () {
+  return {
+    type: ActionTypes.UPDATE_TRIAL_PERIOD
+  }
+}
+
 export function showAutomatedOptions (data) {
   console.log(data)
   return {
@@ -112,6 +118,13 @@ export function updatePicture (data, callback) {
 export function getAutomatedOptions () {
   return (dispatch) => {
     callApi('company/getAutomatedOptions').then(res => dispatch(showAutomatedOptions(res.payload)))
+  }
+}
+
+export function switchToBasicPlan () {
+  return (dispatch) => {
+    callApi('company/switchToBasicPlan')
+      .then(res => dispatch(updateTrialPeriod()))
   }
 }
 

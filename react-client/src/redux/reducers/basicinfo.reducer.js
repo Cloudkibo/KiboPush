@@ -29,6 +29,13 @@ export function basicInfo (state = initialState, action) {
         automated_options: action.data
       })
 
+    case ActionTypes.UPDATE_TRIAL_PERIOD:
+      let user = state.user
+      user.trial.status = false
+      return Object.assign({}, state, {
+        user
+      })
+
     case ActionTypes.LOAD_USER_DETAILS:
       return Object.assign({}, state, {
         user: action.data,
