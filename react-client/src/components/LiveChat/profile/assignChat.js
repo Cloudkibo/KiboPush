@@ -57,7 +57,6 @@ class AssignChat extends React.Component {
   }
 
   unassignTeam() {
-    console.log('in unassignTeam')
     let data = {
       teamId: this.props.activeSession.assigned_to.id,
       teamName: this.props.activeSession.assigned_to.name,
@@ -100,7 +99,6 @@ class AssignChat extends React.Component {
   }
 
   assignToTeam() {
-    console.log('assignToTeam', this.state)
     let data = {
         teamId: this.state.currentSelected.value,
         teamName: this.state.currentSelected.label,
@@ -118,7 +116,6 @@ class AssignChat extends React.Component {
   }
 
   onSelectChange (selected) {
-      console.log(selected)
       if (selected) {
         this.setState({currentSelected: selected}, () => {
             if (selected.group === 'team') {
