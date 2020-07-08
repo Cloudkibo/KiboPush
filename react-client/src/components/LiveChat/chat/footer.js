@@ -6,7 +6,6 @@ import { getmetaurl } from '../../../containers/liveChat/utilities'
 import MODAL from '../../extras/modal'
 import AUDIORECORDER from '../../audioRecorder'
 import CARD from '../messages/horizontalCard'
-import { Popover, PopoverBody } from 'reactstrap'
 
 
 class Footer extends React.Component {
@@ -631,7 +630,7 @@ class Footer extends React.Component {
           content={this.getZoomIntegrationContent()}
           onClose={this.resetZoomValues}
         />
-        <a id='_zoomMeetingLink' style={{display: 'none'}} href={this.state.zoomMeetingUrl} target='_blank' />
+        <a id='_zoomMeetingLink' style={{display: 'none'}} href={this.state.zoomMeetingUrl} target='_blank' rel="noopener noreferrer"> </a>
         <div className='m-messenger__form'>
           <div className='m-messenger__form-controls'>
             {

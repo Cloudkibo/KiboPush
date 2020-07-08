@@ -209,7 +209,7 @@ class Integrations extends React.Component {
                           </div>
                           <span className='m-widget4__ext' style={{width: '140px'}}>
                             {this.state.zoomIntegration.enabled
-                              ? <a target='_blank' href={`https://marketplace.zoom.us/user/installed`} className='m-btn m-btn--pill m-btn--hover-danger btn btn-danger' style={{borderColor: '#f4516c', color: '#f4516c', marginRight: '10px'}}>
+                              ? <a target='_blank' rel="noopener noreferrer" href={`https://marketplace.zoom.us/user/installed`} className='m-btn m-btn--pill m-btn--hover-danger btn btn-danger' style={{borderColor: '#f4516c', color: '#f4516c', marginRight: '10px'}}>
                                 Disconnect
                               </a>
                               : <a href= {`/auth/zoom?userId=${this.props.user._id}&companyId=${this.props.user.companyId}`} className='m-btn m-btn--pill m-btn--hover-success btn btn-success' style={{borderColor: '#34bfa3', color: '#34bfa3', marginRight: '10px'}}>
