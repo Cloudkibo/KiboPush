@@ -234,6 +234,10 @@ export function backdoorInfo (state = initialState, action) {
         chatbots: action.chatbots,
         chatbotCount: action.count
       })
+      case ActionTypes.LOAD_MESSAGES_COUNT:
+        return Object.assign({}, state, {
+          messagesCount: action.data
+        })
     default:
       return state
   }

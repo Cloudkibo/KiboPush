@@ -5,7 +5,7 @@ import CommentCaptures from './commentCaptures'
 import ChatBots from './chatbots'
 import SurveysInfo from './userSurveys'
 import PollsInfo from './userPolls'
-import { loadPagesList, deleteAccount, deleteLiveChat, deleteSubscribers } from '../../redux/actions/backdoor.actions'
+import { loadPagesList, deleteAccount, deleteLiveChat, deleteSubscribers, getMessagesCount } from '../../redux/actions/backdoor.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
@@ -14,9 +14,11 @@ import AlertContainer from 'react-alert'
 class UserDetails extends React.Component {
   constructor (props, context) {
     super(props, context)
+    console.log('this.props.location.state', this.props.location.state)
     if (this.props.location.state) {
       const userID = this.props.location.state._id
       props.loadPagesList(userID, {first_page: 'first', last_id: 'none', number_of_records: 10, search_value: ''})
+      props.getMessagesCount({companyId: this.props.location.state.companyId})
     }
     this.state = {
       pagesData: [],
@@ -229,7 +231,11 @@ class UserDetails extends React.Component {
           </button> */}
           <div className='d-flex align-items-center'>
             <div className='mr-auto'>
-              <h3 className='m-subheader__title'>{this.props.location.state.name}</h3>
+              <h3 className='m-subheader__title'>{this.props.location.state.name}&nbsp;&nbsp;&nbsp;
+              {this.props.messagesCount &&
+                <span className='m-badge m-badge--wide m-badge--primary'>{`${this.props.messagesCount.totalMessagesSent} Messages Sent`}</span>
+              }
+              </h3>
             </div>
           </div>
         </div>
@@ -254,7 +260,8 @@ function mapStateToProps (state) {
   return {
     pages: state.backdoorInfo.pages,
     count: state.backdoorInfo.pagesCount,
-    response: state.backdoorInfo.response
+    response: state.backdoorInfo.response,
+    messagesCount: state.backdoorInfo.messagesCount
   }
 }
 
@@ -263,7 +270,8 @@ function mapDispatchToProps (dispatch) {
     loadPagesList: loadPagesList,
     deleteAccount: deleteAccount,
     deleteLiveChat: deleteLiveChat,
-    deleteSubscribers: deleteSubscribers
+    deleteSubscribers: deleteSubscribers,
+    getMessagesCount: getMessagesCount
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(UserDetails)

@@ -29,7 +29,8 @@ import {
   updateCurrentPageOwners,
   updateLocales,
   updateCommentCaptures,
-  updateChatBots
+  updateChatBots,
+  updateMessagesCount
     } from './../dispatchers/backdoor.dispatcher'
 import * as ActionTypes from '../constants/constants'
 import {LANGUAGE_BY_LOCALE} from '../../utility/utils'
@@ -160,6 +161,17 @@ export function loadPagesList (id, data) {
     callApi(`backdoor/getAllPages/${id}`, 'post', data).then(res => {
       console.log('response from allpages', res)
       dispatch(updatePagesList(res.payload))
+    })
+  }
+}
+
+export function getMessagesCount (data) {
+  // here we will fetch list of user pages from endpoint
+  console.log('data for getMessagesCount', data)
+  return (dispatch) => {
+    callApi(`backdoor/getMessagesCount`, 'post', data).then(res => {
+      console.log('response from getMessagesCount', res)
+      dispatch(updateMessagesCount(res.payload))
     })
   }
 }

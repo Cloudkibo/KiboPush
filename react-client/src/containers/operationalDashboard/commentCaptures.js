@@ -240,7 +240,7 @@ class CommentCaptures extends React.Component {
                                   <span
                                     style={{width: '200px'}}>
                                     {commentCapture.post_id && commentCapture.post_id !== ''
-                                      ? <a href={this.getPostUrl(commentCapture)} target='_blank'>{this.getPostUrl(commentCapture)}</a>
+                                      ? <a href={this.getPostUrl(commentCapture)} target='_blank' rel='noopener noreferrer'>{this.getPostUrl(commentCapture)}</a>
                                       : '-'
                                     }
                                   </span></td>

@@ -84,6 +84,13 @@ export function updatePagesList (data) {
   }
 }
 
+export function updateMessagesCount (data) {
+  return {
+    type: ActionTypes.LOAD_MESSAGES_COUNT,
+    data: data
+  }
+}
+
 export function updateSurveysGraphData (data) {
   return {
     type: ActionTypes.UPDATE_SURVEYS_GRAPH,
