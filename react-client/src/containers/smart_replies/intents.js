@@ -476,7 +476,7 @@ class Intents extends React.Component {
                         <div className="input-group m-input-group m-input-group--pill col-md-12 col-lg-12 col-xl-12" style={{ padding: '20px 44px 0px 44px' }}>
                           <span className="input-group-addon" id="basic-addon1"
                             style={{ background: 'white', borderColor: '#ccc' }}>
-                            <i className="fa fa-searcresolvedh"></i>
+                            <i className="fa fa-search"></i>
                           </span>
                           <input
                             style={{ borderLeft: 'none' }}
