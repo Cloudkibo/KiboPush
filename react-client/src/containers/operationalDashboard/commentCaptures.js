@@ -68,7 +68,7 @@ class CommentCaptures extends React.Component {
         first_page: 'first',
         userId: this.props.userId,
         companyId: this.props.companyId,
-        days: parseInt(this.state.selectedDays)})
+        days: this.state.selectedDays})
     } else if (this.state.pageNumber < data.selected) {
       this.props.loadCommentCaptures({
         current_page: this.state.pageNumber,
@@ -78,7 +78,7 @@ class CommentCaptures extends React.Component {
         first_page: 'next',
         userId: this.props.userId,
         companyId: this.props.companyId,
-        days: parseInt(this.state.selectedDays)})
+        days: this.state.selectedDays})
     } else {
       this.props.loadCommentCaptures({
         current_page: this.state.pageNumber,
@@ -88,7 +88,7 @@ class CommentCaptures extends React.Component {
         first_page: 'previous',
         userId: this.props.userId,
         companyId: this.props.companyId,
-        days: parseInt(this.state.selectedDays)})
+        days: this.state.selectedDays})
     }
     this.setState({pageNumber: data.selected})
     this.displayData(data.selected, this.props.commentCaptures)
@@ -119,7 +119,7 @@ class CommentCaptures extends React.Component {
         first_page: 'first',
         userId: this.props.userId,
         companyId: this.props.companyId,
-        days: parseInt(event.target.value)
+        days: event.target.value
       })
     }
   }
