@@ -99,6 +99,9 @@ class SmsChat extends React.Component {
       props.loadMembersList()
       props.loadTeamsList({platform: 'sms'})
     }
+    if (props.socketData) {
+      props.clearSocketDataSms()
+    }
   }
 
   clearSearchResults () {
