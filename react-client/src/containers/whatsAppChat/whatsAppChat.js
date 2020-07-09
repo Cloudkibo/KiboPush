@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import AlertContainer from 'react-alert'
 import { RingLoader } from 'halogenium'
+import { getZoomIntegration, createZoomMeeting } from '../../redux/actions/settings.actions'
 
 // actions
 import {
@@ -98,6 +99,7 @@ class WhatsAppChat extends React.Component {
       props.loadMembersList()
       props.loadTeamsList({platform: 'whatsapp'})
     }
+    props.getZoomIntegration()
   }
 
   clearSearchResults () {
@@ -414,14 +416,16 @@ class WhatsAppChat extends React.Component {
       subscriberTags: nextProps.subscriberTags
     })
 
+    let newState = Object.assign(this.state, state)
+
     if (nextProps.socketData) {
       handleSocketEventWhatsapp(
         nextProps.socketData,
-        this.state,
-        this.props,
-        this.props.updateWhatsappChatInfo,
-        this.props.user,
-        this.props.clearSocketDataWhatsapp
+        newState,
+        nextProps,
+        nextProps.updateWhatsappChatInfo,
+        nextProps.user,
+        nextProps.clearSocketDataWhatsapp
       )
     }
   }
@@ -515,6 +519,10 @@ class WhatsAppChat extends React.Component {
                     deletefile={this.props.deletefile}
                     showTemplates={true}
                     filesAccepted={'image/*, audio/*, video/mp4, application/pdf'}
+                    showZoom={this.props.user.isSuperUser ? (!this.props.zoomIntegration ? (this.props.user.role === 'admin' || this.props.user.role === 'buyer') ? true : false : true) : false}
+                    history={this.props.history}
+                    zoomIntegration={this.props.zoomIntegration}
+                    createZoomMeeting={this.props.createZoomMeeting}
                   />
                 }
                 {
@@ -614,7 +622,9 @@ function mapDispatchToProps(dispatch) {
     urlMetaData,
     uploadAttachment,
     sendAttachment,
-    deletefile
+    deletefile,
+    getZoomIntegration,
+    createZoomMeeting
   }, dispatch)
 }
 

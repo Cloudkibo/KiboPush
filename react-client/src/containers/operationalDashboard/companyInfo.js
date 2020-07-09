@@ -27,6 +27,13 @@ class CompanyInfo extends React.Component {
     this.loadedMore = false
   }
 
+  goToCompanyDetails (company) {
+    this.props.history.push({
+      pathname: `/companyDetails`,
+      state: company
+    })
+  }
+
   searchCompanies(event) {
       console.log('searching companies', event.target.value)
       this.setState({searchValue: event.target.value, reachedLimit: false}, () => {
@@ -126,6 +133,12 @@ class CompanyInfo extends React.Component {
                                         <span className='m-widget5__desc'>
                                         <b>Created At:</b> {company.owner ? this.handleDate(company.owner.createdAt) : 'Unknown'}
                                         </span>
+                                        <br />
+                                        <span className='m-widget5__desc'>
+                                          <button onClick={() => this.goToCompanyDetails(company)} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-secondary'>
+                                           See more
+                                         </button>
+                                       </span>
                                     </div>
                                     <div className='m-widget5__stats1'>
                                         <span className='m-widget5__number'>
@@ -171,7 +184,7 @@ class CompanyInfo extends React.Component {
                             {!this.state.reachedLimit && this.state.companyInfo.length >= 10 &&
                             <center>
                                 <i className='fa fa-refresh' style={{color: '#716aca'}} />&nbsp;
-                                <a href='#/' id='assignTag' className='m-link' style={{color: '#716aca', cursor: 'pointer', marginTop: '20px'}} onClick={this.loadMore}>Load More</a>
+                                <div id='assignTag' className='m-link' style={{color: '#716aca', cursor: 'pointer', marginTop: '20px'}} onClick={this.loadMore}>Load More</div>
                             </center>
                             }
                             </div>
