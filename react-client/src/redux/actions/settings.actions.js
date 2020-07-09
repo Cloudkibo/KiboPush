@@ -38,6 +38,18 @@ export function showcannedResponses (data) {
   }
 }
 
+export function editCannedResponse (data) {
+  return {
+    type: ActionTypes.UPDATE_CANNED_RESPONSE,
+    data
+  }
+}
+export function RemoveCannedResponse (data) {
+  return {
+    type: ActionTypes.DELETE_CANNED_RESPONSE,
+    data
+  }
+}
 export function getResponseMethod (data) {
   return {
     type: ActionTypes.RESPONSE_METHOD,
@@ -578,8 +590,45 @@ export function loadcannedResponses () {
   return (dispatch) => {
     callApi('cannedResponses')
       .then(res => {
-        console.log('res.payload', res.payload)
         dispatch(showcannedResponses(res.payload))
+      })
+  }
+}
+
+export function createCannedResponses (data, cb) {
+  return (dispatch) => {
+    callApi('cannedResponses', 'post', data)
+      .then(res => {
+        dispatch(loadcannedResponses())
+        cb(res)
+      })
+  }
+}
+
+export function updateCannedResponse (data, cb) {
+  return (dispatch) => {
+    callApi('cannedResponses/edit', 'post', data)
+      .then(res => {
+        cb(res)
+        if (res.status === 'success') {
+        dispatch(editCannedResponse(data))
+        }
+      })
+  }
+}
+export function deleteCannedResponse (data, msg) {
+  return (dispatch) => {
+    callApi('cannedResponses/delete', 'post', data)
+      .then(res => {
+        if (res.status === 'success') {
+          msg.success(res.payload)
+          if(res.status === 'success') {
+            dispatch(RemoveCannedResponse(data))
+            }
+        } else {
+          msg.error('Unable to delete canned Response')
+        }
+        // dispatch(showcannedResponses(res.payload))
       })
   }
 }
