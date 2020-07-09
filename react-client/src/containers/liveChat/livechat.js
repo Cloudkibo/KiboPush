@@ -125,6 +125,9 @@ class LiveChat extends React.Component {
     props.loadTags()
     props.loadCustomFields()
     props.getZoomIntegration()
+    if (props.socketData) {
+      props.clearSocketData()
+    }
   }
 
   clearSearchResults () {

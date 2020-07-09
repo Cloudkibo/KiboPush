@@ -100,6 +100,9 @@ class WhatsAppChat extends React.Component {
       props.loadTeamsList({platform: 'whatsapp'})
     }
     props.getZoomIntegration()
+    if (props.socketData) {
+      props.clearSocketDataWhatsapp()
+    }
   }
 
   clearSearchResults () {
