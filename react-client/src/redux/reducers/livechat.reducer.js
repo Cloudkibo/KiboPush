@@ -21,7 +21,7 @@ export function liveChat (state = initialState, action) {
       }      
       return Object.assign({}, state, {
         openSessions: [...openSessions],
-        closeSessions: [...closeSessions]
+        closeSessions: closeSessions ? [...closeSessions] : []
       })
     case ActionTypes.EMPTY_SOCKET_DATA:
       return Object.assign({}, state, {

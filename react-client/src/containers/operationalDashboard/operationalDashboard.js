@@ -32,7 +32,8 @@ import {
   fetchAutopostingPlatformWiseDateWise,
   fetchOtherAnalytics,
   fetchPageAnalytics,
-  alUserslLocales
+  alUserslLocales,
+  saveUserView
 } from '../../redux/actions/backdoor.actions'
 import { saveUserInformation } from '../../redux/dispatchers/backdoor.dispatcher'
 import { bindActionCreators } from 'redux'
@@ -116,6 +117,7 @@ class OperationalDashboard extends React.Component {
 
   setUsersView (user) {
     auth.putActingAsUser(user.domain_email, user.name)
+    this.props.saveUserView(true)
     this.props.history.push({
       pathname: `/dashboard`
     })
@@ -385,8 +387,7 @@ class OperationalDashboard extends React.Component {
   }
 
   getFile () {
-    console.log('getFile')
-    this.msg.info('DOWNLOADING DATA.... YOU WILL BE NOTIFIED WHEN IT IS DOWNLOAD.')
+    this.msg.info('IT WILL TAKE UP TO 5 MINTUES ... ONCE DATA WILL READY IT WILL SENT ON YOUR EMAIL.')
     this.props.downloadFile(this.msg)
   }
 
@@ -677,7 +678,8 @@ function mapDispatchToProps (dispatch) {
     fetchAutopostingPlatformWiseDateWise,
     alUserslLocales,
     fetchOtherAnalytics,
-    fetchPageAnalytics
+    fetchPageAnalytics,
+    saveUserView
   },
     dispatch)
 }

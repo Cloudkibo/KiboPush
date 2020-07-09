@@ -37,7 +37,7 @@ class Dashboard extends React.Component {
   UNSAFE_componentWillReceiveProps (nextprops) {
     if (nextprops.user) {
       joinRoom(nextprops.user.companyId)
-      if (nextprops.user.platform === 'whatsApp' && nextprops.automated_options && !nextprops.automated_options.twilioWhatsApp && nextprops.user.role === 'buyer') {
+      if (nextprops.user.platform === 'whatsApp' && nextprops.automated_options && !nextprops.automated_options.flockSendWhatsApp && nextprops.user.role === 'buyer') {
         this.props.history.push({
           pathname: '/integrations',
           state: 'whatsApp'

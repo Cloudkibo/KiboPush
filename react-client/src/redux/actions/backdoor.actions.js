@@ -290,8 +290,6 @@ export function downloadFile (msg) {
     callApi(`backdoor/uploadFile`)
     .then(function (data) {
       if(data.status === 'success') {
-        fileDownload(data.payload, 'users.csv')
-        msg.success('File Download Successfully')
       }
       else {
         msg.error('Fail to download file')
@@ -669,5 +667,11 @@ export function loadPagePermissions (id) {
           dispatch(updatePagePermissions(res.payload, 'error'))
         }
       })
+  }
+}
+export function saveUserView (data) {
+  return {
+    type: ActionTypes.SAVE_USER_VIEW,
+    data: data
   }
 }

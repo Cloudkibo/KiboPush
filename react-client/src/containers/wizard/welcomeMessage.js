@@ -47,6 +47,7 @@ class EditTemplate extends React.Component {
     this.handleEnableWelMessage = this.handleEnableWelMessage.bind(this)
   }
   UNSAFE_componentWillReceiveProps (nextprops) {
+    console.log('UNSAFE_componentWillReceiveProps called in welcomeWizard')
     if (this.state.pageValue === '') {
       this.setState({pageValue: nextprops.pages[0]._id, welcomeMessage: nextprops.pages[0].isWelcomeMessageEnabled, broadcast: nextprops.pages[0].welcomeMessage })
     }
@@ -219,7 +220,9 @@ class EditTemplate extends React.Component {
                           broadcast={this.state.broadcast}
                           handleChange={this.handleChange}
                           convoTitle={this.state.convoTitle}
-                          buttonActions={this.state.buttonActions} />
+                          buttonActions={this.state.buttonActions} 
+                          module='welcomeMessage'
+                          />
                       </center>
                       <div className='row'>
                         <div className='col-lg-6 m--align-left' >
