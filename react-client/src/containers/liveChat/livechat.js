@@ -285,6 +285,7 @@ class LiveChat extends React.Component {
   }
 
   handleStatusChange (session, status) {
+    console.log('in handleStatusChange', session)
     const message = (status === 'resolved') ? 'Session has been marked as resolved successfully' : 'Session has been reopened successfully'
     this.setState({
       userChat: [],
@@ -294,7 +295,7 @@ class LiveChat extends React.Component {
     let notificationMessage = (status === 'resolved')
       ? `Session of subscriber ${session.firstName + ' ' + session.lastName} has been marked as resolved by ${this.props.user.name}`
       : `Session of subscriber ${session.firstName + ' ' + session.lastName} has been reopened by ${this.props.user.name}`
-    if (!session.assigned_to) {
+    if (!session.assigned_to || !session.is_assigned) {
         let notificationsData = {
           message: notificationMessage,
           category: { type: 'session_status', id: session._id },
