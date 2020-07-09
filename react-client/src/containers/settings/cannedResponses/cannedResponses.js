@@ -72,8 +72,10 @@ UNSAFE_componentWillReceiveProps (nextProps) {
     let currentDisplay = document.getElementById(`child-table-${row}`).style.display
     if (currentDisplay === 'block') {
       document.getElementById(`child-table-${row}`).style.display = 'none'
+      document.getElementById(`icon-${row}`).className = 'la la-angle-down'
     } else {
       document.getElementById(`child-table-${row}`).style.display = 'block'
+      document.getElementById(`icon-${row}`).className = 'la la-angle-up'
     }
   }
 
@@ -127,7 +129,7 @@ UNSAFE_componentWillReceiveProps (nextProps) {
                 <li className='nav-item m-tabs__item'>
                   <span className='nav-link m-tabs__link active'>
                     <i className='flaticon-share m--hide' />
-                    canned Responses
+                    Canned Responses
                   </span>
                 </li>
               </ul>
@@ -144,8 +146,8 @@ UNSAFE_componentWillReceiveProps (nextProps) {
           <div className='tab-content'>
             <div className='m-content'>
               <div className='row'>
-                <div className='col-7 input-group'>
-                  <input className='form-control m-input m-input--solid' type='text' placeholder='Search Scanned Responses...' aria-label='Search' value={this.state.searchValue} onChange={this.search} />
+                <div className='col-7 input-group' style={{ margin: '15px' }}>
+                  <input className='form-control m-input m-input--solid' type='text' placeholder='Search canned Responses...' aria-label='Search' value={this.state.searchValue} onChange={this.search} />
                 </div>
               </div>
               {this.state.cannedResponses && this.state.cannedResponses.length > 0 ?
@@ -162,12 +164,6 @@ UNSAFE_componentWillReceiveProps (nextProps) {
                     <thead className='m-datatable__head'> 
                       <tr className='m-datatable__row' style={{ height: '53px' }}>
                         <th 
-                          data-field='RecordID'
-                          className='m-datatable__cell--center m-datatable__cell'
-                        >
-                          <span style={{ width: '20px' }} />
-                        </th>
-                        <th 
                           data-field='code'
                           className='m-datatable__cell m-datatable__cell--center'
                         >
@@ -183,6 +179,12 @@ UNSAFE_componentWillReceiveProps (nextProps) {
                             Action
                           </span>
                         </th>
+                        <th 
+                          data-field='RecordID'
+                          className='m-datatable__cell--center m-datatable__cell'
+                        >
+                          <span style={{ width: '20px' }} />
+                        </th>
                       </tr>
                     </thead>
                     <tbody className='m-datatable__body' style={{ maxHeight: '500px', overflow: 'auto' }}>
@@ -196,22 +198,6 @@ UNSAFE_componentWillReceiveProps (nextProps) {
                                 className='m-datatable__row m-datatable__row--even'
                                 style={{ height: 55 }}
                               >
-                                <td
-                                  data-field='RecordID'
-                                  className='m-datatable__cell--center m-datatable__cell'
-                                >
-                                  <span style={{ width: '20px' }}>
-                                    <div
-                                      className='m-datatable__toggle-subtable'
-                                      href='javascript:void(0)'
-                                      data-value={i}
-                                      onClick={() => this.expendRowToggle(cannedResponse, i)}
-                                      title='Canned Response Message'
-                                    >
-                                      <i className='fa fa-caret-right' id={`icon-${i}`} />
-                                    </div>
-                                  </span>
-                                </td>
                                 <td
                                   data-field='code'
                                   className='m-datatable__cell m-datatable__cell--center'
@@ -244,8 +230,24 @@ UNSAFE_componentWillReceiveProps (nextProps) {
                                     </a>
                                   </span>
                                 </td>
+                                <td
+                                  data-field='RecordID'
+                                  className='m-datatable__cell--center m-datatable__cell'
+                                >
+                                  <span style={{ width: '20px' }}>
+                                    <div
+                                      className='m-datatable__toggle-subtable'
+                                      href='javascript:void(0)'
+                                      data-value={i}
+                                      onClick={() => this.expendRowToggle(cannedResponse, i)}
+                                      title='Canned Response Message'
+                                    >
+                                      <i className='la la-angle-down' data-toggle='collapse' id={`icon-${i}`} style={{ cursor: 'pointer' }} />
+                                    </div>
+                                  </span>
+                                </td>
                               </tr>
-                              <tr className='m-datatable__row-detail' id={`child-table-${i}`} style={{display: 'none'}}>
+                              <tr className='m-datatable__row-detail' id={`child-table-${i}`} style={{display: 'none', backgroundColor: '#FFFFFF', height: '70px' }}>
                                 <p style={{ marginLeft: '35px', wordBreak: 'break-all' }}>{cannedResponse.responseMessage}</p>
                               </tr>
                             </span>

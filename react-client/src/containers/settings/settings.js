@@ -519,7 +519,7 @@ class Settings extends React.Component {
                     { (this.props.user.role === 'admin' || this.props.user.role === 'buyer') &&
                     <li className='m-nav__item'>
                       <a href='#/' className='m-nav__link' onClick={this.setCannedResponses} style={{cursor: 'pointer'}} >
-                        <i className='m-nav__link-icon flaticon-network' />
+                        <i className='m-nav__link-icon flaticon-menu-button' />
                         <span className='m-nav__link-text'>Canned Responses</span>
                       </a>
                     </li>

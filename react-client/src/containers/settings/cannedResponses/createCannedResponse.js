@@ -56,8 +56,11 @@ class cannedResponses extends React.Component {
     }
   }
 
-  clear () {
-
+  close () {
+    this.setState({closeModal: 'modal'}, () => {
+      document.getElementById('create').click()
+      this.setState({ closeModal: '', cannedCode: '', cannedresponseMessage: '' })
+    })
   }
 
   onSubmit (event) {
@@ -137,7 +140,7 @@ class cannedResponses extends React.Component {
                   </div>
                 </div>
                 <div className='modal-footer'>
-                  <button className='btn btn-default' onClick={() => { this.clear() }}>Clear</button>
+                  <button className='btn btn-default' onClick={() => { this.close() }}>Close</button>
                   <button id='create' type='submit' className='btn btn-primary' data-dismiss={this.state.closeModal}>{this.props.cannedResponse ? 'Update' : 'Create'}</button>
                 </div>
               </form>
