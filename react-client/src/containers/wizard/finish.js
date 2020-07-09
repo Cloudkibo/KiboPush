@@ -238,7 +238,7 @@ class Finish extends React.Component {
                                 </Link>
                               </div> */}
                           <div className='col-lg-6 m--align-left' >
-                            <Link to={this.props.user.uiMode.mode === 'kiboengage' || this.props.user.uiMode.mode === 'kibocommerce' ? '/menuWizard' : '/responseMethods'} className='btn btn-secondary m-btn m-btn--custom m-btn--icon' data-wizard-action='next'>
+                            <Link to={getCurrentProduct() === 'KiboEngage' || getCurrentProduct() === 'localhost' ? '/menuWizard' : '/responseMethods'} className='btn btn-secondary m-btn m-btn--custom m-btn--icon' data-wizard-action='next'>
                               <span>
                                 <i className='la la-arrow-left' />
                                 <span>Back</span>&nbsp;&nbsp;

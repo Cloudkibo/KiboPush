@@ -76,7 +76,7 @@ class ChatItem extends React.Component {
     if (msg.payload.componentType !== 'text') {
       content.push(<div className='m-messenger__message-content'>
         <div className='m-messenger__message-username'>
-          {type === 'twilio' ? `${this.props.activeSession.name} shared` : this.getRepliedByMsg(msg) }
+          {type === 'whatsApp' ? `${this.props.activeSession.name} shared` : this.getRepliedByMsg(msg) }
         </div>
         {msg.payload.componentType === 'image'
           ? <a key={index} href={msg.payload.fileurl ? msg.payload.fileurl.url : msg.payload.file && msg.payload.file.fileurl.url} target='_blank' rel='noopener noreferrer'>
@@ -168,7 +168,7 @@ class ChatItem extends React.Component {
       let text = msg.payload.text.replace(metaUrl, '')
       content.push(<div className='m-messenger__message-content'>
         <div className='m-messenger__message-username'>
-          {type === 'twilio' ? `${this.props.activeSession.name} shared` : this.getRepliedByMsg(msg)}
+          {type === 'whatsApp' ? `${this.props.activeSession.name} shared` : this.getRepliedByMsg(msg)}
         </div>
         <div style={{display: 'block', overflow: 'hidden', width: '200px'}} className='m-messenger__message-text'>
           {text}
@@ -184,7 +184,7 @@ class ChatItem extends React.Component {
                }
              }}/>
            <a href={metaUrl} target='_blank' rel='noopener noreferrer'>
-               <p style={{fontSize: '13px', fontWeight: 'bold', color: type==='twilio' ? 'black' : 'white'}}>{msg.url_meta.title}</p>
+               <p style={{fontSize: '13px', fontWeight: 'bold', color: type==='whatsApp' ? 'black' : 'white'}}>{msg.url_meta.title}</p>
              </a>
              <br />
              {
@@ -206,7 +206,7 @@ class ChatItem extends React.Component {
                  <td>
                    <div>
                      <a href={metaUrl} target='_blank' rel='noopener noreferrer'>
-                       <p style={{fontSize: '13px', fontWeight: 'bold', color: type==='twilio' ? 'black' : 'white'}}>{msg.url_meta.title}</p>
+                       <p style={{fontSize: '13px', fontWeight: 'bold', color: type==='whatsApp' ? 'black' : 'white'}}>{msg.url_meta.title}</p>
                      </a>
                      <br />
                      {
@@ -224,7 +224,7 @@ class ChatItem extends React.Component {
     } else {
       content.push(<div className='m-messenger__message-content'>
         <div className='m-messenger__message-username'>
-          {type === 'twilio' ? `${this.props.activeSession.name} wrote` : this.getRepliedByMsg(msg)}
+          {type === 'whatsApp' ? `${this.props.activeSession.name} wrote` : this.getRepliedByMsg(msg)}
         </div>
         <div style={{display: 'block', overflow: 'hidden', width: '200px'}} className='m-messenger__message-text'>
           {msg.payload.text}
@@ -324,7 +324,7 @@ class ChatItem extends React.Component {
             }
             {
                 this.props.chat && this.props.chat.map((msg, index) => (
-                  msg.format === 'twilio'
+                  msg.format === 'whatsApp'
                   ? <div key={index} style={{marginLeft: 0, marginRight: 0, display: 'block', clear: 'both'}} className='row'>
                     <Element name={msg._id}>
                       {
@@ -343,7 +343,7 @@ class ChatItem extends React.Component {
                         </div>
                         <div className='m-messenger__message-body'>
                           <div className='m-messenger__message-arrow' />
-                          {this.showContent(msg, 'twilio', index)}
+                          {this.showContent(msg, 'whatsApp', index)}
                         </div>
                       </div>
                     </Element>
