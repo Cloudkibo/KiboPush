@@ -1069,7 +1069,7 @@ class GenericMessage extends React.Component {
   }
 
   getItems () {
-    if (this.state.list.length > 0 && this.props.showQuickRelplies) {
+    if (this.state.list.length > 0 && this.props.showQuickReplies) {
       console.log('quick reply', this.state.list[this.state.list.length - 1])
       if (!this.state.quickRepliesComponent) {
         if (this.props.module && this.props.module === 'welcomeMessage' && this.state.broadcast[this.state.broadcast.length - 1].isEmailPhoneComponent) {
@@ -1340,7 +1340,7 @@ GenericMessage.defaultProps = {
   'titleEditable': false,
   'broadcast': [],
   'componentLimit': 3,
-  'showQuickRelplies' : true
+  'showQuickReplies' : true
 }
 
 function mapStateToProps (state) {
