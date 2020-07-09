@@ -123,7 +123,7 @@ class cannedResponses extends React.Component {
                         <div className='' style={{textAlign: 'left', marginTop: '10px'}}>
                           <label>Canned Code:</label><i className='la la-question-circle' data-toggle='tooltip' title='title of Canned Response' />
                         </div>
-                        <input type='text' id='name' className='form-control m-input' value={this.state.cannedCode} onChange={this.codeHandleChange} required />
+                        <input type='text' id='name' className='form-control m-input' value={this.state.cannedCode} onChange={this.codeHandleChange} maxlength='20' required />
                       </div>
                     </div>
                     <div className='col-12'>
@@ -134,7 +134,7 @@ class cannedResponses extends React.Component {
                         <textarea value={this.state.cannedresponseMessage} onChange={this.responseMessageHandleChange}
                           className='form-control m-input m-input--solid'
                           id='description' rows='3'
-                          style={{ height: '100px', resize: 'none' }} required />
+                          style={{ height: '100px', resize: 'none' }} maxlength='500' required />
                       </div>
                     </div>
                   </div>

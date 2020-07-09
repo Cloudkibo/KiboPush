@@ -9,6 +9,7 @@ class cannedResponses extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
+      isSearchFilter: false,
       cannedResponses: [],
       searchValue: '',
       dataForSearch: [],
@@ -60,21 +61,20 @@ UNSAFE_componentWillReceiveProps (nextProps) {
         this.state.dataForSearch.forEach(element => {
           if (element.responseCode.toLowerCase().includes(event.target.value.toLowerCase())) searchArray.push(element)
         })
-        this.setState({ cannedResponses: searchArray, searchValue: event.target.value })
+        this.setState({ cannedResponses: searchArray, searchValue: event.target.value, isSearchFilter: true })
       } else {
         let dataForSearch = this.state.dataForSearch
-        this.setState({ cannedResponses: dataForSearch, searchValue: event.target.value })
+        this.setState({ cannedResponses: dataForSearch, searchValue: event.target.value, isSearchFilter: true })
       }
     }
   }
 
   expendRowToggle (cannedResponse, row) {
-    let currentDisplay = document.getElementById(`child-table-${row}`).style.display
-    if (currentDisplay === 'block') {
-      document.getElementById(`child-table-${row}`).style.display = 'none'
+    let className = document.getElementById(`icon-${row}`).className
+    console.log('className', className)
+    if (className === 'la la-angle-up collapsed') {
       document.getElementById(`icon-${row}`).className = 'la la-angle-down'
     } else {
-      document.getElementById(`child-table-${row}`).style.display = 'block'
       document.getElementById(`icon-${row}`).className = 'la la-angle-up'
     }
   }
@@ -145,119 +145,77 @@ UNSAFE_componentWillReceiveProps (nextProps) {
           </div>
           <div className='tab-content'>
             <div className='m-content'>
-              <div className='row'>
-                <div className='col-7 input-group' style={{ margin: '15px' }}>
-                  <input className='form-control m-input m-input--solid' type='text' placeholder='Search canned Responses...' aria-label='Search' value={this.state.searchValue} onChange={this.search} />
-                </div>
-              </div>
-              {this.state.cannedResponses && this.state.cannedResponses.length > 0 ?
-                <div
-                  className='m_datatable m-datatable m-datatable--default m-datatable--brand m-datatable--subtable m-datatable--loaded'
-                  id='child_data_local'
-                  style={{ width: '100%', marginTop: '20px' }}
-                >
-                  <table
-                    className='m-datatable__table'
-                    id='m-datatable-urls'
-                    style={{ display: 'block', height: 'auto', overflowX: 'auto' } }
-                  >
-                    <thead className='m-datatable__head'> 
-                      <tr className='m-datatable__row' style={{ height: '53px' }}>
-                        <th 
-                          data-field='code'
-                          className='m-datatable__cell m-datatable__cell--center'
-                        >
-                          <span style={{ width: '150px' }}>
-                            Canned Response Code
-                          </span>
-                        </th>
-                        <th 
-                          data-field='Action'
-                          className='m-datatable__cell m-datatable__cell--center'
-                        >
-                          <span style={{ width: '150px' }}>
-                            Action
-                          </span>
-                        </th>
-                        <th 
-                          data-field='RecordID'
-                          className='m-datatable__cell--center m-datatable__cell'
-                        >
-                          <span style={{ width: '20px' }} />
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody className='m-datatable__body' style={{ maxHeight: '500px', overflow: 'auto' }}>
-                      {
-                        this.state.cannedResponses && this.state.cannedResponses.map((cannedResponse, i) =>
-                          (
-                            <span key={i}>
-                              <tr
-                                data-row={i}
-                                id={`row-${i}`}
-                                className='m-datatable__row m-datatable__row--even'
-                                style={{ height: 55 }}
-                              >
-                                <td
-                                  data-field='code'
-                                  className='m-datatable__cell m-datatable__cell--center'
-                                >
-                                  <span style={{ width: '150px' }}>{cannedResponse.responseCode}</span>
-                                </td>
-                                <td data-field='Actions' className='m-datatable__cell m-datatable__cell--center'>
-                                  <span style={{ overflow: 'visible', width: '150px' }}>
-                                    <a
-                                      href='/#'
-                                      data-toggle='modal'
-                                      data-target='#edit'
-                                      data-placement='bottom'
-                                      onClick={() => { this.updateCannedResponse(cannedResponse) }}
-                                      className='m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill'
-                                      title='Edit details'
-                                    >
-                                      <i className='la la-edit' />
-                                    </a>
-                                    <a
-                                      href='/#'
-                                      onClick={() => this.deleteCannedResponse(cannedResponse)}
-                                      data-toggle='modal'
-                                      data-target='#delete'
-                                      data-placement='bottom'
-                                      title='Delete url'
-                                      className='m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill'
-                                    >
-                                      <i className='la la-trash' />
-                                    </a>
-                                  </span>
-                                </td>
-                                <td
-                                  data-field='RecordID'
-                                  className='m-datatable__cell--center m-datatable__cell'
-                                >
-                                  <span style={{ width: '20px' }}>
-                                    <div
-                                      className='m-datatable__toggle-subtable'
-                                      href='javascript:void(0)'
-                                      data-value={i}
-                                      onClick={() => this.expendRowToggle(cannedResponse, i)}
-                                      title='Canned Response Message'
-                                    >
-                                      <i className='la la-angle-down' data-toggle='collapse' id={`icon-${i}`} style={{ cursor: 'pointer' }} />
-                                    </div>
-                                  </span>
-                                </td>
-                              </tr>
-                              <tr className='m-datatable__row-detail' id={`child-table-${i}`} style={{display: 'none', backgroundColor: '#FFFFFF', height: '70px' }}>
-                                <p style={{ marginLeft: '35px', wordBreak: 'break-all' }}>{cannedResponse.responseMessage}</p>
-                              </tr>
-                            </span>
-                          ))
-                      }
-                    </tbody>
-                  </table>
-                </div>
-                : <p style={{ marginTop: '20px' }}>No Data to display</p>
+              {
+                (this.state.isSearchFilter || (this.state.cannedResponses && this.state.cannedResponses.length > 0)) &&                
+                  <div className='m-input-icon m-input-icon--left col-md-4 col-lg-4 col-xl-4'>
+                    <input className='form-control m-input m-input--solid' type='text' placeholder='Search canned Responses...' aria-label='Search' value={this.state.searchValue} onChange={this.search} />
+                    <span className='m-input-icon__icon m-input-icon__icon--left'>
+                      <span><i className='la la-search' /></span>
+                    </span>
+                  </div>
               }
+              <div style={{ maxHeight: '500px', overflow: 'auto' }}>
+                {
+                  this.state.cannedResponses && this.state.cannedResponses.length > 0 ? this.state.cannedResponses.map((cannedResponse, i) => 
+                    <div key={cannedResponse._id} className='accordion' id={`accordion${cannedResponse._id}`} style={{ marginTop: '15px' }}>
+                      <div className='card'>
+                        <div className='card-header' id={`heading${cannedResponse._id}`}>
+                          <h4 className='mb-0'>
+                            <div
+                              onClick={() => this.expendRowToggle(cannedResponse, i)}
+                              className='btn'
+                              data-toggle='collapse'
+                              data-target={`#collapse_${cannedResponse._id}`}
+                              aria-expanded='true'
+                              aria-controls={`#collapse_${cannedResponse._id}`}
+                            >
+                              {cannedResponse.responseCode}
+                            </div>
+                            <span style={{ overflow: 'visible', width: '150px', float: 'right' }}>
+                              <a
+                                href='/#'
+                                data-toggle='modal'
+                                data-target='#edit'
+                                data-placement='bottom'
+                                onClick={() => { this.updateCannedResponse(cannedResponse) }}
+                                className='m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill'
+                                title='Edit details'
+                              >
+                                <i className='la la-edit' />
+                              </a>
+                              <a
+                                href='/#'
+                                onClick={() => this.deleteCannedResponse(cannedResponse)}
+                                data-toggle='modal'
+                                data-target='#delete'
+                                data-placement='bottom'
+                                title='Delete url'
+                                className='m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill'
+                              >
+                                <i className='la la-trash' />
+                              </a>
+                              <i
+                                style={{ fontSize: '20px', marginLeft: '30px', cursor: 'pointer' }}
+                                className='la la-angle-down'
+                                data-toggle='collapse'
+                                onClick={() => this.expendRowToggle(cannedResponse, i)}
+                                id={`icon-${i}`}
+                                data-target={`#collapse_${cannedResponse._id}`}
+                              />
+                            </span>
+                          </h4>
+                        </div>
+                        <div id={`collapse_${cannedResponse._id}`} className='collapse' aria-labelledby={`heading${cannedResponse._id}`} data-parent="#accordion">
+                          <div className='card-body'>
+                            <p style={{ wordBreak: 'break-all' }}>{cannedResponse.responseMessage}</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )
+                    : <p style= {{ marginTop: '20px' }}>No Data to Display</p>
+                }
+              </div>
             </div>
           </div>
         </div>
