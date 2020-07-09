@@ -501,7 +501,7 @@ class Settings extends React.Component {
                         <span className='m-nav__link-text'>Configuration</span>
                       </a>
                     </li>
-                    { url.includes('kiboengage.cloudkibo.com') && (this.props.user.role === 'admin' || this.props.user.role === 'buyer') &&
+                    { (url.includes('localhost') || url.includes('kiboengage.cloudkibo.com') || (url.includes('kibochat.cloudkibo.com') && this.props.user.isSuperUser)) && (this.props.user.role === 'admin' || this.props.user.role === 'buyer') &&
                     <li className='m-nav__item'>
                       <a href='#/' className='m-nav__link' onClick={this.setIntegrations} style={{cursor: 'pointer'}} >
                         <i className='m-nav__link-icon flaticon-network' />
