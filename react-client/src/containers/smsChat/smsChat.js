@@ -427,14 +427,16 @@ class SmsChat extends React.Component {
       subscriberTags: nextProps.subscriberTags
     })
 
+    let newState = Object.assign(this.state, state)
+
     if (nextProps.socketData) {
       handleSocketEventSms(
         nextProps.socketData,
-        this.state,
-        this.props,
-        this.props.updateSmsChatInfo,
-        this.props.user,
-        this.props.clearSocketDataSms
+        newState,
+        nextProps,
+        nextProps.updateSmsChatInfo,
+        nextProps.user,
+        nextProps.clearSocketDataSms
       )
     }
   }
