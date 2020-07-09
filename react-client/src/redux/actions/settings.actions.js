@@ -590,7 +590,6 @@ export function loadcannedResponses () {
   return (dispatch) => {
     callApi('cannedResponses')
       .then(res => {
-        console.log('res.payload', res.payload)
         dispatch(showcannedResponses(res.payload))
       })
   }
@@ -600,7 +599,6 @@ export function createCannedResponses (data, cb) {
   return (dispatch) => {
     callApi('cannedResponses', 'post', data)
       .then(res => {
-        console.log('res.payload', res.payload)
         dispatch(loadcannedResponses())
         cb(res)
       })
@@ -611,7 +609,6 @@ export function updateCannedResponse (data, cb) {
   return (dispatch) => {
     callApi('cannedResponses/edit', 'post', data)
       .then(res => {
-        console.log('res.payload', res.payload)
         cb(res)
         if (res.status === 'success') {
         dispatch(editCannedResponse(data))
@@ -623,7 +620,6 @@ export function deleteCannedResponse (data, msg) {
   return (dispatch) => {
     callApi('cannedResponses/delete', 'post', data)
       .then(res => {
-        console.log('res.payload', res.payload)
         if (res.status === 'success') {
           msg.success(res.payload)
           if(res.status === 'success') {
