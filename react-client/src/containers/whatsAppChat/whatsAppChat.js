@@ -595,7 +595,8 @@ function mapStateToProps(state) {
     teams: (state.teamsInfo.teams),
     searchChatMsgs: (state.whatsAppChatInfo.searchChat),
     socketData: (state.socketInfo.socketDataWhatsapp),
-    automated_options: (state.basicInfo.automated_options)
+    automated_options: (state.basicInfo.automated_options),
+    zoomIntegration: (state.settingsInfo.zoomIntegration)
   }
 }
 
