@@ -31,6 +31,12 @@ export function showAdvancedSettings (data) {
     data
   }
 }
+export function showcannedResponses (data) {
+  return {
+    type: ActionTypes.GET_CANNED_RESPONSES,
+    data
+  }
+}
 
 export function getResponseMethod (data) {
   return {
@@ -564,6 +570,16 @@ export function getAdvancedSettings () {
     callApi('company/getAdvancedSettings')
       .then(res => {
         dispatch(showAdvancedSettings(res.payload))
+      })
+  }
+}
+
+export function loadcannedResponses () {
+  return (dispatch) => {
+    callApi('cannedResponses')
+      .then(res => {
+        console.log('res.payload', res.payload)
+        dispatch(showcannedResponses(res.payload))
       })
   }
 }

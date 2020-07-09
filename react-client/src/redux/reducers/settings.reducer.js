@@ -25,6 +25,11 @@ export function settingsInfo (state = initialState, action) {
       return Object.assign({}, state, {
         advanced_settings: action.data
       })
+    
+    case ActionTypes.GET_CANNED_RESPONSES:
+      return Object.assign({}, state, {
+        cannedResponses: action.data
+      })
   
     case ActionTypes.ENABLE_SUCCESS_NGP:
       return Object.assign({}, state, {
