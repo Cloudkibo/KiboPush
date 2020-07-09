@@ -1741,7 +1741,6 @@ class Builders extends React.Component {
           this.handleFile({
             fileurl: broadcast.file ? broadcast.file.fileurl: '',
             id: componentId,
-            fileurl: broadcast.file ? broadcast.file.fileurl : '',
             componentName: 'audio',
             componentType: 'audio',
             file: broadcast.file ? broadcast.file : ''

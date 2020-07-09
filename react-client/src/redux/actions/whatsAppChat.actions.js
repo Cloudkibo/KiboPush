@@ -154,11 +154,15 @@ export function markRead (sessionid) {
   }
 }
 
-export function sendChatMessage (data) {
+export function sendChatMessage (data, callback) {
   console.log('data for sendChatMessage', data)
   return (dispatch) => {
     callApi('whatsAppChat', 'post', data)
       .then(res => {
+        if (callback) {
+          callback(res)
+        }
+        if (res.status === 'success') {
         console.log('response from sendChatMessage', res)
         console.log('response from fetchChat', res)
         let fetchData = {
@@ -173,8 +177,9 @@ export function sendChatMessage (data) {
           number_of_records: 10,
         }
         dispatch(fetchOpenSessions(fetchData))
-        dispatch(fetchUserChats(data.contactId, {page: 'first', number: 25}))
-      })
+        dispatch(fetchUserChats(data.contactId, {page: 'first', number: 25})) 
+      }
+    })
   }
 }
 export function sendAttachment (data, handleSendAttachment) {

@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import AlertContainer from 'react-alert'
 import { RingLoader } from 'halogenium'
+import { getZoomIntegration, createZoomMeeting } from '../../redux/actions/settings.actions'
 
 // actions
 import {
@@ -123,6 +124,7 @@ class LiveChat extends React.Component {
     props.loadMembersList()
     props.loadTags()
     props.loadCustomFields()
+    props.getZoomIntegration()
   }
 
   clearSearchResults () {
@@ -398,7 +400,7 @@ class LiveChat extends React.Component {
       this.props.markRead(session._id)
     }
     this.props.clearSearchResult()
-    this.props.fetchUserChats(session._id, { page: 'first', number: 25 })
+    this.props.fetchUserChats(session._id, { page: 'first', number: 25 }, session.messagesCount)
     this.props.getSubscriberTags(session._id, this.alertMsg)
     this.props.getCustomFieldValue(session._id)
     if (session.is_assigned && session.assigned_to.type === 'team') {
@@ -617,9 +619,13 @@ class LiveChat extends React.Component {
                     showEmoji={true}
                     showGif={true}
                     showThumbsUp={true}
+                    showZoom={this.props.user.isSuperUser ? (!this.props.zoomIntegration ? (this.props.user.role === 'admin' || this.props.user.role === 'buyer') ? true : false : true) : false}
                     setMessageData={this.setMessageData}
                     filesAccepted={'image/*, audio/*, video/*, application/*, text/*'}
                     showAgentName={this.props.showAgentName}
+                    history={this.props.history}
+                    zoomIntegration={this.props.zoomIntegration}
+                    createZoomMeeting={this.props.createZoomMeeting}
                   />
                 }
                 {
@@ -704,7 +710,8 @@ function mapStateToProps(state) {
     customFieldValues: (state.customFieldInfo.customFieldSubscriber),
     customFields: (state.customFieldInfo.customFields),
     searchChatMsgs: (state.liveChat.searchChat),
-    socketData: (state.socketInfo.socketData)
+    socketData: (state.socketInfo.socketData),
+    zoomIntegration: (state.settingsInfo.zoomIntegration)
   }
 }
 
@@ -745,7 +752,9 @@ function mapDispatchToProps(dispatch) {
     clearSearchResult,
     urlMetaData,
     getSMPStatus,
-    updateSessionProfilePicture
+    updateSessionProfilePicture,
+    getZoomIntegration,
+    createZoomMeeting
   }, dispatch)
 }
 

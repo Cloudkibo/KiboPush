@@ -77,6 +77,7 @@ class Settings extends React.Component {
     this.goToSettings = this.goToSettings.bind(this)
     this.setUploadCustomerFile = this.setUploadCustomerFile.bind(this)
   }
+
   UNSAFE_componentWillMount () {
     let url = window.location.hostname
     console.log('this.props.location', this.props.location)
@@ -111,11 +112,13 @@ class Settings extends React.Component {
     }
     this.props.getNGP({company_id: this.props.user.companyId})
   }
+
   goToSettings () {
     this.setState({
       openTab: 'billing', show: false, pro: true
     })
   }
+
   handleNGPKeyChange (event) {
     this.setState({NGPKey: event.target.value})
     if (event.target.value.toString().trim() !== '' && this.state.NGPSecret.toString().trim() !== '') {
@@ -124,6 +127,7 @@ class Settings extends React.Component {
       this.setState({isDisableButton: true})
     }
   }
+
   handleNGPSecretChange (event) {
     this.setState({NGPSecret: event.target.value})
 
@@ -133,6 +137,7 @@ class Settings extends React.Component {
       this.setState({isDisableButton: true})
     }
   }
+
   getPlanInfo (plan) {
     this.setState({show: false})
     var planInfo
@@ -140,17 +145,18 @@ class Settings extends React.Component {
       planInfo = 'Individual, Premium Account'
     } else if (plan === 'plan_B') {
       planInfo = 'Individual, Free Account'
-      this.setState({showAPIbyPlan: false, openTab: 'resetPassword'})
+      this.setState({showAPIbyPlan: false})
     } else if (plan === 'plan_C') {
       planInfo = 'Team, Premium Account'
     } else if (plan === 'plan_D') {
-      this.setState({showAPIbyPlan: false, openTab: 'resetPassword'})
+      this.setState({showAPIbyPlan: false})
       planInfo = 'Team, Free Account)'
     } else {
       planInfo = ''
     }
     this.setState({planInfo: planInfo})
   }
+
   setNGP () {
     this.setState({
       openTab: 'showNGP'
@@ -158,84 +164,101 @@ class Settings extends React.Component {
       this.initializeSwitchNGP(this.state.ngpButtonState)
     })
   }
+
   setWhiteListDomains () {
     this.setState({
       openTab: 'whitelistDomains'
     })
   }
+
   setResetPass () {
     this.setState({
       openTab: 'resetPassword'
     })
   }
+
   setConfiguration () {
     this.setState({
       openTab: 'configuration'
     })
   }
+
   setIntegrations () {
     this.setState({
       openTab: 'integrations'
     })
   }
+
   setAdvancedSettings () {
     this.setState({
       openTab: 'advancedSettings'
     })
   }
+
   setPermissions () {
     this.setState({
       openTab: 'permissions'
     })
   }
+
   setGreetingMessage () {
     this.setState({
       openTab: 'greetingMessage'
     })
   }
+
   setUploadCustomerFile () {
     this.setState({
       openTab: 'uploadCustomerInformation'
     })
   }
+
   setBilling () {
     this.setState({
       openTab: 'billing', show: false
     })
   }
+
   setWebhook () {
     this.setState({
       openTab: 'webhook'
     })
   }
+
   setPayementMethods () {
     this.setState({
       openTab: 'paymentMethods'
     })
   }
+
   setConnectFb () {
     this.setState({
       openTab: 'connectFb'
     })
   }
+
   setWelcomeMessage () {
     this.setState({
       openTab: 'welcomeMessage'
     })
   }
+
   setResponseMethods () {
     this.setState({
       openTab: 'responseMethods'
     })
   }
+
   setDeleteUserData () {
     this.setState({
       openTab: 'deleteUserData'
     })
   }
+
   scrollToTop () {
     this.top.scrollIntoView({behavior: 'instant'})
   }
+
   componentDidMount () {
     const hostname = window.location.hostname
     let title = ''
@@ -244,7 +267,6 @@ class Settings extends React.Component {
     } else if (hostname.includes('kibochat.cloudkibo.com')) {
       title = 'KiboChat'
     }
-
     document.title = `${title} | Api Settings`
     var addScript = document.createElement('script')
     addScript.setAttribute('src', 'https://js.stripe.com/v3/')
@@ -262,6 +284,11 @@ class Settings extends React.Component {
     if (this.props.location.state && this.props.location.state.tab) {
       if (this.props.location.state.tab === 'whitelistDomains') {
         this.setWhiteListDomains()
+      }
+    }
+    if (this.props.location.state && this.props.location.state.tab) {
+      if (this.props.location.state.tab === 'integrations') {
+        this.setIntegrations()
       }
     }
   }
@@ -391,8 +418,8 @@ class Settings extends React.Component {
       time: 5000,
       transition: 'scale'
     }
-    const url = window.location.hostname
     console.log('buttonState in render function', this.state.buttonState)
+    const url = window.location.hostname
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />

@@ -58,7 +58,7 @@ class Header extends React.Component {
           pathname: '/integrations',
           state: 'sms'
         })
-      } else if (value === 'whatsApp' && this.props.automated_options && !this.props.automated_options.twilioWhatsApp) {
+      } else if (value === 'whatsApp' && this.props.automated_options && !this.props.automated_options.flockSendWhatsApp) {
         this.props.history.push({
           pathname: '/integrations',
           state: 'whatsApp'
@@ -75,8 +75,8 @@ class Header extends React.Component {
     } else {
       if (value === 'sms' && this.props.automated_options && !this.props.automated_options.twilio) {
         this.msg.error('SMS Twilio is not connected. Please ask your account buyer to connect it.')
-      } else if (value === 'whatsApp' && this.props.automated_options && !this.props.automated_options.twilioWhatsApp) {
-        this.msg.error('WhatsApp Twilio is not connected. Please ask your account buyer to connect it.')
+      } else if (value === 'whatsApp' && this.props.automated_options && !this.props.automated_options.flockSendWhatsApp) {
+        this.msg.error('WhatsApp FlockSend is not connected. Please ask your account buyer to connect it.')
       } else {
         this.redirectToDashboard(value)
         this.props.updatePlatform({platform: value})
@@ -273,13 +273,6 @@ class Header extends React.Component {
 
   render () {
     console.log('this.props.socketData', this.props.socketData)
-    let liveChatLink = ''
-    let hostname = window.location.hostname
-    if (hostname === 'skiboengage.cloudkibo.com') {
-      liveChatLink = 'https://skibochat.cloudkibo.com/liveChat'
-    } else if (hostname === 'kiboengage.cloudkibo.com') {
-      liveChatLink = 'https://kibochat.cloudkibo.com/liveChat'
-    }
     var alertOptions = {
       offset: 14,
       position: 'top right',
