@@ -285,8 +285,7 @@ class LiveChat extends React.Component {
   }
 
   handleStatusChange (session, status) {
-    console.log('session in handleStatusChange', session)
-    console.log('status in handleStatusChange', status)
+    console.log('in handleStatusChange', session)
     const message = (status === 'resolved') ? 'Session has been marked as resolved successfully' : 'Session has been reopened successfully'
     this.setState({
       userChat: [],
