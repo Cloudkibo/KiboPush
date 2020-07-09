@@ -197,14 +197,12 @@ class LiveChat extends React.Component {
   }
 
   handleAgents(teamAgents, type) {
-    console.log('in handle agents', type)
     let agentIds = []
     for (let i = 0; i < teamAgents.length; i++) {
       if (teamAgents[i].agentId._id !== this.props.user._id) {
         agentIds.push(teamAgents[i].agentId._id)
       }
     }
-    console.log('agentIds got', agentIds)
     if (agentIds.length > 0) {
       let message = type && type === 'assigned'
       ? `Session of subscriber ${this.state.activeSession.firstName + ' ' + this.state.activeSession.lastName} has been assigned to your team ${teamAgents[0].teamId.name}`
@@ -287,8 +285,7 @@ class LiveChat extends React.Component {
   }
 
   handleStatusChange (session, status) {
-    console.log('session in handleStatusChange', this.props.members)
-    console.log('this.props.user', this.props.user)
+    console.log('in handleStatusChange', session)
     const message = (status === 'resolved') ? 'Session has been marked as resolved successfully' : 'Session has been reopened successfully'
     this.setState({
       userChat: [],
@@ -298,7 +295,7 @@ class LiveChat extends React.Component {
     let notificationMessage = (status === 'resolved')
       ? `Session of subscriber ${session.firstName + ' ' + session.lastName} has been marked as resolved by ${this.props.user.name}`
       : `Session of subscriber ${session.firstName + ' ' + session.lastName} has been reopened by ${this.props.user.name}`
-    if (!session.assigned_to) {
+    if (!session.assigned_to || !session.is_assigned) {
         let notificationsData = {
           message: notificationMessage,
           category: { type: 'session_status', id: session._id },
@@ -306,8 +303,24 @@ class LiveChat extends React.Component {
           companyId: session.companyId
         }
         this.props.sendNotifications(notificationsData)
-    } else {
-
+    } else if (session.assigned_to && session.assigned_to.type === 'team') {
+      this.props.fetchTeamAgents(session.assigned_to.id, (teamAgents) => {
+        let agentIds = []
+        for (let i = 0; i < teamAgents.length; i++) {
+          if (teamAgents[i].agentId._id !== this.props.user._id) {
+            agentIds.push(teamAgents[i].agentId._id)
+          }
+        }
+        if (agentIds.length > 0) {
+          let notificationsData = {
+            message: notificationMessage,
+            category: { type: 'session_status', id: session._id },
+            agentIds: agentIds,
+            companyId: session.companyId
+          }
+          this.props.sendNotifications(notificationsData)
+        }
+      })
     }
   }
 
@@ -360,7 +373,6 @@ class LiveChat extends React.Component {
   }
 
   handleCustomFieldResponse (res, body) {
-    console.log("res",res)
     if (res.status === 'success') {
       this.alertMsg.success('Value set successfully')
     } else {
@@ -373,7 +385,6 @@ class LiveChat extends React.Component {
   }
 
   changeActiveSession (session, e) {
-    console.log('changeActiveSession', session)
     if (e && e.target.type === 'checkbox') {
       return
     }
@@ -530,7 +541,6 @@ class LiveChat extends React.Component {
   }
 
   render () {
-    console.log('render in live chat')
     return (
       <div id='mainLiveChat' className='m-grid__item m-grid__item--fluid m-wrapper' style={{marginBottom: 0, overflow: 'hidden'}}>
         <AlertContainer ref={a => { this.alertMsg = a }} {...alertOptions} />
