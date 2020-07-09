@@ -65,7 +65,7 @@ class ChatBots extends React.Component {
     if (data.selected === 0) {
       this.props.loadChatbots({last_id: 'none',
         number_of_records: 10, first_page: 'first',
-        days: parseInt(this.state.selectedDays),
+        days: this.state.selectedDays,
         userId: this.props.userId,
         companyId: this.props.companyId
       })
@@ -78,7 +78,7 @@ class ChatBots extends React.Component {
         first_page: 'next',
         userId: this.props.userId,
         companyId: this.props.companyId,
-        days: parseInt(this.state.selectedDays)})
+        days: this.state.selectedDays})
     } else {
       this.props.loadChatbots({
         current_page: this.state.pageNumber,
@@ -88,7 +88,7 @@ class ChatBots extends React.Component {
         first_page: 'previous',
         userId: this.props.userId,
         companyId: this.props.companyId,
-        days: parseInt(this.state.selectedDays)})
+        days: this.state.selectedDays})
     }
     this.setState({pageNumber: data.selected})
     this.displayData(data.selected, this.props.chatbots)
@@ -119,7 +119,7 @@ class ChatBots extends React.Component {
         first_page: 'first',
         userId: this.props.userId,
         companyId: this.props.companyId,
-        days: parseInt(event.target.value)
+        days: event.target.value
       })
     }
   }
