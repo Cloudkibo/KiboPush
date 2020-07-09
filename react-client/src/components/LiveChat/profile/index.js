@@ -25,6 +25,8 @@ class Profile extends React.Component {
                         assignToTeam={this.props.assignToTeam}
                         assignToAgent={this.props.assignToAgent}
                         sendNotifications={this.props.sendNotifications}
+                        agents={this.props.agents}
+                        teams={this.props.teams}
                     />
                   {
                       (this.props.user.currentPlan.unique_ID === 'plan_C' || this.props.user.currentPlan.unique_ID === 'plan_D') &&
@@ -69,7 +71,7 @@ class Profile extends React.Component {
                     />
                     } */}
                     {
-                        this.props.showTags && 
+                        this.props.showTags &&
                         (
                             this.props.subscriberTags ?
                             <AssignTag
@@ -108,7 +110,7 @@ class Profile extends React.Component {
                                 <div className="m-loader" style={{width: "30px", display: "inline-block"}}></div>
                                 <span>Loading Custom Fields...</span>
                                 </center>
-                            </div> 
+                            </div>
                         )
                     }
                 </div>
