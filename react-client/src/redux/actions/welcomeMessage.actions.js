@@ -5,12 +5,15 @@ import callApi from '../../utility/api.caller.service'
 import * as ActionTypes from '../constants/constants'
 import {loadMyPagesList} from './pages.actions'
 
-export function isWelcomeMessageEnabled (data) {
+export function isWelcomeMessageEnabled (data, cb) {
   return (dispatch) => {
     callApi(`pages/isWelcomeMessageEnabled/`, 'post', data)
       .then(res => {
         if (res.status === 'success') {
           dispatch(loadMyPagesList())
+          if(cb) {
+            cb(data.isWelcomeMessageEnabled)
+          }
         }
       })
   }
