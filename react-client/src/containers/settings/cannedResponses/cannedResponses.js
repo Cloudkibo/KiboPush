@@ -148,7 +148,7 @@ UNSAFE_componentWillReceiveProps (nextProps) {
               {
                 (this.state.isSearchFilter || (this.state.cannedResponses && this.state.cannedResponses.length > 0)) &&                
                   <div className='m-input-icon m-input-icon--left col-md-4 col-lg-4 col-xl-4'>
-                    <input className='form-control m-input m-input--solid' type='text' placeholder='Search canned Responses...' aria-label='Search' value={this.state.searchValue} onChange={this.search} />
+                    <input className='form-control m-input m-input--solid' type='text' placeholder='Search here...' aria-label='Search' value={this.state.searchValue} onChange={this.search} />
                     <span className='m-input-icon__icon m-input-icon__icon--left'>
                       <span><i className='la la-search' /></span>
                     </span>
