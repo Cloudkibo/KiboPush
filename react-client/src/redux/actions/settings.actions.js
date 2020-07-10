@@ -3,9 +3,9 @@ import * as ActionTypes from '../constants/constants'
 import callApi from '../../utility/api.caller.service'
 export const API_URL = '/api'
 
-export function updateZoomIntegration (data) {
+export function updateZoomIntegrations (data) {
   return {
-    type: ActionTypes.UPDATE_ZOOM_INTEGRATION,
+    type: ActionTypes.UPDATE_ZOOM_INTEGRATIONS,
     data
   }
 }
@@ -471,7 +471,7 @@ export function updatePlatformWhatsApp (data, msg, clearFields, handleResponse) 
       .then(res => {
         console.log('response from updatePlatformWhatsApp', res)
         if (res.status === 'success') {
-          if (!data.changeWhatsAppTwilio) {
+          if (!data.changeWhatsAppFlockSend) {
             dispatch(getAutomatedOptions())
             dispatch(getuserdetails())
           }
@@ -490,20 +490,28 @@ export function updatePlatformWhatsApp (data, msg, clearFields, handleResponse) 
   }
 }
 
-export function getZoomIntegration () {
+export function getZoomIntegrations () {
   return (dispatch) => {
     callApi('zoom/users')
       .then(res => {
-        dispatch(updateZoomIntegration(res.payload))
-      })
-  }
-}
-
-export function disconnectZoom () {
-  return (dispatch) => {
-    callApi('zoom/disconnect')
-      .then(res => {
-        dispatch(updateZoomIntegration(null))
+        dispatch(updateZoomIntegrations(res.payload ? res.payload : []))
+        // dispatch(updateZoomIntegrations([    
+        //     {
+        //       zoomUserId: '123',
+        //       profilePic: "https://platform-lookaside.fbsbx.com/platform/profilepic/?asid=10217280192532174&height=50&width=50&ext=1596610613&hash=AeTfTwYDbHqEJfmf",
+        //       firstName : "Anisha",
+        //       lastName : "Chhatwani",
+        //       connected: true
+        //     },
+        //     {
+        //       zoomUserId: 'abc',
+        //       profilePic: "",
+        //       firstName : "Kibo",
+        //       lastName : "Meeting",
+        //       connected: true
+        //     }
+        //   ])
+        // )
       })
   }
 }
