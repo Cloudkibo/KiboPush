@@ -6,6 +6,7 @@ import { getmetaurl } from '../../../containers/liveChat/utilities'
 import MODAL from '../../extras/modal'
 import AUDIORECORDER from '../../audioRecorder'
 import CARD from '../messages/horizontalCard'
+import zoomIntegration from '../../../containers/settings/zoomIntegration'
 
 
 class Footer extends React.Component {
@@ -31,6 +32,7 @@ class Footer extends React.Component {
       zoomInvitationMessage: this.initialZoomInvitationMessage,
       zoomMeetingCreated: false,
       zoomCountdown: this.initialZoomCountdown,
+      zoomUserId: '',
       zoomMeetingUrl: '',
       zoomMeetingCreationError: false
     }
@@ -64,7 +66,12 @@ class Footer extends React.Component {
     this.checkZoomDisabled = this.checkZoomDisabled.bind(this)
     this.resetZoomValues = this.resetZoomValues.bind(this)
     this.appendInvitationUrl = this.appendInvitationUrl.bind(this)
+    this.selectZoomUser = this.selectZoomUser.bind(this)
   }
+
+  selectZoomUser (e) {
+    this.setState({zoomUserId: e.target.value})
+  } 
 
   resetZoomValues () {
     clearInterval(this.zoomCountdownTimer)
@@ -97,7 +104,8 @@ class Footer extends React.Component {
           subscriberId: this.props.activeSession._id,
           topic: this.state.zoomTopic,
           agenda: this.state.zoomAgenda,
-          invitationMessage: this.state.zoomInvitationMessage
+          invitationMessage: this.state.zoomInvitationMessage,
+          zoomUserId: this.state.zoomUserId
       }, (res) => {
         if (res.status === 'success' && res.payload) {
           this.setState({
@@ -299,7 +307,7 @@ class Footer extends React.Component {
   }
 
   getZoomIntegrationContent () {
-    if (!this.props.zoomIntegration) {
+    if (this.props.zoomIntegrations.length === 0) {
       return (
         <div>
           <div>
@@ -319,7 +327,26 @@ class Footer extends React.Component {
         <form onSubmit={this.createZoomMeeting}>
           <div className="m-form m-form--fit m-form--label-align-right">
             <span>{`Please provide the following information to create a zoom meeting and send invitation to ${this.props.activeSession.firstName}.`}</span>
-            <div style={{marginTop: '20px', paddingLeft: '0', paddingRight: '0'}} className="form-group m-form__group row">
+
+            <div style={{marginTop: '20px', paddingLeft: '0', paddingRight: '0'}} class="form-group m-form__group row">
+              <label for="_zoom_users" className="col-2 col-form-label">
+                Account:
+              </label>
+              <div className="col-10">
+                <select onChange={this.selectZoomUser} class="form-control m-input" value={this.state.zoomUserId} id="_zoom_users" required>
+                  <option key='' value='' selected disabled>Select a Zoom Account...</option>
+                  {
+                    this.props.zoomIntegrations.map((account) => {
+                      return (
+                      <option value={account.zoomUserId}>{account.firstName + " " + account.lastName}</option>
+                      )
+                    })
+                  }
+                </select>
+              </div>
+            </div>
+
+            <div style={{paddingLeft: '0', paddingRight: '0'}} className="form-group m-form__group row">
               <label for="_zoom_topic" className="col-2 col-form-label">
                 Topic:
               </label>
