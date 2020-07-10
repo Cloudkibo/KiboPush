@@ -56,8 +56,11 @@ class cannedResponses extends React.Component {
     }
   }
 
-  clear () {
-
+  close () {
+    this.setState({closeModal: 'modal'}, () => {
+      document.getElementById('create').click()
+      this.setState({ closeModal: '', cannedCode: '', cannedresponseMessage: '' })
+    })
   }
 
   onSubmit (event) {
@@ -120,7 +123,7 @@ class cannedResponses extends React.Component {
                         <div className='' style={{textAlign: 'left', marginTop: '10px'}}>
                           <label>Canned Code:</label><i className='la la-question-circle' data-toggle='tooltip' title='title of Canned Response' />
                         </div>
-                        <input type='text' id='name' className='form-control m-input' value={this.state.cannedCode} onChange={this.codeHandleChange} required />
+                        <input type='text' id='name' className='form-control m-input' value={this.state.cannedCode} onChange={this.codeHandleChange} maxlength='20' required />
                       </div>
                     </div>
                     <div className='col-12'>
@@ -131,13 +134,13 @@ class cannedResponses extends React.Component {
                         <textarea value={this.state.cannedresponseMessage} onChange={this.responseMessageHandleChange}
                           className='form-control m-input m-input--solid'
                           id='description' rows='3'
-                          style={{ height: '100px', resize: 'none' }} required />
+                          style={{ height: '100px', resize: 'none' }} maxlength='500' required />
                       </div>
                     </div>
                   </div>
                 </div>
                 <div className='modal-footer'>
-                  <button className='btn btn-default' onClick={() => { this.clear() }}>Clear</button>
+                  <button className='btn btn-default' onClick={() => { this.close() }}>Close</button>
                   <button id='create' type='submit' className='btn btn-primary' data-dismiss={this.state.closeModal}>{this.props.cannedResponse ? 'Update' : 'Create'}</button>
                 </div>
               </form>
