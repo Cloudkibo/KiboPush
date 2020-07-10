@@ -1,7 +1,8 @@
 import * as ActionTypes from '../constants/constants'
 
 const initialState = {
-  permissions: []
+  permissions: [],
+  zoomIntegrations: []
 }
 export function settingsInfo (state = initialState, action) {
   switch (action.type) {
@@ -75,9 +76,9 @@ export function settingsInfo (state = initialState, action) {
       return Object.assign({}, state, {
         whitelistDomains: action.data
       })
-    case ActionTypes.UPDATE_ZOOM_INTEGRATION:
+    case ActionTypes.UPDATE_ZOOM_INTEGRATIONS:
       return Object.assign({}, state, {
-        zoomIntegration: action.data
+        zoomIntegrations: action.data
       })
     default:
       return state
