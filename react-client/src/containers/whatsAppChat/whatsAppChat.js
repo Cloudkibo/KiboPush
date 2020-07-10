@@ -464,7 +464,7 @@ class WhatsAppChat extends React.Component {
                 </div>
               }
             <HELPWIDGET
-              documentation={{visibility: true, link: 'https://kibopush.com/whatsapp-twilio/'}}
+              documentation={{visibility: true, link: 'https://kibopush.com/livechat-whatsapp/'}}
               videoTutorial={{visibility: false}}
             />
               <div className='row'>

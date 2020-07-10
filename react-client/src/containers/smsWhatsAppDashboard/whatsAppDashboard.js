@@ -126,7 +126,7 @@ class Dashboard extends React.Component {
               <i className='flaticon-technology m--font-accent' />
             </div>
             <div className='m-alert__text'>
-              Need help in understanding dashboard? Here is the <a href='https://kibopush.com/whatsapp-twilio/' target='_blank' rel='noopener noreferrer'>documentation</a>.
+              Need help in understanding dashboard? Here is the <a href='https://kibopush.com/whatsapp/' target='_blank' rel='noopener noreferrer'>documentation</a>.
             </div>
           </div>
           {this.state.loading
