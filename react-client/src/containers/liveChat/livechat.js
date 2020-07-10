@@ -125,6 +125,9 @@ class LiveChat extends React.Component {
     props.loadTags()
     props.loadCustomFields()
     props.getZoomIntegration()
+    if (props.socketData) {
+      props.clearSocketData()
+    }
   }
 
   clearSearchResults () {
@@ -528,14 +531,17 @@ class LiveChat extends React.Component {
       subscriberTags: nextProps.subscriberTags
     })
 
+
+    let newState = Object.assign(this.state, state)
+
     if (nextProps.socketData) {
       handleSocketEvent(
         nextProps.socketData,
-        this.state,
-        this.props,
-        this.props.updateLiveChatInfo,
-        this.props.user,
-        this.props.clearSocketData
+        newState,
+        nextProps,
+        nextProps.updateLiveChatInfo,
+        nextProps.user,
+        nextProps.clearSocketData
       )
     }
   }
