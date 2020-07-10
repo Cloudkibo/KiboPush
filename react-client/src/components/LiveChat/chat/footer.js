@@ -1,4 +1,6 @@
 import React from 'react'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
 import PropTypes from 'prop-types'
 import { getmetaurl } from '../../../containers/liveChat/utilities'
 
@@ -6,7 +8,7 @@ import { getmetaurl } from '../../../containers/liveChat/utilities'
 import MODAL from '../../extras/modal'
 import AUDIORECORDER from '../../audioRecorder'
 import CARD from '../messages/horizontalCard'
-
+import {loadcannedResponses} from '../../../redux/actions/settings.actions'
 
 class Footer extends React.Component {
   constructor(props, context) {
@@ -32,8 +34,12 @@ class Footer extends React.Component {
       zoomMeetingCreated: false,
       zoomCountdown: this.initialZoomCountdown,
       zoomMeetingUrl: '',
-      zoomMeetingCreationError: false
+      zoomMeetingCreationError: false,
+      cannedMessages: [],
+      dataForSearch: [],
+      showCannedMessages: false
     }
+    this.props.loadcannedResponses()
     this.onInputChange = this.onInputChange.bind(this)
     this.onEnter = this.onEnter.bind(this)
     this.sendThumbsUp = this.sendThumbsUp.bind(this)
@@ -80,6 +86,12 @@ class Footer extends React.Component {
       zoomMeetingLoading: false,
       showAppendInvitationUrl: false
     })
+  }
+
+  UNSAFE_componentWillReceiveProps (nextProps) {
+    if (nextProps.cannedResponses !== this.props.cannedResponses) {
+      this.setState({ cannedMessages: nextProps.cannedResponses, dataForSearch: nextProps.cannedResponses })
+    }
   }
 
   appendInvitationUrl () {
@@ -217,6 +229,12 @@ class Footer extends React.Component {
 
   onInputChange (e) {
     const text = e.target.value
+    if (text[0] === '/') {
+      this.setState({ showCannedMessages: true })
+      this.search(e)
+    } else {
+      this.setState({ showCannedMessages: false })
+    }
     let state = {text}
     const url = getmetaurl(text)
     if (url && url !== this.state.currentUrl) {
@@ -225,6 +243,24 @@ class Footer extends React.Component {
       this.props.fetchUrlMeta(url, this.handleUrlMeta)
     }
     this.setState(state)
+  }
+
+  search (event) {
+    if (this.state.dataForSearch.length > 0) {
+      let searchArray = []
+      if (event.target.value !== '/') {
+        let textLength = event.target.value.length
+        let text = event.target.value.slice(1)
+        console.log('text in search', text)
+        this.state.dataForSearch.forEach(element => {
+          if (element.responseCode.toLowerCase().includes(text.toLowerCase())) searchArray.push(element)
+        })
+        this.setState({ cannedMessages: searchArray })
+      } else {
+        let dataForSearch = this.state.dataForSearch
+        this.setState({ cannedMessages: dataForSearch })
+      }
+    }
   }
 
   removeAttachment () {
@@ -606,7 +642,7 @@ class Footer extends React.Component {
     }
   }
 
-  render() {
+  render () {
     return (
       <div
         className='m-messenger'
@@ -635,99 +671,142 @@ class Footer extends React.Component {
           <div className='m-messenger__form-controls'>
             {
               this.state.uploadingFile
-              ? <div className='align-center'>
-                <center>
-                  <div className="m-loader" style={{width: "30px", display: "inline-block"}} />
-                  <span>Uploading...</span>
-                </center>
-              </div>
-              : this.state.uploaded
-              ? <div className='m-input-icon m-input-icon--right'>
-                <input
-                  style={{cursor: 'not-allowed'}}
-                  type='text'
-                  value={`Attachment: ${this.state.attachment.name.length > 20 ? this.state.attachment.name.substring(0, 20) + '...' : this.state.attachment.name}`}
-                  className='m-messenger__form-input'
-                  disabled
-                />
-                <span onClick={this.removeAttachment} style={{cursor: 'pointer'}} className='m-input-icon__icon m-input-icon__icon--right'>
-                  <span>
-                    <i className='la la-trash' />
-                  </span>
-                </span>
-              </div>
-              :
-              <div className='m-input-icon m-input-icon--right'>
-                <input
-                  autoFocus
-                  type='text'
-                  placeholder='Type here...'
-                  onChange={this.onInputChange}
-                  value={this.state.text}
-                  onKeyPress={this.onEnter}
-                  className='m-messenger__form-input'
-                />
-                <span onClick={() => this.openPicker('emoji')} style={{cursor: 'pointer'}} className='m-input-icon__icon m-input-icon__icon--right'>
-                  <span>
-                      {
-                        this.props.showEmoji &&
-                        <i
-                          style={{
-                            cursor: this.state.uploaded ? 'not-allowed' : 'pointer',
-                            fontSize: '20px',
-                            margin: '0px 5px',
-                            pointerEvents: this.state.uploaded && 'none',
-                            opacity: this.state.uploaded && '0.5'
-                          }}
-                          data-tip='Emoticons'
-                          className='fa fa-smile-o'
-                          id='_emoji_picker'
-                        />
-                      }
-                  </span>
-                </span>
-              </div>
-            }
+                ? <div className='align-center'>
+                  <center>
+                    <div className="m-loader" style={{width: "30px", display: "inline-block"}} />
+                    <span>Uploading...</span>
+                  </center>
+                </div>
+                : this.state.uploaded
+                  ? <div className='m-input-icon m-input-icon--right'>
+                    <input
+                      style={{cursor: 'not-allowed'}}
+                      type='text'
+                      value={`Attachment: ${this.state.attachment.name.length > 20 ? this.state.attachment.name.substring(0, 20) + '...' : this.state.attachment.name}`}
+                      className='m-messenger__form-input'
+                      disabled
+                    />
+                    <span onClick={this.removeAttachment} style={{cursor: 'pointer'}} className='m-input-icon__icon m-input-icon__icon--right'>
+                      <span>
+                        <i className='la la-trash' />
+                      </span>
+                    </span>
+                  </div> : 
+                  <div> {this.state.showCannedMessages &&
+                    <div className='m-dropdown__wrapper'>
+                      <span className='m-dropdown__arrow m-dropdown__arrow--right m-dropdown__arrow--adjust' />
+                      <div className='m-dropdown__inner'>
+                        <div className='m-dropdown__body'>
+                          <div className='m-dropdown__content'>
+                            <div className='card'>
+                              <ul className='m-nav'>
+                                <li key={100} className='m-nav__item'>
+                                  <div className='card-header'>
+                                    <h4 className='mb-0'>
+                                      <div
+                                        className='btn'
+                                        data-toggle='collapse'
+                                        aria-expanded='true'
+                                      >
+                                      Templates
+                                      </div>
+                                    </h4>
+                                  </div>
+                                </li>
+                              </ul>
+                              <div className='card-body' style={{ maxHeight: '200px', overflow: 'auto' }}>
+                                {this.state.cannedMessages.length > 0 ? this.state.cannedMessages.map((item, index) => (
+                                  <ul className='m-nav' key={index}>
+                                    <li key={index} className='m-nav__item'>
+                                      <p style={{ wordBreak: 'break-all' }}>/{item.responseCode}</p>
+                                    </li>
+                                  </ul>
+                                ))
+                                  : <ul className='m-nav'>
+                                    <li key={0} className='m-nav__item'>
+                                      <p style={{ wordBreak: 'break-all' }}>No Data to Display</p>
+                                    </li>
+                                  </ul>
+                                }
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  }
+                  <div className='m-input-icon m-input-icon--right'>
+                    <input
+                      autoFocus
+                      type='text'
+                      placeholder='Type here...'
+                      onChange={this.onInputChange}
+                      value={this.state.text}
+                      onKeyPress={this.onEnter}
+                      className='m-messenger__form-input'
+                    />
+                    <span onClick={() => this.openPicker('emoji')} style={{cursor: 'pointer'}} className='m-input-icon__icon m-input-icon__icon--right'>
+                      <span>
+                        {
+                          this.props.showEmoji &&
+                          <i
+                              style={{
+                              cursor: this.state.uploaded ? 'not-allowed' : 'pointer',
+                              fontSize: '20px',
+                              margin: '0px 5px',
+                              pointerEvents: this.state.uploaded && 'none',
+                              opacity: this.state.uploaded && '0.5'
+                            }}
+                            data-tip='Emoticons'
+                            className='fa fa-smile-o'
+                            id='_emoji_picker'
+                          />
+                        }
+                      </span>
+                    </span>
+                  </div>
+                  </div>
+           }
           </div>
-          <div className='m-messenger__form-tools'>
+          <div className='m-messenger__form-tools' style={{verticalAlign: 'bottom'}}>
             <a href={this.state.downLink} download='record-audio.webm' style={{border: '1px solid #36a3f7'}} className='m-messenger__form-attachment' disabled={this.state.uploadingFile}>
               {
                 this.state.loading
-                ? <div className="m-loader" style={{width: "30px"}} />
-                : this.state.uploaded
-                ? <i style={{color: '#36a3f7'}} onClick={this.sendAttachment} className='flaticon-paper-plane' />
-                :
-                (
-                  this.props.showThumbsUp ?
-                  <i style={{color: '#36a3f7'}} onClick={this.sendThumbsUp} className='la la-thumbs-o-up' />
-                  :
-                  <i style={{color: '#36a3f7'}} onClick={this.sendMessage} className='flaticon-paper-plane' />
-                )
+                  ? <div className="m-loader" style={{width: "30px"}} />
+                  : this.state.uploaded
+                    ? <i style={{color: '#36a3f7'}} onClick={this.sendAttachment} className='flaticon-paper-plane' />
+                    :
+                    (
+                      this.props.showThumbsUp ?
+                        <i style={{color: '#36a3f7'}} onClick={this.sendThumbsUp} className='la la-thumbs-o-up' />
+                        :
+                        <i style={{color: '#36a3f7'}} onClick={this.sendMessage} className='flaticon-paper-plane' />
+                    )
               }
             </a>
           </div>
         </div>
         {
           this.state.loadingUrlMeta
-          ? <div style={{marginBottom: '10px'}} className='align-center'>
-            <center>
-              <div className="m-loader" style={{width: "30px", display: "inline-block"}} />
-              <span>Fetching url meta...</span>
-            </center>
-          </div>
-          : this.state.urlmeta.constructor === Object && Object.keys(this.state.urlmeta).length > 0 &&
-          <div
-            style={{
-              borderRadius: '15px',
-              backgroundColor: '#f0f0f0',
-              minHeight: '20px',
-              justifyContent: 'flex-end',
-              position: 'relative',
-              display: 'inline-block',
-              padding: '5px',
-              marginBottom: '10px'
-            }}
-          >
+            ? <div style={{marginBottom: '10px'}} className='align-center'>
+              <center>
+                <div className="m-loader" style={{width: "30px", display: "inline-block"}} />
+                <span>Fetching url meta...</span>
+              </center>
+            </div>
+            : this.state.urlmeta.constructor === Object && Object.keys(this.state.urlmeta).length > 0 &&
+            <div
+              style={{
+                borderRadius: '15px',
+                backgroundColor: '#f0f0f0',
+                minHeight: '20px',
+                justifyContent: 'flex-end',
+                position: 'relative',
+                display: 'inline-block',
+                padding: '5px',
+                marginBottom: '10px'
+              }}
+            >
             <i style={{float: 'right', cursor: 'pointer'}} className='fa fa-times' onClick={this.removeUrlMeta} />
             <CARD
               title={this.state.urlmeta.ogTitle}
@@ -835,4 +914,14 @@ Footer.propTypes = {
   'filesAccepted': PropTypes.string,
 }
 
-export default Footer
+function mapStateToProps (state) {
+  return {
+    cannedResponses: state.settingsInfo.cannedResponses
+  }
+}
+function mapDispatchToProps (dispatch) {
+  return bindActionCreators({
+    loadcannedResponses: loadcannedResponses
+  }, dispatch)
+}
+export default connect(mapStateToProps, mapDispatchToProps)(Footer)
