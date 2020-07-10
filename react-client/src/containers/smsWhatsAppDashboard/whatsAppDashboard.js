@@ -37,7 +37,7 @@ class Dashboard extends React.Component {
   UNSAFE_componentWillReceiveProps (nextprops) {
     if (nextprops.user) {
       joinRoom(nextprops.user.companyId)
-      if (nextprops.user.platform === 'whatsApp' && nextprops.automated_options && !nextprops.automated_options.twilioWhatsApp && nextprops.user.role === 'buyer') {
+      if (nextprops.user.platform === 'whatsApp' && nextprops.automated_options && !nextprops.automated_options.flockSendWhatsApp && nextprops.user.role === 'buyer') {
         this.props.history.push({
           pathname: '/integrations',
           state: 'whatsApp'
@@ -126,7 +126,7 @@ class Dashboard extends React.Component {
               <i className='flaticon-technology m--font-accent' />
             </div>
             <div className='m-alert__text'>
-              Need help in understanding dashboard? Here is the <a href='https://kibopush.com/whatsapp-twilio/' target='_blank' rel='noopener noreferrer'>documentation</a>.
+              Need help in understanding dashboard? Here is the <a href='https://kibopush.com/whatsapp/' target='_blank' rel='noopener noreferrer'>documentation</a>.
             </div>
           </div>
           {this.state.loading

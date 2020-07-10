@@ -86,7 +86,7 @@ class Contact extends React.Component {
       this.loadContacts()
     })
   }
-  
+
   syncContacts () {
     this.props.syncContacts({twilio: {
       accountSID: this.props.automated_options.twilio.accountSID,
@@ -99,7 +99,7 @@ class Contact extends React.Component {
     if (this.props.user.platform === 'sms') {
       link = `${link}/twilio`
     } else if (this.props.user.platform === 'whatsApp') {
-      link = `${link}/whatsapp-twilio`
+      link = `${link}/subscribers-whatsapp`
     }
     return link
   }
@@ -178,8 +178,8 @@ class Contact extends React.Component {
     if (data.selected === 0) {
       if (this.props.user.platform === 'sms') {
         this.props.loadContactsList({
-          last_id: 'none', 
-          number_of_records: 10, 
+          last_id: 'none',
+          number_of_records: 10,
           first_page: 'first',
           search_value: this.state.searchValue,
           status_value: this.state.status ? this.state.status.value : '',
@@ -422,10 +422,13 @@ class Contact extends React.Component {
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
                             <span style={{width: '100px'}}>Status</span>
                           </th>
-                          <th data-field='lists'
-                            className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '100px'}}>Lists</span>
-                          </th>
+                          {
+                            this.props.user.platform === 'sms' &&
+                            <th data-field='lists'
+                              className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                              <span style={{width: '100px'}}>Lists</span>
+                            </th>
+                          }
                           <th data-field='edit'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
                             <span style={{width: '100px'}}>Actions</span>
@@ -441,14 +444,16 @@ class Contact extends React.Component {
                             <td data-field='name' className='m-datatable__cell--center m-datatable__cell'><span style={contact.isSubscribed ? subscribedStyle : unsubscribedStyle}>{contact.name}</span></td>
                             <td data-field='number' className='m-datatable__cell--center m-datatable__cell'><span style={contact.isSubscribed ? subscribedStyle : unsubscribedStyle}>{contact.number}</span></td>
                             <td data-field='status' className='m-datatable__cell--center m-datatable__cell'><span style={contact.isSubscribed ? subscribedStyle : unsubscribedStyle}>{contact.isSubscribed ? 'Subscribed' : 'Unsubscribed'}</span></td>
-                            <td data-field='lists' className='m-datatable__cell--center m-datatable__cell'><span style={contact.isSubscribed ? subscribedStyle : unsubscribedStyle}>{this.getLists(contact)}</span></td>
+                            {
+                              this.props.user.platform === 'sms' &&  <td data-field='lists' className='m-datatable__cell--center m-datatable__cell'><span style={contact.isSubscribed ? subscribedStyle : unsubscribedStyle}>{this.getLists(contact)}</span></td>
+                            }
                             <td data-field='actions' className='m-datatable__cell'>
                               <span style={{width: '100px'}}>
                                 <button style={{border: 'none', marginLeft: '30px'}} data-toggle="modal" data-target="#editSubscriber" onClick={() => this.showEdit(contact)} className="m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill" title="Edit">
                                   <i className="la la-edit" />
                                 </button>
                               </span>
-                            </td>   
+                            </td>
                           </tr>
                         ))
                       }

@@ -202,6 +202,10 @@ export function backdoorInfo (state = initialState, action) {
       return Object.assign({}, state, {
         monthlyPlatformStats: action.data
       })
+    case ActionTypes.UPDATE_OTHER_ANALYTICS:
+      return Object.assign({}, state, {
+        otherAnalytics: action.data
+      })
     case ActionTypes.UPDATE_TOP_PAGES_KIBODASH:
       return Object.assign({}, state, {
         kiboTopPages: action.data
@@ -219,6 +223,24 @@ export function backdoorInfo (state = initialState, action) {
     case ActionTypes.UPDATE_PAGE_PERMISSIONS_ERROR:
       return Object.assign({}, state, {
         error: action.data
+      })
+    case ActionTypes.UPDATE_COMMENT_CAPTURES:
+      return Object.assign({}, state, {
+        commentCaptures: action.commentCaptures,
+        commentCaptureCount: action.count
+      })
+    case ActionTypes.UPDATE_CHAT_BOTS:
+      return Object.assign({}, state, {
+        chatbots: action.chatbots,
+        chatbotCount: action.count
+      })
+      case ActionTypes.LOAD_MESSAGES_COUNT:
+        return Object.assign({}, state, {
+          messagesCount: action.data
+        })
+      case ActionTypes.SAVE_USER_VIEW:
+      return Object.assign({}, state, {
+        userView: action.data
       })
     default:
       return state

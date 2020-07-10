@@ -20,7 +20,8 @@ class FacebookIntegration extends React.Component {
       whatsAppSID: '',
       whatsAppToken: '',
       code: '',
-      sandboxNumber: '+14155238886'
+      sandboxNumber: '+14155238886',
+      flockSendNumber: ''
     }
     this.closeDialog = this.closeDialog.bind(this)
     this.showDialog = this.showDialog.bind(this)
@@ -33,6 +34,11 @@ class FacebookIntegration extends React.Component {
     this.goToNext = this.goToNext.bind(this)
     this.cancel = this.cancel.bind(this)
     this.updateWhatsAppValues = this.updateWhatsAppValues.bind(this)
+    this.updateFlockSendNumber = this.updateFlockSendNumber.bind(this)
+  }
+
+  updateFlockSendNumber (e) {
+    this.setState({flockSendNumber: e.target.value})
   }
 
   cancel () {
@@ -87,20 +93,33 @@ class FacebookIntegration extends React.Component {
     }}, this.msg)
   }
   submitWapp () {
-    //const regex = /\+(9[976]\d|8[987530]\d|6[987]\d|5[90]\d|42\d|3[875]\d|2[98654321]\d|9[8543210]|8[6421]|6[6543210]|5[87654321]|4[987654310]|3[9643210]|2[70]|7|1)\W*\d\W*\d\W*\d\W*\d\W*\d\W*\d\W*\d\W*\d\W*(\d{1,14})$/g
-    if (this.state.whatsAppSID === '') {
-      this.msg.error('Account SID cannot be empty')
-    } else if (this.state.whatsAppToken === '') {
-      this.msg.error('Auth Token cannot be empty')
-    } else if (this.state.code === '') {
-      this.msg.error('Sandbox code cannot be empty')
+    const regex = /\+(9[976]\d|8[987530]\d|6[987]\d|5[90]\d|42\d|3[875]\d|2[98654321]\d|9[8543210]|8[6421]|6[6543210]|5[87654321]|4[987654310]|3[9643210]|2[70]|7|1)\W*\d\W*\d\W*\d\W*\d\W*\d\W*\d\W*\d\W*\d\W*(\d{1,14})$/g
+    // if (this.state.whatsAppSID === '') {
+    //   this.msg.error('Account SID cannot be empty')
+    // } else if (this.state.whatsAppToken === '') {
+    //   this.msg.error('Auth Token cannot be empty')
+    // } else if (this.state.code === '') {
+    //   this.msg.error('Sandbox code cannot be empty')
+    // } else {
+    //   this.setState({isShowingModalWhatsApp: false})
+    //   this.props.updatePlatformWhatsApp({
+    //     accountSID: this.state.whatsAppSID,
+    //     authToken: this.state.whatsAppToken,
+    //     sandboxNumber: this.state.sandboxNumber,
+    //     sandboxCode: this.state.code,
+    //     platform: 'whatsApp'
+    //   }, this.msg)
+    // }
+    
+    if (this.state.whatsAppToken === '') {
+      this.msg.error('Access Token cannot be empty')
+    } else if (!this.state.flockSendNumber.match(regex)) {
+      this.msg.error('Invalid Number')
     } else {
       this.setState({isShowingModalWhatsApp: false})
       this.props.updatePlatformWhatsApp({
-        accountSID: this.state.whatsAppSID,
-        authToken: this.state.whatsAppToken,
-        sandboxNumber: this.state.sandboxNumber,
-        sandboxCode: this.state.code,
+        accessToken: this.state.whatsAppToken,
+        number: this.state.flockSendNumber,
         platform: 'whatsApp'
       }, this.msg)
     }
@@ -207,13 +226,13 @@ class FacebookIntegration extends React.Component {
                     <span className='m-widget4__title'>
                       <i className='fa fa-whatsapp' />&nbsp;&nbsp;&nbsp;
                       <span>
-                        WhatsApp Twilio
+                        WhatsApp FlockSend
                       </span>
                     </span>
                     <br />
                   </div>
                   <div className='m-widget4__ext'>
-                    {this.props.automated_options && this.props.automated_options.twilioWhatsApp
+                    {this.props.automated_options && this.props.automated_options.flockSendWhatsApp
                       ? <button className='m-btn m-btn--pill m-btn--hover-secondary btn btn-secondary' disabled>
                         Connected
                       </button>
@@ -227,7 +246,7 @@ class FacebookIntegration extends React.Component {
                 <br /><br />
                 {this.props.automated_options && this.props.user &&
                   <center>
-                    <button onClick={this.goToNext} className='btn btn-primary m-btn m-btn--custom m-btn--icon' data-wizard-action='next' disabled={(!this.props.user.facebookInfo && !this.props.automated_options.twilio && !this.props.automated_options.twilioWhatsApp) || (this.props.location.state === 'sms' && !this.props.automated_options.twilio) || (this.props.location.state === 'messenger' && !this.props.user.facebookInfo) || (this.props.location.state === 'whatsApp' && !this.props.automated_options.twilioWhatsApp)}>
+                    <button onClick={this.goToNext} className='btn btn-primary m-btn m-btn--custom m-btn--icon' data-wizard-action='next' disabled={(!this.props.user.facebookInfo && !this.props.automated_options.twilio && !this.props.automated_options.flockSendWhatsApp) || (this.props.location.state === 'sms' && !this.props.automated_options.twilio) || (this.props.location.state === 'messenger' && !this.props.user.facebookInfo) || (this.props.location.state === 'whatsApp' && !this.props.automated_options.flockSendWhatsApp)}>
                       <span>
                         <span>Continue</span>&nbsp;&nbsp;
                         <i className='la la-arrow-right' />
@@ -285,7 +304,7 @@ class FacebookIntegration extends React.Component {
               </div>
             </div>
           </div>
-          <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="whatsapp" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          {/* <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="whatsapp" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
               <div className="modal-content">
                 <div style={{ display: 'block' }} className="modal-header">
@@ -329,6 +348,54 @@ class FacebookIntegration extends React.Component {
                   </div>
                 </div>
               </div>
+                </div>
+              </div>
+            </div>
+          </div> */}
+
+          <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="whatsapp" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+              <div className="modal-content">
+                <div style={{ display: 'block' }} className="modal-header">
+                  <h5 className="modal-title" id="exampleModalLabel">
+                  Connect with FlockSend WhatsApp
+									</h5>
+                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">
+                      &times;
+											</span>
+                  </button>
+                </div>
+                <div style={{color: 'black', maxHeight: '500px', overflowY: 'auto'}} className="modal-body">
+                  <div className='m-form'>
+                    <span>Please enter your FlockSend credentials here:</span>
+                    <div className='form-group m-form__group'>
+                      <div id='_flocksend_access_token' className='form-group m-form__group'>
+                        <label className='control-label'>FlockSend Access Token:</label>
+                        <input className='form-control' value={this.state.whatsAppToken} onChange={(e) => this.updateWhatsAppValues(e, 'whatsAppToken')} />
+                      </div>
+                      <div id='_flocksend_whatsapp_number' className='form-group m-form__group'>
+                        <label className='control-label'>FlockSend WhatsApp Number:</label>
+                        <input className='form-control' onChange={this.updateFlockSendNumber} value={this.state.flockSendNumber} />
+                      </div>
+                    </div>
+                    <div className='m-portlet__foot m-portlet__foot--fit' style={{'overflow': 'auto'}}>
+                      <div className='m-form__actions' style={{'float': 'right'}}>
+                        <button className='btn btn-primary' data-dismiss="modal" aria-label="Close"
+                          onClick={this.submitWapp}> Submit
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <div className='row'>
+                    <div className='col-12'>
+                      In order to send broadcasts and chat with your WhatsApp customers, you need to make them subscribers. In order to do so, please follow the instructions below:
+                      <br /><br />
+                      <b>1. Setup Webhook:</b> Go to <a href='https://flocksend.com/user/profile' target='_blank' rel='noopener noreferrer'>https://flocksend.com/user/profile</a> and click on the Webhook Setting from the Sidebar. Set this URL <i>https://webhook.cloudkibo.com/webhooks/flockSend</i> in the Webhook URL and click on save changes.
+                      <br /><br />
+                      <b>2. Get Subscribers:</b> Now ask your customers to send any WhatsApp message to your FlockSend WhatsApp number {this.state.number}. When they message, they will become a subscriber.
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

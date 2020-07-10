@@ -81,7 +81,7 @@ class InvalidatedSession extends React.Component {
                       </div>
                       <br />
                       <div>
-                        <span>Your Facebook session has been invalidated. Please ask your buyer to connect his/her Facebook Account again.</span>
+                        <span>Your Facebook session has been {this.props.location.state.session_inavalidated ? 'inavalidated' :'disconnected' }. Please ask your buyer to connect his/her Facebook Account again.</span>
                         <br /><br /><br />
                         <label>Buyer Information:</label>
                         <br /><br />
@@ -134,6 +134,9 @@ class InvalidatedSession extends React.Component {
       </div>
     )
   }
+}
+InvalidatedSession.defaultProps = {
+  session: 'invalidated'
 }
 function mapStateToProps (state) {
   return {

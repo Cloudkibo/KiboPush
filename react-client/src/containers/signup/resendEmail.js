@@ -86,7 +86,7 @@ class ResendEmail extends React.Component {
                   </div>
                 </div>
                 {this.props.successMessage &&
-                <label>{this.props.successMessage}. Please check your email </label>
+                <label>{this.props.successMessage}</label>
                 }
                 <br />
                 <br />

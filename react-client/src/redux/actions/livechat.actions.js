@@ -171,19 +171,19 @@ export function clearSearchResult () {
   }
 }
 
-export function showUserChats (payload, originalData) {
+export function showUserChats (payload, originalData, count) {
   console.log('showUserChats response', payload)
   if (originalData.page === 'first') {
     return {
       type: ActionTypes.SHOW_USER_CHAT_OVERWRITE,
       userChat: payload.chat,
-      chatCount: payload.count
+      chatCount: count
     }
   } else {
     return {
       type: ActionTypes.SHOW_USER_CHAT,
       userChat: payload.chat,
-      chatCount: payload.count
+      chatCount: count
     }
   }
 }
@@ -295,11 +295,11 @@ export function fetchSingleSession (sessionid, appendDeleteInfo) {
   }
 }
 
-export function fetchUserChats (sessionid, data, handleFunction) {
+export function fetchUserChats (sessionid, data, count, handleFunction) {
   return (dispatch) => {
     callApi(`livechat/${sessionid}`, 'post', data)
       .then(res => {
-        dispatch(showUserChats(res.payload, data))
+        dispatch(showUserChats(res.payload, data, count))
         if (handleFunction) {
           handleFunction(data.messageId)
         }
@@ -455,8 +455,11 @@ export function assignToAgent (data, handleResponse) {
 }
 
 export function sendNotifications (data) {
+  console.log('data for notifications', data)
   return (dispatch) => {
-    callApi('notifications/create', 'post', data).then(res => {})
+    callApi('notifications/create', 'post', data).then(res => {
+      console.log('response from notifications', res)
+    })
   }
 }
 
@@ -473,12 +476,12 @@ export function assignToTeam (data, handleResponse) {
   }
 }
 
-export function fetchTeamAgents (id, handleAgents) {
+export function fetchTeamAgents (id, handleAgents, type) {
   return (dispatch) => {
     callApi(`teams/fetchAgents/${id}`)
       .then(res => {
         if (res.status === 'success') {
-          handleAgents(res.payload)
+          handleAgents(res.payload, type)
         }
       })
   }

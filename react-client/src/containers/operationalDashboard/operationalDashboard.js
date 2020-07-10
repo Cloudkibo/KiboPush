@@ -9,6 +9,8 @@ import BroadcastsByDays from './broadcastsByDays'
 import PollsByDays from './pollsByDays'
 import Top10pages from './top10pages'
 import UniquePages from './uniquePages'
+import CommentCaptures from './commentCaptures'
+import ChatBots from './chatbots'
 import Reports from './reports'
 import AutopostingSummary from '../dashboard/autopostingSummary'
 import IntegrationsSummary from '../dashboard/integrationsSummary'
@@ -25,24 +27,13 @@ import {
   loadSessionsGraphData,
   sendEmail,
   allLocales,
-  fetchPlatformStats,
-  fetchPlatformStatsDateWise,
-  fetchUserStats,
-  fetchUserStatsDateWise,
-  fetchOneUserStats,
-  fetchOneUserStatsDateWise,
-  fetchPageStats,
-  fetchPageStatsDateWise,
-  fetchOnePageStats,
-  fetchOnePageStatsDateWise,
   fetchTopPages,
   fetchAutopostingPlatformWise,
   fetchAutopostingPlatformWiseDateWise,
-  fetchAutopostingUserWise,
-  fetchAutopostingUserWiseDateWise,
-  fetchPlatformStatsMonthly,
-  fetchPlatformStatsWeekly,
-  alUserslLocales
+  fetchOtherAnalytics,
+  fetchPageAnalytics,
+  alUserslLocales,
+  saveUserView
 } from '../../redux/actions/backdoor.actions'
 import { saveUserInformation } from '../../redux/dispatchers/backdoor.dispatcher'
 import { bindActionCreators } from 'redux'
@@ -80,7 +71,8 @@ class OperationalDashboard extends React.Component {
       openPopover: false,
       filter: false,
       showBroadcasts: false,
-      showDropDown: false
+      showDropDown: false,
+      days: '10'
     }
 
     props.alUserslLocales()
@@ -89,10 +81,9 @@ class OperationalDashboard extends React.Component {
     // props.loadPollsGraphData(0)
     // props.loadSurveysGraphData(0)
     // props.loadSessionsGraphData(0)
-    props.fetchPlatformStats()
+    props.fetchPageAnalytics({days: 10})
     // props.fetchAutopostingPlatformWise()
-    props.fetchPlatformStatsMonthly()
-    props.fetchPlatformStatsWeekly()
+    props.fetchOtherAnalytics({days: 'all'})
     props.fetchTopPages(10)
 
     this.displayData = this.displayData.bind(this)
@@ -111,10 +102,22 @@ class OperationalDashboard extends React.Component {
     this.loadMore = this.loadMore.bind(this)
     this.debounce = this.debounce.bind(this)
     this.setUsersView = this.setUsersView.bind(this)
+    this.onDaysChangePlatform = this.onDaysChangePlatform.bind(this)
+  }
+
+  onDaysChangePlatform (e) {
+    var value = e.target.value
+    this.setState({days: value})
+    if (value === '') {
+      this.props.fetchPageAnalytics({days: ''})
+    } else if (parseInt(value) > 0) {
+      this.props.fetchPageAnalytics({days: parseInt(value)})
+    }
   }
 
   setUsersView (user) {
     auth.putActingAsUser(user.domain_email, user.name)
+    this.props.saveUserView(true)
     this.props.history.push({
       pathname: `/dashboard`
     })
@@ -384,8 +387,7 @@ class OperationalDashboard extends React.Component {
   }
 
   getFile () {
-    console.log('getFile')
-    this.msg.info('DOWNLOADING DATA.... YOU WILL BE NOTIFIED WHEN IT IS DOWNLOAD.')
+    this.msg.info('IT WILL TAKE UP TO 5 MINTUES ... ONCE DATA WILL READY IT WILL SENT ON YOUR EMAIL.')
     this.props.downloadFile(this.msg)
   }
 
@@ -426,8 +428,14 @@ class OperationalDashboard extends React.Component {
         <div style={{float: 'left', clear: 'both'}}
           ref={(el) => { this.top = el }} />
         <div className='m-content'>
-          { this.props.platformStats &&
-            <PlatformStats platformStats={this.props.platformStats} monthlyPlatformStats={this.props.platformStatsMonthly} weeklyPlatformStats={this.props.platformStatsWeekly} history={this.props.history} location={this.props.location} />
+          { this.props.platformStats && this.props.otherAnalytics &&
+            <PlatformStats
+              platformStats={this.props.platformStats}
+              otherAnalytics={this.props.otherAnalytics}
+              history={this.props.history} location={this.props.location}
+              days={this.state.days}
+              onDaysChange={this.onDaysChangePlatform}
+            />
           }
           <div className='row'>
             <AutopostingSummary backdoor={true} history={this.props.history} location={this.props.location} />
@@ -626,6 +634,8 @@ class OperationalDashboard extends React.Component {
           <SurveysByDays history={this.props.history} location={this.props.location} />
           <PollsByDays history={this.props.history} location={this.props.location} />
           <UniquePages history={this.props.history} location={this.props.location} />
+          <CommentCaptures history={this.props.history} location={this.props.location} />
+          <ChatBots history={this.props.history} location={this.props.location} />
         </div>
       </div>
     )
@@ -647,7 +657,8 @@ function mapStateToProps (state) {
     platformStats: state.backdoorInfo.platformStatsInfo,
     autopostingStats: state.backdoorInfo.autopostingStatsInfo,
     platformStatsWeekly: state.backdoorInfo.weeklyPlatformStats,
-    platformStatsMonthly: state.backdoorInfo.monthlyPlatformStats
+    platformStatsMonthly: state.backdoorInfo.monthlyPlatformStats,
+    otherAnalytics: state.backdoorInfo.otherAnalytics
   }
 }
 
@@ -662,24 +673,13 @@ function mapDispatchToProps (dispatch) {
     loadSessionsGraphData,
     sendEmail,
     allLocales,
-    fetchPlatformStats,
-    fetchPlatformStatsDateWise,
-    fetchUserStats,
-    fetchUserStatsDateWise,
-    fetchOneUserStats,
-    fetchOneUserStatsDateWise,
-    fetchPageStats,
-    fetchPageStatsDateWise,
-    fetchOnePageStats,
-    fetchOnePageStatsDateWise,
     fetchTopPages,
     fetchAutopostingPlatformWise,
     fetchAutopostingPlatformWiseDateWise,
-    fetchAutopostingUserWise,
-    fetchAutopostingUserWiseDateWise,
-    fetchPlatformStatsMonthly,
-    fetchPlatformStatsWeekly,
-    alUserslLocales
+    alUserslLocales,
+    fetchOtherAnalytics,
+    fetchPageAnalytics,
+    saveUserView
   },
     dispatch)
 }

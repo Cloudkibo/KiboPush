@@ -72,9 +72,11 @@ class ChatbotAutomation extends React.Component {
   }
 
   getPages () {
-    const chatbotPages = this.props.chatbots.map((item) => item.pageId._id)
-    const pages = this.props.pages.filter((item) => chatbotPages.indexOf(item._id) === -1)
-    return pages
+    if (this.props.chatbots && this.props.pages) {
+      const chatbotPages = this.props.chatbots.map((item) => item.pageId._id)
+      const pages = this.props.pages.filter((item) => chatbotPages.indexOf(item._id) === -1)
+      return pages
+    }
   }
 
   onSettingsClick (chatbot) {
@@ -125,7 +127,7 @@ class ChatbotAutomation extends React.Component {
                         this.state.selectedRadio === 'modify' &&
                         <div style={{marginLeft: '50px'}} className='row'>
                           {
-                            this.props.chatbots.length > 0
+                            this.props.chatbots && this.props.chatbots.length > 0
                             ? this.props.chatbots.map((chatbot) => (
                               <CHATBOT
                                 key={chatbot._id}
@@ -135,6 +137,8 @@ class ChatbotAutomation extends React.Component {
                                 onSettingsClick={() => this.onSettingsClick(chatbot)}
                               />
                             ))
+                            : (!this.props.chatbots) ? 
+                            <p>Loading chatbots...</p>
                             : <p>No data to display</p>
                           }
                         </div>
@@ -154,7 +158,7 @@ class ChatbotAutomation extends React.Component {
                         this.state.selectedRadio === 'create' &&
                         <div style={{marginLeft: '50px'}} className='row'>
                           {
-                            this.props.pages.length > 0
+                            this.props.pages && this.props.pages.length > 0
                             ? pages.length > 0
                               ? <div style={{width: '100%'}} className='row'>
                                 <div className='col-md-6'>
@@ -188,7 +192,12 @@ class ChatbotAutomation extends React.Component {
                               : <div>
                                 You have created the chatbot for all your connected pages.
                               </div>
-                            : <div>
+                            : (!this.props.pages) ? 
+                            <div>
+                              Loading Pages...        
+                            </div>
+                            : 
+                            <div>
                               Please connect a Facebook page to continue
                               <Link to='/addPages' style={{border: '1px solid', marginLeft: '10px'}} className="btn btn-outline-success">
                                 Connect

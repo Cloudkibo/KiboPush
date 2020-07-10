@@ -2,7 +2,6 @@ import * as ActionTypes from '../constants/constants'
 import {localeCodeToEnglish} from '../../utility/utils'
 
 export function handleAction (actionType, data) {
-  console.log('Action Handled', actionType, data)
   return {
     type: actionType,
     data
@@ -20,7 +19,6 @@ export function getLocales (data) {
         tempLocale.push(data[i].facebookInfo.locale)
       }
     }
-    console.log('locale', locale)
     return locale
   }
 }
@@ -46,7 +44,6 @@ export function updateUsersList (data, originalData) {
 export function updateLocales (dict) {
   let convertedData = []
   for (var key in dict){
-    console.log( key, dict[key] );
     convertedData.push({value: key, text: dict[key]})
   }
   return {
@@ -55,7 +52,6 @@ export function updateLocales (dict) {
   }
 }
 export function updateAllLocales (data) {
-  console.log('Data Fetched From backdoor', data)
   let convertedData = []
   for (let i = 0; i < data.length; i++) {
     convertedData.push({value: data[i], text: localeCodeToEnglish(data[i])})
@@ -65,7 +61,6 @@ export function updateAllLocales (data) {
     data: convertedData
   }
 }
-
 export function updateDataObjectsCount (data) {
   return {
     type: ActionTypes.LOAD_DATA_OBJECTS_LIST,
@@ -74,7 +69,6 @@ export function updateDataObjectsCount (data) {
 }
 
 export function updateTopPages (data) {
-  console.log('toppages', data.payload)
   return {
     type: ActionTypes.LOAD_TOP_PAGES_LIST,
     data: data.payload
@@ -86,6 +80,13 @@ export function updatePagesList (data) {
     type: ActionTypes.LOAD_BACKDOOR_PAGES_LIST,
     data: data.pages,
     count: data.count
+  }
+}
+
+export function updateMessagesCount (data) {
+  return {
+    type: ActionTypes.LOAD_MESSAGES_COUNT,
+    data: data
   }
 }
 
@@ -112,6 +113,22 @@ export function updatePollsByDays (data) {
   return {
     type: ActionTypes.UPDATE_POLLS_BY_DAYS,
     polls: data.polls,
+    count: data.count
+  }
+}
+
+export function updateCommentCaptures (data) {
+  return {
+    type: ActionTypes.UPDATE_COMMENT_CAPTURES,
+    commentCaptures: data.commentCaptures,
+    count: data.count
+  }
+}
+
+export function updateChatBots (data) {
+  return {
+    type: ActionTypes.UPDATE_CHAT_BOTS,
+    chatbots: data.chatbots,
     count: data.count
   }
 }

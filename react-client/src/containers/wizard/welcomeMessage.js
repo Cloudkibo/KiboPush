@@ -45,17 +45,22 @@ class EditTemplate extends React.Component {
     this.pageChange = this.pageChange.bind(this)
     this.handleChange = this.handleChange.bind(this)
     this.handleEnableWelMessage = this.handleEnableWelMessage.bind(this)
+    this.setWelcomeMessage = this.setWelcomeMessage.bind(this)
   }
   UNSAFE_componentWillReceiveProps (nextprops) {
+    console.log('UNSAFE_componentWillReceiveProps called in welcomeWizard')
     if (this.state.pageValue === '') {
       this.setState({pageValue: nextprops.pages[0]._id, welcomeMessage: nextprops.pages[0].isWelcomeMessageEnabled, broadcast: nextprops.pages[0].welcomeMessage })
     }
   }
+  setWelcomeMessage(enable) {
+    this.setState({welcomeMessage:enable})
+  }
   handleEnableWelMessage (pageId, enable) {
     if (enable === true) {
-      this.props.isWelcomeMessageEnabled({_id: pageId, isWelcomeMessageEnabled: true})
+      this.props.isWelcomeMessageEnabled({_id: pageId, isWelcomeMessageEnabled: true}, this.setWelcomeMessage)
     } else {
-      this.props.isWelcomeMessageEnabled({_id: pageId, isWelcomeMessageEnabled: false})
+      this.props.isWelcomeMessageEnabled({_id: pageId, isWelcomeMessageEnabled: false}, this.setWelcomeMessage)
     }
   }
 
@@ -177,7 +182,7 @@ class EditTemplate extends React.Component {
               <div className='m-wizard m-wizard--4 m-wizard--brand m-wizard--step-first' id='m_wizard'>
                 <div className='row m-row--no-padding' style={{marginLeft: '0', marginRight: '0', display: 'flex', flexWrap: 'wrap'}}>
                   <Sidebar history={this.props.history} step='3' user={this.props.user} stepNumber={getCurrentProduct() === 'KiboEngage' ? 5 : 4} />
-                  <div className='col-xl-9 col-lg-12 m-portlet m-portlet--tabs' style={{padding: '1rem 2rem 4rem 2rem', borderLeft: '0.07rem solid #EBEDF2', color: '#575962', lineHeight: '1.5', webkitBoxShadow: 'none', boxShadow: 'none'}}>
+                  <div className='col-md-9 col-12 m-portlet m-portlet--tabs' style={{padding: '1rem 2rem 4rem 2rem', borderLeft: '0.07rem solid #EBEDF2', color: '#575962', lineHeight: '1.5', webkitBoxShadow: 'none', boxShadow: 'none'}}>
                     <div className='m-portlet__head'>
                       <div className='m-portlet__head-caption'>
                         <div className='m-portlet__head-title'>
@@ -219,7 +224,9 @@ class EditTemplate extends React.Component {
                           broadcast={this.state.broadcast}
                           handleChange={this.handleChange}
                           convoTitle={this.state.convoTitle}
-                          buttonActions={this.state.buttonActions} />
+                          buttonActions={this.state.buttonActions} 
+                          module='welcomeMessage'
+                          />
                       </center>
                       <div className='row'>
                         <div className='col-lg-6 m--align-left' >

@@ -8,7 +8,6 @@ import AUDIORECORDER from '../../audioRecorder'
 import CARD from '../messages/horizontalCard'
 import zoomIntegration from '../../../containers/settings/zoomIntegration'
 
-
 class Footer extends React.Component {
   constructor(props, context) {
     super(props, context)

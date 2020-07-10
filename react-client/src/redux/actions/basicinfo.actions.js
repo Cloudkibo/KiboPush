@@ -195,6 +195,13 @@ export function validateUserAccessToken (cb) {
   }
 }
 
+export function isFacebookConnected (cb) {
+  return (dispatch) => {
+    callApi('users/validateFacebookConnected').then(res => {
+      cb(res)
+    })
+  }
+}
 export function updateShowIntegrations (data, browserHistory) {
   return (dispatch) => {
     callApi('users/updateShowIntegrations', 'post', data).then(res => {
