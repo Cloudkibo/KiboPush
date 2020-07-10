@@ -23,6 +23,8 @@ class cannedResponses extends React.Component {
   UNSAFE_componentWillReceiveProps (nextProps) {
     if (nextProps.cannedResponse) {
       this.setState({ responseId: nextProps.cannedResponse._id, cannedCode: nextProps.cannedResponse.responseCode, cannedresponseMessage: nextProps.cannedResponse.responseMessage })
+    } else {
+      this.setState({ responseId: '', cannedCode: '', cannedresponseMessage: '' })
     }
   }
 
@@ -107,7 +109,7 @@ class cannedResponses extends React.Component {
             <div className='modal-content' style={{ width: '600px' }} >
               <div style={{ display: 'block', height: '70px', textAlign: 'left' }} className='modal-header'>
                 <h5 className='modal-title' id='exampleModalLabel'>
-                  {this.props.customField ? 'Update Custom Field' : 'Create New Custom Field'}
+                  {this.props.cannedResponse ? 'Update Canned Message' : 'Create New Canned Message'}
                 </h5>
                 <button style={{ marginTop: '-10px', opacity: '0.5', float: 'right' }} type='button' className='close' data-dismiss='modal' aria-label='Close'>
                   <span aria-hidden='true'>
@@ -121,7 +123,7 @@ class cannedResponses extends React.Component {
                     <div className='col-8'>
                       <div className='m-form__group m-form__group--inline'>
                         <div className='' style={{textAlign: 'left', marginTop: '10px'}}>
-                          <label>Canned Code:</label><i className='la la-question-circle' data-toggle='tooltip' title='title of Canned Response' />
+                          <label>Canned Code:</label><i className='la la-question-circle' data-toggle='tooltip' title='Code of canned response' />
                         </div>
                         <input type='text' id='name' className='form-control m-input' value={this.state.cannedCode} onChange={this.codeHandleChange} maxlength='20' required />
                       </div>
@@ -129,7 +131,7 @@ class cannedResponses extends React.Component {
                     <div className='col-12'>
                       <div className='m-form__group m-form__group--inline'>
                         <div className='' style={{textAlign: 'left', marginTop: '10px'}}>
-                          <label>Canned Response</label><i className='la la-question-circle' data-toggle='tooltip' title='Description of Canned Response' />
+                          <label>Canned Response</label><i className='la la-question-circle' data-toggle='tooltip' title='Message of canned response' />
                         </div>
                         <textarea value={this.state.cannedresponseMessage} onChange={this.responseMessageHandleChange}
                           className='form-control m-input m-input--solid'

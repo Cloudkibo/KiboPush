@@ -37,7 +37,8 @@ class Footer extends React.Component {
       zoomMeetingCreationError: false,
       cannedMessages: [],
       dataForSearch: [],
-      showCannedMessages: false
+      showCannedMessages: false,
+      selectedCannMessage : null
     }
     this.props.loadcannedResponses()
     this.onInputChange = this.onInputChange.bind(this)
@@ -70,6 +71,23 @@ class Footer extends React.Component {
     this.checkZoomDisabled = this.checkZoomDisabled.bind(this)
     this.resetZoomValues = this.resetZoomValues.bind(this)
     this.appendInvitationUrl = this.appendInvitationUrl.bind(this)
+    this.selectCannMessage = this.selectCannMessage.bind(this)
+    this.toggleHover =this.toggleHover.bind(this)
+    this.onMouseLeave = this.onMouseLeave.bind(this)
+  }
+
+  toggleHover (id) {
+    console.log('Hovver called', id)
+    document.getElementById(id).style.backgroundColor = 'lightgrey'
+
+  }
+
+  onMouseLeave (id) {
+    document.getElementById(id).style.backgroundColor = 'white'
+  }
+
+  selectCannMessage (CannMessage) {
+    this.setState({selectedCannMessage: CannMessage, text:`/${CannMessage.responseCode}`})
   }
 
   resetZoomValues () {
@@ -573,7 +591,15 @@ class Footer extends React.Component {
   onEnter (e) {
     if (e.which === 13) {
       e.preventDefault()
-      this.sendMessage()
+      if(this.state.selectedCannMessage) {
+        let selectCannMessage = this.state.selectedCannMessage
+        this.setState({showCannedMessages: false, text: selectCannMessage.responseMessage, selectedCannMessage: null }, ()=> {
+          this.sendMessage()
+        })
+      }
+      else {
+        this.sendMessage()
+      }
     }
   }
 
@@ -649,7 +675,6 @@ class Footer extends React.Component {
         style={{
           position: 'absolute',
           bottom: 0,
-          borderTop: '1px solid #ebedf2',
           width: '100%',
           padding: '15px'
         }}
@@ -708,17 +733,17 @@ class Footer extends React.Component {
                                         data-toggle='collapse'
                                         aria-expanded='true'
                                       >
-                                      Templates
+                                      {this.state.selectedCannMessage ? this.state.selectedCannMessage.responseCode : 'Canned Messages'}
                                       </div>
                                     </h4>
                                   </div>
                                 </li>
                               </ul>
                               <div className='card-body' style={{ maxHeight: '200px', overflow: 'auto' }}>
-                                {this.state.cannedMessages.length > 0 ? this.state.cannedMessages.map((item, index) => (
-                                  <ul className='m-nav' key={index}>
+                                {!this.state.selectedCannMessage ? this.state.cannedMessages.length > 0 ? this.state.cannedMessages.map((item, index) => (
+                                  <ul className='m-nav' key={index} id ={`m-nav${index}`} onMouseOver={()=> this.toggleHover(`m-nav${index}`)} onMouseLeave={()=> this.onMouseLeave(`m-nav${index}`)}>
                                     <li key={index} className='m-nav__item'>
-                                      <p style={{ wordBreak: 'break-all' }}>/{item.responseCode}</p>
+                                      <p style={{ wordBreak: 'break-all', cursor: 'pointer'}} onClick={() => this.selectCannMessage(item)}>/{item.responseCode}</p>
                                     </li>
                                   </ul>
                                 ))
@@ -727,6 +752,11 @@ class Footer extends React.Component {
                                       <p style={{ wordBreak: 'break-all' }}>No Data to Display</p>
                                     </li>
                                   </ul>
+                                : <ul className='m-nav'>
+                                <li key={0} className='m-nav__item'>
+                                <p style={{ wordBreak: 'break-all'}}>{this.state.selectedCannMessage.responseMessage}</p>
+                                </li>
+                              </ul>
                                 }
                               </div>
                             </div>
