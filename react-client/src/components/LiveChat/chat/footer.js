@@ -338,7 +338,7 @@ class Footer extends React.Component {
                   {
                     this.props.zoomIntegrations.map((account) => {
                       return (
-                      <option value={account.zoomUserId}>{account.firstName + " " + account.lastName}</option>
+                      <option value={account._id}>{account.firstName + " " + account.lastName}</option>
                       )
                     })
                   }
