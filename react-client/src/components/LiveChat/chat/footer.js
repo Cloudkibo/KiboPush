@@ -772,17 +772,13 @@ class Footer extends React.Component {
   listDataDisplay () {
     let data = this.state.cannedMessages.map((item, index) => {
       if(this.state.selectedIndex === index) {
-      return <ul className='m-nav' style={{backgroundColor:'silver'}} key={index} id ={`m-nav${index}`} onMouseOver={()=> this.toggleHover(index)} onMouseLeave={()=> this.onMouseLeave(`m-nav${index}`)}>
-        <li key={index} className='m-nav__item'>
+      return <li key={index} className='m-nav__item' style={{backgroundColor:'silver'}} key={index} id ={`m-nav${index}`} onMouseOver={()=> this.toggleHover(index)} onMouseLeave={()=> this.onMouseLeave(`m-nav${index}`)}>
           <p style={{ wordBreak: 'break-all', cursor: 'pointer'}} onClick={() => this.selectCannMessage(item)}>/{item.responseCode}</p>
-        </li>
-      </ul> 
+            </li>
       } else {
-        return <ul className='m-nav' style={{backgroundColor:'white'}} key={index} id ={`m-nav${index}`} onMouseOver={()=> this.toggleHover(index)} onMouseLeave={()=> this.onMouseLeave(`m-nav${index}`)}>
-        <li key={index} className='m-nav__item'>
+        return <li key={index} className='m-nav__item' style={{backgroundColor:'white'}} key={index} id ={`m-nav${index}`} onMouseOver={()=> this.toggleHover(index)} onMouseLeave={()=> this.onMouseLeave(`m-nav${index}`)}>
           <p style={{ wordBreak: 'break-all', cursor: 'pointer'}} onClick={() => this.selectCannMessage(item)}>/{item.responseCode}</p>
         </li>
-      </ul> 
       }
     }) 
     return data
@@ -861,7 +857,9 @@ class Footer extends React.Component {
                               </ul>
                               <div className='card-body' id = 'cardBody' style={{ maxHeight: '200px', overflow: 'auto' }}>
                                 {!this.state.selectedCannMessage ? this.state.cannedMessages.length > 0 ? 
-                                   this.listDataDisplay()
+                                <ul className='m-nav' >
+                                   {this.listDataDisplay()}
+                                </ul>
                                   : <ul className='m-nav'>
                                     <li key={0} className='m-nav__item'>
                                       <p style={{ wordBreak: 'break-all' }}>No Data to Display</p>
