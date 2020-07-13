@@ -86,7 +86,7 @@ class Contact extends React.Component {
       this.loadContacts()
     })
   }
-  
+
   syncContacts () {
     this.props.syncContacts({twilio: {
       accountSID: this.props.automated_options.twilio.accountSID,
@@ -99,7 +99,7 @@ class Contact extends React.Component {
     if (this.props.user.platform === 'sms') {
       link = `${link}/twilio`
     } else if (this.props.user.platform === 'whatsApp') {
-      link = `${link}/whatsapp-twilio`
+      link = `${link}/subscribers-whatsapp`
     }
     return link
   }
@@ -178,8 +178,8 @@ class Contact extends React.Component {
     if (data.selected === 0) {
       if (this.props.user.platform === 'sms') {
         this.props.loadContactsList({
-          last_id: 'none', 
-          number_of_records: 10, 
+          last_id: 'none',
+          number_of_records: 10,
           first_page: 'first',
           search_value: this.state.searchValue,
           status_value: this.state.status ? this.state.status.value : '',
@@ -453,7 +453,7 @@ class Contact extends React.Component {
                                   <i className="la la-edit" />
                                 </button>
                               </span>
-                            </td>   
+                            </td>
                           </tr>
                         ))
                       }
