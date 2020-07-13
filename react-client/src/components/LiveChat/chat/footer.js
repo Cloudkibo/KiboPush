@@ -637,9 +637,13 @@ class Footer extends React.Component {
       console.log('this.state.selectedCannMessage', this.state.selectedCannMessage)
       if(this.state.selectedCannMessage) {
         let selectCannMessage = this.state.selectedCannMessage
+        if(selectCannMessage.responseMessage === '') {
+          this.props.alertMsg.error('Canned Message response cannot be empty')
+        } else {
         this.setState({showCannedMessages: false, text: selectCannMessage.responseMessage, selectedCannMessage: null }, ()=> {
           this.sendMessage()
         })
+        }
       }
       else if (!this.state.selectedCannMessage && this.state.showCannedMessages) {
         this.selectCannMessage(this.state.cannedMessages[this.state.selectedIndex])
