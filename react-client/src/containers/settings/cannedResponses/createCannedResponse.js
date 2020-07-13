@@ -251,7 +251,7 @@ class cannedResponses extends React.Component {
               {this.state.popoverOptions.content}
             </PopoverBody>
           </Popover>
-        </div>s
+        </div>
       </div>
     )
   }
