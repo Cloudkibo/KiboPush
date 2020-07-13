@@ -210,10 +210,11 @@ export function resetSocket () {
   }
 }
 
-export function setUserChat (sessionId) {
+export function setUserChat (sessionId, count) {
   return {
     type: ActionTypes.SET_USER_CHAT,
-    sessionId
+    sessionId,
+    count
   }
 }
 
