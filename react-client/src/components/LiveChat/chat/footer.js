@@ -32,7 +32,8 @@ class Footer extends React.Component {
       zoomMeetingCreated: false,
       zoomCountdown: this.initialZoomCountdown,
       zoomMeetingUrl: '',
-      zoomMeetingCreationError: false
+      zoomMeetingCreationError: false,
+      caption: ''
     }
     this.onInputChange = this.onInputChange.bind(this)
     this.onEnter = this.onEnter.bind(this)
@@ -64,6 +65,11 @@ class Footer extends React.Component {
     this.checkZoomDisabled = this.checkZoomDisabled.bind(this)
     this.resetZoomValues = this.resetZoomValues.bind(this)
     this.appendInvitationUrl = this.appendInvitationUrl.bind(this)
+    this.onCaptionChange = this.onCaptionChange.bind(this)
+  }
+
+  onCaptionChange (e) {
+    this.setState({caption: e.target.value})
   }
 
   resetZoomValues () {
@@ -138,7 +144,11 @@ class Footer extends React.Component {
   }
 
   setEmoji (emoji) {
-    this.setState({text: this.state.text + emoji.native})
+    if (this.state.uploaded) {
+      this.setState({caption: this.state.caption + emoji.native})
+    } else {
+      this.setState({text: this.state.text + emoji.native})
+    }
   }
 
   updateChatData (data, payload) {
@@ -233,7 +243,8 @@ class Footer extends React.Component {
       attachment: {},
       componentType: '',
       uploadingFile: false,
-      uploaded: false
+      uploaded: false,
+      caption: ''
     })
   }
 
@@ -346,7 +357,7 @@ class Footer extends React.Component {
               <textarea required onChange={this.setZoomInvitationMessage} className="form-control m-input" value={this.state.zoomInvitationMessage} id="_zoom_invitation_message" rows="3"></textarea>
               {/* <div style={{color: 'red'}}>{'*Required'}</div> */}
             </div>
-            
+
             <div className='m-messenger__form-tools pull-right messengerTools' style={{ backgroundColor: '#F1F0F0', marginTop: '-40px', marginRight: '10px' }}>
               <div id='_appendInvitationUrl' style={{ display: 'inline-block', float: 'left' }}>
                 <i data-tip={this.state.zoomInvitationMessage.includes('invite_url') ? 'Invitation URL is already present' : 'Append invitation URL'} onClick={this.appendInvitationUrl} style={{
@@ -373,7 +384,7 @@ class Footer extends React.Component {
                marginTop: '-10px',
                fontStyle: 'italic'
              }}>{'Note: [invite_url] will be replaced by the generated zoom meeting invitation link'}</div>
-              
+
             <div style={{paddingBottom: '0', paddingRight: '0', paddingLeft: '0', float: 'right'}} className="m-form__actions">
               <button disabled={this.state.zoomMeetingLoading} style={{float: 'right', marginLeft: '30px'}} type='submit' className="btn btn-primary">
                 {
@@ -425,7 +436,8 @@ class Footer extends React.Component {
         componentType: '',
         uploadingFile: false,
         uploaded: false,
-        loading: false
+        loading: false,
+        caption: ''
       }, () => {
         this.updateChatData(data, payload)
       })
@@ -531,6 +543,9 @@ class Footer extends React.Component {
         break
       default:
     }
+    if (this.state.caption !== '') {
+      payload.caption = this.state.caption
+    }
     return payload
   }
 
@@ -596,6 +611,9 @@ class Footer extends React.Component {
       setEmoji: (emoji) => this.setEmoji(emoji),
       sendSticker: (sticker) => this.sendSticker(sticker),
       sendGif: (gif) => this.sendGif(gif)
+    }
+    if (type === 'caption_emoji') {
+      type = 'emoji'
     }
     this.props.getPicker(type, popoverOptions, otherOptions)
   }
@@ -707,6 +725,34 @@ class Footer extends React.Component {
             </a>
           </div>
         </div>
+        {this.props.showCaption && this.state.uploaded && (this.state.componentType === 'image' || this.state.componentType === 'video') &&
+        <div className='m-messenger__form'>
+            <div className='m-input-icon m-input-icon--right'>
+              <input
+                autoFocus
+                type='text'
+                placeholder='Enter Caption...'
+                onChange={this.onCaptionChange}
+                value={this.state.caption}
+                style={{outline: '0', borderWidth: '0 0 2px', borderColor: '#f4f5f8', color: '#575961', width: '300px', height: '30px'}}
+              />
+            <span onClick={() => this.openPicker('caption_emoji')} style={{cursor: 'pointer'}} className='m-input-icon__icon m-input-icon__icon--right'>
+                <span>
+                  <i
+                    style={{
+                      cursor: 'pointer',
+                      fontSize: '20px',
+                      margin: '0px 5px'
+                    }}
+                    data-tip='Emoticons'
+                    className='fa fa-smile-o'
+                    id='_caption_emoji_picker'
+                  />
+                </span>
+              </span>
+            </div>
+          </div>
+        }
         {
           this.state.loadingUrlMeta
           ? <div style={{marginBottom: '10px'}} className='align-center'>
@@ -833,6 +879,7 @@ Footer.propTypes = {
   'showGif': PropTypes.bool.isRequired,
   'showThumbsUp': PropTypes.bool.isRequired,
   'filesAccepted': PropTypes.string,
+  'showCaption': PropTypes.bool,
 }
 
 export default Footer
