@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import AlertContainer from 'react-alert'
 import { RingLoader } from 'halogenium'
+import { getZoomIntegrations, createZoomMeeting } from '../../redux/actions/settings.actions'
 
 // actions
 import {
@@ -97,6 +98,10 @@ class WhatsAppChat extends React.Component {
     if (props.user.currentPlan.unique_ID === 'plan_C' || props.user.currentPlan.unique_ID === 'plan_D') {
       props.loadMembersList()
       props.loadTeamsList({platform: 'whatsapp'})
+    }
+    props.getZoomIntegrations()
+    if (props.socketData) {
+      props.clearSocketDataWhatsapp()
     }
   }
 
@@ -414,14 +419,16 @@ class WhatsAppChat extends React.Component {
       subscriberTags: nextProps.subscriberTags
     })
 
+    let newState = Object.assign(this.state, state)
+
     if (nextProps.socketData) {
       handleSocketEventWhatsapp(
         nextProps.socketData,
-        this.state,
-        this.props,
-        this.props.updateWhatsappChatInfo,
-        this.props.user,
-        this.props.clearSocketDataWhatsapp
+        newState,
+        nextProps,
+        nextProps.updateWhatsappChatInfo,
+        nextProps.user,
+        nextProps.clearSocketDataWhatsapp
       )
     }
   }
@@ -457,7 +464,7 @@ class WhatsAppChat extends React.Component {
                 </div>
               }
             <HELPWIDGET
-              documentation={{visibility: true, link: 'https://kibopush.com/whatsapp-twilio/'}}
+              documentation={{visibility: true, link: 'https://kibopush.com/livechat-whatsapp/'}}
               videoTutorial={{visibility: false}}
             />
               <div className='row'>
@@ -514,7 +521,12 @@ class WhatsAppChat extends React.Component {
                     sendAttachment={this.props.sendAttachment}
                     deletefile={this.props.deletefile}
                     showTemplates={true}
-                    filesAccepted={'image/*, audio/*, video/*, application/pdf'}
+                    filesAccepted={'image/*, audio/*, video/mp4, application/pdf'}
+                    showZoom={this.props.user.isSuperUser ? (this.props.zoomIntegrations.length === 0 ? (this.props.user.role === 'admin' || this.props.user.role === 'buyer') ? true : false : true) : false}
+                    history={this.props.history}
+                    zoomIntegrations={this.props.zoomIntegrations}
+                    createZoomMeeting={this.props.createZoomMeeting}
+                    showCaption={true}
                   />
                 }
                 {
@@ -587,7 +599,8 @@ function mapStateToProps(state) {
     teams: (state.teamsInfo.teams),
     searchChatMsgs: (state.whatsAppChatInfo.searchChat),
     socketData: (state.socketInfo.socketDataWhatsapp),
-    automated_options: (state.basicInfo.automated_options)
+    automated_options: (state.basicInfo.automated_options),
+    zoomIntegrations: (state.settingsInfo.zoomIntegrations)
   }
 }
 
@@ -614,7 +627,9 @@ function mapDispatchToProps(dispatch) {
     urlMetaData,
     uploadAttachment,
     sendAttachment,
-    deletefile
+    deletefile,
+    getZoomIntegrations,
+    createZoomMeeting
   }, dispatch)
 }
 

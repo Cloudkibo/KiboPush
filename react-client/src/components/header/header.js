@@ -273,13 +273,6 @@ class Header extends React.Component {
 
   render () {
     console.log('this.props.socketData', this.props.socketData)
-    let liveChatLink = ''
-    let hostname = window.location.hostname
-    if (hostname === 'skiboengage.cloudkibo.com') {
-      liveChatLink = 'https://skibochat.cloudkibo.com/liveChat'
-    } else if (hostname === 'kiboengage.cloudkibo.com') {
-      liveChatLink = 'https://kibochat.cloudkibo.com/liveChat'
-    }
     var alertOptions = {
       offset: 14,
       position: 'top right',
@@ -484,7 +477,7 @@ class Header extends React.Component {
                           </div>
                         </li>
                       }
-                      <li style={{marginRight: '10px', padding: '0'}} className='m-nav__item m-topbar__notifications m-topbar__notifications--img m-dropdown m-dropdown--large m-dropdown--header-bg-fill m-dropdown--arrow m-dropdown--align-center m-dropdown--mobile-full-width' data-dropdown-toggle='click' data-dropdown-persistent='true' aria-expanded='true'>
+                      <li style={{marginRight: '10px', padding: '0'}} className='m-nav__item m-topbar__notifications m-topbar__notifications--img m-dropdown m-dropdown--large m-dropdown--header-bg-fill m-dropdown--arrow m-dropdown--align-center m-dropdown--mobile-full-width' data-dropdown-toggle='click'>
                         <span className='m-nav__link m-dropdown__toggle' id='m_topbar_notification_icon'>
                           {this.props.notifications && this.state.unseenNotifications.length > 0 &&
                             <span className='m-nav__link-badge m-badge m-badge--dot m-badge--dot-small m-badge--danger' />

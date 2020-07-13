@@ -46,7 +46,7 @@ class Text extends React.Component {
         }
       })
       return (
-        <div style={{wordBreak: 'break-all', display: 'block', overflow: 'hidden'}}>
+        <div style={{wordBreak: 'break-word', display: 'block', overflow: 'hidden'}}>
           {wordElements}
         </div>
       )

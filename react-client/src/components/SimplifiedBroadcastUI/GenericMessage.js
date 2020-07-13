@@ -130,28 +130,6 @@ class GenericMessage extends React.Component {
     this.setState({showContent: !this.state.showContent})
   }
 
-
-
-   showValidationModal (errorMessage) {
-    this.setState({showContent: true, errorMessage: errorMessage}, () => {
-      this.refs.openValidationModal.click()
-    })
-  }
-
-  getModalContent () {
-    if (this.state.showContent) {
-      return (
-        <h6>{this.state.errorMessage}</h6>
-      )
-    } else {
-      return (<div />)
-    }
-  }
-
-  toggleModalContent () {
-    this.setState({showContent: !this.state.showContent})
-  }
-
   setTempFiles (files, filesToRemove) {
     let tempFiles = this.state.tempFiles
     if (files) {
@@ -1091,7 +1069,7 @@ class GenericMessage extends React.Component {
   }
 
   getItems () {
-    if (this.state.list.length > 0 && this.props.showQuickRelplies) {
+    if (this.state.list.length > 0 && this.props.showQuickReplies) {
       console.log('quick reply', this.state.list[this.state.list.length - 1])
       if (!this.state.quickRepliesComponent) {
         if (this.props.module && this.props.module === 'welcomeMessage' && this.state.broadcast[this.state.broadcast.length - 1].isEmailPhoneComponent) {
@@ -1362,7 +1340,7 @@ GenericMessage.defaultProps = {
   'titleEditable': false,
   'broadcast': [],
   'componentLimit': 3,
-  'showQuickRelplies' : true
+  'showQuickReplies' : true
 }
 
 function mapStateToProps (state) {

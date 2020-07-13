@@ -29,6 +29,8 @@ const handleIncomingMessage = (payload, state, props, updateLiveChatInfo, clearS
   if (state.activeSession._id === payload.subscriber._id) {
     let userChat = state.userChat
     userChat.push(payload.message)
+    let allChatMessages = props.allChatMessages
+    allChatMessages[payload.subscriber._id] = userChat
     session = sessions.splice(index, 1)[0]
     session.unreadCount = session.unreadCount ? session.unreadCount + 1 : 1
     session.lastPayload = payload.message.payload
@@ -42,12 +44,17 @@ const handleIncomingMessage = (payload, state, props, updateLiveChatInfo, clearS
     }
     data = {
       userChat,
+      allChatMessages,
       chatCount: props.chatCount + 1,
       openSessions: state.tabValue === 'open' ? sessions : [session, ...props.openSessions],
       closeSessions: state.tabValue === 'close' ? sessions : props.closeSessions,
       closeCount: state.tabValue === 'close' ? props.closeCount - 1 : props.closeCount
     }
   } else if (index >= 0) {
+    let allChatMessages = props.allChatMessages
+    if (allChatMessages[payload.subscriber._id]) {
+      allChatMessages[payload.subscriber._id] = [...allChatMessages[payload.subscriber._id], payload.message]
+    }
     session = sessions.splice(index, 1)[0]
     session.unreadCount = session.unreadCount ? session.unreadCount + 1 : 1
     session.lastPayload = payload.message.payload
@@ -57,6 +64,7 @@ const handleIncomingMessage = (payload, state, props, updateLiveChatInfo, clearS
     session.status = 'new'
     if (state.tabValue === 'open') sessions = [session, ...sessions]
     data = {
+      allChatMessages,
       openSessions: state.tabValue === 'open' ? sessions : [session, ...props.openSessions],
       closeSessions: state.tabValue === 'close' ? sessions : props.closeSessions,
       closeCount: state.tabValue === 'close' ? props.closeCount - 1 : props.closeCount
@@ -64,10 +72,12 @@ const handleIncomingMessage = (payload, state, props, updateLiveChatInfo, clearS
   } else if (index === -1 && state.tabValue === 'open') {
     let closeSessions = props.closeSessions
     let closeCount = props.closeCount
-    let sessionIndex = closeSessions.findIndex((s) => s._id === session._id)
-    if (sessionIndex > -1) {
-      closeSessions.splice(sessionIndex, 1)
-      closeCount -= 1
+    if (closeSessions) {
+      let sessionIndex = closeSessions.findIndex((s) => s._id === session._id)
+      if (sessionIndex > -1) {
+        closeSessions.splice(sessionIndex, 1)
+        closeCount -= 1
+      }
     }
     session.name = `${session.firstName} ${session.lastName}`
     session.lastPayload = payload.message.payload
@@ -78,7 +88,7 @@ const handleIncomingMessage = (payload, state, props, updateLiveChatInfo, clearS
     sessions = [session, ...sessions]
     data = {
       openSessions: sessions,
-      openCount: props.openCount + 1,
+      openCount: props.openCount ? props.openCount + 1 : 1,
       closeSessions,
       closeCount
     }
@@ -97,6 +107,8 @@ const handleAgentReply = (payload, state, props, updateLiveChatInfo, clearSocket
       let userChat = state.userChat
       payload.message.format = 'convos'
       userChat.push(payload.message)
+      let allChatMessages = props.allChatMessages
+      allChatMessages[payload.subscriber_id] = userChat
       session = sessions.splice(index, 1)[0]
       session.lastPayload = payload.message.payload
       session.last_activity_time = new Date()
@@ -111,6 +123,11 @@ const handleAgentReply = (payload, state, props, updateLiveChatInfo, clearSocket
         closeCount: state.tabValue === 'close' ? props.closeCount - 1 : props.closeCount
       }
     } else if (index >= 0) {
+      payload.message.format = 'convos'
+      let allChatMessages = props.allChatMessages
+      if (allChatMessages[payload.subscriber_id]) {
+        allChatMessages[payload.subscriber_id] = [...allChatMessages[payload.subscriber_id], payload.message]
+      }
       session = sessions.splice(index, 1)[0]
       session.lastPayload = payload.message.payload
       session.last_activity_time = new Date()
@@ -118,6 +135,7 @@ const handleAgentReply = (payload, state, props, updateLiveChatInfo, clearSocket
       session.lastRepliedBy = payload.message.replied_by
       if (state.tabValue === 'open') sessions = [session, ...sessions]
       data = {
+        allChatMessages,
         openSessions: state.tabValue === 'open' ? sessions : props.openSessions,
         closeSessions: state.tabValue === 'close' ? sessions : props.closeSessions,
         closeCount: state.tabValue === 'close' ? props.closeCount - 1 : props.closeCount

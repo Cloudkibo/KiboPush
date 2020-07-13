@@ -61,10 +61,12 @@ export function handleSocketEventWhatsapp (data, state, props, updateLiveChatInf
     } else if (index === -1 && state.tabValue === 'open') {
       let closeSessions = props.closeSessions
       let closeCount = props.closeCount
-      let sessionIndex = closeSessions.findIndex((s) => s._id === session._id)
-      if (sessionIndex > -1) {
-        closeSessions.splice(sessionIndex, 1)
-        closeCount -= 1
+      if (closeSessions) {
+        let sessionIndex = closeSessions.findIndex((s) => s._id === session._id)
+        if (sessionIndex > -1) {
+          closeSessions.splice(sessionIndex, 1)
+          closeCount -= 1
+        }
       }
       session.unreadCount = session.unreadCount ? session.unreadCount + 1 : 1
       session.lastPayload = payload.message.payload
@@ -77,7 +79,7 @@ export function handleSocketEventWhatsapp (data, state, props, updateLiveChatInf
         openSessions: sessions,
         closeSessions,
         closeCount,
-        openCount: props.openCount + 1
+        openCount: props.openCount ? props.openCount + 1 : 1
       }
     }
     updateLiveChatInfo(data)

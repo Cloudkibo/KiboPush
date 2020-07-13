@@ -3,9 +3,9 @@ import * as ActionTypes from '../constants/constants'
 import callApi from '../../utility/api.caller.service'
 export const API_URL = '/api'
 
-export function updateZoomIntegration (data) {
+export function updateZoomIntegrations (data) {
   return {
-    type: ActionTypes.UPDATE_ZOOM_INTEGRATION,
+    type: ActionTypes.UPDATE_ZOOM_INTEGRATIONS,
     data
   }
 }
@@ -31,7 +31,25 @@ export function showAdvancedSettings (data) {
     data
   }
 }
+export function showcannedResponses (data) {
+  return {
+    type: ActionTypes.GET_CANNED_RESPONSES,
+    data
+  }
+}
 
+export function editCannedResponse (data) {
+  return {
+    type: ActionTypes.UPDATE_CANNED_RESPONSE,
+    data
+  }
+}
+export function RemoveCannedResponse (data) {
+  return {
+    type: ActionTypes.DELETE_CANNED_RESPONSE,
+    data
+  }
+}
 export function getResponseMethod (data) {
   return {
     type: ActionTypes.RESPONSE_METHOD,
@@ -490,20 +508,28 @@ export function updatePlatformWhatsApp (data, msg, clearFields, handleResponse) 
   }
 }
 
-export function getZoomIntegration () {
+export function getZoomIntegrations () {
   return (dispatch) => {
     callApi('zoom/users')
       .then(res => {
-        dispatch(updateZoomIntegration(res.payload))
-      })
-  }
-}
-
-export function disconnectZoom () {
-  return (dispatch) => {
-    callApi('zoom/disconnect')
-      .then(res => {
-        dispatch(updateZoomIntegration(null))
+        dispatch(updateZoomIntegrations(res.payload ? res.payload : []))
+        // dispatch(updateZoomIntegrations([    
+        //     {
+        //       _id: '123',
+        //       profilePic: "https://platform-lookaside.fbsbx.com/platform/profilepic/?asid=10217280192532174&height=50&width=50&ext=1596610613&hash=AeTfTwYDbHqEJfmf",
+        //       firstName : "Anisha",
+        //       lastName : "Chhatwani",
+        //       connected: true
+        //     },
+        //     {
+        //       _id: 'abc',
+        //       profilePic: "",
+        //       firstName : "Kibo",
+        //       lastName : "Meeting",
+        //       connected: true
+        //     }
+        //   ])
+        // )
       })
   }
 }
@@ -564,6 +590,57 @@ export function getAdvancedSettings () {
     callApi('company/getAdvancedSettings')
       .then(res => {
         dispatch(showAdvancedSettings(res.payload))
+      })
+  }
+}
+
+export function loadcannedResponses () {
+  return (dispatch) => {
+    callApi('cannedResponses')
+      .then(res => {
+        if (res.status === 'success') {
+          dispatch(showcannedResponses(res.payload))
+        } else {
+          console.log('failed to fetch canned messages')
+        }
+      })
+  }
+}
+
+export function createCannedResponses (data, cb) {
+  return (dispatch) => {
+    callApi('cannedResponses', 'post', data)
+      .then(res => {
+        dispatch(loadcannedResponses())
+        cb(res)
+      })
+  }
+}
+
+export function updateCannedResponse (data, cb) {
+  return (dispatch) => {
+    callApi('cannedResponses/edit', 'post', data)
+      .then(res => {
+        cb(res)
+        if (res.status === 'success') {
+        dispatch(editCannedResponse(data))
+        }
+      })
+  }
+}
+export function deleteCannedResponse (data, msg) {
+  return (dispatch) => {
+    callApi('cannedResponses/delete', 'post', data)
+      .then(res => {
+        if (res.status === 'success') {
+          msg.success(res.payload)
+          if(res.status === 'success') {
+            dispatch(RemoveCannedResponse(data))
+            }
+        } else {
+          msg.error('Unable to delete canned Response')
+        }
+        // dispatch(showcannedResponses(res.payload))
       })
   }
 }
