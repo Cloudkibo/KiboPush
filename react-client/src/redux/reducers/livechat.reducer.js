@@ -177,7 +177,8 @@ export function liveChat (state = initialState, action) {
     case ActionTypes.SET_USER_CHAT:
       let newUserChat = state.allChatMessages[action.sessionId]
       return Object.assign({}, state, {
-        userChat: newUserChat
+        userChat: newUserChat,
+        chatCount: action.count
       })
 
     case ActionTypes.ALL_CHAT_OVERWRITE:

@@ -415,7 +415,7 @@ class LiveChat extends React.Component {
     }
     this.props.clearSearchResult()
     if (this.props.allChatMessages[session._id]) {
-      this.props.setUserChat(session._id)
+      this.props.setUserChat(session._id, session.messagesCount)
     } else {
       this.props.fetchUserChats(session._id, { page: 'first', number: 25 }, session.messagesCount)
     }
