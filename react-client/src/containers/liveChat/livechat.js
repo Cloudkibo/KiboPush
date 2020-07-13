@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import AlertContainer from 'react-alert'
 import { RingLoader } from 'halogenium'
-import { getZoomIntegration, createZoomMeeting } from '../../redux/actions/settings.actions'
+import { getZoomIntegrations, createZoomMeeting } from '../../redux/actions/settings.actions'
 
 // actions
 import {
@@ -124,7 +124,10 @@ class LiveChat extends React.Component {
     props.loadMembersList()
     props.loadTags()
     props.loadCustomFields()
-    props.getZoomIntegration()
+    props.getZoomIntegrations()
+    if (props.socketData) {
+      props.clearSocketData()
+    }
   }
 
   clearSearchResults () {
@@ -285,6 +288,7 @@ class LiveChat extends React.Component {
   }
 
   handleStatusChange (session, status) {
+    console.log('in handleStatusChange', session)
     const message = (status === 'resolved') ? 'Session has been marked as resolved successfully' : 'Session has been reopened successfully'
     this.setState({
       userChat: [],
@@ -294,7 +298,7 @@ class LiveChat extends React.Component {
     let notificationMessage = (status === 'resolved')
       ? `Session of subscriber ${session.firstName + ' ' + session.lastName} has been marked as resolved by ${this.props.user.name}`
       : `Session of subscriber ${session.firstName + ' ' + session.lastName} has been reopened by ${this.props.user.name}`
-    if (!session.assigned_to) {
+    if (!session.assigned_to || !session.is_assigned) {
         let notificationsData = {
           message: notificationMessage,
           category: { type: 'session_status', id: session._id },
@@ -527,14 +531,17 @@ class LiveChat extends React.Component {
       subscriberTags: nextProps.subscriberTags
     })
 
+
+    let newState = Object.assign(this.state, state)
+
     if (nextProps.socketData) {
       handleSocketEvent(
         nextProps.socketData,
-        this.state,
-        this.props,
-        this.props.updateLiveChatInfo,
-        this.props.user,
-        this.props.clearSocketData
+        newState,
+        nextProps,
+        nextProps.updateLiveChatInfo,
+        nextProps.user,
+        nextProps.clearSocketData
       )
     }
   }
@@ -628,12 +635,12 @@ class LiveChat extends React.Component {
                     showEmoji={true}
                     showGif={true}
                     showThumbsUp={true}
-                    showZoom={this.props.user.isSuperUser ? (!this.props.zoomIntegration ? (this.props.user.role === 'admin' || this.props.user.role === 'buyer') ? true : false : true) : false}
+                    showZoom={this.props.user.isSuperUser ? (this.props.zoomIntegrations.length === 0 ? (this.props.user.role === 'admin' || this.props.user.role === 'buyer') ? true : false : true) : false}
                     setMessageData={this.setMessageData}
                     filesAccepted={'image/*, audio/*, video/*, application/*, text/*'}
                     showAgentName={this.props.showAgentName}
                     history={this.props.history}
-                    zoomIntegration={this.props.zoomIntegration}
+                    zoomIntegrations={this.props.zoomIntegrations}
                     createZoomMeeting={this.props.createZoomMeeting}
                   />
                 }
@@ -720,7 +727,7 @@ function mapStateToProps(state) {
     customFields: (state.customFieldInfo.customFields),
     searchChatMsgs: (state.liveChat.searchChat),
     socketData: (state.socketInfo.socketData),
-    zoomIntegration: (state.settingsInfo.zoomIntegration)
+    zoomIntegrations: (state.settingsInfo.zoomIntegrations)
   }
 }
 
@@ -762,7 +769,7 @@ function mapDispatchToProps(dispatch) {
     urlMetaData,
     getSMPStatus,
     updateSessionProfilePicture,
-    getZoomIntegration,
+    getZoomIntegrations,
     createZoomMeeting
   }, dispatch)
 }

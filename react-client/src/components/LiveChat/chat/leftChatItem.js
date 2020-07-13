@@ -44,9 +44,19 @@ class LeftChatItem extends React.Component {
         fileurl: { url: message.attachments ? message.attachments[0].payload.url : message.fileurl.url }
       }
       return (
-        <VIDEO
-          video={video}
-        />
+        <div>
+          <VIDEO
+            video={video}
+          />
+          {
+            message.caption &&
+            <div style={{marginTop: '10px'}}>
+              <TEXT 
+                text={{text: message.caption}}
+              />
+            </div>
+          }
+        </div>
       )
     } else if (type === 'audio') {
       const audio = {
@@ -59,12 +69,22 @@ class LeftChatItem extends React.Component {
       )
     } else if (type === 'image') {
       const image = {
-        fileurl: message.attachments ? message.attachments[0].payload.url : message.fileurl.url
+        fileurl: message.attachments ? message.attachments[0].payload.url : message.fileurl.url,
       }
       return (
-        <IMAGE
-          image={image}
-        />
+        <div>
+          <IMAGE
+            image={image}
+          />
+          {
+            message.caption &&
+            <div style={{marginTop: '10px'}}>
+              <TEXT 
+                text={{text: message.caption}}
+              />
+            </div>
+          }
+        </div>
       )
     } else if (type === 'file') {
       const url = message.attachments ? message.attachments[0].payload.url : message.fileurl.url
