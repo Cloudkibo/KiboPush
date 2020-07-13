@@ -6,7 +6,6 @@ import { getmetaurl } from '../../../containers/liveChat/utilities'
 import MODAL from '../../extras/modal'
 import AUDIORECORDER from '../../audioRecorder'
 import CARD from '../messages/horizontalCard'
-import zoomIntegration from '../../../containers/settings/zoomIntegration'
 
 class Footer extends React.Component {
   constructor(props, context) {
@@ -104,43 +103,48 @@ class Footer extends React.Component {
 
   createZoomMeeting (event) {
     event.preventDefault()
-    this.setState({zoomMeetingLoading: true}, () => {
-      this.props.createZoomMeeting({
-          subscriberId: this.props.activeSession._id,
-          topic: this.state.zoomTopic,
-          agenda: this.state.zoomAgenda,
-          invitationMessage: this.state.zoomInvitationMessage,
-          zoomUserId: this.state.zoomUserId
-      }, (res) => {
-        if (res.status === 'success' && res.payload) {
-          this.setState({
-            zoomMeetingLoading: false,
-            zoomMeetingCreated: true,
-            zoomMeetingUrl: res.payload.joinUrl,
-            text: this.state.zoomInvitationMessage.replace('[invite_url]', res.payload.joinUrl)
-          }, () => {
-            document.getElementById('_close_zoom_integration').style.display = 'none'
-            this.sendMessage()
-            this.zoomCountdownTimer= setInterval(() => {
-              if (this.state.zoomCountdown <= 1) {
-                if (this.state.zoomMeetingUrl) {
-                  clearInterval(this.zoomCountdownTimer)
-                  document.getElementById('_zoomMeetingLink').click()
-                  //window.open(this.state.zoomMeetingUrl, '_blank')
-                  document.getElementById('_close_zoom_integration').style.display = 'block'
-                  document.getElementById('_close_zoom_integration').click()
+    const data = this.props.performAction('create a zoom meeting', this.props.activeSession)
+    if (data.isAllowed) {
+      this.setState({zoomMeetingLoading: true}, () => {
+        this.props.createZoomMeeting({
+            subscriberId: this.props.activeSession._id,
+            topic: this.state.zoomTopic,
+            agenda: this.state.zoomAgenda,
+            invitationMessage: this.state.zoomInvitationMessage,
+            zoomUserId: this.state.zoomUserId
+        }, (res) => {
+          if (res.status === 'success' && res.payload) {
+            this.setState({
+              zoomMeetingLoading: false,
+              zoomMeetingCreated: true,
+              zoomMeetingUrl: res.payload.joinUrl,
+              text: this.state.zoomInvitationMessage.replace('[invite_url]', res.payload.joinUrl)
+            }, () => {
+              document.getElementById('_close_zoom_integration').style.display = 'none'
+              this.sendMessage()
+              this.zoomCountdownTimer= setInterval(() => {
+                if (this.state.zoomCountdown <= 1) {
+                  if (this.state.zoomMeetingUrl) {
+                    clearInterval(this.zoomCountdownTimer)
+                    document.getElementById('_zoomMeetingLink').click()
+                    //window.open(this.state.zoomMeetingUrl, '_blank')
+                    document.getElementById('_close_zoom_integration').style.display = 'block'
+                    document.getElementById('_close_zoom_integration').click()
+                  }
+                } else {
+                  this.setState({zoomCountdown: this.state.zoomCountdown - 1})
                 }
-              } else {
-                this.setState({zoomCountdown: this.state.zoomCountdown - 1})
-              }
-            }, 1000)
-          })
-        } else {
-          console.log('error creating zoom meeting', res.description)
-          this.setState({zoomMeetingCreationError: true, zoomMeetingLoading: false})
-        }
+              }, 1000)
+            })
+          } else {
+            console.log('error creating zoom meeting', res.description)
+            this.setState({zoomMeetingCreationError: true, zoomMeetingLoading: false})
+          }
+        })
       })
-    })
+    } else {
+      this.props.alertMsg.error(data.errorMsg)
+    }
   }
 
   goToZoomIntegration () {
