@@ -2,12 +2,20 @@ import React from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import AlertContainer from 'react-alert'
+import { Popover, PopoverBody} from 'reactstrap'
+import { Picker } from 'emoji-mart'
 import { createCannedResponses, updateCannedResponse } from '../../../redux/actions/settings.actions'
 
 class cannedResponses extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
+      showPopover: false,
+      popoverOptions: {
+        placement: 'left',
+        target: '_picker_in_cannedResponse',
+        content: (<div />)
+      },
       closeModal: '',
       responseId: this.props.cannedResponse ? this.props.cannedResponse._id : '',
       cannedCode: this.props.cannedResponse ? this.props.cannedResponse.responseCode : '',
@@ -18,6 +26,72 @@ class cannedResponses extends React.Component {
     this.responseMessageHandleChange = this.responseMessageHandleChange.bind(this)
     this.handleCreateResponse = this.handleCreateResponse.bind(this)
     this.handleUpdateResponse = this.handleUpdateResponse.bind(this)
+    this.getPicker = this.getPicker.bind(this)
+    this.setEmoji = this.setEmoji.bind(this)
+    this.openPicker = this.openPicker.bind(this)
+    this.appendUserName = this.appendUserName.bind(this)
+    this.togglePopover = this.togglePopover.bind(this)
+  }
+
+  setEmoji (emoji) {
+    let cannedresponseMessage = `${this.state.cannedresponseMessage}${emoji.native}`
+    this.setState({cannedresponseMessage})
+  }
+
+  togglePopover () {
+    this.setState({showPopover: !this.state.showPopover})
+  }
+
+  appendUserName (nameType) {
+    let cannedresponseMessage = `${this.state.cannedresponseMessage}{{user_${nameType}_name}}`
+    this.setState({cannedresponseMessage})
+  }
+
+  openPicker (type) {
+    const popoverOptions = {
+      placement: 'left',
+      target: `_${type}_picker_canned`
+    }
+    this.getPicker(type, popoverOptions)
+  }
+
+  getPicker (type, popoverOptions) {
+    console.log('type', type)
+    switch (type) {
+      case 'emoji':
+        popoverOptions.content = (
+          <Picker
+            style={{paddingBottom: '100px', height: '390px', marginLeft: '-14px', marginTop: '-10px'}}
+            emojiSize={24}
+            perLine={6}
+            skin={1}
+            set='facebook'
+            showPreview={false}
+            showSkinTones={false}
+            custom={[]}
+            autoFocus={false}
+            onClick={(emoji) => this.setEmoji(emoji)}
+          />
+        )
+        break
+      case 'user':
+        popoverOptions.content = (
+          <div>
+            <span style={{cursor: 'pointer'}} onClick={() => this.appendUserName('first')}>First Name</span>
+            <div className='m--space-10' />
+            <span style={{cursor: 'pointer'}} onClick={() => this.appendUserName('last')}>Last Name</span>
+            <div className='m--space-10' />
+            <span style={{cursor: 'pointer'}} onClick={() => this.appendUserName('full')}>Full Name</span>
+          </div>
+        )
+        break
+      default:
+    }
+    console.log('popoverOptions.content', popoverOptions.content)
+    this.setState({
+      showPopover: true,
+      popoverOptions
+    })
   }
 
   UNSAFE_componentWillReceiveProps (nextProps) {
@@ -104,7 +178,7 @@ class cannedResponses extends React.Component {
     return (
       <div>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        <div style={{background: 'rgba(33, 37, 41, 0.6)', zIndex: 99992}} className='modal fade' id='create_modal' tabIndex='-1' role='dialog' aria-labelledby='exampleModalLabel' aria-hidden='true'>
+        <div style={{background: 'rgba(33, 37, 41, 0.6)'}} className='modal fade' id='create_modal' tabIndex='-1' role='dialog' aria-labelledby='exampleModalLabel' aria-hidden='true'>
           <div style={{ transform: 'translate(0, 0)', marginLeft: '400px' }} className='modal-dialog' role='document'>
             <div className='modal-content' style={{ width: '600px' }} >
               <div style={{ display: 'block', height: '70px', textAlign: 'left' }} className='modal-header'>
@@ -137,8 +211,23 @@ class cannedResponses extends React.Component {
                           className='form-control m-input m-input--solid'
                           id='description' rows='3'
                           style={{ height: '100px', resize: 'none' }} maxlength='500' required />
+                        <span style={{position: 'absolute', bottom: 0, right: '10px'}}>
+                        <i
+                          style={{fontSize: '20px', margin: '5px', cursor: 'pointer'}}
+                          className='fa fa-user'
+                          id='_user_picker_canned'
+                          onClick={() => {this.openPicker('user')}}
+                        />
+                        <i
+                          style={{fontSize: '20px', margin: '5px', cursor: 'pointer'}}
+                          className='fa fa-smile-o'
+                          id='_emoji_picker_canned'
+                          onClick={() => {this.openPicker('emoji')}}
+                        />
+                        </span>
                       </div>
                     </div>
+
                   </div>
                 </div>
                 <div className='modal-footer'>
@@ -149,6 +238,20 @@ class cannedResponses extends React.Component {
             </div>
           </div>
         </div>
+        <div id='_picker_in_cannedResponse'>
+          <Popover
+            container={document.getElementsByClassName('narcissus_17w311v')[0]}
+            className='greetingPopover'
+            placement={this.state.popoverOptions.placement}
+            isOpen={this.state.showPopover}
+            target={this.state.popoverOptions.target}
+            toggle={this.togglePopover}
+          >
+            <PopoverBody>
+              {this.state.popoverOptions.content}
+            </PopoverBody>
+          </Popover>
+        </div>s
       </div>
     )
   }
