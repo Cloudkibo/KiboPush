@@ -2,12 +2,11 @@ import * as ActionTypes from '../constants/constants'
 
 const initialState = {
   socketSession: '',
-  socketData: {}
+  socketData: {},
+  allChatMessages: {}
 }
 
 export function liveChat (state = initialState, action) {
-  console.log('livechat reducer', action)
-  console.log('livechat reducer state', state)
   switch (action.type) {
     case ActionTypes.UPDATE_SESSION_PROFILE_PICTURE:
       let openSessions = state.openSessions
@@ -18,7 +17,7 @@ export function liveChat (state = initialState, action) {
       } else {
         let closeIndex = closeSessions.findIndex(s => s._id === action.subscriber._id)
         closeSessions[closeIndex].profilePic = action.profilePic
-      }      
+      }
       return Object.assign({}, state, {
         openSessions: [...openSessions],
         closeSessions: closeSessions ? [...closeSessions] : []
@@ -173,6 +172,26 @@ export function liveChat (state = initialState, action) {
         userChat: orderedChat,
         chatCount: action.chatCount,
         changedStatus: ''
+      })
+
+    case ActionTypes.SET_USER_CHAT:
+      let newUserChat = state.allChatMessages[action.sessionId]
+      return Object.assign({}, state, {
+        userChat: newUserChat
+      })
+
+    case ActionTypes.ALL_CHAT_OVERWRITE:
+      let overwriteChat = state.allChatMessages
+      overwriteChat[action.sessionId] = action.userChat
+      return Object.assign({}, state, {
+        allChatMessages: overwriteChat
+      })
+
+    case ActionTypes.ALL_CHAT_UPDATE:
+      let updateChat = state.allChatMessages
+      updateChat[action.sessionId] = [...updateChat[action.sessionId], ...action.userChat]
+      return Object.assign({}, state, {
+        allChatMessages: updateChat
       })
 
     case ActionTypes.SOCKET_UPDATE:
