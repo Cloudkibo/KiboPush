@@ -219,7 +219,7 @@ class cannedResponses extends React.Component {
                           onClick={() => {this.openPicker('user')}}
                         />
                         <i
-                          style={{fontSize: '20px', margin: '5px', cursor: 'pointer'}}
+                          style={{fontSize: '20px', margin: '5px', cursor: 'pointer', marginRight:'10px'}}
                           className='fa fa-smile-o'
                           id='_emoji_picker_canned'
                           onClick={() => {this.openPicker('emoji')}}

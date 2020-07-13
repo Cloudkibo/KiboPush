@@ -38,7 +38,8 @@ class Footer extends React.Component {
       cannedMessages: [],
       dataForSearch: [],
       showCannedMessages: false,
-      selectedCannMessage : null
+      selectedCannMessage : null,
+      selectedIndex: 0
     }
     this.props.loadcannedResponses()
     this.onInputChange = this.onInputChange.bind(this)
@@ -74,19 +75,61 @@ class Footer extends React.Component {
     this.selectCannMessage = this.selectCannMessage.bind(this)
     this.toggleHover =this.toggleHover.bind(this)
     this.onMouseLeave = this.onMouseLeave.bind(this)
+    this.responseMessageHandleChange = this.responseMessageHandleChange.bind(this)
+    this.listDataDisplay = this.listDataDisplay.bind(this)
   }
+  componentDidMount () {
+
+    window.onkeydown = (e) => {
+      console.log(e.which)
+      if (this.state.showCannedMessages) {
+      let selectedIndex = this.state.selectedIndex
+      if (e.which === 40 ) {
+        if(selectedIndex < this.state.cannedMessages.length-1 )
+        this.setState({selectedIndex: selectedIndex +1})
+        document.getElementById("cardBody").scrollTop +=15
+
+      } else if (e.which === 38) {
+        if(selectedIndex !== 0) {
+        this.setState({selectedIndex: selectedIndex - 1})
+        document.getElementById("cardBody").scrollTop -=15
+        }
+      }
+    }
+  }
+}
+  responseMessageHandleChange (event) {
+    let selectedCannMessage = this.state.selectedCannMessage
+    selectedCannMessage.responseMessage = event.target.value
+    this.setState({ selectedCannMessage: selectedCannMessage })
+  }
+  
 
   toggleHover (id) {
-    console.log('Hovver called', id)
-    document.getElementById(id).style.backgroundColor = 'lightgrey'
+    // console.log('Hovver called', id)
+    // document.getElementById(id).style.backgroundColor = 'lightgrey'
+    this.setState({selectedIndex: id})
 
   }
 
   onMouseLeave (id) {
-    document.getElementById(id).style.backgroundColor = 'white'
+    // document.getElementById(id).style.backgroundColor = 'white'
   }
 
   selectCannMessage (CannMessage) {
+    let activeSession = this.props.activeSession
+    if (CannMessage.responseMessage.includes('{{user_full_name}}')) {
+      CannMessage.responseMessage = CannMessage.responseMessage.replace(
+        '{{user_full_name}}', activeSession.firstName + ' ' + activeSession.lastName)
+    }
+    if (CannMessage.responseMessage.includes('{{user_first_name}}')) {
+      CannMessage.responseMessage = CannMessage.responseMessage.replace(
+        '{{user_first_name}}', activeSession.firstName)
+    }
+    if (CannMessage.responseMessage.includes('{{user_last_name}}')) {
+      CannMessage.responseMessage = CannMessage.responseMessage.replace(
+        '{{user_last_name}}', activeSession.lastName)
+    }
     this.setState({selectedCannMessage: CannMessage, text:`/${CannMessage.responseCode}`})
   }
 
@@ -248,10 +291,10 @@ class Footer extends React.Component {
   onInputChange (e) {
     const text = e.target.value
     if (text[0] === '/') {
-      this.setState({ showCannedMessages: true })
+      this.setState({ showCannedMessages: true , selectedIndex: 0})
       this.search(e)
     } else {
-      this.setState({ showCannedMessages: false })
+      this.setState({ showCannedMessages: false, selectedCannMessage: null, selectedIndex: 0})
     }
     let state = {text}
     const url = getmetaurl(text)
@@ -591,14 +634,19 @@ class Footer extends React.Component {
   onEnter (e) {
     if (e.which === 13) {
       e.preventDefault()
+      console.log('this.state.selectedCannMessage', this.state.selectedCannMessage)
       if(this.state.selectedCannMessage) {
         let selectCannMessage = this.state.selectedCannMessage
         this.setState({showCannedMessages: false, text: selectCannMessage.responseMessage, selectedCannMessage: null }, ()=> {
           this.sendMessage()
         })
       }
+      else if (!this.state.selectedCannMessage && this.state.showCannedMessages) {
+        this.selectCannMessage(this.state.cannedMessages[this.state.selectedIndex])
+      }
       else {
-        this.sendMessage()
+        if (!this.state.showCannedMessages)
+            this.sendMessage()
       }
     }
   }
@@ -666,6 +714,25 @@ class Footer extends React.Component {
     if (this.state.attachment && this.state.attachment.id) {
       this.props.deletefile(this.state.attachment.id)
     }
+  }
+
+  listDataDisplay () {
+    let data = this.state.cannedMessages.map((item, index) => {
+      if(this.state.selectedIndex === index) {
+      return <ul className='m-nav' style={{backgroundColor:'silver'}} key={index} id ={`m-nav${index}`} onMouseOver={()=> this.toggleHover(index)} onMouseLeave={()=> this.onMouseLeave(`m-nav${index}`)}>
+        <li key={index} className='m-nav__item'>
+          <p style={{ wordBreak: 'break-all', cursor: 'pointer'}} onClick={() => this.selectCannMessage(item)}>/{item.responseCode}</p>
+        </li>
+      </ul> 
+      } else {
+        return <ul className='m-nav' style={{backgroundColor:'white'}} key={index} id ={`m-nav${index}`} onMouseOver={()=> this.toggleHover(index)} onMouseLeave={()=> this.onMouseLeave(`m-nav${index}`)}>
+        <li key={index} className='m-nav__item'>
+          <p style={{ wordBreak: 'break-all', cursor: 'pointer'}} onClick={() => this.selectCannMessage(item)}>/{item.responseCode}</p>
+        </li>
+      </ul> 
+      }
+    }) 
+    return data
   }
 
   render () {
@@ -739,14 +806,9 @@ class Footer extends React.Component {
                                   </div>
                                 </li>
                               </ul>
-                              <div className='card-body' style={{ maxHeight: '200px', overflow: 'auto' }}>
-                                {!this.state.selectedCannMessage ? this.state.cannedMessages.length > 0 ? this.state.cannedMessages.map((item, index) => (
-                                  <ul className='m-nav' key={index} id ={`m-nav${index}`} onMouseOver={()=> this.toggleHover(`m-nav${index}`)} onMouseLeave={()=> this.onMouseLeave(`m-nav${index}`)}>
-                                    <li key={index} className='m-nav__item'>
-                                      <p style={{ wordBreak: 'break-all', cursor: 'pointer'}} onClick={() => this.selectCannMessage(item)}>/{item.responseCode}</p>
-                                    </li>
-                                  </ul>
-                                ))
+                              <div className='card-body' id = 'cardBody' style={{ maxHeight: '200px', overflow: 'auto' }}>
+                                {!this.state.selectedCannMessage ? this.state.cannedMessages.length > 0 ? 
+                                   this.listDataDisplay()
                                   : <ul className='m-nav'>
                                     <li key={0} className='m-nav__item'>
                                       <p style={{ wordBreak: 'break-all' }}>No Data to Display</p>
@@ -754,8 +816,11 @@ class Footer extends React.Component {
                                   </ul>
                                 : <ul className='m-nav'>
                                 <li key={0} className='m-nav__item'>
-                                <p style={{ wordBreak: 'break-all'}}>{this.state.selectedCannMessage.responseMessage}</p>
-                                </li>
+                                <textarea value={this.state.selectedCannMessage.responseMessage} onChange={this.responseMessageHandleChange}
+                                className='form-control m-input m-input--solid'
+                                id='description' rows='3'
+                                style={{ height: '100px', resize: 'none' }} maxlength='500' required />
+                               </li>
                               </ul>
                                 }
                               </div>
