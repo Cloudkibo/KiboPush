@@ -72,7 +72,7 @@ class ZoomIntegration extends React.Component {
               <div className='row'>
                 <div className='col-xl-12 col-md-12 col-sm-12'>
                   <div>
-              <div style={{background: 'lightgray', color: 'black', padding: '5px', paddingLeft: '20px'}} className='m-portlet__body'>
+              <div style={{padding: '5px', paddingLeft: '20px'}} className='alert m-alert--default'>
                 {/* <div className='form-group m-form__group'>
                   <div style={{textAlign: 'center'}} className='alert m-alert m-alert--default' role='alert'>
                   Need help in understanding Integrations? Here is the <a href='http://kibopush.com/webhook/' target='_blank' rel='noopener noreferrer'>documentation</a>.
@@ -119,7 +119,7 @@ class ZoomIntegration extends React.Component {
                     <div style={{borderBottom: '1px dashed', paddingBottom: '25px'}} className='m-widget4__item' key={i}>
                       <div className='m-widget4__img m-widget4__img--logo'>
                         <span className='btn m-btn m-btn--icon m-btn--icon-only m-btn--custom m-btn--pill' style={{width: '50px', height: '50px', cursor: 'initial', backgroundColor: 'white'}}>
-                          <img style={{width: '100%', height: '100%'}} onError={(e) => e.target.src = 'https://login.vivaldi.net/profile/avatar/default-avatar.png'} src={integration.profilePic ? integration.profilePic : 'https://login.vivaldi.net/profile/avatar/default-avatar.png'}/> 
+                          <img alt='' style={{width: '100%', height: '100%'}} onError={(e) => e.target.src = 'https://login.vivaldi.net/profile/avatar/default-avatar.png'} src={integration.profilePic ? integration.profilePic : 'https://login.vivaldi.net/profile/avatar/default-avatar.png'}/> 
                         </span>
                       </div>
                       <div className='m-widget4__info' style={{width: '140px'}}>

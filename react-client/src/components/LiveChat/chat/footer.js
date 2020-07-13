@@ -6,7 +6,6 @@ import { getmetaurl } from '../../../containers/liveChat/utilities'
 import MODAL from '../../extras/modal'
 import AUDIORECORDER from '../../audioRecorder'
 import CARD from '../messages/horizontalCard'
-import zoomIntegration from '../../../containers/settings/zoomIntegration'
 
 class Footer extends React.Component {
   constructor(props, context) {
