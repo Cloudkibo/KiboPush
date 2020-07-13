@@ -13,7 +13,8 @@ class cannedResponses extends React.Component {
       cannedResponses: [],
       searchValue: '',
       dataForSearch: [],
-      currentcannedResponse: null
+      currentcannedResponse: null,
+      indexEdit:0
     }
     this.props.loadcannedResponses()
     this.expendRowToggle = this.expendRowToggle.bind(this)
@@ -39,10 +40,11 @@ class cannedResponses extends React.Component {
     })
 }
 
-  updateCannedResponse (cannedResponse) {
+  updateCannedResponse (cannedResponse, index) {
     console.log('cannedResponse', cannedResponse)
     this.setState({
-      currentcannedResponse: cannedResponse
+      currentcannedResponse: cannedResponse,
+      indexEdit: index
     }, () => {
       this.refs.cannedReponseModal.click()
     })
@@ -92,7 +94,7 @@ UNSAFE_componentWillReceiveProps (nextProps) {
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <a href='#/' style={{ display: 'none' }} ref='DeleteModal' data-toggle='modal' data-target='#delete_confirmation_modal'>DeleteModal</a>
         <a href='#/' style={{ display: 'none' }} ref='cannedReponseModal' data-toggle='modal' data-target='#create_modal'>CustomFieldModal</a>
-        <CreateCannedResponse cannedResponse={this.state.currentcannedResponse ? { ...this.state.currentcannedResponse } : null} />
+        <CreateCannedResponse cannedResponse={this.state.currentcannedResponse ? { ...this.state.currentcannedResponse } : null} index = {this.state.indexEdit} />
         <div style={{background: 'rgba(33, 37, 41, 0.6)', zIndex: 99991}} className='modal fade' id='delete_confirmation_modal' tabIndex='-1' role='dialog' aria-labelledby='exampleModalLabel' aria-hidden='true'>
           <div style={{ transform: 'translate(0, 0)', paddingLeft: '70px', marginTop: '150px' }} className='modal-dialog' role='document'>
             <div className='modal-content' style={{ width: '400px' }} >
@@ -177,7 +179,7 @@ UNSAFE_componentWillReceiveProps (nextProps) {
                                 data-toggle='modal'
                                 data-target='#edit'
                                 data-placement='bottom'
-                                onClick={() => { this.updateCannedResponse(cannedResponse) }}
+                                onClick={() => { this.updateCannedResponse(cannedResponse, i) }}
                                 className='m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill'
                                 title='Edit details'
                               >
