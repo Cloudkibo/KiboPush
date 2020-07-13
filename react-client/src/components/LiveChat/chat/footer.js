@@ -130,7 +130,7 @@ class Footer extends React.Component {
       CannMessage.responseMessage = CannMessage.responseMessage.replace(
         '{{user_last_name}}', activeSession.lastName)
     }
-    this.setState({selectedCannMessage: CannMessage, text:`/${CannMessage.responseCode}`})
+    this.setState({selectedCannMessage: {...CannMessage}, text:`/${CannMessage.responseCode}`})
   }
 
   resetZoomValues () {
