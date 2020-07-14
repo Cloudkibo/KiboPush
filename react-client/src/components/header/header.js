@@ -178,13 +178,13 @@ class Header extends React.Component {
   getPlanInfo (plan) {
     var planInfo
     if (plan === 'plan_A') {
-      planInfo = 'Individual, Premium Account'
+      planInfo = 'Basic, Free Plan'
     } else if (plan === 'plan_B') {
-      planInfo = 'Individual, Free Account'
+      planInfo = 'Standard, Paid Plan'
     } else if (plan === 'plan_C') {
-      planInfo = 'Team, Premium Account'
+      planInfo = 'Premium, Paid Plan'
     } else if (plan === 'plan_D') {
-      planInfo = 'Team, Free Account'
+      planInfo = 'Enterprise, Paid Plan'
     } else {
       planInfo = ''
     }
