@@ -59,7 +59,8 @@ class MessageTemplate extends React.Component {
       templateArguments: templates[0].templateArguments,
       number: '',
       sendingTemplate: false,
-      selectedIndex: 0
+      selectedIndex: 0,
+      isPhoneNumberValid: false
     }
     this.resetTemplate = this.resetTemplate.bind(this)
     this.onTextChange = this.onTextChange.bind(this)
@@ -85,7 +86,8 @@ class MessageTemplate extends React.Component {
       isTemplateValid: true,
       sendingTemplate: false,
       number: '',
-      selectedIndex: 0
+      selectedIndex: 0,
+      isPhoneNumberValid: false
     })
      /* eslint-disable */
      $('#templateText').removeClass('border border-danger')
@@ -321,7 +323,7 @@ class MessageTemplate extends React.Component {
                     </button>
                 </div>
                 <div style={{ display: 'inline-block', padding: '5px' }}>
-                  <button disabled={!this.state.isPhoneNumberValid || !this.state.isTemplateValid || this.state.sendingTemplate} className='btn btn-primary' onClick={() => { this.sendTemplate(this.state.templateMessage)}}>
+                  <button disabled={(this.state.sendingToNewNumber && !this.state.isPhoneNumberValid) || !this.state.isTemplateValid || this.state.sendingTemplate} className='btn btn-primary' onClick={() => { this.sendTemplate(this.state.templateMessage)}}>
                     {
                       this.state.sendingTemplate ? 
                       <div>
