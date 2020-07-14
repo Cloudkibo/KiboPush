@@ -9,6 +9,8 @@ import { bindActionCreators } from 'redux'
 import AlertContainer from 'react-alert'
 import { updatePlatformSettings, updatePlatformWhatsApp } from '../../redux/actions/settings.actions'
 import { updatePlatform } from '../../redux/actions/basicinfo.actions'
+import {validatePhoneNumber} from '../../utility/utils'
+
 class FacebookIntegration extends React.Component {
   constructor (props, context) {
     super(props, context)
@@ -93,7 +95,6 @@ class FacebookIntegration extends React.Component {
     }}, this.msg)
   }
   submitWapp () {
-    const regex = /\+(9[976]\d|8[987530]\d|6[987]\d|5[90]\d|42\d|3[875]\d|2[98654321]\d|9[8543210]|8[6421]|6[6543210]|5[87654321]|4[987654310]|3[9643210]|2[70]|7|1)\W*\d\W*\d\W*\d\W*\d\W*\d\W*\d\W*\d\W*\d\W*(\d{1,14})$/g
     // if (this.state.whatsAppSID === '') {
     //   this.msg.error('Account SID cannot be empty')
     // } else if (this.state.whatsAppToken === '') {
@@ -113,7 +114,7 @@ class FacebookIntegration extends React.Component {
     
     if (this.state.whatsAppToken === '') {
       this.msg.error('Access Token cannot be empty')
-    } else if (!this.state.flockSendNumber.match(regex)) {
+    } else if (!validatePhoneNumber(this.state.flockSendNumber)) {
       this.msg.error('Invalid Number')
     } else {
       this.setState({isShowingModalWhatsApp: false})

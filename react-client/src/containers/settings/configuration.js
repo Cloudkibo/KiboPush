@@ -6,6 +6,7 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import AlertContainer from 'react-alert'
 import WhatsAppDeleteModal from '../../components/extras/deleteWithPassword'
+import {validatePhoneNumber} from '../../utility/utils'
 
 class Webhook extends React.Component {
   constructor (props, context) {
@@ -159,7 +160,6 @@ class Webhook extends React.Component {
   }
 
   submitWapp () {
-    const regex = /\+(9[976]\d|8[987530]\d|6[987]\d|5[90]\d|42\d|3[875]\d|2[98654321]\d|9[8543210]|8[6421]|6[6543210]|5[87654321]|4[987654310]|3[9643210]|2[70]|7|1)\W*\d\W*\d\W*\d\W*\d\W*\d\W*\d\W*\d\W*\d\W*(\d{1,14})$/g
     // if (this.state.SIDWapp === '') {
     //   this.msg.error('Account SID cannot be empty')
     // } else if (this.state.tokenWapp === '') {
@@ -180,7 +180,7 @@ class Webhook extends React.Component {
 
       if (this.state.tokenWapp === '') {
         this.msg.error('Access Token cannot be empty')
-      } else if (!this.state.number.match(regex)) {
+      } else if (!validatePhoneNumber(this.state.number)) {
         this.msg.error('Invalid Number')
       } else {
         let data = {

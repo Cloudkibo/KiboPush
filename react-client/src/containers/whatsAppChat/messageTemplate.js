@@ -6,6 +6,7 @@
 import React from 'react'
 import { UncontrolledTooltip } from 'reactstrap'
 import PropTypes from 'prop-types'
+import {validatePhoneNumber} from '../../utility/utils'
 
 class MessageTemplate extends React.Component {
   constructor (props, context) {
@@ -71,7 +72,10 @@ class MessageTemplate extends React.Component {
   }
 
   updateNumber (e) {
-    this.setState({number: e.target.value})
+    this.setState({
+      number: e.target.value, 
+      isPhoneNumberValid: validatePhoneNumber(e.target.value)
+    })
   }
 
   resetTemplate () {
@@ -130,13 +134,8 @@ class MessageTemplate extends React.Component {
   }
 
   sendTemplate () {
+    this.setState({sendingTemplate: true})
     if (this.props.sendingToNewNumber) {
-      const regex = /\+(9[976]\d|8[987530]\d|6[987]\d|5[90]\d|42\d|3[875]\d|2[98654321]\d|9[8543210]|8[6421]|6[6543210]|5[87654321]|4[987654310]|3[9643210]|2[70]|7|1)\W*\d\W*\d\W*\d\W*\d\W*\d\W*\d\W*\d\W*\d\W*(\d{1,14})$/g
-      if (!this.state.number.match(regex)) {
-        this.props.alertMsg.error('Invalid Number')
-        return
-      }
-      this.setState({sendingTemplate: true})
       this.props.createNewContact({
         number: this.state.number
       }, (res) => {
@@ -145,7 +144,6 @@ class MessageTemplate extends React.Component {
         })
       })
     } else {
-      this.setState({sendingTemplate: true})
       this._sendTemplate()
     }
   }
@@ -219,9 +217,25 @@ class MessageTemplate extends React.Component {
             <div className='col-6' style={{ maxHeight: '70vh', overflowY: 'scroll' }}>
               {
                 this.props.sendingToNewNumber ? 
-                  <div id='_whatsapp_number' className='form-group m-form__group'>
+                  <div>
                     <label className='control-label'>WhatsApp Number:</label>
-                    <input disabled={this.state.sendingTemplate} className='form-control' value={this.state.number} onChange={(e) => this.updateNumber(e)} />
+                    <div style={{display: 'flex'}} id='_whatsapp_number' className='form-group m-form__group'>
+                      <input type='tel' 
+                        style={{width: '95%'}}
+                        placeholder='Enter a valid WhatsApp phone number...'
+                        disabled={this.state.sendingTemplate} 
+                        className={this.state.isPhoneNumberValid ? 'form-control' : 'form-control border-danger'} 
+                        value={this.state.number} 
+                        onChange={(e) => this.updateNumber(e)} />
+                        { !this.state.isPhoneNumberValid &&
+                        <div style={{marginLeft: '5px', marginTop: '3px'}}>
+                          <UncontrolledTooltip style={{minWidth: '100px', opacity: '1.0'}} target='phoneNumberWarning'>
+                            <span>Invalid phone number</span>
+                          </UncontrolledTooltip>
+                          <i id='phoneNumberWarning' className='flaticon-exclamation m--font-danger'/>
+                        </div>
+                        }
+                    </div>
                   </div>
                 :
                 <p>To send a message outside the 24 hours session window, use one of the following pre-approved templates</p>
@@ -307,7 +321,7 @@ class MessageTemplate extends React.Component {
                     </button>
                 </div>
                 <div style={{ display: 'inline-block', padding: '5px' }}>
-                  <button disabled={!this.state.isTemplateValid || this.state.sendingTemplate} className='btn btn-primary' onClick={() => { this.sendTemplate(this.state.templateMessage)}}>
+                  <button disabled={!this.state.isPhoneNumberValid || !this.state.isTemplateValid || this.state.sendingTemplate} className='btn btn-primary' onClick={() => { this.sendTemplate(this.state.templateMessage)}}>
                     {
                       this.state.sendingTemplate ? 
                       <div>
