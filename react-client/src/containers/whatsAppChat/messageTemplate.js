@@ -54,7 +54,6 @@ class MessageTemplate extends React.Component {
     this.state = {
       templates,
       templateMessage: templates[0].text,
-      selectedRadio: 'contact_reminder',
       isTemplateValid: true,
       templateArguments: templates[0].templateArguments,
       number: '',
@@ -78,9 +77,11 @@ class MessageTemplate extends React.Component {
   resetTemplate () {
     this.setState({
       templateMessage: this.state.templates[0].text,
-      selectedRadio: this.state.templates[0].name,
+      templateArguments: this.state.templates[0].templateArguments,
       isTemplateValid: true,
-      sendingTemplate: false
+      sendingTemplate: false,
+      number: '',
+      selectedIndex: 0
     })
      /* eslint-disable */
      $('#templateText').removeClass('border border-danger')
