@@ -139,7 +139,7 @@ class MessageTemplate extends React.Component {
     this.setState({sendingTemplate: true})
     if (this.props.sendingToNewNumber) {
       this.props.createNewContact({
-        number: this.state.number
+        number: '+' + this.state.number.replace(/\D/g, '')
       }, (res) => {
         this.props.changeActiveSession(res.payload, null, () => {
           this._sendTemplate()
