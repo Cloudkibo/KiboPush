@@ -147,15 +147,15 @@ class Settings extends React.Component {
     this.setState({show: false})
     var planInfo
     if (plan === 'plan_A') {
-      planInfo = 'Individual, Premium Account'
+      planInfo = 'Basic, Free Plan'
     } else if (plan === 'plan_B') {
-      planInfo = 'Individual, Free Account'
+      planInfo = 'Standard, Paid Plan'
       this.setState({showAPIbyPlan: false})
     } else if (plan === 'plan_C') {
-      planInfo = 'Team, Premium Account'
+      planInfo = 'Premium, Paid Plan'
     } else if (plan === 'plan_D') {
       this.setState({showAPIbyPlan: false})
-      planInfo = 'Team, Free Account)'
+      planInfo = 'Enterprise, Paid Plan)'
     } else {
       planInfo = ''
     }
