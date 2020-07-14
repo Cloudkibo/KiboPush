@@ -149,14 +149,14 @@ UNSAFE_componentWillReceiveProps (nextProps) {
             <div className='m-content'>
               {
                 (this.state.isSearchFilter || (this.state.cannedResponses && this.state.cannedResponses.length > 0)) &&                
-                  <div className='m-input-icon m-input-icon--left col-md-4 col-lg-4 col-xl-4'>
+                  <div className='m-input-icon m-input-icon--left col-md-7 col-lg-7 col-xl-7' style= {{marginBottom: '20px'}}>
                     <input className='form-control m-input m-input--solid' type='text' placeholder='Search here...' aria-label='Search' value={this.state.searchValue} onChange={this.search} />
                     <span className='m-input-icon__icon m-input-icon__icon--left'>
                       <span><i className='la la-search' /></span>
                     </span>
                   </div>
               }
-              <div style={{ maxHeight: '500px', overflow: 'auto' }}>
+              <div style={{ maxHeight: '580px', overflow: 'auto' }}>
                 {
                   this.state.cannedResponses && this.state.cannedResponses.length > 0 ? this.state.cannedResponses.map((cannedResponse, i) => 
                     <div key={cannedResponse._id} className='accordion' id={`accordion${cannedResponse._id}`} style={{ marginTop: '15px' }}>
