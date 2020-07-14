@@ -33,37 +33,37 @@ class Sessions extends React.Component {
       filterUnread: false,
       sessionsLoading: true
     }, () => {
-      this.props.fetchSessions(true, 'none')
+      this.props.fetchSessions(true, 'none', true)
     })
   }
 
   updateFilterPage (filterPage) {
     this.props.updateState({filterPage, sessionsLoading: true}, () => {
-      this.props.fetchSessions(true, 'none')
+      this.props.fetchSessions(true, 'none', true)
     })
   }
 
   updateFilterSort (filterSort) {
     this.props.updateState({filterSort, sessionsLoading: true}, () => {
-      this.props.fetchSessions(true, 'none')
+      this.props.fetchSessions(true, 'none', true)
     })
   }
 
   updateFilterSearch (value) {
     this.props.updateState({filterSearch: value, sessionsLoading: true}, () => {
-      this.props.fetchSessions(true, 'none')
+      this.props.fetchSessions(true, 'none', true)
     })
   }
 
   updateFilterPending (filterPending) {
     this.props.updateState({filterPending, sessionsLoading: true}, () => {
-      this.props.fetchSessions(true, 'none')
+      this.props.fetchSessions(true, 'none', true)
     })
   }
 
   updateFilterUnread (filterUnread) {
     this.props.updateState({filterUnread, sessionsLoading: true}, () => {
-      this.props.fetchSessions(true, 'none')
+      this.props.fetchSessions(true, 'none', true)
     })
   }
 
@@ -190,6 +190,7 @@ class Sessions extends React.Component {
                           showPageInfo={this.props.showPageInfo}
                           addToBulkAction={this.addToBulkAction}
                           showingBulkActions={this.props.showingBulkActions}
+                          showBulkActions={this.props.showBulkActions}
                         />
                       ))
                       : <p style={{marginLeft: '30px'}}>No data to display</p>

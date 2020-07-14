@@ -384,11 +384,11 @@ class Webhook extends React.Component {
                 <div className='m-form'>
                   <span>Please enter your FlockSend credentials here:</span>
                   <div className='form-group m-form__group'>
-                    <div id='question' className='form-group m-form__group'>
+                    <div id='_flocksend_access_token' className='form-group m-form__group'>
                       <label className='control-label'>FlockSend Access Token:</label>
                       <input className='form-control' value={this.state.tokenWapp} onChange={(e) => this.updateTokenWapp(e)} />
                     </div>
-                    <div id='question' className='form-group m-form__group'>
+                    <div id='_flocksend_whatsapp_number' className='form-group m-form__group'>
                       <label className='control-label'>WhatsApp Number:</label>
                       <input className='form-control' value={this.state.number} onChange={(e) => this.updateNumber(e)} />
                     </div>
