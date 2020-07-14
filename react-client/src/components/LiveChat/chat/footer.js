@@ -37,8 +37,8 @@ class Footer extends React.Component {
       zoomMeetingCreationError: false,
       cannedMessages: [],
       dataForSearch: [],
-      showCannedMessages: false,
-      selectedCannMessage : null,
+      showCannedMessages: this.props.showCannedMessage,
+      selectedCannMessage : false,
       selectedIndex: 0,
       caption: ''
     }
@@ -161,8 +161,14 @@ class Footer extends React.Component {
   }
 
   UNSAFE_componentWillReceiveProps (nextProps) {
+    console.log('UNSAFE_componentWillReceiveProps called in footer', this.props.activeSession._id)
+    console.log('UNSAFE_componentWillReceiveProps called in footer', nextProps.activeSession._id)
+
     if (nextProps.cannedResponses !== this.props.cannedResponses) {
       this.setState({ cannedMessages: nextProps.cannedResponses, dataForSearch: nextProps.cannedResponses })
+    }
+    if(this.props.activeSession._id !== nextProps.activeSession._id) {
+      this.setState({showCannedMessages: false, text: ''})
     }
   }
 
@@ -686,13 +692,24 @@ class Footer extends React.Component {
         if(selectCannMessage.responseMessage === '') {
           this.props.alertMsg.error('Canned Message response cannot be empty')
         } else {
-        this.setState({showCannedMessages: false, text: selectCannMessage.responseMessage, selectedCannMessage: null }, ()=> {
+          let text = this.state.text
+          if(text.includes(selectCannMessage.responseCode)) {
+            text = text.replace(`/${selectCannMessage.responseCode}`, selectCannMessage.responseMessage)
+          } else {
+            text = selectCannMessage.responseMessage
+          }
+          this.setState({showCannedMessages: false, text: text, selectedCannMessage: null }, ()=> {
           this.sendMessage()
         })
         }
       }
       else if (!this.state.selectedCannMessage && this.state.showCannedMessages) {
+        if(this.state.cannedMessages.length > 0) {
         this.selectCannMessage(this.state.cannedMessages[this.state.selectedIndex])
+        } else {
+          this.setState({showCannedMessages: false})
+          this.sendMessage()
+        }
       }
       else {
         if (!this.state.showCannedMessages)
@@ -772,12 +789,12 @@ class Footer extends React.Component {
   listDataDisplay () {
     let data = this.state.cannedMessages.map((item, index) => {
       if(this.state.selectedIndex === index) {
-      return <li key={index} className='m-nav__item' style={{backgroundColor:'silver'}} key={index} id ={`m-nav${index}`} onMouseOver={()=> this.toggleHover(index)} onMouseLeave={()=> this.onMouseLeave(`m-nav${index}`)}>
-          <p style={{ wordBreak: 'break-all', cursor: 'pointer'}} onClick={() => this.selectCannMessage(item)}>/{item.responseCode}</p>
+      return <li key={index} className='m-nav__item' style={{backgroundColor:'rgba(0,0,0,.03)'}} key={index} id ={`m-nav${index}`} onMouseOver={()=> this.toggleHover(index)} onMouseLeave={()=> this.onMouseLeave(`m-nav${index}`)}>
+          <p style={{ wordBreak: 'break-all', cursor: 'pointer', padding: '5px'}} onClick={() => this.selectCannMessage(item)}>/{item.responseCode}</p>
             </li>
       } else {
         return <li key={index} className='m-nav__item' style={{backgroundColor:'white'}} key={index} id ={`m-nav${index}`} onMouseOver={()=> this.toggleHover(index)} onMouseLeave={()=> this.onMouseLeave(`m-nav${index}`)}>
-          <p style={{ wordBreak: 'break-all', cursor: 'pointer'}} onClick={() => this.selectCannMessage(item)}>/{item.responseCode}</p>
+          <p style={{ wordBreak: 'break-all', cursor: 'pointer', padding: '5px'}} onClick={() => this.selectCannMessage(item)}>/{item.responseCode}</p>
         </li>
       }
     }) 

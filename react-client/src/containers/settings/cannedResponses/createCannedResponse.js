@@ -143,7 +143,7 @@ class cannedResponses extends React.Component {
     event.preventDefault()
     if (this.props.cannedResponse) {
       let dataexist = this.props.cannedResponses.filter((cannedResponse, i)=> {
-        if(cannedResponse.responseCode === this.state.cannedCode && i !== this.props.index) {
+        if(cannedResponse.responseCode.toLowerCase() === this.state.cannedCode.toLowerCase() && i !== this.props.index) {
            return cannedResponse
         }
       })
@@ -159,7 +159,7 @@ class cannedResponses extends React.Component {
     this.msg.error(`unable to edit Canned Message. ${this.state.cannedCode} Canned Code already exists`)
   }
     } else {
-      let dataexist = this.props.cannedResponses.filter(cannedResponse=> cannedResponse.responseCode === this.state.cannedCode)
+      let dataexist = this.props.cannedResponses.filter(cannedResponse=> cannedResponse.responseCode.toLowerCase() === this.state.cannedCode.toLowerCase())
       if(dataexist.length === 0) { 
       let data = {
         responseCode: this.state.cannedCode,
