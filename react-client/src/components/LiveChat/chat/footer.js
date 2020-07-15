@@ -37,8 +37,8 @@ class Footer extends React.Component {
       zoomMeetingCreationError: false,
       cannedMessages: [],
       dataForSearch: [],
-      showCannedMessages: false,
-      selectedCannMessage : null,
+      showCannedMessages: this.props.showCannedMessage,
+      selectedCannMessage : false,
       selectedIndex: 0,
       caption: ''
     }
@@ -90,12 +90,12 @@ class Footer extends React.Component {
       if (e.which === 40 ) {
         if(selectedIndex < this.state.cannedMessages.length-1 )
         this.setState({selectedIndex: selectedIndex +1})
-        document.getElementById("cardBody").scrollTop +=15
+        document.getElementById("cardBody").scrollTop +=55
 
       } else if (e.which === 38) {
         if(selectedIndex !== 0) {
         this.setState({selectedIndex: selectedIndex - 1})
-        document.getElementById("cardBody").scrollTop -=15
+        document.getElementById("cardBody").scrollTop -=55
         }
       }
     }
@@ -142,7 +142,7 @@ class Footer extends React.Component {
 
   selectZoomUser (e) {
     this.setState({zoomUserId: e.target.value})
-  } 
+  }
 
   resetZoomValues () {
     clearInterval(this.zoomCountdownTimer)
@@ -161,8 +161,14 @@ class Footer extends React.Component {
   }
 
   UNSAFE_componentWillReceiveProps (nextProps) {
+    console.log('UNSAFE_componentWillReceiveProps called in footer', this.props.activeSession._id)
+    console.log('UNSAFE_componentWillReceiveProps called in footer', nextProps.activeSession._id)
+
     if (nextProps.cannedResponses !== this.props.cannedResponses) {
       this.setState({ cannedMessages: nextProps.cannedResponses, dataForSearch: nextProps.cannedResponses })
+    }
+    if(this.props.activeSession._id !== nextProps.activeSession._id) {
+      this.setState({showCannedMessages: false, text: ''})
     }
   }
 
@@ -184,7 +190,8 @@ class Footer extends React.Component {
             topic: this.state.zoomTopic,
             agenda: this.state.zoomAgenda,
             invitationMessage: this.state.zoomInvitationMessage,
-            zoomUserId: this.state.zoomUserId
+            zoomUserId: this.state.zoomUserId,
+            platform: this.props.user.platform
         }, (res) => {
           if (res.status === 'success' && res.payload) {
             this.setState({
@@ -314,10 +321,24 @@ class Footer extends React.Component {
     const text = e.target.value
     if (text[0] === '/') {
       this.setState({ showCannedMessages: true , selectedIndex: 0})
-      this.search(e)
+      this.search(text)
     } else {
       this.setState({ showCannedMessages: false, selectedCannMessage: null, selectedIndex: 0})
     }
+    if(this.state.selectedCannMessage) {
+      if (/\s/.test(text)) {
+        var regex = new RegExp("^/" + this.state.selectedCannMessage.responseCode, "g")
+        if(!text.match(regex)) {
+          this.setState({selectedCannMessage: null})
+          this.search(text)
+        }
+     } else {
+       if(text !== `/${this.state.selectedCannMessage.responseCode}`) {
+       this.setState({selectedCannMessage: null})
+       this.search(text)
+      }
+    }
+   }
     let state = {text}
     const url = getmetaurl(text)
     if (url && url !== this.state.currentUrl) {
@@ -328,13 +349,13 @@ class Footer extends React.Component {
     this.setState(state)
   }
 
-  search (event) {
+  search (value) {
     if (this.state.dataForSearch.length > 0) {
       let searchArray = []
-      if (event.target.value !== '/') {
-        let textLength = event.target.value.length
-        let text = event.target.value.slice(1)
-        console.log('text in search', text)
+      if (value !== '/') {
+        let textLength = value.length
+        let text = value.slice(1)
+        console.log('text in search', value)
         this.state.dataForSearch.forEach(element => {
           if (element.responseCode.toLowerCase().includes(text.toLowerCase())) searchArray.push(element)
         })
@@ -686,13 +707,24 @@ class Footer extends React.Component {
         if(selectCannMessage.responseMessage === '') {
           this.props.alertMsg.error('Canned Message response cannot be empty')
         } else {
-        this.setState({showCannedMessages: false, text: selectCannMessage.responseMessage, selectedCannMessage: null }, ()=> {
+          let text = this.state.text
+          if(text.includes(selectCannMessage.responseCode)) {
+            text = text.replace(`/${selectCannMessage.responseCode}`, selectCannMessage.responseMessage)
+          } else {
+            text = selectCannMessage.responseMessage
+          }
+          this.setState({showCannedMessages: false, text: text, selectedCannMessage: null }, ()=> {
           this.sendMessage()
         })
         }
       }
       else if (!this.state.selectedCannMessage && this.state.showCannedMessages) {
+        if(this.state.cannedMessages.length > 0) {
         this.selectCannMessage(this.state.cannedMessages[this.state.selectedIndex])
+        } else {
+          this.setState({showCannedMessages: false})
+          this.sendMessage()
+        }
       }
       else {
         if (!this.state.showCannedMessages)
@@ -771,18 +803,20 @@ class Footer extends React.Component {
 
   listDataDisplay () {
     let data = this.state.cannedMessages.map((item, index) => {
+      let responseMessage = item.responseMessage
+      if (responseMessage.length > 37) {
+        responseMessage = responseMessage.trim().substring(0, 37) + "……"
+      }
       if(this.state.selectedIndex === index) {
-      return <ul className='m-nav' style={{backgroundColor:'silver'}} key={index} id ={`m-nav${index}`} onMouseOver={()=> this.toggleHover(index)} onMouseLeave={()=> this.onMouseLeave(`m-nav${index}`)}>
-        <li key={index} className='m-nav__item'>
-          <p style={{ wordBreak: 'break-all', cursor: 'pointer'}} onClick={() => this.selectCannMessage(item)}>/{item.responseCode}</p>
-        </li>
-      </ul> 
+      return <li key={index} className='m-nav__item' style={{backgroundColor:'rgba(0,0,0,.03)'}} key={index} id ={`m-nav${index}`} onMouseOver={()=> this.toggleHover(index)} onMouseLeave={()=> this.onMouseLeave(`m-nav${index}`)}>
+          <p style={{ wordBreak: 'break-all', cursor: 'pointer', margin: 'auto'}} onClick={() => this.selectCannMessage(item)}>/{item.responseCode}</p>
+          <p style={{ wordBreak: 'break-all', cursor: 'pointer', color: 'grey'}} onClick={() => this.selectCannMessage(item)}>{responseMessage}</p>
+            </li>
       } else {
-        return <ul className='m-nav' style={{backgroundColor:'white'}} key={index} id ={`m-nav${index}`} onMouseOver={()=> this.toggleHover(index)} onMouseLeave={()=> this.onMouseLeave(`m-nav${index}`)}>
-        <li key={index} className='m-nav__item'>
-          <p style={{ wordBreak: 'break-all', cursor: 'pointer'}} onClick={() => this.selectCannMessage(item)}>/{item.responseCode}</p>
+        return <li key={index} className='m-nav__item' style={{backgroundColor:'white'}} key={index} id ={`m-nav${index}`} onMouseOver={()=> this.toggleHover(index)} onMouseLeave={()=> this.onMouseLeave(`m-nav${index}`)}>
+          <p style={{ wordBreak: 'break-all', cursor: 'pointer', margin: 'auto'}} onClick={() => this.selectCannMessage(item)}>/{item.responseCode}</p>
+          <p style={{ wordBreak: 'break-all', cursor: 'pointer', color: 'grey'}} onClick={() => this.selectCannMessage(item)}>{responseMessage}</p>
         </li>
-      </ul> 
       }
     }) 
     return data
@@ -848,20 +882,22 @@ class Footer extends React.Component {
                                 <li key={100} className='m-nav__item'>
                                   <div className='card-header'>
                                     <h4 className='mb-0'>
-                                      <div
+                                      <div style={{cursor: 'auto'}}
                                         className='btn'
                                         data-toggle='collapse'
                                         aria-expanded='true'
                                       >
-                                      {this.state.selectedCannMessage ? this.state.selectedCannMessage.responseCode : 'Canned Messages'}
+                                      {this.state.selectedCannMessage ? this.state.selectedCannMessage.responseCode : 'Canned responses'}
                                       </div>
                                     </h4>
                                   </div>
                                 </li>
                               </ul>
-                              <div className='card-body' id = 'cardBody' style={{ maxHeight: '200px', overflow: 'auto' }}>
+                              <div className='card-body' id = 'cardBody' style={{ maxHeight: '230px', overflow: 'auto' }}>
                                 {!this.state.selectedCannMessage ? this.state.cannedMessages.length > 0 ? 
-                                   this.listDataDisplay()
+                                <ul className='m-nav' >
+                                   {this.listDataDisplay()}
+                                </ul>
                                   : <ul className='m-nav'>
                                     <li key={0} className='m-nav__item'>
                                       <p style={{ wordBreak: 'break-all' }}>No Data to Display</p>
