@@ -3,9 +3,9 @@ import * as ActionTypes from '../constants/constants'
 import callApi from '../../utility/api.caller.service'
 export const API_URL = '/api'
 
-export function updateZoomIntegrations (data) {
+export function updateZoomIntegration (data) {
   return {
-    type: ActionTypes.UPDATE_ZOOM_INTEGRATIONS,
+    type: ActionTypes.UPDATE_ZOOM_INTEGRATION,
     data
   }
 }
@@ -31,25 +31,7 @@ export function showAdvancedSettings (data) {
     data
   }
 }
-export function showcannedResponses (data) {
-  return {
-    type: ActionTypes.GET_CANNED_RESPONSES,
-    data
-  }
-}
 
-export function editCannedResponse (data) {
-  return {
-    type: ActionTypes.UPDATE_CANNED_RESPONSE,
-    data
-  }
-}
-export function RemoveCannedResponse (data) {
-  return {
-    type: ActionTypes.DELETE_CANNED_RESPONSE,
-    data
-  }
-}
 export function getResponseMethod (data) {
   return {
     type: ActionTypes.RESPONSE_METHOD,
@@ -585,6 +567,7 @@ export function getAdvancedSettings () {
       })
   }
 }
+
 
 export function loadcannedResponses () {
   return (dispatch) => {
