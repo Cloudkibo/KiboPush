@@ -142,7 +142,7 @@ class Footer extends React.Component {
 
   selectZoomUser (e) {
     this.setState({zoomUserId: e.target.value})
-  } 
+  }
 
   resetZoomValues () {
     clearInterval(this.zoomCountdownTimer)
@@ -190,7 +190,8 @@ class Footer extends React.Component {
             topic: this.state.zoomTopic,
             agenda: this.state.zoomAgenda,
             invitationMessage: this.state.zoomInvitationMessage,
-            zoomUserId: this.state.zoomUserId
+            zoomUserId: this.state.zoomUserId,
+            platform: this.props.user.platform
         }, (res) => {
           if (res.status === 'success' && res.payload) {
             this.setState({
