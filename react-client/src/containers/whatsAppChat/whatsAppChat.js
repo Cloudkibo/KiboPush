@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import AlertContainer from 'react-alert'
 import { RingLoader } from 'halogenium'
-import { getZoomIntegration, createZoomMeeting } from '../../redux/actions/settings.actions'
+import { getZoomIntegrations, createZoomMeeting } from '../../redux/actions/settings.actions'
 import NEWMESSAGEBUTTON from './newMessageButton'
 import TEMPLATESMODAL from './messageTemplate'
 
@@ -663,7 +663,7 @@ function mapDispatchToProps(dispatch) {
     uploadAttachment,
     sendAttachment,
     deletefile,
-    getZoomIntegration,
+    getZoomIntegrations,
     createZoomMeeting,
     createNewContact
 

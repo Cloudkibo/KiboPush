@@ -775,7 +775,7 @@ function mapDispatchToProps(dispatch) {
     urlMetaData,
     getSMPStatus,
     updateSessionProfilePicture,
-    getZoomIntegration,
+    getZoomIntegrations,
     createZoomMeeting,
     setUserChat
   }, dispatch)

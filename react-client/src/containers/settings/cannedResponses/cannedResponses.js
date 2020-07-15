@@ -151,6 +151,9 @@ UNSAFE_componentWillReceiveProps (nextProps) {
           </div>
           <div className='tab-content'>
             <div className='m-content'>
+              <div style={{textAlign: 'center'}} className='alert m-alert m-alert--default' role='alert'>
+                        Need help in understanding Canned Responses? Here is the <a href='https://kibopush.com/canned-responses/' target='_blank' rel='noopener noreferrer'>documentation</a>.
+              </div>
               {
                 (this.state.isSearchFilter || (this.state.cannedResponses && this.state.cannedResponses.length > 0)) &&                
                   <div className='m-input-icon m-input-icon--left col-md-7 col-lg-7 col-xl-7' style= {{marginBottom: '20px'}}>
