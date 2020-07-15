@@ -16,6 +16,9 @@ export function handleSocketEventWhatsapp (data, state, props, updateLiveChatInf
       case 'session_status_whatsapp':
         handleStatus(data.payload, state, props, updateLiveChatInfo, clearSocketData, user)
         break
+      case 'new_session_created_whatsapp':
+        handleNewSessionCreated(data.payload, state, props, updateLiveChatInfo, clearSocketData, user)
+        break
       default:
     }
   }
@@ -211,6 +214,20 @@ export function handleSocketEventWhatsapp (data, state, props, updateLiveChatInf
       closeSessions: closeSessions,
       openCount: openCount,
       closeCount: closeCount
+    }
+    updateLiveChatInfo(data)
+    clearSocketData()
+  }
+
+  const handleNewSessionCreated = (payload, state, props, updateLiveChatInfo, clearSocketData) => {
+    let newSession = payload
+    newSession.profilePic = 'https://www.mastermindpromotion.com/wp-content/uploads/2015/02/facebook-default-no-profile-pic-300x300.jpg'
+    newSession.firstName = payload.name
+    let sessions = state.sessions
+    sessions = [newSession, ...sessions]
+    let data = {
+      openSessions: sessions,
+      openCount: props.openCount ? props.openCount + 1 : 1
     }
     updateLiveChatInfo(data)
     clearSocketData()

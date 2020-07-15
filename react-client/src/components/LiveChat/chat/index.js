@@ -135,6 +135,7 @@ class Chat extends React.Component {
           updateNewMessage={this.updateNewMessage}
           updateChatAreaHeight={this.updateChatAreaHeight}
           alertMsg={this.props.alertMsg}
+          id='messageTemplate'
         />
 
         <HEADER
@@ -161,7 +162,7 @@ class Chat extends React.Component {
         />
 
         {
-          !moment(this.props.activeSession.lastMessagedAt).isAfter(moment().subtract(24, 'hours')) && !this.props.isSMPApproved
+          !this.props.activeSession.lastMessagedAt || (!moment(this.props.activeSession.lastMessagedAt).isAfter(moment().subtract(24, 'hours')) && !this.props.isSMPApproved)
           ? <div
             className='m-messenger'
             style={{
@@ -288,7 +289,8 @@ Chat.propTypes = {
   'platform': PropTypes.bool.isRequired
 }
 Chat.defaultProps = {
-  showTemplates: false
+  showTemplates: false,
+  showCaption: false
 }
 
 export default Chat

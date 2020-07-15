@@ -22,6 +22,7 @@ import UploadCustomerInformation from './uploadCustomerInformation'
 import WhiteListDomains from './whitelistDomains'
 import Integrations from './integrations'
 import AdvancedSetting from './advancedSettings'
+import CannedResponses from './cannedResponses/cannedResponses'
 import ZoomIntegration from './zoomIntegration'
 
 class Settings extends React.Component {
@@ -78,6 +79,7 @@ class Settings extends React.Component {
     this.setDeleteUserData = this.setDeleteUserData.bind(this)
     this.goToSettings = this.goToSettings.bind(this)
     this.setUploadCustomerFile = this.setUploadCustomerFile.bind(this)
+    this.setCannedResponses = this.setCannedResponses.bind(this)
   }
 
   UNSAFE_componentWillMount () {
@@ -191,6 +193,11 @@ class Settings extends React.Component {
     })
   }
 
+  setCannedResponses () {
+    this.setState({
+      openTab: 'cannedResponses'
+    })
+  }
   setZoomIntegration () {
     this.setState({
       openTab: 'zoomIntegration'
@@ -525,6 +532,14 @@ class Settings extends React.Component {
                       </a>
                     </li>
                     }
+                    { (url.includes('localhost') || url.includes('kibochat.cloudkibo.com')) && (this.props.user.role === 'admin' || this.props.user.role === 'buyer') &&
+                    <li className='m-nav__item'>
+                      <a href='#/' className='m-nav__link' onClick={this.setCannedResponses} style={{cursor: 'pointer'}} >
+                        <i className='m-nav__link-icon flaticon-menu-button' />
+                        <span className='m-nav__link-text'>Canned Responses</span>
+                      </a>
+                    </li>
+                    }
                     {this.props.user && !(this.props.user.role === 'admin' || this.props.user.role === 'agent') &&
                     <li className='m-nav__item'>
                       <a href='#/' className='m-nav__link' onClick={this.setNGP} style={{cursor: 'pointer'}}>
@@ -742,6 +757,9 @@ class Settings extends React.Component {
             { this.state.openTab === 'advancedSettings' &&
               <AdvancedSetting />
             }
+            { this.state.openTab === 'cannedResponses' &&
+              <CannedResponses history= {this.props.history}/>
+          }
             {
               this.state.openTab === 'zoomIntegration' &&
               <ZoomIntegration />
