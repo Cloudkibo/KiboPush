@@ -212,7 +212,7 @@ class cannedResponses extends React.Component {
                   <div className='row'>
                     <div className='col-8'>
                       <div className='form-group m-form__group'>
-                      <label for="exampleInputEmail1">
+                      <label for='Canned Code'>
                             Canned Code:
 												</label>
                         <i className='la la-question-circle' data-toggle='tooltip' title='Code of canned response' />
