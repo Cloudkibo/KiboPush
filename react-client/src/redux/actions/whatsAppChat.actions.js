@@ -203,6 +203,17 @@ export function sendAttachment (data, handleSendAttachment) {
   }
 }
 
+export function createNewContact (data, callback) {
+  return (dispatch) => {
+    callApi(`whatsAppContacts/create`, 'post', data).then(res => {
+      console.log('response from create whatsapp contact', res)
+      if (callback) {
+        callback(res)
+      }
+    })
+  }
+}
+
 export function unSubscribe (id, data) {
   return (dispatch) => {
     callApi(`whatsAppContacts/update/${id}`, 'post', data).then(res => {

@@ -120,7 +120,7 @@ class LiveChat extends React.Component {
     this.setMessageData = this.setMessageData.bind(this)
     this.markSessionsRead = this.markSessionsRead.bind(this)
 
-    this.fetchSessions(true, 'none')
+    this.fetchSessions(true, 'none', true)
     props.getSMPStatus(this.handleSMPStatus)
     props.loadMembersList()
     props.loadTags()
@@ -231,11 +231,11 @@ class LiveChat extends React.Component {
 
   changeTab (value) {
     this.setState({
+      sessions: value === 'open' ? this.props.openSessions : this.props.closeSessions,
+      sessionsCount: value === 'open' ? this.props.openCount : this.props.closeCount,
       tabValue: value,
       userChat: [],
       activeSession: {}
-    }, () => {
-      this.fetchSessions(true, 'none')
     })
   }
 
@@ -606,6 +606,7 @@ class LiveChat extends React.Component {
                   markSessionsRead={this.markSessionsRead}
                   selected={this.state.selected}
                   showingBulkActions={this.state.showingBulkActions}
+                  showBulkActions={true}
                   allSelected={this.state.allSelected}
                 />
                 {
