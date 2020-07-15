@@ -611,9 +611,11 @@ export function createCannedResponses (data, cb) {
   return (dispatch) => {
     callApi('cannedResponses', 'post', data)
       .then(res => {
+        if(res.status === 'success') {
         dispatch(loadcannedResponses())
+        }
         cb(res)
-      })
+     })
   }
 }
 
