@@ -526,8 +526,8 @@ class WhatsAppChat extends React.Component {
                     history={this.props.history}
                     zoomIntegrations={this.props.zoomIntegrations}
                     createZoomMeeting={this.props.createZoomMeeting}
-                    platform='whatsApp'
                     showCaption={true}
+                    platform='whatsApp'
                   />
                 }
                 {
