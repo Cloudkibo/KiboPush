@@ -174,7 +174,10 @@ class cannedResponses extends React.Component {
   }
 
   codeHandleChange (event) {
+    let length = event.target.value.length
+    if( event.target.value[length-1]!==' ')  {
     this.setState({ cannedCode: event.target.value })
+    }
   }
 
   responseMessageHandleChange (event) {
