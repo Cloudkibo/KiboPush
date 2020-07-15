@@ -13,7 +13,8 @@ class cannedResponses extends React.Component {
       cannedResponses: [],
       searchValue: '',
       dataForSearch: [],
-      currentcannedResponse: null
+      currentcannedResponse: null,
+      indexEdit:0
     }
     this.props.loadcannedResponses()
     this.expendRowToggle = this.expendRowToggle.bind(this)
@@ -32,17 +33,22 @@ class cannedResponses extends React.Component {
   }
 
   createCannedResponse (cannedResponse) {
+    if (this.state.cannedResponses.length < 25) {
     this.setState({
       currentcannedResponse: null
     }, () => {
       this.refs.cannedReponseModal.click()
-    })
+    }) 
+    } else {
+     this.msg.error('you can not create more than 25 canned responses')
+    }
 }
 
-  updateCannedResponse (cannedResponse) {
+  updateCannedResponse (cannedResponse, index) {
     console.log('cannedResponse', cannedResponse)
     this.setState({
-      currentcannedResponse: cannedResponse
+      currentcannedResponse: cannedResponse,
+      indexEdit: index
     }, () => {
       this.refs.cannedReponseModal.click()
     })
@@ -82,7 +88,7 @@ UNSAFE_componentWillReceiveProps (nextProps) {
   render () {
     var alertOptions = {
       offset: 14,
-      position: 'bottom right',
+      position: 'top right',
       theme: 'dark',
       time: 5000,
       transition: 'scale'
@@ -92,7 +98,7 @@ UNSAFE_componentWillReceiveProps (nextProps) {
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <a href='#/' style={{ display: 'none' }} ref='DeleteModal' data-toggle='modal' data-target='#delete_confirmation_modal'>DeleteModal</a>
         <a href='#/' style={{ display: 'none' }} ref='cannedReponseModal' data-toggle='modal' data-target='#create_modal'>CustomFieldModal</a>
-        <CreateCannedResponse cannedResponse={this.state.currentcannedResponse ? { ...this.state.currentcannedResponse } : null} />
+        <CreateCannedResponse cannedResponse={this.state.currentcannedResponse ? { ...this.state.currentcannedResponse } : null} index = {this.state.indexEdit} />
         <div style={{background: 'rgba(33, 37, 41, 0.6)', zIndex: 99991}} className='modal fade' id='delete_confirmation_modal' tabIndex='-1' role='dialog' aria-labelledby='exampleModalLabel' aria-hidden='true'>
           <div style={{ transform: 'translate(0, 0)', paddingLeft: '70px', marginTop: '150px' }} className='modal-dialog' role='document'>
             <div className='modal-content' style={{ width: '400px' }} >
@@ -147,14 +153,14 @@ UNSAFE_componentWillReceiveProps (nextProps) {
             <div className='m-content'>
               {
                 (this.state.isSearchFilter || (this.state.cannedResponses && this.state.cannedResponses.length > 0)) &&                
-                  <div className='m-input-icon m-input-icon--left col-md-4 col-lg-4 col-xl-4'>
+                  <div className='m-input-icon m-input-icon--left col-md-7 col-lg-7 col-xl-7' style= {{marginBottom: '20px'}}>
                     <input className='form-control m-input m-input--solid' type='text' placeholder='Search here...' aria-label='Search' value={this.state.searchValue} onChange={this.search} />
                     <span className='m-input-icon__icon m-input-icon__icon--left'>
                       <span><i className='la la-search' /></span>
                     </span>
                   </div>
               }
-              <div style={{ maxHeight: '500px', overflow: 'auto' }}>
+              <div style={{ maxHeight: '580px', overflow: 'auto' }}>
                 {
                   this.state.cannedResponses && this.state.cannedResponses.length > 0 ? this.state.cannedResponses.map((cannedResponse, i) => 
                     <div key={cannedResponse._id} className='accordion' id={`accordion${cannedResponse._id}`} style={{ marginTop: '15px' }}>
@@ -169,7 +175,7 @@ UNSAFE_componentWillReceiveProps (nextProps) {
                               aria-expanded='true'
                               aria-controls={`#collapse_${cannedResponse._id}`}
                             >
-                              {cannedResponse.responseCode}
+                              /{cannedResponse.responseCode}
                             </div>
                             <span style={{ overflow: 'visible', width: '150px', float: 'right' }}>
                               <a
@@ -177,7 +183,7 @@ UNSAFE_componentWillReceiveProps (nextProps) {
                                 data-toggle='modal'
                                 data-target='#edit'
                                 data-placement='bottom'
-                                onClick={() => { this.updateCannedResponse(cannedResponse) }}
+                                onClick={() => { this.updateCannedResponse(cannedResponse, i) }}
                                 className='m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill'
                                 title='Edit details'
                               >
