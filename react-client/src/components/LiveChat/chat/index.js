@@ -234,6 +234,7 @@ class Chat extends React.Component {
             zoomIntegrations={this.props.zoomIntegrations}
             createZoomMeeting={this.props.createZoomMeeting}
             platform={this.props.platform}
+            showCaption={this.props.showCaption}
           />
         }
 
