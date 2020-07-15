@@ -106,7 +106,7 @@ class Footer extends React.Component {
             agenda: this.state.zoomAgenda,
             invitationMessage: this.state.zoomInvitationMessage,
             zoomUserId: this.state.zoomUserId,
-            platform: this.props.platform
+            platform: this.props.user.platform
         }, (res) => {
           if (res.status === 'success' && res.payload) {
             this.setState({
