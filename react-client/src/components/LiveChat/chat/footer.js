@@ -355,10 +355,7 @@ class Footer extends React.Component {
       if (value !== '/') {
         let textLength = value.length
         let text = value.slice(1)
-        console.log('text in search', text)
         this.state.dataForSearch.forEach(element => {
-          console.log('element.responseCode', element.responseCode.toLowerCase())
-          console.log('text.toLowerCase()', text.toLowerCase())
           if (element.responseCode.toLowerCase().includes(text.toLowerCase())) searchArray.push(element)
         })
         this.setState({ cannedMessages: searchArray })
