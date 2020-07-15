@@ -29,7 +29,8 @@ import {
   deletefile,
   clearSearchResult,
   getSMPStatus,
-  updateSessionProfilePicture
+  updateSessionProfilePicture,
+  setUserChat
 } from '../../redux/actions/livechat.actions'
 import { updatePicture } from '../../redux/actions/subscribers.actions'
 import { loadTeamsList } from '../../redux/actions/teams.actions'
@@ -119,7 +120,7 @@ class LiveChat extends React.Component {
     this.setMessageData = this.setMessageData.bind(this)
     this.markSessionsRead = this.markSessionsRead.bind(this)
 
-    this.fetchSessions(true, 'none')
+    this.fetchSessions(true, 'none', true)
     props.getSMPStatus(this.handleSMPStatus)
     props.loadMembersList()
     props.loadTags()
@@ -230,11 +231,11 @@ class LiveChat extends React.Component {
 
   changeTab (value) {
     this.setState({
+      sessions: value === 'open' ? this.props.openSessions : this.props.closeSessions,
+      sessionsCount: value === 'open' ? this.props.openCount : this.props.closeCount,
       tabValue: value,
       userChat: [],
       activeSession: {}
-    }, () => {
-      this.fetchSessions(true, 'none')
     })
   }
 
@@ -401,8 +402,7 @@ class LiveChat extends React.Component {
         loadingChat: true,
         showSearch: false
       }, () => {
-        clearTimeout(this.sessionClickTimer)
-        this.sessionClickTimer = setTimeout(() => this.loadActiveSession({...session}), 1000)
+        this.loadActiveSession({...session})
       })
     }
   }
@@ -414,7 +414,11 @@ class LiveChat extends React.Component {
       this.props.markRead(session._id)
     }
     this.props.clearSearchResult()
-    this.props.fetchUserChats(session._id, { page: 'first', number: 25 }, session.messagesCount)
+    if (this.props.allChatMessages[session._id]) {
+      this.props.setUserChat(session._id, session.messagesCount)
+    } else {
+      this.props.fetchUserChats(session._id, { page: 'first', number: 25 }, session.messagesCount)
+    }
     this.props.getSubscriberTags(session._id, this.alertMsg)
     this.props.getCustomFieldValue(session._id)
     if (session.is_assigned && session.assigned_to.type === 'team') {
@@ -602,6 +606,7 @@ class LiveChat extends React.Component {
                   markSessionsRead={this.markSessionsRead}
                   selected={this.state.selected}
                   showingBulkActions={this.state.showingBulkActions}
+                  showBulkActions={true}
                   allSelected={this.state.allSelected}
                 />
                 {
@@ -715,6 +720,7 @@ function mapStateToProps(state) {
     closeCount: (state.liveChat.closeCount),
     closeSessions: (state.liveChat.closeSessions),
     userChat: (state.liveChat.userChat),
+    allChatMessages: (state.liveChat.allChatMessages),
     chatCount: (state.liveChat.chatCount),
     pages: (state.pagesInfo.pages),
     user: (state.basicInfo.user),
@@ -769,8 +775,9 @@ function mapDispatchToProps(dispatch) {
     urlMetaData,
     getSMPStatus,
     updateSessionProfilePicture,
-    getZoomIntegrations,
-    createZoomMeeting
+    getZoomIntegration,
+    createZoomMeeting,
+    setUserChat
   }, dispatch)
 }
 

@@ -83,7 +83,7 @@ socket.on('message', (data) => {
     if (data.action === 'new_chat_sms') data.showNotification = true
     store.dispatch(handleSocketEventSms(data))
   }
-  if (['new_chat_whatsapp', 'agent_replied_whatsapp', 'session_pending_response_whatsapp', 'unsubscribe_whatsapp', 'session_status_whatsapp'].includes(data.action)) {
+  if (['new_chat_whatsapp', 'agent_replied_whatsapp', 'session_pending_response_whatsapp', 'unsubscribe_whatsapp', 'session_status_whatsapp', 'new_session_created_whatsapp'].includes(data.action)) {
     if (data.action === 'new_chat_whatsapp') data.showNotification = true
     store.dispatch(handleSocketEventWhatsapp(data))
   }
