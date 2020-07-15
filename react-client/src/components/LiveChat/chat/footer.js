@@ -440,7 +440,7 @@ class Footer extends React.Component {
   }
 
   getZoomIntegrationContent () {
-    if (this.props.zoomIntegrations.length === 0) {
+    if (!this.props.zoomIntegration) {
       return (
         <div>
           <div>
@@ -449,7 +449,7 @@ class Footer extends React.Component {
             </span>
           </div>
           <div style={{marginTop: '25px', textAlign: 'center'}}>
-            <div onClick={this.goToZoomIntegration} className='btn btn-primary'>
+            <div onClick={this.goToIntegrations} className='btn btn-primary'>
               Integrate
             </div>
           </div>
@@ -460,26 +460,7 @@ class Footer extends React.Component {
         <form onSubmit={this.createZoomMeeting}>
           <div className="m-form m-form--fit m-form--label-align-right">
             <span>{`Please provide the following information to create a zoom meeting and send invitation to ${this.props.activeSession.firstName}.`}</span>
-
-            <div style={{marginTop: '20px', paddingLeft: '0', paddingRight: '0'}} class="form-group m-form__group row">
-              <label for="_zoom_users" className="col-2 col-form-label">
-                Account:
-              </label>
-              <div className="col-10">
-                <select onChange={this.selectZoomUser} class="form-control m-input" value={this.state.zoomUserId} id="_zoom_users" required>
-                  <option key='' value='' selected disabled>Select a Zoom Account...</option>
-                  {
-                    this.props.zoomIntegrations.map((account) => {
-                      return (
-                      <option value={account._id}>{account.firstName + " " + account.lastName}</option>
-                      )
-                    })
-                  }
-                </select>
-              </div>
-            </div>
-
-            <div style={{paddingLeft: '0', paddingRight: '0'}} className="form-group m-form__group row">
+            <div style={{marginTop: '20px', paddingLeft: '0', paddingRight: '0'}} className="form-group m-form__group row">
               <label for="_zoom_topic" className="col-2 col-form-label">
                 Topic:
               </label>
