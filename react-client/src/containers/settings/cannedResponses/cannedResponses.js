@@ -33,11 +33,15 @@ class cannedResponses extends React.Component {
   }
 
   createCannedResponse (cannedResponse) {
+    if (this.state.cannedResponses.length < 25) {
     this.setState({
       currentcannedResponse: null
     }, () => {
       this.refs.cannedReponseModal.click()
-    })
+    }) 
+    } else {
+     this.msg.error('you can not create more than 25 canned responses')
+    }
 }
 
   updateCannedResponse (cannedResponse, index) {
@@ -84,7 +88,7 @@ UNSAFE_componentWillReceiveProps (nextProps) {
   render () {
     var alertOptions = {
       offset: 14,
-      position: 'bottom right',
+      position: 'top right',
       theme: 'dark',
       time: 5000,
       transition: 'scale'
@@ -171,7 +175,7 @@ UNSAFE_componentWillReceiveProps (nextProps) {
                               aria-expanded='true'
                               aria-controls={`#collapse_${cannedResponse._id}`}
                             >
-                              {cannedResponse.responseCode}
+                              /{cannedResponse.responseCode}
                             </div>
                             <span style={{ overflow: 'visible', width: '150px', float: 'right' }}>
                               <a
