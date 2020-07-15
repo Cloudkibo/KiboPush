@@ -32,6 +32,26 @@ export function showAdvancedSettings (data) {
   }
 }
 
+export function showcannedResponses (data) {
+  return {
+    type: ActionTypes.GET_CANNED_RESPONSES,
+    data
+  }
+}
+
+export function editCannedResponse (data) {
+  return {
+    type: ActionTypes.UPDATE_CANNED_RESPONSE,
+    data
+  }
+}
+export function RemoveCannedResponse (data) {
+  return {
+    type: ActionTypes.DELETE_CANNED_RESPONSE,
+    data
+  }
+}
+
 export function getResponseMethod (data) {
   return {
     type: ActionTypes.RESPONSE_METHOD,
