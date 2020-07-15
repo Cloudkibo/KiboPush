@@ -598,7 +598,11 @@ export function loadcannedResponses () {
   return (dispatch) => {
     callApi('cannedResponses')
       .then(res => {
-        dispatch(showcannedResponses(res.payload))
+        if (res.status === 'success') {
+          dispatch(showcannedResponses(res.payload))
+        } else {
+          console.log('failed to fetch canned messages')
+        }
       })
   }
 }
@@ -607,9 +611,11 @@ export function createCannedResponses (data, cb) {
   return (dispatch) => {
     callApi('cannedResponses', 'post', data)
       .then(res => {
+        if(res.status === 'success') {
         dispatch(loadcannedResponses())
+        }
         cb(res)
-      })
+     })
   }
 }
 
