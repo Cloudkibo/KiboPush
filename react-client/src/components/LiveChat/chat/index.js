@@ -233,6 +233,7 @@ class Chat extends React.Component {
             history={this.props.history}
             zoomIntegrations={this.props.zoomIntegrations}
             createZoomMeeting={this.props.createZoomMeeting}
+            platform={this.props.platform}
           />
         }
 
@@ -282,7 +283,8 @@ Chat.propTypes = {
   'showSticker': PropTypes.bool.isRequired,
   'showEmoji': PropTypes.bool.isRequired,
   'showGif': PropTypes.bool.isRequired,
-  'showThumbsUp': PropTypes.bool.isRequired
+  'showThumbsUp': PropTypes.bool.isRequired,
+  'platform': PropTypes.bool.isRequired
 }
 Chat.defaultProps = {
   showTemplates: false

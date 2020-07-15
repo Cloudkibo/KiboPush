@@ -69,7 +69,7 @@ class Footer extends React.Component {
 
   selectZoomUser (e) {
     this.setState({zoomUserId: e.target.value})
-  } 
+  }
 
   resetZoomValues () {
     clearInterval(this.zoomCountdownTimer)
@@ -105,7 +105,8 @@ class Footer extends React.Component {
             topic: this.state.zoomTopic,
             agenda: this.state.zoomAgenda,
             invitationMessage: this.state.zoomInvitationMessage,
-            zoomUserId: this.state.zoomUserId
+            zoomUserId: this.state.zoomUserId,
+            platform: this.props.platform
         }, (res) => {
           if (res.status === 'success' && res.payload) {
             this.setState({
@@ -377,7 +378,7 @@ class Footer extends React.Component {
               <textarea required onChange={this.setZoomInvitationMessage} className="form-control m-input" value={this.state.zoomInvitationMessage} id="_zoom_invitation_message" rows="3"></textarea>
               {/* <div style={{color: 'red'}}>{'*Required'}</div> */}
             </div>
-            
+
             <div className='m-messenger__form-tools pull-right messengerTools' style={{ backgroundColor: '#F1F0F0', marginTop: '-40px', marginRight: '10px' }}>
               <div id='_appendInvitationUrl' style={{ display: 'inline-block', float: 'left' }}>
                 <i data-tip={this.state.zoomInvitationMessage.includes('invite_url') ? 'Invitation URL is already present' : 'Append invitation URL'} onClick={this.appendInvitationUrl} style={{
@@ -404,7 +405,7 @@ class Footer extends React.Component {
                marginTop: '-10px',
                fontStyle: 'italic'
              }}>{'Note: [invite_url] will be replaced by the generated zoom meeting invitation link'}</div>
-              
+
             <div style={{paddingBottom: '0', paddingRight: '0', paddingLeft: '0', float: 'right'}} className="m-form__actions">
               <button disabled={this.state.zoomMeetingLoading} style={{float: 'right', marginLeft: '30px'}} type='submit' className="btn btn-primary">
                 {
