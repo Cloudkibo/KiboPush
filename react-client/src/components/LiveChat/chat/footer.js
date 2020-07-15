@@ -214,11 +214,10 @@ class Footer extends React.Component {
     })
   }
 
-  goToZoomIntegration () {
-    document.getElementById('_close_zoom_integration').click()
+  goToIntegrations () {
     this.props.history.push({
       pathname: '/settings',
-      state: {tab: 'zoomIntegration'}
+      state: {tab: 'integrations'}
     })
   }
 
