@@ -508,28 +508,20 @@ export function updatePlatformWhatsApp (data, msg, clearFields, handleResponse) 
   }
 }
 
-export function getZoomIntegrations () {
+export function getZoomIntegration () {
   return (dispatch) => {
     callApi('zoom/users')
       .then(res => {
-        dispatch(updateZoomIntegrations(res.payload ? res.payload : []))
-        // dispatch(updateZoomIntegrations([    
-        //     {
-        //       _id: '123',
-        //       profilePic: "https://platform-lookaside.fbsbx.com/platform/profilepic/?asid=10217280192532174&height=50&width=50&ext=1596610613&hash=AeTfTwYDbHqEJfmf",
-        //       firstName : "Anisha",
-        //       lastName : "Chhatwani",
-        //       connected: true
-        //     },
-        //     {
-        //       _id: 'abc',
-        //       profilePic: "",
-        //       firstName : "Kibo",
-        //       lastName : "Meeting",
-        //       connected: true
-        //     }
-        //   ])
-        // )
+        dispatch(updateZoomIntegration(res.payload))
+      })
+  }
+}
+
+export function disconnectZoom () {
+  return (dispatch) => {
+    callApi('zoom/disconnect')
+      .then(res => {
+        dispatch(updateZoomIntegration(null))
       })
   }
 }
