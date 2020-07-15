@@ -323,7 +323,7 @@ class MessageTemplate extends React.Component {
                     </button>
                 </div>
                 <div style={{ display: 'inline-block', padding: '5px' }}>
-                  <button disabled={(this.state.sendingToNewNumber && !this.state.isPhoneNumberValid) || !this.state.isTemplateValid || this.state.sendingTemplate} className='btn btn-primary' onClick={() => { this.sendTemplate(this.state.templateMessage)}}>
+                  <button disabled={(this.props.sendingToNewNumber && !this.state.isPhoneNumberValid) || !this.state.isTemplateValid || this.state.sendingTemplate} className='btn btn-primary' onClick={() => { this.sendTemplate(this.state.templateMessage)}}>
                     {
                       this.state.sendingTemplate ? 
                       <div>
