@@ -1,6 +1,6 @@
 /* eslint-disable no-useless-constructor */
 import React from 'react'
-import { getIntegrations, updateIntegration, createIntegration, getZoomIntegration, disconnectZoom } from '../../redux/actions/settings.actions'
+import { getIntegrations, updateIntegration, createIntegration, getZoomIntegration} from '../../redux/actions/settings.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import AlertContainer from 'react-alert'
@@ -249,7 +249,6 @@ function mapDispatchToProps (dispatch) {
     updateIntegration,
     createIntegration,
     getZoomIntegration,
-    disconnectZoom
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Integrations)
