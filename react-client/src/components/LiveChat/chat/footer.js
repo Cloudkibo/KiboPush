@@ -32,7 +32,6 @@ class Footer extends React.Component {
       zoomInvitationMessage: this.initialZoomInvitationMessage,
       zoomMeetingCreated: false,
       zoomCountdown: this.initialZoomCountdown,
-      zoomUserId: '',
       zoomMeetingUrl: '',
       zoomMeetingCreationError: false,
       cannedMessages: [],
@@ -65,7 +64,7 @@ class Footer extends React.Component {
     this.sendMessage = this.sendMessage.bind(this)
     this.toggleAudioRecording = this.toggleAudioRecording.bind(this)
     this.getZoomIntegrationContent = this.getZoomIntegrationContent.bind(this)
-    this.goToZoomIntegration = this.goToZoomIntegration.bind(this)
+    this.goToIntegrations = this.goToIntegrations.bind(this) 
     this.setZoomTopic = this.setZoomTopic.bind(this)
     this.setZoomAgenda = this.setZoomAgenda.bind(this)
     this.setZoomInvitationMessage = this.setZoomInvitationMessage.bind(this)
@@ -78,7 +77,6 @@ class Footer extends React.Component {
     this.onMouseLeave = this.onMouseLeave.bind(this)
     this.responseMessageHandleChange = this.responseMessageHandleChange.bind(this)
     this.listDataDisplay = this.listDataDisplay.bind(this)
-    this.selectZoomUser = this.selectZoomUser.bind(this)
     this.onCaptionChange = this.onCaptionChange.bind(this)
   }
   componentDidMount () {
@@ -138,10 +136,6 @@ class Footer extends React.Component {
 
   onCaptionChange (e) {
     this.setState({caption: e.target.value})
-  }
-
-  selectZoomUser (e) {
-    this.setState({zoomUserId: e.target.value})
   }
 
   resetZoomValues () {
