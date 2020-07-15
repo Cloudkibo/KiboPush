@@ -174,10 +174,9 @@ class cannedResponses extends React.Component {
   }
 
   codeHandleChange (event) {
-    let length = event.target.value.length
-    if( event.target.value[length-1]!==' ')  {
-    this.setState({ cannedCode: event.target.value })
-    }
+    let str = event.target.value
+    str = str.split(' ').join('')
+    this.setState({ cannedCode: str })
   }
 
   responseMessageHandleChange (event) {
@@ -212,11 +211,17 @@ class cannedResponses extends React.Component {
                 <div className='modal-body'>
                   <div className='row'>
                     <div className='col-8'>
-                      <div className='m-form__group m-form__group--inline'>
-                        <div className='' style={{textAlign: 'left', marginTop: '10px'}}>
-                          <label>Canned Code:</label><i className='la la-question-circle' data-toggle='tooltip' title='Code of canned response' />
-                        </div>
-                        <input type='text' id='name' className='form-control m-input' value={this.state.cannedCode} onChange={this.codeHandleChange} maxlength='20' required />
+                      <div className='form-group m-form__group'>
+                      <label for="exampleInputEmail1">
+                            Canned Code:
+												</label>
+                        <i className='la la-question-circle' data-toggle='tooltip' title='Code of canned response' />
+                        <div class="input-group m-input-group">
+                        <span class="input-group-addon" id="basic-addon1">
+														/
+													</span>
+                        <input type='text' id='name' className='form-control m-input' value={this.state.cannedCode} onChange={this.codeHandleChange} maxlength='30' required />
+                      </div>
                       </div>
                     </div>
                     <div className='col-12'>
