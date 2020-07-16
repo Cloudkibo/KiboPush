@@ -1,6 +1,4 @@
 import React from 'react'
-import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
 import PropTypes from 'prop-types'
 import { getmetaurl } from '../../../containers/liveChat/utilities'
 
@@ -8,7 +6,6 @@ import { getmetaurl } from '../../../containers/liveChat/utilities'
 import MODAL from '../../extras/modal'
 import AUDIORECORDER from '../../audioRecorder'
 import CARD from '../messages/horizontalCard'
-import {loadcannedResponses} from '../../../redux/actions/settings.actions'
 class Footer extends React.Component {
   constructor(props, context) {
     super(props, context)
@@ -42,7 +39,6 @@ class Footer extends React.Component {
       selectedIndex: 0,
       caption: ''
     }
-    this.props.loadcannedResponses()
     this.onInputChange = this.onInputChange.bind(this)
     this.onEnter = this.onEnter.bind(this)
     this.sendThumbsUp = this.sendThumbsUp.bind(this)
@@ -164,7 +160,7 @@ class Footer extends React.Component {
     console.log('UNSAFE_componentWillReceiveProps called in footer', this.props.activeSession._id)
     console.log('UNSAFE_componentWillReceiveProps called in footer', nextProps.activeSession._id)
 
-    if (nextProps.cannedResponses !== this.props.cannedResponses) {
+    if (nextProps.cannedResponses) {
       this.setState({ cannedMessages: nextProps.cannedResponses, dataForSearch: nextProps.cannedResponses })
     }
     if(this.props.activeSession._id !== nextProps.activeSession._id) {
@@ -1102,6 +1098,7 @@ class Footer extends React.Component {
 }
 
 Footer.propTypes = {
+  'cannedResponses': PropTypes.array.isRequired,
   'performAction': PropTypes.func.isRequired,
   'activeSession': PropTypes.object.isRequired,
   'user': PropTypes.object.isRequired,
@@ -1127,14 +1124,4 @@ Footer.propTypes = {
   'showCaption': PropTypes.bool,
 }
 
-function mapStateToProps (state) {
-  return {
-    cannedResponses: state.settingsInfo.cannedResponses
-  }
-}
-function mapDispatchToProps (dispatch) {
-  return bindActionCreators({
-    loadcannedResponses: loadcannedResponses
-  }, dispatch)
-}
-export default connect(mapStateToProps, mapDispatchToProps)(Footer)
+export default Footer
