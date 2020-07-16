@@ -1063,6 +1063,7 @@ class Footer extends React.Component {
 }
 
 Footer.propTypes = {
+  'cannedResponses': PropTypes.array.isRequired,
   'performAction': PropTypes.func.isRequired,
   'activeSession': PropTypes.object.isRequired,
   'user': PropTypes.object.isRequired,
