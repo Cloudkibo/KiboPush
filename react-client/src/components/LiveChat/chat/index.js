@@ -259,6 +259,7 @@ class Chat extends React.Component {
 }
 
 Chat.propTypes = {
+  'cannedResponses': PropTypes.array.isRequired,
   'userChat': PropTypes.array.isRequired,
   'chatCount': PropTypes.number.isRequired,
   'sessions': PropTypes.array.isRequired,
