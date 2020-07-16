@@ -733,7 +733,9 @@ function mapStateToProps(state) {
     customFields: (state.customFieldInfo.customFields),
     searchChatMsgs: (state.liveChat.searchChat),
     socketData: (state.socketInfo.socketData),
-    zoomIntegrations: (state.settingsInfo.zoomIntegrations)
+    zoomIntegrations: (state.settingsInfo.zoomIntegrations),
+    cannedResponses: state.settingsInfo.cannedResponses
+
   }
 }
 
@@ -777,7 +779,8 @@ function mapDispatchToProps(dispatch) {
     updateSessionProfilePicture,
     getZoomIntegrations,
     createZoomMeeting,
-    setUserChat
+    setUserChat,
+   
   }, dispatch)
 }
 
