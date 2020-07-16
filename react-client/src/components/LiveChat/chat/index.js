@@ -204,6 +204,7 @@ class Chat extends React.Component {
             </button>
           </div>
           : <FOOTER
+            cannedResponses={this.props.cannedResponses}
             performAction={this.props.performAction}
             activeSession={this.props.activeSession}
             user={this.props.user}
