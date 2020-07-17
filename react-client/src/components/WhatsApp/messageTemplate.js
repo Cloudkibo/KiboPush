@@ -15,7 +15,7 @@ class MessageTemplate extends React.Component {
       {
         name: 'contact_reminder',
         text: 'Hi {{1}}.\n\nThank you for contacting {{2}}.\n\nPlease choose from the options below to continue:',
-        regex:  new RegExp(/^Hi (.*).\n\nThank you for contacting (.*).\n\nPlease choose from the options below to continue:$/, 'i'),
+        regex:  new RegExp(/^Hi (.*)\.\n\nThank you for contacting (.*).\n\nPlease choose from the options below to continue:$/, 'i'),
         buttons: [
           {title: 'Get in Touch'},
           {title: 'Explore Options'},
