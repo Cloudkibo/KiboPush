@@ -169,12 +169,6 @@ class Settings extends React.Component {
     })
   }
 
-  setCannedResponses () {
-    this.setState({
-      openTab: 'cannedResponses'
-    })
-  }
-
   setWhiteListDomains () {
     this.setState({
       openTab: 'whitelistDomains'
@@ -766,9 +760,6 @@ class Settings extends React.Component {
             { this.state.openTab === 'advancedSettings' &&
               <AdvancedSetting />
             }
-            { this.state.openTab === 'cannedResponses' &&
-              <CannedResponses history= {this.props.history}/>
-          }
             {
               this.state.openTab === 'zoomIntegration' &&
               <ZoomIntegration />
