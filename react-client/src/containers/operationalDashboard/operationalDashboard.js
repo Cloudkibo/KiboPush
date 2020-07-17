@@ -15,6 +15,8 @@ import Reports from './reports'
 import AutopostingSummary from '../dashboard/autopostingSummary'
 import IntegrationsSummary from '../dashboard/integrationsSummary'
 import CompanyInfo from './companyInfo'
+import WhatsAppMetrics from '../smsWhatsAppDashboard/whatsAppMetrics'
+
 //  import ListItem from './ListItem'
 import moment from 'moment'
 import Popover from 'react-simple-popover'
@@ -33,7 +35,8 @@ import {
   fetchOtherAnalytics,
   fetchPageAnalytics,
   alUserslLocales,
-  saveUserView
+  saveUserView,
+  loadMetricsWhatsApp
 } from '../../redux/actions/backdoor.actions'
 import { saveUserInformation } from '../../redux/dispatchers/backdoor.dispatcher'
 import { bindActionCreators } from 'redux'
@@ -636,6 +639,15 @@ class OperationalDashboard extends React.Component {
           <UniquePages history={this.props.history} location={this.props.location} />
           <CommentCaptures history={this.props.history} location={this.props.location} />
           <ChatBots history={this.props.history} location={this.props.location} />
+          <div className='row'>
+            <WhatsAppMetrics
+              startDate={this.state.startDate}
+              endDate={this.state.endDate}
+              loadMetrics={this.props.loadMetricsWhatsApp}
+              showToggle={true}
+              showMetrics={false}
+          />
+          </div>
         </div>
       </div>
     )
@@ -679,7 +691,8 @@ function mapDispatchToProps (dispatch) {
     alUserslLocales,
     fetchOtherAnalytics,
     fetchPageAnalytics,
-    saveUserView
+    saveUserView,
+    loadMetricsWhatsApp
   },
     dispatch)
 }
