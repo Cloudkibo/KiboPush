@@ -204,7 +204,7 @@ class Chat extends React.Component {
             </button>
           </div>
           : <FOOTER
-            cannedResponses = {this.props.cannedResponses}
+            cannedResponses={this.props.cannedResponses}
             performAction={this.props.performAction}
             activeSession={this.props.activeSession}
             user={this.props.user}
@@ -233,7 +233,7 @@ class Chat extends React.Component {
             filesAccepted={this.props.filesAccepted}
             showAgentName={this.props.showAgentName}
             history={this.props.history}
-            zoomIntegration={this.props.zoomIntegration}
+            zoomIntegrations={this.props.zoomIntegrations}
             createZoomMeeting={this.props.createZoomMeeting}
             showCaption={this.props.showCaption}
           />
