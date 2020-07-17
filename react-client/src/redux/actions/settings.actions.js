@@ -511,7 +511,7 @@ export function updatePlatformWhatsApp (data, msg, clearFields, handleResponse) 
   }
 }
 
-export function integrateZoom () {
+export function integrateZoom (cb) {
   return (dispatch) => {
     fetch('auth/zoom', {
       method: 'get',
@@ -519,9 +519,9 @@ export function integrateZoom () {
         'Authorization': `Bearer ${auth.getToken()}`
       })
     })
-      .then(res => {
-        console.log('Going to integrate zoom')
-      })
+      .then((res) => res.json())
+      .then((res) => res)
+      .then((res) => cb(res.payload))
   }
 }
 

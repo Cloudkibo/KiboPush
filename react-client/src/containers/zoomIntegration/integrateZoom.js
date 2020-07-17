@@ -7,10 +7,15 @@ class IntegrateZoom extends Component {
   constructor (props, context) {
     super(props, context)
     this.state={}
+    this.redirectToAuthorizeZoom = this.redirectToAuthorizeZoom.bind(this)
   }
 
   componentDidMount () {
-    this.props.integrateZoom()
+    this.props.integrateZoom(this.redirectToAuthorizeZoom)
+  }
+
+  redirectToAuthorizeZoom (url) {
+    window.location.replace(url)
   }
 
   render () {

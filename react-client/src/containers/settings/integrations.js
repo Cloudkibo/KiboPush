@@ -56,6 +56,11 @@ class Integrations extends React.Component {
     this.saveIntegerationId = this.saveIntegerationId.bind(this)
     this.connect = this.connect.bind(this)
     this.openVideoTutorial = this.openVideoTutorial.bind(this)
+    this.redirectToAuthorizeZoom = this.redirectToAuthorizeZoom.bind(this)
+  }
+
+  redirectToAuthorizeZoom (url) {
+    window.location.replace(url)
   }
 
   openVideoTutorial () {
@@ -257,9 +262,9 @@ class Integrations extends React.Component {
                               ? <a target='_blank' rel="noopener noreferrer" href={`https://marketplace.zoom.us/user/installed`} className='m-btn m-btn--pill m-btn--hover-danger btn btn-danger' style={{borderColor: '#f4516c', color: '#f4516c', marginRight: '10px'}}>
                                 Disconnect
                               </a>
-                              : <a href='/#' onClick={this.props.integrateZoom} className='m-btn m-btn--pill m-btn--hover-success btn btn-success' style={{borderColor: '#34bfa3', color: '#34bfa3', marginRight: '10px'}}>
+                              : <button onClick={() => this.props.integrateZoom(this.redirectToAuthorizeZoom)} className='m-btn m-btn--pill m-btn--hover-success btn btn-success' style={{borderColor: '#34bfa3', color: '#34bfa3', marginRight: '10px'}}>
                               Connect
-                            </a>
+                            </button>
                             }
                           </span>
                         <span className='m-widget4__ext'>
