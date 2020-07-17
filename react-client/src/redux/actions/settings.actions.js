@@ -510,6 +510,15 @@ export function updatePlatformWhatsApp (data, msg, clearFields, handleResponse) 
   }
 }
 
+export function integrateZoom () {
+  return (dispatch) => {
+    callApi('auth/zoom')
+      .then(res => {
+        console.log('Going to integrate zoom')
+      })
+  }
+}
+
 export function getZoomIntegration () {
   return (dispatch) => {
     callApi('zoom/users')

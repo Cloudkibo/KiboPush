@@ -165,6 +165,7 @@ import WhatsAppDashboard from './containers/smsWhatsAppDashboard/whatsAppDashboa
 import messengerDashboard from './containers/dashboard/dashboard'
 import ChatbotAutomation from './containers/chatbotAutomation/chatbotAutomation'
 import ChatbotSettings from './containers/chatbotAutomation/chatbotSettings'
+import IntegrateZoom from './containers/zoomIntegration/integrateZoom'
 
 const Subscriber = asyncComponent(() => import("./containers/subscriber/subscriber"))
 const OperationalDashboard = asyncComponent(() => import("./containers/operationalDashboard/operationalDashboard"))
@@ -399,6 +400,7 @@ const Routes = () => (
     <Route path='/tags' component={Tags} onEnter={requireAuth} />
     <Route path='/successMessage' component={successMessage} onEnter={requireAuth} />
     <Route path='/ErrorMessage' component={ErrorMessage} onEnter={requireAuth} />
+    <Route path='/integrations/zoom' component={IntegrateZoom} onEnter={requireAuth} />
     <Route path='*' render={() => <Redirect to='/' />} />
   </Switch>
 
