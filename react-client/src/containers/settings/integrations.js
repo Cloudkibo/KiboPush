@@ -1,6 +1,12 @@
 /* eslint-disable no-useless-constructor */
 import React from 'react'
-import { getIntegrations, updateIntegration, createIntegration, getZoomIntegration} from '../../redux/actions/settings.actions'
+import {
+  getIntegrations,
+  updateIntegration,
+  createIntegration,
+  getZoomIntegration,
+  integrateZoom
+} from '../../redux/actions/settings.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import AlertContainer from 'react-alert'
@@ -25,7 +31,7 @@ class Integrations extends React.Component {
           description: 'This integration can help you save data from KiboPush to Google Sheets or vice versa',
           color: 'green'
         },
-        { 
+        {
           name: 'Hubspot',
           icon: 'fa fa-transgender-alt',
           enabled: false,
@@ -33,7 +39,7 @@ class Integrations extends React.Component {
           color: 'orangered'
         }
       ],
-      zoomIntegration: { 
+      zoomIntegration: {
         name: 'Zoom Meetings',
         icon: 'fa fa-video-camera',
         enabled: false,
@@ -251,7 +257,7 @@ class Integrations extends React.Component {
                               ? <a target='_blank' rel="noopener noreferrer" href={`https://marketplace.zoom.us/user/installed`} className='m-btn m-btn--pill m-btn--hover-danger btn btn-danger' style={{borderColor: '#f4516c', color: '#f4516c', marginRight: '10px'}}>
                                 Disconnect
                               </a>
-                              : <a href= {`/auth/zoom?userId=${this.props.user._id}&companyId=${this.props.user.companyId}`} className='m-btn m-btn--pill m-btn--hover-success btn btn-success' style={{borderColor: '#34bfa3', color: '#34bfa3', marginRight: '10px'}}>
+                              : <a href='/#' onClick={this.props.integrateZoom} className='m-btn m-btn--pill m-btn--hover-success btn btn-success' style={{borderColor: '#34bfa3', color: '#34bfa3', marginRight: '10px'}}>
                               Connect
                             </a>
                             }
@@ -288,6 +294,7 @@ function mapDispatchToProps (dispatch) {
     updateIntegration,
     createIntegration,
     getZoomIntegration,
+    integrateZoom
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Integrations)
