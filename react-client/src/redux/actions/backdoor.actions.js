@@ -675,3 +675,18 @@ export function saveUserView (data) {
     data: data
   }
 }
+export function showMetrics (data) {
+  return {
+    type: ActionTypes.SHOW_METRICS,
+    data
+  }
+}
+export function loadMetricsWhatsApp (data) {
+  return (dispatch) => {
+    callApi('backdoor/metricsWhatsApp', 'post', data).then(res => {
+      if (res.status === 'success') {
+        dispatch(showMetrics(res.payload))
+      }
+    })
+  }
+}
