@@ -50,6 +50,7 @@ export function RemoveCannedResponse (data) {
     data
   }
 }
+
 export function getResponseMethod (data) {
   return {
     type: ActionTypes.RESPONSE_METHOD,

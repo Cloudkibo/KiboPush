@@ -461,6 +461,7 @@ export const GET_INSIGHTS = 'GET_INSIGHTS'
 export const SHOW_SENT_SEEN = 'SHOW_SENT_SEEN'
 export const SHOW_CARDBOXES_DATA = 'SHOW_CARDBOXES_DATA'
 export const SHOW_SUBSCRIBER_SUMMARY = 'SHOW_SUBSCRIBER_SUMMARY'
+export const SHOW_METRICS = 'SHOW_METRICS'
 
 // constants for hubSpot
 export const SHOW_hubSpotForm = 'SHOW_hubSpotForm'
