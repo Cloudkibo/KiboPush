@@ -114,7 +114,13 @@ class MessageTemplate extends React.Component {
     let templateArguments = this.state.templateArguments
     let isValid = regex.test(msg)
     if (isValid) {
-      templateArguments = regex.exec(msg).slice(1).join(',')
+      let matches = regex.exec(msg)
+      for (let i = 1; i < matches.length; i++) {
+        if (!matches[i]) {
+          isValid = false
+        }
+      }
+      templateArguments = matches.slice(1).join(',')
     }
     if (!isValid) {
       /* eslint-disable */
