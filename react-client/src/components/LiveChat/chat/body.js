@@ -192,6 +192,7 @@ class Body extends React.Component {
                                 displayDate={this.props.displayDate}
                                 activeSession={this.props.activeSession}
                                 previousMessage={this.props.userChat[index - 1]}
+                                user={this.props.user}
                               />
                           ))
                         }
