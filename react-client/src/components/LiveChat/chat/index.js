@@ -164,6 +164,7 @@ class Chat extends React.Component {
           updateState={this.props.updateState}
           newMessage={this.newMessage}
           updateNewMessage={this.updateNewMessage}
+          showSubscriberNameOnMessage={this.props.showSubscriberNameOnMessage}
         />
 
         {

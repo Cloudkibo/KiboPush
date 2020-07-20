@@ -191,7 +191,7 @@ class Body extends React.Component {
                                 showDate={this.props.showDate}
                                 displayDate={this.props.displayDate}
                                 activeSession={this.props.activeSession}
-                                showSubscriberNameOnMessage={false}
+                                showSubscriberNameOnMessage={this.props.showSubscriberNameOnMessage}
                                 previousMessage={this.props.userChat[index - 1]}
                               />
                           ))
