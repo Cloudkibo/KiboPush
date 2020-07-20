@@ -234,7 +234,7 @@ class cannedResponses extends React.Component {
                         <textarea value={this.state.cannedresponseMessage} onChange={this.responseMessageHandleChange}
                           className='form-control m-input m-input--solid'
                           id='description' rows='3'
-                          style={{ height: '100px', resize: 'none' }} maxlength='500' required />
+                          style={{ height: '100px', resize: 'none' }} maxlength='1000' required />
                         <span style={{position: 'absolute', bottom: 0, right: '10px'}}>
                         <i
                           style={{fontSize: '20px', margin: '5px', cursor: 'pointer'}}

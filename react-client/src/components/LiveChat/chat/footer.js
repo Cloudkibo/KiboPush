@@ -114,20 +114,21 @@ class Footer extends React.Component {
   }
 
   selectCannMessage (CannMessage) {
+    let cannResponse = {...CannMessage}
     let activeSession = this.props.activeSession
-    if (CannMessage.responseMessage.includes('{{user_full_name}}')) {
-      CannMessage.responseMessage = CannMessage.responseMessage.replace(
+    if (cannResponse.responseMessage.includes('{{user_full_name}}')) {
+      cannResponse.responseMessage = cannResponse.responseMessage.replace(
         '{{user_full_name}}', activeSession.firstName + ' ' + activeSession.lastName)
     }
-    if (CannMessage.responseMessage.includes('{{user_first_name}}')) {
-      CannMessage.responseMessage = CannMessage.responseMessage.replace(
+    if (cannResponse.responseMessage.includes('{{user_first_name}}')) {
+      cannResponse.responseMessage = cannResponse.responseMessage.replace(
         '{{user_first_name}}', activeSession.firstName)
     }
-    if (CannMessage.responseMessage.includes('{{user_last_name}}')) {
-      CannMessage.responseMessage = CannMessage.responseMessage.replace(
+    if (cannResponse.responseMessage.includes('{{user_last_name}}')) {
+      cannResponse.responseMessage = cannResponse.responseMessage.replace(
         '{{user_last_name}}', activeSession.lastName)
     }
-    this.setState({selectedCannMessage: {...CannMessage}, text:`/${CannMessage.responseCode}`})
+    this.setState({selectedCannMessage: cannResponse, text:`/${cannResponse.responseCode}`})
   }
 
   onCaptionChange (e) {
@@ -332,9 +333,18 @@ class Footer extends React.Component {
   search (value) {
     if (this.state.dataForSearch.length > 0) {
       let searchArray = []
-      if (value !== '/') {
+      if (value[value.length-1] === ' ') {
+        let text = value.trim().slice(1)
+        this.state.dataForSearch.forEach(element => {
+          if (element.responseCode.toLowerCase() === text.toLowerCase()) {
+            this.setState({selectedCannMessage: element})
+            searchArray.push(element)
+        }
+      })
+      this.setState({ cannedMessages: searchArray })
+    }
+      else if (value !== '/') {
         let text = value.slice(1)
-        console.log('text in search', value)
         this.state.dataForSearch.forEach(element => {
           if (element.responseCode.toLowerCase().includes(text.toLowerCase())) searchArray.push(element)
         })
@@ -868,7 +878,7 @@ class Footer extends React.Component {
                                 <textarea value={this.state.selectedCannMessage.responseMessage} onChange={this.responseMessageHandleChange}
                                 className='form-control m-input m-input--solid'
                                 id='description' rows='3'
-                                style={{ height: '100px', resize: 'none' }} maxlength='500' required />
+                                style={{ height: '100px', resize: 'none' }} maxlength='1000' required />
                                </li>
                               </ul>
                                 }
