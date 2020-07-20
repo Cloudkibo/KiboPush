@@ -29,6 +29,7 @@ class Card extends React.Component {
   }
 
   render() {
+    console.log('this.props.card', this.props.card)
     let card = (
       <div
         style={{
@@ -38,6 +39,7 @@ class Card extends React.Component {
         }}
         className='carousel-item carousel-item-preview active'
       >
+      <a href={this.props.card.url} target='_blank' rel='noopener noreferrer'>
       {
         (this.props.card.image_url || this.props.card.imageUrl) &&
         <img
@@ -59,19 +61,20 @@ class Card extends React.Component {
         (this.props.card.image_url || this.props.card.imageUrl)  &&
         <hr style={{marginBottom: '5px'}} />
       }
-      <div style={{textAlign: 'left', margin: '0px 10px', minHeight: '25px'}}>
+      <div style={{textAlign: 'left', margin: '0px 10px', minHeight: '25px', color: 'rgb(87, 89, 98)'}}>
         <span className='m--font-boldest'>
           {this.props.card.title.length > 20 ? `${this.props.card.title.substring(0, 20)}...` : this.props.card.title}
         </span>
       </div>
       {
         (this.props.card.subtitle || this.props.card.description) &&
-        <div style={{textAlign: 'left', margin: '0px 10px', minHeight: '20px'}}>
+        <div style={{textAlign: 'left', margin: '0px 10px', minHeight: '20px', color: 'rgb(87, 89, 98)'}}>
           <span>
             {this.getSubtitle(this.props.card)}
           </span>
         </div>
       }
+      </a>
       </div>
     )
     return (

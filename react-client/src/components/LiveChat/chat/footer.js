@@ -60,7 +60,7 @@ class Footer extends React.Component {
     this.sendMessage = this.sendMessage.bind(this)
     this.toggleAudioRecording = this.toggleAudioRecording.bind(this)
     this.getZoomIntegrationContent = this.getZoomIntegrationContent.bind(this)
-    this.goToIntegrations = this.goToIntegrations.bind(this) 
+    this.goToIntegrations = this.goToIntegrations.bind(this)
     this.setZoomTopic = this.setZoomTopic.bind(this)
     this.setZoomAgenda = this.setZoomAgenda.bind(this)
     this.setZoomInvitationMessage = this.setZoomInvitationMessage.bind(this)
@@ -100,7 +100,7 @@ class Footer extends React.Component {
     selectedCannMessage.responseMessage = event.target.value
     this.setState({ selectedCannMessage: selectedCannMessage })
   }
-  
+
 
   toggleHover (id) {
     // console.log('Hovver called', id)
@@ -704,6 +704,7 @@ class Footer extends React.Component {
   }
 
   sendMessage() {
+    console.log('this.state.urlMeta', this.state.urlmeta)
     const data = this.props.performAction('send messages', this.props.activeSession)
     if (data.isAllowed) {
       let payload = {}
@@ -712,7 +713,7 @@ class Footer extends React.Component {
       if (this.state.text !== '' && /\S/gm.test(this.state.text)) {
         console.log('updating chat data', data)
         payload = this.setDataPayload('text')
-        data = this.props.setMessageData(this.props.activeSession, payload)
+        data = this.props.setMessageData(this.props.activeSession, payload, this.state.urlmeta)
         this.props.sendChatMessage(data)
         this.setState({ text: '', urlmeta: {}, currentUrl: '' })
         this.props.updateChatAreaHeight('57vh')
@@ -788,7 +789,7 @@ class Footer extends React.Component {
           <p style={{ wordBreak: 'break-all', cursor: 'pointer', color: 'grey'}} onClick={() => this.selectCannMessage(item)}>{responseMessage}</p>
         </li>
       }
-    }) 
+    })
     return data
   }
 
@@ -840,7 +841,7 @@ class Footer extends React.Component {
                         <i className='la la-trash' />
                       </span>
                     </span>
-                  </div> : 
+                  </div> :
                   <div> {this.state.showCannedMessages &&
                     <div className='m-dropdown__wrapper'>
                       <span className='m-dropdown__arrow m-dropdown__arrow--right m-dropdown__arrow--adjust' />
@@ -864,7 +865,7 @@ class Footer extends React.Component {
                                 </li>
                               </ul>
                               <div className='card-body' id = 'cardBody' style={{ maxHeight: '230px', overflow: 'auto' }}>
-                                {!this.state.selectedCannMessage ? this.state.cannedMessages.length > 0 ? 
+                                {!this.state.selectedCannMessage ? this.state.cannedMessages.length > 0 ?
                                 <ul className='m-nav' >
                                    {this.listDataDisplay()}
                                 </ul>
