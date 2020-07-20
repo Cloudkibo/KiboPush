@@ -296,7 +296,7 @@ class WhatsAppChat extends React.Component {
     }
   }
 
-  setMessageData(session, payload) {
+  setMessageData(session, payload, urlMeta) {
     const data = {
       senderNumber: this.props.automated_options.flockSendWhatsApp.number,
       recipientNumber: this.state.activeSession.number,
@@ -307,7 +307,8 @@ class WhatsAppChat extends React.Component {
         id: this.props.user._id,
         name: this.props.user.name,
         type: 'agent'
-      }
+      },
+      url_meta: urlMeta
     }
     return data
   }
@@ -595,7 +596,6 @@ class WhatsAppChat extends React.Component {
               </div>
           </div>
         }
-
 
         <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id='messageTemplateNewNumber' tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">

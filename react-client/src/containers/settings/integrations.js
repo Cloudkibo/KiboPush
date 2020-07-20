@@ -23,7 +23,7 @@ class Integrations extends React.Component {
           description: 'This integration can help you save data from KiboPush to Google Sheets or vice versa',
           color: 'green'
         },
-        { 
+        {
           name: 'Hubspot',
           icon: 'fa fa-transgender-alt',
           enabled: false,
@@ -37,6 +37,11 @@ class Integrations extends React.Component {
     this.saveIntegerationId = this.saveIntegerationId.bind(this)
     this.connect = this.connect.bind(this)
     this.openVideoTutorial = this.openVideoTutorial.bind(this)
+    this.redirectToAuthorizeZoom = this.redirectToAuthorizeZoom.bind(this)
+  }
+
+  redirectToAuthorizeZoom (url) {
+    window.location.replace(url)
   }
 
   openVideoTutorial () {

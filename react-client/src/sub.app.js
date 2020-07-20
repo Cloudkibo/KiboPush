@@ -33,7 +33,7 @@ class App extends Component {
   componentDidMount () {
     if (this.props.history.location.pathname.toLowerCase() === '/demossa') {
       this.handleDemoSSAPage()
-    } else {
+    } else if (this.props.history.location.pathname.toLowerCase() !== '/integrations/zoom') {
       this.props.history.push({
         pathname: '/',
         state: {obj: {_id: 1}}

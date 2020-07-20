@@ -165,6 +165,7 @@ import WhatsAppDashboard from './containers/smsWhatsAppDashboard/whatsAppDashboa
 import messengerDashboard from './containers/dashboard/dashboard'
 import ChatbotAutomation from './containers/chatbotAutomation/chatbotAutomation'
 import ChatbotSettings from './containers/chatbotAutomation/chatbotSettings'
+import IntegrateZoom from './containers/zoomIntegration/integrateZoom'
 
 const Subscriber = asyncComponent(() => import("./containers/subscriber/subscriber"))
 const OperationalDashboard = asyncComponent(() => import("./containers/operationalDashboard/operationalDashboard"))
@@ -376,6 +377,7 @@ const Routes = () => (
     <Route path='/createsmsBroadcast' component={CreatesmsBroadcast} onEnter={requireAuth} />
     <Route path='/smsChat' component={SmsChat} onEnter={requireAuth} />
     <Route path='/whatsAppChat' component={WhatsAppChat} onEnter={requireAuth} />
+    <Route path='/integrations/zoom' component={IntegrateZoom} onEnter={requireAuth} />
     <Route path='/integrations' component={Integrations} onEnter={requireAuth} />
     <Route path='/uploadContactsWhatsApp' component={UploadContactsWhatsApp} onEnter={requireAuth} />
     <Route path='/whatsAppBroadcasts' component={WhatsAppBroadcasts} onEnter={requireAuth} />

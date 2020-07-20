@@ -1,6 +1,7 @@
 import {getAutomatedOptions, getuserdetails} from './basicinfo.actions'
 import * as ActionTypes from '../constants/constants'
 import callApi from '../../utility/api.caller.service'
+import auth from '../../utility/auth.service'
 export const API_URL = '/api'
 
 export function updateZoomIntegrations (data) {
