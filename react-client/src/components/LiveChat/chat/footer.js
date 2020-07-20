@@ -348,10 +348,18 @@ class Footer extends React.Component {
   search (value) {
     if (this.state.dataForSearch.length > 0) {
       let searchArray = []
-      if (value !== '/') {
-        let textLength = value.length
+      if (value[value.length-1] === ' ') {
+        let text = value.trim().slice(1)
+        this.state.dataForSearch.forEach(element => {
+          if (element.responseCode.toLowerCase() === text.toLowerCase()) {
+            this.setState({selectedCannMessage: element})
+            searchArray.push(element)
+        }
+      })
+      this.setState({ cannedMessages: searchArray })
+    }
+      else if (value !== '/') {
         let text = value.slice(1)
-        console.log('text in search', value)
         this.state.dataForSearch.forEach(element => {
           if (element.responseCode.toLowerCase().includes(text.toLowerCase())) searchArray.push(element)
         })
