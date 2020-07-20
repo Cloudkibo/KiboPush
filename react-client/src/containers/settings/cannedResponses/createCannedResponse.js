@@ -144,7 +144,9 @@ class cannedResponses extends React.Component {
     if (this.props.cannedResponse) {
       let dataexist = this.props.cannedResponses.filter((cannedResponse, i)=> {
         if(cannedResponse.responseCode.toLowerCase() === this.state.cannedCode.toLowerCase() && i !== this.props.index) {
-           return cannedResponse
+           return true
+        } else {
+          return false
         }
       })
       console.log('dataexist', dataexist)

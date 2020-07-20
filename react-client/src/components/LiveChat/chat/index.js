@@ -16,7 +16,7 @@ import HEADER from './header'
 import BODY from './body'
 import FOOTER from './footer'
 import CONFIRMATIONMODAL from '../../extras/confirmationModal'
-import TEMPLATESMODAL from '../../../containers/whatsAppChat/messageTemplate'
+import MESSAGETEMPLATE from '../../WhatsApp/messageTemplate'
 
 class Chat extends React.Component {
   constructor(props, context) {
@@ -125,18 +125,23 @@ class Chat extends React.Component {
           onConfirm={() => {this.props.handlePendingResponse(this.props.activeSession, false)}}
         />
 
-        <TEMPLATESMODAL
-          sendChatMessage={this.props.sendChatMessage}
-          setMessageData={this.props.setMessageData}
-          activeSession={this.props.activeSession}
-          updateState={this.props.updateState}
-          userChat={this.props.userChat}
-          sessions={this.props.sessions}
-          updateNewMessage={this.updateNewMessage}
-          updateChatAreaHeight={this.updateChatAreaHeight}
-          alertMsg={this.props.alertMsg}
-          id='messageTemplate'
-        />
+
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id='messageTemplate' tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+            <MESSAGETEMPLATE
+              sendChatMessage={this.props.sendChatMessage}
+              setMessageData={this.props.setMessageData}
+              activeSession={this.props.activeSession}
+              updateState={this.props.updateState}
+              userChat={this.props.userChat}
+              sessions={this.props.sessions}
+              updateNewMessage={this.updateNewMessage}
+              updateChatAreaHeight={this.updateChatAreaHeight}
+              alertMsg={this.props.alertMsg}
+              id='messageTemplate'
+            />
+          </div>
+        </div>
 
         <HEADER
           activeSession={this.props.activeSession}
@@ -204,7 +209,7 @@ class Chat extends React.Component {
             </button>
           </div>
           : <FOOTER
-            cannedResponses = {this.props.cannedResponses}
+            cannedResponses={this.props.cannedResponses}
             performAction={this.props.performAction}
             activeSession={this.props.activeSession}
             user={this.props.user}
@@ -233,7 +238,7 @@ class Chat extends React.Component {
             filesAccepted={this.props.filesAccepted}
             showAgentName={this.props.showAgentName}
             history={this.props.history}
-            zoomIntegration={this.props.zoomIntegration}
+            zoomIntegrations={this.props.zoomIntegrations}
             createZoomMeeting={this.props.createZoomMeeting}
             showCaption={this.props.showCaption}
           />

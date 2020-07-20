@@ -32,7 +32,6 @@ export function showAdvancedSettings (data) {
     data
   }
 }
-
 export function showcannedResponses (data) {
   return {
     type: ActionTypes.GET_CANNED_RESPONSES,
@@ -610,7 +609,6 @@ export function getAdvancedSettings () {
       })
   }
 }
-
 
 export function loadcannedResponses () {
   return (dispatch) => {

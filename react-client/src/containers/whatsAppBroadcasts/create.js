@@ -40,13 +40,23 @@ class CreateWhatsAppBroadcast extends React.Component {
     this.onGetCount = this.onGetCount.bind(this)
     this.updateConditions = this.updateConditions.bind(this)
     this.debounce = this.debounce.bind(this)
+    this.checkIfOnlyTemplates = this.checkIfOnlyTemplates.bind(this)
     props.setDefaultCustomersInfo({filter: []})
     props.getCount([], this.onGetCount)
   }
 
+  checkIfOnlyTemplates () {
+    for (let i = 0; i < this.state.broadcast.length; i++) {
+      if (!this.state.broadcast[i].templateName) {
+        return false
+      }
+    }
+    return true
+  }
+
 
   debounce () {
-    this.props.getCount(this.state.conditions, this.onGetCount)
+    this.props.getCount({segmentation: this.state.conditions, onlyTemplates: this.checkIfOnlyTemplates()}, this.onGetCount)
   }
 
   updateConditions (conditions, update) {
@@ -54,7 +64,7 @@ class CreateWhatsAppBroadcast extends React.Component {
     this.setState({conditions})
     if (update) {
       if (this.validateConditions(conditions)) {
-        this.props.getCount(conditions, this.onGetCount)
+        this.props.getCount({segmentation: this.state.conditions, onlyTemplates: this.checkIfOnlyTemplates()}, this.onGetCount)
       } else {
         this.setState({subscribersCount: 0})
       }
@@ -117,7 +127,9 @@ class CreateWhatsAppBroadcast extends React.Component {
 
 
   handleChange (state) {
-    this.setState(state)
+    this.setState(state, () => {
+      this.debounce()
+    })
   }
 
   setInputValue (value) {
@@ -203,7 +215,9 @@ class CreateWhatsAppBroadcast extends React.Component {
     if (this.state.title === '') {
       this.msg.error('Please enter the title of the broadcast')
     } else if (this.validateSegmentation(this.props.customersInfo)) {
-      this.props.sendBroadcast({payload: this.state.broadcast,
+      this.props.sendBroadcast({
+        payload: this.state.broadcast,
+        onlyTemplates: this.checkIfOnlyTemplates(),
         platform: 'Twilio WhatsApp',
         title: this.state.convoTitle,
         segmentation: this.props.customersInfo && this.props.customersInfo.filter ? this.props.customersInfo.filter : ''
@@ -239,8 +253,7 @@ class CreateWhatsAppBroadcast extends React.Component {
                     </div>
                   </div>
 
-                  <p style={{fontSize: '1.1em', marginTop: '30px', marginLeft: '30px'}}><strong>Note:</strong> Broadcasts will only be sent to those subscribers who have messaged you in the past 24 hours.</p>
-
+                  <p style={{fontSize: '1.1em', marginTop: '30px', marginLeft: '30px'}}><strong>Note:</strong> Broadcasts will only be sent to those subscribers who have messaged you in the past 24 hours. Only templates can be sent outside of that 24 hour window.</p>
 
                   <div className='m-portlet__body'>
                     <div className='row'>

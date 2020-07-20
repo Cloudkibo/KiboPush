@@ -12,11 +12,13 @@ class Text extends React.Component {
   }
 
   getCardProps () {
+    console.log('this.props.urlMeta', this.props.urlMeta)
     const image = this.props.urlMeta.image || this.props.urlMeta.ogImage
     const card = {
       title: this.props.urlMeta.title || this.props.urlMeta.ogTitle,
       description: this.props.urlMeta.description || this.props.urlMeta.ogDescription,
-      imageUrl: image && image.url
+      imageUrl: image && image.url,
+      url: this.props.urlMeta.url || this.props.urlMeta.ogUrl
     }
     return card
   }

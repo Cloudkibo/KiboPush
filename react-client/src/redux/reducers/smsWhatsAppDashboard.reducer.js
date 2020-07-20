@@ -14,6 +14,10 @@ export function smsWhatsAppDashboardInfo (state = {}, action) {
       return Object.assign({}, state, {
         cardBoxesData: action.data
       })
+    case ActionTypes.SHOW_METRICS:
+      return Object.assign({}, state, {
+        metrics: action.data
+      })
     default:
       return state
   }

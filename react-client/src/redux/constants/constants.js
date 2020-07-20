@@ -461,6 +461,7 @@ export const GET_INSIGHTS = 'GET_INSIGHTS'
 export const SHOW_SENT_SEEN = 'SHOW_SENT_SEEN'
 export const SHOW_CARDBOXES_DATA = 'SHOW_CARDBOXES_DATA'
 export const SHOW_SUBSCRIBER_SUMMARY = 'SHOW_SUBSCRIBER_SUMMARY'
+export const SHOW_METRICS = 'SHOW_METRICS'
 
 // constants for hubSpot
 export const SHOW_hubSpotForm = 'SHOW_hubSpotForm'
@@ -494,6 +495,7 @@ export const CLEAR_SOCKET_DATA_WHATSAPP = 'CLEAR_SOCKET_DATA_WHATSAPP'
 
 // constants for chatbot automation
 export const SHOW_CHATBOTS = 'SHOW_CHATBOTS'
+
 
 // constants for Scanned Responses
 export const GET_CANNED_RESPONSES = 'GET_CANNED_RESPONSES'
