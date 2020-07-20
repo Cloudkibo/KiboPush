@@ -49,6 +49,15 @@ class Text extends React.Component {
         videoDescription: this.state.videoDescription,
         id:this.props.id
       })
+    } else if (this.props.templateName) {
+      this.props.editComponent('template', {
+        edit: true,
+        templateName: this.props.templateName,
+        templateArguments: this.props.templateArguments,
+        selectedIndex: this.props.selectedIndex,
+        templateMessage: this.state.text,
+        id:this.props.id
+      })
     } else {
       this.props.editComponent('text', {
         id: this.props.id,
@@ -132,7 +141,14 @@ class Text extends React.Component {
           </div>
           }
           {
-            !this.state.videoId && <div style={{maxWidth: '100%', fontSize: '16px', textAlign: 'center', whiteSpace: 'pre-wrap', wordBreak: 'break-word'}} className='bubble recipient broadcastContent'>{this.state.text}</div>
+            !this.state.videoId && 
+            <div style={{
+              maxWidth: '100%', 
+              fontSize: '16px', 
+              textAlign: 'left', 
+              whiteSpace: 'pre-wrap', 
+              wordBreak: 'break-word'
+            }} className='bubble recipient broadcastContent'>{this.state.text}</div>
           }
           {
               this.state.buttons.map((button, index) => {

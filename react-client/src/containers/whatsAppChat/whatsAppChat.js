@@ -5,7 +5,7 @@ import AlertContainer from 'react-alert'
 import { RingLoader } from 'halogenium'
 import { getZoomIntegration, createZoomMeeting } from '../../redux/actions/settings.actions'
 import NEWMESSAGEBUTTON from './newMessageButton'
-import TEMPLATESMODAL from './messageTemplate'
+import MESSAGETEMPLATE from '../../components/WhatsApp/messageTemplate'
 
 // actions
 import {
