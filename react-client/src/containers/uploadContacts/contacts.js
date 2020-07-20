@@ -338,7 +338,7 @@ class Contact extends React.Component {
           </div>
         </div>
         <a href='#/' style={{ display: 'none' }} ref='videoContacts' data-toggle='modal' data-backdrop='static' data-keyboard='false' data-target="#videoContacts">videoContacts</a>
-        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="videosubscriber" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="videoContacts" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog modal-lg" role="document">
             <div className="modal-content" style={{ width: '687px', top: '100' }}>
             <div style={{ display: 'block'}} className="modal-header">
