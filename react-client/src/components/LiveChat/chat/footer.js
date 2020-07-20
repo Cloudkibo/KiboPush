@@ -116,20 +116,21 @@ class Footer extends React.Component {
   }
 
   selectCannMessage (CannMessage) {
+    let cannResponse = {...CannMessage}
     let activeSession = this.props.activeSession
-    if (CannMessage.responseMessage.includes('{{user_full_name}}')) {
-      CannMessage.responseMessage = CannMessage.responseMessage.replace(
+    if (cannResponse.responseMessage.includes('{{user_full_name}}')) {
+      cannResponse.responseMessage = cannResponse.responseMessage.replace(
         '{{user_full_name}}', activeSession.firstName + ' ' + activeSession.lastName)
     }
-    if (CannMessage.responseMessage.includes('{{user_first_name}}')) {
-      CannMessage.responseMessage = CannMessage.responseMessage.replace(
+    if (cannResponse.responseMessage.includes('{{user_first_name}}')) {
+      cannResponse.responseMessage = cannResponse.responseMessage.replace(
         '{{user_first_name}}', activeSession.firstName)
     }
-    if (CannMessage.responseMessage.includes('{{user_last_name}}')) {
-      CannMessage.responseMessage = CannMessage.responseMessage.replace(
+    if (cannResponse.responseMessage.includes('{{user_last_name}}')) {
+      cannResponse.responseMessage = cannResponse.responseMessage.replace(
         '{{user_last_name}}', activeSession.lastName)
     }
-    this.setState({selectedCannMessage: {...CannMessage}, text:`/${CannMessage.responseCode}`})
+    this.setState({selectedCannMessage: cannResponse, text:`/${cannResponse.responseCode}`})
   }
 
   onCaptionChange (e) {
