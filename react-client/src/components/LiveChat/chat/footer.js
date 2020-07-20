@@ -878,7 +878,7 @@ class Footer extends React.Component {
                                 <textarea value={this.state.selectedCannMessage.responseMessage} onChange={this.responseMessageHandleChange}
                                 className='form-control m-input m-input--solid'
                                 id='description' rows='3'
-                                style={{ height: '100px', resize: 'none' }} maxlength='500' required />
+                                style={{ height: '100px', resize: 'none' }} maxlength='1000' required />
                                </li>
                               </ul>
                                 }
