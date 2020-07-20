@@ -5,7 +5,7 @@ import AlertContainer from 'react-alert'
 import { RingLoader } from 'halogenium'
 import { getZoomIntegration, createZoomMeeting } from '../../redux/actions/settings.actions'
 import NEWMESSAGEBUTTON from './newMessageButton'
-import TEMPLATESMODAL from './messageTemplate'
+import MESSAGETEMPLATE from '../../components/WhatsApp/messageTemplate'
 
 // actions
 import {
@@ -596,20 +596,25 @@ class WhatsAppChat extends React.Component {
           </div>
         }
 
-        <TEMPLATESMODAL
-          sendChatMessage={this.props.sendChatMessage}
-          setMessageData={this.setMessageData}
-          activeSession={this.state.activeSession}
-          updateState={this.updateState}
-          userChat={this.state.userChat}
-          sessions={this.state.sessions}
-          alertMsg={this.alertMsg}
-          id='messageTemplateNewNumber'
-          sendingToNewNumber={this.state.sendingToNewNumber}
-          heading={'Send Message Template to WhatsApp Number'}
-          createNewContact={this.props.createNewContact}
-          changeActiveSession={this.changeActiveSession}
-        />
+
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id='messageTemplateNewNumber' tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+            <MESSAGETEMPLATE
+              sendChatMessage={this.props.sendChatMessage}
+              setMessageData={this.setMessageData}
+              activeSession={this.state.activeSession}
+              updateState={this.updateState}
+              userChat={this.state.userChat}
+              sessions={this.state.sessions}
+              alertMsg={this.alertMsg}
+              id='messageTemplateNewNumber'
+              sendingToNewNumber={this.state.sendingToNewNumber}
+              heading={'Send Message Template to WhatsApp Number'}
+              createNewContact={this.props.createNewContact}
+              changeActiveSession={this.changeActiveSession}
+            />
+          </div>
+        </div>
         <NEWMESSAGEBUTTON 
           dataToggle='modal'
           dataTarget='#messageTemplateNewNumber'
