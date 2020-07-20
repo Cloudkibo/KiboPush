@@ -1,6 +1,7 @@
 import {getAutomatedOptions, getuserdetails} from './basicinfo.actions'
 import * as ActionTypes from '../constants/constants'
 import callApi from '../../utility/api.caller.service'
+import auth from '../../utility/auth.service'
 export const API_URL = '/api'
 
 export function updateZoomIntegrations (data) {
@@ -28,6 +29,26 @@ export function showAdvancedSettings (data) {
   console.log(data)
   return {
     type: ActionTypes.GET_ADVANCED_SETTINGS,
+    data
+  }
+}
+
+export function showcannedResponses (data) {
+  return {
+    type: ActionTypes.GET_CANNED_RESPONSES,
+    data
+  }
+}
+
+export function editCannedResponse (data) {
+  return {
+    type: ActionTypes.UPDATE_CANNED_RESPONSE,
+    data
+  }
+}
+export function RemoveCannedResponse (data) {
+  return {
+    type: ActionTypes.DELETE_CANNED_RESPONSE,
     data
   }
 }
@@ -490,6 +511,20 @@ export function updatePlatformWhatsApp (data, msg, clearFields, handleResponse) 
   }
 }
 
+export function integrateZoom (cb) {
+  return (dispatch) => {
+    fetch('/auth/zoom', {
+      method: 'get',
+      headers: new Headers({
+        'Authorization': `Bearer ${auth.getToken()}`
+      })
+    })
+      .then((res) => res.json())
+      .then((res) => res)
+      .then((res) => cb(res.payload))
+  }
+}
+
 export function getZoomIntegrations () {
   return (dispatch) => {
     callApi('zoom/users')
@@ -572,6 +607,60 @@ export function getAdvancedSettings () {
     callApi('company/getAdvancedSettings')
       .then(res => {
         dispatch(showAdvancedSettings(res.payload))
+      })
+  }
+}
+
+
+export function loadcannedResponses () {
+  return (dispatch) => {
+    callApi('cannedResponses')
+      .then(res => {
+        if (res.status === 'success') {
+          dispatch(showcannedResponses(res.payload))
+        } else {
+          console.log('failed to fetch canned messages')
+        }
+      })
+  }
+}
+
+export function createCannedResponses (data, cb) {
+  return (dispatch) => {
+    callApi('cannedResponses', 'post', data)
+      .then(res => {
+        if(res.status === 'success') {
+        dispatch(loadcannedResponses())
+        }
+        cb(res)
+     })
+  }
+}
+
+export function updateCannedResponse (data, cb) {
+  return (dispatch) => {
+    callApi('cannedResponses/edit', 'post', data)
+      .then(res => {
+        cb(res)
+        if (res.status === 'success') {
+        dispatch(editCannedResponse(data))
+        }
+      })
+  }
+}
+export function deleteCannedResponse (data, msg) {
+  return (dispatch) => {
+    callApi('cannedResponses/delete', 'post', data)
+      .then(res => {
+        if (res.status === 'success') {
+          msg.success(res.payload)
+          if(res.status === 'success') {
+            dispatch(RemoveCannedResponse(data))
+            }
+        } else {
+          msg.error('Unable to delete canned Response')
+        }
+        // dispatch(showcannedResponses(res.payload))
       })
   }
 }

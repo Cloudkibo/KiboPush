@@ -23,7 +23,8 @@ import {
   assignToTeam,
   uploadAttachment,
   sendAttachment,
-  deletefile
+  deletefile,
+  createNewContact
 } from '../../redux/actions/whatsAppChat.actions'
 import { updatePicture } from '../../redux/actions/subscribers.actions'
 import { loadTeamsList } from '../../redux/actions/teams.actions'
@@ -68,6 +69,7 @@ class WhatsAppChat extends React.Component {
       showSearch: false,
       customFieldOptions: [],
       showingCustomFieldPopover: false,
+      sendingToNewNumber: false
     }
 
     this.fetchSessions = this.fetchSessions.bind(this)
@@ -93,6 +95,7 @@ class WhatsAppChat extends React.Component {
     this.showFetchingChat = this.showFetchingChat.bind(this)
     this.clearSearchResults = this.clearSearchResults.bind(this)
     this.setMessageData = this.setMessageData.bind(this)
+    this.sendingToNewNumber = this.sendingToNewNumber.bind(this)
 
     this.fetchSessions(true, 'none', true)
     if (props.user.currentPlan.unique_ID === 'plan_C' || props.user.currentPlan.unique_ID === 'plan_D') {
@@ -103,6 +106,10 @@ class WhatsAppChat extends React.Component {
     if (props.socketData) {
       props.clearSocketDataWhatsapp()
     }
+  }
+
+  sendingToNewNumber (sendingToNewNumber) {
+    this.setState({sendingToNewNumber})
   }
 
   clearSearchResults () {
@@ -303,7 +310,7 @@ class WhatsAppChat extends React.Component {
     return data
   }
 
-  changeActiveSession (session) {
+  changeActiveSession (session, e, callback) {
     console.log('changeActiveSession', session)
     if (session._id !== this.state.activeSession._id) {
       session.firstName = session.name
@@ -316,9 +323,15 @@ class WhatsAppChat extends React.Component {
         loadingChat: true,
         showSearch: false
       }, () => {
-        clearTimeout(this.sessionClickTimer)
-        this.sessionClickTimer = setTimeout(() => this.loadActiveSession({...session}), 1000)
+        if (callback) {
+          callback()
+        }
+        this.loadActiveSession({...session})
       })
+    } else {
+      if (callback) {
+        callback()
+      }
     }
   }
 
@@ -526,6 +539,7 @@ class WhatsAppChat extends React.Component {
                     history={this.props.history}
                     zoomIntegrations={this.props.zoomIntegrations}
                     createZoomMeeting={this.props.createZoomMeeting}
+                    showCaption={true}
                   />
                 }
                 {
@@ -579,6 +593,26 @@ class WhatsAppChat extends React.Component {
               </div>
           </div>
         }
+
+        <TEMPLATESMODAL
+          sendChatMessage={this.props.sendChatMessage}
+          setMessageData={this.setMessageData}
+          activeSession={this.state.activeSession}
+          updateState={this.updateState}
+          userChat={this.state.userChat}
+          sessions={this.state.sessions}
+          alertMsg={this.alertMsg}
+          id='messageTemplateNewNumber'
+          sendingToNewNumber={this.state.sendingToNewNumber}
+          heading={'Send Message Template to WhatsApp Number'}
+          createNewContact={this.props.createNewContact}
+          changeActiveSession={this.changeActiveSession}
+        />
+        <NEWMESSAGEBUTTON 
+          dataToggle='modal'
+          dataTarget='#messageTemplateNewNumber'
+          onClick={() => this.sendingToNewNumber(true)}
+        />
       </div>
     )
   }
