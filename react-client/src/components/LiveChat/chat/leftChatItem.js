@@ -129,7 +129,7 @@ class LeftChatItem extends React.Component {
           <div className='m-messenger__message-body'>
             <div className='m-messenger__message-arrow' />
             <div style={{maxWidth: '250px'}} className='m-messenger__message-content'>
-              {this.props.user.platform === 'whatsApp' && <div className='m-messenger__message-username'>
+              {this.props.showSubscriberNameOnMessage && <div className='m-messenger__message-username'>
                 {`${this.props.activeSession.firstName} sent:`}
               </div>}
               {this.getMessage()}
