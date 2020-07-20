@@ -216,7 +216,7 @@ UNSAFE_componentWillReceiveProps (nextProps) {
                         </div>
                         <div id={`collapse_${cannedResponse._id}`} className='collapse' aria-labelledby={`heading${cannedResponse._id}`} data-parent="#accordion">
                           <div className='card-body'>
-                            <p style={{ wordBreak: 'break-all' }}>{cannedResponse.responseMessage}</p>
+                            <p style={{ wordBreak: 'break-word', whiteSpace: 'pre-line' }}>{cannedResponse.responseMessage}</p>
                           </div>
                         </div>
                       </div>
