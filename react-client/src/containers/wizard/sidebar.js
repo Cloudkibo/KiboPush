@@ -31,7 +31,7 @@ class Sidebar extends React.Component {
   render () {
     console.log('stepNumber', this.props.stepNumber)
     return (
-      <div id='sidebarDiv' className='col-xl-3 col-lg-12 m--padding-top-20 m--padding-bottom-15' style={{paddingLeft: '0', paddingRight: '0', paddingTop: '20px !important', paddingBottom: '15px !important', position: 'relative', width: '100%', minHeight: '1px'}}>
+      <div id='sidebarDiv' className='col-12 col-md-3 m--padding-top-20 m--padding-bottom-15' style={{paddingLeft: '0', paddingRight: '0', paddingTop: '20px !important', paddingBottom: '15px !important', position: 'relative', width: '100%', minHeight: '1px'}}>
         <div className='m-wizard__head' style={{padding: '0'}}>
           <div className='m-wizard__nav' style={{paddingBottom: '2rem', display: 'table', width: 'auto', margin: '2rem 2rem 0'}}>
             <div className='m-wizard__steps' style={{display: 'block'}}>
