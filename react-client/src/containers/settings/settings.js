@@ -22,6 +22,7 @@ import UploadCustomerInformation from './uploadCustomerInformation'
 import WhiteListDomains from './whitelistDomains'
 import Integrations from './integrations'
 import AdvancedSetting from './advancedSettings'
+import CannedResponses from './cannedResponses/cannedResponses'
 import ZoomIntegration from './zoomIntegration'
 
 class Settings extends React.Component {

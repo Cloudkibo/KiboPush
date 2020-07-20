@@ -6,7 +6,6 @@ import { getmetaurl } from '../../../containers/liveChat/utilities'
 import MODAL from '../../extras/modal'
 import AUDIORECORDER from '../../audioRecorder'
 import CARD from '../messages/horizontalCard'
-
 class Footer extends React.Component {
   constructor(props, context) {
     super(props, context)
@@ -30,7 +29,6 @@ class Footer extends React.Component {
       zoomInvitationMessage: this.initialZoomInvitationMessage,
       zoomMeetingCreated: false,
       zoomCountdown: this.initialZoomCountdown,
-      zoomUserId: '',
       zoomMeetingUrl: '',
       zoomMeetingCreationError: false,
       cannedMessages: [],
@@ -62,7 +60,7 @@ class Footer extends React.Component {
     this.sendMessage = this.sendMessage.bind(this)
     this.toggleAudioRecording = this.toggleAudioRecording.bind(this)
     this.getZoomIntegrationContent = this.getZoomIntegrationContent.bind(this)
-    this.goToZoomIntegration = this.goToZoomIntegration.bind(this)
+    this.goToIntegrations = this.goToIntegrations.bind(this)
     this.setZoomTopic = this.setZoomTopic.bind(this)
     this.setZoomAgenda = this.setZoomAgenda.bind(this)
     this.setZoomInvitationMessage = this.setZoomInvitationMessage.bind(this)
@@ -70,11 +68,70 @@ class Footer extends React.Component {
     this.checkZoomDisabled = this.checkZoomDisabled.bind(this)
     this.resetZoomValues = this.resetZoomValues.bind(this)
     this.appendInvitationUrl = this.appendInvitationUrl.bind(this)
-    this.selectZoomUser = this.selectZoomUser.bind(this)
+    this.selectCannMessage = this.selectCannMessage.bind(this)
+    this.toggleHover =this.toggleHover.bind(this)
+    this.onMouseLeave = this.onMouseLeave.bind(this)
+    this.responseMessageHandleChange = this.responseMessageHandleChange.bind(this)
+    this.listDataDisplay = this.listDataDisplay.bind(this)
+    this.onCaptionChange = this.onCaptionChange.bind(this)
+  }
+  componentDidMount () {
+
+    window.onkeydown = (e) => {
+      console.log(e.which)
+      if (this.state.showCannedMessages) {
+      let selectedIndex = this.state.selectedIndex
+      if (e.which === 40 ) {
+        if(selectedIndex < this.state.cannedMessages.length-1 )
+        this.setState({selectedIndex: selectedIndex +1})
+        document.getElementById("cardBody").scrollTop +=55
+
+      } else if (e.which === 38) {
+        if(selectedIndex !== 0) {
+        this.setState({selectedIndex: selectedIndex - 1})
+        document.getElementById("cardBody").scrollTop -=55
+        }
+      }
+    }
+  }
+}
+  responseMessageHandleChange (event) {
+    let selectedCannMessage = this.state.selectedCannMessage
+    selectedCannMessage.responseMessage = event.target.value
+    this.setState({ selectedCannMessage: selectedCannMessage })
   }
 
-  selectZoomUser (e) {
-    this.setState({zoomUserId: e.target.value})
+
+  toggleHover (id) {
+    // console.log('Hovver called', id)
+    // document.getElementById(id).style.backgroundColor = 'lightgrey'
+    this.setState({selectedIndex: id})
+
+  }
+
+  onMouseLeave (id) {
+    // document.getElementById(id).style.backgroundColor = 'white'
+  }
+
+  selectCannMessage (CannMessage) {
+    let activeSession = this.props.activeSession
+    if (CannMessage.responseMessage.includes('{{user_full_name}}')) {
+      CannMessage.responseMessage = CannMessage.responseMessage.replace(
+        '{{user_full_name}}', activeSession.firstName + ' ' + activeSession.lastName)
+    }
+    if (CannMessage.responseMessage.includes('{{user_first_name}}')) {
+      CannMessage.responseMessage = CannMessage.responseMessage.replace(
+        '{{user_first_name}}', activeSession.firstName)
+    }
+    if (CannMessage.responseMessage.includes('{{user_last_name}}')) {
+      CannMessage.responseMessage = CannMessage.responseMessage.replace(
+        '{{user_last_name}}', activeSession.lastName)
+    }
+    this.setState({selectedCannMessage: {...CannMessage}, text:`/${CannMessage.responseCode}`})
+  }
+
+  onCaptionChange (e) {
+    this.setState({caption: e.target.value})
   }
 
   resetZoomValues () {
@@ -113,56 +170,48 @@ class Footer extends React.Component {
 
   createZoomMeeting (event) {
     event.preventDefault()
-    const data = this.props.performAction('create a zoom meeting', this.props.activeSession)
-    if (data.isAllowed) {
-      this.setState({zoomMeetingLoading: true}, () => {
-        this.props.createZoomMeeting({
-            subscriberId: this.props.activeSession._id,
-            topic: this.state.zoomTopic,
-            agenda: this.state.zoomAgenda,
-            invitationMessage: this.state.zoomInvitationMessage,
-            zoomUserId: this.state.zoomUserId,
-            platform: this.props.user.platform
-        }, (res) => {
-          if (res.status === 'success' && res.payload) {
-            this.setState({
-              zoomMeetingLoading: false,
-              zoomMeetingCreated: true,
-              zoomMeetingUrl: res.payload.joinUrl,
-              text: this.state.zoomInvitationMessage.replace('[invite_url]', res.payload.joinUrl)
-            }, () => {
-              document.getElementById('_close_zoom_integration').style.display = 'none'
-              this.sendMessage()
-              this.zoomCountdownTimer= setInterval(() => {
-                if (this.state.zoomCountdown <= 1) {
-                  if (this.state.zoomMeetingUrl) {
-                    clearInterval(this.zoomCountdownTimer)
-                    document.getElementById('_zoomMeetingLink').click()
-                    //window.open(this.state.zoomMeetingUrl, '_blank')
-                    document.getElementById('_close_zoom_integration').style.display = 'block'
-                    document.getElementById('_close_zoom_integration').click()
-                  }
-                } else {
-                  this.setState({zoomCountdown: this.state.zoomCountdown - 1})
+    this.setState({zoomMeetingLoading: true}, () => {
+      this.props.createZoomMeeting({
+          subscriberId: this.props.activeSession._id,
+          topic: this.state.zoomTopic,
+          agenda: this.state.zoomAgenda,
+          invitationMessage: this.state.zoomInvitationMessage
+      }, (res) => {
+        if (res.status === 'success' && res.payload) {
+          this.setState({
+            zoomMeetingLoading: false,
+            zoomMeetingCreated: true,
+            zoomMeetingUrl: res.payload.joinUrl,
+            text: this.state.zoomInvitationMessage.replace('[invite_url]', res.payload.joinUrl)
+          }, () => {
+            document.getElementById('_close_zoom_integration').style.display = 'none'
+            this.sendMessage()
+            this.zoomCountdownTimer= setInterval(() => {
+              if (this.state.zoomCountdown <= 1) {
+                if (this.state.zoomMeetingUrl) {
+                  clearInterval(this.zoomCountdownTimer)
+                  document.getElementById('_zoomMeetingLink').click()
+                  //window.open(this.state.zoomMeetingUrl, '_blank')
+                  document.getElementById('_close_zoom_integration').style.display = 'block'
+                  document.getElementById('_close_zoom_integration').click()
                 }
-              }, 1000)
-            })
-          } else {
-            console.log('error creating zoom meeting', res.description)
-            this.setState({zoomMeetingCreationError: true, zoomMeetingLoading: false})
-          }
-        })
+              } else {
+                this.setState({zoomCountdown: this.state.zoomCountdown - 1})
+              }
+            }, 1000)
+          })
+        } else {
+          console.log('error creating zoom meeting', res.description)
+          this.setState({zoomMeetingCreationError: true, zoomMeetingLoading: false})
+        }
       })
-    } else {
-      this.props.alertMsg.error(data.errorMsg)
-    }
+    })
   }
 
-  goToZoomIntegration () {
-    document.getElementById('_close_zoom_integration').click()
+  goToIntegrations () {
     this.props.history.push({
       pathname: '/settings',
-      state: {tab: 'zoomIntegration'}
+      state: {tab: 'integrations'}
     })
   }
 
@@ -371,7 +420,7 @@ class Footer extends React.Component {
   }
 
   getZoomIntegrationContent () {
-    if (this.props.zoomIntegrations.length === 0) {
+    if (!this.props.zoomIntegration) {
       return (
         <div>
           <div>
@@ -380,7 +429,7 @@ class Footer extends React.Component {
             </span>
           </div>
           <div style={{marginTop: '25px', textAlign: 'center'}}>
-            <div onClick={this.goToZoomIntegration} className='btn btn-primary'>
+            <div onClick={this.goToIntegrations} className='btn btn-primary'>
               Integrate
             </div>
           </div>
@@ -391,26 +440,7 @@ class Footer extends React.Component {
         <form onSubmit={this.createZoomMeeting}>
           <div className="m-form m-form--fit m-form--label-align-right">
             <span>{`Please provide the following information to create a zoom meeting and send invitation to ${this.props.activeSession.firstName}.`}</span>
-
-            <div style={{marginTop: '20px', paddingLeft: '0', paddingRight: '0'}} class="form-group m-form__group row">
-              <label for="_zoom_users" className="col-2 col-form-label">
-                Account:
-              </label>
-              <div className="col-10">
-                <select onChange={this.selectZoomUser} class="form-control m-input" value={this.state.zoomUserId} id="_zoom_users" required>
-                  <option key='' value='' selected disabled>Select a Zoom Account...</option>
-                  {
-                    this.props.zoomIntegrations.map((account) => {
-                      return (
-                      <option value={account._id}>{account.firstName + " " + account.lastName}</option>
-                      )
-                    })
-                  }
-                </select>
-              </div>
-            </div>
-
-            <div style={{paddingLeft: '0', paddingRight: '0'}} className="form-group m-form__group row">
+            <div style={{marginTop: '20px', paddingLeft: '0', paddingRight: '0'}} className="form-group m-form__group row">
               <label for="_zoom_topic" className="col-2 col-form-label">
                 Topic:
               </label>
@@ -749,7 +779,7 @@ class Footer extends React.Component {
           <p style={{ wordBreak: 'break-all', cursor: 'pointer', color: 'grey'}} onClick={() => this.selectCannMessage(item)}>{responseMessage}</p>
         </li>
       }
-    }) 
+    })
     return data
   }
 
@@ -801,7 +831,7 @@ class Footer extends React.Component {
                         <i className='la la-trash' />
                       </span>
                     </span>
-                  </div> : 
+                  </div> :
                   <div> {this.state.showCannedMessages &&
                     <div className='m-dropdown__wrapper'>
                       <span className='m-dropdown__arrow m-dropdown__arrow--right m-dropdown__arrow--adjust' />
@@ -825,7 +855,7 @@ class Footer extends React.Component {
                                 </li>
                               </ul>
                               <div className='card-body' id = 'cardBody' style={{ maxHeight: '230px', overflow: 'auto' }}>
-                                {!this.state.selectedCannMessage ? this.state.cannedMessages.length > 0 ? 
+                                {!this.state.selectedCannMessage ? this.state.cannedMessages.length > 0 ?
                                 <ul className='m-nav' >
                                    {this.listDataDisplay()}
                                 </ul>

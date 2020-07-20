@@ -4,6 +4,8 @@ import { bindActionCreators } from 'redux'
 import AlertContainer from 'react-alert'
 import { RingLoader } from 'halogenium'
 import { getZoomIntegrations, createZoomMeeting } from '../../redux/actions/settings.actions'
+import NEWMESSAGEBUTTON from './newMessageButton'
+import TEMPLATESMODAL from './messageTemplate'
 
 // actions
 import {
@@ -608,7 +610,7 @@ class WhatsAppChat extends React.Component {
           createNewContact={this.props.createNewContact}
           changeActiveSession={this.changeActiveSession}
         />
-        <NEWMESSAGEBUTTON 
+        <NEWMESSAGEBUTTON
           dataToggle='modal'
           dataTarget='#messageTemplateNewNumber'
           onClick={() => this.sendingToNewNumber(true)}
