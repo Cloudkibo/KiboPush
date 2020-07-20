@@ -51,7 +51,7 @@ class LeftChatItem extends React.Component {
           {
             message.caption &&
             <div style={{marginTop: '10px'}}>
-              <TEXT 
+              <TEXT
                 text={{text: message.caption}}
               />
             </div>
@@ -79,7 +79,7 @@ class LeftChatItem extends React.Component {
           {
             message.caption &&
             <div style={{marginTop: '10px'}}>
-              <TEXT 
+              <TEXT
                 text={{text: message.caption}}
               />
             </div>
@@ -104,6 +104,7 @@ class LeftChatItem extends React.Component {
       return (
         <TEXT
           text={message}
+          urlMeta={this.props.message.url_meta}
         />
       )
     }

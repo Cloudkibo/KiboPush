@@ -296,7 +296,7 @@ class WhatsAppChat extends React.Component {
     }
   }
 
-  setMessageData(session, payload) {
+  setMessageData(session, payload, urlMeta) {
     const data = {
       senderNumber: this.props.automated_options.flockSendWhatsApp.number,
       recipientNumber: this.state.activeSession.number,
@@ -307,7 +307,8 @@ class WhatsAppChat extends React.Component {
         id: this.props.user._id,
         name: this.props.user.name,
         type: 'agent'
-      }
+      },
+      url_meta: urlMeta
     }
     return data
   }
@@ -610,7 +611,7 @@ class WhatsAppChat extends React.Component {
           createNewContact={this.props.createNewContact}
           changeActiveSession={this.changeActiveSession}
         />
-        <NEWMESSAGEBUTTON 
+        <NEWMESSAGEBUTTON
           dataToggle='modal'
           dataTarget='#messageTemplateNewNumber'
           onClick={() => this.sendingToNewNumber(true)}
