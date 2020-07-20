@@ -1,6 +1,7 @@
 import {getAutomatedOptions, getuserdetails} from './basicinfo.actions'
 import * as ActionTypes from '../constants/constants'
 import callApi from '../../utility/api.caller.service'
+import auth from '../../utility/auth.service'
 export const API_URL = '/api'
 
 export function updateZoomIntegration (data) {
@@ -510,12 +511,17 @@ export function updatePlatformWhatsApp (data, msg, clearFields, handleResponse) 
   }
 }
 
-export function integrateZoom () {
+export function integrateZoom (cb) {
   return (dispatch) => {
-    callApi('auth/zoom')
-      .then(res => {
-        console.log('Going to integrate zoom')
+    fetch('/auth/zoom', {
+      method: 'get',
+      headers: new Headers({
+        'Authorization': `Bearer ${auth.getToken()}`
       })
+    })
+      .then((res) => res.json())
+      .then((res) => res)
+      .then((res) => cb(res.payload))
   }
 }
 
