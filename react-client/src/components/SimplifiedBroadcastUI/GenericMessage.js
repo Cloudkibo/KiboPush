@@ -32,6 +32,7 @@ import VideoLinkModal from './VideoLinkModal'
 import MODAL from '../extras/modal'
 import ConfirmationModal from '../extras/confirmationModal'
 import ReactTooltip from 'react-tooltip'
+import MessageTemplate from '../WhatsApp/messageTemplate'
 
 class GenericMessage extends React.Component {
   constructor (props, context) {
@@ -341,15 +342,25 @@ class GenericMessage extends React.Component {
     }
 
     if (!isPresent) {
-      if (obj.buttons.length > 0) {
-        temp.push({id: obj.id, text: obj.text, componentType: 'text', componentName: 'text', buttons: obj.buttons})
+      if (obj.templateName) {
+        temp.push({
+          id: obj.id, 
+          text: obj.text, 
+          componentType: 'text', 
+          componentName: obj.componentName, 
+          buttons: obj.buttons, 
+          templateName: obj.templateName,
+          templateArguments: obj.templateArguments
+        })
+      } else if (obj.buttons.length > 0) {
+        temp.push({id: obj.id, text: obj.text, componentType: 'text', componentName: obj.componentName ? obj.componentName : 'text', buttons: obj.buttons})
       } else {
         if (obj.isEmailPhoneComponent) {
-          temp.push({id: obj.id, text: obj.text, componentType: 'text', componentName: 'text', isEmailPhoneComponent: obj.isEmailPhoneComponent})
+          temp.push({id: obj.id, text: obj.text, componentType: 'text', componentName: obj.componentName ? obj.componentName : 'text', isEmailPhoneComponent: obj.isEmailPhoneComponent})
         } else if (temp.length > 0 && temp[temp.length - 1].isEmailPhoneComponent) {
-          temp.splice( temp.length - 1, 0, {id: obj.id, text: obj.text, componentType: 'text', componentName: 'text'} )
+          temp.splice( temp.length - 1, 0, {id: obj.id, text: obj.text, componentType: 'text', componentName: obj.componentName ? obj.componentName : 'text'} )
         } else {
-          temp.push({id: obj.id, text: obj.text, componentType: 'text', componentName: 'text'})
+          temp.push({id: obj.id, text: obj.text, componentType: 'text', componentName: obj.componentName ? obj.componentName : 'text'})
         }
       }
     }
@@ -556,17 +567,9 @@ class GenericMessage extends React.Component {
     let component = this.getComponent(componentDetails)
     console.log('component retrieved', component)
     if (edit) {
-      if (componentDetails.componentType === 'text' && componentDetails.videoId) {
-        this.msg.info(`youtube video component edited`)
-      } else {
-        this.msg.info(`${componentDetails.componentType} component edited`)
-      }
+      this.msg.info(`New ${componentDetails.componentName} component edited`)
     } else {
-      if (componentDetails.componentType === 'text' && componentDetails.videoId) {
-        this.msg.info(`New youtube video component added`)
-      } else {
-        this.msg.info(`New ${componentDetails.componentType} component added`)
-      }
+      this.msg.info(`New ${componentDetails.componentName} component added`)
     }
     this.updateList(component)
     component.handler()
@@ -778,7 +781,17 @@ class GenericMessage extends React.Component {
         closeModal={this.closeAddComponentModal}
         toggleGSModal={this.toggleGSModal}
         closeGSModal={this.closeGSModal}
-        addComponent={this.addComponent} />)
+        addComponent={this.addComponent} />),
+      'template': (<MessageTemplate
+        alertMsg={this.msg}
+        id={new Date().getTime()}
+        heading={'Message Template'}
+        addComponent={this.addComponent} 
+        showCloseModalAlertDialog={this.showCloseModalAlertDialog}
+        closeModal={this.closeAddComponentModal}
+        edit={this.state.editData ? true : false}
+        {...this.state.editData}
+      />)
     }
     return modals[this.state.componentType]
   }
@@ -790,6 +803,9 @@ class GenericMessage extends React.Component {
     let components = {
       'text': {
         component: (<Text
+          selectedIndex={broadcast.selectedIndex}
+          templateName={broadcast.templateName}
+          templateArguments={broadcast.templateArguments}
           videoId={broadcast.videoId}
           videoTitle={broadcast.videoTitle}
           videoDescription={broadcast.videoDescription}
@@ -815,7 +831,10 @@ class GenericMessage extends React.Component {
             text: broadcast.text,
             buttons: broadcast.buttons ? broadcast.buttons : [],
             deletePayload: broadcast.deletePayload,
-            isEmailPhoneComponent: broadcast.isEmailPhoneComponent
+            isEmailPhoneComponent: broadcast.isEmailPhoneComponent,
+            componentName: broadcast.componentName,
+            templateName: broadcast.templateName,
+            templateArguments: broadcast.templateArguments
           })
         }
       },
@@ -1168,7 +1187,7 @@ class GenericMessage extends React.Component {
                         </div>
                       </div>
                     }
-                    <GenericMessageComponents hiddenComponents={this.state.hiddenComponents} addComponent={this.showAddComponentModal} addedComponents={this.state.list.length} module= {this.props.module} componentLimit = {this.props.componentLimit}/>
+                    <GenericMessageComponents module={this.props.module} hiddenComponents={this.state.hiddenComponents} addComponent={this.showAddComponentModal} addedComponents={this.state.list.length} module= {this.props.module} componentLimit = {this.props.componentLimit}/>
                     {this.props.module && this.props.module === 'welcomeMessage' &&
                       <div>
                         <ReactTooltip
