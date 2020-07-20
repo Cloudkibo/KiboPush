@@ -510,6 +510,20 @@ export function updatePlatformWhatsApp (data, msg, clearFields, handleResponse) 
   }
 }
 
+export function integrateZoom (cb) {
+  return (dispatch) => {
+    fetch('/auth/zoom', {
+      method: 'get',
+      headers: new Headers({
+        'Authorization': `Bearer ${auth.getToken()}`
+      })
+    })
+      .then((res) => res.json())
+      .then((res) => res)
+      .then((res) => cb(res.payload))
+  }
+}
+
 export function getZoomIntegrations () {
   return (dispatch) => {
     callApi('zoom/users')

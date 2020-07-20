@@ -596,7 +596,6 @@ class WhatsAppChat extends React.Component {
               </div>
           </div>
         }
-
         <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id='messageTemplateNewNumber' tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
             <MESSAGETEMPLATE
