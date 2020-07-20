@@ -226,7 +226,8 @@ Body.propTypes = {
   'markRead': PropTypes.func.isRequired,
   'updateState': PropTypes.func.isRequired,
   'newMessage': PropTypes.bool.isRequired,
-  'updateNewMessage': PropTypes.func.isRequired
+  'updateNewMessage': PropTypes.func.isRequired,
+  'showSubscriberNameOnMessage': PropTypes.bool.isRequired
 }
 
 export default Body

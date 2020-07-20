@@ -147,7 +147,8 @@ LeftChatItem.propTypes = {
   'showDate': PropTypes.func.isRequired,
   'displayDate': PropTypes.func.isRequired,
   'activeSession': PropTypes.object.isRequired,
-  'previousMessage': PropTypes.object
+  'previousMessage': PropTypes.object,
+  'showSubscriberNameOnMessage': PropTypes.bool.isRequired
 }
 
 export default LeftChatItem
