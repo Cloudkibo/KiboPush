@@ -22,7 +22,8 @@ import UploadCustomerInformation from './uploadCustomerInformation'
 import WhiteListDomains from './whitelistDomains'
 import Integrations from './integrations'
 import AdvancedSetting from './advancedSettings'
-import CannedResponses from './cannedResponses/cannedResponses'
+import ZoomIntegration from './zoomIntegration'
+
 class Settings extends React.Component {
   constructor (props, context) {
     super(props, context)
@@ -59,6 +60,7 @@ class Settings extends React.Component {
     this.setResetPass = this.setResetPass.bind(this)
     this.setConfiguration = this.setConfiguration.bind(this)
     this.setIntegrations = this.setIntegrations.bind(this)
+    this.setZoomIntegration = this.setZoomIntegration.bind(this)
     this.setAdvancedSettings = this.setAdvancedSettings.bind(this)
     this.setNGP = this.setNGP.bind(this)
     this.setConnectFb = this.setConnectFb.bind(this)
@@ -196,6 +198,12 @@ class Settings extends React.Component {
     })
   }
 
+  setZoomIntegration () {
+    this.setState({
+      openTab: 'zoomIntegration'
+    })
+  }
+
   setAdvancedSettings () {
     this.setState({
       openTab: 'advancedSettings'
@@ -294,8 +302,8 @@ class Settings extends React.Component {
       }
     }
     if (this.props.location.state && this.props.location.state.tab) {
-      if (this.props.location.state.tab === 'integrations') {
-        this.setIntegrations()
+      if (this.props.location.state.tab === 'zoomIntegration') {
+        this.setZoomIntegration()
       }
     }
   }
@@ -508,7 +516,15 @@ class Settings extends React.Component {
                         <span className='m-nav__link-text'>Configuration</span>
                       </a>
                     </li>
-                    { (url.includes('localhost') || url.includes('kiboengage.cloudkibo.com') || (url.includes('kibochat.cloudkibo.com') && this.props.user.isSuperUser)) && (this.props.user.role === 'admin' || this.props.user.role === 'buyer') &&
+                    { (url.includes('localhost') || (url.includes('kibochat.cloudkibo.com') && this.props.user.isSuperUser)) && (this.props.user.role === 'admin' || this.props.user.role === 'buyer') &&
+                    <li className='m-nav__item'>
+                      <a href='#/' className='m-nav__link' onClick={this.setZoomIntegration} style={{cursor: 'pointer'}} >
+                        <i className='m-nav__link-icon flaticon-network' />
+                        <span className='m-nav__link-text'>Zoom Integration</span>
+                      </a>
+                    </li>
+                    }
+                    { (url.includes('localhost') || url.includes('kiboengage.cloudkibo.com')) && (this.props.user.role === 'admin' || this.props.user.role === 'buyer') &&
                     <li className='m-nav__item'>
                       <a href='#/' className='m-nav__link' onClick={this.setIntegrations} style={{cursor: 'pointer'}} >
                         <i className='m-nav__link-icon flaticon-network' />
@@ -743,6 +759,10 @@ class Settings extends React.Component {
           }
             { this.state.openTab === 'advancedSettings' &&
               <AdvancedSetting />
+            }
+            {
+              this.state.openTab === 'zoomIntegration' &&
+              <ZoomIntegration />
             }
           </div>
         </div>

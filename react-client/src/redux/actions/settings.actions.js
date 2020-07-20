@@ -4,9 +4,9 @@ import callApi from '../../utility/api.caller.service'
 import auth from '../../utility/auth.service'
 export const API_URL = '/api'
 
-export function updateZoomIntegration (data) {
+export function updateZoomIntegrations (data) {
   return {
-    type: ActionTypes.UPDATE_ZOOM_INTEGRATION,
+    type: ActionTypes.UPDATE_ZOOM_INTEGRATIONS,
     data
   }
 }
@@ -525,20 +525,28 @@ export function integrateZoom (cb) {
   }
 }
 
-export function getZoomIntegration () {
+export function getZoomIntegrations () {
   return (dispatch) => {
     callApi('zoom/users')
       .then(res => {
-        dispatch(updateZoomIntegration(res.payload))
-      })
-  }
-}
-
-export function disconnectZoom () {
-  return (dispatch) => {
-    callApi('zoom/disconnect')
-      .then(res => {
-        dispatch(updateZoomIntegration(null))
+        dispatch(updateZoomIntegrations(res.payload ? res.payload : []))
+        // dispatch(updateZoomIntegrations([    
+        //     {
+        //       _id: '123',
+        //       profilePic: "https://platform-lookaside.fbsbx.com/platform/profilepic/?asid=10217280192532174&height=50&width=50&ext=1596610613&hash=AeTfTwYDbHqEJfmf",
+        //       firstName : "Anisha",
+        //       lastName : "Chhatwani",
+        //       connected: true
+        //     },
+        //     {
+        //       _id: 'abc',
+        //       profilePic: "",
+        //       firstName : "Kibo",
+        //       lastName : "Meeting",
+        //       connected: true
+        //     }
+        //   ])
+        // )
       })
   }
 }
