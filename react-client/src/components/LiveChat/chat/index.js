@@ -164,6 +164,7 @@ class Chat extends React.Component {
           updateState={this.props.updateState}
           newMessage={this.newMessage}
           updateNewMessage={this.updateNewMessage}
+          showSubscriberNameOnMessage={this.props.showSubscriberNameOnMessage}
         />
 
         {
@@ -291,7 +292,8 @@ Chat.propTypes = {
   'showSticker': PropTypes.bool.isRequired,
   'showEmoji': PropTypes.bool.isRequired,
   'showGif': PropTypes.bool.isRequired,
-  'showThumbsUp': PropTypes.bool.isRequired
+  'showThumbsUp': PropTypes.bool.isRequired,
+  'showSubscriberNameOnMessage': PropTypes.bool.isRequired
 }
 Chat.defaultProps = {
   showTemplates: false,

@@ -543,6 +543,7 @@ class WhatsAppChat extends React.Component {
                     zoomIntegrations={this.props.zoomIntegrations}
                     createZoomMeeting={this.props.createZoomMeeting}
                     showCaption={true}
+                    showSubscriberNameOnMessage={false}
                   />
                 }
                 {
