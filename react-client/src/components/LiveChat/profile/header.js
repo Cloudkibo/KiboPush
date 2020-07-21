@@ -42,10 +42,10 @@ class ProfileHeader extends React.Component {
   }
 
   onSaveName () {
-    this.setState({savingName: true})
     if (this.state.name === '') {
       this.props.alertMsg.error('Subscriber name cannot be empty')
     } else {
+      this.setState({savingName: true})
       if (this.props.user.platform === 'whatsApp') {
         this.props.editSubscriberWhatsApp(this.props.activeSession._id, {name: this.state.name}, this.props.alertMsg)
       } else if (this.props.user.platform === 'sms') {
