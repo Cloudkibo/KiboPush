@@ -93,7 +93,7 @@ class ProfileHeader extends React.Component {
                   textAlign: 'center',
                   background: !this.state.editName && 'none',
                   boxShadow: !this.state.editName && 'none',
-                  textOverFlow: 'ellipsis'
+                  textOverflow: 'ellipsis'
                 }}
                 className='form-control m-input m-card-profile__name'
                 type='text'
