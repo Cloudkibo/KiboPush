@@ -194,7 +194,7 @@ class Members extends React.Component {
             <div className="modal-content">
               <div style={{ display: 'block' }} className="modal-header">
                 <h5 className="modal-title" id="exampleModalLabel">
-                  Are you sure you want to deactivate this agent ?
+                  Are you sure you want to deactivate this member ?
 							  </h5>
                 <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
                   <span aria-hidden="true">
@@ -203,7 +203,7 @@ class Members extends React.Component {
                 </button>
               </div>
               <div style={{ color: 'black' }} className="modal-body">
-                <p>Agent will not be able to login. And the chat sessions assigned to him will be unassigned.</p>
+                <p>Team member will not be able to login. And the chat sessions assigned to him will be unassigned.</p>
                 <div id='question' className='form-group m-form__group'>
                   <label className='control-label'>To continue, first verify it's you</label>
                   <input className='form-control' type='password' placeholder='Enter password here'
@@ -294,10 +294,12 @@ class Members extends React.Component {
                                 <span
                                   style={{width: '150px'}}>Role</span>
                               </th>
+                              { this.props.user.permissions.updateRolePermission &&
                               <th data-field='Action'
                                 className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
                                 <span style={{width: '150px'}}>Actions</span>
                               </th>
+                              }
                             </tr>
                           </thead>
                           <tbody className='m-datatable__body'
@@ -323,6 +325,7 @@ class Members extends React.Component {
                                   <span
                                      style={member.userId && member.userId.disableMember? {color: '#d3d3d3', width: '150px'} :{width: '150px'}}>{member.userId.role}</span>
                                 </td>
+                                { this.props.user.permissions.updateRolePermission &&
                                 <td data-field='Action'
                                   className='m-datatable__cell'>
                                   <span style={member.userId && member.userId.disableMember? {color: '#d3d3d3', width: '150px'} :{width: '150px'}}>
@@ -351,7 +354,7 @@ class Members extends React.Component {
                                       </span>
                                     }
                                     {
-                                      member.role === 'agent' && !member.userId.disableMember &&
+                                      member.role !== 'buyer' && !member.userId.disableMember &&
                                       <button className='btn btn-primary'
                                         style={{
                                           float: 'left',
@@ -361,7 +364,7 @@ class Members extends React.Component {
                                       </button>
                                     }
                                     {
-                                      member.role === 'agent' && member.userId.disableMember &&
+                                      member.role !== 'buyer' && member.userId.disableMember &&
                                       <button className='btn btn-cancel'
                                         style={{
                                           float: 'left',
@@ -392,6 +395,7 @@ class Members extends React.Component {
                                     } */}
                                   </span>
                                 </td>
+                                }
                               </tr>
                             ))
                         }
