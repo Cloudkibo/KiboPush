@@ -60,7 +60,7 @@ class Footer extends React.Component {
     this.sendMessage = this.sendMessage.bind(this)
     this.toggleAudioRecording = this.toggleAudioRecording.bind(this)
     this.getZoomIntegrationContent = this.getZoomIntegrationContent.bind(this)
-    this.goToIntegrations = this.goToIntegrations.bind(this) 
+    this.goToIntegrations = this.goToIntegrations.bind(this)
     this.setZoomTopic = this.setZoomTopic.bind(this)
     this.setZoomAgenda = this.setZoomAgenda.bind(this)
     this.setZoomInvitationMessage = this.setZoomInvitationMessage.bind(this)
@@ -100,7 +100,7 @@ class Footer extends React.Component {
     selectedCannMessage.responseMessage = event.target.value
     this.setState({ selectedCannMessage: selectedCannMessage })
   }
-  
+
 
   toggleHover (id) {
     // console.log('Hovver called', id)
@@ -114,20 +114,21 @@ class Footer extends React.Component {
   }
 
   selectCannMessage (CannMessage) {
+    let cannResponse = {...CannMessage}
     let activeSession = this.props.activeSession
-    if (CannMessage.responseMessage.includes('{{user_full_name}}')) {
-      CannMessage.responseMessage = CannMessage.responseMessage.replace(
+    if (cannResponse.responseMessage.includes('{{user_full_name}}')) {
+      cannResponse.responseMessage = cannResponse.responseMessage.replace(
         '{{user_full_name}}', activeSession.firstName + ' ' + activeSession.lastName)
     }
-    if (CannMessage.responseMessage.includes('{{user_first_name}}')) {
-      CannMessage.responseMessage = CannMessage.responseMessage.replace(
+    if (cannResponse.responseMessage.includes('{{user_first_name}}')) {
+      cannResponse.responseMessage = cannResponse.responseMessage.replace(
         '{{user_first_name}}', activeSession.firstName)
     }
-    if (CannMessage.responseMessage.includes('{{user_last_name}}')) {
-      CannMessage.responseMessage = CannMessage.responseMessage.replace(
+    if (cannResponse.responseMessage.includes('{{user_last_name}}')) {
+      cannResponse.responseMessage = cannResponse.responseMessage.replace(
         '{{user_last_name}}', activeSession.lastName)
     }
-    this.setState({selectedCannMessage: {...CannMessage}, text:`/${CannMessage.responseCode}`})
+    this.setState({selectedCannMessage: cannResponse, text:`/${cannResponse.responseCode}`})
   }
 
   onCaptionChange (e) {
@@ -332,9 +333,18 @@ class Footer extends React.Component {
   search (value) {
     if (this.state.dataForSearch.length > 0) {
       let searchArray = []
-      if (value !== '/') {
+      if (value[value.length-1] === ' ') {
+        let text = value.trim().slice(1)
+        this.state.dataForSearch.forEach(element => {
+          if (element.responseCode.toLowerCase() === text.toLowerCase()) {
+            this.setState({selectedCannMessage: element})
+            searchArray.push(element)
+        }
+      })
+      this.setState({ cannedMessages: searchArray })
+    }
+      else if (value !== '/') {
         let text = value.slice(1)
-        console.log('text in search', value)
         this.state.dataForSearch.forEach(element => {
           if (element.responseCode.toLowerCase().includes(text.toLowerCase())) searchArray.push(element)
         })
@@ -694,6 +704,7 @@ class Footer extends React.Component {
   }
 
   sendMessage() {
+    console.log('this.state.urlMeta', this.state.urlmeta)
     const data = this.props.performAction('send messages', this.props.activeSession)
     if (data.isAllowed) {
       let payload = {}
@@ -702,7 +713,7 @@ class Footer extends React.Component {
       if (this.state.text !== '' && /\S/gm.test(this.state.text)) {
         console.log('updating chat data', data)
         payload = this.setDataPayload('text')
-        data = this.props.setMessageData(this.props.activeSession, payload)
+        data = this.props.setMessageData(this.props.activeSession, payload, this.state.urlmeta)
         this.props.sendChatMessage(data)
         this.setState({ text: '', urlmeta: {}, currentUrl: '' })
         this.props.updateChatAreaHeight('57vh')
@@ -778,7 +789,7 @@ class Footer extends React.Component {
           <p style={{ wordBreak: 'break-all', cursor: 'pointer', color: 'grey'}} onClick={() => this.selectCannMessage(item)}>{responseMessage}</p>
         </li>
       }
-    }) 
+    })
     return data
   }
 
@@ -830,7 +841,7 @@ class Footer extends React.Component {
                         <i className='la la-trash' />
                       </span>
                     </span>
-                  </div> : 
+                  </div> :
                   <div> {this.state.showCannedMessages &&
                     <div className='m-dropdown__wrapper'>
                       <span className='m-dropdown__arrow m-dropdown__arrow--right m-dropdown__arrow--adjust' />
@@ -854,7 +865,7 @@ class Footer extends React.Component {
                                 </li>
                               </ul>
                               <div className='card-body' id = 'cardBody' style={{ maxHeight: '230px', overflow: 'auto' }}>
-                                {!this.state.selectedCannMessage ? this.state.cannedMessages.length > 0 ? 
+                                {!this.state.selectedCannMessage ? this.state.cannedMessages.length > 0 ?
                                 <ul className='m-nav' >
                                    {this.listDataDisplay()}
                                 </ul>
@@ -868,7 +879,7 @@ class Footer extends React.Component {
                                 <textarea value={this.state.selectedCannMessage.responseMessage} onChange={this.responseMessageHandleChange}
                                 className='form-control m-input m-input--solid'
                                 id='description' rows='3'
-                                style={{ height: '100px', resize: 'none' }} maxlength='500' required />
+                                style={{ height: '100px', resize: 'none' }} maxlength='1000' required />
                                </li>
                               </ul>
                                 }
