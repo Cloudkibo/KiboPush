@@ -34,6 +34,7 @@ import { loadMembersList } from '../../redux/actions/members.actions'
 import { urlMetaData } from '../../redux/actions/convos.actions'
 import { handleSocketEventWhatsapp } from './socket'
 import { clearSocketDataWhatsapp } from '../../redux/actions/socket.actions'
+import { editSubscriberWhatsApp } from '../../redux/actions/uploadContacts.actions'
 
 // components
 import HELPWIDGET from '../../components/extras/helpWidget'
@@ -567,6 +568,7 @@ class WhatsAppChat extends React.Component {
                       showTags={false}
                       showCustomFields={false}
                       showUnsubscribe={false}
+                      editSubscriberWhatsApp={this.props.editSubscriberWhatsApp}
                     />
                 }
                 {
@@ -670,7 +672,8 @@ function mapDispatchToProps(dispatch) {
     deletefile,
     getZoomIntegrations,
     createZoomMeeting,
-    createNewContact
+    createNewContact,
+    editSubscriberWhatsApp
   }, dispatch)
 }
 

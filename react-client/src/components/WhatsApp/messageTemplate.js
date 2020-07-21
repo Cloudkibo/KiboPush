@@ -46,8 +46,8 @@ class MessageTemplate extends React.Component {
       },
       {
         name: 'issue_update',
-        text: 'Hi {{1}},\nWe are working on {{2}}. We will update you as soon as it is {{3}}.',
-        regex:  new RegExp(/^Hi (.*),\n We are working on (.*). We will update you as soon as it is (.*).$/, 'i'),
+        text: 'Hi {{1}},\n We are working on {{2}}. We will update you as soon as it is {{3}}.',
+        regex:  new RegExp(/^Hi (.*),\n We are working on (.*). We will update you as soon as it is (.*)\.$/, 'i'),
         buttons: [],
         templateArguments: '{{1}},{{2}},{{3}}'
       }
