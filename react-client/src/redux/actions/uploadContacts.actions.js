@@ -104,7 +104,7 @@ export function editSubscriberSms (id, data, msg) {
   }
 } 
 
-export function editSubscriber (id, data,msg) {
+export function editSubscriberWhatsApp (id, data,msg) {
   console.log('data for editSubscriber', data)
   return (dispatch) => {
     callApi(`whatsAppContacts/update/${id}`, 'post', data)
