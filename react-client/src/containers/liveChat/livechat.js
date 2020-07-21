@@ -478,7 +478,7 @@ class LiveChat extends React.Component {
   }
 
   getAgents (members) {
-    let agents = members.map(m => m.userId)
+    let agents = members.filter(a => !a.userId.disableMember).map(m => m.userId)
     return agents
   }
 
