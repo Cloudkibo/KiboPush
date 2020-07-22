@@ -19,7 +19,10 @@ export function handleSocketEventWhatsapp (data, state, props, updateLiveChatInf
       case 'new_session_created_whatsapp':
         handleNewSessionCreated(data.payload, state, props, updateLiveChatInfo, clearSocketData, user)
         break
-      case 'message_status_whatsApp':
+      case 'message_delivered_whatsApp':
+        handleMessageStatus(data.payload, state, props, updateLiveChatInfo, clearSocketData, user)
+        break
+      case 'message_seen_whatsApp':
         handleMessageStatus(data.payload, state, props, updateLiveChatInfo, clearSocketData, user)
         break
       default:
@@ -241,9 +244,14 @@ export function handleSocketEventWhatsapp (data, state, props, updateLiveChatInf
     const index = userChat.findIndex((s) => s._id === payload.message._id)
     if (index >= 0) {
       userChat[index].seen = payload.message.seen
-      userChat[index].seenDateTime = payload.message.seenDateTime
       userChat[index].delivered = payload.message.delivered
-      userChat[index].deliveredDateTime = payload.message.deliveredDateTime
+      for (let i = index - 1; i >=0; i--) {
+        if (userChat[i].format === 'convos' && payload.message.action === 'message_delivered_whatsApp' && !userChat[i].delivered) {
+          userChat[i].delivered = payload.message.delivered
+        } else if (userChat[i].format === 'convos' && payload.message.action === 'message_seen_whatsApp' && !userChat[i].seen) {
+          userChat[i].seen = payload.message.seen
+        }
+      }
     }
     let data = {
       userChat
