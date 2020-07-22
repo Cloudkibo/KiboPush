@@ -27,6 +27,7 @@ class Profile extends React.Component {
                         sendNotifications={this.props.sendNotifications}
                         agents={this.props.agents}
                         teams={this.props.teams}
+                        editSubscriberWhatsApp={this.props.editSubscriberWhatsApp}
                     />
                   {
                       (this.props.user.currentPlan.unique_ID === 'plan_C' || this.props.user.currentPlan.unique_ID === 'plan_D') &&
