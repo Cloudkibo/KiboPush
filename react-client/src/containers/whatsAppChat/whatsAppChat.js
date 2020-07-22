@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import AlertContainer from 'react-alert'
 import { RingLoader } from 'halogenium'
-import { getZoomIntegration, createZoomMeeting } from '../../redux/actions/settings.actions'
+import { getZoomIntegration, createZoomMeeting, loadcannedResponses } from '../../redux/actions/settings.actions'
 import NEWMESSAGEBUTTON from './newMessageButton'
 import MESSAGETEMPLATE from '../../components/WhatsApp/messageTemplate'
 
@@ -71,7 +71,8 @@ class WhatsAppChat extends React.Component {
       showSearch: false,
       customFieldOptions: [],
       showingCustomFieldPopover: false,
-      sendingToNewNumber: false
+      sendingToNewNumber: false,
+      cannedResponses: []
     }
 
     this.fetchSessions = this.fetchSessions.bind(this)
@@ -98,7 +99,7 @@ class WhatsAppChat extends React.Component {
     this.clearSearchResults = this.clearSearchResults.bind(this)
     this.setMessageData = this.setMessageData.bind(this)
     this.sendingToNewNumber = this.sendingToNewNumber.bind(this)
-
+    this.props.loadcannedResponses()
     this.fetchSessions(true, 'none', true)
     if (props.user.currentPlan.unique_ID === 'plan_C' || props.user.currentPlan.unique_ID === 'plan_D') {
       props.loadMembersList()
@@ -384,7 +385,9 @@ class WhatsAppChat extends React.Component {
   UNSAFE_componentWillReceiveProps (nextProps) {
     console.log('UNSAFE_componentWillMount called in live chat', nextProps)
     let state = {}
-
+    if (nextProps.cannedResponses !== this.props.cannedResponses) {
+      this.setState({ cannedResponses: nextProps.cannedResponses})
+    }
     if (nextProps.openSessions || nextProps.closeSessions) {
       state.loading = false
       state.sessionsLoading = false
@@ -508,6 +511,7 @@ class WhatsAppChat extends React.Component {
                 {
                   this.state.activeSession.constructor === Object && Object.keys(this.state.activeSession).length > 0 &&
                   <CHAT
+                    cannedResponses = {this.state.cannedResponses}
                     userChat={this.state.userChat}
                     chatCount={this.props.chatCount}
                     sessions={this.state.sessions}
@@ -640,7 +644,8 @@ function mapStateToProps(state) {
     searchChatMsgs: (state.whatsAppChatInfo.searchChat),
     socketData: (state.socketInfo.socketDataWhatsapp),
     automated_options: (state.basicInfo.automated_options),
-    zoomIntegration: (state.settingsInfo.zoomIntegration)
+    zoomIntegration: (state.settingsInfo.zoomIntegration),
+    cannedResponses: state.settingsInfo.cannedResponses
   }
 }
 
@@ -670,7 +675,8 @@ function mapDispatchToProps(dispatch) {
     deletefile,
     getZoomIntegration,
     createZoomMeeting,
-    createNewContact
+    createNewContact,
+    loadcannedResponses
   }, dispatch)
 }
 
