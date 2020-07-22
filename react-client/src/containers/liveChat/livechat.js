@@ -652,6 +652,7 @@ class LiveChat extends React.Component {
                     history={this.props.history}
                     zoomIntegration={this.props.zoomIntegration}
                     createZoomMeeting={this.props.createZoomMeeting}
+                    showSubscriberNameOnMessage={true}
                   />
                 }
                 {
