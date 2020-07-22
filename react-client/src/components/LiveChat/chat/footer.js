@@ -119,17 +119,39 @@ class Footer extends React.Component {
     let cannResponse = {...CannMessage}
     let activeSession = this.props.activeSession
     if (cannResponse.responseMessage.includes('{{user_full_name}}')) {
-      cannResponse.responseMessage = cannResponse.responseMessage.replace(
-        '{{user_full_name}}', activeSession.firstName + ' ' + activeSession.lastName)
+      if(!activeSession.name) {
+        cannResponse.responseMessage = cannResponse.responseMessage.replace(
+          /{{user_full_name}}/g, activeSession.firstName + ' ' + activeSession.lastName)  
+      } else {
+        cannResponse.responseMessage = cannResponse.responseMessage.replace(
+          /{{user_full_name}}/g, activeSession.name)
+      }
     }
     if (cannResponse.responseMessage.includes('{{user_first_name}}')) {
+      if(!activeSession.name) {
       cannResponse.responseMessage = cannResponse.responseMessage.replace(
-        '{{user_first_name}}', activeSession.firstName)
+        /{{user_first_name}}/g, activeSession.firstName)
+      } else {
+        let subscriberName = activeSession.name.split(' ')
+        cannResponse.responseMessage = cannResponse.responseMessage.replace(
+          /{{user_first_name}}/g, subscriberName[0])
+      }
     }
     if (cannResponse.responseMessage.includes('{{user_last_name}}')) {
+      if (!activeSession.name) {
+         cannResponse.responseMessage = cannResponse.responseMessage.replace(
+        /{{user_last_name}}/g, activeSession.lastName)
+    } else {
+      let subscriberName = activeSession.name.split(' ')
+      if (subscriberName.length >= 2) {
+       cannResponse.responseMessage = cannResponse.responseMessage.replace(
+        /{{user_last_name}}/g, subscriberName[subscriberName.length-1])
+    } else {
       cannResponse.responseMessage = cannResponse.responseMessage.replace(
-        '{{user_last_name}}', activeSession.lastName)
+        /{{user_last_name}}/g, '')    
     }
+  }
+  }
     this.setState({selectedCannMessage: cannResponse, text:`/${cannResponse.responseCode}`})
   }
 
