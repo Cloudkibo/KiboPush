@@ -288,7 +288,7 @@ class CreateTeam extends React.Component {
                                         </span>
                                       </li>
                                       {
-                                        this.props.members.map((member, i) => (
+                                        this.props.members && this.props.members.filter(a => !a.userId.disableMember).map((member, i) => (
                                           <li className='m-nav__item'>
                                             <a href='#/' onClick={() => this.changeAgent(member.userId.name)} className='m-nav__link' style={{cursor: 'pointer'}}>
                                               { this.exists(member.userId._id) === true
