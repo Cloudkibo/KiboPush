@@ -84,47 +84,54 @@ class ProfileHeader extends React.Component {
         <div className='m-card-profile__details'>
           {
             this.props.user.platform === 'whatsApp' ?
-            <span>
-              <input
-                id='_edit_name'
-                style={{
-                  border: !this.state.editName && 'none',
-                  color: '#575962',
-                  textAlign: 'center',
-                  background: !this.state.editName && 'none',
-                  boxShadow: !this.state.editName && 'none',
-                  textOverflow: 'ellipsis'
-                }}
-                className='form-control m-input m-card-profile__name'
-                type='text'
-                value={this.state.name}
-                onChange={this.onNameChange}
-                readOnly={!this.state.editName}
-                disabled={this.state.savingName}
-              />
-              {
-                this.state.editName
-                ? <span>
-                  <button disabled={this.state.savingName} style={{border: 'none'}} onClick={this.onSaveName} className="m-portlet__nav-link btn m-btn m-btn--hover-success m-btn--icon m-btn--icon-only m-btn--pill" title="Save">
-                    {
-                      this.state.savingName
-                      ? <div className="m-loader" style={{width: "30px"}} />
-                      : <i className="la la-check" />
-                    }
-                  </button>
-                  {
-                    !this.state.savingName &&
-                    <button style={{border: 'none'}} onClick={this.onCancelEditName} className="m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill" title="Cancel">
-                      <i className="la la-close" />
-                    </button>
-                  }
+            <span style={{display: 'flex', justifyContent: 'center'}}>
+                <div>
+                  <div style={{display: this.state.editName ? 'flex' : 'none'}}>
+                    <input
+                      id='_edit_name'
+                      style={{
+                        border: !this.state.editName && 'none',
+                        color: '#575962',
+                        textAlign: 'center',
+                        background: !this.state.editName && 'none',
+                        boxShadow: !this.state.editName && 'none',
+                        textOverflow: 'ellipsis'
+                      }}
+                      className='form-control m-input m-card-profile__name'
+                      type='text'
+                      value={this.state.name}
+                      onChange={this.onNameChange}
+                      readOnly={!this.state.editName}
+                      disabled={this.state.savingName}
+                    /> 
+                    <span style={{display: 'inherit', marginLeft: '5px'}} className="m-card-profile__name">
+                      <button disabled={this.state.savingName} style={{border: 'none'}} onClick={this.onSaveName} className="m-portlet__nav-link btn m-btn m-btn--hover-success m-btn--icon m-btn--icon-only m-btn--pill" title="Save">
+                        {
+                          this.state.savingName
+                          ? <div className="m-loader" style={{width: "30px"}} />
+                          : <i className="la la-check" />
+                        }
+                      </button>
+                      {
+                        !this.state.savingName &&
+                        <button style={{border: 'none'}} onClick={this.onCancelEditName} className="m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill" title="Cancel">
+                          <i className="la la-close" />
+                        </button>
+                      }
+                    </span>
+                  </div>
+                </div>
+              
+            
+              <div style={{display: !this.state.editName ? 'flex' : 'none'}}>
+                <span style={{maxWidth: '150px', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden'}} className="m-card-profile__name">
+                  {this.state.name}
                 </span>
-                : <span>
-                  <button style={{border: 'none'}} onClick={this.onEditName} className="m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill" title="Edit">
-                    <i className="la la-edit" />
-                  </button>
-                </span>
-              }
+                <button style={{border: 'none', marginLeft: '5px'}} onClick={this.onEditName} className="m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill" title="Edit">
+                  <i style={{color: 'black'}} className="fa fa-edit" />
+                </button>
+              </div>
+              
               <br />
             </span> :
             <span className='m-card-profile__name'>{this.props.activeSession.name}</span>
