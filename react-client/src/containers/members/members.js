@@ -365,7 +365,7 @@ class Members extends React.Component {
                                     }
                                     {
                                       member.role !== 'buyer' && member.userId.disableMember &&
-                                      <button className='btn btn-cancel'
+                                      <button className='btn btn-secondary'
                                         style={{
                                           float: 'left',
                                           margin: 2
