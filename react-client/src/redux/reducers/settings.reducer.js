@@ -1,7 +1,8 @@
 import * as ActionTypes from '../constants/constants'
 
 const initialState = {
-  permissions: []
+  permissions: [],
+  zoomIntegrations: []
 }
 export function settingsInfo (state = initialState, action) {
   switch (action.type) {
@@ -20,35 +21,33 @@ export function settingsInfo (state = initialState, action) {
       return Object.assign({}, state, {
         permissions: oldPermissions
       })
-    
     case ActionTypes.GET_ADVANCED_SETTINGS:
       return Object.assign({}, state, {
         advanced_settings: action.data
       })
 
+    case ActionTypes.GET_CANNED_RESPONSES:
+      return Object.assign({}, state, {
+        cannedResponses: action.data
+      })
 
-case ActionTypes.GET_CANNED_RESPONSES:
-  return Object.assign({}, state, {
-    cannedResponses: action.data
-  })
+    case ActionTypes.UPDATE_CANNED_RESPONSE: {
+      let cannedResponses = state.cannedResponses
+      let cannedResponsesIndex = cannedResponses.findIndex(cannedResponse => cannedResponse._id === action.data.responseId)
+      cannedResponses[cannedResponsesIndex] = Object.assign(cannedResponses[cannedResponsesIndex], action.data)
+      return Object.assign({}, state, {
+        cannedResponses: [...cannedResponses]
+      })
+    }
+    case ActionTypes.DELETE_CANNED_RESPONSE: {
+    let cannedResponses = state.cannedResponses
+    let cannedResponsesIndex = cannedResponses.findIndex(cannedResponse => cannedResponse._id === action.data.responseId)
+      cannedResponses.splice(cannedResponsesIndex, 1)
+      return Object.assign({}, state, {
+        cannedResponses: [...cannedResponses]
+      })
+    }
 
-case ActionTypes.UPDATE_CANNED_RESPONSE: {
-  let cannedResponses = state.cannedResponses
-  let cannedResponsesIndex = cannedResponses.findIndex(cannedResponse => cannedResponse._id === action.data.responseId)
-  cannedResponses[cannedResponsesIndex] = Object.assign(cannedResponses[cannedResponsesIndex], action.data)
-  return Object.assign({}, state, {
-    cannedResponses: [...cannedResponses]
-  })
-}
-case ActionTypes.DELETE_CANNED_RESPONSE: {
-let cannedResponses = state.cannedResponses
-let cannedResponsesIndex = cannedResponses.findIndex(cannedResponse => cannedResponse._id === action.data.responseId)
-  cannedResponses.splice(cannedResponsesIndex, 1)
-  return Object.assign({}, state, {
-    cannedResponses: [...cannedResponses]
-  })
-}
-  
     case ActionTypes.ENABLE_SUCCESS_NGP:
       return Object.assign({}, state, {
         apiEnableNGP: action.data,
@@ -98,9 +97,9 @@ let cannedResponsesIndex = cannedResponses.findIndex(cannedResponse => cannedRes
       return Object.assign({}, state, {
         whitelistDomains: action.data
       })
-    case ActionTypes.UPDATE_ZOOM_INTEGRATION:
+    case ActionTypes.UPDATE_ZOOM_INTEGRATIONS:
       return Object.assign({}, state, {
-        zoomIntegration: action.data
+        zoomIntegrations: action.data
       })
     default:
       return state

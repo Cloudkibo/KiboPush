@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import AlertContainer from 'react-alert'
 import { RingLoader } from 'halogenium'
-import { getZoomIntegration, createZoomMeeting, loadcannedResponses } from '../../redux/actions/settings.actions'
+import { getZoomIntegrations, createZoomMeeting, loadcannedResponses } from '../../redux/actions/settings.actions'
 import NEWMESSAGEBUTTON from './newMessageButton'
 import MESSAGETEMPLATE from '../../components/WhatsApp/messageTemplate'
 
@@ -106,7 +106,7 @@ class WhatsAppChat extends React.Component {
       props.loadMembersList()
       props.loadTeamsList({platform: 'whatsapp'})
     }
-    props.getZoomIntegration()
+    props.getZoomIntegrations()
     if (props.socketData) {
       props.clearSocketDataWhatsapp()
     }
@@ -485,7 +485,7 @@ class WhatsAppChat extends React.Component {
               }
             <HELPWIDGET
               documentation={{visibility: true, link: 'https://kibopush.com/livechat-whatsapp/'}}
-              videoTutorial={{visibility: false}}
+              videoTutorial={{visibility: true, videoId: 'WmZZyc1IgLA'}}
             />
               <div className='row'>
                 <SESSIONS
@@ -543,11 +543,12 @@ class WhatsAppChat extends React.Component {
                     deletefile={this.props.deletefile}
                     showTemplates={true}
                     filesAccepted={'image/*, audio/*, video/mp4, application/pdf'}
-                    showZoom={this.props.user.isSuperUser ? (!this.props.zoomIntegration ? (this.props.user.role === 'admin' || this.props.user.role === 'buyer') ? true : false : true) : false}
+                    showZoom={this.props.user.isSuperUser ? (this.props.zoomIntegrations.length === 0 ? (this.props.user.role === 'admin' || this.props.user.role === 'buyer') ? true : false : true) : false}
                     history={this.props.history}
-                    zoomIntegration={this.props.zoomIntegration}
+                    zoomIntegrations={this.props.zoomIntegrations}
                     createZoomMeeting={this.props.createZoomMeeting}
                     showCaption={true}
+                    showSubscriberNameOnMessage={false}
                   />
                 }
                 {
@@ -602,26 +603,25 @@ class WhatsAppChat extends React.Component {
               </div>
           </div>
         }
-
         <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id='messageTemplateNewNumber' tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-         <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
-           <MESSAGETEMPLATE
-             sendChatMessage={this.props.sendChatMessage}
-             setMessageData={this.setMessageData}
-             activeSession={this.state.activeSession}
-             updateState={this.updateState}
-             userChat={this.state.userChat}
-             sessions={this.state.sessions}
-             alertMsg={this.alertMsg}
-             id='messageTemplateNewNumber'
-             sendingToNewNumber={this.state.sendingToNewNumber}
-             heading={'Send Message Template to WhatsApp Number'}
-             createNewContact={this.props.createNewContact}
-             changeActiveSession={this.changeActiveSession}
-           />
-         </div>
-       </div>
-       <NEWMESSAGEBUTTON
+          <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+            <MESSAGETEMPLATE
+              sendChatMessage={this.props.sendChatMessage}
+              setMessageData={this.setMessageData}
+              activeSession={this.state.activeSession}
+              updateState={this.updateState}
+              userChat={this.state.userChat}
+              sessions={this.state.sessions}
+              alertMsg={this.alertMsg}
+              id='messageTemplateNewNumber'
+              sendingToNewNumber={this.state.sendingToNewNumber}
+              heading={'Send Message Template to WhatsApp Number'}
+              createNewContact={this.props.createNewContact}
+              changeActiveSession={this.changeActiveSession}
+            />
+          </div>
+        </div>
+        <NEWMESSAGEBUTTON 
           dataToggle='modal'
           dataTarget='#messageTemplateNewNumber'
           onClick={() => this.sendingToNewNumber(true)}
@@ -646,8 +646,8 @@ function mapStateToProps(state) {
     searchChatMsgs: (state.whatsAppChatInfo.searchChat),
     socketData: (state.socketInfo.socketDataWhatsapp),
     automated_options: (state.basicInfo.automated_options),
-    zoomIntegration: (state.settingsInfo.zoomIntegration),
-    cannedResponses: state.settingsInfo.cannedResponses
+    cannedResponses: state.settingsInfo.cannedResponses,
+    zoomIntegrations: (state.settingsInfo.zoomIntegrations)
   }
 }
 
@@ -675,7 +675,7 @@ function mapDispatchToProps(dispatch) {
     uploadAttachment,
     sendAttachment,
     deletefile,
-    getZoomIntegration,
+    getZoomIntegrations,
     createZoomMeeting,
     createNewContact,
     editSubscriberWhatsApp,
