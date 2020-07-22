@@ -150,8 +150,8 @@ class RightChatItem extends React.Component {
                 {this.getRepliedByMsg()}
               </div>
               {this.getMessage()}
+              {this.props.seenElement}
             </div>
-            {this.props.seenElement}
           </div>
         </div>
       </div>
