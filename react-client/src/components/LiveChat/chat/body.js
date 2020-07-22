@@ -191,6 +191,7 @@ class Body extends React.Component {
                                 showDate={this.props.showDate}
                                 displayDate={this.props.displayDate}
                                 activeSession={this.props.activeSession}
+                                showSubscriberNameOnMessage={this.props.showSubscriberNameOnMessage}
                                 previousMessage={this.props.userChat[index - 1]}
                               />
                           ))
@@ -225,7 +226,8 @@ Body.propTypes = {
   'markRead': PropTypes.func.isRequired,
   'updateState': PropTypes.func.isRequired,
   'newMessage': PropTypes.bool.isRequired,
-  'updateNewMessage': PropTypes.func.isRequired
+  'updateNewMessage': PropTypes.func.isRequired,
+  'showSubscriberNameOnMessage': PropTypes.bool.isRequired
 }
 
 export default Body
