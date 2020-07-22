@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import AlertContainer from 'react-alert'
 import { RingLoader } from 'halogenium'
-import { getZoomIntegrations, createZoomMeeting, loadcannedResponses } from '../../redux/actions/settings.actions
+import { getZoomIntegrations, createZoomMeeting, loadcannedResponses } from '../../redux/actions/settings.actions'
 import NEWMESSAGEBUTTON from './newMessageButton'
 import MESSAGETEMPLATE from '../../components/WhatsApp/messageTemplate'
 
