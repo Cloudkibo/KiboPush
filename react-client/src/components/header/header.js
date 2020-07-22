@@ -793,7 +793,7 @@ class Header extends React.Component {
                                     </Link>
                                   }
                                   </li>
-                                  {this.props.user && this.props.user.role === 'buyer' &&
+                                  {this.props.user && this.props.user.permissions['connect_facebook_account'] &&
                                     <li className='m-nav__item'>
                                       <span data-toggle="modal" data-target="#disconnectFacebook" className='m-nav__link'>
                                         <i className='m-nav__link-icon la la-unlink' />
