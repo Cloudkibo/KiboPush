@@ -27,8 +27,7 @@ class Profile extends React.Component {
                         sendNotifications={this.props.sendNotifications}
                     />
                   {
-                      (this.props.user.currentPlan.unique_ID === 'plan_C' || this.props.user.currentPlan.unique_ID === 'plan_D') &&
-                      (['admin', 'buyer'].includes(this.props.user.role)) &&
+                      this.props.user.permissions['assign_session_agent'] && this.props.user.permissions['assign_session_team'] &&
                       <AssignChat
                       alertMsg={this.props.alertMsg}
                       activeSession={this.props.activeSession}
@@ -71,7 +70,7 @@ class Profile extends React.Component {
                     />
                     } */}
                     {
-                        this.props.showTags && 
+                        this.props.showTags &&
                         (
                             this.props.subscriberTags ?
                             <AssignTag
@@ -110,7 +109,7 @@ class Profile extends React.Component {
                                 <div className="m-loader" style={{width: "30px", display: "inline-block"}}></div>
                                 <span>Loading Custom Fields...</span>
                                 </center>
-                            </div> 
+                            </div>
                         )
                     }
                 </div>

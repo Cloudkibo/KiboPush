@@ -142,7 +142,7 @@ class Members extends React.Component {
                   <h5 className="modal-title" id="exampleModalLabel">
                     Dashboard Video Tutorial
 									</h5>
-                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" 
+                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal"
                   aria-label="Close"
                   onClick={() => {
                     this.setState({
@@ -225,7 +225,7 @@ class Members extends React.Component {
                   </h3>
                 </div>
               </div>
-              {this.props.user.permissions.invitationsPermission &&
+              {this.props.user.permissions['invite_members'] &&
               <div className='m-portlet__head-tools'>
                 <Link to={{pathname: '/newInvitation', state: { prevPath: this.props.location.pathname }}}>
                   <button
@@ -307,7 +307,7 @@ class Members extends React.Component {
                                   className='m-datatable__cell'>
                                   <span style={{width: '150px'}}>
                                     {
-                                      member.role !== 'buyer' && this.props.user.permissions.updateRolePermission &&
+                                      member.role !== 'buyer' && this.props.user.permissions['update_role'] &&
                                       <span>
                                         {
                                         member.role === 'admin'
@@ -331,7 +331,7 @@ class Members extends React.Component {
                                       </span>
                                     }
                                     {/* {
-                                      member.role !== 'buyer' && member.role === 'admin' && this.props.user.permissions.deleteAdminPermission &&
+                                      member.role !== 'buyer' && this.props.user.permissions['delete_members'] &&
                                       <button className='btn btn-primary'
                                         style={{
                                           float: 'left',
@@ -340,16 +340,7 @@ class Members extends React.Component {
                                         onClick={() => this.showDialogDelete(member)}>Delete
                                       </button>
                                     }
-                                    {
-                                      member.role !== 'buyer' && member.role === 'agent' && this.props.user.permissions.deleteAgentPermission &&
-                                      <button className='btn btn-primary'
-                                        style={{
-                                          float: 'left',
-                                          margin: 2
-                                        }}
-                                        onClick={() => this.showDialogDelete(member)}>Delete
-                                      </button>
-                                    } */}
+                                   */}
                                   </span>
                                 </td>
                               </tr>

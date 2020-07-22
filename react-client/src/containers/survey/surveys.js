@@ -259,7 +259,7 @@ class Survey extends React.Component {
                   <h5 className="modal-title" id="exampleModalLabel">
                     Survey Video Tutorial
 									</h5>
-                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" 
+                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal"
                   aria-label="Close"
                   onClick={() => {
                     this.setState({
@@ -425,11 +425,22 @@ class Survey extends React.Component {
                       </h3>
                     </div>
                   </div>
-                  <div className='m-portlet__head-tools'>
-                    {
-                      this.props.subscribers && this.props.subscribers.length === 0
-                      ? <a href='#/'>
-                        <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' disabled>
+                  {
+                    this.props.user.permissions['create_surveys'] &&
+                    <div className='m-portlet__head-tools'>
+                      {
+                        this.props.subscribers && this.props.subscribers.length === 0
+                        ? <a href='#/'>
+                          <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' disabled>
+                            <span>
+                              <i className='la la-plus' />
+                              <span>
+                                Create New
+                              </span>
+                            </span>
+                          </button>
+                        </a>
+                        : <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' data-toggle="modal" data-target="#createSurvey">
                           <span>
                             <i className='la la-plus' />
                             <span>
@@ -437,17 +448,9 @@ class Survey extends React.Component {
                             </span>
                           </span>
                         </button>
-                      </a>
-                      : <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' data-toggle="modal" data-target="#createSurvey">
-                        <span>
-                          <i className='la la-plus' />
-                          <span>
-                            Create New
-                          </span>
-                        </span>
-                      </button>
-                      }
-                  </div>
+                        }
+                    </div>
+                  }
                 </div>
                 <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="createSurvey" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                   <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
@@ -574,11 +577,14 @@ class Survey extends React.Component {
                               </button>
                               { this.props.subscribers && this.props.subscribers.length === 0
                                 ? <span>
-                                  <button className='btn btn-primary btn-sm'
-                                    style={{float: 'left', margin: 2}}
-                                    onClick={() => this.gotoResults(survey)}>
-                                    Report
-                                  </button>
+                                  {
+                                    this.props.user.plan['surveys_reports'] && this.props.user.permissions['view_survey_reports'] &&
+                                    <button className='btn btn-primary btn-sm'
+                                      style={{float: 'left', margin: 2}}
+                                      onClick={() => this.gotoResults(survey)}>
+                                      Report
+                                    </button>
+                                  }
                                   <button className='btn btn-primary btn-sm'
                                     style={{float: 'left', margin: 2}}
                                     onClick={() => this.props.sendsurvey(
@@ -586,42 +592,34 @@ class Survey extends React.Component {
                                   </button>
                                 </span>
                           : <span>
-                            <button className='btn btn-primary btn-sm'
-                              style={{float: 'left', margin: 2}}
-                              onClick={() => this.gotoResults(survey)}>
-                            Report
-                          </button>
-
-                            <button className='btn btn-primary btn-sm'
-                              style={{float: 'left', margin: 2}}
-                              data-toggle="modal" data-target="#send"
-                              onClick={() => {
-                                this.saveSurvey(survey)
-                              }}>
-                              Send
-                          </button>
+                            {
+                              this.props.user.plan['surveys_reports'] && this.props.user.permissions['view_survey_reports'] &&
+                              <button className='btn btn-primary btn-sm'
+                                style={{float: 'left', margin: 2}}
+                                onClick={() => this.gotoResults(survey)}>
+                                Report
+                              </button>
+                            }
+                            {
+                              this.props.user.permissions['resend_surveys'] &&
+                              <button className='btn btn-primary btn-sm'
+                                style={{float: 'left', margin: 2}}
+                                data-toggle="modal" data-target="#send"
+                                onClick={() => {
+                                  this.saveSurvey(survey)
+                                }}>
+                                Send
+                            </button>
+                            }
                           </span>
-                        } { this.props.user && (this.props.user.role === 'admin' || this.props.user.role === 'buyer')
-                          ? <button className='btn btn-primary btn-sm'
+                        } {
+                          this.props.user.permissions['delete_surveys'] &&
+                          <button className='btn btn-primary btn-sm'
                             style={{float: 'left', margin: 2}}
                             onClick={() => this.showDialogDelete(survey._id)}
                             data-toggle="modal" data-target="#deleteSurvey">
                           Delete
                       </button>
-                      : <div>
-                        {survey.sent === 0
-                        ? <button className='btn btn-primary btn-sm'
-                          style={{float: 'left', margin: 2}}
-                          onClick={() => this.showDialogDelete(survey._id)}>
-                        Delete
-                    </button>
-                    : <button className='btn btn-primary btn-sm' disabled
-                      style={{float: 'left', margin: 2}}
-                      onClick={() => this.showDialogDelete(survey._id)}>
-                    Delete
-                    </button>
-                      }
-                      </div>
                     }
 
                             </td>
