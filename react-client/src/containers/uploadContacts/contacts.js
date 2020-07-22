@@ -6,7 +6,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 
 import { fetchContactLists } from '../../redux/actions/contacts.actions'
-import { loadContactsList, loadWhatsAppContactsList, editSubscriber, editSubscriberSms, syncContacts } from '../../redux/actions/uploadContacts.actions'
+import { loadContactsList, loadWhatsAppContactsList, editSubscriberWhatsApp, editSubscriberSms, syncContacts } from '../../redux/actions/uploadContacts.actions'
 import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
 import AlertContainer from 'react-alert'
@@ -113,7 +113,7 @@ class Contact extends React.Component {
       this.msg.error('Subscriber name cannot be empty')
     } else {
       if (this.props.user.platform === 'whatsApp') {
-        this.props.editSubscriber(this.state.contact._id, {name: this.state.name}, this.msg)
+        this.props.editSubscriberWhatsApp(this.state.contact._id, {name: this.state.name}, this.msg)
       } else if (this.props.user.platform === 'sms') {
         this.props.editSubscriberSms(this.state.contact._id, {name: this.state.name}, this.msg)
       }
@@ -506,7 +506,7 @@ function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     loadContactsList,
     loadWhatsAppContactsList,
-    editSubscriber,
+    editSubscriberWhatsApp,
     editSubscriberSms,
     syncContacts,
     fetchContactLists
