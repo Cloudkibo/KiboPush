@@ -7,6 +7,8 @@ const initialState = {
 
 export function whatsAppChatInfo (state = initialState, action) {
   console.log('whatsapp reducer', action)
+  let openSessions = state.openSessions
+  let closeSessions = state.closeSessions
   switch (action.type) {
     case ActionTypes.FETCH_WHATSAPP_OPEN_SESSIONS:
       return Object.assign({}, state, {
@@ -33,7 +35,7 @@ export function whatsAppChatInfo (state = initialState, action) {
         chatCount: action.count
       })
     case ActionTypes.UPDATE_UNREAD_COUNT_WHATSAPP:
-      let openSessions = [...state.openSessions]
+      openSessions = [...state.openSessions]
       let openIds = openSessions.map(s => s._id)
       let openIndex = openIds.indexOf(action.data)
       openSessions[openIndex].unreadCount = 0
@@ -86,6 +88,37 @@ export function whatsAppChatInfo (state = initialState, action) {
       })
     case ActionTypes.UPDATE_WHATSAPPCHAT_INFO:
       return Object.assign({}, state, action, action.data)
+
+    case ActionTypes.UPDATE_CONTACT:
+      // let currentContacts = state.contacts
+      // index = currentContacts.findIndex((contact) => contact._id === action.id)
+      // let keys = Object.keys(action.data)
+      // for (let i = 0; i < keys.length; i++) {
+      //   currentContacts[index][keys[i]] = action.data[keys[i]]
+      // }
+      // return Object.assign({}, state, {
+      //   contacts: [...currentContacts]
+      // })
+      openSessions = state.openSessions
+      if (openSessions) {
+        let openSessionsIndex = openSessions.findIndex(session => session._id === action.id)
+        if (openSessionsIndex >= 0) {
+          openSessions[openSessionsIndex].name = action.data.name
+          openSessions[openSessionsIndex].firstName = action.data.name
+        }
+      }
+      closeSessions = state.closeSessions
+      if (closeSessions) {
+        let closeSessionsIndex = closeSessions.findIndex(session => session._id === action.id)
+        if (closeSessionsIndex >= 0) {
+          closeSessions[closeSessionsIndex].name = action.data.name
+          closeSessions[closeSessionsIndex].firstName = action.data.name
+        }
+      }
+      return Object.assign({}, state, {
+        openSessions: openSessions ? [...openSessions] : openSessions,
+        closeSessions: closeSessions ? [...closeSessions] : closeSessions
+      })
     default:
       return state
   }

@@ -164,6 +164,7 @@ class Chat extends React.Component {
           updateState={this.props.updateState}
           newMessage={this.newMessage}
           updateNewMessage={this.updateNewMessage}
+          showSubscriberNameOnMessage={this.props.showSubscriberNameOnMessage}
         />
 
         {
@@ -209,7 +210,7 @@ class Chat extends React.Component {
             </button>
           </div>
           : <FOOTER
-            cannedResponses = {this.props.cannedResponses}
+            cannedResponses={this.props.cannedResponses}
             performAction={this.props.performAction}
             activeSession={this.props.activeSession}
             user={this.props.user}
@@ -238,7 +239,7 @@ class Chat extends React.Component {
             filesAccepted={this.props.filesAccepted}
             showAgentName={this.props.showAgentName}
             history={this.props.history}
-            zoomIntegration={this.props.zoomIntegration}
+            zoomIntegrations={this.props.zoomIntegrations}
             createZoomMeeting={this.props.createZoomMeeting}
             showCaption={this.props.showCaption}
           />
@@ -291,7 +292,8 @@ Chat.propTypes = {
   'showSticker': PropTypes.bool.isRequired,
   'showEmoji': PropTypes.bool.isRequired,
   'showGif': PropTypes.bool.isRequired,
-  'showThumbsUp': PropTypes.bool.isRequired
+  'showThumbsUp': PropTypes.bool.isRequired,
+  'showSubscriberNameOnMessage': PropTypes.bool.isRequired
 }
 Chat.defaultProps = {
   showTemplates: false,
