@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { validURL, isEmoji } from '../../../containers/liveChat/utilities'
 import CARD from './card'
 
-class Text extends React.Component {
+class Contact extends React.Component {
   constructor(props, context) {
     super(props, context)
     this.state = {}
@@ -77,9 +77,9 @@ class Text extends React.Component {
   }
 }
 
-Text.propTypes = {
+Contact.propTypes = {
   'name': PropTypes.string.isRequired,
   'number': PropTypes.string.isRequired
 }
 
-export default Text
+export default Contact
