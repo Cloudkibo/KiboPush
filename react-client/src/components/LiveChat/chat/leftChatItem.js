@@ -9,6 +9,7 @@ import VIDEO from '../messages/video'
 import FILE from '../messages/file'
 import CARD from '../messages/card'
 import LOCATION from '../messages/location'
+import CONTACT from '../messages/contact'
 
 class LeftChatItem extends React.Component {
   constructor(props, context) {
@@ -97,7 +98,14 @@ class LeftChatItem extends React.Component {
     } else if (type === 'location') {
       return (
         <LOCATION
-          data={message.attachments[0]}
+          data={(message.attachments && message.attachments[0]) || message}
+        />
+      )
+    } else if (type === 'contact') {
+      return (
+        <CONTACT
+          name={message.name}
+          number={message.number}
         />
       )
     } else if (message.text) {
