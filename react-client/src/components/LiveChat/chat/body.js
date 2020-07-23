@@ -50,6 +50,7 @@ class Body extends React.Component {
         <div className='m-messenger__message-username' style={{marginBottom: '2px'}}>
           <img
             style={{height: '18px', float: 'right'}}
+            alt='double-ticks'
             src={message.seen ? 'https://cdn.cloudkibo.com/public/img/double-ticks-blue.png' : 'https://cdn.cloudkibo.com/public/img/double-ticks-white.png'}
           />
         </div>
