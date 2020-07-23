@@ -9,7 +9,8 @@ export function appendSentSeenResponsesData (data) {
     let pagepoll = pagepolls.filter((c) => c.pollId === polls[j]._id)
     let pagePollDelivered = pagepoll.filter((c) => c.sent === true)
     let pagepollTapped = pagepoll.filter((c) => c.seen === true)
-    polls[j].sent = pagePollDelivered.length // total sent
+    polls[j].sent = pagepoll.length
+    polls[j].delivered = pagePollDelivered.length // total sent
     polls[j].seen = pagepollTapped.length // total tapped
     for (let i = 0; i < responsesCount.length; i++) {
       if (responsesCount[i]._id === polls[j]._id) {

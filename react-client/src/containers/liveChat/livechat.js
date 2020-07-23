@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import AlertContainer from 'react-alert'
 import { RingLoader } from 'halogenium'
-import { getZoomIntegration, createZoomMeeting, loadcannedResponses } from '../../redux/actions/settings.actions'
+import { getZoomIntegrations, createZoomMeeting, loadcannedResponses } from '../../redux/actions/settings.actions'
 
 // actions
 import {
@@ -126,7 +126,7 @@ class LiveChat extends React.Component {
     props.loadMembersList()
     props.loadTags()
     props.loadCustomFields()
-    props.getZoomIntegration()
+    props.getZoomIntegrations()
     if (props.socketData) {
       props.clearSocketData()
     }
@@ -645,12 +645,12 @@ class LiveChat extends React.Component {
                     showEmoji={true}
                     showGif={true}
                     showThumbsUp={true}
-                    showZoom={this.props.user.isSuperUser ? (!this.props.zoomIntegration ? (this.props.user.role === 'admin' || this.props.user.role === 'buyer') ? true : false : true) : false}
+                    showZoom={this.props.user.isSuperUser ? (this.props.zoomIntegrations.length === 0 ? (this.props.user.role === 'admin' || this.props.user.role === 'buyer') ? true : false : true) : false}
                     setMessageData={this.setMessageData}
                     filesAccepted={'image/*, audio/*, video/*, application/*, text/*'}
                     showAgentName={this.props.showAgentName}
                     history={this.props.history}
-                    zoomIntegration={this.props.zoomIntegration}
+                    zoomIntegrations={this.props.zoomIntegrations}
                     createZoomMeeting={this.props.createZoomMeeting}
                     showSubscriberNameOnMessage={true}
                   />
@@ -739,8 +739,9 @@ function mapStateToProps(state) {
     customFields: (state.customFieldInfo.customFields),
     searchChatMsgs: (state.liveChat.searchChat),
     socketData: (state.socketInfo.socketData),
-    zoomIntegration: (state.settingsInfo.zoomIntegration),
+    zoomIntegrations: (state.settingsInfo.zoomIntegrations),
     cannedResponses: state.settingsInfo.cannedResponses
+
   }
 }
 
@@ -782,11 +783,10 @@ function mapDispatchToProps(dispatch) {
     urlMetaData,
     getSMPStatus,
     updateSessionProfilePicture,
-    getZoomIntegration,
+    getZoomIntegrations,
     createZoomMeeting,
     setUserChat,
     loadcannedResponses
-
   }, dispatch)
 }
 
