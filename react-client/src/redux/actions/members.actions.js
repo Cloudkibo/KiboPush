@@ -39,18 +39,35 @@ export function loadMembersList () {
   }
 }
 
-export function deleteMember (data, msg) {
+export function disableMember (data, password,  msg) {
   return (dispatch) => {
-    callApi('company/removeMember', 'post', data)
+    callApi('company/disableMember', 'post', {memberId: data.userId._id, password: password})
     .then(res => {
       if (res.status === 'success') {
-        msg.success('Member deleted successfully!')
+        msg.success('Member has been disabled')
         dispatch(loadMembersList())
       } else {
         if (res.status === 'failed' && res.description) {
-          msg.error(`Failed to delete member. ${res.description}`)
+          msg.error(`Failed to disable member. ${res.description}`)
         } else {
-          msg.error('Failed to delete member')
+          msg.error('Failed to disable member')
+        }
+      }
+    })
+  }
+}
+export function enableMember (data,  msg) {
+  return (dispatch) => {
+    callApi('company/enableMember', 'post', {memberId: data.userId._id})
+    .then(res => {
+      if (res.status === 'success') {
+        msg.success(res.description)
+        dispatch(loadMembersList())
+      } else {
+        if (res.status === 'failed' && res.description) {
+          msg.error(`Failed to enable member. ${res.description}`)
+        } else {
+          msg.error('Failed to enable member')
         }
       }
     })

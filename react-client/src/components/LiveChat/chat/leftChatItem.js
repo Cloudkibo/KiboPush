@@ -130,9 +130,10 @@ class LeftChatItem extends React.Component {
           <div className='m-messenger__message-body'>
             <div className='m-messenger__message-arrow' />
             <div style={{maxWidth: '250px'}} className='m-messenger__message-content'>
-              <div className='m-messenger__message-username'>
+            { this.props.showSubscriberNameOnMessage && <div className='m-messenger__message-username'>
                 {`${this.props.activeSession.firstName} sent:`}
               </div>
+            }
               {this.getMessage()}
             </div>
           </div>
@@ -148,7 +149,8 @@ LeftChatItem.propTypes = {
   'showDate': PropTypes.func.isRequired,
   'displayDate': PropTypes.func.isRequired,
   'activeSession': PropTypes.object.isRequired,
-  'previousMessage': PropTypes.object
+  'previousMessage': PropTypes.object,
+  'showSubscriberNameOnMessage': PropTypes.bool.isRequired
 }
 
 export default LeftChatItem
