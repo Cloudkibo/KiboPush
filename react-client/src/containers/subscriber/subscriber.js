@@ -1806,21 +1806,21 @@ class Subscriber extends React.Component {
                                       <td data-toggle='modal' data-target='#m_modal_1_2' onClick={() => { this.setSubscriber(subscriber) }} data-field='Name'
                                         className='m-datatable__cell'>
                                         <span
-                                          style={subscriber.isSubscribed ? subscribedStyle : unsubscribedStyle}>{subscriber.firstName} {subscriber.lastName}</span>
+                                          style={(subscriber.isSubscribed && !subscriber.disabledByPlan) ? subscribedStyle : unsubscribedStyle}>{subscriber.firstName} {subscriber.lastName}</span>
                                       </td>
 
                                       <td data-toggle='modal' data-target='#m_modal_1_2' onClick={() => { this.setSubscriber(subscriber) }} data-field='Page'
                                         className='m-datatable__cell'>
                                         <span
-                                          style={subscriber.isSubscribed ? subscribedStyle : unsubscribedStyle}>
+                                          style={(subscriber.isSubscribed && !subscriber.disabledByPlan) ? subscribedStyle : unsubscribedStyle}>
                                           {subscriber.pageId.pageName}
                                         </span>
                                       </td>
                                       <td onClick={() => { this.setSubscriber(subscriber) }} data-field='Status'
                                         className='m-datatable__cell'>
                                         <span
-                                          style={subscriber.isSubscribed ? subscribedStyle : unsubscribedStyle}>
-                                          {subscriber.isSubscribed ? 'Subscribed' : 'Unsubscribed'}
+                                          style={(subscriber.isSubscribed && !subscriber.disabledByPlan) ? subscribedStyle : unsubscribedStyle}>
+                                          {subscriber.disabledByPlan ? 'Disabled' : subscriber.isSubscribed ? 'Subscribed' : 'Unsubscribed'}
                                         </span>
                                       </td>
                                       <td data-toggle='modal' data-target='#m_modal_1_2' onClick={() => { this.setSubscriber(subscriber) }} data-field='Gender' className='m-datatable__cell'>
