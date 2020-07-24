@@ -5,7 +5,6 @@ import AlertContainer from 'react-alert'
 import Papa from 'papaparse'
 import Select from 'react-select'
 import {
-  uploadFile,
   saveContacts,
   deleteContact,
   deleteAllInvalidContacts,
@@ -14,7 +13,8 @@ import {
 import {
   updateContact,
   addContactManually,
-  getDuplicateSubscribers
+  getDuplicateSubscribers,
+  sendMessage
 } from '../../redux/actions/uploadContactsWhatsApp.actions'
 import PREVIEW from '../uploadContactsSMS/preview'
 import MODAL from '../../components/extras/modal'
@@ -49,7 +49,6 @@ class UploadContacts extends React.Component {
     this.onAdd = this.onAdd.bind(this)
     this.handleOnAdd = this.handleOnAdd.bind(this)
     this.disableAddButton = this.disableAddButton.bind(this)
-    this.handleFileUpload = this.handleFileUpload.bind(this)
     this.parseCSV = this.parseCSV.bind(this)
     this.sendMessage = this.sendMessage.bind(this)
     this.onReset = this.onReset.bind(this)
@@ -63,6 +62,7 @@ class UploadContacts extends React.Component {
     this.submitClick = this.submitClick.bind(this)
     this.handleDuplicateSubscribers = this.handleDuplicateSubscribers.bind(this)
     this.setMessageData = this.setMessageData.bind(this)
+    this.handleSendMessageResponse = this.handleSendMessageResponse.bind(this)
   }
 
   onNameChange (e) {
@@ -78,16 +78,6 @@ class UploadContacts extends React.Component {
       this.setState({number: e.target.value, numberError: true})
     } else {
       this.setState({number: e.target.value, numberError: false})
-    }
-  }
-
-  handleFileUpload (res) {
-    this.setState({loading: false})
-    if (res.status === 'success') {
-      this.msg.success('Contacts uploaded successfully!')
-      this.props.deleteAllContacts()
-    } else {
-      this.msg.error(res.description)
     }
   }
 
@@ -132,12 +122,23 @@ class UploadContacts extends React.Component {
     }
   }
 
-  sendMessage (data) {
+  sendMessage (data, res) {
     let fileData = this.state.finalData
     fileData.append('senderNumber', data.senderNumber)
-    fileData.append('payload', data.payload)
+    fileData.append('payload', JSON.stringify(data.payload))
+    fileData.append('actionType', this.state.actionType)
     console.log('data', data)
     console.log('fileData', fileData)
+    this.setState({templateFunction: res})
+    this.props.sendMessage(fileData, this.handleSendMessageResponse)
+  }
+
+  handleSendMessageResponse(res) {
+    if (res.status === 'success') {
+      this.setState({actionType: 'send'})
+      this.props.deleteAllContacts()
+    }
+    this.state.templateFunction(res)
   }
 
   onReset () {
@@ -428,7 +429,7 @@ class UploadContacts extends React.Component {
          <MESSAGETEMPLATE
             sendChatMessage={this.sendMessage}
             setMessageData={this.setMessageData}
-            alertMsg={this.alertMsg}
+            alertMsg={this.msg}
             id='_templates_modal'
             sendingToNewNumber={false}
             heading={'Send Template Message'}
@@ -543,12 +544,12 @@ function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     addContactManually,
     updateContact,
-    uploadFile,
     saveContacts,
     deleteContact,
     deleteAllInvalidContacts,
     deleteAllContacts,
-    getDuplicateSubscribers
+    getDuplicateSubscribers,
+    sendMessage
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(UploadContacts)

@@ -44,3 +44,19 @@ export function getDuplicateSubscribers (filedata, callback) {
     })
   }
 }
+export function sendMessage (filedata, callback) {
+  return (dispatch) => {
+    // eslint-disable-next-line no-undef
+    fetch(`${API_URL}/whatsAppContacts/sendMessage`, {
+      method: 'post',
+      body: filedata,
+      // eslint-disable-next-line no-undef
+      headers: new Headers({
+        'Authorization': `Bearer ${auth.getToken()}`
+      })
+    }).then((res) => res.json()).then((res) => res).then(res => {
+      console.log('response from sendMessage', res)
+      callback(res)
+    })
+  }
+}
