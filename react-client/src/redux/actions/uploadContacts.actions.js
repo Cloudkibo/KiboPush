@@ -78,13 +78,16 @@ export function loadContactsList (data) {
       })
   }
 }
-export function loadWhatsAppContactsList (data) {
+export function loadWhatsAppContactsList (data, prepareExport) {
   console.log('data for loadWhatsAppContactsList', data)
   return (dispatch) => {
     callApi('whatsAppContacts', 'post', data)
       .then(res => {
         console.log('response from loadWhatsAppContactsList', res)
         dispatch(showContacts(res.payload))
+        if (prepareExport) {
+          prepareExport(res)
+        }
       })
   }
 }
