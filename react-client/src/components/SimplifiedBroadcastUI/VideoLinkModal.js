@@ -57,7 +57,8 @@ class VideoLinkModal extends React.Component {
       fileSizeExceeded: this.props.fileSizeExceeded,
       initialFile: this.props.file ? this.props.file.fileurl.id : null,
       videoType: this.props.videoType ? this.props.videoType : 'youtube',
-      facebookUrl: this.props.facebookUrl
+      facebookUrl: this.props.facebookUrl,
+      processingError: ''
     }
     console.log('VideoLinkModal state', this.state)
     console.log('VideoLinkModal module', this.props.module)
@@ -73,6 +74,18 @@ class VideoLinkModal extends React.Component {
     this.facebookVideoReady = this.facebookVideoReady.bind(this)
     this.getInputBorderColor = this.getInputBorderColor.bind(this)
     this.checkDisabled = this.checkDisabled.bind(this)
+    this.handleProcessingError = this.handleProcessingError.bind(this)
+  }
+  
+  handleProcessingError (res) {
+    if (res.status !== 'success') {
+      this.setState({
+        processingError: `Unable to process file. Please try again. ${res.description ? res.description: ''}`,
+        fileSizeExceeded: false, 
+        youtubeDisabled: true,
+        youtubeLoading: false
+      })
+    }
   }
 
   handleLinkChange(e) {
@@ -103,7 +116,8 @@ class VideoLinkModal extends React.Component {
         videoTitle: null, 
         videoDescription: null, 
         file: null, 
-        card: null 
+        card: null,
+        processingError: ''
       }, () => {
         this.validateYoutubeUrl()
       })
@@ -111,7 +125,8 @@ class VideoLinkModal extends React.Component {
       this.setState({ 
         facebookButtons: [], 
         facebookDisabled: true,
-        facebookLink: e.target.value
+        facebookLink: e.target.value,
+        processingError: ''
       }, () => {
         this.validateFacebookUrl()
       })
@@ -222,7 +237,7 @@ class VideoLinkModal extends React.Component {
   updateFile(file) {
     if (file === 'ERR_LIMIT_REACHED') {
       this.setState({ fileSizeExceeded: true, youtubeDisabled: true, youtubeLoading: false })
-      this.props.urlMetaData(this.state.youtubeLink, (data) => this.handleUrlMetaData(data))
+      this.props.urlMetaData(this.state.youtubeLink, (data) => this.handleUrlMetaData(data), this.handleProcessingError)
       return
     }
     this.props.setTempFiles([file.fileurl.id])
@@ -265,7 +280,7 @@ class VideoLinkModal extends React.Component {
         fileName: data.fileurl.name,
         type: data.fileurl.type,
         size: data.fileurl.size
-      }, (newData) => this.updateFileUrl(data, newData))
+      }, (newData) => this.updateFileUrl(data, newData), null, this.handleProcessingError)
     }
   }
 
@@ -329,7 +344,7 @@ class VideoLinkModal extends React.Component {
             this.setState({ videoId, youtubeLoading: false })
             this.props.urlMetaData(this.state.youtubeLink, (data) => this.handleUrlMetaData(data))
           } else {
-            this.props.downloadYouTubeVideo(this.state.youtubeLink, this.props.id, (file) => { this.updateFile(file) })
+            this.props.downloadYouTubeVideo(this.state.youtubeLink, this.props.id, (file) => { this.updateFile(file) }, this.handleProcessingError)
           }
         })
       } else {
@@ -479,7 +494,8 @@ class VideoLinkModal extends React.Component {
                     className='form-control' 
                   />
                   <div style={{ color: 'green' }}>{this.state.fileSizeExceeded ? '*The size of this YouTube video exceeds the 25 Mb limit imposed by Facebook, so it will be sent as a card.' : ''}</div>
-                  <div style={{ color: 'red' }}>{!this.state.fileSizeExceeded && this.state.youtubeDisabled && !this.state.youtubeLoading ? `*Please enter a valid YouTube video link.` : ''}</div>
+                  <div style={{ color: 'red' }}>{!this.state.fileSizeExceeded && this.state.processingError === '' && this.state.youtubeDisabled && !this.state.youtubeLoading ? `*Please enter a valid YouTube video link.` : ''}</div>
+                  <div style={{ color: 'red' }}>{this.state.processingError !== '' ? this.state.processingError : ''}</div>
                   <div style={{ marginBottom: '30px', color: 'green' }}>{this.state.youtubeLoading ? `*Please wait for the YouTube video to download.` : ''}</div>
                   {
                   !this.state.youtubeLoading && this.state.file &&
