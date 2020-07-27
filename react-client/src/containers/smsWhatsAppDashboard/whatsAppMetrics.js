@@ -10,6 +10,7 @@ import WhatsAppMetrics from '../../components/smsWhatsAppDashboard/whatsAppMetri
 import { bindActionCreators } from 'redux'
 import { validDateRange } from '../../utility/utils'
 import moment from 'moment'
+import { UncontrolledTooltip } from 'reactstrap'
 
 class Metrics extends React.Component {
   constructor (props, context) {
@@ -54,7 +55,7 @@ class Metrics extends React.Component {
     }
   }
   UNSAFE_componentWillReceiveProps (nextprops) {
-    if (nextprops.metrics.graphDatas) {
+    if (nextprops.metrics && nextprops.metrics.graphDatas) {
       this.setChartData(nextprops.metrics.graphDatas)
     }
   }
@@ -311,6 +312,18 @@ class Metrics extends React.Component {
                       </div>
                   </div>
                 </div>
+                </li>
+              }
+              {
+                this.props.sendWhatsAppMetricsEmail &&
+                <li className='nav-item m-tabs__item'>
+                  <UncontrolledTooltip style={{minWidth: '100px', opacity: '1.0'}} target='_send_monthly_email'>
+                    <span>Send monthly WhatsApp usage statistics to all KiboPush WhatsApp users</span>
+                  </UncontrolledTooltip>
+                  <div onClick={this.props.sendWhatsAppMetricsEmail} id='_send_monthly_email' className='m-card-profile__email m-link' style={{cursor: 'pointer', marginTop: '5px', marginLeft: '15px', marginRight: '20px'}}>
+                    <i style={{marginRight: '5px'}} className='la la-envelope-o' />
+                    Send Monthly Email
+                  </div>
                 </li>
               }
                 {this.props.showToggle &&
