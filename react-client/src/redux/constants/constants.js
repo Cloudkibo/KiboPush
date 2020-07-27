@@ -47,6 +47,7 @@ export const UPDATE_PAGE_ADMINS = 'UPDATE_PAGE_ADMINS'
 export const UPDATE_COMMENT_CAPTURES = 'UPDATE_COMMENT_CAPTURES'
 export const UPDATE_CHAT_BOTS = 'UPDATE_CHAT_BOTS'
 export const LOAD_MESSAGES_COUNT = 'LOAD_MESSAGES_COUNT'
+export const LOAD_USER_SUMMARY = 'LOAD_USER_SUMMARY'
 
 
 // constants for basicinfo
@@ -461,6 +462,7 @@ export const GET_INSIGHTS = 'GET_INSIGHTS'
 export const SHOW_SENT_SEEN = 'SHOW_SENT_SEEN'
 export const SHOW_CARDBOXES_DATA = 'SHOW_CARDBOXES_DATA'
 export const SHOW_SUBSCRIBER_SUMMARY = 'SHOW_SUBSCRIBER_SUMMARY'
+export const SHOW_METRICS = 'SHOW_METRICS'
 
 // constants for hubSpot
 export const SHOW_hubSpotForm = 'SHOW_hubSpotForm'

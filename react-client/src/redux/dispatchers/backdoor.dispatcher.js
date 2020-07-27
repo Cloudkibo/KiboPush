@@ -90,6 +90,14 @@ export function updateMessagesCount (data) {
   }
 }
 
+export function updateUserSummary (data) {
+  return {
+    type: ActionTypes.LOAD_USER_SUMMARY,
+    data: data
+  }
+}
+
+
 export function updateSurveysGraphData (data) {
   return {
     type: ActionTypes.UPDATE_SURVEYS_GRAPH,

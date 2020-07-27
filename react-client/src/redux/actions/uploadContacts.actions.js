@@ -78,13 +78,16 @@ export function loadContactsList (data) {
       })
   }
 }
-export function loadWhatsAppContactsList (data) {
+export function loadWhatsAppContactsList (data, prepareExport) {
   console.log('data for loadWhatsAppContactsList', data)
   return (dispatch) => {
     callApi('whatsAppContacts', 'post', data)
       .then(res => {
         console.log('response from loadWhatsAppContactsList', res)
         dispatch(showContacts(res.payload))
+        if (prepareExport) {
+          prepareExport(res)
+        }
       })
   }
 }
@@ -104,7 +107,7 @@ export function editSubscriberSms (id, data, msg) {
   }
 } 
 
-export function editSubscriber (id, data,msg) {
+export function editSubscriberWhatsApp (id, data,msg) {
   console.log('data for editSubscriber', data)
   return (dispatch) => {
     callApi(`whatsAppContacts/update/${id}`, 'post', data)

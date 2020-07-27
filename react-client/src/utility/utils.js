@@ -1,5 +1,6 @@
 import cookie from 'react-cookie'
 import auth from './auth.service'
+import moment from 'moment'
 
 export function formatAMPM (date) {
   let hours = date.getHours()
@@ -742,4 +743,25 @@ export var LANGUAGE_BY_LOCALE = {
   yo: "Yoruba",
   zu_ZA: "Zulu (South Africa)",
   zu: "Zulu"
+}
+export function validDateRange (startDate, endDate) {
+  var valid = false
+  var dateRangeWarning = ''
+  if (startDate === '' && endDate === '') {
+     valid = true
+     dateRangeWarning = ''
+  } else if (startDate === '' && endDate !== '') {
+    dateRangeWarning = 'Select start date to apply filter'
+    valid = false
+  } else if (startDate !== '' && endDate === '') {
+    dateRangeWarning = 'Select end date to apply filter'
+    valid = false
+  } else if (moment(startDate).isAfter(endDate)) {
+    dateRangeWarning = 'Incorrect Range'
+    valid = false
+  } else {
+      dateRangeWarning = ''
+    valid = true
+  }
+  return {valid, dateRangeWarning}
 }

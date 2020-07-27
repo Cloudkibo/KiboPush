@@ -44,16 +44,29 @@ class Body extends React.Component {
     return isAllowed
   }
 
-  getSeen (message, index) {
-    if (index === (this.props.userChat.length - 1) && message.seen) {
+  getSeen (message, chat) {
+    if (message.seen || message.delivered) {
       return (
-        <div style={{float: 'right', marginRight: '15px', fontSize: 'small'}}>
-          <i className='la la-check' style={{fontSize: 'small'}} />&nbsp;Seen&nbsp;{this.props.displayDate(message.seenDateTime)}
+        <div className='m-messenger__message-username' style={{marginBottom: '2px'}}>
+          <img
+            style={{height: '18px', float: 'right'}}
+            alt='double-ticks'
+            src={message.seen ? 'https://cdn.cloudkibo.com/public/img/double-ticks-blue.png' : 'https://cdn.cloudkibo.com/public/img/double-ticks-white.png'}
+          />
         </div>
       )
     } else {
-      return <div />
+      return null
     }
+    // if (index === (this.props.userChat.length - 1) && message.seen) {
+    //   return (
+    //     <div style={{float: 'right', marginRight: '15px', fontSize: 'small'}}>
+    //       <i className='la la-check' style={{fontSize: 'small'}} />&nbsp;Seen&nbsp;{this.props.displayDate(message.seenDateTime)}
+    //     </div>
+    //   )
+    // } else {
+    //   return <div />
+    // }
   }
 
   loadMoreMessage() {
@@ -191,6 +204,7 @@ class Body extends React.Component {
                                 showDate={this.props.showDate}
                                 displayDate={this.props.displayDate}
                                 activeSession={this.props.activeSession}
+                                showSubscriberNameOnMessage={this.props.showSubscriberNameOnMessage}
                                 previousMessage={this.props.userChat[index - 1]}
                               />
                           ))
@@ -225,7 +239,8 @@ Body.propTypes = {
   'markRead': PropTypes.func.isRequired,
   'updateState': PropTypes.func.isRequired,
   'newMessage': PropTypes.bool.isRequired,
-  'updateNewMessage': PropTypes.func.isRequired
+  'updateNewMessage': PropTypes.func.isRequired,
+  'showSubscriberNameOnMessage': PropTypes.bool.isRequired
 }
 
 export default Body

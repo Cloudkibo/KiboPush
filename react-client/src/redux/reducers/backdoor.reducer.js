@@ -238,6 +238,10 @@ export function backdoorInfo (state = initialState, action) {
         return Object.assign({}, state, {
           messagesCount: action.data
         })
+      case ActionTypes.LOAD_USER_SUMMARY:
+        return Object.assign({}, state, {
+          userSummary: action.data
+        })
       case ActionTypes.SAVE_USER_VIEW:
       return Object.assign({}, state, {
         userView: action.data

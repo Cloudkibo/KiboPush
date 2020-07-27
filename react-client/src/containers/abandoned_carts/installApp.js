@@ -29,7 +29,9 @@ class InstallApp extends React.Component {
       this.setState({selectedPage: this.props.pages[0].pageId})
     }
     if (readShopifyInstallRequest() && readShopifyInstallRequest() !== '') {
-      this.setState({pageUrl: readShopifyInstallRequest()})
+      this.setState({pageUrl: readShopifyInstallRequest()}, ()=> {
+        removeShopifyInstallRequest()
+      })    
     }
   }
 

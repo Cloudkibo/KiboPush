@@ -6,11 +6,15 @@ import React from 'react'
 import { connect } from 'react-redux'
 
 import { fetchContactLists } from '../../redux/actions/contacts.actions'
-import { loadContactsList, loadWhatsAppContactsList, editSubscriber, editSubscriberSms, syncContacts } from '../../redux/actions/uploadContacts.actions'
+import { loadContactsList, loadWhatsAppContactsList, editSubscriberWhatsApp, editSubscriberSms, syncContacts } from '../../redux/actions/uploadContacts.actions'
 import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
 import AlertContainer from 'react-alert'
 import Select from 'react-select'
+import YouTube from 'react-youtube'
+import fileDownload from 'js-file-download'
+var json2csv = require('json2csv')
+
 
 class Contact extends React.Component {
   constructor (props, context) {
@@ -28,7 +32,8 @@ class Contact extends React.Component {
       requested_page: 0,
       list: null,
       status: null,
-      searchValue: ''
+      searchValue: '',
+      openVideo: false
     }
     if (props.user.platform === 'sms') {
       props.fetchContactLists()
@@ -51,6 +56,55 @@ class Contact extends React.Component {
     this.handleFilterByStatus = this.handleFilterByStatus.bind(this)
     this.loadContacts = this.loadContacts.bind(this)
     this.searchTimer = null
+    this.openVideoTutorial = this.openVideoTutorial.bind(this)
+    this.exportRecords = this.exportRecords.bind(this)
+    this.prepareExportData = this.prepareExportData.bind(this)
+  }
+  prepareExportData (res) {
+    let msg = this.msg
+    if (res.status === 'success') {
+      var subscribersData = res.payload.contacts
+      var data = []
+      var subscriberObj = {}
+      for (var i = 0; i < subscribersData.length; i++) {
+        var subscriber = subscribersData[i]
+        subscriberObj = {
+          'Name': `${subscriber.name}`,
+          'PhoneNumber': subscriber.number,
+          'Status': subscriber.isSubscribed ? 'Subscribed' : 'unSubscribed',
+          'Subscription Datetime' : new Date(subscriber.datetime).toUTCString(),
+          'Messages count': subscriber.messagesCount ? subscriber.messagesCount : '0',
+          'Last Message from Subscriber': new Date(subscriber.lastMessagedAt).toUTCString(),
+          'Last Interaction with Subscriber': new Date(subscriber.last_activity_time).toUTCString() 
+        }
+        data.push(subscriberObj)
+      }
+      var info = data
+      var keys = []
+      var val = info[0]
+
+      for (var j in val) {
+        var subKey = j
+        keys.push(subKey)
+      }
+      json2csv({ data: info, fields: keys }, function (err, csv) {
+        if (err) {
+        } else {
+          fileDownload(csv, 'SubscriberList.csv')
+          msg.success('Data Dowloaded Successfully')
+        }
+      })
+    } else {
+        msg.error('Failed to download the data')
+    }
+  }
+  exportRecords () {
+    this.props.loadWhatsAppContactsList({
+      last_id: 'none',
+      number_of_records: this.state.totalLength,
+      first_page: 'first',
+    }, this.prepareExportData)
+    this.msg.info('DOWNLOADING DATA.... YOU WILL BE NOTIFIED WHEN IT IS DOWNLOAD.')
   }
 
   loadContacts () {
@@ -62,6 +116,12 @@ class Contact extends React.Component {
       status_value: this.state.status ? this.state.status.value : '',
       list_value: this.state.list ? this.state.list.value : ''
     })
+  }
+  openVideoTutorial () {
+    this.setState({
+      openVideo: true
+    })
+    this.refs.videoContacts.click()
   }
 
   searchSubscriber (e) {
@@ -113,7 +173,7 @@ class Contact extends React.Component {
       this.msg.error('Subscriber name cannot be empty')
     } else {
       if (this.props.user.platform === 'whatsApp') {
-        this.props.editSubscriber(this.state.contact._id, {name: this.state.name}, this.msg)
+        this.props.editSubscriberWhatsApp(this.state.contact._id, {name: this.state.name}, this.msg)
       } else if (this.props.user.platform === 'sms') {
         this.props.editSubscriberSms(this.state.contact._id, {name: this.state.name}, this.msg)
       }
@@ -328,6 +388,41 @@ class Contact extends React.Component {
             </div>
           </div>
         </div>
+        <a href='#/' style={{ display: 'none' }} ref='videoContacts' data-toggle='modal' data-backdrop='static' data-keyboard='false' data-target="#videoContacts">videoContacts</a>
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="videoContacts" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog modal-lg" role="document">
+            <div className="modal-content" style={{ width: '687px', top: '100' }}>
+            <div style={{ display: 'block'}} className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">
+                  Subscribers in Whatsapp
+                </h5>
+                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal"
+                aria-label="Close"
+                onClick={() => {
+                  this.setState({
+                    openVideo: false
+                  })}}>
+                  <span aria-hidden="true">
+                    &times;
+                    </span>
+                </button>
+              </div>
+              <div style={{ color: 'black' }} className="modal-body">
+              {this.state.openVideo && <YouTube
+                  videoId='shKW_0z7VTw'
+                  opts={{
+                    height: '390',
+                    width: '640',
+                    playerVars: { // https://developers.google.com/youtube/player_parameters
+                      autoplay: 0
+                    }
+                  }}
+                />
+                }
+              </div>
+            </div>
+          </div>
+        </div>
         <div className='m-content'>
           <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
             <div className='m-alert__icon'>
@@ -335,6 +430,7 @@ class Contact extends React.Component {
             </div>
             <div className='m-alert__text'>
               Need help in understanding subscribers? Here is the <a href={this.getUserGuideLink()} target='_blank' rel='noopener noreferrer'>documentation</a>.
+              Or check out this <a href='#/' onClick={this.openVideoTutorial}>video tutorial</a>
             </div>
           </div>
           <div className='row'>
@@ -474,6 +570,18 @@ class Contact extends React.Component {
                         activeClassName={'active'}
                         forcePage={this.state.pageNumber} />
                     </div>
+                    { this.props.user.platform === 'whatsApp' &&
+                    <div className='m-form m-form--label-align-right m--margin-bottom-30'>
+                      <button className='btn btn-success m-btn m-btn--icon pull-right' onClick={this.exportRecords}>
+                        <span>
+                          <i className='fa fa-download' />
+                          <span>
+                            Export Records in CSV File
+                          </span>
+                        </span>
+                      </button>
+                    </div>
+                    }
                   </div>
                   : <span>
                     <p> No data to display </p>
@@ -506,7 +614,7 @@ function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     loadContactsList,
     loadWhatsAppContactsList,
-    editSubscriber,
+    editSubscriberWhatsApp,
     editSubscriberSms,
     syncContacts,
     fetchContactLists

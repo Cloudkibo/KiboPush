@@ -10,6 +10,7 @@ import ReactPaginate from 'react-paginate'
 import { Link } from 'react-router-dom'
 import { loadWhatsAppContactsList } from '../../redux/actions/uploadContacts.actions'
 import { handleDate } from '../../utility/utils'
+import YouTube from 'react-youtube'
 
 class WhatsAppBroadcast extends React.Component {
   constructor (props) {
@@ -21,7 +22,8 @@ class WhatsAppBroadcast extends React.Component {
       pageNumber: 0,
       searchValue: '',
       selectedDays: '0',
-      filter:false
+      filter:false,
+      openVideo : false
     }
 
     props.loadWhatsAppContactsList({last_id: 'none', number_of_records: 10, first_page: 'first'})
@@ -32,7 +34,15 @@ class WhatsAppBroadcast extends React.Component {
     this.onFilter = this.onFilter.bind(this)
     this.searchBroadcast = this.searchBroadcast.bind(this)
     this.onDaysChange = this.onDaysChange.bind(this)
+    this.openVideoTutorial = this.openVideoTutorial.bind(this)
   }
+  openVideoTutorial () {
+    this.setState({
+      openVideo: true
+    })
+    this.refs.videoBroadcastWhatsapp.click()
+  }
+
 onDaysChange (e) {
   var value = e.target.value
   this.setState({selectedDays: value})
@@ -191,6 +201,41 @@ onFilter (e) {
             </div>
           </div>
         </div>
+        <a href='#/' style={{ display: 'none' }} ref='videoBroadcastWhatsapp' data-toggle='modal' data-backdrop='static' data-keyboard='false' data-target="#videoBroadcastWhatsapp">videoBroadcastWhatsapp</a>
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="videoBroadcastWhatsapp" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog modal-lg" role="document">
+            <div className="modal-content" style={{width: '687px', top: '100'}}>
+            <div style={{ display: 'block'}} className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">
+                  Broadcast for Whatsapp Video Tutorial
+                </h5>
+                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal"
+                aria-label="Close"
+                onClick={() => {
+                  this.setState({
+                    openVideo: false
+                  })}}>
+                  <span aria-hidden="true">
+                    &times;
+                    </span>
+                </button>
+              </div>
+              <div style={{color: 'black'}} className="modal-body">
+              {this.state.openVideo && <YouTube
+                videoId='W46lhY3L8mg'
+                opts={{
+                  height: '390',
+                  width: '640',
+                  playerVars: { // https://developers.google.com/youtube/player_parameters
+                    autoplay: 0
+                  }
+                }}
+            />
+              }
+              </div>
+            </div>
+          </div>
+        </div>
         <div className='m-content'>
           <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
             <div className='m-alert__icon'>
@@ -198,6 +243,7 @@ onFilter (e) {
             </div>
             <div className='m-alert__text'>
               Need help in understanding broadcasts? Here is the <a href='https://kibopush.com/broadcasts-whatsapp' target='_blank' rel='noopener noreferrer'>documentation</a>.
+              Or check out this <a href='#/' onClick={this.openVideoTutorial}>video tutorial</a>
             </div>
           </div>
           <div className='row'>
@@ -293,7 +339,7 @@ onFilter (e) {
                             <td data-field='type' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{(broadcast.payload.length > 1) ? 'Miscellaneous' : broadcast.payload[0].componentType}</span></td>
                             <td data-field='createAt' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{handleDate(broadcast.datetime)}</span></td>
                             <td data-field='sent' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{this.props.automated_options.flockSendWhatsApp.number}</span></td>
-                            <td data-field='delivered' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{broadcast.sent}</span></td>
+                            <td data-field='delivered' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{broadcast.delivered ? broadcast.delivered : 0}</span></td>
                             <td data-field='seen' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{broadcast.seen}</span></td>
                           </tr>
                         ))

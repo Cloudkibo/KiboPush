@@ -478,7 +478,7 @@ class LiveChat extends React.Component {
   }
 
   getAgents (members) {
-    let agents = members.map(m => m.userId)
+    let agents = members.filter(a => !a.userId.disableMember).map(m => m.userId)
     return agents
   }
 
@@ -652,6 +652,7 @@ class LiveChat extends React.Component {
                     history={this.props.history}
                     zoomIntegrations={this.props.zoomIntegrations}
                     createZoomMeeting={this.props.createZoomMeeting}
+                    showSubscriberNameOnMessage={true}
                   />
                 }
                 {
