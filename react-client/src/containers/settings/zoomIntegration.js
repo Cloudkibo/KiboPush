@@ -139,7 +139,7 @@ class ZoomIntegration extends React.Component {
                             </a>
                             : <button onClick={() => this.props.integrateZoom(this.redirectToAuthorizeZoom)} className='m-btn m-btn--pill m-btn--hover-success btn btn-success' style={{borderColor: '#34bfa3', color: '#34bfa3', marginRight: '10px'}}>
                             Connect
-                          </a>
+                          </button>
                           }
                       </span>
                       <hr style={{borderTop: '1px dashed #36a3f7'}} />
