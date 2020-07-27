@@ -153,15 +153,14 @@ class ZoomIntegration extends React.Component {
               {
                 this.props.zoomIntegrations.length < 3 &&
                 <div style={{display: 'flex', justifyContent: 'center', marginTop: '50px'}}>
-                  <a href= {`/auth/zoom?userId=${this.props.user._id}&companyId=${this.props.user.companyId}`}>
-                    <button
-                      style={{border: '1px dashed #36a3f7', cursor: 'pointer'}}
-                      type="button"
-                      className="btn m-btn--pill btn-outline-info m-btn m-btn--custom"
-                    >
-                      {this.props.zoomIntegrations.length > 0 ? '+ Connect New' : '+ Connect'}
-                    </button>
-                  </a>
+                  <button
+                    onClick={() => this.props.integrateZoom(this.redirectToAuthorizeZoom)}
+                    style={{border: '1px dashed #36a3f7', cursor: 'pointer'}}
+                    type="button"
+                    className="btn m-btn--pill btn-outline-info m-btn m-btn--custom"
+                  >
+                    {this.props.zoomIntegrations.length > 0 ? '+ Connect New' : '+ Connect'}
+                  </button>
                 </div>
               }
             </div>
@@ -182,7 +181,8 @@ function mapStateToProps (state) {
 }
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-    getZoomIntegrations
+    getZoomIntegrations,
+    integrateZoom
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(ZoomIntegration)
