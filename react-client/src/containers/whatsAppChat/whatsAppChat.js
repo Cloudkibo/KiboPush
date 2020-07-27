@@ -646,7 +646,7 @@ function mapStateToProps(state) {
     searchChatMsgs: (state.whatsAppChatInfo.searchChat),
     socketData: (state.socketInfo.socketDataWhatsapp),
     automated_options: (state.basicInfo.automated_options),
-    cannedResponses: state.settingsInfo.cannedResponses,
+    cannedResponses: (state.settingsInfo.cannedResponses),
     zoomIntegrations: (state.settingsInfo.zoomIntegrations)
   }
 }

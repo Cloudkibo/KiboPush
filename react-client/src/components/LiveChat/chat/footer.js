@@ -31,13 +31,14 @@ class Footer extends React.Component {
       zoomCountdown: this.initialZoomCountdown,
       zoomUserId: '',
       zoomMeetingUrl: '',
+      zoomUserId: '',
       zoomMeetingCreationError: false,
       cannedMessages: [],
       dataForSearch: [],
       showCannedMessages: this.props.showCannedMessage,
       selectedCannMessage : false,
       selectedIndex: 0,
-      caption: ''
+      caption: '',
     }
     this.onInputChange = this.onInputChange.bind(this)
     this.onEnter = this.onEnter.bind(this)
@@ -69,6 +70,7 @@ class Footer extends React.Component {
     this.checkZoomDisabled = this.checkZoomDisabled.bind(this)
     this.resetZoomValues = this.resetZoomValues.bind(this)
     this.appendInvitationUrl = this.appendInvitationUrl.bind(this)
+    this.selectZoomUser = this.selectZoomUser.bind(this)
     this.selectCannMessage = this.selectCannMessage.bind(this)
     this.toggleHover =this.toggleHover.bind(this)
     this.onMouseLeave = this.onMouseLeave.bind(this)
@@ -77,8 +79,12 @@ class Footer extends React.Component {
     this.selectZoomUser = this.selectZoomUser.bind(this)
     this.onCaptionChange = this.onCaptionChange.bind(this)
   }
-  componentDidMount () {
 
+  selectZoomUser (e) {
+    this.setState({zoomUserId: e.target.value})
+  }
+
+  componentDidMount () {
     window.onkeydown = (e) => {
       console.log(e.which)
       if (this.state.showCannedMessages) {
@@ -463,7 +469,7 @@ class Footer extends React.Component {
   }
 
   checkZoomDisabled () {
-    return !this.state.zoomTopic || !this.state.zoomAgenda || !this.state.zoomInvitationMessage
+    return !this.state.zoomTopic || !this.state.zoomAgenda || !this.state.zoomInvitationMessage || !this.state.zoomUserId
   }
 
   getZoomIntegrationContent () {

@@ -198,7 +198,7 @@ class Settings extends React.Component {
       openTab: 'cannedResponses'
     })
   }
-
+  
   setZoomIntegration () {
     this.setState({
       openTab: 'zoomIntegration'
