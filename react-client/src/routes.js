@@ -137,7 +137,7 @@ import CreateMessengerRefURLMessage from './containers/messengerRefURL/createMes
 import BusinessGatewayHome from './containers/businessGateway/home'
 import PushMessage from './containers/businessGateway/pushMessage'
 import UploadContacts from './containers/uploadContactsSMS/uploadContacts'
-import UploadContactsWhatsApp from './containers/uploadContacts/uploadContactsWhatsApp'
+import UploadContactsWhatsApp from './containers/uploadContactsWhatsApp/uploadContacts'
 import auth from './utility/auth.service'
 import ChatWidget from './containers/chatWidget/chatWidget'
 import Checkbox from './containers/GrowthTools/checkbox'

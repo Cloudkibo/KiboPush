@@ -52,7 +52,7 @@ class MessageTemplate extends React.Component {
 
   updateNumber (e) {
     this.setState({
-      number: e.target.value, 
+      number: e.target.value,
       isPhoneNumberValid: validatePhoneNumber(e.target.value)
     })
   }
@@ -99,7 +99,7 @@ class MessageTemplate extends React.Component {
       templateArguments
     })
   }
-  
+
   onTextChange (e) {
     this.setState({
       edited: true,
@@ -150,8 +150,10 @@ class MessageTemplate extends React.Component {
         if (this.props.updateChatAreaHeight) {
           this.props.updateChatAreaHeight('57vh')
         }
-        data.format = 'convos'
-        this.updateChatData(data, payload)
+        if (this.props.activeSession) {
+          data.format = 'convos'
+          this.updateChatData(data, payload)
+        }
         document.getElementById(`_close_${this.props.id}`).click()
         this.props.alertMsg.success('Template Successfully Sent')
       } else {
@@ -207,7 +209,7 @@ class MessageTemplate extends React.Component {
       <div className="modal-content" style={{width: '60vw'}}>
         <div style={{ display: 'block' }} className="modal-header">
           <h5 className="modal-title" id="exampleModalLabel">
-            {this.props.heading ? this.props.heading : 'Message Templates'} 
+            {this.props.heading ? this.props.heading : 'Message Templates'}
           </h5>
           <button id={`_close_${this.props.id}`} style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" aria-label="Close" data-dismiss='modal'>
             <span aria-hidden="true">
@@ -243,8 +245,7 @@ class MessageTemplate extends React.Component {
                       }
                   </div>
                 </div>
-              :
-              <p>To send a message outside the 24 hours session window, use one of the following pre-approved templates</p>
+              : this.props.showDescription && <p>To send a message outside the 24 hours session window, use one of the following pre-approved templates</p>
             }
           
             <div>
@@ -348,7 +349,6 @@ class MessageTemplate extends React.Component {
                 }
               </div>
             </div>
-
             </div>
           </div>
 
@@ -366,8 +366,12 @@ class MessageTemplate extends React.Component {
   }
 }
 
+MessageTemplate.defaultPropTypes = {
+  showDescription: true
+}
+
 MessageTemplate.propTypes = {
   'sendTemplate': PropTypes.func.isRequired,
-  'closeTemplates': PropTypes.func.isRequired
+  'closeTemplates': PropTypes.func.isRequired,
 }
 export default MessageTemplate
