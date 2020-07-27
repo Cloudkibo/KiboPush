@@ -89,7 +89,7 @@ class MessageTemplate extends React.Component {
 
   updateNumber (e) {
     this.setState({
-      number: e.target.value, 
+      number: e.target.value,
       isPhoneNumberValid: validatePhoneNumber(e.target.value)
     })
   }
@@ -136,7 +136,7 @@ class MessageTemplate extends React.Component {
       templateArguments
     })
   }
-  
+
   onTextChange (e) {
     this.setState({
       edited: true,
@@ -187,8 +187,10 @@ class MessageTemplate extends React.Component {
         if (this.props.updateChatAreaHeight) {
           this.props.updateChatAreaHeight('57vh')
         }
-        data.format = 'convos'
-        this.updateChatData(data, payload)
+        if (this.props.activeSession) {
+          data.format = 'convos'
+          this.updateChatData(data, payload)
+        }
         document.getElementById(`_close_${this.props.id}`).click()
         this.props.alertMsg.success('Template Successfully Sent')
       } else {
@@ -244,7 +246,7 @@ class MessageTemplate extends React.Component {
       <div className="modal-content" style={{width: '60vw'}}>
         <div style={{ display: 'block' }} className="modal-header">
           <h5 className="modal-title" id="exampleModalLabel">
-            {this.props.heading ? this.props.heading : 'Message Templates'} 
+            {this.props.heading ? this.props.heading : 'Message Templates'}
           </h5>
           <button id={`_close_${this.props.id}`} style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" aria-label="Close" data-dismiss='modal'>
             <span aria-hidden="true">
@@ -259,16 +261,16 @@ class MessageTemplate extends React.Component {
         <div className='row'>
         <div className='col-6' style={{ maxHeight: '70vh', overflowY: 'scroll' }}>
           {
-            this.props.sendingToNewNumber ? 
+            this.props.sendingToNewNumber ?
               <div>
                 <label className='control-label'>WhatsApp Number:</label>
                 <div style={{display: 'flex'}} id='_whatsapp_number' className='form-group m-form__group'>
-                  <input type='tel' 
+                  <input type='tel'
                     style={{width: '95%'}}
                     placeholder='Enter a valid WhatsApp phone number...'
-                    disabled={this.state.sendingTemplate} 
-                    className={this.state.isPhoneNumberValid ? 'form-control' : 'form-control border-danger'} 
-                    value={this.state.number} 
+                    disabled={this.state.sendingTemplate}
+                    className={this.state.isPhoneNumberValid ? 'form-control' : 'form-control border-danger'}
+                    value={this.state.number}
                     onChange={(e) => this.updateNumber(e)} />
                     { !this.state.isPhoneNumberValid &&
                     <div style={{marginLeft: '5px', marginTop: '3px'}}>
@@ -280,10 +282,9 @@ class MessageTemplate extends React.Component {
                     }
                 </div>
               </div>
-            :
-            <p>To send a message outside the 24 hours session window, use one of the following pre-approved templates</p>
+            : this.props.showDescription && <p>To send a message outside the 24 hours session window, use one of the following pre-approved templates</p>
           }
-        
+
           <div>
           <label>Select Template:</label>
             <div className='radio-buttons' style={{marginLeft: '37px'}}>
@@ -291,7 +292,7 @@ class MessageTemplate extends React.Component {
                 this.state.templates.map((template, index) => {
                   return (
                     <div className='radio'>
-                      <input 
+                      <input
                         disabled={this.state.sendingTemplate}
                         id={template.name+this.props.id}
                         type='radio'
@@ -330,17 +331,17 @@ class MessageTemplate extends React.Component {
               {
                 this.state.templates[this.state.selectedIndex].buttons.map((button, index) => (
                   (
-                    <div className='bubble recipient' 
-                      style={{ 
-                        maxWidth: '100%', 
-                        textAlign: 'center', 
-                        margin: 'auto', 
-                        marginTop: '5px', 
-                        fontSize: '15px', 
-                        backgroundColor: 'white', 
-                        border: '1px solid rgba(0,0,0,.1)', 
-                        borderRadius: '10px', 
-                        wordBreak: 'break-all', 
+                    <div className='bubble recipient'
+                      style={{
+                        maxWidth: '100%',
+                        textAlign: 'center',
+                        margin: 'auto',
+                        marginTop: '5px',
+                        fontSize: '15px',
+                        backgroundColor: 'white',
+                        border: '1px solid rgba(0,0,0,.1)',
+                        borderRadius: '10px',
+                        wordBreak: 'break-all',
                         color: '#0782FF' }}>{button.title}</div>
                   )
                 ))
@@ -368,7 +369,7 @@ class MessageTemplate extends React.Component {
                 this.props.sendChatMessage &&
                 <button disabled={(this.props.sendingToNewNumber && !this.state.isPhoneNumberValid) || !this.state.isTemplateValid || this.state.sendingTemplate} className='btn btn-primary' onClick={this.sendTemplate}>
                   {
-                    this.state.sendingTemplate ? 
+                    this.state.sendingTemplate ?
                     <div>
                       <div className="m-loader" style={{height: '10px', width: "30px", display: "inline-block"}}></div>
                       <span>Sending...</span>
@@ -395,8 +396,12 @@ class MessageTemplate extends React.Component {
   }
 }
 
+MessageTemplate.defaultPropTypes = {
+  showDescription: true
+}
+
 MessageTemplate.propTypes = {
   'sendTemplate': PropTypes.func.isRequired,
-  'closeTemplates': PropTypes.func.isRequired
+  'closeTemplates': PropTypes.func.isRequired,
 }
 export default MessageTemplate

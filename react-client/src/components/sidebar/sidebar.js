@@ -1253,6 +1253,25 @@ class Sidebar extends Component {
     }
   }
 
+  inviteSubscribers () {
+    if (this.props.user && this.props.user.platform === 'whatsApp') {
+      return (
+        <li className='m-menu__item' aria-haspopup='true' >
+          <Link to='/uploadContactsWhatsApp' className='m-menu__link'>
+            <i className='m-menu__link-icon flaticon-user-add'>
+              <span />
+            </i>
+            <span className='m-menu__link-text'>
+              Invite Subscribers
+            </span>
+          </Link>
+        </li>
+      )
+    } else {
+      return (null)
+    }
+  }
+
   render () {
     console.log('this.state', this.state)
 
@@ -1280,6 +1299,7 @@ class Sidebar extends Component {
                   {this.showBusinessGateway()}
                   {this.showBroadcastingItems()}
                   {this.uploadContacts()}
+                  {this.inviteSubscribers()}
                   {this.showLiveChatItem()}
                   {this.showAutomationItems()}
                   {this.showGrowthToolsItems()}

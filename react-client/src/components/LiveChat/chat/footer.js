@@ -29,6 +29,7 @@ class Footer extends React.Component {
       zoomInvitationMessage: this.initialZoomInvitationMessage,
       zoomMeetingCreated: false,
       zoomCountdown: this.initialZoomCountdown,
+      zoomUserId: '',
       zoomMeetingUrl: '',
       zoomUserId: '',
       zoomMeetingCreationError: false,
@@ -75,6 +76,7 @@ class Footer extends React.Component {
     this.onMouseLeave = this.onMouseLeave.bind(this)
     this.responseMessageHandleChange = this.responseMessageHandleChange.bind(this)
     this.listDataDisplay = this.listDataDisplay.bind(this)
+    this.selectZoomUser = this.selectZoomUser.bind(this)
     this.onCaptionChange = this.onCaptionChange.bind(this)
   }
 
@@ -163,6 +165,10 @@ class Footer extends React.Component {
     this.setState({caption: e.target.value})
   }
 
+  selectZoomUser (e) {
+    this.setState({zoomUserId: e.target.value})
+  }
+
   resetZoomValues () {
     clearInterval(this.zoomCountdownTimer)
     this.setState({
@@ -180,6 +186,8 @@ class Footer extends React.Component {
   }
 
   UNSAFE_componentWillReceiveProps (nextProps) {
+    console.log('UNSAFE_componentWillReceiveProps called in footer', this.props.activeSession._id)
+    console.log('UNSAFE_componentWillReceiveProps called in footer', nextProps.activeSession._id)
 
     if (nextProps.cannedResponses) {
       this.setState({ cannedMessages: nextProps.cannedResponses, dataForSearch: nextProps.cannedResponses })
@@ -1153,6 +1161,5 @@ Footer.propTypes = {
   'filesAccepted': PropTypes.string,
   'showCaption': PropTypes.bool,
 }
-
 
 export default Footer
