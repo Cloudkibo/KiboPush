@@ -30,13 +30,14 @@ class Footer extends React.Component {
       zoomMeetingCreated: false,
       zoomCountdown: this.initialZoomCountdown,
       zoomMeetingUrl: '',
+      zoomUserId: '',
       zoomMeetingCreationError: false,
       cannedMessages: [],
       dataForSearch: [],
       showCannedMessages: this.props.showCannedMessage,
       selectedCannMessage : false,
       selectedIndex: 0,
-      caption: ''
+      caption: '',
     }
     this.onInputChange = this.onInputChange.bind(this)
     this.onEnter = this.onEnter.bind(this)
@@ -60,7 +61,7 @@ class Footer extends React.Component {
     this.sendMessage = this.sendMessage.bind(this)
     this.toggleAudioRecording = this.toggleAudioRecording.bind(this)
     this.getZoomIntegrationContent = this.getZoomIntegrationContent.bind(this)
-    this.goToIntegrations = this.goToIntegrations.bind(this)
+    this.goToZoomIntegration = this.goToZoomIntegration.bind(this)
     this.setZoomTopic = this.setZoomTopic.bind(this)
     this.setZoomAgenda = this.setZoomAgenda.bind(this)
     this.setZoomInvitationMessage = this.setZoomInvitationMessage.bind(this)
@@ -68,6 +69,7 @@ class Footer extends React.Component {
     this.checkZoomDisabled = this.checkZoomDisabled.bind(this)
     this.resetZoomValues = this.resetZoomValues.bind(this)
     this.appendInvitationUrl = this.appendInvitationUrl.bind(this)
+    this.selectZoomUser = this.selectZoomUser.bind(this)
     this.selectCannMessage = this.selectCannMessage.bind(this)
     this.toggleHover =this.toggleHover.bind(this)
     this.onMouseLeave = this.onMouseLeave.bind(this)
@@ -75,8 +77,12 @@ class Footer extends React.Component {
     this.listDataDisplay = this.listDataDisplay.bind(this)
     this.onCaptionChange = this.onCaptionChange.bind(this)
   }
-  componentDidMount () {
 
+  selectZoomUser (e) {
+    this.setState({zoomUserId: e.target.value})
+  }
+
+  componentDidMount () {
     window.onkeydown = (e) => {
       console.log(e.which)
       if (this.state.showCannedMessages) {
@@ -193,48 +199,56 @@ class Footer extends React.Component {
 
   createZoomMeeting (event) {
     event.preventDefault()
-    this.setState({zoomMeetingLoading: true}, () => {
-      this.props.createZoomMeeting({
-          subscriberId: this.props.activeSession._id,
-          topic: this.state.zoomTopic,
-          agenda: this.state.zoomAgenda,
-          invitationMessage: this.state.zoomInvitationMessage
-      }, (res) => {
-        if (res.status === 'success' && res.payload) {
-          this.setState({
-            zoomMeetingLoading: false,
-            zoomMeetingCreated: true,
-            zoomMeetingUrl: res.payload.joinUrl,
-            text: this.state.zoomInvitationMessage.replace('[invite_url]', res.payload.joinUrl)
-          }, () => {
-            document.getElementById('_close_zoom_integration').style.display = 'none'
-            this.sendMessage()
-            this.zoomCountdownTimer= setInterval(() => {
-              if (this.state.zoomCountdown <= 1) {
-                if (this.state.zoomMeetingUrl) {
-                  clearInterval(this.zoomCountdownTimer)
-                  document.getElementById('_zoomMeetingLink').click()
-                  //window.open(this.state.zoomMeetingUrl, '_blank')
-                  document.getElementById('_close_zoom_integration').style.display = 'block'
-                  document.getElementById('_close_zoom_integration').click()
+    const data = this.props.performAction('create a zoom meeting', this.props.activeSession)
+    if (data.isAllowed) {
+      this.setState({zoomMeetingLoading: true}, () => {
+        this.props.createZoomMeeting({
+            subscriberId: this.props.activeSession._id,
+            topic: this.state.zoomTopic,
+            agenda: this.state.zoomAgenda,
+            invitationMessage: this.state.zoomInvitationMessage,
+            zoomUserId: this.state.zoomUserId,
+            platform: this.props.user.platform
+        }, (res) => {
+          if (res.status === 'success' && res.payload) {
+            this.setState({
+              zoomMeetingLoading: false,
+              zoomMeetingCreated: true,
+              zoomMeetingUrl: res.payload.joinUrl,
+              text: this.state.zoomInvitationMessage.replace('[invite_url]', res.payload.joinUrl)
+            }, () => {
+              document.getElementById('_close_zoom_integration').style.display = 'none'
+              this.sendMessage()
+              this.zoomCountdownTimer= setInterval(() => {
+                if (this.state.zoomCountdown <= 1) {
+                  if (this.state.zoomMeetingUrl) {
+                    clearInterval(this.zoomCountdownTimer)
+                    document.getElementById('_zoomMeetingLink').click()
+                    //window.open(this.state.zoomMeetingUrl, '_blank')
+                    document.getElementById('_close_zoom_integration').style.display = 'block'
+                    document.getElementById('_close_zoom_integration').click()
+                  }
+                } else {
+                  this.setState({zoomCountdown: this.state.zoomCountdown - 1})
                 }
-              } else {
-                this.setState({zoomCountdown: this.state.zoomCountdown - 1})
-              }
-            }, 1000)
-          })
-        } else {
-          console.log('error creating zoom meeting', res.description)
-          this.setState({zoomMeetingCreationError: true, zoomMeetingLoading: false})
-        }
+              }, 1000)
+            })
+          } else {
+            console.log('error creating zoom meeting', res.description)
+            this.setState({zoomMeetingCreationError: true, zoomMeetingLoading: false})
+          }
+        })
       })
-    })
+    } else {
+      this.props.alertMsg.error(data.errorMsg)
+    }
   }
 
-  goToIntegrations () {
+  goToZoomIntegration () {
+    document.getElementById('_close_zoom_integration').click()
     this.props.history.push({
       pathname: '/settings',
-      state: {tab: 'integrations'}
+      state: {tab: 'zoomIntegration'}
     })
   }
 
@@ -447,11 +461,11 @@ class Footer extends React.Component {
   }
 
   checkZoomDisabled () {
-    return !this.state.zoomTopic || !this.state.zoomAgenda || !this.state.zoomInvitationMessage
+    return !this.state.zoomTopic || !this.state.zoomAgenda || !this.state.zoomInvitationMessage || !this.state.zoomUserId
   }
 
   getZoomIntegrationContent () {
-    if (!this.props.zoomIntegration) {
+    if (this.props.zoomIntegrations.length === 0) {
       return (
         <div>
           <div>
@@ -460,7 +474,7 @@ class Footer extends React.Component {
             </span>
           </div>
           <div style={{marginTop: '25px', textAlign: 'center'}}>
-            <div onClick={this.goToIntegrations} className='btn btn-primary'>
+            <div onClick={this.goToZoomIntegration} className='btn btn-primary'>
               Integrate
             </div>
           </div>
@@ -471,7 +485,26 @@ class Footer extends React.Component {
         <form onSubmit={this.createZoomMeeting}>
           <div className="m-form m-form--fit m-form--label-align-right">
             <span>{`Please provide the following information to create a zoom meeting and send invitation to ${this.props.activeSession.firstName}.`}</span>
-            <div style={{marginTop: '20px', paddingLeft: '0', paddingRight: '0'}} className="form-group m-form__group row">
+
+            <div style={{marginTop: '20px', paddingLeft: '0', paddingRight: '0'}} class="form-group m-form__group row">
+              <label for="_zoom_users" className="col-2 col-form-label">
+                Account:
+              </label>
+              <div className="col-10">
+                <select onChange={this.selectZoomUser} class="form-control m-input" value={this.state.zoomUserId} id="_zoom_users" required>
+                  <option key='' value='' selected disabled>Select a Zoom Account...</option>
+                  {
+                    this.props.zoomIntegrations.map((account) => {
+                      return (
+                      <option value={account._id}>{account.firstName + " " + account.lastName}</option>
+                      )
+                    })
+                  }
+                </select>
+              </div>
+            </div>
+
+            <div style={{paddingLeft: '0', paddingRight: '0'}} className="form-group m-form__group row">
               <label for="_zoom_topic" className="col-2 col-form-label">
                 Topic:
               </label>
