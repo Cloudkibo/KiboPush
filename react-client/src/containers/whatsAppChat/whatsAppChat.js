@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import AlertContainer from 'react-alert'
 import { RingLoader } from 'halogenium'
-import { getZoomIntegration, createZoomMeeting, loadcannedResponses } from '../../redux/actions/settings.actions'
+import { getZoomIntegrations, createZoomMeeting, loadcannedResponses } from '../../redux/actions/settings.actions'
 import NEWMESSAGEBUTTON from './newMessageButton'
 import MESSAGETEMPLATE from '../../components/WhatsApp/messageTemplate'
 
@@ -106,7 +106,7 @@ class WhatsAppChat extends React.Component {
       props.loadMembersList()
       props.loadTeamsList({platform: 'whatsapp'})
     }
-    props.getZoomIntegration()
+    props.getZoomIntegrations()
     if (props.socketData) {
       props.clearSocketDataWhatsapp()
     }
@@ -543,9 +543,9 @@ class WhatsAppChat extends React.Component {
                     deletefile={this.props.deletefile}
                     showTemplates={true}
                     filesAccepted={'image/*, audio/*, video/mp4, application/pdf'}
-                    showZoom={this.props.user.isSuperUser ? (!this.props.zoomIntegration ? (this.props.user.role === 'admin' || this.props.user.role === 'buyer') ? true : false : true) : false}
+                    showZoom={this.props.user.isSuperUser ? (this.props.zoomIntegrations.length === 0 ? (this.props.user.role === 'admin' || this.props.user.role === 'buyer') ? true : false : true) : false}
                     history={this.props.history}
-                    zoomIntegration={this.props.zoomIntegration}
+                    zoomIntegrations={this.props.zoomIntegrations}
                     createZoomMeeting={this.props.createZoomMeeting}
                     showCaption={true}
                     showSubscriberNameOnMessage={false}
@@ -647,7 +647,7 @@ function mapStateToProps(state) {
     searchChatMsgs: (state.whatsAppChatInfo.searchChat),
     socketData: (state.socketInfo.socketDataWhatsapp),
     automated_options: (state.basicInfo.automated_options),
-    zoomIntegration: (state.settingsInfo.zoomIntegration),
+    zoomIntegrations: (state.settingsInfo.zoomIntegrations),
     cannedResponses: state.settingsInfo.cannedResponses
   }
 }
@@ -676,7 +676,7 @@ function mapDispatchToProps(dispatch) {
     uploadAttachment,
     sendAttachment,
     deletefile,
-    getZoomIntegration,
+    getZoomIntegrations,
     createZoomMeeting,
     createNewContact,
     loadcannedResponses,
