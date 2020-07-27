@@ -1,6 +1,6 @@
 /* eslint-disable no-useless-constructor */
 import React from 'react'
-import { getZoomIntegrations } from '../../redux/actions/settings.actions'
+import { getZoomIntegrations, integrateZoom } from '../../redux/actions/settings.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import AlertContainer from 'react-alert'
@@ -11,7 +11,7 @@ class ZoomIntegration extends React.Component {
     this.state = {
       deleteIngerationId: '',
       openVideo: false,
-      zoomIntegration: { 
+      zoomIntegration: {
         name: 'Zoom Meetings',
         icon: 'fa fa-video-camera',
         enabled: false,
@@ -21,6 +21,11 @@ class ZoomIntegration extends React.Component {
     }
     props.getZoomIntegrations()
     this.openVideoTutorial = this.openVideoTutorial.bind(this)
+    this.redirectToAuthorizeZoom = this.redirectToAuthorizeZoom.bind(this)
+  }
+
+  redirectToAuthorizeZoom (url) {
+    window.location.replace(url)
   }
 
   openVideoTutorial () {
@@ -111,15 +116,15 @@ class ZoomIntegration extends React.Component {
                   </div>
                 </div>
               </div>
-              
-              <div>               
+
+              <div>
                 {
                 this.props.zoomIntegrations.map((integration, i) => (
                   <div style={{display: 'flex', justifyContent: 'center', marginTop: '25px'}} className='m-widget4'>
                     <div style={{borderBottom: '1px dashed', paddingBottom: '25px'}} className='m-widget4__item' key={i}>
                       <div className='m-widget4__img m-widget4__img--logo'>
                         <span className='btn m-btn m-btn--icon m-btn--icon-only m-btn--custom m-btn--pill' style={{width: '50px', height: '50px', cursor: 'initial', backgroundColor: 'white'}}>
-                          <img alt='' style={{width: '100%', height: '100%'}} onError={(e) => e.target.src = 'https://login.vivaldi.net/profile/avatar/default-avatar.png'} src={integration.profilePic ? integration.profilePic : 'https://login.vivaldi.net/profile/avatar/default-avatar.png'}/> 
+                          <img alt='' style={{width: '100%', height: '100%'}} onError={(e) => e.target.src = 'https://login.vivaldi.net/profile/avatar/default-avatar.png'} src={integration.profilePic ? integration.profilePic : 'https://login.vivaldi.net/profile/avatar/default-avatar.png'}/>
                         </span>
                       </div>
                       <div className='m-widget4__info' style={{width: '140px'}}>
@@ -132,11 +137,11 @@ class ZoomIntegration extends React.Component {
                             ? <a target='_blank' rel="noopener noreferrer" href={`https://marketplace.zoom.us/user/installed`} className='m-btn m-btn--pill m-btn--hover-danger btn btn-danger' style={{borderColor: '#f4516c', color: '#f4516c', marginRight: '10px'}}>
                               Disconnect
                             </a>
-                            : <a href= {`/auth/zoom?userId=${this.props.user._id}&companyId=${this.props.user.companyId}`} className='m-btn m-btn--pill m-btn--hover-success btn btn-success' style={{borderColor: '#34bfa3', color: '#34bfa3', marginRight: '10px'}}>
+                            : <button onClick={() => this.props.integrateZoom(this.redirectToAuthorizeZoom)} className='m-btn m-btn--pill m-btn--hover-success btn btn-success' style={{borderColor: '#34bfa3', color: '#34bfa3', marginRight: '10px'}}>
                             Connect
-                          </a>
+                          </button>
                           }
-                      </span> 
+                      </span>
                       <hr style={{borderTop: '1px dashed #36a3f7'}} />
                     </div>
                   </div>
@@ -148,15 +153,14 @@ class ZoomIntegration extends React.Component {
               {
                 this.props.zoomIntegrations.length < 3 &&
                 <div style={{display: 'flex', justifyContent: 'center', marginTop: '50px'}}>
-                  <a href= {`/auth/zoom?userId=${this.props.user._id}&companyId=${this.props.user.companyId}`}>
-                    <button
-                      style={{border: '1px dashed #36a3f7', cursor: 'pointer'}}
-                      type="button"
-                      className="btn m-btn--pill btn-outline-info m-btn m-btn--custom"
-                    >
-                      {this.props.zoomIntegrations.length > 0 ? '+ Connect New' : '+ Connect'} 
-                    </button>
-                  </a>
+                  <button
+                    onClick={() => this.props.integrateZoom(this.redirectToAuthorizeZoom)}
+                    style={{border: '1px dashed #36a3f7', cursor: 'pointer'}}
+                    type="button"
+                    className="btn m-btn--pill btn-outline-info m-btn m-btn--custom"
+                  >
+                    {this.props.zoomIntegrations.length > 0 ? '+ Connect New' : '+ Connect'}
+                  </button>
                 </div>
               }
             </div>
@@ -177,7 +181,8 @@ function mapStateToProps (state) {
 }
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-    getZoomIntegrations
+    getZoomIntegrations,
+    integrateZoom
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(ZoomIntegration)
