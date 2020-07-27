@@ -703,3 +703,16 @@ export function loadMetricsWhatsApp (data) {
     })
   }
 }
+
+export function sendWhatsAppMetricsEmail (msg) {
+  return (dispatch) => {
+    msg.info('Sending Email...You will be notified when it is sent to all users')
+    callApi('backdoor/sendWhatsAppMetricsEmail').then(res => {
+      if (res.status === 'success') {
+        msg.success('Email sent successfully!')
+      } else {
+        msg.error('Email not sent')
+      }
+    })
+  }
+}

@@ -36,7 +36,8 @@ import {
   fetchPageAnalytics,
   alUserslLocales,
   saveUserView,
-  loadMetricsWhatsApp
+  loadMetricsWhatsApp,
+  sendWhatsAppMetricsEmail
 } from '../../redux/actions/backdoor.actions'
 import { saveUserInformation } from '../../redux/dispatchers/backdoor.dispatcher'
 import { bindActionCreators } from 'redux'
@@ -646,6 +647,7 @@ class OperationalDashboard extends React.Component {
               loadMetrics={this.props.loadMetricsWhatsApp}
               showToggle={true}
               showMetrics={false}
+              sendWhatsAppMetricsEmail={() => this.props.sendWhatsAppMetricsEmail(this.msg)}
           />
           </div>
         </div>
@@ -692,7 +694,8 @@ function mapDispatchToProps (dispatch) {
     fetchOtherAnalytics,
     fetchPageAnalytics,
     saveUserView,
-    loadMetricsWhatsApp
+    loadMetricsWhatsApp,
+    sendWhatsAppMetricsEmail
   },
     dispatch)
 }
