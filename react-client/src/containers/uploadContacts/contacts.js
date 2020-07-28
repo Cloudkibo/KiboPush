@@ -70,11 +70,11 @@ class Contact extends React.Component {
         var subscriber = subscribersData[i]
         subscriberObj = {
           'Name': `${subscriber.name}`,
-          'PhoneNumber': subscriber.number,
+          'PhoneNumber': `${subscriber.number}`,
           'Status': subscriber.isSubscribed ? 'Subscribed' : 'unSubscribed',
           'Subscription Datetime' : new Date(subscriber.datetime).toUTCString(),
           'Messages count': subscriber.messagesCount ? subscriber.messagesCount : '0',
-          'Last Message from Subscriber': new Date(subscriber.lastMessagedAt).toUTCString(),
+          'Last Message Received': new Date(subscriber.lastMessagedAt).toUTCString(),
           'Last Interaction with Subscriber': new Date(subscriber.last_activity_time).toUTCString() 
         }
         data.push(subscriberObj)
