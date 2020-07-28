@@ -46,7 +46,7 @@ export function deleteFile (serverPath, handleResponse) {
   }
 }
 
-export function downloadYouTubeVideo (url, id, handleFunction) {
+export function downloadYouTubeVideo (url, id, handleFunction, handleError) {
   return (dispatch) => {
     let data = {
       id,
@@ -63,13 +63,19 @@ export function downloadYouTubeVideo (url, id, handleFunction) {
         'Content-Type': 'application/json'
       })
     }).then((res) => res.json()).then((res) => res).then(res => {
-      console.log('YouTube video payload', res.payload)
-      handleFunction(res.payload)
+      if (res.status === 'success') {
+        console.log('YouTube video payload', res.payload)
+        handleFunction(res.payload)
+      } else {
+        if (handleError) {
+          handleError(res)
+        }
+      }
     })
   }
 }
 
-export function urlMetaData (url, handleFunction) {
+export function urlMetaData (url, handleFunction, handleError) {
   return (dispatch) => {
     let data = {
       url
@@ -78,8 +84,14 @@ export function urlMetaData (url, handleFunction) {
     callApi('broadcasts/urlMetaData', 'post', data)
       .then(res => {
         console.log('response from urlMetaData', res)
-        if (handleFunction) {
-          handleFunction(res.payload)
+        if (res.status === 'success') {
+          if (handleFunction) {
+            handleFunction(res.payload)
+          }
+        } else {
+          if (handleError) {
+            handleError(res)
+          }
         }
       })
   }
@@ -121,22 +133,28 @@ export function uploadImage (file, pages, componentType, data, handleUpload, set
     })
   }
 }
-export function uploadTemplate (dataTosend, data, handleUpload, setLoading) {
+export function uploadTemplate (dataTosend, data, handleUpload, setLoading, handleError) {
   console.log('data in uploadTemplate', dataTosend)
   return (dispatch) => {
     callApi('uploadTemplate', 'post', dataTosend, 'accounts')
       .then(res => {
         console.log('response from uploadTemplate', res)
-        data.fileurl = res.payload
-        if (dataTosend.componentType === 'image') {
-          data.image_url = res.payload.url
-        }
-        console.log('fileInfo: ', data)
-        if (setLoading) {
-          setLoading()
-        }
-        if (handleUpload) {
-          handleUpload(data)
+          if (setLoading) {
+            setLoading()
+          }
+          if (res.status === 'success') {
+          data.fileurl = res.payload
+          if (dataTosend.componentType === 'image') {
+            data.image_url = res.payload.url
+          }
+          console.log('fileInfo: ', data)
+          if (handleUpload) {
+            handleUpload(data)
+          } 
+        } else {
+          if (handleError) {
+            handleError(res)
+          }
         }
       })
   }

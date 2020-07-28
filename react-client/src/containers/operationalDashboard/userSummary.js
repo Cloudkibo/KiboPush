@@ -3,9 +3,6 @@ import IconStack from '../../components/Dashboard/IconStack'
 
 
 class UserSummary extends React.Component {
-  constructor(props, context) {
-    super(props, context)
-  }
 
   render() {
     return (
