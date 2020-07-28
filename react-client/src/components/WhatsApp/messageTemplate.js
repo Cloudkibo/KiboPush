@@ -245,7 +245,8 @@ class MessageTemplate extends React.Component {
                       }
                   </div>
                 </div>
-              : this.props.showDescription && <p>To send a message outside the 24 hours session window, use one of the following pre-approved templates</p>
+              : this.props.showDescription && 
+              <p>To send a message outside the 24 hours session window, use one of the following pre-approved templates</p>
             }
           
             <div>
