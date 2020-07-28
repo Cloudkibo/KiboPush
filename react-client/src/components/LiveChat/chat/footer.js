@@ -127,7 +127,7 @@ class Footer extends React.Component {
     if (cannResponse.responseMessage.includes('{{user_full_name}}')) {
       if(!activeSession.name) {
         cannResponse.responseMessage = cannResponse.responseMessage.replace(
-          /{{user_full_name}}/g, activeSession.firstName + ' ' + activeSession.lastName)  
+          /{{user_full_name}}/g, activeSession.firstName + ' ' + activeSession.lastName)
       } else {
         cannResponse.responseMessage = cannResponse.responseMessage.replace(
           /{{user_full_name}}/g, activeSession.name)
@@ -154,7 +154,7 @@ class Footer extends React.Component {
         /{{user_last_name}}/g, subscriberName[subscriberName.length-1])
     } else {
       cannResponse.responseMessage = cannResponse.responseMessage.replace(
-        /{{user_last_name}}/g, '')    
+        /{{user_last_name}}/g, '')
     }
   }
   }

@@ -7,6 +7,7 @@ import { deleteFiles, deleteFile, getFileIdsOfBroadcast } from '../../utility/ut
 import { loadTags } from '../../redux/actions/tags.actions'
 import { fetchAllSequence } from '../../redux/actions/sequence.action'
 import { loadCustomFields } from '../../redux/actions/customFields.actions'
+import { getWhatsAppMessageTemplates } from '../../redux/actions/settings.actions'
 
 // import Image from './PreviewComponents/Image'
 import Audio from './PreviewComponents/Audio'
@@ -105,10 +106,13 @@ class GenericMessage extends React.Component {
     if (props.setReset) {
       props.setReset(this.reset)
     }
-    this.props.loadCustomFields()
-    this.props.loadTags()
-    this.props.fetchAllSequence()
-    console.log('genericMessage props in constructor', this.props)
+    props.loadCustomFields()
+    props.loadTags()
+    props.fetchAllSequence()
+
+    props.getWhatsAppMessageTemplates()
+    
+    console.log('genericMessage props in constructor', props)
   }
 
   showValidationModal (errorMessage) {
@@ -783,6 +787,7 @@ class GenericMessage extends React.Component {
         closeGSModal={this.closeGSModal}
         addComponent={this.addComponent} />),
       'template': (<MessageTemplate
+        templates={this.props.whatsAppMessageTemplates}
         alertMsg={this.msg}
         id={new Date().getTime()}
         heading={'Message Template'}
@@ -1187,7 +1192,7 @@ class GenericMessage extends React.Component {
                         </div>
                       </div>
                     }
-                    <GenericMessageComponents module={this.props.module} hiddenComponents={this.state.hiddenComponents} addComponent={this.showAddComponentModal} addedComponents={this.state.list.length} module= {this.props.module} componentLimit = {this.props.componentLimit}/>
+                    <GenericMessageComponents module={this.props.module} hiddenComponents={this.state.hiddenComponents} addComponent={this.showAddComponentModal} addedComponents={this.state.list.length} componentLimit = {this.props.componentLimit}/>
                     {this.props.module && this.props.module === 'welcomeMessage' &&
                       <div>
                         <ReactTooltip
@@ -1367,7 +1372,8 @@ function mapStateToProps (state) {
   return {
     customFields: (state.customFieldInfo.customFields),
     sequences: state.sequenceInfo.sequences,
-    tags: state.tagsInfo.tags
+    tags: state.tagsInfo.tags,
+    whatsAppMessageTemplates: state.settingsInfo.whatsAppMessageTemplates
   }
 }
 
@@ -1375,7 +1381,8 @@ function mapDispatchToProps (dispatch) {
   return bindActionCreators({
       loadCustomFields,
       fetchAllSequence,
-      loadTags
+      loadTags,
+      getWhatsAppMessageTemplates
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps, null, { withRef: true })(GenericMessage)

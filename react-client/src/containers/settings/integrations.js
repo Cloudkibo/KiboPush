@@ -3,8 +3,7 @@ import React from 'react'
 import {
   getIntegrations,
   updateIntegration,
-  createIntegration,
-  integrateZoom
+  createIntegration
 } from '../../redux/actions/settings.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
@@ -42,11 +41,6 @@ class Integrations extends React.Component {
     this.saveIntegerationId = this.saveIntegerationId.bind(this)
     this.connect = this.connect.bind(this)
     this.openVideoTutorial = this.openVideoTutorial.bind(this)
-    this.redirectToAuthorizeZoom = this.redirectToAuthorizeZoom.bind(this)
-  }
-
-  redirectToAuthorizeZoom (url) {
-    window.location.replace(url)
   }
 
   openVideoTutorial () {
@@ -245,8 +239,7 @@ function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     getIntegrations,
     updateIntegration,
-    createIntegration,
-    integrateZoom
+    createIntegration
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Integrations)

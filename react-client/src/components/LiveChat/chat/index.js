@@ -125,7 +125,6 @@ class Chat extends React.Component {
           onConfirm={() => {this.props.handlePendingResponse(this.props.activeSession, false)}}
         />
 
-
         <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id='messageTemplate' tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
             <MESSAGETEMPLATE
@@ -139,10 +138,11 @@ class Chat extends React.Component {
               updateChatAreaHeight={this.updateChatAreaHeight}
               alertMsg={this.props.alertMsg}
               id='messageTemplate'
+              templates={this.props.whatsAppMessageTemplates}
             />
           </div>
         </div>
-
+        
         <HEADER
           activeSession={this.props.activeSession}
           showSearch={this.props.showSearch}

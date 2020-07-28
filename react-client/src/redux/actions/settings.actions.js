@@ -92,6 +92,13 @@ export function showWebhookResponse (data) {
   }
 }
 
+export function updateWhatsAppMessageTemplates (data) {
+  return {
+    type: ActionTypes.UPDATE_WHATSAPP_MESSAGE_TEMPLATES,
+    data
+  }
+}
+
 export function getPermissions () {
   return (dispatch) => {
     callApi('permissions/fetchPermissions')
@@ -507,6 +514,16 @@ export function updatePlatformWhatsApp (data, msg, clearFields, handleResponse) 
           }
         }
       })
+  }
+}
+
+export function getWhatsAppMessageTemplates () {
+  return (dispatch) => {
+    callApi('company/getWhatsAppMessageTemplates')
+      .then(res => {
+        console.log('response from getWhatsAppMessageTemplates', res)
+        dispatch(updateWhatsAppMessageTemplates(res.payload))
+    })
   }
 }
 
