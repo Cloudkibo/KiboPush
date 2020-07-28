@@ -125,23 +125,26 @@ class Chat extends React.Component {
           onConfirm={() => {this.props.handlePendingResponse(this.props.activeSession, false)}}
         />
 
-        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id='messageTemplate' tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-          <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
-            <MESSAGETEMPLATE
-              sendChatMessage={this.props.sendChatMessage}
-              setMessageData={this.props.setMessageData}
-              activeSession={this.props.activeSession}
-              updateState={this.props.updateState}
-              userChat={this.props.userChat}
-              sessions={this.props.sessions}
-              updateNewMessage={this.updateNewMessage}
-              updateChatAreaHeight={this.updateChatAreaHeight}
-              alertMsg={this.props.alertMsg}
-              id='messageTemplate'
-              templates={this.props.whatsAppMessageTemplates}
-            />
+        {
+          this.props.showTemplates &&
+          <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id='messageTemplate' tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+              <MESSAGETEMPLATE
+                sendChatMessage={this.props.sendChatMessage}
+                setMessageData={this.props.setMessageData}
+                activeSession={this.props.activeSession}
+                updateState={this.props.updateState}
+                userChat={this.props.userChat}
+                sessions={this.props.sessions}
+                updateNewMessage={this.updateNewMessage}
+                updateChatAreaHeight={this.updateChatAreaHeight}
+                alertMsg={this.props.alertMsg}
+                id='messageTemplate'
+                templates={this.props.whatsAppMessageTemplates}
+              />
+            </div>
           </div>
-        </div>
+        }
         
         <HEADER
           activeSession={this.props.activeSession}
