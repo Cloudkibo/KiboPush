@@ -11,52 +11,10 @@ import {validatePhoneNumber} from '../../utility/utils'
 class MessageTemplate extends React.Component {
   constructor (props, context) {
     super(props, context)
-    let templates = [
-      {
-        name: 'contact_reminder',
-        text: 'Hi {{1}}.\n\nThank you for contacting {{2}}.\n\nPlease choose from the options below to continue:',
-        regex:  new RegExp(/^Hi (.*)\.\n\nThank you for contacting (.*).\n\nPlease choose from the options below to continue:$/, 'i'),
-        buttons: [
-          {title: 'Get in Touch'},
-          {title: 'Explore Options'},
-          {title: 'Speak to Support'}
-        ],
-        templateArguments: '{{1}},{{2}}'
-      },
-      {
-        name: 'sign_up_confirmation',
-        text: 'Hello {{1}}! Your {{2}} account is ready to go! If you need help getting started you can:',
-        regex:  new RegExp(/^Hello (.*)! Your (.*) account is ready to go! If you need help getting started you can:$/, 'i'),
-        buttons: [
-          {title: 'Schedule Demo'},
-          {title: 'Contact Support'},
-          {title: 'Upgrade Plan'}
-        ],
-        templateArguments: '{{1}},{{2}}'
-      },
-      {
-        name: 'issue_resolution',
-        text: 'Hi {{1}},\nYour issue {{2}} has been resolved,\nPlease confirm by selecting one of the options below:',
-        regex:  new RegExp(/^Hi (.*),\nYour issue (.*) has been resolved,\nPlease confirm by selecting one of the options below:$/, 'i'),
-        buttons: [
-          {title: 'It has been resolved'},
-          {title: 'Still not working'}
-        ],
-        templateArguments: '{{1}},{{2}}'
-      },
-      {
-        name: 'issue_update',
-        text: 'Hi {{1}},\n We are working on {{2}}. We will update you as soon as it is {{3}}.',
-        regex:  new RegExp(/^Hi (.*),\n We are working on (.*). We will update you as soon as it is (.*)\.$/, 'i'),
-        buttons: [],
-        templateArguments: '{{1}},{{2}},{{3}}'
-      }
-    ]
     this.state = {
-      templates,
-      templateMessage: this.props.templateMessage ? this.props.templateMessage : templates[0].text,
+      templateMessage: this.props.templateMessage,
       isTemplateValid: true,
-      templateArguments: this.props.templateArguments ? this.props.templateArguments : templates[0].templateArguments,
+      templateArguments: this.props.templateArguments,
       number: '',
       sendingTemplate: false,
       selectedIndex: this.props.selectedIndex ? this.props.selectedIndex : 0,
@@ -84,6 +42,11 @@ class MessageTemplate extends React.Component {
         edited: false,
         isTemplateValid: true
       })
+    } else if (nextProps.templates.length > 0) {
+      this.setState({
+        templateMessage: nextProps.templates[0].text,
+        templateArguments: nextProps.templates[0].templateArguments
+      })
     }
   }
 
@@ -96,8 +59,8 @@ class MessageTemplate extends React.Component {
 
   resetTemplate () {
     this.setState({
-      templateMessage: this.state.templates[0].text,
-      templateArguments: this.state.templates[0].templateArguments,
+      templateMessage: this.props.templates[0].text,
+      templateArguments: this.props.templates[0].templateArguments,
       isTemplateValid: true,
       sendingTemplate: false,
       number: '',
@@ -110,7 +73,7 @@ class MessageTemplate extends React.Component {
   }
 
   validateTemplate(msg) {
-    let regex = this.state.templates[this.state.selectedIndex].regex
+    let regex = new RegExp(this.props.templates[this.state.selectedIndex].regex)
     let templateArguments = this.state.templateArguments
     let isValid = regex.test(msg)
     if (isValid) {
@@ -149,8 +112,8 @@ class MessageTemplate extends React.Component {
     this.setState({
       selectedIndex: index,
       isTemplateValid: true,
-      templateArguments: this.state.templates[index].templateArguments,
-      templateMessage: this.state.templates[index].text
+      templateArguments: this.props.templates[index].templateArguments,
+      templateMessage: this.props.templates[index].text
     })
     /* eslint-disable */
     $('#templateText').removeClass('border border-danger')
@@ -176,9 +139,9 @@ class MessageTemplate extends React.Component {
     let payload = {
       componentType: 'text',
       text: this.state.templateMessage,
-      buttons: this.state.templates[this.state.selectedIndex].buttons,
+      buttons: this.props.templates[this.state.selectedIndex].buttons,
       templateArguments: this.state.templateArguments,
-      templateName: this.state.templates[this.state.selectedIndex].name
+      templateName: this.props.templates[this.state.selectedIndex].name
     }
     let data = this.props.setMessageData(this.props.activeSession, payload)
     this.props.sendChatMessage(data, (res) => {
@@ -226,8 +189,8 @@ class MessageTemplate extends React.Component {
       componentName: 'template',
       componentType: 'text',
       text: this.state.templateMessage,
-      buttons: this.state.templates[this.state.selectedIndex].buttons,
-      templateName: this.state.templates[this.state.selectedIndex].name,
+      buttons: this.props.templates[this.state.selectedIndex].buttons,
+      templateName: this.props.templates[this.state.selectedIndex].name,
       templateArguments: this.state.templateArguments,
       selectedIndex: this.state.selectedIndex
     }, this.props.edit)
@@ -256,140 +219,148 @@ class MessageTemplate extends React.Component {
         </div>
         <div style={{color: 'black'}} className="modal-body">
 
-
-
-        <div className='row'>
-        <div className='col-6' style={{ maxHeight: '70vh', overflowY: 'scroll' }}>
-          {
-            this.props.sendingToNewNumber ?
-              <div>
-                <label className='control-label'>WhatsApp Number:</label>
-                <div style={{display: 'flex'}} id='_whatsapp_number' className='form-group m-form__group'>
-                  <input type='tel'
-                    style={{width: '95%'}}
-                    placeholder='Enter a valid WhatsApp phone number...'
-                    disabled={this.state.sendingTemplate}
-                    className={this.state.isPhoneNumberValid ? 'form-control' : 'form-control border-danger'}
-                    value={this.state.number}
-                    onChange={(e) => this.updateNumber(e)} />
-                    { !this.state.isPhoneNumberValid &&
-                    <div style={{marginLeft: '5px', marginTop: '3px'}}>
-                      <UncontrolledTooltip style={{minWidth: '100px', opacity: '1.0'}} target='phoneNumberWarning'>
-                        <span>Invalid phone number</span>
-                      </UncontrolledTooltip>
-                      <i id='phoneNumberWarning' className='flaticon-exclamation m--font-danger'/>
-                    </div>
-                    }
+        {
+          this.props.templates.length > 0 ?
+          <div className='row'>
+            <div className='col-6' style={{ maxHeight: '70vh', overflowY: 'scroll' }}>
+            {
+              this.props.sendingToNewNumber ? 
+                <div>
+                  <label className='control-label'>WhatsApp Number:</label>
+                  <div style={{display: 'flex'}} id='_whatsapp_number' className='form-group m-form__group'>
+                    <input type='tel' 
+                      style={{width: '95%'}}
+                      placeholder='Enter a valid WhatsApp phone number...'
+                      disabled={this.state.sendingTemplate} 
+                      className={this.state.isPhoneNumberValid ? 'form-control' : 'form-control border-danger'} 
+                      value={this.state.number} 
+                      onChange={(e) => this.updateNumber(e)} />
+                      { !this.state.isPhoneNumberValid &&
+                      <div style={{marginLeft: '5px', marginTop: '3px'}}>
+                        <UncontrolledTooltip style={{minWidth: '100px', opacity: '1.0'}} target='phoneNumberWarning'>
+                          <span>Invalid phone number</span>
+                        </UncontrolledTooltip>
+                        <i id='phoneNumberWarning' className='flaticon-exclamation m--font-danger'/>
+                      </div>
+                      }
+                  </div>
                 </div>
+              : this.props.showDescription && 
+              <p>To send a message outside the 24 hours session window, use one of the following pre-approved templates</p>
+            }
+          
+            <div>
+            <label>Select Template:</label>
+              <div className='radio-buttons' style={{marginLeft: '37px'}}>
+                {
+                  this.props.templates.map((template, index) => {
+                    return (
+                      <div className='radio'>
+                        <input 
+                          disabled={this.state.sendingTemplate}
+                          id={template.name+this.props.id}
+                          type='radio'
+                          value={template.name+this.props.id}
+                          name={template.name+this.props.id}
+                          onChange={() => this.handleRadioButton(index)}
+                          checked={this.state.selectedIndex === index} />
+                        <span>{template.name}</span>
+                      </div>
+                    )
+                  })
+                }
               </div>
-            : this.props.showDescription && <p>To send a message outside the 24 hours session window, use one of the following pre-approved templates</p>
-          }
-
-          <div>
-          <label>Select Template:</label>
-            <div className='radio-buttons' style={{marginLeft: '37px'}}>
-              {
-                this.state.templates.map((template, index) => {
-                  return (
-                    <div className='radio'>
-                      <input
-                        disabled={this.state.sendingTemplate}
-                        id={template.name+this.props.id}
-                        type='radio'
-                        value={template.name+this.props.id}
-                        name={template.name+this.props.id}
-                        onChange={() => this.handleRadioButton(index)}
-                        checked={this.state.selectedIndex === index} />
-                      <span>{template.name}</span>
-                    </div>
-                  )
-                })
-              }
-            </div>
-            <div style={{textAlign: 'center', display: 'flex'}}>
-              <textarea disabled={this.state.sendingTemplate} rows='7' id='templateText' onChange={this.onTextChange} value={this.state.templateMessage}  className='form-control m-messenger__form-input' style={{resize: 'none', width: '95%', marginTop: '25px', borderRadius: '5px'}} maxLength='200' />
-              { !this.state.isTemplateValid &&
-              <div style={{marginTop: '25px', marginLeft: '5px'}}>
-                <UncontrolledTooltip style={{minWidth: '100px', opacity: '1.0'}} target='templateWarning'>
-                  <span>Message template format cannot be changed</span>
-                </UncontrolledTooltip>
-                <i id='templateWarning' className='flaticon-exclamation m--font-danger'/>
+              <div style={{textAlign: 'center', display: 'flex'}}>
+                <textarea disabled={this.state.sendingTemplate} rows='5' id='templateText' onChange={this.onTextChange} value={this.state.templateMessage}  className='form-control m-messenger__form-input' style={{resize: 'none', width: '95%', marginTop: '10px', borderRadius: '5px'}} maxLength='200' />
+                { !this.state.isTemplateValid &&
+                <div style={{marginTop: '25px', marginLeft: '5px'}}>
+                  <UncontrolledTooltip style={{minWidth: '100px', opacity: '1.0'}} target='templateWarning'>
+                    <span>Message template format cannot be changed</span>
+                  </UncontrolledTooltip>
+                  <i id='templateWarning' className='flaticon-exclamation m--font-danger'/>
+                </div>
+                }
               </div>
-              }
-            </div>
-            <p style={{fontSize: '12px', marginTop: '5px'}}>Each variable 'x' can be replaced with the text that contains letters, digits, special characters or spaces</p>
-          </div>
-        </div>
-        <div className='col-1'>
-          <div style={{ minHeight: '100%', width: '1px', borderLeft: '1px solid rgba(0,0,0,.1)' }} />
-        </div>
-        <div className='col-5'>
-          <h4 style={{ marginLeft: '-50px' }}>Preview:</h4>
-          <div className='ui-block' style={{ overflowY: 'auto', border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', minHeight: '68vh', maxHeight: '68vh', marginLeft: '-50px' }} >
-            <div className='discussion' style={{ display: 'inline-block', marginTop: '50px', paddingLeft: '10px', paddingRight: '10px' }} >
-              <div style={{ maxWidth: '100%', fontSize: '15px', textAlign: 'justify', whiteSpace: 'pre-wrap', wordBreak: 'break-word' }} className='bubble recipient'>{this.state.templateMessage}</div>
-              {
-                this.state.templates[this.state.selectedIndex].buttons.map((button, index) => (
-                  (
-                    <div className='bubble recipient'
-                      style={{
-                        maxWidth: '100%',
-                        textAlign: 'center',
-                        margin: 'auto',
-                        marginTop: '5px',
-                        fontSize: '15px',
-                        backgroundColor: 'white',
-                        border: '1px solid rgba(0,0,0,.1)',
-                        borderRadius: '10px',
-                        wordBreak: 'break-all',
-                        color: '#0782FF' }}>{button.title}</div>
-                  )
-                ))
-              }
+              <p style={{fontSize: '12px', marginTop: '5px'}}>{'Each variable "{{x}}" can be replaced with text that contains letters, digits, special characters or spaces.'}</p>
             </div>
           </div>
-        </div>
+          <div className='col-1'>
+            <div style={{ minHeight: '100%', width: '1px', borderLeft: '1px solid rgba(0,0,0,.1)' }} />
+          </div>
+          <div className='col-5'>
+            <h4 style={{ marginLeft: '-50px' }}>Preview:</h4>
+            <div className='ui-block' style={{ overflowY: 'auto', border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', minHeight: '68vh', maxHeight: '68vh', marginLeft: '-50px' }} >
+              <div className='discussion' style={{ display: 'inline-block', marginTop: '50px', paddingLeft: '10px', paddingRight: '10px' }} >
+                <div style={{ maxWidth: '100%', fontSize: '15px', textAlign: 'justify', whiteSpace: 'pre-wrap', wordBreak: 'break-word' }} className='bubble recipient'>{this.state.templateMessage}</div>
+                {
+                  this.props.templates[this.state.selectedIndex].buttons.map((button, index) => (
+                    (
+                      <div className='bubble recipient' 
+                        style={{ 
+                          maxWidth: '100%', 
+                          textAlign: 'center', 
+                          margin: 'auto', 
+                          marginTop: '5px', 
+                          fontSize: '15px', 
+                          backgroundColor: 'white', 
+                          border: '1px solid rgba(0,0,0,.1)', 
+                          borderRadius: '10px', 
+                          wordBreak: 'break-all', 
+                          color: '#0782FF' }}>{button.title}</div>
+                    )
+                  ))
+                }
+              </div>
+            </div>
+          </div> 
+
+          <div className='col-6' style={{ marginTop: '-5vh' }}>
+            <div className='pull-right'>
+            <div style={{ width: '100%', textAlign: 'right' }}>
+              <div style={{ display: 'inline-block', padding: '5px' }}>
+                <button disabled={this.state.sendingTemplate} className='btn btn-secondary' onClick={this.resetTemplate}>
+                  Reset
+                  </button>
+              </div>
+              <div style={{ display: 'inline-block', padding: '5px' }}>
+                <button disabled={this.state.sendingTemplate} className='btn btn-secondary' data-dismiss='modal'>
+                  Cancel
+                  </button>
+              </div>
+              <div style={{ display: 'inline-block', padding: '5px' }}>
+                {
+                  this.props.sendChatMessage &&
+                  <button disabled={(this.props.sendingToNewNumber && !this.state.isPhoneNumberValid) || !this.state.isTemplateValid || this.state.sendingTemplate} className='btn btn-primary' onClick={this.sendTemplate}>
+                    {
+                      this.state.sendingTemplate ? 
+                      <div>
+                        <div className="m-loader" style={{height: '10px', width: "30px", display: "inline-block"}}></div>
+                        <span>Sending...</span>
+                      </div>
+                      :
+                      <span>Send</span>
+                    }
+                  </button>
+                }
+                {
+                  this.props.addComponent &&
+                  <button disabled={!this.state.isTemplateValid} className='btn btn-primary' onClick={this.addComponent}>
+                    {this.props.edit ? 'Edit' : 'Next'}
+                  </button>
+                }
+              </div>
+            </div>
+            </div>
+          </div>
+
+        </div> :
+
+        <div style={{display: 'flex', justifyContent: 'center'}}>
+          <span>Loading Templates...</span>
         </div>
 
-        <div className='col-6' style={{ marginTop: '-5vh' }}>
-          <div className='pull-right'>
-          <div style={{ width: '100%', textAlign: 'right' }}>
-            <div style={{ display: 'inline-block', padding: '5px' }}>
-              <button disabled={this.state.sendingTemplate} className='btn btn-secondary' onClick={this.resetTemplate}>
-                Reset
-                </button>
-            </div>
-            <div style={{ display: 'inline-block', padding: '5px' }}>
-              <button disabled={this.state.sendingTemplate} className='btn btn-secondary' data-dismiss='modal'>
-                Cancel
-                </button>
-            </div>
-            <div style={{ display: 'inline-block', padding: '5px' }}>
-              {
-                this.props.sendChatMessage &&
-                <button disabled={(this.props.sendingToNewNumber && !this.state.isPhoneNumberValid) || !this.state.isTemplateValid || this.state.sendingTemplate} className='btn btn-primary' onClick={this.sendTemplate}>
-                  {
-                    this.state.sendingTemplate ?
-                    <div>
-                      <div className="m-loader" style={{height: '10px', width: "30px", display: "inline-block"}}></div>
-                      <span>Sending...</span>
-                    </div>
-                    :
-                    <span>Send</span>
-                  }
-                </button>
-              }
-              {
-                this.props.addComponent &&
-                <button disabled={!this.state.isTemplateValid} className='btn btn-primary' onClick={this.addComponent}>
-                  {this.props.edit ? 'Edit' : 'Next'}
-                </button>
-              }
-            </div>
-          </div>
+        }
 
-          </div>
-        </div>
         </div>
       </div>
     )

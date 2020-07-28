@@ -21,6 +21,7 @@ import MODAL from '../../components/extras/modal'
 import CONFIRMATIONMODAL from '../../components/extras/confirmationModal'
 import FULLSCREENLOADER from '../../components/extras/fullScreenLoader'
 import MESSAGETEMPLATE from '../../components/WhatsApp/messageTemplate'
+import { getWhatsAppMessageTemplates } from '../../redux/actions/settings.actions'
 
 class UploadContacts extends React.Component {
   constructor (props, context) {
@@ -63,6 +64,7 @@ class UploadContacts extends React.Component {
     this.handleDuplicateSubscribers = this.handleDuplicateSubscribers.bind(this)
     this.setMessageData = this.setMessageData.bind(this)
     this.handleSendMessageResponse = this.handleSendMessageResponse.bind(this)
+    props.getWhatsAppMessageTemplates()
   }
 
   onNameChange (e) {
@@ -434,6 +436,7 @@ class UploadContacts extends React.Component {
             sendingToNewNumber={false}
             heading={'Send Template Message'}
             showDescription={false}
+            templates={this.props.whatsAppMessageTemplates}
           />
         </div>
       </div>
@@ -537,6 +540,7 @@ function mapStateToProps (state) {
     validContactsCount: (state.contactsInfo.validContactsCount),
     invalidContactsCount: (state.contactsInfo.invalidContactsCount),
     automated_options: (state.basicInfo.automated_options),
+    whatsAppMessageTemplates: (state.settingsInfo.whatsAppMessageTemplates)
   }
 }
 
@@ -549,7 +553,8 @@ function mapDispatchToProps (dispatch) {
     deleteAllInvalidContacts,
     deleteAllContacts,
     getDuplicateSubscribers,
-    sendMessage
+    sendMessage,
+    getWhatsAppMessageTemplates
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(UploadContacts)
