@@ -104,6 +104,15 @@ let cannedResponsesIndex = cannedResponses.findIndex(cannedResponse => cannedRes
       return Object.assign({}, state, {
         zoomIntegrations: action.data
       })
+    case ActionTypes.REMOVE_ZOOM_INTEGRATION:
+      let zoomIntegrations = state.zoomIntegrations
+      let indexToRemove = state.zoomIntegrations.findIndex(integration => integration._id === action.data._id)
+      if (indexToRemove >= 0) {
+        zoomIntegrations.splice(indexToRemove, 1)
+      }
+      return Object.assign({}, state, {
+        zoomIntegrations: [...zoomIntegrations]
+      })
     case ActionTypes.UPDATE_WHATSAPP_MESSAGE_TEMPLATES:
       return Object.assign({}, state, {
         whatsAppMessageTemplates: action.data
