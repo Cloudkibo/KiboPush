@@ -17,6 +17,7 @@ import { loadAllSubscribersListNew, updateCustomFieldForSubscriber } from './../
 import { fetchNotifications } from './../redux/actions/notifications.actions'
 import { handleSocketEvent, handleSocketEventSms, handleSocketEventWhatsapp } from '../redux/actions/socket.actions'
 import { addToSponsoredMessages, updateSponsoredMessagesListItemStatus } from './../redux/actions/sponsoredMessaging.actions'
+import { removeZoomIntegration } from './../redux/actions/settings.actions'
 const whatsAppActions = require('./../redux/actions/whatsAppChat.actions')
 const smsActions = require('./../redux/actions/smsChat.actions')
 
@@ -173,6 +174,8 @@ socket.on('message', (data) => {
   } else if (data.action === 'sponsoredMessaging_statusChanged') {
     console.log('update status of new sponsored message')
     store.dispatch(updateSponsoredMessagesListItemStatus(data.payload))
+  } else if (data.action === 'zoom_uninstall') {
+    store.dispatch(removeZoomIntegration(data.payload))
   }
   if (callbacks[data.action]) {
     callbacks[data.action](data.payload)
