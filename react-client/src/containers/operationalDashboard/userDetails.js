@@ -19,7 +19,7 @@ class UserDetails extends React.Component {
     if (this.props.location.state) {
       const userID = this.props.location.state._id
       props.loadPagesList(userID, {first_page: 'first', last_id: 'none', number_of_records: 10, search_value: ''})
-      props.getUserSummary({companyId: this.props.location.state.companyId, days: 10})
+      props.getUserSummary({userId: this.props.location.state._id, days: 10})
     }
     this.state = {
       pagesData: [],
@@ -29,8 +29,7 @@ class UserDetails extends React.Component {
       isShowingModalSubscribers: false,
       isShowingModalLiveChat: false,
       id: '',
-      searchValue: '',
-      days: '10'
+      searchValue: ''
     }
     this.displayData = this.displayData.bind(this)
     this.handleClickEvent = this.handleClickEvent.bind(this)
@@ -46,18 +45,15 @@ class UserDetails extends React.Component {
     this.closeDialogLiveChat = this.closeDialogLiveChat.bind(this)
     this.onDaysChange = this.onDaysChange.bind(this) 
   }
-  onDaysChange(e) {
-    var value = e.target.value
-    this.setState({days: value})
+  onDaysChange(value) {
     if (value === '') {
-      this.props.getUserSummary({companyId: this.props.location.state.companyId, days: ''})
+      this.props.getUserSummary({userId: this.props.location.state._id, days: ''})
     } else if (parseInt(value) > 0) {
-      this.props.getUserSummary({companyId: this.props.location.state.companyId, days: parseInt(value)})
+      this.props.getUserSummary({userId: this.props.location.state._id, days: parseInt(value)})
     }
   }
   componentDidMount () {
     // this.scrollToTop();
-
     const hostname = window.location.hostname
     let title = ''
     if (hostname.includes('kiboengage.cloudkibo.com')) {
@@ -248,7 +244,7 @@ class UserDetails extends React.Component {
           </div>
         </div>
         <div className='m-content'>
-          <UserSummary userSummary={this.props.userSummary} days={this.state.days} onDaysChange={this.onDaysChange} />
+          <UserSummary userSummary={this.props.userSummary} onDaysChange={this.onDaysChange} />
           <PagesInfo history={this.props.history} location={this.props.location} pages={this.state.pagesData} pagesData={this.props.pages} pageNumber={this.state.pageNumber} length={this.state.totalLength} handleClickEvent={this.handleClickEvent} displayData={this.displayData} search={this.search} />
           <BroadcastsInfo history={this.props.history} location={this.props.location} userID={this.props.location.state._id} />
           <SurveysInfo history={this.props.history} location={this.props.location} userID={this.props.location.state._id} />
