@@ -11,12 +11,13 @@ class UserSummary extends React.Component {
     }
     this.onDaysChange = this.onDaysChange.bind(this)
   }
+  
   onDaysChange (e) {
     this.setState({
       days: e.target.value
     })
   }
-
+  
   componentDidMount () {
     let typingTimer
     let doneTypingInterval = this.state.typingInterval
