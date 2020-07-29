@@ -101,19 +101,19 @@ export function fetchTeamAgents (id, handleAgents) {
   }
 }
 
-export function showUserChats (payload, originalData) {
+export function showUserChats (payload, originalData, count) {
   console.log('showUserChats response', payload)
   if (originalData.page === 'first') {
     return {
       type: ActionTypes.SHOW_SMS_USER_CHAT_OVERWRITE,
       userChat: payload.chat,
-      chatCount: payload.count
+      chatCount: count
     }
   } else {
     return {
       type: ActionTypes.SHOW_SMS_USER_CHAT,
       userChat: payload.chat,
-      chatCount: payload.count
+      chatCount: count
     }
   }
 }
@@ -195,11 +195,11 @@ export function fetchCloseSessions (data) {
   }
 }
 
-export function fetchUserChats (sessionid, data, handleFunction) {
+export function fetchUserChats (sessionid, data, count, handleFunction) {
   return (dispatch) => {
     callApi(`smsChat/getChat/${sessionid}`, 'post', data)
       .then(res => {
-        dispatch(showUserChats(res.payload, data))
+        dispatch(showUserChats(res.payload, data, count))
         if (handleFunction) {
           handleFunction(data.messageId)
         }
