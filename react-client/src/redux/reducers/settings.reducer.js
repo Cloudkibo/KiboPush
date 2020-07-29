@@ -104,7 +104,7 @@ let cannedResponsesIndex = cannedResponses.findIndex(cannedResponse => cannedRes
       return Object.assign({}, state, {
         zoomIntegrations: action.data
       })
-    case ActionTypes.REMOVE_ZOOM_INTEGRATIONS:
+    case ActionTypes.REMOVE_ZOOM_INTEGRATION:
       let zoomIntegrations = state.zoomIntegrations
       let indexToRemove = state.zoomIntegrations.findIndex(integration => integration._id === action.data._id)
       if (indexToRemove >= 0) {

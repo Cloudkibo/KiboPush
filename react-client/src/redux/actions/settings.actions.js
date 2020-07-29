@@ -13,7 +13,7 @@ export function updateZoomIntegrations (data) {
 
 export function removeZoomIntegration (data) {
   return {
-    type: ActionTypes.REMOVE_ZOOM_INTEGRATIONS,
+    type: ActionTypes.REMOVE_ZOOM_INTEGRATION,
     data
   }
 }
