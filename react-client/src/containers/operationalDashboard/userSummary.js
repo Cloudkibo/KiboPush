@@ -11,10 +11,12 @@ class UserSummary extends React.Component {
     }
     this.onDaysChange = this.onDaysChange.bind(this)
   }
+
   onDaysChange (e) {
     this.setState({
       days: e.target.value
     })
+
   }
 
   componentDidMount () {
@@ -29,6 +31,7 @@ class UserSummary extends React.Component {
     })
     input.addEventListener('keydown', () => {clearTimeout(typingTimer)})
   }
+  
   render() {
     return (
      <div className='row' style={{height: '200px'}}>
