@@ -22,7 +22,7 @@ class ConfirmationModal extends React.Component {
                 </span>
               </button>
             </div>
-            <div style={{ color: 'black' }} className="modal-body">
+            <div style={{ color: 'black', whiteSpace: 'pre-line' }} className="modal-body">
               <p>{this.props.description}</p>
               <div style={{ width: '100%', textAlign: 'center' }}>
                 <div style={{ display: 'inline-block', padding: '5px' }}>

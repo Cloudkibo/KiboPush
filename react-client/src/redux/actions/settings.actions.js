@@ -553,24 +553,24 @@ export function getZoomIntegrations () {
   return (dispatch) => {
     callApi('zoom/users')
       .then(res => {
-        dispatch(updateZoomIntegrations(res.payload ? res.payload : []))
-        // dispatch(updateZoomIntegrations([    
-        //     {
-        //       _id: '123',
-        //       profilePic: "https://platform-lookaside.fbsbx.com/platform/profilepic/?asid=10217280192532174&height=50&width=50&ext=1596610613&hash=AeTfTwYDbHqEJfmf",
-        //       firstName : "Anisha",
-        //       lastName : "Chhatwani",
-        //       connected: true
-        //     },
-        //     {
-        //       _id: 'abc',
-        //       profilePic: "",
-        //       firstName : "Kibo",
-        //       lastName : "Meeting",
-        //       connected: true
-        //     }
-        //   ])
-        // )
+        //dispatch(updateZoomIntegrations(res.payload ? res.payload : []))
+        dispatch(updateZoomIntegrations([    
+            {
+              _id: '123',
+              profilePic: "https://platform-lookaside.fbsbx.com/platform/profilepic/?asid=10217280192532174&height=50&width=50&ext=1596610613&hash=AeTfTwYDbHqEJfmf",
+              firstName : "Anisha",
+              lastName : "Chhatwani",
+              connected: true
+            },
+            {
+              _id: 'abc',
+              profilePic: "https://marketplacecontent.zoom.us//gCnqdlNeQAm9i-gWzFolsw/NauViVfXSqCZ_neqINzeEw/app/dENflTHgQPml6oCe-CiFQg/obZ0MydITbydrlhF7k6ZJw.png",
+              firstName : "Kibo",
+              lastName : "Meeting",
+              connected: true
+            }
+          ])
+        )
       })
   }
 }
