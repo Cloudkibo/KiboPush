@@ -4,6 +4,7 @@ import { getZoomIntegrations, integrateZoom } from '../../redux/actions/settings
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import AlertContainer from 'react-alert'
+import YouTube from 'react-youtube'
 
 class ZoomIntegration extends React.Component {
   constructor (props, context) {
@@ -32,7 +33,7 @@ class ZoomIntegration extends React.Component {
     this.setState({
       openVideo: true
     })
-    this.refs.videoIntegeration.click()
+    this.refs.videoTutorial.click()
   }
 
   UNSAFE_componentWillReceiveProps (nextProps) {
@@ -59,6 +60,46 @@ class ZoomIntegration extends React.Component {
     return (
       <div id='target' className='col-lg-8 col-md-8 col-sm-8 col-xs-12'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
+        <button style={{ display: 'none' }} ref='videoTutorial' data-toggle='modal' data-backdrop='static' data-keyboard='false' data-target="#videoTutorial">videoTutorial</button>
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="videoTutorial" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog modal-lg" role="document">
+            <div className="modal-content" style={{ width: '687px', top: '100' }}>
+              <div style={{ display: 'block' }} className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">
+                  Video Tutorial
+                </h5>
+                <button
+                  style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal"
+                  aria-label="Close"
+                  onClick={() => {
+                    this.setState({
+                      openVideo: false
+                    })
+                  }}
+                >
+                  <span aria-hidden="true">
+                    &times;
+                  </span>
+                </button>
+              </div>
+              <div style={{ color: 'black' }} className="modal-body">
+                {
+                  this.state.openVideo &&
+                  <YouTube
+                    videoId='qATErwH93f0'
+                    opts={{
+                      height: '390',
+                      width: '640',
+                      playerVars: {
+                        autoplay: 0
+                      }
+                    }}
+                  />
+                }
+              </div>
+            </div>
+          </div>
+        </div>
         <div className='m-portlet m-portlet--full-height m-portlet--tabs  '>
           <div className='m-portlet__head'>
             <div className='m-portlet__head-tools'>
@@ -74,16 +115,14 @@ class ZoomIntegration extends React.Component {
           </div>
           <div className='tab-content'>
             <div className='m-content'>
+              <div style={{textAlign: 'center'}} className='alert m-alert m-alert--default' role='alert'>
+                Need help in understanding Zoom Integration? Here is the <a href='https://kibopush.com/livechat/#zoomIntegration' target='_blank' rel='noopener noreferrer'>documentation</a>.
+                Or check out this  <a href='#/' onClick={this.openVideoTutorial}>video tutorial</a> to understand this feature.
+              </div>
               <div className='row'>
                 <div className='col-xl-12 col-md-12 col-sm-12'>
                   <div>
               <div style={{padding: '5px', paddingLeft: '20px'}} className='alert m-alert--default'>
-                {/* <div className='form-group m-form__group'>
-                  <div style={{textAlign: 'center'}} className='alert m-alert m-alert--default' role='alert'>
-                  Need help in understanding Integrations? Here is the <a href='http://kibopush.com/webhook/' target='_blank' rel='noopener noreferrer'>documentation</a>.
-                  Or check out this  <a href='#/' onClick={this.openVideoTutorial}>video tutorial</a> to understand this feature.
-                  </div>
-                </div> */}
                 <div className='tab-content'>
                   <div className='tab-pane active' id='m_widget4_tab1_content'>
                     <div className='m-widget4'>
@@ -98,19 +137,6 @@ class ZoomIntegration extends React.Component {
                             {this.state.zoomIntegration.description}
                           </span>
                       </div>
-
-
-
-                      {/* <span className='m-widget4__ext' style={{width: '140px'}}>
-                            {this.state.zoomIntegration.enabled
-                              ? <a target='_blank' rel="noopener noreferrer" href={`https://marketplace.zoom.us/user/installed`} className='m-btn m-btn--pill m-btn--hover-danger btn btn-danger' style={{borderColor: '#f4516c', color: '#f4516c', marginRight: '10px'}}>
-                                Disconnect
-                              </a>
-                              : <a href= {`/auth/zoom?userId=${this.props.user._id}&companyId=${this.props.user.companyId}`} className='m-btn m-btn--pill m-btn--hover-success btn btn-success' style={{borderColor: '#34bfa3', color: '#34bfa3', marginRight: '10px'}}>
-                              Connect
-                            </a>
-                            }
-                          </span> */}
 
                     </div>
                   </div>
