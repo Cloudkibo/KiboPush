@@ -30,6 +30,7 @@ import { loadMembersList } from '../../redux/actions/members.actions'
 import { urlMetaData } from '../../redux/actions/convos.actions'
 import { handleSocketEventSms } from './socket'
 import { clearSocketDataSms } from '../../redux/actions/socket.actions'
+import { getZoomIntegrations, createZoomMeeting } from '../../redux/actions/settings.actions'
 
 // components
 import HELPWIDGET from '../../components/extras/helpWidget'
@@ -102,6 +103,7 @@ class SmsChat extends React.Component {
     if (props.socketData) {
       props.clearSocketDataSms()
     }
+    props.getZoomIntegrations()
   }
 
   clearSearchResults () {
@@ -327,8 +329,7 @@ class SmsChat extends React.Component {
         loadingChat: true,
         showSearch: false
       }, () => {
-        clearTimeout(this.sessionClickTimer)
-        this.sessionClickTimer = setTimeout(() => this.loadActiveSession({...session}), 1000)
+        this.loadActiveSession({...session})
       })
     }
   }
@@ -528,6 +529,10 @@ class SmsChat extends React.Component {
                     showGif={false}
                     showThumbsUp={false}
                     setMessageData={this.setMessageData}
+                    showZoom={this.props.user.isSuperUser ? (this.props.zoomIntegrations.length === 0 ? (this.props.user.role === 'admin' || this.props.user.role === 'buyer') ? true : false : true) : false}
+                    history={this.props.history}
+                    zoomIntegrations={this.props.zoomIntegrations}
+                    createZoomMeeting={this.props.createZoomMeeting}
                   />
                 }
                 {
@@ -607,6 +612,7 @@ function mapStateToProps(state) {
     searchChatMsgs: (state.smsChatInfo.searchChat),
     socketData: (state.socketInfo.socketDataSms),
     twilioNumbers: (state.smsBroadcastsInfo.twilioNumbers),
+    zoomIntegrations: (state.settingsInfo.zoomIntegrations)
   }
 }
 
@@ -631,7 +637,9 @@ function mapDispatchToProps(dispatch) {
     updateSmsChatInfo,
     clearSearchResult,
     urlMetaData,
-    loadTwilioNumbers
+    loadTwilioNumbers,
+    getZoomIntegrations,
+    createZoomMeeting
   }, dispatch)
 }
 
