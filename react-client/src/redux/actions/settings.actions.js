@@ -563,7 +563,7 @@ export function getZoomIntegrations () {
         //     },
         //     {
         //       _id: 'abc',
-        //       profilePic: "",
+        //       profilePic: "https://marketplacecontent.zoom.us//gCnqdlNeQAm9i-gWzFolsw/NauViVfXSqCZ_neqINzeEw/app/dENflTHgQPml6oCe-CiFQg/obZ0MydITbydrlhF7k6ZJw.png",
         //       firstName : "Kibo",
         //       lastName : "Meeting",
         //       connected: true
