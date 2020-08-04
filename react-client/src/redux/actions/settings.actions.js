@@ -39,7 +39,6 @@ export function showAdvancedSettings (data) {
     data
   }
 }
-
 export function showcannedResponses (data) {
   return {
     type: ActionTypes.GET_CANNED_RESPONSES,
@@ -564,7 +563,7 @@ export function getZoomIntegrations () {
         //     },
         //     {
         //       _id: 'abc',
-        //       profilePic: "",
+        //       profilePic: "https://marketplacecontent.zoom.us//gCnqdlNeQAm9i-gWzFolsw/NauViVfXSqCZ_neqINzeEw/app/dENflTHgQPml6oCe-CiFQg/obZ0MydITbydrlhF7k6ZJw.png",
         //       firstName : "Kibo",
         //       lastName : "Meeting",
         //       connected: true
@@ -634,7 +633,6 @@ export function getAdvancedSettings () {
       })
   }
 }
-
 
 export function loadcannedResponses () {
   return (dispatch) => {
