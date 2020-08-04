@@ -16,7 +16,7 @@ import HEADER from './header'
 import BODY from './body'
 import FOOTER from './footer'
 import CONFIRMATIONMODAL from '../../extras/confirmationModal'
-import TEMPLATESMODAL from '../../../containers/whatsAppChat/messageTemplate'
+import MESSAGETEMPLATE from '../../WhatsApp/messageTemplate'
 
 class Chat extends React.Component {
   constructor(props, context) {
@@ -125,17 +125,26 @@ class Chat extends React.Component {
           onConfirm={() => {this.props.handlePendingResponse(this.props.activeSession, false)}}
         />
 
-        <TEMPLATESMODAL
-          sendChatMessage={this.props.sendChatMessage}
-          setMessageData={this.props.setMessageData}
-          activeSession={this.props.activeSession}
-          updateState={this.props.updateState}
-          userChat={this.props.userChat}
-          sessions={this.props.sessions}
-          updateNewMessage={this.updateNewMessage}
-          updateChatAreaHeight={this.updateChatAreaHeight}
-          alertMsg={this.props.alertMsg}
-        />
+        {
+          this.props.showTemplates &&
+          <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id='messageTemplate' tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+              <MESSAGETEMPLATE
+                sendChatMessage={this.props.sendChatMessage}
+                setMessageData={this.props.setMessageData}
+                activeSession={this.props.activeSession}
+                updateState={this.props.updateState}
+                userChat={this.props.userChat}
+                sessions={this.props.sessions}
+                updateNewMessage={this.updateNewMessage}
+                updateChatAreaHeight={this.updateChatAreaHeight}
+                alertMsg={this.props.alertMsg}
+                id='messageTemplate'
+                templates={this.props.whatsAppMessageTemplates}
+              />
+            </div>
+          </div>
+        }
 
         <HEADER
           activeSession={this.props.activeSession}
@@ -158,10 +167,11 @@ class Chat extends React.Component {
           updateState={this.props.updateState}
           newMessage={this.newMessage}
           updateNewMessage={this.updateNewMessage}
+          showSubscriberNameOnMessage={this.props.showSubscriberNameOnMessage}
         />
 
         {
-          !moment(this.props.activeSession.lastMessagedAt).isAfter(moment().subtract(24, 'hours')) && !this.props.isSMPApproved
+          !this.props.activeSession.lastMessagedAt || (!moment(this.props.activeSession.lastMessagedAt).isAfter(moment().subtract(24, 'hours')) && !this.props.isSMPApproved)
           ? <div
             className='m-messenger'
             style={{
@@ -203,6 +213,7 @@ class Chat extends React.Component {
             </button>
           </div>
           : <FOOTER
+            cannedResponses={this.props.cannedResponses}
             performAction={this.props.performAction}
             activeSession={this.props.activeSession}
             user={this.props.user}
@@ -257,6 +268,7 @@ class Chat extends React.Component {
 }
 
 Chat.propTypes = {
+  'cannedResponses': PropTypes.array.isRequired,
   'userChat': PropTypes.array.isRequired,
   'chatCount': PropTypes.number.isRequired,
   'sessions': PropTypes.array.isRequired,
@@ -283,7 +295,8 @@ Chat.propTypes = {
   'showSticker': PropTypes.bool.isRequired,
   'showEmoji': PropTypes.bool.isRequired,
   'showGif': PropTypes.bool.isRequired,
-  'showThumbsUp': PropTypes.bool.isRequired
+  'showThumbsUp': PropTypes.bool.isRequired,
+  'showSubscriberNameOnMessage': PropTypes.bool.isRequired
 }
 Chat.defaultProps = {
   showTemplates: false,

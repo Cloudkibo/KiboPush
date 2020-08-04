@@ -137,7 +137,7 @@ import CreateMessengerRefURLMessage from './containers/messengerRefURL/createMes
 import BusinessGatewayHome from './containers/businessGateway/home'
 import PushMessage from './containers/businessGateway/pushMessage'
 import UploadContacts from './containers/uploadContactsSMS/uploadContacts'
-import UploadContactsWhatsApp from './containers/uploadContacts/uploadContactsWhatsApp'
+import UploadContactsWhatsApp from './containers/uploadContactsWhatsApp/uploadContacts'
 import auth from './utility/auth.service'
 import ChatWidget from './containers/chatWidget/chatWidget'
 import Checkbox from './containers/GrowthTools/checkbox'
@@ -159,12 +159,14 @@ import BackdoorPageAdmins from './containers/operationalDashboard/pageAdmins'
 import CustomFields from './containers/customFields/customFields'
 import Tags from './containers/tags/tags'
 import successMessage from './containers/integerationScreen/successMessage'
+import AlreadyConnected from './containers/integerationScreen/alreadyConnected'
 import ErrorMessage from './containers/integerationScreen/ErrorMessage'
 import SmsDashboard from './containers/smsWhatsAppDashboard/smsDashboard'
 import WhatsAppDashboard from './containers/smsWhatsAppDashboard/whatsAppDashboard'
 import messengerDashboard from './containers/dashboard/dashboard'
 import ChatbotAutomation from './containers/chatbotAutomation/chatbotAutomation'
 import ChatbotSettings from './containers/chatbotAutomation/chatbotSettings'
+import IntegrateZoom from './containers/zoomIntegration/integrateZoom'
 
 const Subscriber = asyncComponent(() => import("./containers/subscriber/subscriber"))
 const OperationalDashboard = asyncComponent(() => import("./containers/operationalDashboard/operationalDashboard"))
@@ -376,6 +378,7 @@ const Routes = () => (
     <Route path='/createsmsBroadcast' component={CreatesmsBroadcast} onEnter={requireAuth} />
     <Route path='/smsChat' component={SmsChat} onEnter={requireAuth} />
     <Route path='/whatsAppChat' component={WhatsAppChat} onEnter={requireAuth} />
+    <Route path='/integrations/zoom' component={IntegrateZoom} onEnter={requireAuth} />
     <Route path='/integrations' component={Integrations} onEnter={requireAuth} />
     <Route path='/uploadContactsWhatsApp' component={UploadContactsWhatsApp} onEnter={requireAuth} />
     <Route path='/whatsAppBroadcasts' component={WhatsAppBroadcasts} onEnter={requireAuth} />
@@ -398,6 +401,7 @@ const Routes = () => (
     <Route path='/chatbotSettings' component={ChatbotSettings} onEnter={requireAuth} />
     <Route path='/tags' component={Tags} onEnter={requireAuth} />
     <Route path='/successMessage' component={successMessage} onEnter={requireAuth} />
+    <Route path='/alreadyConnected' component={AlreadyConnected} onEnter={requireAuth} />
     <Route path='/ErrorMessage' component={ErrorMessage} onEnter={requireAuth} />
     <Route path='*' render={() => <Redirect to='/' />} />
   </Switch>

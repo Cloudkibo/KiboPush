@@ -1,3 +1,4 @@
+
 /**
  * Created by sojharo on 20/07/2017.
  */
@@ -11,7 +12,28 @@ import { Link } from 'react-router-dom'
 class Header extends React.Component {
   constructor (props, context) {
     super(props, context)
-    this.state = {}
+    this.state = {
+      userView: false,
+      showViewingAsDropDown: false,
+    }
+    this.showViewingAsDropDown = this.showViewingAsDropDown.bind(this)
+
+  }
+  showViewingAsDropDown () {
+    console.log('show viewing as dropdown')
+    this.setState({showViewingAsDropDown: true})
+  }
+
+  removeActingAsUser () {
+    auth.removeActingAsUser()
+    window.location.reload()
+  }
+
+  UNSAFE_componentWillReceiveProps (nextProps) {
+    console.log('nextProps in header', nextProps)
+    if(nextProps.userView) {
+      this.setState({userView: nextProps.userView})
+    }
   }
 
   render () {
@@ -40,6 +62,50 @@ class Header extends React.Component {
               <div id='m_header_topbar' className='m-topbar  m-stack m-stack--ver m-stack--general'>
                 <div className='m-stack__item m-topbar__nav-wrapper'>
                   <ul className='m-topbar__nav m-nav m-nav--inline'>
+                  {this.props.user.isSuperUser && (auth.getActingAsUser() !== undefined || this.state.userView) &&
+                        <li style={{marginRight: '20px', padding: '0'}} className='m-nav__item m-topbar__user-profile m-topbar__user-profile--img  m-dropdown m-dropdown--medium m-dropdown--arrow m-dropdown--header-bg-fill m-dropdown--align-right m-dropdown--mobile-full-width m-dropdown--skin-light' data-dropdown-toggle='click'>
+                          <div style={{marginTop: '15px'}}>
+                            <span className='m-topbar__userpic'>
+                              <div style={{ display: 'inline-block', height: '41px' }}>
+
+                                <span className='m-nav__link-text' style={{ lineHeight: '41px', verticalAlign: 'middle', textAlign: 'center' }}>
+                                <li className='m-menu__item  m-menu__item--submenu m-menu__item--relm-portlet__nav-item m-dropdown m-dropdown--inline m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push' data-dropdown-toggle='click'>
+                                  <span style={{fontSize: '0.85em'}} onClick={this.showViewingAsDropDown} className='m-portlet__nav-link m-dropdown__toggle dropdown-toggle btn btn--sm m-btn--pill btn-secondary m-btn m-btn--label-brand'>
+                                    Viewing As...
+                                  </span>
+                                  {
+                                    this.state.showViewingAsDropDown &&
+                                    <div className='m-dropdown__wrapper'>
+                                      <span className='m-dropdown__arrow m-dropdown__arrow--right m-dropdown__arrow--adjust' />
+                                      <div className='m-dropdown__inner'>
+                                        <div className='m-dropdown__body'>
+                                          <div className='m-dropdown__content'>
+                                            <ul className='m-nav'>
+                                              <li style={{textAlign: 'center'}} className='m-nav__item'>
+                                                <span>
+                                                  Currently viewing as: <strong>{auth.getActingAsUserName()} </strong>
+                                                </span>
+                                              </li>
+                                              <li style={{textAlign: 'center'}} className='m-nav__item'>
+                                                <span onClick={this.removeActingAsUser} className='m-btn m-btn--pill m-btn--hover-brand btn btn-secondary' style={{cursor: 'pointer'}}>
+                                                  <span className='m-nav__link-text'>
+                                                    Switch back to my view
+                                                  </span>
+                                                </span>
+                                              </li>
+                                            </ul>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  }
+                                </li>
+                               </span>
+                              </div>
+                            </span>
+                          </div>
+                        </li>
+                      }
                   {this.props.user && this.props.user.facebookInfo && this.props.otherPages &&
                     <li className='m-nav__item m-topbar__quick-actions m-topbar__quick-actions--img m-dropdown m-dropdown--large m-dropdown--header-bg-fill m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push m-dropdown--mobile-full-width m-dropdown--skin-light' data-dropdown-toggle='click'>
                       <a href='#/' className='m-nav__link m-dropdown__toggle'>
@@ -211,7 +277,8 @@ function mapStateToProps (state) {
   return {
     user: (state.basicInfo.user),
     subscribers: (state.subscribersInfo.subscribers),
-    otherPages: (state.pagesInfo.otherPages)
+    otherPages: (state.pagesInfo.otherPages),
+    userView: (state.backdoorInfo.userView)
   }
 }
 

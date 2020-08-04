@@ -12,11 +12,13 @@ class Text extends React.Component {
   }
 
   getCardProps () {
+    console.log('this.props.urlMeta', this.props.urlMeta)
     const image = this.props.urlMeta.image || this.props.urlMeta.ogImage
     const card = {
       title: this.props.urlMeta.title || this.props.urlMeta.ogTitle,
       description: this.props.urlMeta.description || this.props.urlMeta.ogDescription,
-      imageUrl: image && image.url
+      imageUrl: image && image.url,
+      url: this.props.urlMeta.url || this.props.urlMeta.ogUrl
     }
     return card
   }
@@ -32,8 +34,13 @@ class Text extends React.Component {
       let words = text.replace(/\n/g, " \r\n").split(" ")
       let wordElements = words.map((word, index) => {
         if (validURL(word.trim())) {
+          let url= word.trim()
+          var pattern = /^((http|https|ftp):\/\/)/
+          if(!pattern.test(word.trim())) {
+              url = "http://" + url
+          }
           return (
-            <a style={{color: this.props.color, whiteSpace: 'break-spaces'}} href={text} target='_blank' rel='noopener noreferrer'>
+            <a style={{color: this.props.color, whiteSpace: 'break-spaces'}} href={url} target='_blank' rel='noopener noreferrer'>
               {word + (index < words.length - 1 ? " " : "")}
             </a>
           )

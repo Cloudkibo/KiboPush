@@ -3,7 +3,9 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import AlertContainer from 'react-alert'
 import { RingLoader } from 'halogenium'
-import { getZoomIntegrations, createZoomMeeting } from '../../redux/actions/settings.actions'
+import { getZoomIntegrations, createZoomMeeting, loadcannedResponses, getWhatsAppMessageTemplates } from '../../redux/actions/settings.actions'
+import NEWMESSAGEBUTTON from './newMessageButton'
+import MESSAGETEMPLATE from '../../components/WhatsApp/messageTemplate'
 
 // actions
 import {
@@ -23,7 +25,8 @@ import {
   assignToTeam,
   uploadAttachment,
   sendAttachment,
-  deletefile
+  deletefile,
+  createNewContact
 } from '../../redux/actions/whatsAppChat.actions'
 import { updatePicture } from '../../redux/actions/subscribers.actions'
 import { loadTeamsList } from '../../redux/actions/teams.actions'
@@ -31,6 +34,7 @@ import { loadMembersList } from '../../redux/actions/members.actions'
 import { urlMetaData } from '../../redux/actions/convos.actions'
 import { handleSocketEventWhatsapp } from './socket'
 import { clearSocketDataWhatsapp } from '../../redux/actions/socket.actions'
+import { editSubscriberWhatsApp } from '../../redux/actions/uploadContacts.actions'
 
 // components
 import HELPWIDGET from '../../components/extras/helpWidget'
@@ -68,6 +72,8 @@ class WhatsAppChat extends React.Component {
       showSearch: false,
       customFieldOptions: [],
       showingCustomFieldPopover: false,
+      sendingToNewNumber: false,
+      cannedResponses: []
     }
 
     this.fetchSessions = this.fetchSessions.bind(this)
@@ -93,7 +99,8 @@ class WhatsAppChat extends React.Component {
     this.showFetchingChat = this.showFetchingChat.bind(this)
     this.clearSearchResults = this.clearSearchResults.bind(this)
     this.setMessageData = this.setMessageData.bind(this)
-
+    this.sendingToNewNumber = this.sendingToNewNumber.bind(this)
+    this.props.loadcannedResponses()
     this.fetchSessions(true, 'none', true)
     if (props.user.currentPlan.unique_ID === 'plan_C' || props.user.currentPlan.unique_ID === 'plan_D') {
       props.loadMembersList()
@@ -103,6 +110,11 @@ class WhatsAppChat extends React.Component {
     if (props.socketData) {
       props.clearSocketDataWhatsapp()
     }
+    props.getWhatsAppMessageTemplates()
+  }
+
+  sendingToNewNumber (sendingToNewNumber) {
+    this.setState({sendingToNewNumber})
   }
 
   clearSearchResults () {
@@ -287,7 +299,7 @@ class WhatsAppChat extends React.Component {
     }
   }
 
-  setMessageData(session, payload) {
+  setMessageData(session, payload, urlMeta) {
     const data = {
       senderNumber: this.props.automated_options.flockSendWhatsApp.number,
       recipientNumber: this.state.activeSession.number,
@@ -298,12 +310,13 @@ class WhatsAppChat extends React.Component {
         id: this.props.user._id,
         name: this.props.user.name,
         type: 'agent'
-      }
+      },
+      url_meta: urlMeta
     }
     return data
   }
 
-  changeActiveSession (session) {
+  changeActiveSession (session, e, callback) {
     console.log('changeActiveSession', session)
     if (session._id !== this.state.activeSession._id) {
       session.firstName = session.name
@@ -316,9 +329,15 @@ class WhatsAppChat extends React.Component {
         loadingChat: true,
         showSearch: false
       }, () => {
-        clearTimeout(this.sessionClickTimer)
-        this.sessionClickTimer = setTimeout(() => this.loadActiveSession({...session}), 1000)
+        if (callback) {
+          callback()
+        }
+        this.loadActiveSession({...session})
       })
+    } else {
+      if (callback) {
+        callback()
+      }
     }
   }
 
@@ -368,7 +387,9 @@ class WhatsAppChat extends React.Component {
   UNSAFE_componentWillReceiveProps (nextProps) {
     console.log('UNSAFE_componentWillMount called in live chat', nextProps)
     let state = {}
-
+    if (nextProps.cannedResponses !== this.props.cannedResponses) {
+      this.setState({ cannedResponses: nextProps.cannedResponses})
+    }
     if (nextProps.openSessions || nextProps.closeSessions) {
       state.loading = false
       state.sessionsLoading = false
@@ -465,7 +486,7 @@ class WhatsAppChat extends React.Component {
               }
             <HELPWIDGET
               documentation={{visibility: true, link: 'https://kibopush.com/livechat-whatsapp/'}}
-              videoTutorial={{visibility: false}}
+              videoTutorial={{visibility: true, videoId: 'WmZZyc1IgLA'}}
             />
               <div className='row'>
                 <SESSIONS
@@ -492,6 +513,7 @@ class WhatsAppChat extends React.Component {
                 {
                   this.state.activeSession.constructor === Object && Object.keys(this.state.activeSession).length > 0 &&
                   <CHAT
+                    cannedResponses = {this.state.cannedResponses}
                     userChat={this.state.userChat}
                     chatCount={this.props.chatCount}
                     sessions={this.state.sessions}
@@ -527,6 +549,8 @@ class WhatsAppChat extends React.Component {
                     zoomIntegrations={this.props.zoomIntegrations}
                     createZoomMeeting={this.props.createZoomMeeting}
                     showCaption={true}
+                    showSubscriberNameOnMessage={false}
+                    whatsAppMessageTemplates={this.props.whatsAppMessageTemplates}
                   />
                 }
                 {
@@ -550,6 +574,7 @@ class WhatsAppChat extends React.Component {
                       showTags={false}
                       showCustomFields={false}
                       showUnsubscribe={false}
+                      editSubscriberWhatsApp={this.props.editSubscriberWhatsApp}
                     />
                 }
                 {
@@ -580,6 +605,32 @@ class WhatsAppChat extends React.Component {
               </div>
           </div>
         }
+        
+          <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id='messageTemplateNewNumber' tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+              <MESSAGETEMPLATE
+                sendChatMessage={this.props.sendChatMessage}
+                setMessageData={this.setMessageData}
+                activeSession={this.state.activeSession}
+                updateState={this.updateState}
+                userChat={this.state.userChat}
+                sessions={this.state.sessions}
+                alertMsg={this.alertMsg}
+                id='messageTemplateNewNumber'
+                sendingToNewNumber={this.state.sendingToNewNumber}
+                heading={'Send Message Template to WhatsApp Number'}
+                createNewContact={this.props.createNewContact}
+                changeActiveSession={this.changeActiveSession}
+                templates={this.props.whatsAppMessageTemplates}
+              />
+            </div>
+          </div>
+          <NEWMESSAGEBUTTON
+              dataToggle='modal'
+              dataTarget='#messageTemplateNewNumber'
+              onClick={() => this.sendingToNewNumber(true)}
+          />
+        
       </div>
     )
   }
@@ -600,7 +651,9 @@ function mapStateToProps(state) {
     searchChatMsgs: (state.whatsAppChatInfo.searchChat),
     socketData: (state.socketInfo.socketDataWhatsapp),
     automated_options: (state.basicInfo.automated_options),
-    zoomIntegrations: (state.settingsInfo.zoomIntegrations)
+    zoomIntegrations: (state.settingsInfo.zoomIntegrations),
+    cannedResponses: (state.settingsInfo.cannedResponses),
+    whatsAppMessageTemplates: (state.settingsInfo.whatsAppMessageTemplates)
   }
 }
 
@@ -629,7 +682,12 @@ function mapDispatchToProps(dispatch) {
     sendAttachment,
     deletefile,
     getZoomIntegrations,
-    createZoomMeeting
+    createZoomMeeting,
+    createNewContact,
+    editSubscriberWhatsApp,
+    loadcannedResponses,
+    editSubscriberWhatsApp,
+    getWhatsAppMessageTemplates
   }, dispatch)
 }
 

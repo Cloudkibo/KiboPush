@@ -1,10 +1,15 @@
 /* eslint-disable no-useless-constructor */
 import React from 'react'
-import { getIntegrations, updateIntegration, createIntegration} from '../../redux/actions/settings.actions'
+import {
+  getIntegrations,
+  updateIntegration,
+  createIntegration
+} from '../../redux/actions/settings.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import AlertContainer from 'react-alert'
 import { findIndex } from 'lodash'
+import YouTube from 'react-youtube'
 
 class Integrations extends React.Component {
   constructor (props, context) {
@@ -22,7 +27,7 @@ class Integrations extends React.Component {
           description: 'This integration can help you save data from KiboPush to Google Sheets or vice versa',
           color: 'green'
         },
-        { 
+        {
           name: 'Hubspot',
           icon: 'fa fa-transgender-alt',
           enabled: false,
@@ -42,7 +47,7 @@ class Integrations extends React.Component {
     this.setState({
       openVideo: true
     })
-    this.refs.videoIntegeration.click()
+    this.refs.videoTutorial.click()
   }
 
   saveIntegerationId (id) {
@@ -89,6 +94,46 @@ class Integrations extends React.Component {
     return (
       <div id='target' className='col-lg-8 col-md-8 col-sm-8 col-xs-12'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
+        <button style={{ display: 'none' }} ref='videoTutorial' data-toggle='modal' data-backdrop='static' data-keyboard='false' data-target="#videoTutorial">videoTutorial</button>
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="videoTutorial" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog modal-lg" role="document">
+            <div className="modal-content" style={{ width: '687px', top: '100' }}>
+              <div style={{ display: 'block' }} className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">
+                  Video Tutorial
+                </h5>
+                <button
+                  style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal"
+                  aria-label="Close"
+                  onClick={() => {
+                    this.setState({
+                      openVideo: false
+                    })
+                  }}
+                >
+                  <span aria-hidden="true">
+                    &times;
+                  </span>
+                </button>
+              </div>
+              <div style={{ color: 'black' }} className="modal-body">
+                {
+                  this.state.openVideo &&
+                  <YouTube
+                    videoId='qATErwH93f0'
+                    opts={{
+                      height: '390',
+                      width: '640',
+                      playerVars: {
+                        autoplay: 0
+                      }
+                    }}
+                  />
+                }
+              </div>
+            </div>
+          </div>
+        </div>
         <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="deleteIntegeration" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
             <div className="modal-content">
@@ -130,16 +175,14 @@ class Integrations extends React.Component {
           </div>
           <div className='tab-content'>
             <div className='m-content'>
+               <div style={{textAlign: 'center', marginBottom: '0'}} className='alert m-alert m-alert--default' role='alert'>
+                Need help in understanding Zoom Integration? Here is the <a href='https://kibopush.com/livechat/#zoomIntegration' target='_blank' rel='noopener noreferrer'>documentation</a>.
+                Or check out this  <a href='#/' onClick={this.openVideoTutorial}>video tutorial</a> to understand this feature.
+                </div>
               <div className='row'>
                 <div className='col-xl-12 col-md-12 col-sm-12'>
                   <div>
               <div className='m-portlet__body'>
-                {/* <div className='form-group m-form__group'>
-                  <div style={{textAlign: 'center'}} className='alert m-alert m-alert--default' role='alert'>
-                  Need help in understanding Integrations? Here is the <a href='http://kibopush.com/webhook/' target='_blank' rel='noopener noreferrer'>documentation</a>.
-                  Or check out this  <a href='#/' onClick={this.openVideoTutorial}>video tutorial</a> to understand this feature.
-                  </div>
-                </div> */}
                 <div className='tab-content'>
                   <div className='tab-pane active' id='m_widget4_tab1_content'>
                     <div className='m-widget4'>

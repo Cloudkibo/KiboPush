@@ -198,6 +198,7 @@ class Settings extends React.Component {
       openTab: 'cannedResponses'
     })
   }
+  
   setZoomIntegration () {
     this.setState({
       openTab: 'zoomIntegration'
@@ -532,7 +533,7 @@ class Settings extends React.Component {
                       </a>
                     </li>
                     }
-                    { (this.props.user.role === 'admin' || this.props.user.role === 'buyer') &&
+                    { (url.includes('localhost') || url.includes('kibochat.cloudkibo.com')) && (this.props.user.role === 'admin' || this.props.user.role === 'buyer') &&
                     <li className='m-nav__item'>
                       <a href='#/' className='m-nav__link' onClick={this.setCannedResponses} style={{cursor: 'pointer'}} >
                         <i className='m-nav__link-icon flaticon-menu-button' />
@@ -759,7 +760,7 @@ class Settings extends React.Component {
             }
             { this.state.openTab === 'cannedResponses' &&
               <CannedResponses history= {this.props.history}/>
-          }
+            }	
             {
               this.state.openTab === 'zoomIntegration' &&
               <ZoomIntegration />

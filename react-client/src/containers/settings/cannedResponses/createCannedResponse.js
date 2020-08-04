@@ -142,15 +142,26 @@ class cannedResponses extends React.Component {
   onSubmit (event) {
     event.preventDefault()
     if (this.props.cannedResponse) {
+      let dataexist = this.props.cannedResponses.filter((cannedResponse, i)=> {
+        if(cannedResponse.responseCode.toLowerCase() === this.state.cannedCode.toLowerCase() && i !== this.props.index) {
+           return true
+        } else {
+          return false
+        }
+      })
+      console.log('dataexist', dataexist)
+      if(dataexist.length===0) {
       let data = {
         responseId: this.state.responseId,
         responseCode: this.state.cannedCode,
         responseMessage: this.state.cannedresponseMessage
       }
       this.props.updateCannedResponse(data, this.handleUpdateResponse)
-
+  } else {
+    this.msg.error(`unable to edit Canned Message. ${this.state.cannedCode} Canned Code already exists`)
+  }
     } else {
-      let dataexist = this.props.cannedResponses.filter(cannedResponse=> cannedResponse.responseCode === this.state.cannedCode)
+      let dataexist = this.props.cannedResponses.filter(cannedResponse=> cannedResponse.responseCode.toLowerCase() === this.state.cannedCode.toLowerCase())
       if(dataexist.length === 0) { 
       let data = {
         responseCode: this.state.cannedCode,
@@ -165,7 +176,9 @@ class cannedResponses extends React.Component {
   }
 
   codeHandleChange (event) {
-    this.setState({ cannedCode: event.target.value })
+    let str = event.target.value
+    str = str.split(' ').join('')
+    this.setState({ cannedCode: str })
   }
 
   responseMessageHandleChange (event) {
@@ -200,11 +213,17 @@ class cannedResponses extends React.Component {
                 <div className='modal-body'>
                   <div className='row'>
                     <div className='col-8'>
-                      <div className='m-form__group m-form__group--inline'>
-                        <div className='' style={{textAlign: 'left', marginTop: '10px'}}>
-                          <label>Canned Code:</label><i className='la la-question-circle' data-toggle='tooltip' title='Code of canned response' />
-                        </div>
-                        <input type='text' id='name' className='form-control m-input' value={this.state.cannedCode} onChange={this.codeHandleChange} maxlength='20' required />
+                      <div className='form-group m-form__group'>
+                      <label for='Canned Code'>
+                            Canned Code:
+												</label>
+                        <i className='la la-question-circle' data-toggle='tooltip' title='Code of canned response' />
+                        <div class="input-group m-input-group">
+                        <span class="input-group-addon" id="basic-addon1">
+														/
+													</span>
+                        <input type='text' id='name' className='form-control m-input' value={this.state.cannedCode} onChange={this.codeHandleChange} maxlength='30' required />
+                      </div>
                       </div>
                     </div>
                     <div className='col-12'>
@@ -215,7 +234,7 @@ class cannedResponses extends React.Component {
                         <textarea value={this.state.cannedresponseMessage} onChange={this.responseMessageHandleChange}
                           className='form-control m-input m-input--solid'
                           id='description' rows='3'
-                          style={{ height: '100px', resize: 'none' }} maxlength='500' required />
+                          style={{ height: '100px', resize: 'none' }} maxlength='1000' required />
                         <span style={{position: 'absolute', bottom: 0, right: '10px'}}>
                         <i
                           style={{fontSize: '20px', margin: '5px', cursor: 'pointer'}}

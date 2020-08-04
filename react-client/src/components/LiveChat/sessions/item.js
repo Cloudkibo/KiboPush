@@ -48,13 +48,13 @@ class SessionItem extends React.Component {
   }
 
   showQuickAction (e) {
-    if (!this.props.showingBulkActions) {
+    if (this.props.showBulkActions) {
       this.setState({showingQuickAction: true}) 
     }
   }
 
   hideQuickAction (e) {
-    if (!this.props.showingBulkActions) {
+    if (this.props.showBulkActions) {
       this.setState({showingQuickAction: false})
     }
   }
@@ -86,8 +86,8 @@ class SessionItem extends React.Component {
               height: '50px', 
               textAlign: 'center'
             }}
-            onMouseEnter={this.props.showingBulkActions ? this.showCheckbox : null}
-            onMouseLeave={this.props.showingBulkActions ? this.hideCheckbox : null}
+            onMouseEnter={this.props.showBulkActions ? this.showCheckbox : null}
+            onMouseLeave={this.props.showBulkActions ? this.hideCheckbox : null}
             className='m-widget4__img m-widget4__img--pic'>
               {
                 !this.state.showingCheckbox && !this.props.showingBulkActions ? 

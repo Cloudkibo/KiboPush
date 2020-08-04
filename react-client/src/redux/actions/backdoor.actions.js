@@ -30,7 +30,8 @@ import {
   updateLocales,
   updateCommentCaptures,
   updateChatBots,
-  updateMessagesCount
+  updateMessagesCount,
+  updateUserSummary
     } from './../dispatchers/backdoor.dispatcher'
 import * as ActionTypes from '../constants/constants'
 import {LANGUAGE_BY_LOCALE} from '../../utility/utils'
@@ -165,6 +166,7 @@ export function loadPagesList (id, data) {
   }
 }
 
+
 export function getMessagesCount (data) {
   // here we will fetch list of user pages from endpoint
   console.log('data for getMessagesCount', data)
@@ -172,6 +174,17 @@ export function getMessagesCount (data) {
     callApi(`backdoor/getMessagesCount`, 'post', data).then(res => {
       console.log('response from getMessagesCount', res)
       dispatch(updateMessagesCount(res.payload))
+    })
+  }
+}
+
+export function getUserSummary (data) {
+  // here we will fetch list of user pages from endpoint
+  console.log('data for user summary', data)
+  return (dispatch) => {
+    callApi(`backdoor/userSummary`, 'post', data).then(res => {
+      console.log('response from userSummary', res)
+      dispatch(updateUserSummary(res.payload))
     })
   }
 }
@@ -673,5 +686,33 @@ export function saveUserView (data) {
   return {
     type: ActionTypes.SAVE_USER_VIEW,
     data: data
+  }
+}
+export function showMetrics (data) {
+  return {
+    type: ActionTypes.SHOW_METRICS,
+    data
+  }
+}
+export function loadMetricsWhatsApp (data) {
+  return (dispatch) => {
+    callApi('backdoor/metricsWhatsApp', 'post', data).then(res => {
+      if (res.status === 'success') {
+        dispatch(showMetrics(res.payload))
+      }
+    })
+  }
+}
+
+export function sendWhatsAppMetricsEmail (msg) {
+  return (dispatch) => {
+    msg.info('Sending Email...You will be notified when it is sent to all users')
+    callApi('backdoor/sendWhatsAppMetricsEmail').then(res => {
+      if (res.status === 'success') {
+        msg.success('Email sent successfully!')
+      } else {
+        msg.error('Email not sent')
+      }
+    })
   }
 }

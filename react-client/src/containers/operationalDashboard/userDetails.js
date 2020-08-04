@@ -5,11 +5,12 @@ import CommentCaptures from './commentCaptures'
 import ChatBots from './chatbots'
 import SurveysInfo from './userSurveys'
 import PollsInfo from './userPolls'
-import { loadPagesList, deleteAccount, deleteLiveChat, deleteSubscribers, getMessagesCount } from '../../redux/actions/backdoor.actions'
+import { loadPagesList, deleteAccount, deleteLiveChat, deleteSubscribers, getUserSummary } from '../../redux/actions/backdoor.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import AlertContainer from 'react-alert'
+import UserSummary from './userSummary'
 
 class UserDetails extends React.Component {
   constructor (props, context) {
@@ -18,7 +19,7 @@ class UserDetails extends React.Component {
     if (this.props.location.state) {
       const userID = this.props.location.state._id
       props.loadPagesList(userID, {first_page: 'first', last_id: 'none', number_of_records: 10, search_value: ''})
-      props.getMessagesCount({companyId: this.props.location.state.companyId})
+      props.getUserSummary({userId: this.props.location.state._id, days: 10})
     }
     this.state = {
       pagesData: [],
@@ -42,11 +43,17 @@ class UserDetails extends React.Component {
     this.closeDialogSubscribers = this.closeDialogSubscribers.bind(this)
     this.showDialogLiveChat = this.showDialogLiveChat.bind(this)
     this.closeDialogLiveChat = this.closeDialogLiveChat.bind(this)
+    this.onDaysChange = this.onDaysChange.bind(this) 
   }
-
+  onDaysChange(value) {
+    if (value === '') {
+      this.props.getUserSummary({userId: this.props.location.state._id, days: ''})
+    } else if (parseInt(value) > 0) {
+      this.props.getUserSummary({userId: this.props.location.state._id, days: parseInt(value)})
+    }
+  }
   componentDidMount () {
     // this.scrollToTop();
-
     const hostname = window.location.hostname
     let title = ''
     if (hostname.includes('kiboengage.cloudkibo.com')) {
@@ -232,14 +239,12 @@ class UserDetails extends React.Component {
           <div className='d-flex align-items-center'>
             <div className='mr-auto'>
               <h3 className='m-subheader__title'>{this.props.location.state.name}&nbsp;&nbsp;&nbsp;
-              {this.props.messagesCount &&
-                <span className='m-badge m-badge--wide m-badge--primary'>{`${this.props.messagesCount.totalMessagesSent} Messages Sent`}</span>
-              }
               </h3>
             </div>
           </div>
         </div>
         <div className='m-content'>
+          <UserSummary userSummary={this.props.userSummary} onDaysChange={this.onDaysChange} />
           <PagesInfo history={this.props.history} location={this.props.location} pages={this.state.pagesData} pagesData={this.props.pages} pageNumber={this.state.pageNumber} length={this.state.totalLength} handleClickEvent={this.handleClickEvent} displayData={this.displayData} search={this.search} />
           <BroadcastsInfo history={this.props.history} location={this.props.location} userID={this.props.location.state._id} />
           <SurveysInfo history={this.props.history} location={this.props.location} userID={this.props.location.state._id} />
@@ -261,7 +266,7 @@ function mapStateToProps (state) {
     pages: state.backdoorInfo.pages,
     count: state.backdoorInfo.pagesCount,
     response: state.backdoorInfo.response,
-    messagesCount: state.backdoorInfo.messagesCount
+    userSummary: state.backdoorInfo.userSummary
   }
 }
 
@@ -271,7 +276,7 @@ function mapDispatchToProps (dispatch) {
     deleteAccount: deleteAccount,
     deleteLiveChat: deleteLiveChat,
     deleteSubscribers: deleteSubscribers,
-    getMessagesCount: getMessagesCount
+    getUserSummary: getUserSummary
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(UserDetails)

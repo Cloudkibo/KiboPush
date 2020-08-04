@@ -1,11 +1,19 @@
 import {getAutomatedOptions, getuserdetails} from './basicinfo.actions'
 import * as ActionTypes from '../constants/constants'
 import callApi from '../../utility/api.caller.service'
+import auth from '../../utility/auth.service'
 export const API_URL = '/api'
 
 export function updateZoomIntegrations (data) {
   return {
     type: ActionTypes.UPDATE_ZOOM_INTEGRATIONS,
+    data
+  }
+}
+
+export function removeZoomIntegration (data) {
+  return {
+    type: ActionTypes.REMOVE_ZOOM_INTEGRATION,
     data
   }
 }
@@ -50,6 +58,7 @@ export function RemoveCannedResponse (data) {
     data
   }
 }
+
 export function getResponseMethod (data) {
   return {
     type: ActionTypes.RESPONSE_METHOD,
@@ -86,6 +95,13 @@ export function showWebhook (data) {
 export function showWebhookResponse (data) {
   return {
     type: ActionTypes.SHOW_WEBHOOK_RESPONSE,
+    data
+  }
+}
+
+export function updateWhatsAppMessageTemplates (data) {
+  return {
+    type: ActionTypes.UPDATE_WHATSAPP_MESSAGE_TEMPLATES,
     data
   }
 }
@@ -508,6 +524,30 @@ export function updatePlatformWhatsApp (data, msg, clearFields, handleResponse) 
   }
 }
 
+export function getWhatsAppMessageTemplates () {
+  return (dispatch) => {
+    callApi('company/getWhatsAppMessageTemplates')
+      .then(res => {
+        console.log('response from getWhatsAppMessageTemplates', res)
+        dispatch(updateWhatsAppMessageTemplates(res.payload))
+    })
+  }
+}
+
+export function integrateZoom (cb) {
+  return (dispatch) => {
+    fetch('/auth/zoom', {
+      method: 'get',
+      headers: new Headers({
+        'Authorization': `Bearer ${auth.getToken()}`
+      })
+    })
+      .then((res) => res.json())
+      .then((res) => res)
+      .then((res) => cb(res.payload))
+  }
+}
+
 export function getZoomIntegrations () {
   return (dispatch) => {
     callApi('zoom/users')
@@ -523,7 +563,7 @@ export function getZoomIntegrations () {
         //     },
         //     {
         //       _id: 'abc',
-        //       profilePic: "",
+        //       profilePic: "https://marketplacecontent.zoom.us//gCnqdlNeQAm9i-gWzFolsw/NauViVfXSqCZ_neqINzeEw/app/dENflTHgQPml6oCe-CiFQg/obZ0MydITbydrlhF7k6ZJw.png",
         //       firstName : "Kibo",
         //       lastName : "Meeting",
         //       connected: true
@@ -611,9 +651,11 @@ export function createCannedResponses (data, cb) {
   return (dispatch) => {
     callApi('cannedResponses', 'post', data)
       .then(res => {
+        if(res.status === 'success') {
         dispatch(loadcannedResponses())
+        }
         cb(res)
-      })
+     })
   }
 }
 

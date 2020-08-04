@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import AlertContainer from 'react-alert'
 import { RingLoader } from 'halogenium'
-import { getZoomIntegrations, createZoomMeeting } from '../../redux/actions/settings.actions'
+import { getZoomIntegrations, createZoomMeeting, loadcannedResponses } from '../../redux/actions/settings.actions'
 
 // actions
 import {
@@ -90,7 +90,8 @@ class LiveChat extends React.Component {
       smpStatus: [],
       selected: [],
       showingBulkActions: false,
-      allSelected: false
+      allSelected: false,
+      cannedResponses: []
     }
 
     this.fetchSessions = this.fetchSessions.bind(this)
@@ -119,8 +120,8 @@ class LiveChat extends React.Component {
     this.isSMPApproved = this.isSMPApproved.bind(this)
     this.setMessageData = this.setMessageData.bind(this)
     this.markSessionsRead = this.markSessionsRead.bind(this)
-
-    this.fetchSessions(true, 'none')
+    this.props.loadcannedResponses()
+    this.fetchSessions(true, 'none', true)
     props.getSMPStatus(this.handleSMPStatus)
     props.loadMembersList()
     props.loadTags()
@@ -231,11 +232,11 @@ class LiveChat extends React.Component {
 
   changeTab (value) {
     this.setState({
+      sessions: value === 'open' ? this.props.openSessions : this.props.closeSessions,
+      sessionsCount: value === 'open' ? this.props.openCount : this.props.closeCount,
       tabValue: value,
       userChat: [],
       activeSession: {}
-    }, () => {
-      this.fetchSessions(true, 'none')
     })
   }
 
@@ -477,7 +478,7 @@ class LiveChat extends React.Component {
   }
 
   getAgents (members) {
-    let agents = members.map(m => m.userId)
+    let agents = members.filter(a => !a.userId.disableMember).map(m => m.userId)
     return agents
   }
 
@@ -485,6 +486,9 @@ class LiveChat extends React.Component {
     console.log('UNSAFE_componentWillMount called in live chat', nextProps)
     let state = {}
 
+    if (nextProps.cannedResponses !== this.props.cannedResponses) {
+      this.setState({ cannedResponses: nextProps.cannedResponses})
+    }
     if (nextProps.openSessions || nextProps.closeSessions) {
       state.loading = false
       state.sessionsLoading = false
@@ -606,11 +610,13 @@ class LiveChat extends React.Component {
                   markSessionsRead={this.markSessionsRead}
                   selected={this.state.selected}
                   showingBulkActions={this.state.showingBulkActions}
+                  showBulkActions={true}
                   allSelected={this.state.allSelected}
                 />
                 {
                   this.state.activeSession.constructor === Object && Object.keys(this.state.activeSession).length > 0 &&
                   <CHAT
+                    cannedResponses = {this.state.cannedResponses}
                     userChat={this.state.userChat}
                     chatCount={this.props.chatCount}
                     sessions={this.state.sessions}
@@ -646,6 +652,7 @@ class LiveChat extends React.Component {
                     history={this.props.history}
                     zoomIntegrations={this.props.zoomIntegrations}
                     createZoomMeeting={this.props.createZoomMeeting}
+                    showSubscriberNameOnMessage={true}
                   />
                 }
                 {
@@ -732,7 +739,9 @@ function mapStateToProps(state) {
     customFields: (state.customFieldInfo.customFields),
     searchChatMsgs: (state.liveChat.searchChat),
     socketData: (state.socketInfo.socketData),
-    zoomIntegrations: (state.settingsInfo.zoomIntegrations)
+    zoomIntegrations: (state.settingsInfo.zoomIntegrations),
+    cannedResponses: state.settingsInfo.cannedResponses
+
   }
 }
 
@@ -776,7 +785,8 @@ function mapDispatchToProps(dispatch) {
     updateSessionProfilePicture,
     getZoomIntegrations,
     createZoomMeeting,
-    setUserChat
+    setUserChat,
+    loadcannedResponses
   }, dispatch)
 }
 
