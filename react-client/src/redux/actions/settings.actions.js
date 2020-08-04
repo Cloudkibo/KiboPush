@@ -25,6 +25,13 @@ export function showIntegrations (data) {
   }
 }
 
+export function showAdminAlerts (data) {
+  return {
+    type: ActionTypes.SHOW_ADMINALERTS,
+    data
+  }
+}
+
 export function showWhiteListDomains (data) {
   return {
     type: ActionTypes.SHOW_WHITELIST_DOMAINS,
@@ -116,6 +123,29 @@ export function getPermissions () {
           console.log('permissions', res.payload)
           dispatch(getPermissionsSuccess(res.payload))
         }
+      })
+  }
+}
+
+export function fetchNotifications () {
+  return (dispatch) => {
+    callApi('companyPreferences/')
+      .then(res => {
+         res = {status: 'success', payload: { pendingSessionAlert : {
+            enabled: true,
+            notification_interval: 5,
+            interval_unit: 'mins',
+            assignedMembers: 'both'
+            }, 
+            unresolveSessionAlert: {
+            enabled: true,
+            notification_interval: 30,
+            interval_unit: 'mins',
+            assignedMembers: 'buyer'
+            }
+          }
+        }
+        dispatch(showAdminAlerts(res.payload)) 
       })
   }
 }
