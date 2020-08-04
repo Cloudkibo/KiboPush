@@ -159,6 +159,7 @@ import BackdoorPageAdmins from './containers/operationalDashboard/pageAdmins'
 import CustomFields from './containers/customFields/customFields'
 import Tags from './containers/tags/tags'
 import successMessage from './containers/integerationScreen/successMessage'
+import AlreadyConnected from './containers/integerationScreen/alreadyConnected'
 import ErrorMessage from './containers/integerationScreen/ErrorMessage'
 import SmsDashboard from './containers/smsWhatsAppDashboard/smsDashboard'
 import WhatsAppDashboard from './containers/smsWhatsAppDashboard/whatsAppDashboard'
@@ -400,6 +401,7 @@ const Routes = () => (
     <Route path='/chatbotSettings' component={ChatbotSettings} onEnter={requireAuth} />
     <Route path='/tags' component={Tags} onEnter={requireAuth} />
     <Route path='/successMessage' component={successMessage} onEnter={requireAuth} />
+    <Route path='/alreadyConnected' component={AlreadyConnected} onEnter={requireAuth} />
     <Route path='/ErrorMessage' component={ErrorMessage} onEnter={requireAuth} />
     <Route path='*' render={() => <Redirect to='/' />} />
   </Switch>
