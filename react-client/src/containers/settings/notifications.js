@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import AlertContainer from 'react-alert'
-import { fetchNotifications } from '../../redux/actions/settings.actions'
+import { fetchNotifications, updateNotificationSettings } from '../../redux/actions/settings.actions'
 
 class Notifications extends React.Component {
   constructor (props, context) {
@@ -24,9 +24,21 @@ class Notifications extends React.Component {
     }
   }
   saveNotificationSettings () {
-
+    var payload = {}
+    for (let alert of this.state.notifications) {
+      payload[alert._id]= {
+        enabled: alert.enabled,
+        notification_interval: alert.notification_interval,
+        interval_unit: alert.interval_unit,
+        assignedMembers: alert.assignedMembers
+      }
+    }
+    this.props.updateNotificationSettings(payload, this.msg)
   }
   updateNotificationSettings (notification, field, value) {
+    if (field === 'notification_interval' && (!value || value === 0)) {
+      value = 1
+    }
     var notifications = []
     for (let alert of this.state.notifications) 
     { if (alert._id === notification._id) {
@@ -153,7 +165,7 @@ class Notifications extends React.Component {
                                 Set time (in mins) after which alert will be sent
                               </div>
                               <div className='col-4'>
-                                 <input className='form-control m-input' style={{width: '90px'}} min='1' step='1' type='number' value={notification.notification_interval} id='mins-input' onChange={(e) => { this.updateNotificationSettings(notification, 'notification_interval', e.value)}}/>
+                                 <input disabled={!notification.enabled} className='form-control m-input' style={{width: '90px'}} min='1' step='1' type='number' value={notification.notification_interval}  onKeyDown={e => /[+\-.,\s]$/.test(e.key) && e.preventDefault()} id='mins-input' onChange={(e) => { this.updateNotificationSettings(notification, 'notification_interval', e.target.value)}}/>
                               </div>
                             </div>
                             <div className='row' style={{marginTop: '5px'}}>
@@ -161,7 +173,7 @@ class Notifications extends React.Component {
                                 Assign members who will receive alert
                               </div>
                               <div className='col-4'>
-                                <select className='custom-select' onChange={(e) => { this.updateNotificationSettings(notification, 'assignedMembers', e.value)}}>
+                                <select disabled={!notification.enabled} className='custom-select' onChange={(e) => { this.updateNotificationSettings(notification, 'assignedMembers', e.target.value)}}>
                                   <option value='buyer' selected={notification.assignedMembers === 'buyer'}>
                                     Buyer
                                   </option>
@@ -199,7 +211,8 @@ function mapStateToProps (state) {
 }
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-    fetchNotifications: fetchNotifications
+    fetchNotifications: fetchNotifications,
+    updateNotificationSettings: updateNotificationSettings
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Notifications)

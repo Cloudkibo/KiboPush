@@ -129,27 +129,28 @@ export function getPermissions () {
 
 export function fetchNotifications () {
   return (dispatch) => {
-    callApi('companyPreferences/')
+    callApi('adminAlerts/')
       .then(res => {
-         res = {status: 'success', payload: { pendingSessionAlert : {
-            enabled: true,
-            notification_interval: 5,
-            interval_unit: 'mins',
-            assignedMembers: 'both'
-            }, 
-            unresolveSessionAlert: {
-            enabled: true,
-            notification_interval: 30,
-            interval_unit: 'mins',
-            assignedMembers: 'buyer'
-            }
-          }
+        if (res.status === 'success') {
+          dispatch(showAdminAlerts(res.payload)) 
         }
-        dispatch(showAdminAlerts(res.payload)) 
       })
   }
 }
-
+export function updateNotificationSettings (data, msg) {
+  return (dispatch) => {
+    callApi('adminAlerts/update', 'post', data)
+      .then(res => {
+        if (res.status === 'success') {
+          dispatch(fetchNotifications()) 
+          msg.success('Notification settings updated successfully')
+        } else {
+          msg.error('Unable to update notification settings')
+          console.log(res.description)
+        }
+      })
+  }
+}
 export function updatePermission (updatedPermissions, msg) {
   return (dispatch) => {
     callApi('permissions/updatePermissions', 'post', updatedPermissions)
