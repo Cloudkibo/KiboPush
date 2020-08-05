@@ -145,7 +145,7 @@ class Chat extends React.Component {
             </div>
           </div>
         }
-        
+
         <HEADER
           activeSession={this.props.activeSession}
           showSearch={this.props.showSearch}

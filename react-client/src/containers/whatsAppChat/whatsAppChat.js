@@ -684,6 +684,7 @@ function mapDispatchToProps(dispatch) {
     getZoomIntegrations,
     createZoomMeeting,
     createNewContact,
+    editSubscriberWhatsApp,
     loadcannedResponses,
     editSubscriberWhatsApp,
     getWhatsAppMessageTemplates

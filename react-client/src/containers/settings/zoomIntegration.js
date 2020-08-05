@@ -5,12 +5,16 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import AlertContainer from 'react-alert'
 import YouTube from 'react-youtube'
+import CONFIRMATIONMODAL from '../../components/extras/confirmationModal'
 
 class ZoomIntegration extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      deleteIngerationId: '',
+      deleteZoomIngeration: {
+        firstName: '',
+        lastName: ''
+      },
       openVideo: false,
       zoomIntegration: {
         name: 'Zoom Meetings',
@@ -23,6 +27,13 @@ class ZoomIntegration extends React.Component {
     props.getZoomIntegrations()
     this.openVideoTutorial = this.openVideoTutorial.bind(this)
     this.redirectToAuthorizeZoom = this.redirectToAuthorizeZoom.bind(this)
+    this.setDeleteZoomIntegration = this.setDeleteZoomIntegration.bind(this)
+  }
+
+  setDeleteZoomIntegration (integration) {
+    this.setState({deleteZoomIngeration: integration}, () => {
+      this.refs.toggleDisconnectZoom.click()
+    })
   }
 
   redirectToAuthorizeZoom (url) {
@@ -60,6 +71,14 @@ class ZoomIntegration extends React.Component {
     return (
       <div id='target' className='col-lg-8 col-md-8 col-sm-8 col-xs-12'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
+        <button ref='toggleDisconnectZoom' data-toggle='modal' data-target='#_confirm_zoom_disconnect' style={{display: 'none'}} />
+        <a ref='disconnectZoom' style={{display: 'none'}} target='_blank' rel="noopener noreferrer" href={`https://marketplace.zoom.us/user/installed`} />
+        <CONFIRMATIONMODAL
+          id='_confirm_zoom_disconnect'
+          title='Disconnect Zoom Integration'
+          description={`Are you sure you want to disconnect this Zoom integration?\n\nPlease make sure you are logged in on the Zoom platform from "${this.state.deleteZoomIngeration.firstName} ${this.state.deleteZoomIngeration.lastName}" account before clicking on "Yes".\n\n`}
+          onConfirm={() => this.refs.disconnectZoom.click()}
+        />
         <button style={{ display: 'none' }} ref='videoTutorial' data-toggle='modal' data-backdrop='static' data-keyboard='false' data-target="#videoTutorial">videoTutorial</button>
         <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="videoTutorial" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog modal-lg" role="document">
@@ -160,9 +179,9 @@ class ZoomIntegration extends React.Component {
                       </div>
                       <span className='m-widget4__ext' style={{paddingLeft: '150px'}}>
                           {integration.connected
-                            ? <a target='_blank' rel="noopener noreferrer" href={`https://marketplace.zoom.us/user/installed`} className='m-btn m-btn--pill m-btn--hover-danger btn btn-danger' style={{borderColor: '#f4516c', color: '#f4516c', marginRight: '10px'}}>
+                            ? <button onClick={() => this.setDeleteZoomIntegration(integration)} className='m-btn m-btn--pill m-btn--hover-danger btn btn-danger' style={{borderColor: '#f4516c', color: '#f4516c', marginRight: '10px'}}>
                               Disconnect
-                            </a>
+                            </button>
                             : <button onClick={() => this.props.integrateZoom(this.redirectToAuthorizeZoom)} className='m-btn m-btn--pill m-btn--hover-success btn btn-success' style={{borderColor: '#34bfa3', color: '#34bfa3', marginRight: '10px'}}>
                             Connect
                           </button>

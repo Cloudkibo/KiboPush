@@ -23,6 +23,11 @@ class TextArea extends React.Component {
     this.appendUserName = this.appendUserName.bind(this)
   }
 
+
+  togglePopover () {
+    this.setState({showPopover: !this.state.showPopover})
+  }
+
   onTextChange (e) {
     if (e.target.value.length <= 2000) {
       let text = e.target.value
@@ -30,11 +35,6 @@ class TextArea extends React.Component {
       this.props.updateParentState({text})
     }
   }
-
-  togglePopover () {
-    this.setState({showPopover: !this.state.showPopover})
-  }
-
   getPicker (type, popoverOptions) {
     switch (type) {
       case 'emoji':
