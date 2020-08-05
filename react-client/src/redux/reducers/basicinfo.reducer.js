@@ -73,10 +73,6 @@ export function basicInfo (state = initialState, action) {
         captchaKey: action.captchaKey,
         stripeKey: action.stripeKey
       })
-    case ActionTypes.FETCH_PLAN:
-      return Object.assign({}, state, {
-        error: action.data
-      })
 
     default:
       return state

@@ -9,13 +9,6 @@ export function setBrowserName (data) {
   }
 }
 
-export function fetchPlan (data) {
-  return {
-    type: ActionTypes.FETCH_PLAN,
-    data
-  }
-}
-
 export function showuserdetails (data) {
   // NOTE: don't remove following auth method call
   console.log('user details', data)
@@ -172,22 +165,23 @@ export function updatePlan (data, msg) {
       console.log('response from updatePlan', res)
       if (res.status === 'success') {
         msg.success('Plan updated successfully')
-        dispatch(fetchPlan('success'))
         dispatch(getuserdetails())
       } else {
-        dispatch(fetchPlan(res.description))
+        const error = res.description || 'Failed to update plan'
+        msg.error(error)
       }
     })
   }
 }
 
-export function updateCard (data, msg) {
+export function updateCard (data, msg, callback) {
   console.log('data for updateMode', data)
   return (dispatch) => {
     callApi('company/setCard', 'post', data).then(res => {
       console.log('response from updatePlan', res)
       if (res.status === 'success') {
         msg.success('Card added successfully')
+        callback()
         dispatch(getuserdetails())
       }
     })
