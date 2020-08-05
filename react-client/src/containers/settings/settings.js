@@ -547,7 +547,7 @@ class Settings extends React.Component {
                       </a>
                     </li>
                     }
-                    { (url.includes('localhost') || url.includes('kibochat.cloudkibo.com')) && (this.props.user.role === 'buyer') &&
+                    { (url.includes('localhost') || url.includes('kibochat.cloudkibo.com')) && (this.props.user.role === 'buyer') &&  (this.props.user.currentPlan.unique_ID === 'plan_C' || this.props.user.currentPlan.unique_ID === 'plan_D') &&
                     <li className='m-nav__item'>
                       <a href='#/' className='m-nav__link' onClick={this.setNotification} style={{cursor: 'pointer'}} >
                         <i className='m-nav__link-icon flaticon-bell' />
