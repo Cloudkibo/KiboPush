@@ -608,17 +608,17 @@ class Poll extends React.Component {
                               className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
                               <span style={{ width: '50px' }}>Sent</span>
                             </th>
-                            {/* <th data-field='seen'
+                            <th data-field='seen'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '50px'}}>Seen</span>
-                          </th> */}
+                            <span style={{width: '100px'}}>Delivered</span>
+                            </th>
                             <th data-field='responses'
                               className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
                               <span style={{ width: '100px' }}>Responses</span>
                             </th>
                             <th data-field='actions'
                               className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                              <span style={{ width: '200px' }}>Actions</span>
+                              <span style={{ width: '150px' }}>Actions</span>
                             </th>
                           </tr>
                         </thead>
@@ -631,11 +631,11 @@ class Poll extends React.Component {
                                 <td data-field='platform' className='m-datatable__cell'><span style={{ width: '100px' }}>{poll.platform}</span></td>
                                 <td data-field='statement' className='m-datatable__cell'><span style={{ width: '150px' }}>{poll.statement}</span></td>
                                 <td data-field='datetime' className='m-datatable__cell'><span style={{ width: '150px' }}>{handleDate(poll.datetime)}</span></td>
-                                <td data-field='sent' className='m-datatable__cell'><span style={{ width: '50px' }}>{poll.sent}</span></td>
-                                {/* <td data-field='seen' className='m-datatable__cell'><span style={{width: '50px'}}>{poll.seen}</span></td> */}
-                                <td data-field='responses' className='m-datatable__cell'><span style={{ width: '50px' }}>{poll.responses}</span></td>
+                                <td data-field='sent' className='m-datatable__cell'><span style={{ width: '50px', textAlign: 'center' }}>{poll.sent}</span></td>
+                                <td data-field='seen' className='m-datatable__cell'><span style={{width: '100px', textAlign: 'center'}}>{poll.delivered}</span></td>
+                                <td data-field='responses' className='m-datatable__cell'><span style={{ width: '100px', textAlign: 'center' }}>{poll.responses}</span></td>
                                 <td data-field='actions' className='m-datatable__cell'>
-                                  <span style={{ width: '200px' }}>
+                                  <span style={{ width: '150px' }}>
                                     <button className='btn btn-primary btn-sm'
                                       style={{ float: 'left', margin: 2 }}
                                       onClick={() => this.gotoViewPoll(poll)}>

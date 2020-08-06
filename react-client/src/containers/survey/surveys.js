@@ -554,7 +554,7 @@ class Survey extends React.Component {
                           <th>Description</th>
                           <th>Created At</th>
                           <th>Sent</th>
-                          {/* <th>Seen</th> */}
+                          <th>Delivered</th>
                           <th>Responded</th>
                           <th>Actions</th>
 
@@ -567,10 +567,10 @@ class Survey extends React.Component {
                             <td>{survey.title}</td>
                             <td>{survey.description}</td>
                             <td>{handleDate(survey.datetime)}</td>
-                            <td>{survey.sent}</td>
-                            {/* <td>{survey.seen}</td> */}
-                            <td>{survey.responses}</td>
-                            <td>
+                            <td style={{textAlign: 'center'}}>{survey.sent}</td>
+                            <td style={{textAlign: 'center'}}>{survey.delivered}</td>
+                            <td style={{textAlign: 'center'}}>{survey.responses}</td>
+                            <td style={{width: '150px'}}>
                               <button className='btn btn-primary btn-sm'
                                 style={{float: 'left', margin: 2}}
                                 onClick={() => this.gotoView(survey)}>View

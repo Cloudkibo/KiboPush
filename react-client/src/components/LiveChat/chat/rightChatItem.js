@@ -50,9 +50,19 @@ class RightChatItem extends React.Component {
       )
     } else if (['image', 'sticker', 'gif', 'thumbsUp'].includes(type)) {
       return (
-        <IMAGE
+        <div>
+          <IMAGE
           image={message}
-        />
+          />
+          {
+            message.caption &&
+            <div style={{marginTop: '10px'}}>
+              <TEXT
+                text={{text: message.caption}}
+              />
+            </div>
+        }
+      </div>
       )
     } else if (type === 'audio') {
       return (
@@ -62,9 +72,19 @@ class RightChatItem extends React.Component {
       )
     } else if (type === 'video') {
       return (
-        <VIDEO
-          video={message}
-        />
+        <div>
+          <VIDEO
+            video={message}
+          />
+          {
+            message.caption &&
+            <div style={{marginTop: '10px'}}>
+              <TEXT
+                text={{text: message.caption}}
+              />
+            </div>
+          }
+      </div>
       )
     } else if (type === 'file') {
       return (
@@ -130,8 +150,8 @@ class RightChatItem extends React.Component {
                 {this.getRepliedByMsg()}
               </div>
               {this.getMessage()}
+              {this.props.seenElement}
             </div>
-            {this.props.seenElement}
           </div>
         </div>
       </div>

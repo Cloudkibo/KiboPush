@@ -143,11 +143,31 @@ class GenericMessageComponents extends React.Component {
                   <img src='https://cdn.cloudkibo.com/public/icons/video.png' alt='Video' style={{maxHeight: '20px', margin: '10px', marginLeft: '20px'}} />
                   Video Link
                 </h5>
-                <p style={descriptionStyle}>Enter a YouTube or Facebook link to send it as a playable video</p>
+                {
+                  this.props.module && this.props.module === 'whatsapp' ? 
+                  <p style={descriptionStyle}>Send a YouTube video link</p> :
+                  <p style={descriptionStyle}>Enter a YouTube or Facebook link to send it as a playable video</p>
+                }
               </div>
             </div>
           </div>
         </div>
+        {
+          this.props.module && this.props.module === 'whatsapp' && 
+          <div data-tip={tooltipText} style={{...cursorStyle, ...outerColumnStyle}} className='col-6' hidden={this.props.hiddenComponents.indexOf('template') > -1 ? true : null}>
+            <div style={componentStyle} className='ui-block hoverbordercomponent' onClick={() => { this.props.addComponent('template') }}>
+              <div className='row'>
+                <div className='col-12' style={innerColumnStyle}>
+                  <h5 style={headerStyle}>
+                    <img src='https://cdn.cloudkibo.com/public/icons/text.png' alt='Template' style={{maxHeight: '20px', margin: '10px', marginLeft: '20px'}} />
+                    Template
+                  </h5>
+                    <p style={descriptionStyle}>Send a pre-approved message template. These can be sent outside of the 24 hour messaging window. </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        }
         <div data-tip={tooltipText} style={{...cursorStyle, ...outerColumnStyle}} className='col-6' hidden={this.props.hiddenComponents.indexOf('link') > -1 ? true : null}>
           <div style={componentStyle} className='ui-block hoverbordercomponent' onClick={() => { this.props.addComponent('link') }}>
             <div className='row'>

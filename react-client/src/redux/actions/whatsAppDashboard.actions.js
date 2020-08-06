@@ -8,6 +8,13 @@ export function showSentSeen (data) {
   }
 }
 
+export function showMetrics (data) {
+  return {
+    type: ActionTypes.SHOW_METRICS,
+    data
+  }
+}
+
 export function showSubscriberSummary (data) {
   return {
     type: ActionTypes.SHOW_SUBSCRIBER_SUMMARY,
@@ -28,6 +35,17 @@ export function loadSentSeenWhatsApp (data) {
       console.log('response from loadSentSeen', res)
       if (res.status === 'success') {
         dispatch(showSentSeen(res.payload))
+      }
+    })
+  }
+}
+
+export function loadMetrics (data) {
+  return (dispatch) => {
+    callApi('whatsAppDashboard/metrics', 'post', data).then(res => {
+      console.log('response from loadSentSeen', res)
+      if (res.status === 'success') {
+        dispatch(showMetrics(res.payload))
       }
     })
   }

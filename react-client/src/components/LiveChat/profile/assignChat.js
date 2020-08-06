@@ -29,7 +29,7 @@ class AssignChat extends React.Component {
                 } : ''
             })
         }
-    } 
+    }
 
   unassignAgent() {
     let data = {
@@ -63,7 +63,7 @@ class AssignChat extends React.Component {
       subscriberId: this.props.activeSession._id,
       isAssigned: false
     }
-    this.props.fetchTeamAgents(this.props.activeSession.assigned_to.id)
+    this.props.fetchTeamAgents(this.props.activeSession.assigned_to.id, 'unassigned')
     this.props.assignToTeam(data, (res) => {
       if (res.status === 'success') {
         this.props.alertMsg.success('Team unassigned succesfully')
@@ -99,14 +99,13 @@ class AssignChat extends React.Component {
   }
 
   assignToTeam() {
-    console.log('assignToTeam', this.state)
     let data = {
         teamId: this.state.currentSelected.value,
         teamName: this.state.currentSelected.label,
         subscriberId: this.props.activeSession._id,
         isAssigned: true
     }
-    this.props.fetchTeamAgents(this.state.currentSelected.value)
+    this.props.fetchTeamAgents(this.state.currentSelected.value, 'assigned')
     this.props.assignToTeam(data, (res) => {
       if (res.status === 'success') {
         this.props.alertMsg.success('Team assigned succesfully')
@@ -117,7 +116,6 @@ class AssignChat extends React.Component {
   }
 
   onSelectChange (selected) {
-      console.log(selected)
       if (selected) {
         this.setState({currentSelected: selected}, () => {
             if (selected.group === 'team') {
@@ -133,7 +131,7 @@ class AssignChat extends React.Component {
             } else if (this.state.currentSelected.group === 'agent') {
                 this.unassignAgent()
             }
-        } 
+        }
         this.setState({currentSelected: ''})
       }
   }
@@ -177,5 +175,5 @@ AssignChat.propTypes = {
     'sendNotifications': PropTypes.func.isRequired,
     'user': PropTypes.object.isRequired
   }
-  
+
   export default AssignChat

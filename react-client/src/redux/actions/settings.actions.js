@@ -1,11 +1,19 @@
 import {getAutomatedOptions, getuserdetails} from './basicinfo.actions'
 import * as ActionTypes from '../constants/constants'
 import callApi from '../../utility/api.caller.service'
+import auth from '../../utility/auth.service'
 export const API_URL = '/api'
 
-export function updateZoomIntegration (data) {
+export function updateZoomIntegrations (data) {
   return {
-    type: ActionTypes.UPDATE_ZOOM_INTEGRATION,
+    type: ActionTypes.UPDATE_ZOOM_INTEGRATIONS,
+    data
+  }
+}
+
+export function removeZoomIntegration (data) {
+  return {
+    type: ActionTypes.REMOVE_ZOOM_INTEGRATION,
     data
   }
 }
@@ -13,6 +21,13 @@ export function updateZoomIntegration (data) {
 export function showIntegrations (data) {
   return {
     type: ActionTypes.GET_INTEGRATIONS,
+    data
+  }
+}
+
+export function showAdminAlerts (data) {
+  return {
+    type: ActionTypes.SHOW_ADMINALERTS,
     data
   }
 }
@@ -28,6 +43,25 @@ export function showAdvancedSettings (data) {
   console.log(data)
   return {
     type: ActionTypes.GET_ADVANCED_SETTINGS,
+    data
+  }
+}
+export function showcannedResponses (data) {
+  return {
+    type: ActionTypes.GET_CANNED_RESPONSES,
+    data
+  }
+}
+
+export function editCannedResponse (data) {
+  return {
+    type: ActionTypes.UPDATE_CANNED_RESPONSE,
+    data
+  }
+}
+export function RemoveCannedResponse (data) {
+  return {
+    type: ActionTypes.DELETE_CANNED_RESPONSE,
     data
   }
 }
@@ -72,6 +106,13 @@ export function showWebhookResponse (data) {
   }
 }
 
+export function updateWhatsAppMessageTemplates (data) {
+  return {
+    type: ActionTypes.UPDATE_WHATSAPP_MESSAGE_TEMPLATES,
+    data
+  }
+}
+
 export function getPermissions () {
   return (dispatch) => {
     callApi('permissions/fetchPermissions')
@@ -85,6 +126,30 @@ export function getPermissions () {
   }
 }
 
+export function fetchNotifications () {
+  return (dispatch) => {
+    callApi('adminAlerts/')
+      .then(res => {
+        if (res.status === 'success') {
+          dispatch(showAdminAlerts(res.payload)) 
+        }
+      })
+  }
+}
+export function updateNotificationSettings (data, msg) {
+  return (dispatch) => {
+    callApi('adminAlerts/update', 'post', data)
+      .then(res => {
+        if (res.status === 'success') {
+          dispatch(fetchNotifications()) 
+          msg.success('Notification settings updated successfully')
+        } else {
+          msg.error('Unable to update notification settings')
+          console.log(res.description)
+        }
+      })
+  }
+}
 export function updatePermission (updatedPermissions, msg) {
   return (dispatch) => {
     callApi('permissions/updatePermissions', 'post', updatedPermissions)
@@ -490,20 +555,52 @@ export function updatePlatformWhatsApp (data, msg, clearFields, handleResponse) 
   }
 }
 
-export function getZoomIntegration () {
+export function getWhatsAppMessageTemplates () {
   return (dispatch) => {
-    callApi('zoom/users')
+    callApi('company/getWhatsAppMessageTemplates')
       .then(res => {
-        dispatch(updateZoomIntegration(res.payload))
-      })
+        console.log('response from getWhatsAppMessageTemplates', res)
+        dispatch(updateWhatsAppMessageTemplates(res.payload))
+    })
   }
 }
 
-export function disconnectZoom () {
+export function integrateZoom (cb) {
   return (dispatch) => {
-    callApi('zoom/disconnect')
+    fetch('/auth/zoom', {
+      method: 'get',
+      headers: new Headers({
+        'Authorization': `Bearer ${auth.getToken()}`
+      })
+    })
+      .then((res) => res.json())
+      .then((res) => res)
+      .then((res) => cb(res.payload))
+  }
+}
+
+export function getZoomIntegrations () {
+  return (dispatch) => {
+    callApi('zoom/users')
       .then(res => {
-        dispatch(updateZoomIntegration(null))
+        dispatch(updateZoomIntegrations(res.payload ? res.payload : []))
+        // dispatch(updateZoomIntegrations([    
+        //     {
+        //       _id: '123',
+        //       profilePic: "https://platform-lookaside.fbsbx.com/platform/profilepic/?asid=10217280192532174&height=50&width=50&ext=1596610613&hash=AeTfTwYDbHqEJfmf",
+        //       firstName : "Anisha",
+        //       lastName : "Chhatwani",
+        //       connected: true
+        //     },
+        //     {
+        //       _id: 'abc',
+        //       profilePic: "https://marketplacecontent.zoom.us//gCnqdlNeQAm9i-gWzFolsw/NauViVfXSqCZ_neqINzeEw/app/dENflTHgQPml6oCe-CiFQg/obZ0MydITbydrlhF7k6ZJw.png",
+        //       firstName : "Kibo",
+        //       lastName : "Meeting",
+        //       connected: true
+        //     }
+        //   ])
+        // )
       })
   }
 }
@@ -564,6 +661,59 @@ export function getAdvancedSettings () {
     callApi('company/getAdvancedSettings')
       .then(res => {
         dispatch(showAdvancedSettings(res.payload))
+      })
+  }
+}
+
+export function loadcannedResponses () {
+  return (dispatch) => {
+    callApi('cannedResponses')
+      .then(res => {
+        if (res.status === 'success') {
+          dispatch(showcannedResponses(res.payload))
+        } else {
+          console.log('failed to fetch canned messages')
+        }
+      })
+  }
+}
+
+export function createCannedResponses (data, cb) {
+  return (dispatch) => {
+    callApi('cannedResponses', 'post', data)
+      .then(res => {
+        if(res.status === 'success') {
+        dispatch(loadcannedResponses())
+        }
+        cb(res)
+     })
+  }
+}
+
+export function updateCannedResponse (data, cb) {
+  return (dispatch) => {
+    callApi('cannedResponses/edit', 'post', data)
+      .then(res => {
+        cb(res)
+        if (res.status === 'success') {
+        dispatch(editCannedResponse(data))
+        }
+      })
+  }
+}
+export function deleteCannedResponse (data, msg) {
+  return (dispatch) => {
+    callApi('cannedResponses/delete', 'post', data)
+      .then(res => {
+        if (res.status === 'success') {
+          msg.success(res.payload)
+          if(res.status === 'success') {
+            dispatch(RemoveCannedResponse(data))
+            }
+        } else {
+          msg.error('Unable to delete canned Response')
+        }
+        // dispatch(showcannedResponses(res.payload))
       })
   }
 }

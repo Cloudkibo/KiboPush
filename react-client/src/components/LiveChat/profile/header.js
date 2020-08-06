@@ -9,11 +9,50 @@ class ProfileHeader extends React.Component {
   constructor(props, context) {
     super(props, context)
     this.state = {
+      editName: false,
+      name: this.props.activeSession.name,
+      savingName: false
     }
     this.unSubscribe = this.unSubscribe.bind(this)
     this.handleUnsubscribe = this.handleUnsubscribe.bind(this)
+    this.onEditName = this.onEditName.bind(this)
+    this.onCancelEditName = this.onCancelEditName.bind(this)
+    this.onSaveName = this.onSaveName.bind(this)
+    this.onNameChange = this.onNameChange.bind(this)
   }
 
+  UNSAFE_componentWillReceiveProps (nextProps) {
+    if (nextProps.activeSession) {
+      this.setState({name: nextProps.activeSession.name, savingName: false, editName: false})
+    }
+  }
+
+  onNameChange (e) {
+    this.setState({name: e.target.value})
+  }
+
+  onEditName () {
+    this.setState({editName: true}, () => {
+      document.getElementById('_edit_name').focus()
+    })
+  }
+
+  onCancelEditName () {
+    this.setState({editName: false, name: this.props.activeSession.name})
+  }
+
+  onSaveName () {
+    if (this.state.name === '') {
+      this.props.alertMsg.error('Subscriber name cannot be empty')
+    } else {
+      this.setState({savingName: true})
+      if (this.props.user.platform === 'whatsApp') {
+        this.props.editSubscriberWhatsApp(this.props.activeSession._id, {name: this.state.name}, this.props.alertMsg)
+      } else if (this.props.user.platform === 'sms') {
+        this.props.editSubscriberSms(this.props.activeSession._id, {name: this.state.name}, this.props.alertMsg)
+      }
+    }
+  }
 
   unSubscribe() {
     this.props.unSubscribe({ subscriber_id: this.props.activeSession._id, page_id: this.props.activeSession.pageId._id }, this.handleUnsubscribe)
@@ -21,6 +60,12 @@ class ProfileHeader extends React.Component {
 
   handleUnsubscribe (res) {
     if (res.status === 'success') {
+      this.props.sendNotifications({
+        message: `Subscriber ${this.props.activeSession.firstName + ' ' + this.props.activeSession.lastName} has been blocked by ${this.props.user.name}`,
+        category: { type: 'unsubscribe', id: this.props.activeSession._id },
+        agentIds: this.props.agents.length > 0 ? this.props.agents.filter(a => a._id !== this.props.user._id).map(b => b._id): [],
+        companyId: this.props.activeSession.companyId
+      })
       this.props.alertMsg.success('Unsubscribed successfully')
       this.props.updateState({activeSession: {}})
     } else {
@@ -29,7 +74,6 @@ class ProfileHeader extends React.Component {
   }
 
   render() {
-    console.log('state in profile header', this.state)
     return (
       <div>
         <div className='m-card-profile__pic'>
@@ -38,9 +82,60 @@ class ProfileHeader extends React.Component {
           </div>
         </div>
         <div className='m-card-profile__details'>
-          <span className='m-card-profile__name'>
-            {this.props.activeSession.name}
-          </span>
+          {
+            this.props.user.platform === 'whatsApp' ?
+            <span style={{display: 'flex', justifyContent: 'center'}}>
+                <div>
+                  <div style={{display: this.state.editName ? 'flex' : 'none'}}>
+                    <input
+                      id='_edit_name'
+                      style={{
+                        border: !this.state.editName && 'none',
+                        color: '#575962',
+                        textAlign: 'center',
+                        background: !this.state.editName && 'none',
+                        boxShadow: !this.state.editName && 'none',
+                        textOverflow: 'ellipsis'
+                      }}
+                      className='form-control m-input m-card-profile__name'
+                      type='text'
+                      value={this.state.name}
+                      onChange={this.onNameChange}
+                      readOnly={!this.state.editName}
+                      disabled={this.state.savingName}
+                    /> 
+                    <span style={{display: 'inherit', marginLeft: '5px'}} className="m-card-profile__name">
+                      <button disabled={this.state.savingName} style={{border: 'none'}} onClick={this.onSaveName} className="m-portlet__nav-link btn m-btn m-btn--hover-success m-btn--icon m-btn--icon-only m-btn--pill" title="Save">
+                        {
+                          this.state.savingName
+                          ? <div className="m-loader" style={{width: "30px"}} />
+                          : <i className="la la-check" />
+                        }
+                      </button>
+                      {
+                        !this.state.savingName &&
+                        <button style={{border: 'none'}} onClick={this.onCancelEditName} className="m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill" title="Cancel">
+                          <i className="la la-close" />
+                        </button>
+                      }
+                    </span>
+                  </div>
+                </div>
+              
+            
+              <div style={{display: !this.state.editName ? 'flex' : 'none'}}>
+                <span style={{maxWidth: '150px', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden'}} className="m-card-profile__name">
+                  {this.state.name}
+                </span>
+                <button style={{border: 'none', marginLeft: '5px'}} onClick={this.onEditName} className="m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill" title="Edit">
+                  <i style={{color: 'black'}} className="fa fa-edit" />
+                </button>
+              </div>
+              
+              <br />
+            </span> :
+            <span className='m-card-profile__name'>{this.props.activeSession.name}</span>
+          }
           {
             this.props.showUnsubscribe && this.props.user && (this.props.user.role === 'admin' || this.props.user.role === 'buyer') &&
             <span className='m-card-profile__email m-link' data-toggle="modal" data-target="#_unsubscribe" style={{ color: '#716aca', cursor: 'pointer' }}>
@@ -48,30 +143,43 @@ class ProfileHeader extends React.Component {
             </span>
           }
           <br />
-          <span style={{pointerEvents: 'none'}} className='m-card-profile__email m-link'>
-            {
-              (this.props.activeSession.gender) &&
-                this.props.activeSession.gender
-            }
-          </span>
-          <br />
-          <span style={{pointerEvents: 'none'}} className='m-card-profile__email m-link'>
-            {
-                (this.props.activeSession.locale) &&
-                localeCodeToEnglish(this.props.activeSession.locale)
-            }
-          </span>
+          {
+              (this.props.activeSession.number) && (this.props.activeSession.name !== this.props.activeSession.number) &&
+              <div>
+                <span style={{pointerEvents: 'none'}} className='m-card-profile__email m-link'>
+                  {this.props.activeSession.number}
+                </span>
+              </div>
+          }
+          {
+            (this.props.activeSession.gender) &&
+              <div>
+                <span style={{pointerEvents: 'none'}} className='m-card-profile__email m-link'>
+                  {this.props.activeSession.gender}
+                </span>
+              </div>
+          }
+          {
+              (this.props.activeSession.locale) &&
+              <div>
+                <span style={{pointerEvents: 'none'}} className='m-card-profile__email m-link'>
+                  {localeCodeToEnglish(this.props.activeSession.locale)}
+                </span>
+              </div>
+          }
           <br />
           {
             this.props.user.isSuperUser && this.props.activeSession.customerId &&
-            <a href='#/' style={{ color: 'white' }}
-              onClick={() => {
-                window.open(`http://demoapp.cloudkibo.com/${this.props.activeSession.customerId}`, '_blank', 'fullscreen=yes')
-              }}
-              className='btn m-btn--pill    btn-primary'
-            >
+            <div>
+              <a href='#/' style={{ color: 'white' }}
+                onClick={() => {
+                  window.open(`http://demoapp.cloudkibo.com/${this.props.activeSession.customerId}`, '_blank', 'fullscreen=yes')
+                }}
+                className='btn m-btn--pill btn-primary'
+              >
               <i className='fa fa-external-link' /> View Customer Details
-            </a>
+              </a>
+            </div>
           }
           <br />
         </div>

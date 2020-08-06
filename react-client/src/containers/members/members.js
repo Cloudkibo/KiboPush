@@ -7,8 +7,9 @@ import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 import {
   loadMembersList,
-  deleteMember,
-  updateMember
+  disableMember,
+  updateMember,
+  enableMember
 } from '../../redux/actions/members.actions'
 import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
@@ -25,15 +26,21 @@ class Members extends React.Component {
       totalLength: 0,
       filterByName: '',
       filterByEmail: '',
-      isShowingModalDelete: false,
-      deleteid: '',
-      openVideo: false
+      isShowingModalDisable: false,
+      disabledMember: null,
+      openVideo: false,
+      password: ''
     }
     this.displayData = this.displayData.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
-    this.showDialogDelete = this.showDialogDelete.bind(this)
-    this.closeDialogDelete = this.closeDialogDelete.bind(this)
+    this.showDisableDialog = this.showDisableDialog.bind(this)
+    this.closeDialogDisable = this.closeDialogDisable.bind(this)
     this.openVideoTutorial = this.openVideoTutorial.bind(this)
+    this.onPasswordChange = this.onPasswordChange.bind(this)
+  }
+
+  onPasswordChange (e) {
+    this.setState({ password: e.target.value })
   }
   openVideoTutorial () {
     this.setState({
@@ -48,13 +55,15 @@ class Members extends React.Component {
       this.setState({totalLength: nextProps.members.length})
     }
   }
-  showDialogDelete (id) {
-    this.setState({isShowingModalDelete: true})
-    this.setState({deleteid: id})
+  showDisableDialog (member) {
+    this.setState({isShowingModalDisable: true})
+    this.setState({disabledMember: member})
+    this.refs.disable.click()
   }
 
-  closeDialogDelete () {
-    this.setState({isShowingModalDelete: false})
+  closeDialogDisable () {
+    this.setState({isShowingModalDisable: false})
+    this.refs.disable.click()
   }
   displayData (n, members) {
     let offset = n * 10
@@ -131,6 +140,7 @@ class Members extends React.Component {
       time: 3000,
       transition: 'scale'
     }
+    
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
@@ -178,32 +188,42 @@ class Members extends React.Component {
             </div>
           </div>
         </div>
-        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="delete" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
-              <div className="modal-content">
-                <div style={{ display: 'block' }} className="modal-header">
-                  <h5 className="modal-title" id="exampleModalLabel">
-                  Delete Member
-									</h5>
-                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">
-                      &times;
-											</span>
-                  </button>
+        <a href='#/' style={{ display: 'none' }} ref='disable' data-toggle="modal" data-target="#disable">disable</a>
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="disable" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+            <div className="modal-content">
+              <div style={{ display: 'block' }} className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">
+                  Are you sure you want to deactivate this member ?
+							  </h5>
+                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">
+                    &times;
+									</span>
+                </button>
+              </div>
+              <div style={{ color: 'black' }} className="modal-body">
+                <p>Team member will not be able to login. And the chat sessions assigned to him will be unassigned.</p>
+                <div id='question' className='form-group m-form__group'>
+                  <label className='control-label'>To continue, first verify it's you</label>
+                  <input className='form-control' type='password' placeholder='Enter password here'
+                    value={this.state.password} onChange={this.onPasswordChange} />
                 </div>
-                <div style={{color: 'black'}} className="modal-body">
-                <p>Are you sure you want to delete this member?</p>
-              <button style={{float: 'right'}}
-                className='btn btn-primary btn-sm'
-                onClick={() => {
-                  this.removeMember(this.state.deleteid)
-                  this.closeDialogDelete()
-                }} data-dismiss='modal'>Delete
-              </button>
-                </div>
+                <button style={{ float: 'right' }}
+                  className='btn btn-primary btn-sm'
+                  disabled={this.state.password === ''}
+                  onClick={() => {
+                    this.props.disableMember(this.state.disabledMember, this.state.password, this.msg)
+                    this.setState({
+                      password: ''
+                    })
+                    this.closeDialogDisable()
+                  }}>Deactivate
+                </button>
               </div>
             </div>
           </div>
+        </div>
         <div className='m-content'>
           <div
             className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30'
@@ -274,10 +294,12 @@ class Members extends React.Component {
                                 <span
                                   style={{width: '150px'}}>Role</span>
                               </th>
+                              { this.props.user.permissions.updateRolePermission &&
                               <th data-field='Action'
                                 className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
                                 <span style={{width: '150px'}}>Actions</span>
                               </th>
+                              }
                             </tr>
                           </thead>
                           <tbody className='m-datatable__body'
@@ -290,22 +312,23 @@ class Members extends React.Component {
                                 style={{height: '55px'}} key={i}>
                                 <td data-field='Condition'
                                   className='m-datatable__cell'>
-                                  <span
-                                    style={{width: '150px'}}>{member.userId.name}</span>
+                                  <span style={member.userId && member.userId.disableMember? {color: '#d3d3d3', width: '150px'} :{width: '150px'}}>{member.userId.name}</span>
+                                </td>
+                                <td data-field='KeyWords'
+                                  className='m-datatable__cell'>
+                                  <span style={member.userId && member.userId.disableMember? {color: '#d3d3d3', width: '150px', overflow: 'visible'} :{width: '150px', overflow: 'visible'}}>
+                                    {member.userId.email}
+                                  </span>
                                 </td>
                                 <td data-field='KeyWords'
                                   className='m-datatable__cell'>
                                   <span
-                                    style={{width: '150px', overflow: 'visible'}}>{member.userId.email}</span>
+                                     style={member.userId && member.userId.disableMember? {color: '#d3d3d3', width: '150px'} :{width: '150px'}}>{member.userId.role}</span>
                                 </td>
-                                <td data-field='KeyWords'
-                                  className='m-datatable__cell'>
-                                  <span
-                                    style={{width: '150px'}}>{member.userId.role}</span>
-                                </td>
+                                { this.props.user.permissions.updateRolePermission &&
                                 <td data-field='Action'
                                   className='m-datatable__cell'>
-                                  <span style={{width: '150px'}}>
+                                  <span style={member.userId && member.userId.disableMember? {color: '#d3d3d3', width: '150px'} :{width: '150px'}}>
                                     {
                                       member.role !== 'buyer' && this.props.user.permissions['update_role'] &&
                                       <span>
@@ -330,6 +353,26 @@ class Members extends React.Component {
                                       }
                                       </span>
                                     }
+                                    {
+                                      member.role !== 'buyer' && !member.userId.disableMember &&
+                                      <button className='btn btn-primary'
+                                        style={{
+                                          float: 'left',
+                                          margin: 2
+                                        }}
+                                        onClick={() => {this.showDisableDialog(member)}}> Deactivate
+                                      </button>
+                                    }
+                                    {
+                                      member.role !== 'buyer' && member.userId.disableMember &&
+                                      <button className='btn btn-secondary'
+                                        style={{
+                                          float: 'left',
+                                          margin: 2
+                                        }}
+                                        onClick={() => {this.props.enableMember(member, this.msg)}}> Activate
+                                      </button>
+                                    }
                                     {/* {
                                       member.role !== 'buyer' && this.props.user.permissions['delete_members'] &&
                                       <button className='btn btn-primary'
@@ -343,6 +386,7 @@ class Members extends React.Component {
                                    */}
                                   </span>
                                 </td>
+                                }
                               </tr>
                             ))
                         }
@@ -383,7 +427,7 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators(
-    {loadMembersList: loadMembersList, deleteMember, updateMember},
+    {loadMembersList: loadMembersList, disableMember, updateMember, enableMember},
     dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Members)

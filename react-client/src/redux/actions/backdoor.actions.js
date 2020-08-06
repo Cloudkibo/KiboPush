@@ -27,7 +27,11 @@ import {
   updatePageAdmins,
   updateCompanyInfo,
   updateCurrentPageOwners,
-  updateLocales
+  updateLocales,
+  updateCommentCaptures,
+  updateChatBots,
+  updateMessagesCount,
+  updateUserSummary
     } from './../dispatchers/backdoor.dispatcher'
 import * as ActionTypes from '../constants/constants'
 import {LANGUAGE_BY_LOCALE} from '../../utility/utils'
@@ -90,6 +94,28 @@ export function loadPollsByDays (data) {
   }
 }
 
+export function loadCommentCaptures (data) {
+  console.log('data for loadCommentCaptures', data)
+  return (dispatch) => {
+    callApi(`backdoor/getAllCommentCaptures`, 'post', data)
+      .then(res => {
+        console.log('response from loadCommentCaptures', res)
+        dispatch(updateCommentCaptures(res.payload))
+      })
+  }
+}
+
+export function loadChatbots (data) {
+  console.log('data for loadChatbots', data)
+  return (dispatch) => {
+    callApi(`backdoor/getAllChatBots`, 'post', data)
+      .then(res => {
+        console.log('response from loadChatbots', res)
+        dispatch(updateChatBots(res.payload))
+      })
+  }
+}
+
 export function loadSurveysByDays (data) {
   // here we will fetch list of subscribers from endpoint
   console.log('data for loadSurveysByDays', data)
@@ -136,6 +162,29 @@ export function loadPagesList (id, data) {
     callApi(`backdoor/getAllPages/${id}`, 'post', data).then(res => {
       console.log('response from allpages', res)
       dispatch(updatePagesList(res.payload))
+    })
+  }
+}
+
+
+export function getMessagesCount (data) {
+  // here we will fetch list of user pages from endpoint
+  console.log('data for getMessagesCount', data)
+  return (dispatch) => {
+    callApi(`backdoor/getMessagesCount`, 'post', data).then(res => {
+      console.log('response from getMessagesCount', res)
+      dispatch(updateMessagesCount(res.payload))
+    })
+  }
+}
+
+export function getUserSummary (data) {
+  // here we will fetch list of user pages from endpoint
+  console.log('data for user summary', data)
+  return (dispatch) => {
+    callApi(`backdoor/userSummary`, 'post', data).then(res => {
+      console.log('response from userSummary', res)
+      dispatch(updateUserSummary(res.payload))
     })
   }
 }
@@ -275,7 +324,7 @@ export function sendEmail (msg) {
 }
 export function allLocales (id) {
   return (dispatch) => {
-    callApi(`backdoor/allLocales/${id}`).then(res => dispatch(updateAllLocales(res.payload))) 
+    callApi(`backdoor/allLocales/${id}`).then(res => dispatch(updateAllLocales(res.payload)))
   }
 }
 
@@ -336,9 +385,9 @@ export function deleteLiveChat (id, msg) {
 }
 
 // Fetch Platform Stats
-export function fetchPlatformStats (id) {
+export function fetchPageAnalytics (data) {
   return (dispatch) => {
-    callApi(`operational/platformwise`)
+    callApi(`backdoor/pageAnalytics`, 'post', data)
       .then(res => {
         console.log('response from fetchPlatformStats', res)
         dispatch(handleAction(ActionTypes.UPDATE_PLATFORM_STATS, res.payload))
@@ -466,14 +515,12 @@ export function fetchAutopostingUserWiseDateWise (startDate, companyId) {
 
 // -- Custom Actions ---
 
-export function fetchPlatformStatsWeekly () {
-  let date = new Date()
-  date.setDate(date.getDate() - 10)
+export function fetchOtherAnalytics (data) {
   return (dispatch) => {
-    callApi(`operational/platformwise/ranged`, 'post', {startDate: date.toISOString()})
+    callApi(`backdoor/otherAnalytics`, 'post', data)
       .then(res => {
         console.log('response from fetchPlatformStatsWeekly', res)
-        dispatch(handleAction(ActionTypes.UPDATE_WEEKLY_PLATFORM_STATS, res.payload))
+        dispatch(handleAction(ActionTypes.UPDATE_OTHER_ANALYTICS, res.payload))
       })
   }
 }
@@ -639,5 +686,33 @@ export function saveUserView (data) {
   return {
     type: ActionTypes.SAVE_USER_VIEW,
     data: data
+  }
+}
+export function showMetrics (data) {
+  return {
+    type: ActionTypes.SHOW_METRICS,
+    data
+  }
+}
+export function loadMetricsWhatsApp (data) {
+  return (dispatch) => {
+    callApi('backdoor/metricsWhatsApp', 'post', data).then(res => {
+      if (res.status === 'success') {
+        dispatch(showMetrics(res.payload))
+      }
+    })
+  }
+}
+
+export function sendWhatsAppMetricsEmail (msg) {
+  return (dispatch) => {
+    msg.info('Sending Email...You will be notified when it is sent to all users')
+    callApi('backdoor/sendWhatsAppMetricsEmail').then(res => {
+      if (res.status === 'success') {
+        msg.success('Email sent successfully!')
+      } else {
+        msg.error('Email not sent')
+      }
+    })
   }
 }

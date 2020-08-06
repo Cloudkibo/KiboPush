@@ -26,6 +26,7 @@ import Integrations from './containers/integrations/integrations'
 import PollResult from './containers/polls/PollResult'
 import ViewPoll from './containers/polls/ViewPoll'
 import UserDetails from './containers/operationalDashboard/userDetails'
+import CompanyDetails from './containers/operationalDashboard/companyDetails'
 import ViewPollDetail from './containers/operationalDashboard/pollDetails'
 import UserBroadcasts from './containers/operationalDashboard/userBroadcasts'
 import SurveyDetails from './containers/operationalDashboard/surveyDetails'
@@ -136,7 +137,7 @@ import CreateMessengerRefURLMessage from './containers/messengerRefURL/createMes
 import BusinessGatewayHome from './containers/businessGateway/home'
 import PushMessage from './containers/businessGateway/pushMessage'
 import UploadContacts from './containers/uploadContactsSMS/uploadContacts'
-import UploadContactsWhatsApp from './containers/uploadContacts/uploadContactsWhatsApp'
+import UploadContactsWhatsApp from './containers/uploadContactsWhatsApp/uploadContacts'
 import auth from './utility/auth.service'
 import ChatWidget from './containers/chatWidget/chatWidget'
 import Checkbox from './containers/GrowthTools/checkbox'
@@ -158,12 +159,14 @@ import BackdoorPageAdmins from './containers/operationalDashboard/pageAdmins'
 import CustomFields from './containers/customFields/customFields'
 import Tags from './containers/tags/tags'
 import successMessage from './containers/integerationScreen/successMessage'
+import AlreadyConnected from './containers/integerationScreen/alreadyConnected'
 import ErrorMessage from './containers/integerationScreen/ErrorMessage'
 import SmsDashboard from './containers/smsWhatsAppDashboard/smsDashboard'
 import WhatsAppDashboard from './containers/smsWhatsAppDashboard/whatsAppDashboard'
 import messengerDashboard from './containers/dashboard/dashboard'
 import ChatbotAutomation from './containers/chatbotAutomation/chatbotAutomation'
 import ChatbotSettings from './containers/chatbotAutomation/chatbotSettings'
+import IntegrateZoom from './containers/zoomIntegration/integrateZoom'
 
 const Subscriber = asyncComponent(() => import("./containers/subscriber/subscriber"))
 const OperationalDashboard = asyncComponent(() => import("./containers/operationalDashboard/operationalDashboard"))
@@ -253,6 +256,7 @@ const Routes = () => (
     <Route path='/submitSurveyResponse' component={SubmitSurvey} />
     <Route path='/inviteSubscribers' component={InviteSubscribers} onEnter={requireAuth} />
     <Route path='/userDetails' component={UserDetails} onEnter={requireAuth} />
+    <Route path='/companyDetails' component={CompanyDetails} onEnter={requireAuth} />
     <Route path='/pageSubscribers' component={PageSubscribers} onEnter={requireAuth} />
     <Route path='/userBroadcasts' component={UserBroadcasts} onEnter={requireAuth} />
     <Route path='/userPolls' component={UserPolls} onEnter={requireAuth} />
@@ -374,6 +378,7 @@ const Routes = () => (
     <Route path='/createsmsBroadcast' component={CreatesmsBroadcast} onEnter={requireAuth} />
     <Route path='/smsChat' component={SmsChat} onEnter={requireAuth} />
     <Route path='/whatsAppChat' component={WhatsAppChat} onEnter={requireAuth} />
+    <Route path='/integrations/zoom' component={IntegrateZoom} onEnter={requireAuth} />
     <Route path='/integrations' component={Integrations} onEnter={requireAuth} />
     <Route path='/uploadContactsWhatsApp' component={UploadContactsWhatsApp} onEnter={requireAuth} />
     <Route path='/whatsAppBroadcasts' component={WhatsAppBroadcasts} onEnter={requireAuth} />
@@ -396,6 +401,7 @@ const Routes = () => (
     <Route path='/chatbotSettings' component={ChatbotSettings} onEnter={requireAuth} />
     <Route path='/tags' component={Tags} onEnter={requireAuth} />
     <Route path='/successMessage' component={successMessage} onEnter={requireAuth} />
+    <Route path='/alreadyConnected' component={AlreadyConnected} onEnter={requireAuth} />
     <Route path='/ErrorMessage' component={ErrorMessage} onEnter={requireAuth} />
     <Route path='*' render={() => <Redirect to='/' />} />
   </Switch>

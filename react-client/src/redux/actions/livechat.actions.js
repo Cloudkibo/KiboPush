@@ -188,9 +188,33 @@ export function showUserChats (payload, originalData, count) {
   }
 }
 
+export function updateAllChat (payload, originalData, sessionId) {
+  if (originalData.page === 'first') {
+    return {
+      type: ActionTypes.ALL_CHAT_OVERWRITE,
+      userChat: payload.chat,
+      sessionId
+    }
+  } else {
+    return {
+      type: ActionTypes.ALL_CHAT_UPDATE,
+      userChat: payload.chat,
+      sessionId
+    }
+  }
+}
+
 export function resetSocket () {
   return {
     type: ActionTypes.RESET_SOCKET
+  }
+}
+
+export function setUserChat (sessionId, count) {
+  return {
+    type: ActionTypes.SET_USER_CHAT,
+    sessionId,
+    count
   }
 }
 
@@ -299,6 +323,7 @@ export function fetchUserChats (sessionid, data, count, handleFunction) {
   return (dispatch) => {
     callApi(`livechat/${sessionid}`, 'post', data)
       .then(res => {
+        dispatch(updateAllChat(res.payload, data, sessionid))
         dispatch(showUserChats(res.payload, data, count))
         if (handleFunction) {
           handleFunction(data.messageId)
@@ -455,8 +480,11 @@ export function assignToAgent (data, handleResponse) {
 }
 
 export function sendNotifications (data) {
+  console.log('data for notifications', data)
   return (dispatch) => {
-    callApi('notifications/create', 'post', data).then(res => {})
+    callApi('notifications/create', 'post', data).then(res => {
+      console.log('response from notifications', res)
+    })
   }
 }
 
@@ -473,12 +501,12 @@ export function assignToTeam (data, handleResponse) {
   }
 }
 
-export function fetchTeamAgents (id, handleAgents) {
+export function fetchTeamAgents (id, handleAgents, type) {
   return (dispatch) => {
     callApi(`teams/fetchAgents/${id}`)
       .then(res => {
         if (res.status === 'success') {
-          handleAgents(res.payload)
+          handleAgents(res.payload, type)
         }
       })
   }

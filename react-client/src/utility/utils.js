@@ -1,5 +1,6 @@
 import cookie from 'react-cookie'
 import auth from './auth.service'
+import moment from 'moment'
 
 export function formatAMPM (date) {
   let hours = date.getHours()
@@ -25,7 +26,10 @@ export function localeCodeToEnglish(loc) {
     return '';
 }
 
-
+export function validatePhoneNumber (number) {
+  const regex = /\+(9[976]\d|8[987530]\d|6[987]\d|5[90]\d|42\d|3[875]\d|2[98654321]\d|9[8543210]|8[6421]|6[6543210]|5[87654321]|4[987654310]|3[9643210]|2[70]|7|1)\W*\d\W*\d\W*\d\W*\d\W*\d\W*\d\W*\d\W*\d\W*(\d{1,2})$/g
+  return number.match(regex)
+}
 
 export function handleDate (d) {
   if (d) {
@@ -739,4 +743,25 @@ export var LANGUAGE_BY_LOCALE = {
   yo: "Yoruba",
   zu_ZA: "Zulu (South Africa)",
   zu: "Zulu"
+}
+export function validDateRange (startDate, endDate) {
+  var valid = false
+  var dateRangeWarning = ''
+  if (startDate === '' && endDate === '') {
+     valid = true
+     dateRangeWarning = ''
+  } else if (startDate === '' && endDate !== '') {
+    dateRangeWarning = 'Select start date to apply filter'
+    valid = false
+  } else if (startDate !== '' && endDate === '') {
+    dateRangeWarning = 'Select end date to apply filter'
+    valid = false
+  } else if (moment(startDate).isAfter(endDate)) {
+    dateRangeWarning = 'Incorrect Range'
+    valid = false
+  } else {
+      dateRangeWarning = ''
+    valid = true
+  }
+  return {valid, dateRangeWarning}
 }

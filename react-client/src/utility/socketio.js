@@ -17,6 +17,7 @@ import { loadAllSubscribersListNew, updateCustomFieldForSubscriber } from './../
 import { fetchNotifications } from './../redux/actions/notifications.actions'
 import { handleSocketEvent, handleSocketEventSms, handleSocketEventWhatsapp } from '../redux/actions/socket.actions'
 import { addToSponsoredMessages, updateSponsoredMessagesListItemStatus } from './../redux/actions/sponsoredMessaging.actions'
+import { removeZoomIntegration } from './../redux/actions/settings.actions'
 const whatsAppActions = require('./../redux/actions/whatsAppChat.actions')
 const smsActions = require('./../redux/actions/smsChat.actions')
 
@@ -83,11 +84,13 @@ socket.on('message', (data) => {
     if (data.action === 'new_chat_sms') data.showNotification = true
     store.dispatch(handleSocketEventSms(data))
   }
-  if (['new_chat_whatsapp', 'agent_replied_whatsapp', 'session_pending_response_whatsapp', 'unsubscribe_whatsapp', 'session_status_whatsapp'].includes(data.action)) {
+  if (['new_chat_whatsapp', 'agent_replied_whatsapp', 'session_pending_response_whatsapp', 'unsubscribe_whatsapp', 'session_status_whatsapp', 'new_session_created_whatsapp', 'message_delivered_whatsApp', 'message_seen_whatsApp'].includes(data.action)) {
     if (data.action === 'new_chat_whatsapp') data.showNotification = true
     store.dispatch(handleSocketEventWhatsapp(data))
   }
-
+  if (['new_notification'].includes(data.action)) {
+    store.dispatch(fetchNotifications())
+  }
   if (data.action === 'whatsapp_message_seen') {
     store.dispatch(whatsAppActions.socketUpdateWhatsAppSeen(data.payload))
   } else if (data.action === 'message_seen') {
@@ -171,6 +174,8 @@ socket.on('message', (data) => {
   } else if (data.action === 'sponsoredMessaging_statusChanged') {
     console.log('update status of new sponsored message')
     store.dispatch(updateSponsoredMessagesListItemStatus(data.payload))
+  } else if (data.action === 'zoom_uninstall') {
+    store.dispatch(removeZoomIntegration(data.payload))
   }
   if (callbacks[data.action]) {
     callbacks[data.action](data.payload)

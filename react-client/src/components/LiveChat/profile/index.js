@@ -25,6 +25,9 @@ class Profile extends React.Component {
                         assignToTeam={this.props.assignToTeam}
                         assignToAgent={this.props.assignToAgent}
                         sendNotifications={this.props.sendNotifications}
+                        agents={this.props.agents}
+                        teams={this.props.teams}
+                        editSubscriberWhatsApp={this.props.editSubscriberWhatsApp}
                     />
                   {
                       this.props.user.permissions['assign_session_agent'] && this.props.user.permissions['assign_session_team'] &&
@@ -32,8 +35,7 @@ class Profile extends React.Component {
                       alertMsg={this.props.alertMsg}
                       activeSession={this.props.activeSession}
                       teams={
-                          (this.props.user && this.props.user.role !== 'agent' &&
-                          this.props.teams && this.props.teams.length > 0) ?
+                          (this.props.teams && this.props.teams.length > 0) ?
                               this.props.teams.map(team => (
                                   {
                                       label: team.name,

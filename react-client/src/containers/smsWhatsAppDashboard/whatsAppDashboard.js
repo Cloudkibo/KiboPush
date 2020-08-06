@@ -9,7 +9,8 @@ import { connect } from 'react-redux'
 import CardBoxesContainer from '../../components/smsWhatsAppDashboard/cardboxes'
 import SubscriberSummary from '../../components/smsWhatsAppDashboard/subscriberSummary'
 import SentSeen from '../../components/smsWhatsAppDashboard/sentSeen'
-import { loadCardBoxesDataWhatsApp, loadSubscriberSummaryWhatsApp, loadSentSeenWhatsApp } from '../../redux/actions/whatsAppDashboard.actions'
+import WhatsAppMetrics from './whatsAppMetrics'
+import { loadCardBoxesDataWhatsApp, loadSubscriberSummaryWhatsApp, loadSentSeenWhatsApp, loadMetrics } from '../../redux/actions/whatsAppDashboard.actions'
 import { loadWhatsAppContactsList, loadContactsList } from '../../redux/actions/uploadContacts.actions'
 import { bindActionCreators } from 'redux'
 import { RingLoader } from 'halogenium'
@@ -21,7 +22,9 @@ class Dashboard extends React.Component {
     this.state = {
       subscriberGraph: [],
       sentSeenGraph: [],
-      loading: true
+      loading: true,
+      startDate: '',
+      endDate: ''
     }
     this.includeZeroCounts = this.includeZeroCounts.bind(this)
     this.prepareChartData = this.prepareChartData.bind(this)
@@ -31,8 +34,25 @@ class Dashboard extends React.Component {
     this.props.loadCardBoxesDataWhatsApp()
     this.props.loadContactsList({last_id: 'none', number_of_records: 10, first_page: 'first'})
     this.props.loadWhatsAppContactsList({last_id: 'none', number_of_records: 10, first_page: 'first'})
-    this.props.loadSentSeenWhatsApp({days: 30})
     this.props.loadSubscriberSummaryWhatsApp({days: 'all'})
+    window.location.hostname.includes('kiboengage.cloudkibo.com')
+    if (window.location.hostname.includes('kiboengage.cloudkibo.com') || window.location.hostname.includes('localhost')) {
+      this.props.loadSentSeenWhatsApp({days: 30})
+    } else if (window.location.hostname.includes('kibochat.cloudkibo.com')) {
+      let endDate = new Date()
+      let startDate = new Date(
+          (endDate.getTime() - (30 * 24 * 60 * 60 * 1000)))
+
+      let startMonth = ('0' + (startDate.getMonth() + 1)).slice(-2)
+      let startDay = ('0' + startDate.getDate()).slice(-2)
+      let finalStartDate = `${startDate.getFullYear()}-${startMonth}-${startDay}`
+
+      let endMonth = ('0' + (endDate.getMonth() + 1)).slice(-2)
+      let endDay = ('0' + endDate.getDate()).slice(-2)
+      let finalEndDate = `${endDate.getFullYear()}-${endMonth}-${endDay}`
+      this.setState({startDate: finalStartDate, endDate: finalEndDate})
+      this.props.loadMetrics({startDate: finalStartDate, endDate: finalEndDate})
+    }
   }
   UNSAFE_componentWillReceiveProps (nextprops) {
     if (nextprops.user) {
@@ -44,7 +64,7 @@ class Dashboard extends React.Component {
         })
       }
     }
-    if (nextprops.cardBoxesData && nextprops.subscriberSummary && nextprops.sentSeenData) {
+    if (nextprops.cardBoxesData && nextprops.subscriberSummary && (nextprops.sentSeenData || nextprops.metrics)) {
       this.setState({loading: false})
     }
     if (nextprops.subscriberSummary && nextprops.subscriberSummary.graphdata.length > 0) {
@@ -111,6 +131,7 @@ class Dashboard extends React.Component {
     document.title = `${title} | Dashboard`
   }
   render () {
+    const url = window.location.hostname
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <div className='m-subheader '>
@@ -126,7 +147,7 @@ class Dashboard extends React.Component {
               <i className='flaticon-technology m--font-accent' />
             </div>
             <div className='m-alert__text'>
-              Need help in understanding dashboard? Here is the <a href='https://kibopush.com/whatsapp-twilio/' target='_blank' rel='noopener noreferrer'>documentation</a>.
+              Need help in understanding dashboard? Here is the <a href='https://kibopush.com/whatsapp/' target='_blank' rel='noopener noreferrer'>documentation</a>.
             </div>
           </div>
           {this.state.loading
@@ -144,12 +165,23 @@ class Dashboard extends React.Component {
                  />
             </div>
             <div className='row'>
-              <SentSeen
+              {url.includes('kibochat.cloudkibo.com')
+                ? <WhatsAppMetrics
+                    startDate={this.state.startDate}
+                    endDate={this.state.endDate}
+                    metrics={this.props.metrics}
+                    loadMetrics={this.props.loadMetrics}
+                    showToggle={false}
+                    showMetrics={true}
+                  />
+                : url.includes('kiboengage.cloudkibo.com') &&
+                <SentSeen
                 loadSentSeen={this.props.loadSentSeenWhatsApp}
                 platform='whatsApp'
                 sentSeenData={this.props.sentSeenData}
                 sentSeenGraph={this.state.sentSeenGraph}
                  />
+             }
             </div>
           </div>
         }
@@ -167,6 +199,7 @@ function mapStateToProps (state) {
     sentSeenData: (state.smsWhatsAppDashboardInfo.sentSeenData),
     automated_options: (state.basicInfo.automated_options),
     contacts: (state.contactsInfo.contacts),
+    metrics: (state.smsWhatsAppDashboardInfo.metrics)
   }
 }
 
@@ -177,7 +210,8 @@ function mapDispatchToProps (dispatch) {
       loadSubscriberSummaryWhatsApp,
       loadSentSeenWhatsApp,
       loadContactsList,
-      loadWhatsAppContactsList
+      loadWhatsAppContactsList,
+      loadMetrics
     },
     dispatch)
 }

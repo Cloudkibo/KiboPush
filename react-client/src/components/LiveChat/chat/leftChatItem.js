@@ -9,6 +9,7 @@ import VIDEO from '../messages/video'
 import FILE from '../messages/file'
 import CARD from '../messages/card'
 import LOCATION from '../messages/location'
+import CONTACT from '../messages/contact'
 
 class LeftChatItem extends React.Component {
   constructor(props, context) {
@@ -44,9 +45,19 @@ class LeftChatItem extends React.Component {
         fileurl: { url: message.attachments ? message.attachments[0].payload.url : message.fileurl.url }
       }
       return (
-        <VIDEO
-          video={video}
-        />
+        <div>
+          <VIDEO
+            video={video}
+          />
+          {
+            message.caption &&
+            <div style={{marginTop: '10px'}}>
+              <TEXT
+                text={{text: message.caption}}
+              />
+            </div>
+          }
+        </div>
       )
     } else if (type === 'audio') {
       const audio = {
@@ -59,12 +70,22 @@ class LeftChatItem extends React.Component {
       )
     } else if (type === 'image') {
       const image = {
-        fileurl: message.attachments ? message.attachments[0].payload.url : message.fileurl.url
+        fileurl: message.attachments ? message.attachments[0].payload.url : message.fileurl.url,
       }
       return (
-        <IMAGE
-          image={image}
-        />
+        <div>
+          <IMAGE
+            image={image}
+          />
+          {
+            message.caption &&
+            <div style={{marginTop: '10px'}}>
+              <TEXT
+                text={{text: message.caption}}
+              />
+            </div>
+          }
+        </div>
       )
     } else if (type === 'file') {
       const url = message.attachments ? message.attachments[0].payload.url : message.fileurl.url
@@ -77,13 +98,21 @@ class LeftChatItem extends React.Component {
     } else if (type === 'location') {
       return (
         <LOCATION
-          data={message.attachments[0]}
+          data={(message.attachments && message.attachments[0]) || message}
+        />
+      )
+    } else if (type === 'contact') {
+      return (
+        <CONTACT
+          name={message.name}
+          number={message.number}
         />
       )
     } else if (message.text) {
       return (
         <TEXT
           text={message}
+          urlMeta={this.props.message.url_meta}
         />
       )
     }
@@ -109,9 +138,9 @@ class LeftChatItem extends React.Component {
           <div className='m-messenger__message-body'>
             <div className='m-messenger__message-arrow' />
             <div style={{maxWidth: '250px'}} className='m-messenger__message-content'>
-              <div className='m-messenger__message-username'>
+              {this.props.showSubscriberNameOnMessage && <div className='m-messenger__message-username'>
                 {`${this.props.activeSession.firstName} sent:`}
-              </div>
+              </div>}
               {this.getMessage()}
             </div>
           </div>
@@ -127,7 +156,8 @@ LeftChatItem.propTypes = {
   'showDate': PropTypes.func.isRequired,
   'displayDate': PropTypes.func.isRequired,
   'activeSession': PropTypes.object.isRequired,
-  'previousMessage': PropTypes.object
+  'previousMessage': PropTypes.object,
+  'showSubscriberNameOnMessage': PropTypes.bool.isRequired
 }
 
 export default LeftChatItem

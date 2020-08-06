@@ -23,7 +23,7 @@ class Sidebar extends Component {
     const isKiboEngage = url.includes('kiboengage.cloudkibo.com')
     const isKiboLite = url.includes('kibolite.cloudkibo.com')
     const platform = user.platform
-    if (user.isSuperUser) {
+    if (user.isSuperUser && (isKiboEngage || isLocalhost)) {
       menuItems.push({
         priority: 'a',
         name: 'Operational Dashboard',
@@ -146,6 +146,14 @@ class Sidebar extends Component {
         name: 'Upload Contacts',
         route: '/uploadContacts',
         icon: 'fa fa-id-card-o'
+      })
+    }
+    if (platform === 'whatsApp') {
+      menuItems.push({
+        priority: 'f',
+        name: 'Invite Subscribers',
+        route: '/uploadContactsWhatsApp',
+        icon: 'flaticon-user-add'
       })
     }
     if ((isKiboChat || isLocalhost) && user.plan['livechat'] && user.permissions['manage_livechat'] && ['MIX_CHAT', 'HUMAN_CHAT'].includes(automated_options.automated_options)) {
