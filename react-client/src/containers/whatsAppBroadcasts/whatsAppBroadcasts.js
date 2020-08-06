@@ -13,7 +13,7 @@ import { handleDate } from '../../utility/utils'
 import YouTube from 'react-youtube'
 
 class WhatsAppBroadcast extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = {
       broadcastsData: [],
@@ -22,12 +22,12 @@ class WhatsAppBroadcast extends React.Component {
       pageNumber: 0,
       searchValue: '',
       selectedDays: '0',
-      filter:false,
-      openVideo : false
+      filter: false,
+      openVideo: false
     }
 
-    props.loadWhatsAppContactsList({last_id: 'none', number_of_records: 10, first_page: 'first'})
-    props.loadBroadcastsList({last_id: 'none', number_of_records: 10, first_page: 'first', filter: false, filter_criteria: {search_value: '', type_value: '', days: '0'}})
+    props.loadWhatsAppContactsList({ last_id: 'none', number_of_records: 10, first_page: 'first' })
+    props.loadBroadcastsList({ last_id: 'none', number_of_records: 10, first_page: 'first', filter: false, filter_criteria: { search_value: '', type_value: '', days: '0' } })
     this.displayData = this.displayData.bind(this)
     this.gotoCreate = this.gotoCreate.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
@@ -36,16 +36,16 @@ class WhatsAppBroadcast extends React.Component {
     this.onDaysChange = this.onDaysChange.bind(this)
     this.openVideoTutorial = this.openVideoTutorial.bind(this)
   }
-  openVideoTutorial () {
+  openVideoTutorial() {
     this.setState({
       openVideo: true
     })
     this.refs.videoBroadcastWhatsapp.click()
   }
 
-onDaysChange (e) {
-  var value = e.target.value
-  this.setState({selectedDays: value})
+  onDaysChange(e) {
+    var value = e.target.value
+    this.setState({ selectedDays: value })
     if (value && value !== '') {
       if (value.indexOf('.') !== -1) {
         value = Math.floor(value)
@@ -55,43 +55,43 @@ onDaysChange (e) {
           selectedDays: '0'
         })
       }
-      this.setState({filter: true, pageNumber: 0})
-      this.props.loadBroadcastsList({last_id: 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: this.state.searchValue, type_value: this.state.filterValue === 'all' ? '' : this.state.filterValue, days: value}})
+      this.setState({ filter: true, pageNumber: 0 })
+      this.props.loadBroadcastsList({ last_id: 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: { search_value: this.state.searchValue, type_value: this.state.filterValue === 'all' ? '' : this.state.filterValue, days: value } })
     } else if (value === '') {
-      this.setState({selectedDays: '0', filter: false})
-      this.props.loadBroadcastsList({last_id: 'none', number_of_records: 10, first_page: 'first', filter: false, filter_criteria: {search_value: this.state.searchValue, type_value: this.state.filterValue === 'all' ? '' : this.state.filterValue, days: '0'}})
+      this.setState({ selectedDays: '0', filter: false })
+      this.props.loadBroadcastsList({ last_id: 'none', number_of_records: 10, first_page: 'first', filter: false, filter_criteria: { search_value: this.state.searchValue, type_value: this.state.filterValue === 'all' ? '' : this.state.filterValue, days: '0' } })
     }
-}
-
-searchBroadcast (event) {
-  this.setState({
-    searchValue: event.target.value, pageNumber:0
-  })
-  if (event.target.value !== '') {
-    this.setState({filter: true})
-    this.props.loadBroadcastsList({last_id: this.props.broadcasts.length > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: event.target.value.toLowerCase(), type_value: this.state.filterValue, days: this.state.selectedDays}})
-  } else {
-    this.props.loadBroadcastsList({last_id: this.props.broadcasts.length > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: false, filter_criteria: {search_value: '', type_value: this.state.filterValue, days: this.state.selectedDays}})
   }
-}
-onFilter (e) {
-  this.setState({filterValue: e.target.value})
-  if (e.target.value !== '' && e.target.value !== 'all') {
-    this.setState({filter: true, pageNumber: 0})
-    this.props.loadBroadcastsList({last_id: (this.props.broadcasts && this.props.broadcasts.length) > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: {search_value: this.state.searchValue, type_value: e.target.value, days: this.state.selectedDays}})
-  } else {
-    this.setState({filter: false, pageNumber: 0})
-    this.props.loadBroadcastsList({last_id: this.props.broadcasts.length > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: false, filter_criteria: {search_value: this.state.searchValue, type_value: '', days: this.state.selectedDays}})
-  }
-}
 
-  gotoCreate (broadcast) {
+  searchBroadcast(event) {
+    this.setState({
+      searchValue: event.target.value, pageNumber: 0
+    })
+    if (event.target.value !== '') {
+      this.setState({ filter: true })
+      this.props.loadBroadcastsList({ last_id: this.props.broadcasts.length > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: { search_value: event.target.value.toLowerCase(), type_value: this.state.filterValue, days: this.state.selectedDays } })
+    } else {
+      this.props.loadBroadcastsList({ last_id: this.props.broadcasts.length > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: false, filter_criteria: { search_value: '', type_value: this.state.filterValue, days: this.state.selectedDays } })
+    }
+  }
+  onFilter(e) {
+    this.setState({ filterValue: e.target.value })
+    if (e.target.value !== '' && e.target.value !== 'all') {
+      this.setState({ filter: true, pageNumber: 0 })
+      this.props.loadBroadcastsList({ last_id: (this.props.broadcasts && this.props.broadcasts.length) > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: true, filter_criteria: { search_value: this.state.searchValue, type_value: e.target.value, days: this.state.selectedDays } })
+    } else {
+      this.setState({ filter: false, pageNumber: 0 })
+      this.props.loadBroadcastsList({ last_id: this.props.broadcasts.length > 0 ? this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none', number_of_records: 10, first_page: 'first', filter: false, filter_criteria: { search_value: this.state.searchValue, type_value: '', days: this.state.selectedDays } })
+    }
+  }
+
+  gotoCreate(broadcast) {
     this.props.history.push({
       pathname: `/createWhatsAppBroadcast`
     })
   }
 
-  displayData (n, broadcasts) {
+  displayData(n, broadcasts) {
     let offset = n * 10
     let data = []
     let limit
@@ -105,10 +105,10 @@ onFilter (e) {
       data[index] = broadcasts[i]
       index++
     }
-    this.setState({broadcastsData: data})
+    this.setState({ broadcastsData: data })
   }
 
-  handlePageClick (data) {
+  handlePageClick(data) {
     if (data.selected === 0) {
       this.props.loadBroadcastsList({
         last_id: 'none',
@@ -119,7 +119,8 @@ onFilter (e) {
           search_value: this.state.searchValue,
           type_value: this.state.filterValue === 'all' ? '' : this.state.filterValue,
           days: this.state.selectedDays
-        }})
+        }
+      })
     } else if (this.state.pageNumber < data.selected) {
       this.props.loadBroadcastsList({
         current_page: this.state.pageNumber,
@@ -132,7 +133,8 @@ onFilter (e) {
           search_value: this.state.searchValue,
           type_value: this.state.filterValue === 'all' ? '' : this.state.filterValue,
           days: this.state.selectedDays
-        }})
+        }
+      })
     } else {
       this.props.loadBroadcastsList({
         current_page: this.state.pageNumber,
@@ -145,13 +147,14 @@ onFilter (e) {
           search_value: this.state.searchValue,
           type_value: this.state.filterValue === 'all' ? '' : this.state.filterValue,
           days: this.state.selectedDays
-        }})
+        }
+      })
     }
-    this.setState({pageNumber: data.selected})
+    this.setState({ pageNumber: data.selected })
     this.displayData(data.selected, this.props.broadcasts)
   }
 
-  componentDidMount () {
+  componentDidMount() {
     const hostname = window.location.hostname
     let title = ''
     if (hostname.includes('kiboengage.cloudkibo.com')) {
@@ -162,7 +165,7 @@ onFilter (e) {
     document.title = `${title} | Broadcasts`
   }
 
-  UNSAFE_componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     console.log('in UNSAFE_componentWillReceiveProps of smsBroadcasts', nextProps)
     if (nextProps.broadcasts && nextProps.count) {
       this.displayData(0, nextProps.broadcasts)
@@ -172,11 +175,11 @@ onFilter (e) {
     }
     if (nextProps.twilioNumbers && nextProps.twilioNumbers.length > 0) {
       console.log('inside', nextProps.twilioNumbers[0])
-      this.setState({numberValue: nextProps.twilioNumbers[0]})
+      this.setState({ numberValue: nextProps.twilioNumbers[0] })
     }
   }
 
-  render () {
+  render() {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <div className='m-subheader '>
@@ -184,14 +187,14 @@ onFilter (e) {
             this.props.contacts && this.props.contacts.length === 0 &&
             <div className='m-alert m-alert--icon m-alert--icon-solid m-alert--outline alert alert-warning alert-dismissible fade show' role='alert'>
               <div className='m-alert__icon'>
-                <i className='flaticon-exclamation-1' style={{color: 'white'}} />
+                <i className='flaticon-exclamation-1' style={{ color: 'white' }} />
                 <span />
               </div>
               <div className='m-alert__text'>
                 <strong>
-                0 Subscribers!&nbsp;
+                  0 Subscribers!&nbsp;
                 </strong>
-                You do not have any subscribers. Please click <Link style={{cursor: 'pointer'}} to='/uploadContacts' >here</Link> to add subscribers
+                You do not have any subscribers. Please click <Link style={{ cursor: 'pointer' }} to='/uploadContacts' >here</Link> to add subscribers
               </div>
             </div>
           }
@@ -204,34 +207,35 @@ onFilter (e) {
         <a href='#/' style={{ display: 'none' }} ref='videoBroadcastWhatsapp' data-toggle='modal' data-backdrop='static' data-keyboard='false' data-target="#videoBroadcastWhatsapp">videoBroadcastWhatsapp</a>
         <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="videoBroadcastWhatsapp" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog modal-lg" role="document">
-            <div className="modal-content" style={{width: '687px', top: '100'}}>
-            <div style={{ display: 'block'}} className="modal-header">
+            <div className="modal-content" style={{ width: '687px', top: '100' }}>
+              <div style={{ display: 'block' }} className="modal-header">
                 <h5 className="modal-title" id="exampleModalLabel">
                   Broadcast for Whatsapp Video Tutorial
                 </h5>
                 <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal"
-                aria-label="Close"
-                onClick={() => {
-                  this.setState({
-                    openVideo: false
-                  })}}>
+                  aria-label="Close"
+                  onClick={() => {
+                    this.setState({
+                      openVideo: false
+                    })
+                  }}>
                   <span aria-hidden="true">
                     &times;
                     </span>
                 </button>
               </div>
-              <div style={{color: 'black'}} className="modal-body">
-              {this.state.openVideo && <YouTube
-                videoId='W46lhY3L8mg'
-                opts={{
-                  height: '390',
-                  width: '640',
-                  playerVars: { // https://developers.google.com/youtube/player_parameters
-                    autoplay: 0
-                  }
-                }}
-            />
-              }
+              <div style={{ color: 'black' }} className="modal-body">
+                {this.state.openVideo && <YouTube
+                  videoId='W46lhY3L8mg'
+                  opts={{
+                    height: '390',
+                    width: '640',
+                    playerVars: { // https://developers.google.com/youtube/player_parameters
+                      autoplay: 0
+                    }
+                  }}
+                />
+                }
               </div>
             </div>
           </div>
@@ -270,102 +274,102 @@ onFilter (e) {
                     </div>
                   </div>
                   <div className='m-portlet__body'>
-                  <div className='form-row'>
-                  <div style={{display: 'inline-block'}} className='form-group col-md-3'>
-                    <input type='text' placeholder='Search broadcasts by title' className='form-control' value={this.state.searchValue} onChange={this.searchBroadcast} />
-                  </div>
-                  <div style={{display: 'inline-block'}} className='form-group col-md-3'>
-                      <select className='custom-select' style={{width: '100%'}} value={this.state.filterValue} onChange={this.onFilter} >
-                        <option value='' disabled>Filter by type...</option>
-                        <option value='text'>text</option>
-                        <option value='audio'>audio</option>
-                        <option value='file'>file</option>
-                        <option value='media'>media</option>
-                        <option value='miscellaneous'>miscellaneous</option>
-                        <option value='all'>all</option>
-                      </select>
-                    </div>
-                    <div className='form-group col-md-6' style={{display: 'flex', float: 'right'}}>
-                      <span style={{marginLeft: '70px'}} htmlFor='example-text-input' className='col-form-label'>
-                        Show records for last:&nbsp;&nbsp;
-                      </span>
-                      <div style={{width: '200px'}}>
-                        <input id='example-text-input' type='number' min='0' step='1' value={this.state.selectedDays === '0' ? '' : this.state.selectedDays} className='form-control' onChange={this.onDaysChange} />
+                    <div className='form-row'>
+                      <div style={{ display: 'inline-block' }} className='form-group col-md-3'>
+                        <input type='text' placeholder='Search broadcasts by title' className='form-control' value={this.state.searchValue} onChange={this.searchBroadcast} />
                       </div>
-                      <span htmlFor='example-text-input' className='col-form-label'>
-                      &nbsp;&nbsp;days
+                      <div style={{ display: 'inline-block' }} className='form-group col-md-3'>
+                        <select className='custom-select' style={{ width: '100%' }} value={this.state.filterValue} onChange={this.onFilter} >
+                          <option value='' disabled>Filter by type...</option>
+                          <option value='text'>text</option>
+                          <option value='audio'>audio</option>
+                          <option value='file'>file</option>
+                          <option value='media'>media</option>
+                          <option value='miscellaneous'>miscellaneous</option>
+                          <option value='all'>all</option>
+                        </select>
+                      </div>
+                      <div className='form-group col-md-6' style={{ display: 'flex', float: 'right' }}>
+                        <span style={{ marginLeft: '70px' }} htmlFor='example-text-input' className='col-form-label'>
+                          Show records for last:&nbsp;&nbsp;
                       </span>
-                    </div>
+                        <div style={{ width: '200px' }}>
+                          <input id='example-text-input' type='number' min='0' step='1' value={this.state.selectedDays === '0' ? '' : this.state.selectedDays} className='form-control' onChange={this.onDaysChange} />
+                        </div>
+                        <span htmlFor='example-text-input' className='col-form-label'>
+                          &nbsp;&nbsp;days
+                      </span>
+                      </div>
 
-                 </div>
-                    { this.state.broadcastsData && this.state.broadcastsData.length > 0
-                  ? <div className='m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
-                    <table className='m-datatable__table' style={{display: 'block', height: 'auto', overflowX: 'auto'}}>
-                      <thead className='m-datatable__head'>
-                        <tr className='m-datatable__row'
-                          style={{height: '53px'}}>
-                          <th data-field='title'
-                            className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '100px'}}>Title</span>
-                          </th>
-                          <th data-field='type'
-                            className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '100px'}}>Type</span>
-                          </th>
-                          <th data-field='createdAt'
-                            className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '100px'}}>Created At</span>
-                          </th>
-                          <th data-field='sent'
-                            className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '100px'}}>Sent From</span>
-                          </th>
-                          <th data-field='delivered'
-                            className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '100px'}}>Delivered</span>
-                          </th>
-                          <th data-field='seen'
-                            className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '100px'}}>Seen</span>
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody className='m-datatable__body'>
-                        {this.state.broadcastsData.map((broadcast, i) => (
-                          <tr data-row={i}
-                            className='m-datatable__row m-datatable__row--even'
-                            style={{height: '55px'}} key={i}>
-                            <td data-field='title' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{broadcast.title}</span></td>
-                            <td data-field='type' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{(broadcast.payload.length > 1) ? 'Miscellaneous' : broadcast.payload[0].componentType}</span></td>
-                            <td data-field='createAt' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{handleDate(broadcast.datetime)}</span></td>
-                            <td data-field='sent' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{this.props.automated_options.flockSendWhatsApp.number}</span></td>
-                            <td data-field='delivered' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{broadcast.delivered ? broadcast.delivered : 0}</span></td>
-                            <td data-field='seen' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{broadcast.seen}</span></td>
-                          </tr>
-                        ))
-                      }
-                      </tbody>
-                    </table>
-                    <div className='pagination'>
-                      <ReactPaginate
-                        previousLabel={'previous'}
-                        nextLabel={'next'}
-                        breakLabel={<a href='#/'>...</a>}
-                        breakClassName={'break-me'}
-                        pageCount={Math.ceil(this.state.totalLength / 10)}
-                        marginPagesDisplayed={2}
-                        pageRangeDisplayed={3}
-                        onPageChange={this.handlePageClick}
-                        containerClassName={'pagination'}
-                        subContainerClassName={'pages pagination'}
-                        activeClassName={'active'}
-                        forcePage={this.state.pageNumber} />
                     </div>
-                  </div>
-                  : <span>
-                    <p> No data to display </p>
-                  </span>
-                }
+                    {this.state.broadcastsData && this.state.broadcastsData.length > 0
+                      ? <div className='m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
+                        <table className='m-datatable__table' style={{ display: 'block', height: 'auto', overflowX: 'auto' }}>
+                          <thead className='m-datatable__head'>
+                            <tr className='m-datatable__row'
+                              style={{ height: '53px' }}>
+                              <th data-field='title'
+                                className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                                <span style={{ width: '100px' }}>Title</span>
+                              </th>
+                              <th data-field='type'
+                                className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                                <span style={{ width: '100px' }}>Type</span>
+                              </th>
+                              <th data-field='createdAt'
+                                className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                                <span style={{ width: '100px' }}>Created At</span>
+                              </th>
+                              <th data-field='sent'
+                                className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                                <span style={{ width: '100px' }}>Sent From</span>
+                              </th>
+                              <th data-field='delivered'
+                                className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                                <span style={{ width: '100px' }}>Delivered</span>
+                              </th>
+                              <th data-field='seen'
+                                className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                                <span style={{ width: '100px' }}>Seen</span>
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody className='m-datatable__body'>
+                            {this.state.broadcastsData.map((broadcast, i) => (
+                              <tr data-row={i}
+                                className='m-datatable__row m-datatable__row--even'
+                                style={{ height: '55px' }} key={i}>
+                                <td data-field='title' className='m-datatable__cell--center m-datatable__cell'><span style={{ width: '100px' }}>{broadcast.title}</span></td>
+                                <td data-field='type' className='m-datatable__cell--center m-datatable__cell'><span style={{ width: '100px' }}>{(broadcast.payload.length > 1) ? 'Miscellaneous' : broadcast.payload[0].componentType}</span></td>
+                                <td data-field='createAt' className='m-datatable__cell--center m-datatable__cell'><span style={{ width: '100px' }}>{handleDate(broadcast.datetime)}</span></td>
+                                <td data-field='sent' className='m-datatable__cell--center m-datatable__cell'><span style={{ width: '100px' }}>{this.props.automated_options.whatsApp.number}</span></td>
+                                <td data-field='delivered' className='m-datatable__cell--center m-datatable__cell'><span style={{ width: '100px' }}>{broadcast.delivered ? broadcast.delivered : 0}</span></td>
+                                <td data-field='seen' className='m-datatable__cell--center m-datatable__cell'><span style={{ width: '100px' }}>{broadcast.seen}</span></td>
+                              </tr>
+                            ))
+                            }
+                          </tbody>
+                        </table>
+                        <div className='pagination'>
+                          <ReactPaginate
+                            previousLabel={'previous'}
+                            nextLabel={'next'}
+                            breakLabel={<a href='#/'>...</a>}
+                            breakClassName={'break-me'}
+                            pageCount={Math.ceil(this.state.totalLength / 10)}
+                            marginPagesDisplayed={2}
+                            pageRangeDisplayed={3}
+                            onPageChange={this.handlePageClick}
+                            containerClassName={'pagination'}
+                            subContainerClassName={'pages pagination'}
+                            activeClassName={'active'}
+                            forcePage={this.state.pageNumber} />
+                        </div>
+                      </div>
+                      : <span>
+                        <p> No data to display </p>
+                      </span>
+                    }
                   </div>
 
                 </div>
@@ -379,7 +383,7 @@ onFilter (e) {
   }
 }
 
-function mapStateToProps (state) {
+function mapStateToProps(state) {
   return {
     broadcasts: (state.whatsAppBroadcastsInfo.broadcasts),
     count: (state.whatsAppBroadcastsInfo.count),
@@ -388,7 +392,7 @@ function mapStateToProps (state) {
   }
 }
 
-function mapDispatchToProps (dispatch) {
+function mapDispatchToProps(dispatch) {
   return bindActionCreators({
     loadBroadcastsList,
     loadWhatsAppContactsList
