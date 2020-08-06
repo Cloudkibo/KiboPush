@@ -24,6 +24,7 @@ import Integrations from './integrations'
 import AdvancedSetting from './advancedSettings'
 import CannedResponses from './cannedResponses/cannedResponses'
 import ZoomIntegration from './zoomIntegration'
+import Notifications from './notifications'
 
 class Settings extends React.Component {
   constructor (props, context) {
@@ -80,6 +81,7 @@ class Settings extends React.Component {
     this.goToSettings = this.goToSettings.bind(this)
     this.setUploadCustomerFile = this.setUploadCustomerFile.bind(this)
     this.setCannedResponses = this.setCannedResponses.bind(this)
+    this.setNotification = this.setNotification.bind(this)
   }
 
   UNSAFE_componentWillMount () {
@@ -166,6 +168,12 @@ class Settings extends React.Component {
       openTab: 'showNGP'
     }, () => {
       this.initializeSwitchNGP(this.state.ngpButtonState)
+    })
+  }
+
+  setNotification () {
+    this.setState({
+      openTab: 'notifications'
     })
   }
 
@@ -541,6 +549,14 @@ class Settings extends React.Component {
                       </a>
                     </li>
                     }
+                    { (url.includes('localhost') || url.includes('kibochat.cloudkibo.com')) && (this.props.user.role === 'buyer') &&  (this.props.user.currentPlan.unique_ID === 'plan_C' || this.props.user.currentPlan.unique_ID === 'plan_D') &&
+                    <li className='m-nav__item'>
+                      <a href='#/' className='m-nav__link' onClick={this.setNotification} style={{cursor: 'pointer'}} >
+                        <i className='m-nav__link-icon flaticon-bell' />
+                        <span className='m-nav__link-text'>Notifications</span>
+                      </a>
+                    </li>
+                    }
                     {this.props.user && !(this.props.user.role === 'admin' || this.props.user.role === 'agent') &&
                     <li className='m-nav__item'>
                       <a href='#/' className='m-nav__link' onClick={this.setNGP} style={{cursor: 'pointer'}}>
@@ -754,6 +770,9 @@ class Settings extends React.Component {
             }
             { this.state.openTab === 'integrations' &&
               <Integrations history= {this.props.history}/>
+            }
+            { this.state.openTab === 'notifications' &&
+              <Notifications history= {this.props.history}/>
             }
             { this.state.openTab === 'advancedSettings' &&
               <AdvancedSetting />
