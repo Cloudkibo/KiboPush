@@ -11,16 +11,29 @@ class Billing extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      selectedRadio: props.pro === 'true' ? 'premium' : 'free',
+      selectedRadio: 'free',
     }
     this.handleRadioButton = this.handleRadioButton.bind(this)
     this.save = this.save.bind(this)
     this.goToPayment = this.goToPayment.bind(this)
     this.getPlan = this.getPlan.bind(this)
+    this.setRadioButton = this.setRadioButton.bind(this)
   }
 
   componentDidMount () {
     document.title = 'KiboPush | api_settings'
+  }
+
+  setRadioButton () {
+    if (this.props.user.currentPlan.unique_ID === 'plan_A') {
+      this.setState({selectedRadio: 'free'})
+    } else if (this.props.user.currentPlan.unique_ID === 'plan_B') {
+      this.setState({selectedRadio: 'standard'})
+    } else if (this.props.user.currentPlan.unique_ID === 'plan_C') {
+      this.setState({selectedRadio: 'premium'})
+    } else if (this.props.user.currentPlan.unique_ID === 'plan_B') {
+      this.setState({selectedRadio: 'enterprise'})
+    }
   }
 
   getPlan () {
@@ -135,7 +148,7 @@ class Billing extends React.Component {
                       <br /><br />
                     </div>
                     <center style={{marginTop: '15px', marginBottom: '15px'}}>
-                      <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' data-toggle='modal' data-target='#upgradePlan'>
+                      <button onClick={this.setRadioButton} className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' data-toggle='modal' data-target='#upgradePlan'>
                         {this.props.user && this.props.user.currentPlan.unique_ID === 'plan_A'
                         ? <span>
                           Upgrade to Pro
