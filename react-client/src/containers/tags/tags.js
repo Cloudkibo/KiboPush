@@ -32,7 +32,7 @@ class Tags extends React.Component {
     })
     this.refs.videoTags.click()
   }
-  
+
 
   componentDidMount() {
     const hostname = window.location.hostname;
@@ -49,7 +49,7 @@ class Tags extends React.Component {
   deleteTag (tag) {
     this.setState({
         currentTag: tag
-    }, () => { 
+    }, () => {
         this.refs.DeleteModal.click()
     })
   }
@@ -126,7 +126,7 @@ class Tags extends React.Component {
                 <h5 className="modal-title" id="exampleModalLabel">
                   Tags Video Tutorial
                 </h5>
-                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" 
+                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal"
                 aria-label="Close"
                 onClick={() => {
                   this.setState({
@@ -221,20 +221,23 @@ class Tags extends React.Component {
                         </h3>
                       </div>
                     </div>
-                    <div className='m-portlet__head-tools'>
-                      <ul className='m-portlet__nav'>
-                        <li className='m-portlet__nav-item'>
-                          <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' onClick={this.createTag}>
-                            <span>
-                              <i className='la la-plus' />
+                    {
+                      this.props.user.permissions['create_tags'] &&
+                      <div className='m-portlet__head-tools'>
+                        <ul className='m-portlet__nav'>
+                          <li className='m-portlet__nav-item'>
+                            <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' onClick={this.createTag}>
                               <span>
-                                New Tag
+                                <i className='la la-plus' />
+                                <span>
+                                  New Tag
+                                </span>
                               </span>
-                            </span>
-                          </button>
-                        </li>
-                      </ul>
-                    </div>
+                            </button>
+                          </li>
+                        </ul>
+                      </div>
+                    }
                   </div>
                   <div className='m-portlet__body'>
                     {/* <div className='row align-items-center'>
@@ -282,16 +285,22 @@ class Tags extends React.Component {
                                   <td data-field='subscriberCount' className='m-datatable__cell--center m-datatable__cell'><span style={{ width: '100px' }}>{tag.subscribersCount}</span></td>
                                   <td data-field='actions' className='m-datatable__cell--center m-datatable__cell'>
                                     <span style={{ width: '150px' }}>
-                                        <button className='btn btn-primary btn-sm'
-                                            onClick={() => this.deleteTag(tag)}
-                                            style={{ float: 'right', margin: 2 }}>
-                                            Delete
-                                        </button>
-                                        <button className='btn btn-primary btn-sm'
-                                            onClick={() => this.updateTag(tag)}
-                                            style={{ float: 'right', margin: 2 }}>
-                                            Edit
-                                        </button>
+                                        {
+                                          this.props.user.permissions['delete_tags'] &&
+                                          <button className='btn btn-primary btn-sm'
+                                              onClick={() => this.deleteTag(tag)}
+                                              style={{ float: 'right', margin: 2 }}>
+                                              Delete
+                                          </button>
+                                        }
+                                        {
+                                          this.props.user.permissions['update_tags'] &&
+                                          <button className='btn btn-primary btn-sm'
+                                              onClick={() => this.updateTag(tag)}
+                                              style={{ float: 'right', margin: 2 }}>
+                                              Edit
+                                          </button>
+                                        }
                                     </span>
                                   </td>
                                 </tr>
@@ -334,7 +343,8 @@ class Tags extends React.Component {
 
 function mapStateToProps(state) {
   return {
-    tags: (state.tagsInfo.tags)
+    tags: (state.tagsInfo.tags),
+    user: (state.basicInfo.user)
   }
 }
 
