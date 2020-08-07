@@ -178,12 +178,19 @@ class Configuration extends React.Component {
   }
 
   clearFieldsWapp() {
-    let whatsappData = JSON.parse(JSON.stringify(this.initialWhatsappData))
-    whatsappData[this.props.automated_options.whatsApp.provider] = this.props.automated_options.whatsApp
-    this.setState({
-      whatsappProvider: this.props.automated_options.whatsApp.provider,
-      whatsappData
-    })
+    if (this.props.automated_options && this.props.automated_options.whatsApp) {
+      let whatsappData = JSON.parse(JSON.stringify(this.initialWhatsappData))
+      whatsappData[this.props.automated_options.whatsApp.provider] = this.props.automated_options.whatsApp
+      this.setState({
+        whatsappProvider: this.props.automated_options.whatsApp.provider,
+        whatsappData
+      })
+    } else {
+      this.setState({
+        whatsappProvider: '',
+        whatsappData: this.initialWhatsappData
+      })
+    }
   }
 
   render() {
