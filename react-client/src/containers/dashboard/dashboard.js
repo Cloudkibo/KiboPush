@@ -723,20 +723,20 @@ class Dashboard extends React.Component {
                 />
             </div>
             */}
-
-            <div className='row'>
-              <div className='m-form m-form--label-align-right m--margin-bottom-30 col-12'>
-                {
-                  this.props.user.plan['csv_exports'] &&
-                  <button className='btn btn-success m-btn m-btn--icon pull-right' onClick={this.exportDashboardInformation}>
-                    <span>
-                      <i className='fa fa-download' />
+              <div className='row'>
+                <div className='m-form m-form--label-align-right m--margin-bottom-30 col-12'>
+                  {
+                    this.props.user.plan['csv_exports'] &&
+                    <button className='btn btn-success m-btn m-btn--icon pull-right' onClick={this.exportDashboardInformation}>
                       <span>
-                        Export Records in CSV File
+                        <i className='fa fa-download' />
+                        <span>
+                          Export Records in CSV File
                       </span>
-                    </span>
-                  </button>
-                }
+                      </span>
+                    </button>
+                  }
+                </div>
               </div>
             </div>
           }
