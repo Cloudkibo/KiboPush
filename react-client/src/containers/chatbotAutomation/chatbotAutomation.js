@@ -137,23 +137,26 @@ class ChatbotAutomation extends React.Component {
                                 onSettingsClick={() => this.onSettingsClick(chatbot)}
                               />
                             ))
-                            : (!this.props.chatbots) ? 
+                            : (!this.props.chatbots) ?
                             <p>Loading chatbots...</p>
                             : <p>No data to display</p>
                           }
                         </div>
                       }
-                      <label className="m-radio m-radio--bold m-radio--state-brand">
-                        <input
-                          type="radio"
-                          onClick={this.onRadioClick}
-                          onChange={() => {}}
-                          value='create'
-                          checked={this.state.selectedRadio === 'create'}
-                        />
-                          Create New Chatbot
-                        <span />
-                      </label>
+                      {
+                        this.props.user.permissions['create_chatbot_automation'] &&
+                        <label className="m-radio m-radio--bold m-radio--state-brand">
+                          <input
+                            type="radio"
+                            onClick={this.onRadioClick}
+                            onChange={() => {}}
+                            value='create'
+                            checked={this.state.selectedRadio === 'create'}
+                          />
+                            Create New Chatbot
+                          <span />
+                        </label>
+                      }
                       {
                         this.state.selectedRadio === 'create' &&
                         <div style={{marginLeft: '50px'}} className='row'>
@@ -192,11 +195,11 @@ class ChatbotAutomation extends React.Component {
                               : <div>
                                 You have created the chatbot for all your connected pages.
                               </div>
-                            : (!this.props.pages) ? 
+                            : (!this.props.pages) ?
                             <div>
-                              Loading Pages...        
+                              Loading Pages...
                             </div>
-                            : 
+                            :
                             <div>
                               Please connect a Facebook page to continue
                               <Link to='/addPages' style={{border: '1px solid', marginLeft: '10px'}} className="btn btn-outline-success">
@@ -221,7 +224,8 @@ class ChatbotAutomation extends React.Component {
 function mapStateToProps (state) {
   return {
     chatbots: (state.chatbotsInfo.chatbots),
-    pages: (state.pagesInfo.pages)
+    pages: (state.pagesInfo.pages),
+    user: (state.basicInfo.user)
   }
 }
 

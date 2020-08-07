@@ -40,11 +40,7 @@ class CheckoutForm extends React.Component {
 
   handleSubmit (ev) {
     ev.preventDefault()
-    // if (!this.state.responseReturned) {
-    //   this.setState({error: true})
-    //   return
-    // }
-    console.log('ev', ev)
+
     if (this.props.stripe) {
       console.log('this.props.stripe', this.props.stripe)
       this.props.stripe

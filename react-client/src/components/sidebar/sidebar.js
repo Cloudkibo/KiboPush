@@ -1,1286 +1,404 @@
-/* eslint-disable camelcase */
-/**
- * Created by sojharo on 20/07/2017.
- */
-
 import React, {Component} from 'react'
-import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { getAutomatedOptions } from '../../redux/actions/basicinfo.actions'
 import { bindActionCreators } from 'redux'
-import {getCurrentProduct} from '../../utility/utils'
-import { fetchSingleSession, fetchUserChats, resetSocket } from '../../redux/actions/livechat.actions'
+import MENUITEM from './menuItem'
 
 class Sidebar extends Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      isShowingModal: false,
-      activeSession: '',
-      currentProfile: {},
-      loading: true,
-      ignore: true,
-      dashboard: true,
-      broadcasts: false,
-      surveys: false,
-      polls: false,
-      livechat: false,
-      autoposting: false,
-      persistentMenu: true,
-      pages: true,
-      subscribers: true,
-      subscribeToMessenger: true,
-      messengerLink: true,
-      phoneNumber: true,
-      settings: true,
-      userGuide: true,
-      inviteMembers: true,
-      members: true,
-      welcomeMessage: true,
-      segmentSubscribers: true,
-      commentCapture: true,
-      landingPages: true,
-      messengerRefURL: true,
-      messageUs: true,
-      chatWidget: true,
-      messengerCode: true,
-      smartReplies: false,
-      templates: false,
-      sequenceMessaging: false,
-      waitingResponse: false,
-      isKiboChat: false,
-      isLocalhost: false,
-      messengerAds: true,
-      businessGateway: false,
-      checkbox: true,
-      abandonedCarts: false,
-      rssIntegration: true,
-      overlayWidgets: true,
-      newsIntegration: true
+      menuItems: []
     }
-    this.openUserGuide = this.openUserGuide.bind(this)
-    this.closeUserGuide = this.closeUserGuide.bind(this)
-  }
-  UNSAFE_componentWillMount () {
-    let url = window.location.hostname
-    console.log('url', url)
-    if (url === 'skibochat.cloudkibo.com' || url === 'kibochat.cloudkibo.com') {
-      console.log('kibochat')
-      this.setState({
-        rssIntegration: false,
-        newsIntegration: false,
-        livechat: true,
-        smartReplies: true,
-        waitingResponse: true,
-        broadcasts: false,
-        polls: false,
-        surveys: false,
-        sequenceMessaging: false,
-        templates: false,
-        autoposting: false,
-        isKiboChat: true
-      })
-    } else if (url === 'skiboengage.cloudkibo.com' || url === 'kiboengage.cloudkibo.com') {
-      console.log('kiboEngage')
-      this.setState({
-        rssIntegration: true,
-        newsIntegration: true,
-        broadcasts: true,
-        polls: true,
-        surveys: true,
-        sequenceMessaging: true,
-        templates: true,
-        autoposting: true,
-        livechat: false,
-        smartReplies: false,
-        waitingResponse: false,
-        abandonedCarts: true
-      })
-    } else if (url === 'staging.kibopush.com') {
-      console.log('staging')
-      this.setState({
-        broadcasts: true,
-        polls: true,
-        surveys: true,
-        sequenceMessaging: true,
-        templates: true,
-        autoposting: true,
-        livechat: true,
-        smartReplies: true,
-        waitingResponse: true
-      })
-    } else if (url.includes('localhost')) {
-      console.log('localhost')
-      this.setState({
-        rssIntegration: true,
-        newsIntegration: true,
-        broadcasts: true,
-        polls: true,
-        surveys: true,
-        sequenceMessaging: true,
-        templates: true,
-        autoposting: true,
-        livechat: true,
-        smartReplies: true,
-        waitingResponse: true,
-        businessGateway: true,
-        isLocalhost: true
-      })
-    } else if (url === 'skibolite.cloudkibo.com' || url === 'kibolite.cloudkibo.com') {
-      console.log('kibolite')
-      this.setState({
-        rssIntegration: false,
-        newsIntegration: false,
-        broadcasts: false,
-        polls: false,
-        surveys: false,
-        sequenceMessaging: false,
-        templates: false,
-        autoposting: false,
-        livechat: false,
-        smartReplies: false,
-        waitingResponse: false,
-        businessGateway: true,
-        isKiboLite: true
-      })
-    }
+    this.setMenuItems = this.setMenuItems.bind(this)
+
     this.props.getAutomatedOptions()
   }
 
-  openUserGuide () {
-    this.setState({isShowingModal: true})
-  }
-
-  closeUserGuide () {
-    this.setState({isShowingModal: false})
+  setMenuItems (user, automated_options) {
+    const url = window.location.hostname
+    let menuItems = []
+    const isLocalhost = url.includes('localhost')
+    const isKiboChat = url.includes('kibochat.cloudkibo.com')
+    const isKiboEngage = url.includes('kiboengage.cloudkibo.com')
+    const isKiboLite = url.includes('kibolite.cloudkibo.com')
+    const platform = user.platform
+    if (user.isSuperUser && (isKiboEngage || isLocalhost)) {
+      menuItems.push({
+        priority: 'a',
+        name: 'Operational Dashboard',
+        route: '/operationalDashboard',
+        icon: 'flaticon-statistics'
+      })
+    }
+    if (user.plan['dashboard']) {
+      menuItems.push({
+        priority: 'b',
+        name: 'Dashboard',
+        route: '/dashboard',
+        routeState: {isKiboLite},
+        icon: 'flaticon-squares-4'
+      })
+    }
+    if (!isKiboLite && platform === 'messenger') {
+      let submenu = []
+      if (user.plan['manage_subscribers'] && user.permissions['view_subscribers']) {
+        submenu.push({
+          priority: 'a',
+          name: 'Subscribers',
+          route: '/subscribers',
+          icon: 'flaticon-user-ok'
+        })
+      }
+      if (user.plan['custom_fields'] && user.permissions['view_custom_fields']) {
+        submenu.push({
+          priority: 'b',
+          name: 'Custom Fields',
+          route: '/customFields',
+          icon: 'flaticon-profile'
+        })
+      }
+      if (user.plan['tags'] && user.permissions['view_tags']) {
+        submenu.push({
+          priority: 'c',
+          name: 'Tags',
+          route: '/tags',
+          icon: 'flaticon-interface-9'
+        })
+      }
+      menuItems.push({
+        priority: 'c',
+        name: 'Subscriptions',
+        submenu,
+        icon: 'flaticon-users'
+      })
+    }
+    if (['sms', 'whatsApp'].includes(platform) && user.permissions['view_subscribers']) {
+      menuItems.push({
+        priority: 'c',
+        name: 'Subscribers',
+        route: '/smsSubscribers',
+        icon: 'flaticon-user-ok'
+      })
+    }
+    if (isKiboLite) {
+      menuItems.push({
+        priority: 'd',
+        name: 'Broadcast',
+        route: '/businessGateway',
+        icon: 'flaticon-network'
+      })
+    }
+    if (isKiboEngage || isLocalhost) {
+      let submenu = []
+      if (user.plan['broadcasts'] && user.permissions['view_broadcasts']) {
+        submenu.push({
+          priority: 'a',
+          name: 'Broadcasts',
+          route: platform === 'messenger' ? '/broadcasts' : platform === 'sms' ? '/smsBroadcasts' : '/whatsAppBroadcasts'
+        })
+      }
+      if (platform === 'messenger' && user.plan['surveys'] && user.permissions['view_surveys']) {
+        submenu.push({
+          priority: 'b',
+          name: 'Surveys',
+          route: '/surveys'
+        })
+      }
+      if (platform === 'messenger' && user.plan['polls'] && user.permissions['view_polls']) {
+        submenu.push({
+          priority: 'c',
+          name: 'Polls',
+          route: '/poll'
+        })
+      }
+      if (platform === 'messenger' && user.plan['segmentation_lists'] && user.permissions['view_segmentation_lists']) {
+        submenu.push({
+          priority: 'd',
+          name: 'Segment Subscribers',
+          route: '/segmentedLists'
+        })
+      }
+      if (platform === 'messenger' && (user.plan['broadcasts_templates'] || user.plan['poll_templates'] || user.plan['survey_templates'])) {
+        submenu.push({
+          priority: 'e',
+          name: 'Templates',
+          route: '/templates'
+        })
+      }
+      if (platform === 'messenger' && user.plan['sponsored_broadcast'] && user.permissions['view_sponsored_broadcast']) {
+        submenu.push({
+          priority: 'f',
+          name: 'Sponsored Broadcast (Beta)',
+          route: '/sponsoredMessaging'
+        })
+      }
+      menuItems.push({
+        priority: 'e',
+        name: 'Broadcasting',
+        submenu,
+        icon: 'flaticon-paper-plane'
+      })
+    }
+    if (platform === 'sms') {
+      menuItems.push({
+        priority: 'f',
+        name: 'Upload Contacts',
+        route: '/uploadContacts',
+        icon: 'fa fa-id-card-o'
+      })
+    }
+    if (platform === 'whatsApp') {
+      menuItems.push({
+        priority: 'f',
+        name: 'Invite Subscribers',
+        route: '/uploadContactsWhatsApp',
+        icon: 'flaticon-user-add'
+      })
+    }
+    if ((isKiboChat || isLocalhost) && user.plan['livechat'] && user.permissions['manage_livechat'] && ['MIX_CHAT', 'HUMAN_CHAT'].includes(automated_options.automated_options)) {
+      menuItems.push({
+        priority: 'g',
+        name: 'Live Chat',
+        route: platform === 'messenger' ? '/liveChat' : platform === 'sms' ? '/smsChat' : '/whatsAppChat',
+        icon: 'flaticon-chat-1'
+      })
+    }
+    if (isKiboEngage || isKiboChat || isLocalhost) {
+      let submenu = []
+      if ((isKiboChat || isLocalhost) && user.plan['smart_replies'] && user.permissions['view_bots'] && ['MIX_CHAT', 'AUTOMATED_CHAT'].includes(automated_options.automated_options)) {
+        submenu.push({
+          priority: 'a',
+          name: 'Smart Replies',
+          route: '/bots'
+        })
+      }
+      if ((isKiboChat || isLocalhost) && user.plan['chatbot_automation'] && user.permissions['configure_chatbot_automation']) {
+        submenu.push({
+          priority: 'b',
+          name: 'Chatbot Automation',
+          route: '/chatbotAutomation'
+        })
+      }
+      if ((isKiboEngage || isLocalhost) && user.plan['autoposting'] && user.permissions['view_autoposting_feeds']) {
+        submenu.push({
+          priority: 'c',
+          name: 'Autoposting',
+          route: '/autoposting'
+        })
+      }
+      if ((isKiboEngage || isLocalhost) && user.plan['rss_integration'] && user.permissions['view_rss_fedds']) {
+        submenu.push({
+          priority: 'd',
+          name: 'RSS Integration',
+          route: '/rssIntegration'
+        })
+      }
+      if ((isKiboEngage || isLocalhost) && user.plan['news_integration'] && user.permissions['view_news_fedds']) {
+        submenu.push({
+          priority: 'e',
+          name: 'News Integration',
+          route: '/newsIntegration'
+        })
+      }
+      if ((isKiboEngage || isLocalhost) && user.plan['sequence_messaging'] && user.permissions['view_sequences']) {
+        submenu.push({
+          priority: 'f',
+          name: 'Sequence Messaging',
+          route: '/sequenceMessaging'
+        })
+      }
+      menuItems.push({
+        priority: 'h',
+        name: 'Automation',
+        submenu,
+        icon: 'flaticon-share'
+      })
+    }
+    if (isKiboEngage || isLocalhost) {
+      let submenu = []
+      if (user.plan['comment_capture'] && user.permissions['view_comment_capture_rules']) {
+        submenu.push({
+          priority: 'a',
+          name: 'Comment Capture',
+          route: '/commentCapture'
+        })
+      }
+      if (user.plan['customer_matching'] && user.permissions['invite_subscribers_using_phone_number']) {
+        submenu.push({
+          priority: 'b',
+          name: 'Invite Using Phone Numbers',
+          route: '/customerMatchingUsingPhNum'
+        })
+      }
+      submenu.push({
+        priority: 'c',
+        name: 'Invite Subscribers',
+        route: '/inviteSubscribers'
+      })
+      if (user.plan['messenger_code'] && user.permissions['view_messenger_codes']) {
+        submenu.push({
+          priority: 'd',
+          name: 'Messenger Code',
+          route: '/messengerCode'
+        })
+      }
+      if (user.plan['landing_pages']) {
+        submenu.push({
+          priority: 'e',
+          name: 'Landing Pages',
+          route: '/landingPages'
+        })
+      }
+      if (user.plan['json_ads']) {
+        submenu.push({
+          priority: 'f',
+          name: 'JSON Ads',
+          route: '/jsonAds'
+        })
+      }
+      if (user.plan['messenger_links'] && user.permissions['view_messenger_ref_urls']) {
+        submenu.push({
+          priority: 'g',
+          name: 'Messenger Ref Url',
+          route: '/messengerRefURL'
+        })
+      }
+      if (user.plan['subscribe_to_messenger']) {
+        submenu.push({
+          priority: 'h',
+          name: 'Message Us Button',
+          route: '/messageUs'
+        })
+      }
+      if (user.plan['customer_chat_plugin']) {
+        submenu.push({
+          priority: 'i',
+          name: 'Customer Chat Plugin',
+          route: '/chatWidget'
+        })
+      }
+      if (user.plan['checkbox_plugin']) {
+        submenu.push({
+          priority: 'j',
+          name: 'Checkbox Plugin',
+          route: '/checkbox'
+        })
+      }
+      if (user.plan['overlay_widgets'] && user.isSuperUser) {
+        submenu.push({
+          priority: 'k',
+          name: 'Overlay Widgets',
+          route: '/overlayWidgets'
+        })
+      }
+      menuItems.push({
+        priority: 'i',
+        name: 'Growth Tools',
+        submenu,
+        icon: 'flaticon-diagram'
+      })
+    }
+    if (platform === 'messenger') {
+      let submenu = []
+      if (user.plan['manage_pages'] && user.permissions['manage_facebook_pages']) {
+        submenu.push({
+          priority: 'a',
+          name: 'Pages',
+          route: '/pages'
+        })
+      }
+      if (user.plan['menu'] && user.permissions['set_persistent_menu']) {
+        submenu.push({
+          priority: 'b',
+          name: 'Persistent Menu',
+          route: '/menu'
+        })
+      }
+      if (user.plan['welcome_message'] && user.permissions['manage_welcome_message']) {
+        submenu.push({
+          priority: 'c',
+          name: 'Welcome Message',
+          route: '/welcomeMessage'
+        })
+      }
+      if (user.plan['greeting_text'] && user.permissions['manage_greeting_text']) {
+        submenu.push({
+          priority: 'd',
+          name: 'Greeting Text',
+          route: '/greetingMessage'
+        })
+      }
+      menuItems.push({
+        priority: 'j',
+        name: 'Manage Pages',
+        submenu,
+        icon: 'flaticon-add'
+      })
+    }
+    if (true) {
+      let submenu = []
+      if (user.plan['invite_members'] && user.permissions['invite_members']) {
+        submenu.push({
+          priority: 'a',
+          name: 'Invite Members',
+          route: '/inviteMembers'
+        })
+      }
+      if (user.permissions['view_members']) {
+        submenu.push({
+          priority: 'b',
+          name: 'Members',
+          route: '/members'
+        })
+      }
+      if (user.plan['team_members_management'] && user.permissions['view_teams']) {
+        submenu.push({
+          priority: 'c',
+          name: 'Teams',
+          route: '/teams'
+        })
+      }
+      menuItems.push({
+        priority: 'k',
+        name: 'Organization',
+        submenu,
+        icon: 'flaticon-share'
+      })
+    }
+    if (platform === 'messenger' && user.isSuperUser) {
+      menuItems.push({
+        priority: 'l',
+        name: 'Abandoned Carts',
+        route: '/abandonedCarts',
+        icon: 'flaticon-comment'
+      })
+    }
+    menuItems.push({
+      priority: 'm',
+      name: 'Settings',
+      route: '/settings',
+      icon: 'flaticon-cogwheel'
+    })
+    menuItems.push({
+      priority: 'n',
+      name: 'User Guide',
+      link: 'http://kibopush.com/user-guide/',
+      icon: 'flaticon-info'
+    })
+    return menuItems.sort((a, b) => (a.priority > b.priority) ? 1 : -1)
   }
 
   UNSAFE_componentWillReceiveProps (nextProps) {
-    console.log('nextProps in sidebar', nextProps)
-
-   /* if (nextProps.user) {
-      this.setState({broadcasts: nextProps.user.uiMode.broadcasts,
-        polls: nextProps.user.uiMode.polls,
-        surveys: nextProps.user.uiMode.surveys,
-        sequenceMessaging: nextProps.user.uiMode.sequenceMessaging,
-        templates: nextProps.user.uiMode.templates,
-        livechat: nextProps.user.uiMode.livechat,
-        smartReplies: nextProps.user.uiMode.smartReplies,
-        abandonedCarts: nextProps.user.uiMode.abandonedCarts,
-        subscribers: nextProps.user.uiMode.subscribers,
-        segmentSubscribers: nextProps.user.uiMode.segmentSubscribers,
-        autoposting: nextProps.user.uiMode.autoposting,
-        persistentMenu: nextProps.user.uiMode.persistentMenu,
-        pages: nextProps.user.uiMode.pages,
-        phoneNumber: nextProps.user.uiMode.phoneNumber,
-        inviteMembers: nextProps.user.uiMode.inviteMembers,
-        members: nextProps.user.uiMode.members,
-        welcomeMessage: nextProps.user.uiMode.welcomeMessage,
-        commentCapture: nextProps.user.uiMode.commentCapture})
-    }   */
-  }
-
-  showAbandonedCarts () {
-    if (this.props.user) {
-      if (this.state.abandonedCarts && this.props.user.isSuperUser) {
-        // include user persmissions
-        return (
-          <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-            <Link to='/abandonedCarts' className='m-menu__link m-menu__toggle'>
-              <i className='m-menu__link-icon flaticon-comment' title='Comment Capture' />
-              <span className='m-menu__link-text'>Abandoned Carts</span>
-            </Link>
-          </li>
-        )
-      } else {
-        return (null)
-      }
-    }
-  }
-
-  showOperationalDashboard () {
-    if (this.props.user) {
-      if (this.props.user.isSuperUser && (getCurrentProduct() === 'KiboEngage' || getCurrentProduct() === 'localhost')) {
-        return (
-          <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-            <Link to='/operationalDashboard' className='m-menu__link m-menu__toggle'>
-              <i className='m-menu__link-icon flaticon-statistics' title='Operational Dashboard' />
-              <span className='m-menu__link-text'>Operational Dashboard</span>
-            </Link>
-          </li>
-        )
-      } else {
-        return (null)
-      }
-    }
-  }
-
-  showDashboard () {
-    if (this.props.user) {
-      if (this.props.user.permissions.dashboardPermission && this.props.user.plan.dashboard) {
-        return (
-          <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-            <Link to='/dashboard'  state={{isKiboLite: this.state.businessGateway}} className='m-menu__link m-menu__toggle'>
-              <i className='m-menu__link-icon flaticon-squares-4' title='Dashboard' />
-              <span className='m-menu__link-text'>Dashboard</span>
-            </Link>
-          </li>
-        )
-      } else {
-        return (null)
-      }
-    }
-  }
-
-  showSubscribersItem () {
-    if (this.props.user) {
-      if (this.state.subscribers && this.props.user.permissions.subscriberPermission && this.props.user.plan.manage_subscribers) {
-        return (
-          <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-            <Link to={this.props.user.platform === 'messenger' ? '/subscribers' : '/smsSubscribers'} className='m-menu__link m-menu__toggle'>
-              <i className='m-menu__link-icon flaticon-user-ok' title='Subscribers' />
-              <span className='m-menu__link-text'>Subscribers</span>
-            </Link>
-          </li>
-        )
-      } else {
-        return (null)
-      }
-    }
-  }
-
-  showCustomFields() {
-    if (this.props.user && this.props.user.platform === 'messenger') {
-      if (this.state.subscribers && this.props.user.permissions.subscriberPermission && this.props.user.plan.manage_subscribers) {
-        return (
-          <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-            <Link to={'/customFields'} className='m-menu__link m-menu__toggle'>
-              <i className='m-menu__link-icon flaticon-profile' title='Custom Fields' />
-              <span className='m-menu__link-text'>Custom Fields</span>
-            </Link>
-          </li>
-        )
-      } else {
-        return (null)
-      }
-    }
-  }
-
-  showTags() {
-    if (this.props.user && this.props.user.platform === 'messenger') {
-      if (this.state.subscribers && this.props.user.permissions.subscriberPermission && this.props.user.plan.manage_subscribers) {
-        return (
-          <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-            <Link to={'/tags'} className='m-menu__link m-menu__toggle'>
-              <i className='m-menu__link-icon flaticon-interface-9' title='Custom Fields' />
-              <span className='m-menu__link-text'>Tags</span>
-            </Link>
-          </li>
-        )
-      } else {
-        return (null)
-      }
-    }
-  }
-
-  showSponsoredMessaging () {
-    if (this.props.user) {
-      // include user persmissions
-
-        return (
-          <li className='m-menu__item' aria-haspopup='true' >
-            <Link to='/sponsoredMessaging' className='m-menu__link'>
-              <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
-                <span />
-              </i>
-              <span className='m-menu__link-text'>
-                Sponsored Broadcast (Beta)
-              </span>
-            </Link>
-          </li>
-        )
-
-    }
-  }
-
-  showBroadcastingItems () {
-    if (!this.state.isKiboChat && !this.state.isKiboLite) {
-      return (
-        <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-          <span className='m-menu__link m-menu__toggle'>
-            <i className='m-menu__link-icon flaticon-paper-plane' title='Broadcasting' />
-            <span className='m-menu__link-text'>Broadcasting</span>
-            <i className='m-menu__ver-arrow la la-angle-right' />
-          </span>
-          <div className='m-menu__submenu'>
-            <span className='m-menu__arrow' />
-            <ul className='m-menu__subnav'>
-              <li className='m-menu__item  m-menu__item--parent' aria-haspopup='true' >
-                <span className='m-menu__link'>
-                  <span className='m-menu__link-text'>
-                    Broadcasting
-                  </span>
-                </span>
-              </li>
-              {this.showBroadcastsItem()}
-              {this.props.user && this.props.user.platform === 'messenger' && this.showSurveysItem()}
-              {this.props.user && this.props.user.platform === 'messenger' && this.showPollsItem()}
-              {this.props.user && this.props.user.platform === 'messenger' && this.showSegmentSubscribers()}
-              {this.props.user && this.props.user.platform === 'messenger' && this.showTemplates()}
-              {this.props.user && this.props.user.platform === 'messenger' && this.showSponsoredMessaging()}
-            </ul>
-          </div>
-        </li>
-      )
-    } else {
-      return (
-        <div />
-      )
-    }
-  }
-
-  showLiveChatItem () {
-    if (this.props.user) {
-      if (this.state.livechat && this.props.user.permissions.livechatPermission && this.props.user.plan.livechat && this.props.automated_options &&
-          (this.props.automated_options.automated_options === 'MIX_CHAT' ||
-           this.props.automated_options.automated_options === 'HUMAN_CHAT')) {
-        return (
-          <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-            <Link to={this.props.user.platform === 'sms' ? 'smsChat' : this.props.user.platform === 'messenger' ? '/liveChat' : 'whatsAppChat'} className='m-menu__link m-menu__toggle'>
-              <i className='m-menu__link-icon flaticon-chat-1' title='Live Chat' />
-              <span className='m-menu__link-text'>Live Chat (Beta)</span>
-            </Link>
-          </li>
-        )
-      } else {
-        return (null)
-      }
-    }
-  }
-
-  showAutomationItems () {
-    if (!this.state.isKiboLite && this.props.user && this.props.user.platform === 'messenger') {
-      return (
-        <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-          <span className='m-menu__link m-menu__toggle'>
-            <i className='m-menu__link-icon flaticon-share' title='Automation' />
-            <span className='m-menu__link-text'>Automation</span>
-            <i className='m-menu__ver-arrow la la-angle-right' />
-          </span>
-          <div className='m-menu__submenu'>
-            <span className='m-menu__arrow' />
-            <ul className='m-menu__subnav'>
-              <li className='m-menu__item  m-menu__item--parent' aria-haspopup='true' >
-                <span className='m-menu__link'>
-                  <span className='m-menu__link-text'>
-                    Automation
-                  </span>
-                </span>
-              </li>
-              {this.showSmartRespliesItem()}
-              {this.showChatbotAutomation()}
-              {this.showAutoPostingItem()}
-              {this.showRssIntegrationItem()}
-              {this.showNewsIntegrationItem()}
-              {this.showSequenceMessaging()}
-            </ul>
-          </div>
-        </li>
-      )
-    } else {
-      return (
-        <div />
-      )
-    }
-  }
-
-  showSubscriptionsItem () {
-    if (!this.state.isKiboLite && this.props.user && this.props.user.platform === 'messenger') {
-      return (
-        <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-          <span className='m-menu__link m-menu__toggle'>
-            <i className='m-menu__link-icon flaticon-users' title='Subscriptions' />
-            <span className='m-menu__link-text'>Subscriptions</span>
-            <i className='m-menu__ver-arrow la la-angle-right' />
-          </span>
-          <div className='m-menu__submenu'>
-            <span className='m-menu__arrow' />
-            <ul className='m-menu__subnav'>
-              <li className='m-menu__item  m-menu__item--parent' aria-haspopup='true' >
-                <span className='m-menu__link'>
-                  <span className='m-menu__link-text'>
-                    Subscriptions
-                  </span>
-                </span>
-              </li>
-              {this.showSubscribersItem()}
-              {this.showCustomFields()}
-              {this.showTags()}
-            </ul>
-          </div>
-        </li>
-      )
-    } else if (['sms', 'whatsApp'].includes(this.props.user.platform)) {
-      return (this.showSubscribersItem())
-    } else {
-      return (
-        <div />
-      )
-    }
-  }
-
-  showGrowthToolsItems () {
-    if (this.props.user && this.props.user.platform === 'messenger' && (window.location.host.includes('kiboengage.cloudkibo.com') || window.location.host === 'localhost:3021' || window.location.host === 'localhost:3000')) {
-      return (
-        <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-          <span className='m-menu__link m-menu__toggle'>
-            <i className='m-menu__link-icon flaticon-diagram' title='Growth Tools' />
-            <span className='m-menu__link-text'>Growth Tools</span>
-            <i className='m-menu__ver-arrow la la-angle-right' />
-          </span>
-          <div className='m-menu__submenu'>
-            <span className='m-menu__arrow' />
-            <ul className='m-menu__subnav'>
-              <li className='m-menu__item  m-menu__item--parent' aria-haspopup='true' >
-                <span className='m-menu__link'>
-                  <span className='m-menu__link-text'>
-                    Growth Tools
-                  </span>
-                </span>
-              </li>
-              {this.showCommentCapture()}
-              {this.showInviteUsingPhoneNumber()}
-              {this.showInviteSubscribers()}
-              {this.showMessengerCode()}
-              {/* {this.showDiscoverTabs()} */}
-              {this.showLandingPages()}
-              {this.showMessengerAds()}
-              {this.showMessengerRefURL()}
-              {this.showMessageUs()}
-              {this.showChatWidget()}
-              {this.showCheckbox()}
-              {this.showOverlayWidgets()}
-            </ul>
-          </div>
-        </li>
-      )
-    }
-  }
-
-  showManagePagesItems () {
-    if (this.props.user && this.props.user.platform === 'messenger') {
-      return (
-        <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-          <span className='m-menu__link m-menu__toggle'>
-            <i className='m-menu__link-icon flaticon-add' title='Manage Pages' />
-            <span className='m-menu__link-text'>Manage Pages</span>
-            <i className='m-menu__ver-arrow la la-angle-right' />
-          </span>
-          <div className='m-menu__submenu'>
-            <span className='m-menu__arrow' />
-            <ul className='m-menu__subnav'>
-              <li className='m-menu__item  m-menu__item--parent' aria-haspopup='true' >
-                <span className='m-menu__link'>
-                  <span className='m-menu__link-text'>
-                    Manage Pages
-                  </span>
-                </span>
-              </li>
-              {this.showPagesItem()}
-              {this.showPersistentMenuItem()}
-              {this.showWelcomeMessageItem()}
-              {this.showGreetingText()}
-            </ul>
-          </div>
-        </li>
-      )
-    }
-  }
-
-  showOrganizationItems () {
-    if (this.props.user && (this.props.user.currentPlan.unique_ID === 'plan_C' || this.props.user.currentPlan.unique_ID === 'plan_D')) {
-      return (
-        <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-          <span className='m-menu__link m-menu__toggle'>
-            <i className='m-menu__link-icon flaticon-share' title='Organization' />
-            <span className='m-menu__link-text'>Organization</span>
-            <i className='m-menu__ver-arrow la la-angle-right' />
-          </span>
-          <div className='m-menu__submenu'>
-            <span className='m-menu__arrow' />
-            <ul className='m-menu__subnav'>
-              <li className='m-menu__item  m-menu__item--parent' aria-haspopup='true' >
-                <span className='m-menu__link'>
-                  <span className='m-menu__link-text'>
-                    Organization
-                  </span>
-                </span>
-              </li>
-              {this.showInviteMembersItem()}
-              {this.showMembersItem()}
-              {this.showTeams()}
-            </ul>
-          </div>
-        </li>
-      )
-    }
-  }
-
-  showSettings () {
-    if (this.state.settings) {
-      return (
-        <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-          <Link to='/settings' className='m-menu__link m-menu__toggle'>
-            <i className='m-menu__link-icon flaticon-cogwheel' title='Settings' />
-            <span className='m-menu__link-text'>Settings</span>
-          </Link>
-        </li>
-      )
-    }
-  }
-
-  showUserGuide () {
-    if (this.state.settings) {
-      return (
-        <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-          <a href='http://kibopush.com/user-guide/' target='_blank' rel='noopener noreferrer' className='m-menu__link m-menu__toggle'>
-            <i className='m-menu__link-icon flaticon-info' title='User Guide' />
-            <span className='m-menu__link-text'>User Guide</span>
-          </a>
-        </li>
-      )
-    }
-  }
-
-  showBroadcastsItem () {
-    if (this.props.user) {
-      if (this.state.broadcasts && this.props.user.permissions.broadcastPermission && this.props.user.plan.broadcasts) {
-        return (
-          <li className='m-menu__item' aria-haspopup='true' >
-            <Link to={this.props.user.platform === 'sms' ? 'smsBroadcasts' : this.props.user.platform === 'messenger' ? '/broadcasts' : '/whatsAppBroadcasts'} className='m-menu__link'>
-              <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
-                <span />
-              </i>
-              <span className='m-menu__link-text'>
-                Broadcasts
-              </span>
-            </Link>
-          </li>
-        )
-      } else {
-        return (null)
-      }
-    }
-  }
-
-  showSurveysItem () {
-    if (this.props.user) {
-      if (this.state.surveys && this.props.user.permissions.surveyPermission && this.props.user.plan.surveys) {
-        return (
-          <li className='m-menu__item' aria-haspopup='true' >
-            <Link to='/surveys' className='m-menu__link'>
-              <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
-                <span />
-              </i>
-              <span className='m-menu__link-text'>
-                Surveys
-              </span>
-            </Link>
-          </li>
-        )
-      } else {
-        return (null)
-      }
-    }
-  }
-
-  showPollsItem () {
-    if (this.props.user) {
-      if (this.state.polls && this.props.user.permissions.pollsPermission && this.props.user.plan.polls) {
-        return (
-          <li className='m-menu__item' aria-haspopup='true' >
-            <Link to='/poll' className='m-menu__link'>
-              <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
-                <span />
-              </i>
-              <span className='m-menu__link-text'>
-                Polls
-              </span>
-            </Link>
-          </li>
-        )
-      } else {
-        return (null)
-      }
-    }
-  }
-
-  showSegmentSubscribers () {
-    // add paid plan check later
-    if (this.state.segmentSubscribers && this.props.user) {
-      return (
-        <li className='m-menu__item' aria-haspopup='true' >
-          <Link to='/segmentedLists' className='m-menu__link'>
-            <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
-              <span />
-            </i>
-            <span className='m-menu__link-text'>
-              Segment Subscribers
-            </span>
-          </Link>
-        </li>
-      )
-    } else {
-      return (null)
-    }
-  }
-
-  showTemplates () {
-    // add paid plan check later
-    if (this.props.user && this.state.templates) {
-      if ((this.props.user.role === 'buyer' || this.props.user.role === 'admin' || this.props.user.isSuperUser)) {
-        return (
-          <li className='m-menu__item' aria-haspopup='true' >
-            <Link to='/templates' className='m-menu__link'>
-              <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
-                <span />
-              </i>
-              <span className='m-menu__link-text'>
-                Templates
-              </span>
-            </Link>
-          </li>
-        )
-      } else {
-        return (null)
-      }
-    }
-  }
-
-  showSmartRespliesItem () {
-    if (this.props.user && this.props.user.isSuperUser && this.state.smartReplies && this.props.automated_options && (this.props.automated_options.automated_options === 'MIX_CHAT' ||
-     this.props.automated_options.automated_options === 'AUTOMATED_CHAT')) {
-      return (
-        <li className='m-menu__item' aria-haspopup='true' >
-          <Link to='/bots' className='m-menu__link'>
-            <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
-              <span />
-            </i>
-            <span className='m-menu__link-text'>
-              Smart Replies
-            </span>
-          </Link>
-        </li>
-      )
-    } else {
-      return (null)
-    }
-  }
-
-  showChatbotAutomation () {
-    if (this.props.user && (this.state.isKiboChat || this.state.isLocalhost)) {
-      return (
-        <li className='m-menu__item' aria-haspopup='true' >
-          <Link to='/chatbotAutomation' className='m-menu__link'>
-            <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
-              <span />
-            </i>
-            <span className='m-menu__link-text'>
-              Chatbot Automation
-            </span>
-          </Link>
-        </li>
-      )
-    } else {
-      return (null)
-    }
-  }
-
-  showAutoPostingItem () {
-    if (this.props.user) {
-      if (this.state.autoposting && this.props.user.permissions.autopostingPermission && this.props.user.plan.autoposting) {
-        return (
-          <li className='m-menu__item' aria-haspopup='true' >
-            <Link to='/autoposting' className='m-menu__link'>
-              <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
-                <span />
-              </i>
-              <span className='m-menu__link-text'>
-                Autoposting
-              </span>
-            </Link>
-          </li>
-        )
-      } else {
-        return (null)
-      }
-    }
-  }
-
-  showRssIntegrationItem () {
-      if (this.state.rssIntegration) {
-        return (
-          <li className='m-menu__item' aria-haspopup='true' >
-            <Link to='/rssIntegration' className='m-menu__link'>
-              <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
-                <span />
-              </i>
-              <span className='m-menu__link-text'>
-                Rss Integration
-              </span>
-            </Link>
-          </li>
-        )
-      } else {
-        return (null)
-      }
-  }
-
-  showNewsIntegrationItem () {
-      if (this.state.newsIntegration) {
-        return (
-          <li className='m-menu__item' aria-haspopup='true' >
-            <Link to='/newsIntegration' className='m-menu__link'>
-              <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
-                <span />
-              </i>
-              <span className='m-menu__link-text'>
-                News Integration
-              </span>
-            </Link>
-          </li>
-        )
-      } else {
-        return (null)
-      }
-  }
-
-  showSequenceMessaging () {
-    if (this.props.user && this.state.sequenceMessaging) {
-        return (
-          <li className='m-menu__item' aria-haspopup='true' >
-            <Link to='/sequenceMessaging' className='m-menu__link'>
-              <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
-                <span />
-              </i>
-              <span className='m-menu__link-text'>
-                Sequence Messaging
-              </span>
-            </Link>
-          </li>
-        )
-      } else {
-        return (null)
-      }
-  }
-
-  showCommentCapture () {
-    if (this.props.user) {
-      // include user persmissions
-      if (this.state.commentCapture) {
-        return (
-          <li className='m-menu__item' aria-haspopup='true' >
-            <Link to='/commentCapture' className='m-menu__link'>
-              <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
-                <span />
-              </i>
-              <span className='m-menu__link-text'>
-                Comment Capture
-              </span>
-            </Link>
-          </li>
-        )
-      } else {
-        return (null)
-      }
-    }
-  }
-
-  showLandingPages () {
-    if (this.props.user && this.props.user.isSuperUser) {
-      // include user persmissions
-      if (this.state.landingPages) {
-        return (
-          <li className='m-menu__item' aria-haspopup='true' >
-            <Link to='/landingPages' className='m-menu__link'>
-              <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
-                <span />
-              </i>
-              <span className='m-menu__link-text'>
-                Landing Pages
-              </span>
-            </Link>
-          </li>
-        )
-      } else {
-        return (null)
-      }
-    }
-  }
-  showOverlayWidgets () {
-    if (this.props.user && this.props.user.isSuperUser) {
-      // include user persmissions
-      if (this.state.overlayWidgets) {
-        return (
-          <li className='m-menu__item' aria-haspopup='true' >
-            <Link to='/overlayWidgets' className='m-menu__link'>
-              <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
-                <span />
-              </i>
-              <span className='m-menu__link-text'>
-                Overlay Widgets
-              </span>
-            </Link>
-          </li>
-        )
-      } else {
-        return (null)
-      }
-    }
-  }
-
-  showMessengerRefURL () {
-    if (this.props.user) {
-      // include user persmissions
-      if (this.state.messengerRefURL) {
-        return (
-          <li className='m-menu__item' aria-haspopup='true' >
-            <Link to='/messengerRefURL' className='m-menu__link'>
-              <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
-                <span />
-              </i>
-              <span className='m-menu__link-text'>
-                Messenger Ref URL
-              </span>
-            </Link>
-          </li>
-        )
-      } else {
-        return (null)
-      }
-    }
-  }
-
-  showMessengerAds () {
-    if (this.props.user && this.props.user.isSuperUser) {
-      // include user persmissions
-      if (this.state.messengerAds) {
-        return (
-          <li className='m-menu__item' aria-haspopup='true' >
-            <Link to='/jsonAds' className='m-menu__link'>
-              <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
-                <span />
-              </i>
-              <span className='m-menu__link-text'>
-                JSON Ads
-              </span>
-            </Link>
-          </li>
-        )
-      } else {
-        return (null)
-      }
-    }
-  }
-
-  showMessageUs () {
-    if (this.props.user) {
-      // include user persmissions
-      if (this.state.messageUs) {
-        return (
-          <li className='m-menu__item' aria-haspopup='true' >
-            <Link to='/messageUs' className='m-menu__link'>
-              <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
-                <span />
-              </i>
-              <span className='m-menu__link-text'>
-                Message Us Button
-              </span>
-            </Link>
-          </li>
-        )
-      } else {
-        return (null)
-      }
-    }
-  }
-
-  showChatWidget () {
-    if (this.props.user) {
-      // include user persmissions
-      if (this.state.chatWidget) {
-        return (
-          <li className='m-menu__item' aria-haspopup='true' >
-            <Link to='/chatWidget' className='m-menu__link'>
-              <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
-                <span />
-              </i>
-              <span className='m-menu__link-text'>
-                Customer Chat Plugin
-              </span>
-            </Link>
-          </li>
-        )
-      } else {
-        return (null)
-      }
-    }
-  }
-
-  showCheckbox() {
-    if (this.props.user) {
-      // include user persmissions
-      if (this.state.checkbox) {
-        return (
-          <li className='m-menu__item' aria-haspopup='true' >
-            <Link to='/checkbox' className='m-menu__link'>
-              <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
-                <span />
-              </i>
-              <span className='m-menu__link-text'>
-                Checkbox Plugin
-              </span>
-            </Link>
-          </li>
-        )
-      } else {
-        return (null)
-      }
-    }
-  }
-
-  showMessengerCode () {
-    if (this.props.user) {
-      // include user persmissions
-      if (this.state.messengerCode) {
-        return (
-          <li className='m-menu__item' aria-haspopup='true' >
-            <Link to='/messengerCode' className='m-menu__link'>
-              <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
-                <span />
-              </i>
-              <span className='m-menu__link-text'>
-                Messenger Code
-              </span>
-            </Link>
-          </li>
-        )
-      } else {
-        return (null)
-      }
-    }
-  }
-  showDiscoverTabs () {
-    if (this.props.user) {
-      return (
-        <li className='m-menu__item' aria-haspopup='true' >
-          <Link to='/discoverTabs' className='m-menu__link'>
-            <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
-              <span />
-            </i>
-            <span className='m-menu__link-text'>
-              Discover Tabs
-            </span>
-          </Link>
-        </li>
-      )
-    } else {
-      return (null)
-    }
-  }
-  showInviteUsingPhoneNumber () {
-    // add paid plan check later
-    if (this.props.user && this.state.phoneNumber) {
-      return (
-        <li className='m-menu__item' aria-haspopup='true' >
-          <Link to='/customerMatchingUsingPhNum' className='m-menu__link'>
-            <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
-              <span />
-            </i>
-            <span className='m-menu__link-text'>
-              Invite Using Phone Numbers
-            </span>
-          </Link>
-        </li>
-      )
-    } else {
-      return (null)
-    }
-  }
-
-  showInviteSubscribers () {
-    // add paid plan check later
-    if (this.props.user && this.state.phoneNumber) {
-      return (
-        <li className='m-menu__item' aria-haspopup='true' >
-          <Link to='/inviteSubscribers' className='m-menu__link'>
-            <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
-              <span />
-            </i>
-            <span className='m-menu__link-text'>
-              Invite Subscribers
-            </span>
-          </Link>
-        </li>
-      )
-    } else {
-      return (null)
-    }
-  }
-
-  showHTMLWidget () {
-    return (
-      <li className='m-menu__item' aria-haspopup='true' >
-        <span className='m-menu__link'>
-          <i className='m-mesing Phone Numbersnu__link-bullet m-menu__link-bullet--dot'>
-            <span />
-          </i>
-          <span className='m-menu__link-text'>
-            HTML Widget
-          </span>
-        </span>
-      </li>
-    )
-  }
-
-  showKiboPushWidget () {
-    return (
-      <li className='m-menu__item' aria-haspopup='true' >
-        <span className='m-menu__link'>
-          <i className='m-mesing Phone Numbersnu__link-bullet m-menu__link-bullet--dot'>
-            <span />
-          </i>
-          <span className='m-menu__link-text'>
-            KiboPush Widget
-          </span>
-        </span>
-      </li>
-    )
-  }
-
-  showPagesItem () {
-    if (this.props.user) {
-      if (this.state.pages && this.props.user.permissions.pagesPermission && this.props.user.plan.manage_pages) {
-        return (
-          <li className='m-menu__item' aria-haspopup='true' >
-            <Link to='/pages' className='m-menu__link'>
-              <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
-                <span />
-              </i>
-              <span className='m-menu__link-text'>
-                Pages
-              </span>
-            </Link>
-          </li>
-        )
-      } else {
-        return (null)
-      }
-    }
-  }
-
-  showPersistentMenuItem () {
-    if (this.props.user) {
-      if (this.state.persistentMenu && this.props.user.permissions.menuPermission && this.props.user.plan.menu) {
-        return (
-          <li className='m-menu__item' aria-haspopup='true' >
-            <Link to='/menu' className='m-menu__link'>
-              <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
-                <span />
-              </i>
-              <span className='m-menu__link-text'>
-                Persistent Menu
-              </span>
-            </Link>
-          </li>
-        )
-      } else {
-        return (null)
-      }
-    }
-  }
-
-  showWelcomeMessageItem () {
-    if (this.props.user) {
-      if (this.state.welcomeMessage && this.props.user.permissions.pagesPermission) {
-        return (
-          <li className='m-menu__item' aria-haspopup='true' >
-            <Link to='/welcomeMessage' className='m-menu__link'>
-              <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
-                <span />
-              </i>
-              <span className='m-menu__link-text'>
-                Welcome Message
-              </span>
-            </Link>
-          </li>
-        )
-      } else {
-        return (null)
-      }
-    }
-  }
-
-  showGreetingText () {
-    return (
-      <li className='m-menu__item' aria-haspopup='true' >
-        <Link to='/greetingMessage' className='m-menu__link'>
-          <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
-            <span />
-          </i>
-          <span className='m-menu__link-text'>
-            Greeting Text
-          </span>
-        </Link>
-      </li>
-    )
-  }
-
-  showInviteMembersItem () {
-    if (this.props.user) {
-      if (this.state.inviteMembers && (this.props.user.permissions.inviteAdminPermission || this.props.user.permissions.inviteAgentPermission) && this.props.user.plan.invite_team) {
-        return (
-          <li className='m-menu__item' aria-haspopup='true' >
-            <Link to='/inviteMembers' className='m-menu__link'>
-              <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
-                <span />
-              </i>
-              <span className='m-menu__link-text'>
-                Invite Members
-              </span>
-            </Link>
-          </li>
-        )
-      } else {
-        return (null)
-      }
-    }
-  }
-
-  showMembersItem () {
-    if (this.props.user) {
-      if (this.state.members && this.props.user.permissions.membersPermission && this.props.user.plan.team_members_management) {
-        return (
-          <li className='m-menu__item' aria-haspopup='true' >
-            <Link to='/members' className='m-menu__link'>
-              <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
-                <span />
-              </i>
-              <span className='m-menu__link-text'>
-                Members
-              </span>
-            </Link>
-          </li>
-        )
-      } else {
-        return (null)
-      }
-    }
-  }
-
-  showTeams () {
-    if (this.props.user) {
-      if (this.props.user.currentPlan.unique_ID === 'plan_C' || this.props.user.currentPlan.unique_ID === 'plan_D') {
-        return (
-          <li className='m-menu__item' aria-haspopup='true' >
-            <Link to='/teams' className='m-menu__link'>
-              <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
-                <span />
-              </i>
-              <span className='m-menu__link-text'>
-                Teams
-              </span>
-            </Link>
-          </li>
-        )
-      } else {
-        return (null)
-      }
-    }
-  }
-
-  showBusinessGateway () {
-    if (this.props.user && this.state.businessGateway) {
-      return (
-        <li className='m-menu__item' aria-haspopup='true' >
-          <Link to='/businessGateway' className='m-menu__link'>
-            <i className='m-menu__link-icon flaticon-network'>
-              <span />
-            </i>
-            <span className='m-menu__link-text'>
-              Broadcast
-            </span>
-          </Link>
-        </li>
-      )
-    } else {
-      return (null)
-    }
-  }
-
-  uploadContacts () {
-    // if (this.props.user && this.props.user.platform !== 'messenger') {
-    //   return (
-    //     <li className='m-menu__item' aria-haspopup='true' >
-    //       <Link to={this.props.user.platform === 'sms' ? '/uploadContacts' : '/uploadContactsWhatsApp'} className='m-menu__link'>
-    //         <i className='m-menu__link-icon fa fa-id-card-o'>
-    //           <span />
-    //         </i>
-    //         <span className='m-menu__link-text'>
-    //           {this.props.user.platform === 'whatsApp' ? 'Invite Subscribers' : 'Upload Contacts'}
-    //         </span>
-    //       </Link>
-    //     </li>
-    //   )
-    // } else {
-    //   return (null)
-    // }
-    if (this.props.user && this.props.user.platform === 'sms') {
-      return (
-        <li className='m-menu__item' aria-haspopup='true' >
-          <Link to={'/uploadContacts'} className='m-menu__link'>
-            <i className='m-menu__link-icon fa fa-id-card-o'>
-              <span />
-            </i>
-            <span className='m-menu__link-text'>
-              {'Upload Contacts'}
-            </span>
-          </Link>
-        </li>
-      )
-    } else {
-      return (null)
-    }
-  }
-
-  inviteSubscribers () {
-    if (this.props.user && this.props.user.platform === 'whatsApp') {
-      return (
-        <li className='m-menu__item' aria-haspopup='true' >
-          <Link to='/uploadContactsWhatsApp' className='m-menu__link'>
-            <i className='m-menu__link-icon flaticon-user-add'>
-              <span />
-            </i>
-            <span className='m-menu__link-text'>
-              Invite Subscribers
-            </span>
-          </Link>
-        </li>
-      )
-    } else {
-      return (null)
+    if (nextProps.user && nextProps.automated_options) {
+       this.setState({menuItems: this.setMenuItems(nextProps.user, nextProps.automated_options)})
     }
   }
 
   render () {
-    console.log('this.state', this.state)
-
-    if (this.props.user && this.props.user.permissionsRevoked) {
-      this.props.history.push({pathname: '/connectFb', state: {permissionsRevoked: true}})
-    }
     return (
       <div id='sidebarDiv'>
-        <button className='m-aside-left-close  m-aside-left-close--skin-dark ' id='m_aside_left_close_btn'>
+        <button className='m-aside-left-close m-aside-left-close--skin-dark' id='m_aside_left_close_btn'>
           <i className='la la-close' />
         </button>
         <div id='m_aside_left' className='m-grid__item m-aside-left  m-aside-left--skin-dark'>
@@ -1288,28 +406,17 @@ class Sidebar extends Component {
             id='m_ver_menu'
             className='m-aside-menu  m-aside-menu--skin-dark m-aside-menu--submenu-skin-dark m-scroller mCustomScrollbar _mCS_2 mCS-autoHide'
             data-menu-vertical='1'
-            data-menu-scrollable='1'>
+            data-menu-scrollable='1'
+          >
             <div id='mCSB_2' className='mCustomScrollBox mCS-minimal-dark mCSB_vertical mCSB_outside' tabIndex='0' style={{maxHeight: 'none'}}>
               <div id='mCSB_2_container' className='mCSB_container' style={{position: 'relative', top: '0px', left: '0px'}} dir='ltr'>
-                {this.props.user &&
                 <ul className='m-menu__nav  m-menu__nav--dropdown-submenu-arrow '>
-                  {this.showOperationalDashboard()}
-                  {this.showDashboard()}
-                  {this.showSubscriptionsItem()}
-                  {this.showBusinessGateway()}
-                  {this.showBroadcastingItems()}
-                  {this.uploadContacts()}
-                  {this.inviteSubscribers()}
-                  {this.showLiveChatItem()}
-                  {this.showAutomationItems()}
-                  {this.showGrowthToolsItems()}
-                  {this.showManagePagesItems()}
-                  {this.showOrganizationItems()}
-                  {this.props.user && this.props.user.platform === 'messenger' && this.showAbandonedCarts()}
-                  {this.showSettings()}
-                  {this.showUserGuide()}
+                  {
+                    this.state.menuItems.map((item, index) => (
+                      <MENUITEM {...item} />
+                    ))
+                  }
                 </ul>
-              }
               </div>
             </div>
             <div id='mCSB_2_scrollbar_vertical' className='mCSB_scrollTools mCSB_2_scrollbar mCS-minimal-dark mCSB_scrollTools_vertical' style={{display: 'block'}}>
@@ -1327,25 +434,19 @@ class Sidebar extends Component {
     )
   }
 }
+
 function mapStateToProps (state) {
-  console.log('state in sidebar', state)
+  console.log('mapStateToProps in sidebar', state)
   return {
-    sessions: (state.liveChat.sessions),
     user: (state.basicInfo.user),
-    updatedUser: (state.basicInfo.updatedUser),
-    socketSession: (state.liveChat.socketSession),
-    userChat: (state.liveChat.userChat),
-    socketData: (state.liveChat.socketData),
     automated_options: (state.basicInfo.automated_options)
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-    getAutomatedOptions: getAutomatedOptions,
-    fetchUserChats: fetchUserChats,
-    resetSocket: resetSocket,
-    fetchSingleSession: fetchSingleSession
+    getAutomatedOptions
   }, dispatch)
 }
+
 export default connect(mapStateToProps, mapDispatchToProps)(Sidebar)

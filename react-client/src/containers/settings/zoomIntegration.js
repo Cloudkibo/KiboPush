@@ -30,6 +30,12 @@ class ZoomIntegration extends React.Component {
     this.setDeleteZoomIntegration = this.setDeleteZoomIntegration.bind(this)
   }
 
+  setDeleteZoomIntegration (integration) {
+    this.setState({deleteZoomIngeration: integration}, () => {
+      this.refs.toggleDisconnectZoom.click()
+    })
+  }
+
   setDeleteZoomIntegration(integration) {
     this.setState({ deleteZoomIngeration: integration }, () => {
       this.refs.toggleDisconnectZoom.click()
@@ -162,28 +168,28 @@ class ZoomIntegration extends React.Component {
                       </div>
                     </div>
 
-                    <div>
-                      {
-                        this.props.zoomIntegrations.map((integration, i) => (
-                          <div style={{ display: 'flex', justifyContent: 'center', marginTop: '25px' }} className='m-widget4'>
-                            <div style={{ borderBottom: '1px dashed', paddingBottom: '25px' }} className='m-widget4__item' key={i}>
-                              <div className='m-widget4__img m-widget4__img--logo'>
-                                <span className='btn m-btn m-btn--icon m-btn--icon-only m-btn--custom m-btn--pill' style={{ width: '50px', height: '50px', cursor: 'initial', backgroundColor: 'white' }}>
-                                  <img alt='' style={{ width: '100%', height: '100%' }} onError={(e) => e.target.src = 'https://login.vivaldi.net/profile/avatar/default-avatar.png'} src={integration.profilePic ? integration.profilePic : 'https://login.vivaldi.net/profile/avatar/default-avatar.png'} />
-                                </span>
-                              </div>
-                              <div className='m-widget4__info' style={{ width: '140px' }}>
-                                <span className='m-widget4__title'>
-                                  {integration.firstName + " " + integration.lastName}
-                                </span>
-                              </div>
-                              <span className='m-widget4__ext' style={{ paddingLeft: '150px' }}>
-                                {integration.connected
-                                  ? <button onClick={() => this.setDeleteZoomIntegration(integration)} className='m-btn m-btn--pill m-btn--hover-danger btn btn-danger' style={{ borderColor: '#f4516c', color: '#f4516c', marginRight: '10px' }}>
-                                    Disconnect
+              <div>
+                {
+                this.props.zoomIntegrations.map((integration, i) => (
+                  <div style={{display: 'flex', justifyContent: 'center', marginTop: '25px'}} className='m-widget4'>
+                    <div style={{borderBottom: '1px dashed', paddingBottom: '25px'}} className='m-widget4__item' key={i}>
+                      <div className='m-widget4__img m-widget4__img--logo'>
+                        <span className='btn m-btn m-btn--icon m-btn--icon-only m-btn--custom m-btn--pill' style={{width: '50px', height: '50px', cursor: 'initial', backgroundColor: 'white'}}>
+                          <img alt='' style={{width: '100%', height: '100%'}} onError={(e) => e.target.src = 'https://login.vivaldi.net/profile/avatar/default-avatar.png'} src={integration.profilePic ? integration.profilePic : 'https://login.vivaldi.net/profile/avatar/default-avatar.png'}/>
+                        </span>
+                      </div>
+                      <div className='m-widget4__info' style={{width: '140px'}}>
+                        <span className='m-widget4__title'>
+                          {integration.firstName + " " + integration.lastName}
+                        </span>
+                      </div>
+                      <span className='m-widget4__ext' style={{paddingLeft: '150px'}}>
+                          {integration.connected
+                            ? <button onClick={() => this.setDeleteZoomIntegration(integration)} className='m-btn m-btn--pill m-btn--hover-danger btn btn-danger' style={{borderColor: '#f4516c', color: '#f4516c', marginRight: '10px'}}>
+                              Disconnect
                             </button>
-                                  : <button onClick={() => this.props.integrateZoom(this.redirectToAuthorizeZoom)} className='m-btn m-btn--pill m-btn--hover-success btn btn-success' style={{ borderColor: '#34bfa3', color: '#34bfa3', marginRight: '10px' }}>
-                                    Connect
+                            : <button onClick={() => this.props.integrateZoom(this.redirectToAuthorizeZoom)} className='m-btn m-btn--pill m-btn--hover-success btn btn-success' style={{borderColor: '#34bfa3', color: '#34bfa3', marginRight: '10px'}}>
+                            Connect
                           </button>
                                 }
                               </span>
