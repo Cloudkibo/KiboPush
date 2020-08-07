@@ -514,7 +514,7 @@ export function updatePlatformWhatsApp(data, msg, clearFields, handleResponse) {
             msg.success('Saved Successfully')
           }
         } else {
-          msg.error(res.payload)
+          msg.error(res.description)
           if (clearFields) {
             clearFields()
           }
