@@ -3,7 +3,7 @@ import React from 'react'
 import { updatePlatformSettings, updatePlatformWhatsApp, disconnect, deleteWhatsApp } from '../../redux/actions/settings.actions'
 import { getAutomatedOptions, disconnectFacebook } from '../../redux/actions/basicinfo.actions'
 import { bindActionCreators } from 'redux'
-import { connect, Provider } from 'react-redux'
+import { connect } from 'react-redux'
 import AlertContainer from 'react-alert'
 import WhatsAppDeleteModal from '../../components/extras/deleteWithPassword'
 import { validatePhoneNumber } from '../../utility/utils'
@@ -11,26 +11,27 @@ import { validatePhoneNumber } from '../../utility/utils'
 class Configuration extends React.Component {
   constructor(props, context) {
     super(props, context)
+    this.initialWhatsappData = {
+      twilio: {
+        provider: 'twilio',
+        accessToken: '',
+        businessNumber: '+14155238886',
+        accountSID: '',
+        sandBoxCode: ''
+      },
+      flockSend: {
+        provider: 'flockSend',
+        accessToken: '',
+        businessNumber: ''
+      }
+    }
     this.state = {
       SID: '',
       token: '',
       type: '',
       deleteType: '',
       whatsappProvider: '',
-      whatsappData: {
-        twilio: {
-          provider: 'twilio',
-          accessToken: '',
-          businessNumber: '+14155238886',
-          accountSID: '',
-          sandBoxCode: ''
-        },
-        flockSend: {
-          provider: 'flockSend',
-          accessToken: '',
-          businessNumber: ''
-        }
-      }
+      whatsappData: JSON.parse(JSON.stringify(this.initialWhatsappData))
     }
     this.updateToken = this.updateToken.bind(this)
     this.updateSID = this.updateSID.bind(this)
@@ -84,9 +85,8 @@ class Configuration extends React.Component {
     if (this.state.type === 'Disconnect') {
       this.props.deleteWhatsApp({ type: this.state.deleteType, password: password }, this.handleDeleteWhatsAppResponse)
     } else {
-      let accessToken = ''
       let data = {
-        accessToken: this.state.tokenWapp,
+        accessToken: this.state.whatsappData[this.state.whatsappProvider].accessToken,
         type: this.state.deleteType,
         password: password
       }
@@ -113,7 +113,7 @@ class Configuration extends React.Component {
       this.setState({ SID: nextProps.automated_options.twilio.accountSID, token: nextProps.automated_options.twilio.authToken })
     }
     if (nextProps.automated_options && nextProps.automated_options.whatsApp) {
-      let whatsappData = this.state.whatsappData
+      let whatsappData = JSON.parse(JSON.stringify(this.initialWhatsappData))
       whatsappData[nextProps.automated_options.whatsApp.provider] = nextProps.automated_options.whatsApp
       this.setState({
         whatsappProvider: nextProps.automated_options.whatsApp.provider,
@@ -182,17 +182,12 @@ class Configuration extends React.Component {
   }
 
   clearFieldsWapp() {
-    if (this.props.automated_options && this.props.automated_options.whatsApp) {
-      this.setState({
-        // SIDWapp: this.props.automated_options.twilioWhatsApp.accountSID,
-        // tokenWapp: this.props.automated_options.twilioWhatsApp.authToken,
-        // number: this.props.automated_options.twilioWhatsApp.sandboxNumber,
-        // code: this.props.automated_options.twilioWhatsApp.sandboxCode,
-        tokenWapp: this.props.automated_options.whatsApp.accessToken
-      })
-    } else {
-      this.setState({ SIDWapp: '', tokenWapp: '', code: '', number: '' })
-    }
+    let whatsappData = JSON.parse(JSON.stringify(this.initialWhatsappData))
+    whatsappData[this.props.automated_options.whatsApp.provider] = this.props.automated_options.whatsApp
+    this.setState({
+      whatsappProvider: this.props.automated_options.whatsApp.provider,
+      whatsappData
+    })
   }
 
   render() {
@@ -218,8 +213,8 @@ class Configuration extends React.Component {
         </button>
         <WhatsAppDeleteModal
           id='disconnectWhatsApp'
-          title={`${this.state.deleteType} WhatsApp FlockSend Account`}
-          content={`Are you sure you want to ${this.state.deleteType} your WhatsApp FlockSend Account? Doing so will remove all of your subscribers, their chat history and the broadcasts you have created.`}
+          title={`${this.state.deleteType} WhatsApp Account`}
+          content={`Are you sure you want to ${this.state.deleteType} your WhatsApp Account? Doing so will remove all of your subscribers, their chat history and the broadcasts you have created.`}
           deleteWithPassword={this.deleteWhatsApp}
         />
         <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="disconnect" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -319,7 +314,7 @@ class Configuration extends React.Component {
             <div className="modal-content">
               <div style={{ display: 'block' }} className="modal-header">
                 <h5 className="modal-title" id="exampleModalLabel">
-                  Connect with FlockSend WhatsApp
+                  Connect with WhatsApp
 									</h5>
                 <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
                   <span aria-hidden="true">
