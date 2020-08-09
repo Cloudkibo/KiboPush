@@ -39,7 +39,7 @@ class RightChatItem extends React.Component {
 
   getMessage () {
     const message = this.props.message.payload
-    const type = message.componentType
+    const type = message.componentType === 'media' ? message.mediaType : message.componentType
     if (['text', 'template'].includes(type)) {
       return (
         <TEXT

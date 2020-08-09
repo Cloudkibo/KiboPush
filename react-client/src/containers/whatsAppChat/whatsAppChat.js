@@ -104,7 +104,7 @@ class WhatsAppChat extends React.Component {
     this.fetchSessions(true, 'none', true)
     if (props.user.currentPlan.unique_ID === 'plan_C' || props.user.currentPlan.unique_ID === 'plan_D') {
       props.loadMembersList()
-      props.loadTeamsList({platform: 'whatsapp'})
+      props.loadTeamsList({ platform: 'whatsapp' })
     }
     props.getZoomIntegrations()
     if (props.socketData) {
@@ -113,39 +113,39 @@ class WhatsAppChat extends React.Component {
     props.getWhatsAppMessageTemplates()
   }
 
-  sendingToNewNumber (sendingToNewNumber) {
-    this.setState({sendingToNewNumber})
+  sendingToNewNumber(sendingToNewNumber) {
+    this.setState({ sendingToNewNumber })
   }
 
-  clearSearchResults () {
-    this.setState({searchChatMsgs: null})
+  clearSearchResults() {
+    this.setState({ searchChatMsgs: null })
   }
 
   hideSearch() {
     this.setState({ showSearch: false, searchChatMsgs: null })
   }
 
-  showSearch () {
-    this.setState({showSearch: !this.state.showSearch})
+  showSearch() {
+    this.setState({ showSearch: !this.state.showSearch })
   }
 
-  updatePendingStatus (res, value, sessionId) {
+  updatePendingStatus(res, value, sessionId) {
     if (res.status === 'success') {
       let sessions = this.state.sessions
       let activeSession = this.state.activeSession
       let index = sessions.findIndex((session) => session._id === sessionId)
       sessions[index].pendingResponse = value
       activeSession.pendingResponse = value
-      this.setState({sessions, activeSession})
+      this.setState({ sessions, activeSession })
     } else {
       const message = value ? 'Failed to remove pending flag' : 'Failed to mark session as pending'
       this.alertMsg.error(message)
     }
   }
 
-  handlePendingResponse (session, value) {
+  handlePendingResponse(session, value) {
     this.props.updatePendingResponse(
-      {id: session._id, pendingResponse: value},
+      { id: session._id, pendingResponse: value },
       (res) => this.updatePendingStatus(res, value, session._id)
     )
   }
@@ -172,11 +172,11 @@ class WhatsAppChat extends React.Component {
     this.props.fetchTeamAgents(id, this.handleAgents)
   }
 
-  showFetchingChat (fetchingChat) {
-    this.setState({fetchingChat})
+  showFetchingChat(fetchingChat) {
+    this.setState({ fetchingChat })
   }
 
-  changeTab (value) {
+  changeTab(value) {
     this.setState({
       tabValue: value,
       sessions: value === 'open' ? this.props.openSessions : this.props.closeSessions,
@@ -186,7 +186,7 @@ class WhatsAppChat extends React.Component {
     })
   }
 
-  getChatPreview (message, repliedBy, subscriberName) {
+  getChatPreview(message, repliedBy, subscriberName) {
     let chatPreview = ''
     if (message.format === 'whatsApp') {
       // subscriber
@@ -208,7 +208,7 @@ class WhatsAppChat extends React.Component {
     return chatPreview
   }
 
-  updateState (state, callback) {
+  updateState(state, callback) {
     if (state.reducer) {
       const data = {
         chat: state.userChat,
@@ -223,7 +223,7 @@ class WhatsAppChat extends React.Component {
     }
   }
 
-  handleStatusChange (session, status) {
+  handleStatusChange(session, status) {
     const message = (status === 'resolved') ? 'Session has been marked as resoleved successfully' : 'Session has been reopened successfully'
     this.setState({
       userChat: [],
@@ -232,11 +232,11 @@ class WhatsAppChat extends React.Component {
     this.alertMsg.success(message)
   }
 
-  handleTeamAgents (agents) {
-    this.setState({teamAgents: agents})
+  handleTeamAgents(agents) {
+    this.setState({ teamAgents: agents })
   }
 
-  performAction (errorMsg, session) {
+  performAction(errorMsg, session) {
     let isAllowed = true
     if (session.is_assigned) {
       if (session.assigned_to.type === 'agent' && session.assigned_to.id !== this.props.user._id) {
@@ -253,14 +253,14 @@ class WhatsAppChat extends React.Component {
       }
     }
     errorMsg = `You can not perform this action. ${errorMsg}`
-    return {isAllowed, errorMsg}
+    return { isAllowed, errorMsg }
   }
 
-  changeStatus (status, session) {
+  changeStatus(status, session) {
     let errorMsg = (status === 'resolved') ? 'mark this session as resolved' : 'reopen this session'
     const data = this.performAction(errorMsg, session)
     if (data.isAllowed) {
-      this.props.changeStatus({_id: session._id, status: status}, () => this.handleStatusChange(session, status))
+      this.props.changeStatus({ _id: session._id, status: status }, () => this.handleStatusChange(session, status))
     } else {
       this.alertMsg.error(data.errorMsg)
     }
@@ -278,7 +278,7 @@ class WhatsAppChat extends React.Component {
     })
   }
 
-  setDefaultPicture (e, subscriber) {
+  setDefaultPicture(e, subscriber) {
     if (subscriber.gender === 'female') {
       e.target.src = 'https://i.pinimg.com/236x/50/28/b5/5028b59b7c35b9ea1d12496c0cfe9e4d.jpg'
     } else {
@@ -286,8 +286,8 @@ class WhatsAppChat extends React.Component {
     }
   }
 
-  handleCustomFieldResponse (res, body) {
-    console.log("res",res)
+  handleCustomFieldResponse(res, body) {
+    console.log("res", res)
     if (res.status === 'success') {
       this.alertMsg.success('Value set successfully')
     } else {
@@ -301,7 +301,7 @@ class WhatsAppChat extends React.Component {
 
   setMessageData(session, payload, urlMeta) {
     const data = {
-      senderNumber: this.props.automated_options.flockSendWhatsApp.number,
+      senderNumber: this.props.automated_options.whatsApp.number,
       recipientNumber: this.state.activeSession.number,
       contactId: session._id,
       payload,
@@ -316,7 +316,7 @@ class WhatsAppChat extends React.Component {
     return data
   }
 
-  changeActiveSession (session, e, callback) {
+  changeActiveSession(session, e, callback) {
     console.log('changeActiveSession', session)
     if (session._id !== this.state.activeSession._id) {
       session.firstName = session.name
@@ -332,7 +332,7 @@ class WhatsAppChat extends React.Component {
         if (callback) {
           callback()
         }
-        this.loadActiveSession({...session})
+        this.loadActiveSession({ ...session })
       })
     } else {
       if (callback) {
@@ -341,7 +341,7 @@ class WhatsAppChat extends React.Component {
     }
   }
 
-  loadActiveSession (session) {
+  loadActiveSession(session) {
     console.log('loadActiveSession', session)
     if (session.unreadCount && session.unreadCount > 0) {
       session.unreadCount = 0
@@ -352,7 +352,7 @@ class WhatsAppChat extends React.Component {
     if (session.is_assigned && session.assigned_to.type === 'team') {
       this.props.fetchTeamAgents(session.assigned_to.id, this.handleTeamAgents)
     }
-    this.setState({activeSession: session})
+    this.setState({ activeSession: session })
   }
 
   fetchSessions(firstPage, lastId, fetchBoth) {
@@ -379,16 +379,16 @@ class WhatsAppChat extends React.Component {
     }
   }
 
-  getAgents (members) {
+  getAgents(members) {
     let agents = members.map(m => m.userId)
     return agents
   }
 
-  UNSAFE_componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     console.log('UNSAFE_componentWillMount called in live chat', nextProps)
     let state = {}
     if (nextProps.cannedResponses !== this.props.cannedResponses) {
-      this.setState({ cannedResponses: nextProps.cannedResponses})
+      this.setState({ cannedResponses: nextProps.cannedResponses })
     }
     if (nextProps.openSessions || nextProps.closeSessions) {
       state.loading = false
@@ -406,7 +406,7 @@ class WhatsAppChat extends React.Component {
       state.sessionsCount = this.state.tabValue === 'open' ? nextProps.openCount : nextProps.closeCount
     }
 
-    if (nextProps.customFields && nextProps.customFieldValues ) {
+    if (nextProps.customFields && nextProps.customFieldValues) {
       let fieldOptions = []
       for (let a = 0; a < nextProps.customFields.length; a++) {
         if (nextProps.customFieldValues.customFields.length > 0) {
@@ -454,40 +454,40 @@ class WhatsAppChat extends React.Component {
     }
   }
 
-  render () {
+  render() {
     console.log('render in live chat')
     return (
-      <div id='mainLiveChat' className='m-grid__item m-grid__item--fluid m-wrapper' style={{marginBottom: 0, overflow: 'hidden'}}>
+      <div id='mainLiveChat' className='m-grid__item m-grid__item--fluid m-wrapper' style={{ marginBottom: 0, overflow: 'hidden' }}>
         <AlertContainer ref={a => { this.alertMsg = a }} {...alertOptions} />
         {
           this.state.loading
-          ? <div
-            style={{
-              position: 'fixed',
-              top: '50%',
-              left: '50%',
-              width: '30em',
-              height: '18em',
-              marginLeft: '-10em'
-            }}
-            className='align-center'
-          >
-            <center><RingLoader color='#716aca' /></center>
-          </div>
-          : <div style={{padding: '10px 30px'}} className='m-content'>
+            ? <div
+              style={{
+                position: 'fixed',
+                top: '50%',
+                left: '50%',
+                width: '30em',
+                height: '18em',
+                marginLeft: '-10em'
+              }}
+              className='align-center'
+            >
+              <center><RingLoader color='#716aca' /></center>
+            </div>
+            : <div style={{ padding: '10px 30px' }} className='m-content'>
               {
                 this.state.fetchingChat &&
                 <div style={{ width: '100vw', height: '100vh', background: 'rgba(33, 37, 41, 0.6)', position: 'fixed', zIndex: '99999', top: '0', left: '0' }}>
                   <div style={{ position: 'fixed', top: '50%', left: '50%', width: '30em', height: '18em', marginLeft: '-10em' }}
-                  className='align-center'>
-                  <center><RingLoader color='#716aca' />Fetching chat...</center>
+                    className='align-center'>
+                    <center><RingLoader color='#716aca' />Fetching chat...</center>
                   </div>
                 </div>
               }
-            <HELPWIDGET
-              documentation={{visibility: true, link: 'https://kibopush.com/livechat-whatsapp/'}}
-              videoTutorial={{visibility: true, videoId: 'WmZZyc1IgLA'}}
-            />
+              <HELPWIDGET
+                documentation={{ visibility: true, link: 'https://kibopush.com/livechat-whatsapp/' }}
+                videoTutorial={{ visibility: true, videoId: 'WmZZyc1IgLA' }}
+              />
               <div className='row'>
                 <SESSIONS
                   pages={this.props.pages}
@@ -513,7 +513,7 @@ class WhatsAppChat extends React.Component {
                 {
                   this.state.activeSession.constructor === Object && Object.keys(this.state.activeSession).length > 0 &&
                   <CHAT
-                    cannedResponses = {this.state.cannedResponses}
+                    cannedResponses={this.state.cannedResponses}
                     userChat={this.state.userChat}
                     chatCount={this.props.chatCount}
                     sessions={this.state.sessions}
@@ -539,7 +539,7 @@ class WhatsAppChat extends React.Component {
                     showGif={false}
                     showThumbsUp={false}
                     setMessageData={this.setMessageData}
-                    uploadAttachment ={this.props.uploadAttachment}
+                    uploadAttachment={this.props.uploadAttachment}
                     sendAttachment={this.props.sendAttachment}
                     deletefile={this.props.deletefile}
                     showTemplates={true}
@@ -554,28 +554,28 @@ class WhatsAppChat extends React.Component {
                   />
                 }
                 {
-                   this.state.activeSession.constructor === Object && Object.keys(this.state.activeSession).length > 0 && !this.state.showSearch &&
-                   <PROFILE
-                      updateState={this.updateState}
-                      teams={this.props.teams ? this.props.teams : []}
-                      tags={this.state.tags ? this.state.tags : []}
-                      agents={this.props.members ? this.getAgents(this.props.members) : []}
-                      subscriberTags={this.state.subscriberTags}
-                      activeSession={this.state.activeSession}
-                      user={this.props.user}
-                      profilePicError={this.profilePicError}
-                      alertMsg={this.alertMsg}
-                      customers={this.props.customers}
-                      fetchTeamAgents={this.fetchTeamAgents}
-                      assignToTeam={this.props.assignToTeam}
-                      sendNotifications={this.props.sendNotifications}
-                      assignToAgent={this.props.assignToAgent}
-                      customFieldOptions={this.state.customFieldOptions}
-                      showTags={false}
-                      showCustomFields={false}
-                      showUnsubscribe={false}
-                      editSubscriberWhatsApp={this.props.editSubscriberWhatsApp}
-                    />
+                  this.state.activeSession.constructor === Object && Object.keys(this.state.activeSession).length > 0 && !this.state.showSearch &&
+                  <PROFILE
+                    updateState={this.updateState}
+                    teams={this.props.teams ? this.props.teams : []}
+                    tags={this.state.tags ? this.state.tags : []}
+                    agents={this.props.members ? this.getAgents(this.props.members) : []}
+                    subscriberTags={this.state.subscriberTags}
+                    activeSession={this.state.activeSession}
+                    user={this.props.user}
+                    profilePicError={this.profilePicError}
+                    alertMsg={this.alertMsg}
+                    customers={this.props.customers}
+                    fetchTeamAgents={this.fetchTeamAgents}
+                    assignToTeam={this.props.assignToTeam}
+                    sendNotifications={this.props.sendNotifications}
+                    assignToAgent={this.props.assignToAgent}
+                    customFieldOptions={this.state.customFieldOptions}
+                    showTags={false}
+                    showCustomFields={false}
+                    showUnsubscribe={false}
+                    editSubscriberWhatsApp={this.props.editSubscriberWhatsApp}
+                  />
                 }
                 {
                   Object.keys(this.state.activeSession).length > 0 && this.state.activeSession.constructor === Object && this.state.showSearch &&
@@ -592,45 +592,47 @@ class WhatsAppChat extends React.Component {
                 }
                 {
                   this.state.activeSession.constructor === Object && Object.keys(this.state.activeSession).length === 0 &&
-                  <div style={{border: '1px solid #F2F3F8',
+                  <div style={{
+                    border: '1px solid #F2F3F8',
                     marginBottom: '0px',
                     display: 'flex',
                     justifyContent: 'center',
-                    alignItems: 'center'}} className='col-xl-8 m-portlet'>
+                    alignItems: 'center'
+                  }} className='col-xl-8 m-portlet'>
                     <div style={{ textAlign: 'center', padding: '20px' }}>
                       <p>Please select a session to view its chat.</p>
                     </div>
                   </div>
                 }
               </div>
-          </div>
-        }
-        
-          <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id='messageTemplateNewNumber' tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
-              <MESSAGETEMPLATE
-                sendChatMessage={this.props.sendChatMessage}
-                setMessageData={this.setMessageData}
-                activeSession={this.state.activeSession}
-                updateState={this.updateState}
-                userChat={this.state.userChat}
-                sessions={this.state.sessions}
-                alertMsg={this.alertMsg}
-                id='messageTemplateNewNumber'
-                sendingToNewNumber={this.state.sendingToNewNumber}
-                heading={'Send Message Template to WhatsApp Number'}
-                createNewContact={this.props.createNewContact}
-                changeActiveSession={this.changeActiveSession}
-                templates={this.props.whatsAppMessageTemplates}
-              />
             </div>
+        }
+
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id='messageTemplateNewNumber' tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+            <MESSAGETEMPLATE
+              sendChatMessage={this.props.sendChatMessage}
+              setMessageData={this.setMessageData}
+              activeSession={this.state.activeSession}
+              updateState={this.updateState}
+              userChat={this.state.userChat}
+              sessions={this.state.sessions}
+              alertMsg={this.alertMsg}
+              id='messageTemplateNewNumber'
+              sendingToNewNumber={this.state.sendingToNewNumber}
+              heading={'Send Message Template to WhatsApp Number'}
+              createNewContact={this.props.createNewContact}
+              changeActiveSession={this.changeActiveSession}
+              templates={this.props.whatsAppMessageTemplates}
+            />
           </div>
-          <NEWMESSAGEBUTTON
-              dataToggle='modal'
-              dataTarget='#messageTemplateNewNumber'
-              onClick={() => this.sendingToNewNumber(true)}
-          />
-        
+        </div>
+        <NEWMESSAGEBUTTON
+          dataToggle='modal'
+          dataTarget='#messageTemplateNewNumber'
+          onClick={() => this.sendingToNewNumber(true)}
+        />
+
       </div>
     )
   }
@@ -684,6 +686,7 @@ function mapDispatchToProps(dispatch) {
     getZoomIntegrations,
     createZoomMeeting,
     createNewContact,
+    editSubscriberWhatsApp,
     loadcannedResponses,
     editSubscriberWhatsApp,
     getWhatsAppMessageTemplates

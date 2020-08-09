@@ -34,7 +34,7 @@ class Text extends React.Component {
       let words = text.replace(/\n/g, " \r\n").split(" ")
       let wordElements = words.map((word, index) => {
         if (validURL(word.trim())) {
-          let url = word.trim()
+          let url= word.trim()
           var pattern = /^((http|https|ftp):\/\/)/
           if(!pattern.test(word.trim())) {
               url = "http://" + url
