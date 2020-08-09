@@ -78,7 +78,8 @@ class Sidebar extends Component {
         sequenceMessaging: false,
         templates: false,
         autoposting: false,
-        isKiboChat: true
+        isKiboChat: true,
+        abandonedCarts: true
       })
     } else if (url === 'skiboengage.cloudkibo.com' || url === 'kiboengage.cloudkibo.com') {
       console.log('kiboEngage')
@@ -94,7 +95,7 @@ class Sidebar extends Component {
         livechat: false,
         smartReplies: false,
         waitingResponse: false,
-        abandonedCarts: true
+        abandonedCarts: false
       })
     } else if (url === 'staging.kibopush.com') {
       console.log('staging')
