@@ -18,6 +18,20 @@ export function removeZoomIntegration(data) {
   }
 }
 
+export function updateShopifyIntegrations (data) {
+  return {
+    type: ActionTypes.UPDATE_SHOPIFY_INTEGRATIONS,
+    data
+  }
+}
+
+export function removeShopifyIntegration (data) {
+  return {
+    type: ActionTypes.REMOVE_SHOPIFY_INTEGRATION,
+    data
+  }
+}
+
 export function showIntegrations(data) {
   return {
     type: ActionTypes.GET_INTEGRATIONS,
@@ -561,6 +575,19 @@ export function getWhatsAppMessageTemplates() {
         console.log('response from getWhatsAppMessageTemplates', res)
         dispatch(updateWhatsAppMessageTemplates(res.payload))
       })
+  }
+}
+
+export function integrateShopify (cb) {
+  return (dispatch) => {
+    // TODO: Under construction by Sojharo
+  }
+}
+
+export function getShopifyIntegrations () {
+  return (dispatch) => {
+    // TODO: Under construction by Sojharo
+    dispatch(updateShopifyIntegrations([]))
   }
 }
 
