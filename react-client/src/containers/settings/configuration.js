@@ -161,11 +161,7 @@ class Configuration extends React.Component {
 
   handleResponse(payload) {
     this.refs.connectWapp.click()
-    if (payload.showModal) {
-      this.refs.disconnectWhatsApp.click()
-    } else {
-      this.msg.success('Saved Successfully')
-    }
+    this.msg.success('Saved Successfully')
   }
 
   submitWapp(event) {
@@ -182,12 +178,19 @@ class Configuration extends React.Component {
   }
 
   clearFieldsWapp() {
-    let whatsappData = JSON.parse(JSON.stringify(this.initialWhatsappData))
-    whatsappData[this.props.automated_options.whatsApp.provider] = this.props.automated_options.whatsApp
-    this.setState({
-      whatsappProvider: this.props.automated_options.whatsApp.provider,
-      whatsappData
-    })
+    if (this.props.automated_options && this.props.automated_options.whatsApp) {
+      let whatsappData = JSON.parse(JSON.stringify(this.initialWhatsappData))
+      whatsappData[this.props.automated_options.whatsApp.provider] = this.props.automated_options.whatsApp
+      this.setState({
+        whatsappProvider: this.props.automated_options.whatsApp.provider,
+        whatsappData
+      })
+    } else {
+      this.setState({
+        whatsappProvider: '',
+        whatsappData: this.initialWhatsappData
+      })
+    }
   }
 
   render() {
@@ -206,7 +209,7 @@ class Configuration extends React.Component {
             &times;
           </span>
         </button>
-        <button ref='connectWapp' style={{ marginTop: '-10px', opacity: '0.5', color: 'black', display: 'none' }} type="button" className="close" data-toggle="modal" data-target="#connectWapp" aria-label="Close">
+        <button onClick={this.clearFieldsWapp} ref='connectWapp' style={{ marginTop: '-10px', opacity: '0.5', color: 'black', display: 'none' }} type="button" className="close" data-toggle="modal" data-target="#connectWapp" aria-label="Close">
           <span aria-hidden="true">
             &times;
           </span>

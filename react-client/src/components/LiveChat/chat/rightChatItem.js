@@ -23,7 +23,7 @@ class RightChatItem extends React.Component {
     this.getMessage = this.getMessage.bind(this)
   }
 
-  getRepliedByMsg () {
+  getRepliedByMsg() {
     console.log('this.state.repliedBy', this.state.repliedBy)
     let message = ''
     if (
@@ -37,7 +37,7 @@ class RightChatItem extends React.Component {
     return message
   }
 
-  getMessage () {
+  getMessage() {
     const message = this.props.message.payload
     const type = message.componentType === 'media' ? message.mediaType : message.componentType
     if (['text', 'template'].includes(type)) {
@@ -52,17 +52,17 @@ class RightChatItem extends React.Component {
       return (
         <div>
           <IMAGE
-          image={message}
+            image={message}
           />
           {
             message.caption &&
-            <div style={{marginTop: '10px'}}>
+            <div style={{ marginTop: '10px' }}>
               <TEXT
-                text={{text: message.caption}}
+                text={{ text: message.caption }}
               />
             </div>
-        }
-      </div>
+          }
+        </div>
       )
     } else if (type === 'audio') {
       return (
@@ -78,13 +78,13 @@ class RightChatItem extends React.Component {
           />
           {
             message.caption &&
-            <div style={{marginTop: '10px'}}>
+            <div style={{ marginTop: '10px' }}>
               <TEXT
-                text={{text: message.caption}}
+                text={{ text: message.caption }}
               />
             </div>
           }
-      </div>
+        </div>
       )
     } else if (type === 'file') {
       return (
@@ -131,21 +131,21 @@ class RightChatItem extends React.Component {
 
   render() {
     return (
-      <div style={{marginLeft: 0, marginRight: 0, display: 'block', clear: 'both'}} className='row'>
+      <div style={{ marginLeft: 0, marginRight: 0, display: 'block', clear: 'both' }} className='row'>
         {
           this.props.index === 0
-          ? <div className='m-messenger__datetime'>
-            {this.props.displayDate(this.props.message.datetime)}
-          </div>
-          : this.props.index > 0 && this.props.showDate(this.props.previousMessage.datetime, this.props.message.datetime) &&
-          <div className='m-messenger__datetime'>
-            {this.props.displayDate(this.props.message.datetime)}
-          </div>
+            ? <div className='m-messenger__datetime'>
+              {this.props.displayDate(this.props.message.datetime)}
+            </div>
+            : this.props.index > 0 && this.props.showDate(this.props.previousMessage.datetime, this.props.message.datetime) &&
+            <div className='m-messenger__datetime'>
+              {this.props.displayDate(this.props.message.datetime)}
+            </div>
         }
         <div id={this.props.message._id} className='m-messenger__message m-messenger__message--out'>
           <div className='m-messenger__message-body'>
             <div className='m-messenger__message-arrow' />
-            <div style={{maxWidth: '250px'}} className='m-messenger__message-content'>
+            <div style={{ maxWidth: '250px' }} className='m-messenger__message-content'>
               <div className='m-messenger__message-username'>
                 {this.getRepliedByMsg()}
               </div>

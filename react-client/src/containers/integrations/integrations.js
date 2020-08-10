@@ -14,25 +14,26 @@ import { validatePhoneNumber } from '../../utility/utils'
 class FacebookIntegration extends React.Component {
   constructor(props, context) {
     super(props, context)
+    this.initialWhatsappData = {
+      twilio: {
+        provider: 'twilio',
+        accessToken: '',
+        businessNumber: '+14155238886',
+        accountSID: '',
+        sandBoxCode: ''
+      },
+      flockSend: {
+        provider: 'flockSend',
+        accessToken: '',
+        businessNumber: ''
+      }
+    }
     this.state = {
       isShowingModal: false,
       isShowingModalWhatsApp: false,
       SID: '',
       token: '',
-      whatsappData: {
-        twilio: {
-          provider: 'twilio',
-          accessToken: '',
-          businessNumber: '+14155238886',
-          accountSID: '',
-          sandBoxCode: ''
-        },
-        flockSend: {
-          provider: 'flockSend',
-          accessToken: '',
-          businessNumber: ''
-        }
-      }
+      whatsappData: JSON.parse(JSON.stringify(this.initialWhatsappData))
     }
     this.closeDialog = this.closeDialog.bind(this)
     this.showDialog = this.showDialog.bind(this)
@@ -46,6 +47,8 @@ class FacebookIntegration extends React.Component {
     this.cancel = this.cancel.bind(this)
     this.changeWhatsAppProvider = this.changeWhatsAppProvider.bind(this)
     this.updateWhatsAppData = this.updateWhatsAppData.bind(this)
+    this.clearFieldsWapp = this.clearFieldsWapp.bind(this)
+    this.handleResponse = this.handleResponse.bind(this)
   }
 
   updateWhatsAppData(e, data) {
@@ -114,6 +117,15 @@ class FacebookIntegration extends React.Component {
     }, this.msg)
   }
 
+  handleResponse(payload) {
+    this.refs.connectWapp.click()
+    if (payload.showModal) {
+      this.refs.disconnectWhatsApp.click()
+    } else {
+      this.msg.success('Saved Successfully')
+    }
+  }
+
   submitWapp(event) {
     event.preventDefault()
     this.props.updatePlatformWhatsApp(this.state.whatsappData[this.state.whatsappProvider], this.msg, null, this.handleResponse)
@@ -131,6 +143,13 @@ class FacebookIntegration extends React.Component {
     this.props.history.push({
       pathname: '/dashboard',
       state: { loadScript: true }
+    })
+  }
+
+  clearFieldsWapp() {
+    this.setState({
+      whatsappProvider: '',
+      whatsappData: this.initialWhatsappData
     })
   }
 
@@ -355,7 +374,7 @@ class FacebookIntegration extends React.Component {
                 <h5 className="modal-title" id="exampleModalLabel">
                   Connect with WhatsApp
 									</h5>
-                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                <button ref='connectWapp' onClick={this.clearFieldsWapp} style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
                   <span aria-hidden="true">
                     &times;
 											</span>
