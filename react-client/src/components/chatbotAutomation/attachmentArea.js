@@ -286,7 +286,7 @@ class AttachmentArea extends React.Component {
               ref='_upload_attachment_in_chatbot'
               style={{display: 'none'}}
               type='file'
-              accept='image/*, video/*'
+              accept='image/*, video/*, audio/*, application/*, text/*'
               onChange={this.onFileChange}
               onClick={(e) => {e.target.value = ''}}
             />
@@ -324,6 +324,8 @@ class AttachmentArea extends React.Component {
             </span>
           </div>
           {
+            this.state.attachmentType &&
+            ['file', 'audio'].indexOf(this.state.attachmentType) === -1 &&
             this.state.buttons.length > 0 &&
             <button
               id='_attach_button_in_chatbot'
