@@ -3,6 +3,7 @@ import * as ActionTypes from '../constants/constants'
 const initialState = {
   permissions: [],
   zoomIntegrations: [],
+  shopifyIntegrations: [],
   whatsAppMessageTemplates: []
 }
 export function settingsInfo (state = initialState, action) {
@@ -115,6 +116,19 @@ export function settingsInfo (state = initialState, action) {
       }
       return Object.assign({}, state, {
         zoomIntegrations: [...zoomIntegrations]
+      })
+    case ActionTypes.UPDATE_SHOPIFY_INTEGRATIONS:
+      return Object.assign({}, state, {
+        shopifyIntegrations: action.data
+      })
+    case ActionTypes.REMOVE_SHOPIFY_INTEGRATION:
+      let shopifyIntegrations = state.shopifyIntegrations
+      let shopifyIndexToRemove = state.shopifyIntegrations.findIndex(integration => integration._id === action.data._id)
+      if (shopifyIndexToRemove >= 0) {
+        shopifyIntegrations.splice(shopifyIndexToRemove, 1)
+      }
+      return Object.assign({}, state, {
+        shopifyIntegrations: [...shopifyIntegrations]
       })
     case ActionTypes.UPDATE_WHATSAPP_MESSAGE_TEMPLATES:
       return Object.assign({}, state, {

@@ -367,12 +367,12 @@ class Sidebar extends Component {
       })
     }
     if (platform === 'messenger' && user.isSuperUser) {
-      menuItems.push({
-        priority: 'l',
-        name: 'Abandoned Carts',
-        route: '/abandonedCarts',
-        icon: 'flaticon-comment'
-      })
+//       menuItems.push({
+//         priority: 'l',
+//         name: 'Abandoned Carts',
+//         route: '/abandonedCarts',
+//         icon: 'flaticon-comment'
+//       })
     }
     menuItems.push({
       priority: 'm',

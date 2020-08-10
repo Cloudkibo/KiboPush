@@ -19,7 +19,7 @@ import cookie from 'react-cookie'
 import AlertContainer from 'react-alert'
 
 class Header extends React.Component {
-  constructor (props, context) {
+  constructor(props, context) {
     super(props, context)
     props.fetchNotifications()
     this.state = {
@@ -45,12 +45,12 @@ class Header extends React.Component {
     this.redirectToDashboard = this.redirectToDashboard.bind(this)
   }
 
-  removeActingAsUser () {
+  removeActingAsUser() {
     auth.removeActingAsUser()
     window.location.reload()
   }
 
-  updatePlatformValue (e, value) {
+  updatePlatformValue(e, value) {
     console.log('in updatePlatformValue', value)
     if (this.props.user && this.props.user.role === 'buyer') {
       if (value === 'sms' && this.props.automated_options && !this.props.automated_options.twilio) {
@@ -58,7 +58,7 @@ class Header extends React.Component {
           pathname: '/integrations',
           state: 'sms'
         })
-      } else if (value === 'whatsApp' && this.props.automated_options && !this.props.automated_options.flockSendWhatsApp) {
+      } else if (value === 'whatsApp' && this.props.automated_options && !this.props.automated_options.whatsApp) {
         this.props.history.push({
           pathname: '/integrations',
           state: 'whatsApp'
@@ -70,21 +70,21 @@ class Header extends React.Component {
         })
       } else {
         this.redirectToDashboard(value)
-        this.props.updatePlatform({platform: value})
+        this.props.updatePlatform({ platform: value })
       }
     } else {
       if (value === 'sms' && this.props.automated_options && !this.props.automated_options.twilio) {
         this.msg.error('SMS Twilio is not connected. Please ask your account buyer to connect it.')
-      } else if (value === 'whatsApp' && this.props.automated_options && !this.props.automated_options.flockSendWhatsApp) {
-        this.msg.error('WhatsApp FlockSend is not connected. Please ask your account buyer to connect it.')
+      } else if (value === 'whatsApp' && this.props.automated_options && !this.props.automated_options.whatsApp) {
+        this.msg.error('WhatsApp is not connected. Please ask your account buyer to connect it.')
       } else {
         this.redirectToDashboard(value)
-        this.props.updatePlatform({platform: value})
+        this.props.updatePlatform({ platform: value })
       }
     }
   }
 
-  redirectToDashboard (value) {
+  redirectToDashboard(value) {
     if (value === 'sms') {
       this.props.history.push({
         pathname: '/SmsDashboard',
@@ -103,43 +103,43 @@ class Header extends React.Component {
     }
   }
 
-  profilePicError (e) {
+  profilePicError(e) {
     console.log('profile picture error for user')
     // e.target.src = 'https://emblemsbf.com/img/27447.jpg'
-    this.props.updatePicture({user: this.props.user})
+    this.props.updatePicture({ user: this.props.user })
   }
-  logout () {
-    this.props.updateShowIntegrations({showIntegrations: true})
+  logout() {
+    this.props.updateShowIntegrations({ showIntegrations: true })
     auth.logout()
   }
-  showDropDown () {
+  showDropDown() {
     console.log('showDropDown')
     this.setState({ showDropDown: true })
     // this.changeMode = this.changeMode.bind(this)
   }
 
-  showViewingAsDropDown () {
+  showViewingAsDropDown() {
     console.log('show viewing as dropdown')
-    this.setState({showViewingAsDropDown: true})
+    this.setState({ showViewingAsDropDown: true })
   }
 
-  changeMode (mode) {
+  changeMode(mode) {
     this.props.updateMode({ mode: mode }, this.props.user)
   }
-  changeStatus (e, id) {
+  changeStatus(e, id) {
     this.props.updateMode({ _id: id, advancedMode: e.target.checked })
   }
 
-  toggleSidebar () {
+  toggleSidebar() {
     /* eslint-disable */
     $('body').toggleClass(' m-aside-left--minimize m-brand--minimize')
     /* eslint-enable */
   }
 
-  UNSAFE_componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     console.log('nextProps in header', nextProps)
-    if(nextProps.userView) {
-      this.setState({userView: nextProps.userView})
+    if (nextProps.userView) {
+      this.setState({ userView: nextProps.userView })
     }
     if (nextProps.user) {
       let mode = nextProps.user.uiMode && nextProps.user.uiMode.mode === 'kiboengage' ? 'Customer Engagement' : nextProps.user.uiMode.mode === 'kibochat' ? 'Customer Chat' : nextProps.user.uiMode.mode === 'kibocommerce' ? 'E-Commerce' : 'All'
@@ -175,7 +175,7 @@ class Header extends React.Component {
       this.setState({ seenNotifications: seen, unseenNotifications: unseen })
     }
   }
-  getPlanInfo (plan) {
+  getPlanInfo(plan) {
     var planInfo
     if (plan === 'plan_A') {
       planInfo = 'Basic, Free Plan'
@@ -190,7 +190,7 @@ class Header extends React.Component {
     }
     this.setState({ planInfo: planInfo })
   }
-  timeSince (date) {
+  timeSince(date) {
     var newDate = new Date(date)
     var seconds = Math.floor((new Date() - newDate) / 1000)
 
@@ -218,7 +218,7 @@ class Header extends React.Component {
     return Math.floor(seconds) + ' seconds ago'
   }
 
-  gotoView (id, _id, type) {
+  gotoView(id, _id, type) {
     this.props.markRead({ notificationId: _id })
     if (type === 'webhookFailed') {
       this.props.history.push({
@@ -238,7 +238,7 @@ class Header extends React.Component {
     }
   }
 
-  goToSubProduct (product) {
+  goToSubProduct(product) {
     let productUrls = {
       'kiboengage': {
         'staging': 'https://skiboengage.cloudkibo.com/',
@@ -271,7 +271,7 @@ class Header extends React.Component {
     return productUrls[product][environment]
   }
 
-  render () {
+  render() {
     console.log('this.props.socketData', this.props.socketData)
     var alertOptions = {
       offset: 14,
@@ -338,7 +338,7 @@ class Header extends React.Component {
                               <div className='m-dropdown__content'>
                                 <ul className='m-nav'>
                                   <li key={'messenger'} className='m-nav__item'>
-                                    <span  onClick={(e) => this.updatePlatformValue(e, 'messenger')} className='m-nav__link' style={{cursor: 'pointer'}}>
+                                    <span onClick={(e) => this.updatePlatformValue(e, 'messenger')} className='m-nav__link' style={{ cursor: 'pointer' }}>
                                       <i className='m-nav__link-icon fa fa-facebook-square' />
                                       <span className='m-nav__link-text'>
                                         Messenger
@@ -346,7 +346,7 @@ class Header extends React.Component {
                                     </span>
                                   </li>
                                   <li key={'sms'} className='m-nav__item'>
-                                    <span onClick={(e) => this.updatePlatformValue(e, 'sms')} className='m-nav__link' style={{cursor: 'pointer'}}>
+                                    <span onClick={(e) => this.updatePlatformValue(e, 'sms')} className='m-nav__link' style={{ cursor: 'pointer' }}>
                                       <i className='m-nav__link-icon flaticon flaticon-chat-1' />
                                       <span className='m-nav__link-text'>
                                         SMS
@@ -354,7 +354,7 @@ class Header extends React.Component {
                                     </span>
                                   </li>
                                   <li key={'whatsApp'} className='m-nav__item'>
-                                    <span onClick={(e) => this.updatePlatformValue(e, 'whatsApp')} className='m-nav__link' style={{cursor: 'pointer'}}>
+                                    <span onClick={(e) => this.updatePlatformValue(e, 'whatsApp')} className='m-nav__link' style={{ cursor: 'pointer' }}>
                                       <i className='m-nav__link-icon socicon socicon-whatsapp' />
                                       <span className='m-nav__link-text'>
                                         WhatsApp
@@ -434,50 +434,50 @@ class Header extends React.Component {
                   {this.props.user &&
                     <ul className='m-topbar__nav m-nav m-nav--inline'>
                       {this.props.user.isSuperUser && (auth.getActingAsUser() !== undefined || this.state.userView) &&
-                        <li style={{marginRight: '20px', padding: '0'}} className='m-nav__item m-topbar__user-profile m-topbar__user-profile--img  m-dropdown m-dropdown--medium m-dropdown--arrow m-dropdown--header-bg-fill m-dropdown--align-right m-dropdown--mobile-full-width m-dropdown--skin-light' data-dropdown-toggle='click'>
-                          <div style={{marginTop: '15px'}}>
+                        <li style={{ marginRight: '20px', padding: '0' }} className='m-nav__item m-topbar__user-profile m-topbar__user-profile--img  m-dropdown m-dropdown--medium m-dropdown--arrow m-dropdown--header-bg-fill m-dropdown--align-right m-dropdown--mobile-full-width m-dropdown--skin-light' data-dropdown-toggle='click'>
+                          <div style={{ marginTop: '15px' }}>
                             <span className='m-topbar__userpic'>
                               <div style={{ display: 'inline-block', height: '41px' }}>
 
                                 <span className='m-nav__link-text' style={{ lineHeight: '41px', verticalAlign: 'middle', textAlign: 'center' }}>
-                                <li className='m-menu__item  m-menu__item--submenu m-menu__item--relm-portlet__nav-item m-dropdown m-dropdown--inline m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push' data-dropdown-toggle='click'>
-                                  <span style={{fontSize: '0.85em'}} onClick={this.showViewingAsDropDown} className='m-portlet__nav-link m-dropdown__toggle dropdown-toggle btn btn--sm m-btn--pill btn-secondary m-btn m-btn--label-brand'>
-                                    Viewing As...
+                                  <li className='m-menu__item  m-menu__item--submenu m-menu__item--relm-portlet__nav-item m-dropdown m-dropdown--inline m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push' data-dropdown-toggle='click'>
+                                    <span style={{ fontSize: '0.85em' }} onClick={this.showViewingAsDropDown} className='m-portlet__nav-link m-dropdown__toggle dropdown-toggle btn btn--sm m-btn--pill btn-secondary m-btn m-btn--label-brand'>
+                                      Viewing As...
                                   </span>
-                                  {
-                                    this.state.showViewingAsDropDown &&
-                                    <div className='m-dropdown__wrapper'>
-                                      <span className='m-dropdown__arrow m-dropdown__arrow--right m-dropdown__arrow--adjust' />
-                                      <div className='m-dropdown__inner'>
-                                        <div className='m-dropdown__body'>
-                                          <div className='m-dropdown__content'>
-                                            <ul className='m-nav'>
-                                              <li style={{textAlign: 'center'}} className='m-nav__item'>
-                                                <span>
-                                                  Currently viewing as: <strong>{auth.getActingAsUserName()} </strong>
-                                                </span>
-                                              </li>
-                                              <li style={{textAlign: 'center'}} className='m-nav__item'>
-                                                <span onClick={this.removeActingAsUser} className='m-btn m-btn--pill m-btn--hover-brand btn btn-secondary' style={{cursor: 'pointer'}}>
-                                                  <span className='m-nav__link-text'>
-                                                    Switch back to my view
+                                    {
+                                      this.state.showViewingAsDropDown &&
+                                      <div className='m-dropdown__wrapper'>
+                                        <span className='m-dropdown__arrow m-dropdown__arrow--right m-dropdown__arrow--adjust' />
+                                        <div className='m-dropdown__inner'>
+                                          <div className='m-dropdown__body'>
+                                            <div className='m-dropdown__content'>
+                                              <ul className='m-nav'>
+                                                <li style={{ textAlign: 'center' }} className='m-nav__item'>
+                                                  <span>
+                                                    Currently viewing as: <strong>{auth.getActingAsUserName()} </strong>
                                                   </span>
-                                                </span>
-                                              </li>
-                                            </ul>
+                                                </li>
+                                                <li style={{ textAlign: 'center' }} className='m-nav__item'>
+                                                  <span onClick={this.removeActingAsUser} className='m-btn m-btn--pill m-btn--hover-brand btn btn-secondary' style={{ cursor: 'pointer' }}>
+                                                    <span className='m-nav__link-text'>
+                                                      Switch back to my view
+                                                  </span>
+                                                  </span>
+                                                </li>
+                                              </ul>
+                                            </div>
                                           </div>
                                         </div>
                                       </div>
-                                    </div>
-                                  }
-                                </li>
-                               </span>
+                                    }
+                                  </li>
+                                </span>
                               </div>
                             </span>
                           </div>
                         </li>
                       }
-                      <li style={{marginRight: '10px', padding: '0'}} className='m-nav__item m-topbar__notifications m-topbar__notifications--img m-dropdown m-dropdown--large m-dropdown--header-bg-fill m-dropdown--arrow m-dropdown--align-center m-dropdown--mobile-full-width' data-dropdown-toggle='click'>
+                      <li style={{ marginRight: '10px', padding: '0' }} className='m-nav__item m-topbar__notifications m-topbar__notifications--img m-dropdown m-dropdown--large m-dropdown--header-bg-fill m-dropdown--arrow m-dropdown--align-center m-dropdown--mobile-full-width' data-dropdown-toggle='click'>
                         <span className='m-nav__link m-dropdown__toggle' id='m_topbar_notification_icon'>
                           {this.props.notifications && this.state.unseenNotifications.length > 0 &&
                             <span className='m-nav__link-badge m-badge m-badge--dot m-badge--dot-small m-badge--danger' />
@@ -560,87 +560,87 @@ class Header extends React.Component {
                         </div>
                       </li>
                       {this.props.user && this.props.user.isSuperUser && this.props.user.facebookInfo &&
-                      <li style={{marginRight: '10px', padding: '0'}} className='m-nav__item m-topbar__quick-actions m-topbar__quick-actions--img m-dropdown m-dropdown--large m-dropdown--header-bg-fill m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push m-dropdown--mobile-full-width m-dropdown--skin-light' data-dropdown-toggle='click'>
-                        <span className='m-nav__link m-dropdown__toggle'>
-                          <span className='m-nav__link-badge m-badge m-badge--dot m-badge--info m--hide' />
-                          <span className='m-nav__link-icon'>
-                            <i className='flaticon-share' />
+                        <li style={{ marginRight: '10px', padding: '0' }} className='m-nav__item m-topbar__quick-actions m-topbar__quick-actions--img m-dropdown m-dropdown--large m-dropdown--header-bg-fill m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push m-dropdown--mobile-full-width m-dropdown--skin-light' data-dropdown-toggle='click'>
+                          <span className='m-nav__link m-dropdown__toggle'>
+                            <span className='m-nav__link-badge m-badge m-badge--dot m-badge--info m--hide' />
+                            <span className='m-nav__link-icon'>
+                              <i className='flaticon-share' />
+                            </span>
                           </span>
-                        </span>
-                        <div className='m-dropdown__wrapper'>
-                          <span className='m-dropdown__arrow m-dropdown__arrow--right m-dropdown__arrow--adjust' />
-                          <div className='m-dropdown__inner'>
-                            <div className='m-dropdown__body m-dropdown__body--paddingless'>
-                              <div className='m-dropdown__content'>
-                                <div className='m-scrollable' data-scrollable='false' data-max-height='380' data-mobile-max-height='200'>
-                                  <div className='m-nav-grid m-nav-grid--skin-light'>
-                                    <div className='m-nav-grid__row'>
-                                      {
-                                        (window.location.hostname.toLowerCase().includes('kiboengage') &&
-                                        this.props.subscribers &&
-                                          this.props.subscribers.length === 0)
-                                          ? <Link to='/broadcasts' className='m-nav-grid__item'>
-                                            <i className='m-nav-grid__icon flaticon-file' />
-                                            <span className='m-nav-grid__text'>Send New Broadcast</span>
-                                          </Link>
-                                          : (window.location.hostname.toLowerCase().includes('kiboengage')) ? <Link to='/broadcasts' className='m-nav-grid__item'>
-                                            <i className='m-nav-grid__icon flaticon-file' />
-                                            <span className='m-nav-grid__text'>Send New Broadcast</span>
-                                          </Link>
-                                          : null
-                                      }
+                          <div className='m-dropdown__wrapper'>
+                            <span className='m-dropdown__arrow m-dropdown__arrow--right m-dropdown__arrow--adjust' />
+                            <div className='m-dropdown__inner'>
+                              <div className='m-dropdown__body m-dropdown__body--paddingless'>
+                                <div className='m-dropdown__content'>
+                                  <div className='m-scrollable' data-scrollable='false' data-max-height='380' data-mobile-max-height='200'>
+                                    <div className='m-nav-grid m-nav-grid--skin-light'>
+                                      <div className='m-nav-grid__row'>
+                                        {
+                                          (window.location.hostname.toLowerCase().includes('kiboengage') &&
+                                            this.props.subscribers &&
+                                            this.props.subscribers.length === 0)
+                                            ? <Link to='/broadcasts' className='m-nav-grid__item'>
+                                              <i className='m-nav-grid__icon flaticon-file' />
+                                              <span className='m-nav-grid__text'>Send New Broadcast</span>
+                                            </Link>
+                                            : (window.location.hostname.toLowerCase().includes('kiboengage')) ? <Link to='/broadcasts' className='m-nav-grid__item'>
+                                              <i className='m-nav-grid__icon flaticon-file' />
+                                              <span className='m-nav-grid__text'>Send New Broadcast</span>
+                                            </Link>
+                                              : null
+                                        }
 
-                                      {
-                                        (window.location.hostname.toLowerCase().includes('kiboengage') &&
-                                        this.props.subscribers &&
-                                          this.props.subscribers.length === 0)
-                                          ? <Link to='/poll' className='m-nav-grid__item'>
-                                            <i className='m-nav-grid__icon flaticon-time' />
-                                            <span className='m-nav-grid__text'>Send New Poll</span>
-                                          </Link>
-                                          : (window.location.hostname.toLowerCase().includes('kiboengage')) ? <Link to='/poll' className='m-nav-grid__item'>
-                                            <i className='m-nav-grid__icon flaticon-time' />
-                                            <span className='m-nav-grid__text'>Send New Poll</span>
-                                          </Link>
-                                         : null
+                                        {
+                                          (window.location.hostname.toLowerCase().includes('kiboengage') &&
+                                            this.props.subscribers &&
+                                            this.props.subscribers.length === 0)
+                                            ? <Link to='/poll' className='m-nav-grid__item'>
+                                              <i className='m-nav-grid__icon flaticon-time' />
+                                              <span className='m-nav-grid__text'>Send New Poll</span>
+                                            </Link>
+                                            : (window.location.hostname.toLowerCase().includes('kiboengage')) ? <Link to='/poll' className='m-nav-grid__item'>
+                                              <i className='m-nav-grid__icon flaticon-time' />
+                                              <span className='m-nav-grid__text'>Send New Poll</span>
+                                            </Link>
+                                              : null
 
-                                      }
+                                        }
 
-                                    </div>
-                                    <div className='m-nav-grid__row'>
+                                      </div>
+                                      <div className='m-nav-grid__row'>
 
-                                      {
-                                        (window.location.hostname.toLowerCase().includes('kiboengage') && this.props.subscribers &&
-                                          this.props.subscribers.length === 0)
-                                          ? <Link to='/surveys' className='m-nav-grid__item'>
-                                            <i className='m-nav-grid__icon flaticon-folder' />
-                                            <span className='m-nav-grid__text'>Send New Survey</span>
+                                        {
+                                          (window.location.hostname.toLowerCase().includes('kiboengage') && this.props.subscribers &&
+                                            this.props.subscribers.length === 0)
+                                            ? <Link to='/surveys' className='m-nav-grid__item'>
+                                              <i className='m-nav-grid__icon flaticon-folder' />
+                                              <span className='m-nav-grid__text'>Send New Survey</span>
+                                            </Link>
+                                            : (window.location.hostname.toLowerCase().includes('kiboengage')) ? <Link to='/surveys' className='m-nav-grid__item'>
+                                              <i className='m-nav-grid__icon flaticon-folder' />
+                                              <span className='m-nav-grid__text'>Send New Survey</span>
+                                            </Link>
+                                              : null
+                                        }
+                                        {
+                                          !window.location.hostname.toLowerCase().includes('kiboengage') &&
+                                          <Link to='/bots' className='m-nav-grid__item'>
+                                            <i className='m-nav-grid__icon flaticon-clipboard' />
+                                            <span className='m-nav-grid__text'>Create New Bot</span>
                                           </Link>
-                                          : (window.location.hostname.toLowerCase().includes('kiboengage')) ? <Link to='/surveys' className='m-nav-grid__item'>
-                                            <i className='m-nav-grid__icon flaticon-folder' />
-                                            <span className='m-nav-grid__text'>Send New Survey</span>
-                                          </Link>
-                                           : null
-                                      }
-                                      {
-                                        !window.location.hostname.toLowerCase().includes('kiboengage') &&
-                                      <Link to='/bots' className='m-nav-grid__item'>
-                                        <i className='m-nav-grid__icon flaticon-clipboard' />
-                                        <span className='m-nav-grid__text'>Create New Bot</span>
-                                      </Link>
-                                       }
+                                        }
+                                      </div>
                                     </div>
                                   </div>
                                 </div>
                               </div>
                             </div>
                           </div>
-                        </div>
-                      </li>
+                        </li>
                       }
                       {/* APP CHOOSER */}
-                      <li style={{marginRight: '20px', padding: '0'}} className='m-nav__item m-topbar__quick-actions m-topbar__quick-actions--img m-dropdown m-dropdown--large m-dropdown--header-bg-fill m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push m-dropdown--mobile-full-width m-dropdown--skin-light' data-dropdown-toggle='click'>
-                        <span style={{cursor: 'pointer'}} className='m-nav__link m-dropdown__toggle'>
+                      <li style={{ marginRight: '20px', padding: '0' }} className='m-nav__item m-topbar__quick-actions m-topbar__quick-actions--img m-dropdown m-dropdown--large m-dropdown--header-bg-fill m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push m-dropdown--mobile-full-width m-dropdown--skin-light' data-dropdown-toggle='click'>
+                        <span style={{ cursor: 'pointer' }} className='m-nav__link m-dropdown__toggle'>
                           <span className='m-nav__link-badge m-badge m-badge--dot m-badge--info m--hide' />
                           <span className='m-nav__link-icon'>
                             <i className='flaticon-app' />
@@ -787,11 +787,11 @@ class Header extends React.Component {
                                   }
                                   <li className='m-nav__item'>
                                     {window.location.hostname.toLowerCase().includes('kibochat')
-                                    && <Link to='/liveChat' className='m-nav__link'>
-                                      <i className='m-nav__link-icon flaticon-chat-1' />
-                                      <span className='m-nav__link-text'>Messages</span>
-                                    </Link>
-                                  }
+                                      && <Link to='/liveChat' className='m-nav__link'>
+                                        <i className='m-nav__link-icon flaticon-chat-1' />
+                                        <span className='m-nav__link-text'>Messages</span>
+                                      </Link>
+                                    }
                                   </li>
                                   {this.props.user && this.props.user.permissions['connect_facebook_account'] &&
                                     <li className='m-nav__item'>
@@ -837,37 +837,37 @@ class Header extends React.Component {
             </div>
           </div>
         </div>
-        <div style={{ background: 'rgba(33, 37, 41, 0.6)'}} className="modal fade" id="disconnectFacebook" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
-              <div className="modal-content">
-                <div style={{ display: 'block' }} className="modal-header">
-                  <h5 className="modal-title" id="exampleModalLabel">
-                    Disconnet Facebook Account
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="disconnectFacebook" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+            <div className="modal-content">
+              <div style={{ display: 'block' }} className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">
+                  Disconnet Facebook Account
 									</h5>
-                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">
-                      &times;
+                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">
+                    &times;
 											</span>
-                  </button>
-                </div>
-                <div style={{color: 'black'}} className="modal-body">
+                </button>
+              </div>
+              <div style={{ color: 'black' }} className="modal-body">
                 <p>Are you sure you want to disconnect your Facebook account?</p>
-                <button style={{float: 'right'}}
-                    className='btn btn-primary btn-sm'
-                    onClick={() => {
+                <button style={{ float: 'right' }}
+                  className='btn btn-primary btn-sm'
+                  onClick={() => {
                     this.props.disconnectFacebook(this.logout)
                   }} data-dismiss='modal'>Yes
                   </button>
-                </div>
               </div>
             </div>
           </div>
+        </div>
       </header>
     )
   }
 }
 
-function mapStateToProps (state) {
+function mapStateToProps(state) {
   console.log('state in header', state)
   return {
     user: (state.basicInfo.user),
@@ -882,7 +882,7 @@ function mapStateToProps (state) {
   }
 }
 
-function mapDispatchToProps (dispatch) {
+function mapDispatchToProps(dispatch) {
   return bindActionCreators({
     fetchNotifications: fetchNotifications,
     resetSocket: resetSocket,
