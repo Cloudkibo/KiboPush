@@ -25,6 +25,7 @@ import AdvancedSetting from './advancedSettings'
 import CannedResponses from './cannedResponses/cannedResponses'
 import ZoomIntegration from './zoomIntegration'
 import Notifications from './notifications'
+import ShopifyIntegration from './shopifyIntegration'
 
 class Settings extends React.Component {
   constructor (props, context) {
@@ -63,6 +64,7 @@ class Settings extends React.Component {
     this.setConfiguration = this.setConfiguration.bind(this)
     this.setIntegrations = this.setIntegrations.bind(this)
     this.setZoomIntegration = this.setZoomIntegration.bind(this)
+    this.setShopifyIntegration = this.setShopifyIntegration.bind(this)
     this.setAdvancedSettings = this.setAdvancedSettings.bind(this)
     this.setNGP = this.setNGP.bind(this)
     this.setConnectFb = this.setConnectFb.bind(this)
@@ -213,6 +215,12 @@ class Settings extends React.Component {
     })
   }
 
+  setShopifyIntegration () {
+    this.setState({
+      openTab: 'shopifyIntegration'
+    })
+  }
+
   setAdvancedSettings () {
     this.setState({
       openTab: 'advancedSettings'
@@ -313,6 +321,11 @@ class Settings extends React.Component {
     if (this.props.location.state && this.props.location.state.tab) {
       if (this.props.location.state.tab === 'zoomIntegration') {
         this.setZoomIntegration()
+      }
+    }
+    if (this.props.location.state && this.props.location.state.tab) {
+      if (this.props.location.state.tab === 'shopifyIntegration') {
+        this.setShopifyIntegration()
       }
     }
   }
@@ -530,6 +543,14 @@ class Settings extends React.Component {
                       <a href='#/' className='m-nav__link' onClick={this.setZoomIntegration} style={{cursor: 'pointer'}} >
                         <i className='m-nav__link-icon flaticon-network' />
                         <span className='m-nav__link-text'>Zoom Integration</span>
+                      </a>
+                    </li>
+                    }
+                    { (url.includes('localhost') || (url.includes('kibochat.cloudkibo.com') && this.props.user.isSuperUser)) && (this.props.user.role === 'admin' || this.props.user.role === 'buyer') &&
+                    <li className='m-nav__item'>
+                      <a href='#/' className='m-nav__link' onClick={this.setShopifyIntegration} style={{cursor: 'pointer'}} >
+                        <i className='m-nav__link-icon flaticon-network' />
+                        <span className='m-nav__link-text'>Shopify Integration</span>
                       </a>
                     </li>
                     }
@@ -783,6 +804,10 @@ class Settings extends React.Component {
             {
               this.state.openTab === 'zoomIntegration' &&
               <ZoomIntegration />
+            }
+            {
+              this.state.openTab === 'shopifyIntegration' &&
+              <ShopifyIntegration />
             }
           </div>
         </div>
