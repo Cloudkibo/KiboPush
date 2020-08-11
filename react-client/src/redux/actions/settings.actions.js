@@ -18,6 +18,20 @@ export function removeZoomIntegration(data) {
   }
 }
 
+export function updateShopifyIntegrations (data) {
+  return {
+    type: ActionTypes.UPDATE_SHOPIFY_INTEGRATIONS,
+    data
+  }
+}
+
+export function removeShopifyIntegration (data) {
+  return {
+    type: ActionTypes.REMOVE_SHOPIFY_INTEGRATION,
+    data
+  }
+}
+
 export function showIntegrations(data) {
   return {
     type: ActionTypes.GET_INTEGRATIONS,
@@ -25,7 +39,14 @@ export function showIntegrations(data) {
   }
 }
 
-export function showWhiteListDomains(data) {
+export function showAdminAlerts (data) {
+  return {
+    type: ActionTypes.SHOW_ADMINALERTS,
+    data
+  }
+}
+
+export function showWhiteListDomains (data) {
   return {
     type: ActionTypes.SHOW_WHITELIST_DOMAINS,
     data
@@ -40,7 +61,7 @@ export function showAdvancedSettings(data) {
   }
 }
 
-export function showcannedResponses(data) {
+export function showcannedResponses (data) {
   return {
     type: ActionTypes.GET_CANNED_RESPONSES,
     data
@@ -120,7 +141,31 @@ export function getPermissions() {
   }
 }
 
-export function updatePermission(updatedPermissions, msg) {
+export function fetchNotifications () {
+  return (dispatch) => {
+    callApi('adminAlerts/')
+      .then(res => {
+        if (res.status === 'success') {
+          dispatch(showAdminAlerts(res.payload)) 
+        }
+      })
+  }
+}
+export function updateNotificationSettings (data, msg) {
+  return (dispatch) => {
+    callApi('adminAlerts/update', 'post', data)
+      .then(res => {
+        if (res.status === 'success') {
+          dispatch(fetchNotifications()) 
+          msg.success('Notification settings updated successfully')
+        } else {
+          msg.error('Unable to update notification settings')
+          console.log(res.description)
+        }
+      })
+  }
+}
+export function updatePermission (updatedPermissions, msg) {
   return (dispatch) => {
     callApi('permissions/updatePermissions', 'post', updatedPermissions)
       .then(res => {
@@ -533,6 +578,19 @@ export function getWhatsAppMessageTemplates() {
   }
 }
 
+export function integrateShopify (cb) {
+  return (dispatch) => {
+    // TODO: Under construction by Sojharo
+  }
+}
+
+export function getShopifyIntegrations () {
+  return (dispatch) => {
+    // TODO: Under construction by Sojharo
+    dispatch(updateShopifyIntegrations([]))
+  }
+}
+
 export function integrateZoom(cb) {
   return (dispatch) => {
     fetch('/auth/zoom', {
@@ -633,8 +691,7 @@ export function getAdvancedSettings() {
   }
 }
 
-
-export function loadcannedResponses() {
+export function loadcannedResponses () {
   return (dispatch) => {
     callApi('cannedResponses')
       .then(res => {

@@ -183,7 +183,7 @@ class GenericMessageComponents extends React.Component {
         </div>
 
         {
-          this.props.module === 'broadcast' &&
+          this.props.module === 'broadcast' && this.props.user.plan['user_input'] &&
           <div data-tip={tooltipText} style={{...cursorStyle, ...outerColumnStyle}} className='col-6' hidden={this.props.hiddenComponents.indexOf('userInput') > -1 ? true : null}>
           <div style={componentStyle} className='ui-block hoverbordercomponent' id='text' onClick={() => { this.props.addComponent('userInput') }}>
             <div className='row'>
