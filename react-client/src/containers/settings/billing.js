@@ -11,57 +11,25 @@ class Billing extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      selectedRadio: 'free',
+      selectedRadio: props.pro === 'true' ? 'premium' : 'free',
     }
     this.handleRadioButton = this.handleRadioButton.bind(this)
     this.save = this.save.bind(this)
     this.goToPayment = this.goToPayment.bind(this)
-    this.getPlan = this.getPlan.bind(this)
-    this.setRadioButton = this.setRadioButton.bind(this)
   }
 
   componentDidMount () {
     document.title = 'KiboPush | api_settings'
   }
-
-  setRadioButton () {
-    if (this.props.user.currentPlan.unique_ID === 'plan_A') {
-      this.setState({selectedRadio: 'free'})
-    } else if (this.props.user.currentPlan.unique_ID === 'plan_B') {
-      this.setState({selectedRadio: 'standard'})
-    } else if (this.props.user.currentPlan.unique_ID === 'plan_C') {
-      this.setState({selectedRadio: 'premium'})
-    } else if (this.props.user.currentPlan.unique_ID === 'plan_B') {
-      this.setState({selectedRadio: 'enterprise'})
-    }
-  }
-
-  getPlan () {
-    switch (this.props.user.currentPlan.unique_ID) {
-      case 'plan_A':
-        return 'FREE'
-      case 'plan_B':
-        return 'STANDARD'
-      case 'plan_C':
-        return 'PREMIUM'
-      case 'plan_D':
-        return 'ENTERPRISE'
-      default:
-        return 'FREE'
-    }
-  }
-
   UNSAFE_componentWillReceiveProps (nextProps) {
     console.log('nextProps.user', nextProps.user)
     if (nextProps.user) {
-      if (nextProps.user.currentPlan.unique_ID === 'plan_A') {
-        this.setState({selectedRadio: 'free'})
-      } else if (nextProps.user.currentPlan.unique_ID === 'plan_B') {
-        this.setState({selectedRadio: 'standard'})
-      } else if (nextProps.user.currentPlan.unique_ID === 'plan_C') {
+      if (this.props.pro === true) {
         this.setState({selectedRadio: 'premium'})
-      } else if (nextProps.user.currentPlan.unique_ID === 'plan_B') {
-        this.setState({selectedRadio: 'enterprise'})
+      } else if (nextProps.user.currentPlan.unique_ID === 'plan_A' || nextProps.user.currentPlan.unique_ID === 'plan_C') {
+        this.setState({selectedRadio: 'premium'})
+      } else if (nextProps.user.currentPlan.unique_ID === 'plan_B' || nextProps.user.currentPlan.unique_ID === 'plan_D') {
+        this.setState({selectedRadio: 'free'})
       }
     }
     if (nextProps.error) {
@@ -79,15 +47,17 @@ class Billing extends React.Component {
   }
   save () {
     if (this.state.selectedRadio === 'free') {
-      this.props.updatePlan({companyId: this.props.user.companyId, plan: 'plan_A'}, this.msg)
-    } else if (this.state.selectedRadio === 'standard') {
-      this.props.updatePlan({companyId: this.props.user.companyId, plan: 'plan_B'}, this.msg)
+      if (this.props.user.currentPlan.unique_ID === 'plan_A' || this.props.user.currentPlan.unique_ID === 'plan_B') {
+        this.props.updatePlan({companyId: this.props.user.companyId, plan: 'plan_B'}, this.msg)
+      } else if (this.props.user.currentPlan.unique_ID === 'plan_C' || this.props.user.currentPlan.unique_ID === 'plan_D') {
+        this.props.updatePlan({companyId: this.props.user.companyId, plan: 'plan_D'}, this.msg)
+      }
     } else if (this.state.selectedRadio === 'premium') {
-      this.props.updatePlan({companyId: this.props.user.companyId, plan: 'plan_C'}, this.msg)
-    } else if (this.state.selectedRadio === 'enterprise') {
-      this.msg.info('Please contact sales: sales@cloudkibo.com')
-    } else {
-      this.msg.error('Please select a plan')
+      if (this.props.user.currentPlan.unique_ID === 'plan_A' || this.props.user.currentPlan.unique_ID === 'plan_B') {
+        this.props.updatePlan({companyId: this.props.user.companyId, plan: 'plan_A'}, this.msg)
+      } else if (this.props.user.currentPlan.unique_ID === 'plan_C' || this.props.user.currentPlan.unique_ID === 'plan_D') {
+        this.props.updatePlan({companyId: this.props.user.companyId, plan: 'plan_C'}, this.msg)
+      }
     }
   }
 
@@ -121,8 +91,7 @@ class Billing extends React.Component {
           </div>
           <div className='m-portlet__body'>
             <div className='row'>
-              <div className='col-md-1 col-lg-1 col-xl-1' />
-              <div className='col-md-10 col-lg-10 col-xl-10'>
+              <div className='col-md-8 col-lg-8 col-xl-8'>
                 <div className='m-widget24'>
                   <div className='m-widget24__item' style={{border: 'solid 1px #ccc'}}>
                     <div style={{borderBottom: 'solid 1px #ccc'}}>
@@ -130,7 +99,7 @@ class Billing extends React.Component {
                         Billing Plan
                       </h4>
                       <br />
-                      {this.props.user && (['plan_B', 'plan_C', 'plan_D'].includes(this.props.user.currentPlan.unique_ID)) && this.props.user.last4 &&
+                      {this.props.user && (this.props.user.currentPlan.unique_ID === 'plan_C' || this.props.user.currentPlan.unique_ID === 'plan_A') && this.props.user.last4 &&
                       <div>
                         <span style={{marginLeft: '1.8rem'}}>
                           <i className='fa fa-credit-card-alt' />&nbsp;&nbsp;
@@ -139,17 +108,22 @@ class Billing extends React.Component {
                         <br />
                       </div>
                       }
-                      <a href='https://kibopush.com/pricing/' target='_blank' rel='noopener noreferrer' className='m-widget24__desc' style={{color: 'blue', cursor: 'pointer'}}>
+                      <a href='#/' className='m-widget24__desc' style={{color: 'blue', cursor: 'pointer'}}>
                         <u>Learn more about pricing</u>
                       </a>
-                      <span className='m-widget24__stats m--font-brand'>
-                        <span style={{padding: '10px'}}>{this.getPlan()}</span>
+                      {this.props.user && (this.props.user.currentPlan.unique_ID === 'plan_B' || this.props.user.currentPlan.unique_ID === 'plan_D')
+                      ? <span className='m-widget24__stats m--font-brand'>
+                        FREE
                       </span>
+                      : <span className='m-widget24__stats m--font-brand'>
+                        PREMIUM
+                      </span>
+                      }
                       <br /><br />
                     </div>
                     <center style={{marginTop: '15px', marginBottom: '15px'}}>
-                      <button onClick={this.setRadioButton} className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' data-toggle='modal' data-target='#upgradePlan'>
-                        {this.props.user && this.props.user.currentPlan.unique_ID === 'plan_A'
+                      <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' data-toggle='modal' data-target='#upgradePlan'>
+                        {this.props.user && (this.props.user.currentPlan.unique_ID === 'plan_B' || this.props.user.currentPlan.unique_ID === 'plan_D')
                         ? <span>
                           Upgrade to Pro
                         </span>
@@ -162,7 +136,6 @@ class Billing extends React.Component {
                   </div>
                 </div>
               </div>
-              <div className='col-md-1 col-lg-1 col-xl-1' />
             </div>
             <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="upgradePlan" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
@@ -193,54 +166,34 @@ class Billing extends React.Component {
                       <div className='radio'>
                         <input id='segmentList'
                           type='radio'
-                          value='standard'
-                          name='segmentationType'
-                          onChange={this.handleRadioButton}
-                          checked={this.state.selectedRadio === 'standard'} />
-                        <label>Standard</label>
-                      </div>
-                      <div className='radio'>
-                        <input id='segmentList'
-                          type='radio'
                           value='premium'
                           name='segmentationType'
                           onChange={this.handleRadioButton}
                           checked={this.state.selectedRadio === 'premium'} />
                         <label>Premium</label>
                       </div>
-                      <div className='radio'>
-                        <input id='segmentList'
-                          type='radio'
-                          value='enterprise'
-                          name='segmentationType'
-                          onChange={this.handleRadioButton}
-                          checked={this.state.selectedRadio === 'enterprise'} />
-                        <label>Enterprise</label>
-                      </div>
                     </div>
                   </div>
-                  {
-                    ['standard', 'premium'].includes(this.state.selectedRadio) &&
-                    <div className='col-12'>
-                      <label>Select Payment Method:</label>
-                      <br />
-                      {
-                        this.props.user && this.props.user.last4
-                        ? <div className='m-widget4__info'>
-                          <i className='fa fa-credit-card-alt' />&nbsp;&nbsp;
-                          <span className='m-widget4__title'>
-                           xxxx xxxx xxxx {this.props.user.last4}
-                          </span>
-                        </div>
-                        : <div className='btn' onClick={this.goToPayment} style={{border: '1px solid #cccc', borderStyle: 'dotted', marginLeft: '15px'}}>
-                          <i className='fa fa-plus' style={{marginRight: '10px'}} />
-                          <span>Add Payment Method</span>
-                        </div>
-                      }
+                  {this.state.selectedRadio === 'premium' &&
+                  <div className='col-12'>
+                    <label>Select Payment Method:</label>
+                    <br />
+                    {this.props.user && this.props.user.last4
+                    ? <div className='m-widget4__info'>
+                      <i className='fa fa-credit-card-alt' />&nbsp;&nbsp;
+                      <span className='m-widget4__title'>
+                       xxxx xxxx xxxx {this.props.user.last4}
+                      </span>
+                    </div>
+                    : <div className='btn' onClick={this.goToPayment} style={{border: '1px solid #cccc', borderStyle: 'dotted', marginLeft: '15px'}}>
+                      <i className='fa fa-plus' style={{marginRight: '10px'}} />
+                      <span>Add Payment Method</span>
                     </div>
                   }
+                  </div>
+                  }
                   <br /><br />
-                  <button className='btn btn-primary' style={{marginRight: '10px', float: 'right'}} onClick={this.save} data-dismiss='modal' aria-label='Close'>
+                  <button className='btn btn-primary' style={{marginRight: '10px', float: 'right'}} onClick={this.save.bind(this)} data-dismiss='modal' aria-label='Close'>
                     Change
                   </button>
                 </div>

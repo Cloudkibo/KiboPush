@@ -51,18 +51,15 @@ class ListItem extends React.Component {
                 {this.props.item.subscriptionUrl}
               </a>
               <br />
-              {
-                this.props.showDelete &&
-                <span className='m-widget5__info-date m--font-info'>
-                  <button data-toggle="modal" data-target="#deleteFeed" onClick={() => this.props.updateDeleteID(this.props.item._id)} className='btn btn-outline-danger m-btn m-btn--icon btn-sm m-btn--icon-only m-btn--pill m-btn--air'>
-                    <i className='la la-remove' />&nbsp;&nbsp;
-                  </button>
-                </span>
-              }
+              <span className='m-widget5__info-date m--font-info'>
+                <button data-toggle="modal" data-target="#deleteFeed" onClick={() => this.props.updateDeleteID(this.props.item._id)} className='btn btn-outline-danger m-btn m-btn--icon btn-sm m-btn--icon-only m-btn--pill m-btn--air'>
+                  <i className='la la-remove' />&nbsp;&nbsp;
+                </button>
+              </span>
               <span className='m-widget5__info-date m--font-info'>
                 &nbsp;&nbsp;
               </span>
-              {!this.props.marginState && this.props.showSettings &&
+              {!this.props.marginState &&
               <span className='m-widget5__info-date m--font-info'>
                 <button onClick={() => this.props.openSettings(item)} className='btn btn-outline-brand m-btn m-btn--icon btn-sm m-btn--icon-only m-btn--pill m-btn--air'>
                   <i className='la la-gear' />
@@ -72,7 +69,7 @@ class ListItem extends React.Component {
               <span className='m-widget5__info-date m--font-info'>
                 &nbsp;&nbsp;
               </span>
-              {!this.props.marginState && this.props.showHistory &&
+              {!this.props.marginState &&
               <span className='m-widget5__info-date m--font-info'>
                 <button onClick={() => this.props.gotoMessages(this.props.item)} className='btn btn-outline-brand m-btn m-btn--icon btn-sm m-btn--icon-only m-btn--pill m-btn--air'>
                   <i className='la la-envelope' />

@@ -226,84 +226,81 @@ class AdSet extends React.Component {
             </div>
             }
             </span>
-            {
-              this.props.isCreatable &&
-              <span className='radio'>
-                <input
-                  type='radio'
-                  value='new'
-                  onChange={this.handleAdSetType}
-                  checked={this.state.adSetType === 'new'} />
-                Create New Ad Set
-                <span />
-                <br /><br />
-                {this.state.adSetType === 'new' &&
-                  <div>
-                    <div className='form-group m-form__group'>
-                      <span style={{fontWeight: 'bold'}}>Ad Set Name:</span>
-                      <input type='text' className='form-control m-input' placeholder='Enter Ad Set Name...' onChange={this.changeAdSetName} value={this.state.adSetName} style={{borderRadius: '20px', width: '50%', display: 'inline-block', marginLeft: '15px'}} />
+            <span className='radio'>
+              <input
+                type='radio'
+                value='new'
+                onChange={this.handleAdSetType}
+                checked={this.state.adSetType === 'new'} />
+              Create New Ad Set
+              <span />
+              <br /><br />
+              {this.state.adSetType === 'new' &&
+                <div>
+                  <div className='form-group m-form__group'>
+                    <span style={{fontWeight: 'bold'}}>Ad Set Name:</span>
+                    <input type='text' className='form-control m-input' placeholder='Enter Ad Set Name...' onChange={this.changeAdSetName} value={this.state.adSetName} style={{borderRadius: '20px', width: '50%', display: 'inline-block', marginLeft: '15px'}} />
+                  </div>
+                  <div className='form-group m-form__group'>
+                    <span style={{fontWeight: 'bold'}}>Targeting:</span>
+                  </div>
+                  <div className='form-group m-form__group row'>
+                    <div className='col-md-4'>
+                      <label>Gender:</label>
+                        <select className='form-control' value={this.state.gender} onChange={this.selectGender} style={{width: '60%', display: 'inline-block', marginLeft: '15px'}}>
+                          <option key='all' value='all'>All</option>
+                          <option key='male' value='male'>Male</option>
+                          <option key='female' value='female'>Female</option>
+                      </select>
                     </div>
-                    <div className='form-group m-form__group'>
-                      <span style={{fontWeight: 'bold'}}>Targeting:</span>
-                    </div>
-                    <div className='form-group m-form__group row'>
-                      <div className='col-md-4'>
-                        <label>Gender:</label>
-                          <select className='form-control' value={this.state.gender} onChange={this.selectGender} style={{width: '60%', display: 'inline-block', marginLeft: '15px'}}>
-                            <option key='all' value='all'>All</option>
-                            <option key='male' value='male'>Male</option>
-                            <option key='female' value='female'>Female</option>
-                        </select>
-                      </div>
-                      <div className='col-md-8'>
-                        <label>Age:</label>
-                          <select className='form-control' value={this.state.minAge} onChange={this.selectMinAge} style={{width: '10%', display: 'inline-block', marginLeft: '15px'}}>
-                            {this.getAgeRange(18, 65)}
-                        </select>
-                        <label>-</label>
-                          <select className='form-control' value={this.state.maxAge} onChange={this.selectMaxAge} style={{width: '10%', display: 'inline-block', marginLeft: '15px'}}>
-                            {this.getAgeRange(18, 65)}
-                        </select>
-                      </div>
-                    </div>
-                    <div className='form-group m-form__group'>
-                      <span style={{fontWeight: 'bold'}}>Budget:</span>
-                    </div>
-                    <div className='form-group m-form__group'>
-                      <label>Budget Type:</label>
-                        <div className='radio-buttons' style={{paddingLeft: '63px', display: 'inline'}}>
-                          <span className='radio' style={{display: 'inline-block'}}>
-                            <input
-                              type='radio'
-                              value='daily_budget'
-                              onChange={this.handleBudgetType}
-                              checked={this.state.budgetType === 'daily_budget'} />
-                            Daily Budget
-                            <span ></span>
-                          </span>
-                          <span className='radio' style={{display: 'inline-block', marginLeft: '50px'}}>
-                            <input
-                              type='radio'
-                              value='lifetime_budget'
-                              onChange={this.handleBudgetType}
-                              checked={this.state.budgetType === 'lifetime_budget'} />
-                            Lifetime Budget
-                            <span ></span>
-                          </span>
-                        </div>
-                        <br /><br />
-                        <label>Budget Amount:</label>
-                        <input id='example-text-input' type='number' min='0' step='1' className='form-control' onChange={this.handleBudgetAmount} value={this.state.budgetAmount} style={{display:'inline-block', width: '10%', marginLeft: '20px'}} />
-                        <span style={{display:'inline-block', marginLeft: '5px'}}>{this.state.currency}</span>
-                        <br /><br />
-                        <label>Bid Amount:</label>
-                        <input id='example-text-input' type='number' min='0' step='1' onKeyDown={this.onKeyDown} className='form-control' onChange={this.handleBidAmount} value={this.state.bidAmount} style={{display:'inline-block', width: '10%', marginLeft: '48px'}} />
-                        <span style={{display:'inline-block', marginLeft: '5px'}}>{this.state.currency}</span>
+                    <div className='col-md-8'>
+                      <label>Age:</label>
+                        <select className='form-control' value={this.state.minAge} onChange={this.selectMinAge} style={{width: '10%', display: 'inline-block', marginLeft: '15px'}}>
+                          {this.getAgeRange(18, 65)}
+                      </select>
+                      <label>-</label>
+                        <select className='form-control' value={this.state.maxAge} onChange={this.selectMaxAge} style={{width: '10%', display: 'inline-block', marginLeft: '15px'}}>
+                          {this.getAgeRange(18, 65)}
+                      </select>
                     </div>
                   </div>
-                }
-              </span>
-            }
+                  <div className='form-group m-form__group'>
+                    <span style={{fontWeight: 'bold'}}>Budget:</span>
+                  </div>
+                  <div className='form-group m-form__group'>
+                    <label>Budget Type:</label>
+                      <div className='radio-buttons' style={{paddingLeft: '63px', display: 'inline'}}>
+                        <span className='radio' style={{display: 'inline-block'}}>
+                          <input
+                            type='radio'
+                            value='daily_budget'
+                            onChange={this.handleBudgetType}
+                            checked={this.state.budgetType === 'daily_budget'} />
+                          Daily Budget
+                          <span ></span>
+                        </span>
+                        <span className='radio' style={{display: 'inline-block', marginLeft: '50px'}}>
+                          <input
+                            type='radio'
+                            value='lifetime_budget'
+                            onChange={this.handleBudgetType}
+                            checked={this.state.budgetType === 'lifetime_budget'} />
+                          Lifetime Budget
+                          <span ></span>
+                        </span>
+                      </div>
+                      <br /><br />
+                      <label>Budget Amount:</label>
+                      <input id='example-text-input' type='number' min='0' step='1' className='form-control' onChange={this.handleBudgetAmount} value={this.state.budgetAmount} style={{display:'inline-block', width: '10%', marginLeft: '20px'}} />
+                      <span style={{display:'inline-block', marginLeft: '5px'}}>{this.state.currency}</span>
+                      <br /><br />
+                      <label>Bid Amount:</label>
+                      <input id='example-text-input' type='number' min='0' step='1' onKeyDown={this.onKeyDown} className='form-control' onChange={this.handleBidAmount} value={this.state.bidAmount} style={{display:'inline-block', width: '10%', marginLeft: '48px'}} />
+                      <span style={{display:'inline-block', marginLeft: '5px'}}>{this.state.currency}</span>
+                  </div>
+                </div>
+              }
+            </span>
           </div>
         <Footer
           currentStep='adSet'

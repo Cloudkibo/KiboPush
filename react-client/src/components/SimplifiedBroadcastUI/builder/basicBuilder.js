@@ -33,11 +33,11 @@ class BasicBuilder extends React.Component {
                           {
                             !this.props.titleEditable || this.props.currentId !== message.id
                             ? <h7> {message.title} </h7>
-                            :
-                            <h7>{message.title}
+                            : 
+                            <h7>{message.title} 
                               <i onClick={this.props.showDialog} id='convoTitle' style={{cursor: 'pointer', color: 'black', marginLeft: '10px'}} className='fa fa-pencil-square-o' aria-hidden='true' />
                               {
-                                index > 0 &&
+                                index > 0 && 
                                 <i onClick={this.props.confirmDeleteModal} id='convoTitle' style={{cursor: 'pointer', color: 'red', marginLeft: '10px'}} className='fa fa-trash-o' aria-hidden='true' />
                               }
                             </h7>
@@ -53,7 +53,7 @@ class BasicBuilder extends React.Component {
                           {
                             !this.props.titleEditable || this.props.currentId !== message.id
                             ? <h7> {message.title} </h7>
-                            : <h7>{message.title}
+                            : <h7>{message.title} 
                                 <i onClick={this.props.showDialog} id='convoTitle' style={{cursor: 'pointer', color: 'black', marginLeft: '10px'}} className='fa fa-pencil-square-o' aria-hidden='true' />
                                 <i onClick={this.props.confirmDeleteModal} id='convoTitle' style={{cursor: 'pointer', color: 'red', marginLeft: '10px'}} className='fa fa-trash-o' aria-hidden='true' />
                               </h7>
@@ -82,7 +82,6 @@ class BasicBuilder extends React.Component {
                           showAddComponentModal={this.props.showAddComponentModal}
                           list={this.props.list}
                           module={this.props.module}
-                          user={this.props.user}
                           noDefaultHeight={this.props.noDefaultHeight}
                           getItems={() => this.props.getItems(this.props.currentId)}
                         />

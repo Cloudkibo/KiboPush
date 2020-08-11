@@ -154,7 +154,7 @@ class SegmentedList extends React.Component {
                 <h5 className="modal-title" id="exampleModalLabel">
                   Segmented List Video Tutorial
 									</h5>
-                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal"
+                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" 
                 aria-label="Close"
                 onClick={() => {
                   this.setState({
@@ -265,30 +265,27 @@ class SegmentedList extends React.Component {
                       </h3>
                     </div>
                   </div>
-                  {
-                    this.props.user.permissions['create_segmentation_lists'] &&
-                    <div className='m-portlet__head-tools'>
-                      {
-                        this.props.subscribers && this.props.subscribers.length > 0
-                          ? <Link to='createSubList' className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
+                  <div className='m-portlet__head-tools'>
+                    {
+                      this.props.subscribers && this.props.subscribers.length > 0
+                        ? <Link to='createSubList' className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
+                          <span>
+                            <i className='la la-plus' />
                             <span>
-                              <i className='la la-plus' />
-                              <span>
-                                Create Segmented Subscribers List
-                          </span>
-                            </span>
-                          </Link>
-                          : <Link className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' disabled>
-                            <span>
-                              <i className='la la-plus' />
-                              <span>
-                                Create Segmented Subscribers List
+                              Create Segmented Subscribers List
                         </span>
-                            </span>
-                          </Link>
-                      }
-                    </div>
-                  }
+                          </span>
+                        </Link>
+                        : <Link className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' disabled>
+                          <span>
+                            <i className='la la-plus' />
+                            <span>
+                              Create Segmented Subscribers List
+                      </span>
+                          </span>
+                        </Link>
+                    }
+                  </div>
                 </div>
                 <div className='m-portlet__body'>
                   <div className='row align-items-center'>
@@ -343,23 +340,19 @@ class SegmentedList extends React.Component {
                                             Edit
                                       </Link>
                                         </div>
-                                        : this.props.user.permissions['update_segmentation_lists'] &&
-                                        <div>
+                                        : <div>
                                           <Link to='/createSubList' className='btn btn-primary btn-sm'
                                             style={{ float: 'left', margin: 2 }} onClick={() => this.saveCurrentList(list)}>
                                             Edit
                                       </Link>
                                         </div>
                                       }
-                                      {
-                                        this.props.user.permissions['delete_segmentation_lists'] &&
-                                        <button className='btn btn-primary btn-sm'
-                                          style={{ float: 'left', margin: 2 }}
-                                          onClick={() => this.showDialogDelete(list._id)}
-                                          data-toggle="modal" data-target="#deleteList">
-                                          Delete
-                                      </button>
-                                      }
+                                      <button className='btn btn-primary btn-sm'
+                                        style={{ float: 'left', margin: 2 }}
+                                        onClick={() => this.showDialogDelete(list._id)}
+                                        data-toggle="modal" data-target="#deleteList">
+                                        Delete
+                                    </button>
                                     </span>
                                   </td>
                                 </tr>
@@ -399,7 +392,6 @@ class SegmentedList extends React.Component {
 function mapStateToProps(state) {
   return {
     pages: (state.pagesInfo.pages),
-    user: (state.basicInfo.user),
     customerLists: (state.listsInfo.customerLists),
     count: (state.listsInfo.count),
     subscribers: (state.subscribersInfo.subscribers)

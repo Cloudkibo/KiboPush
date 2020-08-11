@@ -144,8 +144,8 @@ class MessengerRefURL extends React.Component {
                 <h5 className="modal-title" id="exampleModalLabel">
                   Messenger Ref Url Video Tutorial
 									</h5>
-                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal"
-                    aria-label="Close"
+                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" 
+                    aria-label="Close" 
                     onClick={() => {
                       this.setState({
                         openVideo: false
@@ -263,19 +263,16 @@ class MessengerRefURL extends React.Component {
                       </h3>
                     </div>
                   </div>
-                  {
-                    this.props.user.permissions['create_messnger_ref_urls'] &&
-                    <div className='m-portlet__head-tools'>
-                      <a href='#/' data-toggle="modal" data-target="#create" onClick={this.showCreateDialog} className='addLink btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
+                  <div className='m-portlet__head-tools'>
+                    <a href='#/' data-toggle="modal" data-target="#create" onClick={this.showCreateDialog} className='addLink btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
+                      <span>
+                        <i className='la la-plus' />
                         <span>
-                          <i className='la la-plus' />
-                          <span>
-                            Create New
-                          </span>
+                          Create New
                         </span>
-                      </a>
-                    </div>
-                  }
+                      </span>
+                    </a>
+                  </div>
                 </div>
                 <div className='m-portlet__body'>
                   <div className='form-row'>
@@ -316,18 +313,12 @@ class MessengerRefURL extends React.Component {
                               <span style={{width: '200px'}}>{messengerRefURL.ref_parameter}</span></td>
                             <td data-field='actions' className='m-datatable__cell--center m-datatable__cell'>
                               <span style={{width: '150px'}}>
-                                {
-                                  this.props.user.permissions['update_messenger_ref_urls'] &&
-                                  <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2, marginLeft: '40px'}} onClick={() => this.onEdit(messengerRefURL)}>
-                                      Edit
-                                  </button>
-                                }
-                                {
-                                  this.props.user.permissions['delete_messenger_ref_urls'] &&
-                                  <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}} data-toggle="modal" data-target="#delete" onClick={() => this.showDialogDelete(messengerRefURL._id)}>
-                                      Delete
-                                  </button>
-                                }
+                                <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2, marginLeft: '40px'}} onClick={() => this.onEdit(messengerRefURL)}>
+                                    Edit
+                                </button>
+                                <button className='btn btn-primary btn-sm' style={{float: 'left', margin: 2}} data-toggle="modal" data-target="#delete" onClick={() => this.showDialogDelete(messengerRefURL._id)}>
+                                    Delete
+                                </button>
                               </span>
                             </td>
                           </tr>
@@ -369,8 +360,7 @@ function mapStateToProps (state) {
   console.log(state)
   return {
     messengerRefURLs: (state.messengerRefURLInfo.messengerRefURLs),
-    pages: (state.pagesInfo.pages),
-    user: (state.basicInfo.user)
+    pages: (state.pagesInfo.pages)
   }
 }
 

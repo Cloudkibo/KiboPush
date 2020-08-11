@@ -129,10 +129,10 @@ class TemplateBroadcasts extends React.Component {
     if(nextProps.broadcasts && nextProps.broadcasts.length === 0 && nextProps.count > 0) {
       if (this.state.pageNumber > 0) {
       this.props.loadBroadcastsListNew({last_id: this.state.lastBroadcastTemplateId, number_of_records: 5, first_page: this.state.pageNumber < 2 ? 'first': 'previous', filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, category_value: this.state.filterValue}})
-      let pageNumber = this.state.pageNumber-1
+      let pageNumber = this.state.pageNumber-1 
       this.setState({pageNumber:pageNumber})
       } else {
-        this.props.loadBroadcastsListNew({last_id: 'none', number_of_records: 5, first_page: 'first', filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, category_value: this.state.filterValue}})
+        this.props.loadBroadcastsListNew({last_id: 'none', number_of_records: 5, first_page: 'first', filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, category_value: this.state.filterValue}})      
       }
     }
   }
@@ -257,21 +257,18 @@ class TemplateBroadcasts extends React.Component {
                   </h3>
                 </div>
               </div>
-              {
-                this.props.user.permissions['create_templates'] &&
-                <div className='m-portlet__head-tools'>
-                  <Link onClick={this.goToCreate}>
-                    <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
+              <div className='m-portlet__head-tools'>
+                <Link onClick={this.goToCreate}>
+                  <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
+                    <span>
+                      <i className='la la-plus' />
                       <span>
-                        <i className='la la-plus' />
-                        <span>
-                          Create New
-                        </span>
+                        Create New
                       </span>
-                    </button>
-                  </Link>
-                </div>
-              }
+                    </span>
+                  </button>
+                </Link>
+              </div>
             </div>
             <div className='m-portlet__body'>
               <div className='row align-items-center'>
@@ -384,21 +381,15 @@ class TemplateBroadcasts extends React.Component {
                                   style={{width: '170px'}}><button onClick={() => { let broadcastSelected = broadcast; this.gotoViewBroadcast(broadcastSelected) }} className='btn btn-primary btn-sm' style={{float: 'left', margin: 2, color: 'white'}}>
                                   View
                                 </button>
-                                {
-                                  this.props.user.permissions['update_templates'] &&
                                   <button onClick={() => { let broadcastSelected = broadcast; this.gotoEditBroadcast(broadcastSelected) }} className='btn btn-primary btn-sm' style={{float: 'left', margin: 2, color: 'white'}}>
                                     Edit
                                   </button>
-                                }
-                                {
-                                  this.props.user.permissions['delete_templates'] &&
                                   <button className='btn btn-primary btn-sm'
                                     style={{float: 'left', margin: 2}}
                                     onClick={() => this.showDialogDelete(broadcast._id)}
                                     data-toggle="modal" data-target="#deleteBroadcast">
-                                    Delete
-                                  </button>
-                                }
+                                  Delete
+                              </button>
                                 </span></td>
                             </tr>
                           ))
