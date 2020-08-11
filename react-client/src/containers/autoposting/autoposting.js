@@ -36,7 +36,7 @@ class Autoposting extends React.Component {
     })
     this.refs.videoAutoposting.click()
   }
-
+  
   gotoRssIntegration() {
     this.props.history.push({
       pathname: `/rssIntegration`
@@ -70,7 +70,7 @@ class Autoposting extends React.Component {
     this.refs.guide.click()
   }
   UNSAFE_componentWillReceiveProps(nextProps) {
-
+   
   }
 
   updateDeleteID(id) {
@@ -196,7 +196,7 @@ class Autoposting extends React.Component {
                 <h5 className="modal-title" id="exampleModalLabel">
                   Autoposting Video Tutorial
 									</h5>
-                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal"
+                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" 
                 aria-label="Close"
                 onClick={() => {
                   this.setState({
@@ -289,22 +289,19 @@ class Autoposting extends React.Component {
                       </h3>
                     </div>
                   </div>
-                  {
-                    this.props.user.permissions['add_autoposting_feeds'] &&
-                    <div className='m-portlet__head-tools'>
-                      <Link data-toggle="modal" data-target="#addFeed">
-                        <button
-                          className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
+                  <div className='m-portlet__head-tools'>
+                    <Link data-toggle="modal" data-target="#addFeed">
+                      <button
+                        className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
+                        <span>
+                          <i className='la la-plus' />
                           <span>
-                            <i className='la la-plus' />
-                            <span>
-                              Add Feed
-                            </span>
+                            Add Feed
                           </span>
-                        </button>
-                      </Link>
-                    </div>
-                  }
+                        </span>
+                      </button>
+                    </Link>       
+                  </div>
                 </div>
                 <div className='m-portlet__body'>
                   <div className='col-12'>
@@ -324,21 +321,7 @@ class Autoposting extends React.Component {
                     this.props.autopostingData && this.props.autopostingData.length > 0
                       ? this.props.autopostingData.map((item, i) => (
                         <div className='m-widget5'>
-                          <ListItem
-                            key={item._id}
-                            updateDeleteID={this.updateDeleteID}
-                            openSettings={this.gotoSettings}
-                            gotoMessages={this.gotoMessages}
-                            type={item.subscriptionType}
-                            title={item.accountTitle}
-                            username={item.userId}
-                            item={item}
-                            marginState={false}
-                            openGuidelines={this.viewGuide}
-                            showHistory={(this.props.user.plan['autoposting_history'] && this.props.user.permissions['view_autoposting_feed_history'])}
-                            showSettings={this.props.user.permissions['update_autoposting_feeds']}
-                            showDelete={this.props.user.permissions['delete_autoposting_feeds']}
-                          />
+                          <ListItem key={item._id} updateDeleteID={this.updateDeleteID} openSettings={this.gotoSettings} gotoMessages={this.gotoMessages} type={item.subscriptionType} title={item.accountTitle} username={item.userId} item={item} marginState={false} openGuidelines={this.viewGuide} />
                         </div>
                       ))
                       : <p>Currently, you do not have any feeds. Click on Add Feed button to add new feeds. </p>
@@ -356,7 +339,6 @@ function mapStateToProps(state) {
   return {
     autopostingData: (state.autopostingInfo.autopostingData),
     pages: (state.pagesInfo.pages),
-    user: (state.basicInfo.user)
   }
 }
 

@@ -310,7 +310,7 @@ class Poll extends React.Component {
                 <h5 className="modal-title" id="exampleModalLabel">
                   Polls Video Tutorial
 									</h5>
-                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal"
+                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" 
                 aria-label="Close"
                 onClick={() => {
                   this.setState({
@@ -474,30 +474,27 @@ class Poll extends React.Component {
                       </h3>
                     </div>
                   </div>
-                  {
-                    this.props.user.permissions['create_polls'] &&
-                    <div className='m-portlet__head-tools'>
-                      {
-                        this.props.subscribers && this.props.subscribers.length === 0
-                          ? <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' data-toggle="modal" data-target="#create" disabled>
+                  <div className='m-portlet__head-tools'>
+                    {
+                      this.props.subscribers && this.props.subscribers.length === 0
+                        ? <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' data-toggle="modal" data-target="#create" disabled>
+                          <span>
+                            <i className='la la-plus' />
                             <span>
-                              <i className='la la-plus' />
-                              <span>
-                                Create New
-                            </span>
-                            </span>
-                          </button>
-                          : <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' data-toggle="modal" data-target="#create">
+                              Create New
+                          </span>
+                          </span>
+                        </button>
+                        : <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' data-toggle="modal" data-target="#create">
+                          <span>
+                            <i className='la la-plus' />
                             <span>
-                              <i className='la la-plus' />
-                              <span>
-                                Create New
-                            </span>
-                            </span>
-                          </button>
-                      }
-                    </div>
-                  }
+                              Create New
+                          </span>
+                          </span>
+                        </button>
+                    }
+                  </div>
                 </div>
                 <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="create" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                   <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
@@ -641,13 +638,10 @@ class Poll extends React.Component {
                                       onClick={() => this.gotoViewPoll(poll)}>
                                       View
                                 </button>
-                                    {
-                                      this.props.user.permissions['view_poll_reports'] &&
-                                      <button className='btn btn-primary btn-sm'
-                                        style={{ float: 'left', margin: 2 }}
-                                        onClick={() => this.gotoView(poll)}>Report
-                                      </button>
-                                    }
+                                    <button className='btn btn-primary btn-sm'
+                                      style={{ float: 'left', margin: 2 }}
+                                      onClick={() => this.gotoView(poll)}>Report
+                                </button>
                                     {this.props.subscribers && this.props.subscribers.length === 0
                                       ? <span style={{ width: '150px' }}>
                                         <button className='btn btn-sm' disabled
@@ -656,24 +650,41 @@ class Poll extends React.Component {
                                           Send
                                   </button>
                                 </span>
-                                : this.props.user.permissions['resend_polls'] &&
-                                <span style={{width: '150px'}}>
+                                : <span style={{width: '150px'}}>
                                   <button className='btn btn-primary btn-sm'
                                     data-toggle="modal" data-target="#send"
                                     style={{float: 'left', margin: 2}}
                                     onClick={() => this.savePoll(poll)}>
                                     Send
                                   </button>
-                                </span>
+                                      </span>
                                     }
-                                    {this.props.user.permissions['delete_polls'] &&
-                                      <button className='btn btn-primary btn-sm'
+                                    {this.props.user && (this.props.user.role === 'admin' || this.props.user.role === 'buyer')
+                                      ? <button className='btn btn-primary btn-sm'
                                         style={{ float: 'left', margin: 2 }}
                                         data-toggle='modal'
                                         data-target='#delete'
                                         onClick={() => this.showDialogDelete(poll._id)}>
                                         Delete
-                                      </button>
+                              </button>
+                                      : <div>
+                                        {poll.sent === 0
+                                          ? <button className='btn btn-primary btn-sm'
+                                            style={{ float: 'left', margin: 2 }}
+                                            data-toggle='modal'
+                                            data-target='#delete'
+                                            onClick={() => this.showDialogDelete(poll._id)}>
+                                            Delete
+                            </button>
+                                          : <button className='btn btn-primary btn-sm' disabled
+                                            style={{ float: 'left', margin: 2 }}
+                                            data-toggle='modal'
+                                            data-target='#delete'
+                                            onClick={() => this.showDialogDelete(poll._id)}>
+                                            Delete
+                            </button>
+                                        }
+                                      </div>
                                     }
                                   </span>
                                 </td>

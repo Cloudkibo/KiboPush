@@ -515,20 +515,17 @@ class NewsIntegrations extends React.Component {
                     </h3>
                   </div>
                 </div>
-                {
-                  this.props.user.permissions['add_news_feeds'] &&
-                  <div className='m-portlet__head-tools'>
-                    <Link to='/editSection'
-                      className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
+                <div className='m-portlet__head-tools'>
+                  <Link to='/editSection'
+                    className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
+                    <span>
+                      <i className='la la-plus' />
                       <span>
-                        <i className='la la-plus' />
-                        <span>
-                          Add News Section
-                        </span>
+                        Add News Section
                       </span>
-                    </Link>
-                  </div>
-                }
+                    </span>
+                  </Link>
+                </div>
               </div>
               <div className='m-portlet__body'>
                 <div className='col-12'>
@@ -645,8 +642,7 @@ function mapStateToProps (state) {
     pages: (state.pagesInfo.pages),
     rssFeeds: (state.feedsInfo.rssFeeds),
     count: (state.feedsInfo.count),
-    defaultFeeds: (state.feedsInfo.defaultFeeds),
-    user: (state.basicInfo.user)
+    defaultFeeds: (state.feedsInfo.defaultFeeds)
   }
 }
 

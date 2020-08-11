@@ -30,7 +30,7 @@ class Profile extends React.Component {
                         editSubscriberWhatsApp={this.props.editSubscriberWhatsApp}
                     />
                   {
-                      this.props.user.permissions['assign_session_agent'] && this.props.user.permissions['assign_session_team'] &&
+                      (this.props.user.currentPlan.unique_ID === 'plan_C' || this.props.user.currentPlan.unique_ID === 'plan_D') &&
                       <AssignChat
                       alertMsg={this.props.alertMsg}
                       activeSession={this.props.activeSession}

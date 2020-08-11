@@ -9,6 +9,13 @@ export function setBrowserName (data) {
   }
 }
 
+export function fetchPlan (data) {
+  return {
+    type: ActionTypes.FETCH_PLAN,
+    data
+  }
+}
+
 export function showuserdetails (data) {
   // NOTE: don't remove following auth method call
   console.log('user details', data)
@@ -16,12 +23,6 @@ export function showuserdetails (data) {
   return {
     type: ActionTypes.LOAD_USER_DETAILS,
     data
-  }
-}
-
-export function updateTrialPeriod () {
-  return {
-    type: ActionTypes.UPDATE_TRIAL_PERIOD
   }
 }
 
@@ -114,13 +115,6 @@ export function getAutomatedOptions () {
   }
 }
 
-export function switchToBasicPlan () {
-  return (dispatch) => {
-    callApi('company/switchToBasicPlan')
-      .then(res => dispatch(updateTrialPeriod()))
-  }
-}
-
 export function getFbAppId () {
   return (dispatch) => {
     callApi('users/fbAppId').then(res => dispatch(storeFbAppId(res.payload)))
@@ -165,23 +159,22 @@ export function updatePlan (data, msg) {
       console.log('response from updatePlan', res)
       if (res.status === 'success') {
         msg.success('Plan updated successfully')
+        dispatch(fetchPlan('success'))
         dispatch(getuserdetails())
       } else {
-        const error = res.description || 'Failed to update plan'
-        msg.error(error)
+        dispatch(fetchPlan(res.description))
       }
     })
   }
 }
 
-export function updateCard (data, msg, callback) {
+export function updateCard (data, msg) {
   console.log('data for updateMode', data)
   return (dispatch) => {
     callApi('company/setCard', 'post', data).then(res => {
       console.log('response from updatePlan', res)
       if (res.status === 'success') {
         msg.success('Card added successfully')
-        callback()
         dispatch(getuserdetails())
       }
     })
