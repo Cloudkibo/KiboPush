@@ -46,7 +46,7 @@ export function showAdminAlerts (data) {
   }
 }
 
-export function showWhiteListDomains(data) {
+export function showWhiteListDomains (data) {
   return {
     type: ActionTypes.SHOW_WHITELIST_DOMAINS,
     data
@@ -61,7 +61,7 @@ export function showAdvancedSettings(data) {
   }
 }
 
-export function showcannedResponses(data) {
+export function showcannedResponses (data) {
   return {
     type: ActionTypes.GET_CANNED_RESPONSES,
     data
@@ -141,7 +141,31 @@ export function getPermissions() {
   }
 }
 
-export function updatePermission(updatedPermissions, msg) {
+export function fetchNotifications () {
+  return (dispatch) => {
+    callApi('adminAlerts/')
+      .then(res => {
+        if (res.status === 'success') {
+          dispatch(showAdminAlerts(res.payload)) 
+        }
+      })
+  }
+}
+export function updateNotificationSettings (data, msg) {
+  return (dispatch) => {
+    callApi('adminAlerts/update', 'post', data)
+      .then(res => {
+        if (res.status === 'success') {
+          dispatch(fetchNotifications()) 
+          msg.success('Notification settings updated successfully')
+        } else {
+          msg.error('Unable to update notification settings')
+          console.log(res.description)
+        }
+      })
+  }
+}
+export function updatePermission (updatedPermissions, msg) {
   return (dispatch) => {
     callApi('permissions/updatePermissions', 'post', updatedPermissions)
       .then(res => {
@@ -667,8 +691,7 @@ export function getAdvancedSettings() {
   }
 }
 
-
-export function loadcannedResponses() {
+export function loadcannedResponses () {
   return (dispatch) => {
     callApi('cannedResponses')
       .then(res => {

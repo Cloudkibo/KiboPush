@@ -23,35 +23,38 @@ export function settingsInfo (state = initialState, action) {
       return Object.assign({}, state, {
         permissions: oldPermissions
       })
-    
     case ActionTypes.GET_ADVANCED_SETTINGS:
       return Object.assign({}, state, {
         advanced_settings: action.data
       })
 
+    case ActionTypes.SHOW_ADMINALERTS:
+      return Object.assign({}, state, {
+        adminAlerts: action.data
+      })
 
-case ActionTypes.GET_CANNED_RESPONSES:
-  return Object.assign({}, state, {
-    cannedResponses: action.data
-  })
+    case ActionTypes.GET_CANNED_RESPONSES:
+      return Object.assign({}, state, {
+        cannedResponses: action.data
+      })
 
-case ActionTypes.UPDATE_CANNED_RESPONSE: {
-  let cannedResponses = state.cannedResponses
-  let cannedResponsesIndex = cannedResponses.findIndex(cannedResponse => cannedResponse._id === action.data.responseId)
-  cannedResponses[cannedResponsesIndex] = Object.assign(cannedResponses[cannedResponsesIndex], action.data)
-  return Object.assign({}, state, {
-    cannedResponses: [...cannedResponses]
-  })
-}
-case ActionTypes.DELETE_CANNED_RESPONSE: {
-let cannedResponses = state.cannedResponses
-let cannedResponsesIndex = cannedResponses.findIndex(cannedResponse => cannedResponse._id === action.data.responseId)
-  cannedResponses.splice(cannedResponsesIndex, 1)
-  return Object.assign({}, state, {
-    cannedResponses: [...cannedResponses]
-  })
-}
-  
+    case ActionTypes.UPDATE_CANNED_RESPONSE: {
+      let cannedResponses = state.cannedResponses
+      let cannedResponsesIndex = cannedResponses.findIndex(cannedResponse => cannedResponse._id === action.data.responseId)
+      cannedResponses[cannedResponsesIndex] = Object.assign(cannedResponses[cannedResponsesIndex], action.data)
+      return Object.assign({}, state, {
+        cannedResponses: [...cannedResponses]
+      })
+    }
+    case ActionTypes.DELETE_CANNED_RESPONSE: {
+    let cannedResponses = state.cannedResponses
+    let cannedResponsesIndex = cannedResponses.findIndex(cannedResponse => cannedResponse._id === action.data.responseId)
+      cannedResponses.splice(cannedResponsesIndex, 1)
+      return Object.assign({}, state, {
+        cannedResponses: [...cannedResponses]
+      })
+    }
+
     case ActionTypes.ENABLE_SUCCESS_NGP:
       return Object.assign({}, state, {
         apiEnableNGP: action.data,
@@ -114,19 +117,19 @@ let cannedResponsesIndex = cannedResponses.findIndex(cannedResponse => cannedRes
       return Object.assign({}, state, {
         zoomIntegrations: [...zoomIntegrations]
       })
-      case ActionTypes.UPDATE_SHOPIFY_INTEGRATIONS:
-        return Object.assign({}, state, {
-          shopifyIntegrations: action.data
-        })
-      case ActionTypes.REMOVE_SHOPIFY_INTEGRATION:
-        let shopifyIntegrations = state.shopifyIntegrations
-        let shopifyIndexToRemove = state.shopifyIntegrations.findIndex(integration => integration._id === action.data._id)
-        if (shopifyIndexToRemove >= 0) {
-          shopifyIntegrations.splice(shopifyIndexToRemove, 1)
-        }
-        return Object.assign({}, state, {
-          shopifyIntegrations: [...shopifyIntegrations]
-        })
+    case ActionTypes.UPDATE_SHOPIFY_INTEGRATIONS:
+      return Object.assign({}, state, {
+        shopifyIntegrations: action.data
+      })
+    case ActionTypes.REMOVE_SHOPIFY_INTEGRATION:
+      let shopifyIntegrations = state.shopifyIntegrations
+      let shopifyIndexToRemove = state.shopifyIntegrations.findIndex(integration => integration._id === action.data._id)
+      if (shopifyIndexToRemove >= 0) {
+        shopifyIntegrations.splice(shopifyIndexToRemove, 1)
+      }
+      return Object.assign({}, state, {
+        shopifyIntegrations: [...shopifyIntegrations]
+      })
     case ActionTypes.UPDATE_WHATSAPP_MESSAGE_TEMPLATES:
       return Object.assign({}, state, {
         whatsAppMessageTemplates: action.data
