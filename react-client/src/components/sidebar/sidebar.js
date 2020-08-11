@@ -379,6 +379,7 @@ class Sidebar extends Component {
               </li>
               {this.showSmartRespliesItem()}
               {this.showChatbotAutomation()}
+              {this.showChatbotAutomationNew()}
               {this.showAutoPostingItem()}
               {this.showRssIntegrationItem()}
               {this.showNewsIntegrationItem()}
@@ -687,6 +688,25 @@ class Sidebar extends Component {
             </i>
             <span className='m-menu__link-text'>
               Chatbot Automation
+            </span>
+          </Link>
+        </li>
+      )
+    } else {
+      return (null)
+    }
+  }
+
+  showChatbotAutomationNew () {
+    if (this.props.user && this.props.user.isSuperUser && (this.state.isKiboChat || this.state.isLocalhost)) {
+      return (
+        <li className='m-menu__item' aria-haspopup='true' >
+          <Link to='/chatbotAutomationNew' className='m-menu__link'>
+            <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
+              <span />
+            </i>
+            <span className='m-menu__link-text'>
+              Chatbot Automation (NEW)
             </span>
           </Link>
         </li>
@@ -1348,4 +1368,5 @@ function mapDispatchToProps (dispatch) {
     fetchSingleSession: fetchSingleSession
   }, dispatch)
 }
+
 export default connect(mapStateToProps, mapDispatchToProps)(Sidebar)
