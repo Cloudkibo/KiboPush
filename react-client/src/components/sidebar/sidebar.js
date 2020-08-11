@@ -180,6 +180,13 @@ class Sidebar extends Component {
           route: '/chatbotAutomation'
         })
       }
+      if ((isKiboChat || isLocalhost) && user.isSuperUser && user.plan['chatbot_automation'] && user.permissions['configure_chatbot_automation']) {
+        submenu.push({
+          priority: 'b',
+          name: 'Chatbot Automation (NEW)',
+          route: '/chatbotAutomationNew'
+        })
+      }
       if ((isKiboEngage || isLocalhost) && user.plan['autoposting'] && user.permissions['view_autoposting_feeds']) {
         submenu.push({
           priority: 'c',
