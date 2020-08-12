@@ -25,11 +25,15 @@ import MODAL from '../../components/extras/modal'
 import WHITELISTDOMAINS from '../../components/chatbotAutomation/whitelistDomains'
 import $ from 'jquery'
 
+const MessengerPlugin = require('react-messenger-plugin').default
+
 class ConfigureChatbot extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
       loading: true,
+      powerLoading: false,
+      showTestContent: false,
       chatbot: props.location.state.chatbot,
       blocks: [],
       sidebarItems: [],
@@ -54,6 +58,13 @@ class ConfigureChatbot extends React.Component {
     this.toggleWhitelistModal = this.toggleWhitelistModal.bind(this)
     this.getWhitelistModalContent = this.getWhitelistModalContent.bind(this)
     this.onAnalytics = this.onAnalytics.bind(this)
+    this.onPublish = this.onPublish.bind(this)
+    this.onDisable = this.onDisable.bind(this)
+    this.afterPublish = this.afterPublish.bind(this)
+    this.afterDisable = this.afterDisable.bind(this)
+    this.showTestModal = this.showTestModal.bind(this)
+    this.getTestModalContent = this.getTestModalContent.bind(this)
+    this.toggleTestModalContent = this.toggleTestModalContent.bind(this)
 
     props.getFbAppId()
   }
@@ -79,6 +90,20 @@ class ConfigureChatbot extends React.Component {
     /* eslint-disable */
     $('#sidebarDiv').addClass('hideSideBar')
     /* eslint-enable */
+
+    let comp = this
+    registerAction({
+      event: 'chatbot.test.message',
+      action: function (data) {
+        comp.msg.success('Sent successfully on messenger')
+        comp.refs._open_test_chatbot_modal.click()
+        comp.toggleTestModalContent()
+      }
+    })
+  }
+
+  toggleTestModalContent () {
+    this.setState({showTestContent: !this.state.showTestContent})
   }
 
   updateState (state) {
@@ -216,7 +241,7 @@ class ConfigureChatbot extends React.Component {
 
   onBack() {
     this.props.history.push({
-      pathname: '/chatbotAutomation'
+      pathname: '/chatbotAutomationNew'
     })
   }
 
@@ -233,6 +258,67 @@ class ConfigureChatbot extends React.Component {
           deleteDomain={this.props.deleteDomain}
           saveWhiteListDomains={this.props.saveWhiteListDomains}
           fetchWhiteListedDomains={this.props.fetchWhiteListedDomains}
+        />
+      )
+    } else {
+      return (<div />)
+    }
+  }
+
+  onDisable () {
+    this.setState({powerLoading: true})
+    const data = {
+      chatbotId: this.state.chatbot._id,
+      published: false
+    }
+    this.props.updateChatbot(data, (res) => this.afterDisable(res))
+  }
+
+  afterDisable (res) {
+    if (res.status === 'success') {
+      this.msg.success('Chatbot disabled successfully')
+      let chatbot = this.state.chatbot
+      chatbot.published = false
+      this.setState({chatbot, powerLoading: false})
+    } else {
+      this.msg.error(res.description)
+    }
+  }
+
+  onPublish () {
+    this.setState({powerLoading: true})
+    const data = {
+      chatbotId: this.state.chatbot._id,
+      published: true
+    }
+    this.props.updateChatbot(data, (res) => this.afterPublish(res))
+  }
+
+  afterPublish (res) {
+    if (res.status === 'success') {
+      this.msg.success('Chatbot published successfully')
+      let chatbot = this.state.chatbot
+      chatbot.published = true
+      this.setState({chatbot, powerLoading: false})
+    } else {
+      this.msg.error(res.description)
+    }
+  }
+
+  showTestModal () {
+    this.setState({showTestContent: true}, () => {
+      this.refs._open_test_chatbot_modal.click()
+    })
+  }
+
+  getTestModalContent () {
+    if (this.state.showTestContent) {
+      return (
+        <MessengerPlugin
+          appId={this.props.fbAppId}
+          pageId={this.state.chatbot.pageFbId}
+          size='large'
+          passthroughParams='_chatbot'
         />
       )
     } else {
@@ -263,6 +349,40 @@ class ConfigureChatbot extends React.Component {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={(a) => { this.msg = a }} {...alertOptions} />
+        <div className='m-subheader '>
+          <div className='d-flex align-items-center'>
+            <div className='mr-auto'>
+              <h3 className='m-subheader__title'>Configure Chatbot</h3>
+            </div>
+            <div className='pull-right'>
+              <button
+                id='_chatbot_message_area_header_publish'
+                style={{marginLeft: '10px', borderColor: this.state.chatbot.published ? '#34bfa3' : '#f4516c'}}
+                className={`pull-right btn btn-${this.state.chatbot.published ? 'success' : 'danger'} m-btn m-btn--icon m-btn--icon-only m-btn--custom m-btn--pill m-btn--air`}
+                onClick={this.state.chatbot.published ? this.onDisable : this.onPublish}
+                data-tip={this.state.chatbot.published ? 'Disable Chatbot' : 'Publish Chatbot'}
+                data-place='bottom'
+              >
+                {
+                  this.state.powerLoading
+                  ? <i className="m-loader" />
+                  : <i className="la la-power-off" />
+                }
+              </button>
+              <button
+                id='_chatbot_message_area_header_test'
+                style={{marginLeft: '10px', borderColor: '#716aca'}}
+                className="pull-right btn btn-brand m-btn m-btn--icon m-btn--icon-only m-btn--custom m-btn--pill m-btn--air"
+                onClick={this.showTestModal}
+                data-tip='Test Chatbot'
+                data-place='bottom'
+                disabled={!(this.state.progress === 100)}
+              >
+                <i className="fa flaticon-paper-plane"></i>
+              </button>
+            </div>
+          </div>
+        </div>
 
         <Prompt
           when={this.state.unsavedChanges}
@@ -324,6 +444,13 @@ class ConfigureChatbot extends React.Component {
               id='_cb_whitelist_domains'
               title='Manage Whitelist Domains'
               content={this.getWhitelistModalContent()}
+            />
+            <button ref='_open_test_chatbot_modal' style={{display: 'none'}} data-toggle='modal' data-target='#_test_chatbot' />
+            <MODAL
+              id='_test_chatbot'
+              title='Test Chatbot'
+              content={this.getTestModalContent()}
+              onClose={this.toggleTestModalContent}
             />
           </div>
         }
