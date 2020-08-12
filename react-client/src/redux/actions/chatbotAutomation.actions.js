@@ -90,9 +90,9 @@ export function updateChatbot (data, callback) {
   }
 }
 
-export function deleteMessageBlock (id, callback) {
+export function deleteMessageBlock (ids, callback) {
   return (dispatch) => {
-    callApi(`messageBlock/${id}`, 'delete')
+    callApi('messageBlock', 'delete', {ids})
       .then(res => {
         console.log('response from deleteMessageBlock', res)
         callback(res)

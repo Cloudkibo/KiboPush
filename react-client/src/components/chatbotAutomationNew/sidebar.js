@@ -48,7 +48,7 @@ class Sidebar extends React.Component {
   }
 
   setItems (data, currentBlock) {
-    const items = this.props.data.filter((d) => d.parentId && d.parentId.toString() === currentBlock.uniqueId.toString())
+    const items = data.filter((d) => d.parentId && d.parentId.toString() === currentBlock.uniqueId.toString())
     this.setState({items})
   }
 
