@@ -29,6 +29,10 @@ export function settingsInfo (state = initialState, action) {
         advanced_settings: action.data
       })
 
+    case ActionTypes.SHOW_ADMINALERTS:
+      return Object.assign({}, state, {
+        adminAlerts: action.data
+      })
 
 case ActionTypes.GET_CANNED_RESPONSES:
   return Object.assign({}, state, {
