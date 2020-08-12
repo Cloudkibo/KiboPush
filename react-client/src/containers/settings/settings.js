@@ -24,6 +24,7 @@ import Integrations from './integrations'
 import AdvancedSetting from './advancedSettings'
 import CannedResponses from './cannedResponses/cannedResponses'
 import ZoomIntegration from './zoomIntegration'
+import Notifications from './notifications'
 import ShopifyIntegration from './shopifyIntegration'
 import Notifications from './notifications'
 

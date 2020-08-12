@@ -165,6 +165,7 @@ export function updateNotificationSettings (data, msg) {
       })
   }
 }
+
 export function updatePermission (updatedPermissions, msg) {
   return (dispatch) => {
     callApi('permissions/updatePermissions', 'post', updatedPermissions)
