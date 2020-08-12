@@ -178,13 +178,13 @@ class Header extends React.Component {
   getPlanInfo(plan) {
     var planInfo
     if (plan === 'plan_A') {
-      planInfo = 'Individual, Premium Account'
+      planInfo = 'Basic, Free Plan'
     } else if (plan === 'plan_B') {
-      planInfo = 'Individual, Free Account'
+      planInfo = 'Standard, Paid Plan'
     } else if (plan === 'plan_C') {
-      planInfo = 'Team, Premium Account'
+      planInfo = 'Premium, Paid Plan'
     } else if (plan === 'plan_D') {
-      planInfo = 'Team, Free Account'
+      planInfo = 'Enterprise, Paid Plan'
     } else {
       planInfo = ''
     }
@@ -793,7 +793,7 @@ class Header extends React.Component {
                                       </Link>
                                     }
                                   </li>
-                                  {this.props.user && this.props.user.role === 'buyer' &&
+                                  {this.props.user && this.props.user.permissions['connect_facebook_account'] &&
                                     <li className='m-nav__item'>
                                       <span data-toggle="modal" data-target="#disconnectFacebook" className='m-nav__link'>
                                         <i className='m-nav__link-icon la la-unlink' />
