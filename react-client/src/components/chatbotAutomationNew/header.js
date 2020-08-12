@@ -157,6 +157,7 @@ class Header extends React.Component {
               this.refs._add_child.click()
               setTimeout(() => {this._cb_ma_add_child_input.focus()}, 500)
             }}
+            disabled={!this.props.canAddChild}
           >
             Add Child
           </button>
@@ -166,6 +167,7 @@ class Header extends React.Component {
             type='button'
             className='pull-right btn btn-primary'
             onClick={() => this.refs._delete_message_block.click()}
+            disabled={!this.props.canDelete}
           >
             Delete
           </button>
@@ -174,7 +176,7 @@ class Header extends React.Component {
         <CONFIRMATIONMODAL
           id='_cb_ma_delete_mb'
           title='Delete Step'
-          description='Are you sure you want to delete this step?'
+          description='Deleting this step will delete all its children (if any) as well. Are you sure you want to delete this step?'
           onConfirm={this.onDelete}
         />
         <button style={{display: 'none'}} ref='_add_child' data-toggle='modal' data-target='#_cb_ma_add_child' />
@@ -193,7 +195,9 @@ Header.propTypes = {
   'onDelete': PropTypes.func.isRequired,
   'onRename': PropTypes.func.isRequired,
   'blocks': PropTypes.array.isRequired,
-  'onAddChild': PropTypes.func.isRequired
+  'onAddChild': PropTypes.func.isRequired,
+  'canAddChild': PropTypes.bool.isRequired,
+  'canDelete': PropTypes.bool.isRequired
 }
 
 export default Header

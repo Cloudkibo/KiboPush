@@ -161,7 +161,12 @@ class MessageArea extends React.Component {
       let blocks = this.props.blocks
       const index = blocks.findIndex((item) => item.uniqueId.toString() === data.uniqueId.toString())
       if (index !== -1) {
-        blocks.splice(index, 1)
+        const deletedItem = blocks.splice(index, 1)
+        if (res.payload.upserted && res.payload.upserted.length > 0) {
+          data._id = res.payload.upserted[0]._id
+        } else {
+          data._id = deletedItem[0]._id
+        }
       }
       blocks = [...blocks, data]
       const completed = blocks.filter((item) => item.payload.length > 0).length
@@ -190,22 +195,48 @@ class MessageArea extends React.Component {
   }
 
   onDelete () {
-    this.props.deleteMessageBlock(this.props.block._id, this.afterDelete)
+    let blockUniqueIds = this.props.sidebarItems.filter((item) => item.parentId && item.parentId.toString() === this.props.block.uniqueId.toString()).map((item) => item.id)
+    blockUniqueIds = [...blockUniqueIds, this.props.block.uniqueId]
+    const blockIds = this.props.blocks.filter((item) => item._id && blockUniqueIds.includes(item.uniqueId)).map((item) => item._id)
+    console.log('blockIds', blockIds)
+    this.props.deleteMessageBlock(blockIds, (res) => this.afterDelete(res, blockUniqueIds))
   }
 
-  afterDelete (res) {
+  afterDelete (res, blockUniqueIds) {
     if (res.status === 'success') {
       this.props.alertMsg.success('Message block deleted successfully')
-      const { blocks, sidebarItems } = this.props
-      const blockIndex = blocks.findIndex((item) => item.uniqueId.toString() === this.props.block.uniqueId.toString())
-      const sidebarIndex = sidebarItems.findIndex((item) => item.id.toString() === this.props.block.uniqueId.toString())
-      if (blockIndex > -1) {
-        blocks.splice(blockIndex, 1)
+      let blocks = this.props.blocks.filter((item) => !blockUniqueIds.includes(item.uniqueId))
+      let sidebarItems = this.props.sidebarItems.filter((item) => !blockUniqueIds.includes(item.id))
+      let currentBlock = {}
+      if (blocks.length === 0) {
+        const id = new Date().getTime()
+        blocks = [{
+          _id: 'welcome-id',
+          title: 'Welcome',
+          payload: [],
+          uniqueId: id,
+          triggers: []
+        }]
+        sidebarItems = [{
+          title: 'Welcome',
+          id,
+          isParent: false
+        }]
+        currentBlock = blocks[0]
+      } else {
+        const parentId = this.props.sidebarItems.find((item) =>  item.id.toString() === this.props.block.uniqueId.toString()).parentId
+        const parent = this.props.blocks.find((item) => item.uniqueId.toString() === parentId)
+        const quickReplies = parent.payload[parent.payload.length - 1].quickReplies
+        const qrIndex = quickReplies.findIndex((item) => item.title === this.props.block.title)
+        quickReplies.splice(qrIndex, 1)
+        parent.quickReplies = quickReplies
+        const bIndex = this.props.blocks.findIndex((item) => item._id === parent._id)
+        blocks[bIndex] = parent
+        currentBlock = parent
+        this.props.handleMessageBlock({...parent, chatbotId: this.props.chatbot._id}, (res) => {})
       }
-      if (sidebarIndex > -1) {
-        sidebarItems.splice(sidebarIndex, 1)
-      }
-      this.props.updateParentState({blocks, sidebarItems, currentBlock: blocks[0]})
+      console.log('after delete', {blocks, sidebarItems, currentBlock})
+      this.props.updateParentState({blocks, sidebarItems, currentBlock})
     } else {
       this.props.alertMsg.error('Failed to delete message block')
     }
@@ -298,6 +329,8 @@ class MessageArea extends React.Component {
               onRename={this.renameBlock}
               blocks={this.props.blocks}
               onAddChild={this.onAddChild}
+              canAddChild={!(!this.state.text && Object.keys(this.state.attachment).length === 0)}
+              canDelete={this.props.block._id && this.props.block._id !== 'welcome-id' ? true : false}
             />
             <div className='m--space-30' />
             <TRIGGERAREA

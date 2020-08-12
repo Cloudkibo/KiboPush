@@ -255,7 +255,7 @@ class MessageArea extends React.Component {
   }
 
   onDelete () {
-    this.props.deleteMessageBlock(this.props.block._id, this.afterDelete)
+    this.props.deleteMessageBlock([this.props.block._id], this.afterDelete)
   }
 
   afterDelete (res) {
