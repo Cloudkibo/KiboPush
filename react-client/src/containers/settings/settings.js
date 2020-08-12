@@ -26,7 +26,6 @@ import CannedResponses from './cannedResponses/cannedResponses'
 import ZoomIntegration from './zoomIntegration'
 import Notifications from './notifications'
 import ShopifyIntegration from './shopifyIntegration'
-import Notifications from './notifications'
 
 class Settings extends React.Component {
   constructor (props, context) {
@@ -214,7 +213,7 @@ class Settings extends React.Component {
       openTab: 'cannedResponses'
     })
   }
-  
+
   setZoomIntegration () {
     this.setState({
       openTab: 'zoomIntegration'
@@ -801,7 +800,7 @@ class Settings extends React.Component {
             }
             { this.state.openTab === 'cannedResponses' &&
               <CannedResponses history= {this.props.history}/>
-            }	
+            }
             {
               this.state.openTab === 'zoomIntegration' &&
               <ZoomIntegration />
