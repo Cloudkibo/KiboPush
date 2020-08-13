@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { fetchAnalytics,downloadAnalytics } from '../../redux/actions/chatbotAutomation.actions'
+import { fetchAnalytics, downloadAnalytics } from '../../redux/actions/chatbotAutomation.actions'
 import BACKBUTTON from '../../components/extras/backButton'
 import LIFETIMESTATISTICS from '../../components/chatbotAutomation/lifeTimeStatistics'
 import PERIODICSTATISTICS from '../../components/chatbotAutomation/periodicStatistics'
@@ -58,7 +58,7 @@ class Analytics extends React.Component {
 
   exportRecords() {
     this.props.downloadAnalytics({pageName: this.props.location.state.page.pageName, chatBotId: this.state.chatbot._id}, this.prepareExportData)
-    this.msg.info('DOWNLOADING DATA.... YOU WILL BE NOTIFIED WHEN IT IS DOWNLOAD.')
+    this.msg.info('DOWNLOADING DATA.... YOU WILL BE NOTIFIED WHEN IT IS DOWNLOADED.')
   }
 
   componentDidMount () {
