@@ -22,6 +22,7 @@ class Header extends React.Component {
     this.getAddChildModalContent = this.getAddChildModalContent.bind(this)
     this.onAddChild = this.onAddChild.bind(this)
     this.onChildTitleChange = this.onChildTitleChange.bind(this)
+    this.onAddChildClick = this.onAddChildClick.bind(this)
   }
 
   onDelete () {
@@ -102,6 +103,13 @@ class Header extends React.Component {
     }
   }
 
+  onAddChildClick () {
+    this.refs._add_child.click()
+    this.setState({childTitle: ''}, () => {
+      setTimeout(() => {this._cb_ma_add_child_input.focus()}, 500)
+    })
+  }
+
   UNSAFE_componentWillReceiveProps (nextProps) {
     if (nextProps.title) {
       this.setState({
@@ -153,10 +161,7 @@ class Header extends React.Component {
             style={{marginLeft: '10px'}}
             type='button'
             className='pull-right btn btn-primary'
-            onClick={() => {
-              this.refs._add_child.click()
-              setTimeout(() => {this._cb_ma_add_child_input.focus()}, 500)
-            }}
+            onClick={this.onAddChildClick}
             disabled={!this.props.canAddChild}
           >
             Add Child

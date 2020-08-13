@@ -271,43 +271,38 @@ class MessageArea extends React.Component {
   }
 
   onAddChild (title) {
-    const titles = this.props.blocks.map((item) => item.title.toLowerCase())
-    if (titles.indexOf(title.toLowerCase()) > -1) {
-      this.props.alertMsg.error('A block with this title already exists. Please choose a diffrent title')
-    } else {
-      const currentBlock = this.props.block
-      const options = this.state.quickReplies
-      const id = new Date().getTime()
-      const newBlock = {title, payload: [], uniqueId: `${id}`, triggers: [title.toLowerCase()]}
-      const sidebarItems = this.props.sidebarItems
-      const index = sidebarItems.findIndex((item) => item.id.toString() === currentBlock.uniqueId.toString())
-      sidebarItems[index].isParent = true
-      const newSidebarItem = {title, isParent: false, id: `${id}`, parentId: currentBlock.uniqueId}
-      const blocks = [...this.props.blocks, newBlock]
-      const completed = blocks.filter((item) => item.payload.length > 0).length
-      const progress = Math.floor((completed / blocks.length) * 100)
-      const option = {
-        content_type: 'text',
-        title,
-        payload: JSON.stringify([{action: '_chatbot', blockUniqueId: `${id}`, payloadAction: 'create'}])
-      }
-      options.push(option)
-      if (currentBlock.payload.length > 0) {
-        currentBlock.payload[currentBlock.payload.length - 1].quickReplies = options
-      } else {
-        currentBlock.payload.push({quickReplies: options})
-      }
-      this.props.updateParentState({
-        blocks,
-        currentBlock,
-        progress,
-        sidebarItems: [...sidebarItems, newSidebarItem],
-        unsavedChanges: true
-      })
-      this.setState({quickReplies: options, triggers: [title.toLowerCase()]}, () => {
-        this.onNext(() => {})
-      })
+    const currentBlock = this.props.block
+    const options = this.state.quickReplies
+    const id = new Date().getTime()
+    const newBlock = {title, payload: [], uniqueId: `${id}`, triggers: [title.toLowerCase()]}
+    const sidebarItems = this.props.sidebarItems
+    const index = sidebarItems.findIndex((item) => item.id.toString() === currentBlock.uniqueId.toString())
+    sidebarItems[index].isParent = true
+    const newSidebarItem = {title, isParent: false, id: `${id}`, parentId: currentBlock.uniqueId}
+    const blocks = [...this.props.blocks, newBlock]
+    const completed = blocks.filter((item) => item.payload.length > 0).length
+    const progress = Math.floor((completed / blocks.length) * 100)
+    const option = {
+      content_type: 'text',
+      title,
+      payload: JSON.stringify([{action: '_chatbot', blockUniqueId: `${id}`, payloadAction: 'create'}])
     }
+    options.push(option)
+    if (currentBlock.payload.length > 0) {
+      currentBlock.payload[currentBlock.payload.length - 1].quickReplies = options
+    } else {
+      currentBlock.payload.push({quickReplies: options})
+    }
+    this.props.updateParentState({
+      blocks,
+      currentBlock,
+      progress,
+      sidebarItems: [...sidebarItems, newSidebarItem],
+      unsavedChanges: true
+    })
+    this.setState({quickReplies: options, triggers: [title.toLowerCase()]}, () => {
+      this.onNext(() => {})
+    })
   }
 
   UNSAFE_componentWillReceiveProps (nextProps) {
