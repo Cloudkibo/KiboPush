@@ -50,7 +50,7 @@ class ChatbotAutomation extends React.Component {
     chatbot.pageId = chatbot.pageId._id
     chatbot.startingBlockId = chatbot.startingBlockId || 'welcome-id'
     this.props.history.push({
-      pathname: '/configureChatbot',
+      pathname: '/configureChatbotNew',
       state: {chatbot, page}
     })
   }
@@ -62,7 +62,7 @@ class ChatbotAutomation extends React.Component {
     chatbot.startingBlockId = chatbot.startingBlockId || 'welcome-id'
     if (res.status === 'success') {
       this.props.history.push({
-        pathname: '/configureChatbot',
+        pathname: '/configureChatbotNew',
         state: {chatbot, page}
       })
     } else {

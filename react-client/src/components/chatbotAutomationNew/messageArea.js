@@ -2,14 +2,9 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import HEADER from './header'
 import FOOTER from './footer'
-import TEXTAREA from './textArea'
-import ATTACHMENTAREA from './attachmentArea'
-import MOREOPTIONS from './moreOptions'
-import MODAL from '../extras/modal'
-import TRIGGERAREA from './triggerArea'
-import MESSAGEBLOCKUSAGE from './messageBlockUsage'
-
-const MessengerPlugin = require('react-messenger-plugin').default
+import TEXTAREA from '../chatbotAutomation/textArea'
+import ATTACHMENTAREA from '../chatbotAutomation/attachmentArea'
+import TRIGGERAREA from '../chatbotAutomation/triggerArea'
 
 class MessageArea extends React.Component {
   constructor(props, context) {
@@ -19,7 +14,6 @@ class MessageArea extends React.Component {
       text: '',
       attachment: {},
       quickReplies: [],
-      showTestContent: false,
       disableNext: false
     }
     this.onNext = this.onNext.bind(this)
@@ -27,41 +21,20 @@ class MessageArea extends React.Component {
     this.updateState = this.updateState.bind(this)
     this.afterNext = this.afterNext.bind(this)
     this.setStateData = this.setStateData.bind(this)
-    this.showTestModal = this.showTestModal.bind(this)
-    this.getTestModalContent = this.getTestModalContent.bind(this)
     this.onPublish = this.onPublish.bind(this)
     this.onDisable = this.onDisable.bind(this)
     this.onDelete = this.onDelete.bind(this)
     this.afterDelete = this.afterDelete.bind(this)
-    this.toggleTestModalContent = this.toggleTestModalContent.bind(this)
     this.afterPublish = this.afterPublish.bind(this)
     this.afterDisable = this.afterDisable.bind(this)
-    this.addOption = this.addOption.bind(this)
-    this.removeOption = this.removeOption.bind(this)
-    this.updateOption = this.updateOption.bind(this)
     this.renameBlock = this.renameBlock.bind(this)
-    this.checkEmptyBlock = this.checkEmptyBlock.bind(this)
-    this.isOrphanBlock = this.isOrphanBlock.bind(this)
+    this.onAddChild = this.onAddChild.bind(this)
   }
 
   componentDidMount () {
     if (this.props.block) {
       this.setStateData(this.props.block)
     }
-
-    let comp = this
-    this.props.registerSocketAction({
-      event: 'chatbot.test.message',
-      action: function (data) {
-        comp.props.alertMsg.success('Sent successfully on messenger')
-        comp.refs._open_test_chatbot_modal.click()
-        comp.toggleTestModalContent()
-      }
-    })
-  }
-
-  toggleTestModalContent () {
-    this.setState({showTestContent: !this.state.showTestContent})
   }
 
   setStateData (block) {
@@ -117,9 +90,6 @@ class MessageArea extends React.Component {
       currentBlock.payload = payload
       currentBlock.triggers = this.state.triggers
       const chatbot = this.props.chatbot
-      // if (this.state.triggers) {
-      //   chatbot.triggers = this.state.triggers
-      // }
       let parentState = {currentBlock, chatbot, unsavedChanges: true}
       if (allTriggers) {
         parentState.allTriggers = allTriggers
@@ -175,6 +145,7 @@ class MessageArea extends React.Component {
         uniqueId: `${this.props.block.uniqueId}`,
         title: this.props.block.title,
         chatbotId: this.props.chatbot._id,
+        updateStartingBlockId: (this.props.block._id === 'welcome-id'),
         payload: this.preparePayload(this.state)
       }
       const dataToShow = data
@@ -190,52 +161,21 @@ class MessageArea extends React.Component {
       let blocks = this.props.blocks
       const index = blocks.findIndex((item) => item.uniqueId.toString() === data.uniqueId.toString())
       if (index !== -1) {
-        blocks.splice(index, 1)
-        // const deletedItem = blocks.splice(index, 1)
-        // if (res.payload.upserted && res.payload.upserted.length > 0) {
-        //   data._id = res.payload.upserted[0]._id
-        // } else {
-        //   data._id = deletedItem[0]._id
-        // }
+        const deletedItem = blocks.splice(index, 1)
+        if (res.payload.upserted && res.payload.upserted.length > 0) {
+          data._id = res.payload.upserted[0]._id
+        } else {
+          data._id = deletedItem[0]._id
+        }
       }
-      // const chatbot = this.props.chatbot
-      // if (data.triggers && data._id) {
-      //   chatbot.startingBlockId = data._id
-      // }
       blocks = [...blocks, data]
       const completed = blocks.filter((item) => item.payload.length > 0).length
       const progress = Math.floor((completed / blocks.length) * 100)
-      const incompleteBlocks = blocks.filter((item) => item.payload.length === 0)
-      let currentBlock = data
-      if (incompleteBlocks.length > 0) {
-        currentBlock = incompleteBlocks[0]
-      }
-      this.props.updateParentState({blocks, currentBlock, progress, unsavedChanges: false})
+      this.props.updateParentState({blocks, progress, unsavedChanges: false})
     } else {
       this.props.alertMsg.error(res.description)
     }
     callback()
-  }
-
-  showTestModal () {
-    this.setState({showTestContent: true}, () => {
-      this.refs._open_test_chatbot_modal.click()
-    })
-  }
-
-  getTestModalContent () {
-    if (this.state.showTestContent) {
-      return (
-        <MessengerPlugin
-          appId={this.props.fbAppId}
-          pageId={this.props.chatbot.pageFbId}
-          size='large'
-          passthroughParams='_chatbot'
-        />
-      )
-    } else {
-      return (<div />)
-    }
   }
 
   onPublish (callback) {
@@ -255,22 +195,48 @@ class MessageArea extends React.Component {
   }
 
   onDelete () {
-    this.props.deleteMessageBlock([this.props.block._id], this.afterDelete)
+    let blockUniqueIds = this.props.sidebarItems.filter((item) => item.parentId && item.parentId.toString() === this.props.block.uniqueId.toString()).map((item) => item.id)
+    blockUniqueIds = [...blockUniqueIds, this.props.block.uniqueId]
+    const blockIds = this.props.blocks.filter((item) => item._id && blockUniqueIds.includes(item.uniqueId)).map((item) => item._id)
+    console.log('blockIds', blockIds)
+    this.props.deleteMessageBlock(blockIds, (res) => this.afterDelete(res, blockUniqueIds))
   }
 
-  afterDelete (res) {
+  afterDelete (res, blockUniqueIds) {
     if (res.status === 'success') {
       this.props.alertMsg.success('Message block deleted successfully')
-      const { blocks, sidebarItems } = this.props
-      const blockIndex = blocks.findIndex((item) => item.uniqueId.toString() === this.props.block.uniqueId.toString())
-      const sidebarIndex = sidebarItems.findIndex((item) => item.id.toString() === this.props.block.uniqueId.toString())
-      if (blockIndex > -1) {
-        blocks.splice(blockIndex, 1)
+      let blocks = this.props.blocks.filter((item) => !blockUniqueIds.includes(item.uniqueId))
+      let sidebarItems = this.props.sidebarItems.filter((item) => !blockUniqueIds.includes(item.id))
+      let currentBlock = {}
+      if (blocks.length === 0) {
+        const id = new Date().getTime()
+        blocks = [{
+          _id: 'welcome-id',
+          title: 'Welcome',
+          payload: [],
+          uniqueId: id,
+          triggers: []
+        }]
+        sidebarItems = [{
+          title: 'Welcome',
+          id,
+          isParent: false
+        }]
+        currentBlock = blocks[0]
+      } else {
+        const parentId = this.props.sidebarItems.find((item) =>  item.id.toString() === this.props.block.uniqueId.toString()).parentId
+        const parent = this.props.blocks.find((item) => item.uniqueId.toString() === parentId)
+        const quickReplies = parent.payload[parent.payload.length - 1].quickReplies
+        const qrIndex = quickReplies.findIndex((item) => item.title === this.props.block.title)
+        quickReplies.splice(qrIndex, 1)
+        parent.quickReplies = quickReplies
+        const bIndex = this.props.blocks.findIndex((item) => item._id === parent._id)
+        blocks[bIndex] = parent
+        currentBlock = parent
+        this.props.handleMessageBlock({...parent, chatbotId: this.props.chatbot._id}, (res) => {})
       }
-      if (sidebarIndex > -1) {
-        sidebarItems.splice(sidebarIndex, 1)
-      }
-      this.props.updateParentState({blocks, sidebarItems, currentBlock: blocks[0]})
+      console.log('after delete', {blocks, sidebarItems, currentBlock})
+      this.props.updateParentState({blocks, sidebarItems, currentBlock})
     } else {
       this.props.alertMsg.error('Failed to delete message block')
     }
@@ -294,74 +260,6 @@ class MessageArea extends React.Component {
     }
   }
 
-  addOption (title, action, uniqueId) {
-    const titles = this.props.blocks.map((item) => item.title.toLowerCase())
-    if (action === 'create' && titles.indexOf(title.toLowerCase()) > -1) {
-      this.props.alertMsg.error('A block with this title already exists. Please choose a diffrent title')
-    } else {
-      const options = this.state.quickReplies
-      let option = {
-        content_type: 'text',
-        title
-      }
-      if (action === 'link') {
-        option.payload = JSON.stringify([{action: '_chatbot', blockUniqueId: uniqueId}])
-        options.push(option)
-      } else if (action === 'create') {
-        const id = new Date().getTime()
-        const newBlock = {title, payload: [], uniqueId: id, triggers: [title.toLowerCase()]}
-        const sidebarItems = this.props.sidebarItems
-        const index = sidebarItems.findIndex((item) => item.id.toString() === this.props.block.uniqueId.toString())
-        sidebarItems[index].isParent = true
-        const newSidebarItem = {title, isParent: false, id, parentId: this.props.block.uniqueId}
-        const blocks = [...this.props.blocks, newBlock]
-        const completed = blocks.filter((item) => item.payload.length > 0).length
-        const progress = Math.floor((completed / blocks.length) * 100)
-        option.payload = JSON.stringify([{action: '_chatbot', blockUniqueId: id, payloadAction: 'create'}])
-        options.push(option)
-        const currentBlock = this.props.block
-        if (currentBlock.payload.length > 0) {
-          currentBlock.payload[currentBlock.payload.length - 1].quickReplies = options
-        } else {
-          currentBlock.payload.push({quickReplies: options})
-        }
-        this.props.updateParentState({
-          blocks,
-          currentBlock,
-          progress,
-          sidebarItems: [...sidebarItems, newSidebarItem],
-          unsavedChanges: true
-        })
-      }
-      this.setState({quickReplies: options})
-    }
-  }
-
-  updateOption (uniqueId, index, title) {
-    const quickReplies = this.state.quickReplies
-    quickReplies[index].title = title
-    const payload = JSON.parse(quickReplies[index].payload)
-    payload[0].blockUniqueId = uniqueId
-    quickReplies[index].payload = JSON.stringify(payload)
-
-    this.setState({quickReplies})
-  }
-
-  removeOption (uniqueId, index) {
-    const quickReplies = this.state.quickReplies
-    quickReplies.splice(index, 1)
-
-    const currentBlock = this.props.block
-    if (currentBlock.payload.length > 0) {
-      currentBlock.payload[currentBlock.payload.length - 1].quickReplies = quickReplies
-    } else {
-      currentBlock.payload.push({quickReplies})
-    }
-
-    this.props.updateParentState({currentBlock, unsavedChanges: true})
-    this.setState({quickReplies})
-  }
-
   renameBlock (title) {
     let { block, blocks, sidebarItems } = this.props
     block.title = title
@@ -372,32 +270,43 @@ class MessageArea extends React.Component {
     this.props.updateParentState({currentBlock: block, blocks, sidebarItems, unsavedChanges: true})
   }
 
-  checkEmptyBlock () {
-    const { block, blocks } = this.props
-    const emptyBlocks = blocks.filter((item) => item.payload.length === 0 && item.uniqueId.toString() !== block.uniqueId.toString())
-    if (emptyBlocks.length > 0) {
-      return true
+  onAddChild (title) {
+    const titles = this.props.blocks.map((item) => item.title.toLowerCase())
+    if (titles.indexOf(title.toLowerCase()) > -1) {
+      this.props.alertMsg.error('A block with this title already exists. Please choose a diffrent title')
     } else {
-      return false
-    }
-  }
-
-  isOrphanBlock () {
-    const currentBlock = this.props.block
-    if (!currentBlock._id || this.props.chatbot.startingBlockId === currentBlock._id) {
-      return false
-    } else {
-      let temp = this.props.blocks.filter((item) => item.payload.length > 0)
-      temp = temp.map((item) => item.payload[item.payload.length - 1].quickReplies)
-      temp = temp.filter((item) => item.length > 0)
-      temp = [].concat.apply([], temp) // merge array of arrays into single arary
-      temp = temp.map((item) => JSON.parse(item.payload)[0])
-      const ids = temp.map((item) => item.blockUniqueId.toString())
-      if (ids.includes(currentBlock.uniqueId.toString())) {
-        return false
-      } else {
-        return true
+      const currentBlock = this.props.block
+      const options = this.state.quickReplies
+      const id = new Date().getTime()
+      const newBlock = {title, payload: [], uniqueId: `${id}`, triggers: [title.toLowerCase()]}
+      const sidebarItems = this.props.sidebarItems
+      const index = sidebarItems.findIndex((item) => item.id.toString() === currentBlock.uniqueId.toString())
+      sidebarItems[index].isParent = true
+      const newSidebarItem = {title, isParent: false, id: `${id}`, parentId: currentBlock.uniqueId}
+      const blocks = [...this.props.blocks, newBlock]
+      const completed = blocks.filter((item) => item.payload.length > 0).length
+      const progress = Math.floor((completed / blocks.length) * 100)
+      const option = {
+        content_type: 'text',
+        title,
+        payload: JSON.stringify([{action: '_chatbot', blockUniqueId: `${id}`, payloadAction: 'create'}])
       }
+      options.push(option)
+      if (currentBlock.payload.length > 0) {
+        currentBlock.payload[currentBlock.payload.length - 1].quickReplies = options
+      } else {
+        currentBlock.payload.push({quickReplies: options})
+      }
+      this.props.updateParentState({
+        blocks,
+        currentBlock,
+        progress,
+        sidebarItems: [...sidebarItems, newSidebarItem],
+        unsavedChanges: true
+      })
+      this.setState({quickReplies: options, triggers: [title.toLowerCase()]}, () => {
+        this.onNext(() => {})
+      })
     }
   }
 
@@ -412,22 +321,16 @@ class MessageArea extends React.Component {
     return (
       <div style={{border: '1px solid #ccc', backgroundColor: 'white', padding: '0px'}} className='col-md-9'>
         <div style={{margin: '0px'}} className='m-portlet m-portlet-mobile'>
-          <div id='_chatbot_message_area' style={{height: '80vh', position: 'relative', padding: '15px', overflowY: 'scroll'}} className='m-portlet__body'>
+          <div id='_chatbot_message_area' style={{height: '70vh', position: 'relative', padding: '15px', overflowY: 'scroll'}} className='m-portlet__body'>
             <HEADER
               title={this.props.block.title}
-              showDelete={this.isOrphanBlock()}
               onDelete={this.onDelete}
-              onTest={this.showTestModal}
-              canTest={this.props.progress === 100}
-              canPublish={this.props.progress === 100}
-              onPublish={this.onPublish}
-              onDisable={this.onDisable}
-              isPublished={this.props.chatbot.published}
               alertMsg={this.props.alertMsg}
               onRename={this.renameBlock}
               blocks={this.props.blocks}
-              showAnalytics={this.props.chatbot.published}
-              onAnalytics={this.props.onAnalytics}
+              onAddChild={this.onAddChild}
+              canAddChild={!(!this.state.text && Object.keys(this.state.attachment).length === 0)}
+              canDelete={this.props.block._id && this.props.block._id !== 'welcome-id' ? true : false}
             />
             <div className='m--space-30' />
             <TRIGGERAREA
@@ -454,42 +357,9 @@ class MessageArea extends React.Component {
               toggleWhitelistModal={this.props.toggleWhitelistModal}
             />
             <div className='m--space-10' />
-            {
-              (this.state.text || Object.keys(this.state.attachment).length > 0) &&
-              <MOREOPTIONS
-                data={this.state.quickReplies}
-                alertMsg={this.props.alertMsg}
-                currentLevel={this.props.currentLevel}
-                maxLevel={this.props.maxLevel}
-                blocks={this.props.blocks}
-                addOption={this.addOption}
-                removeOption={this.removeOption}
-                updateOption={this.updateOption}
-              />
-            }
-            {
-              this.props.chatbot.published && this.props.block.stats &&
-              (this.props.block.stats.urlBtnClickedCount > 0 || this.props.block.stats.sentCount > 0) &&
-              <MESSAGEBLOCKUSAGE
-                urlBtnClickedCount={this.props.block.stats ? this.props.block.stats.urlBtnClickedCount : 0}
-                sentCount={this.props.block.stats ? this.props.block.stats.sentCount : 0}
-              />
-            }
-            <div className='m--space-10' />
             <FOOTER
-              showPrevious={false}
-              showNext={true}
               onNext={this.onNext}
               disableNext={this.state.disableNext}
-              onPrevious={() => {}}
-              emptyBlocks={this.checkEmptyBlock()}
-            />
-            <button ref='_open_test_chatbot_modal' style={{display: 'none'}} data-toggle='modal' data-target='#_test_chatbot' />
-            <MODAL
-              id='_test_chatbot'
-              title='Test Chatbot'
-              content={this.getTestModalContent()}
-              onClose={this.toggleTestModalContent}
             />
           </div>
         </div>

@@ -224,7 +224,8 @@ class EditTemplate extends React.Component {
                           broadcast={this.state.broadcast}
                           handleChange={this.handleChange}
                           convoTitle={this.state.convoTitle}
-                          buttonActions={this.state.buttonActions} 
+                          buttonActions={this.state.buttonActions}
+                          pages={this.props.pages.filter((page) => page.pageId === this.state.pageId)}
                           module='welcomeMessage'
                           />
                       </center>
