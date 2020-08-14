@@ -14,7 +14,7 @@ import { loadSurveysListNew } from './../redux/actions/surveys.actions'
 import {updateCustomFieldValue, addCustomField, removeCustomField, updateSingleCustomField} from './../redux/actions/customFields.actions'
 import { addTag, removeTag, updateTag, assignTag, unassignTag } from './../redux/actions/tags.actions'
 import { loadAllSubscribersListNew, updateCustomFieldForSubscriber } from './../redux/actions/subscribers.actions'
-import { fetchNotifications } from './../redux/actions/notifications.actions'
+import { fetchNotifications, setNotification } from './../redux/actions/notifications.actions'
 import { handleSocketEvent, handleSocketEventSms, handleSocketEventWhatsapp } from '../redux/actions/socket.actions'
 import { addToSponsoredMessages, updateSponsoredMessagesListItemStatus } from './../redux/actions/sponsoredMessaging.actions'
 import { removeZoomIntegration } from './../redux/actions/settings.actions'
@@ -89,6 +89,9 @@ socket.on('message', (data) => {
     store.dispatch(handleSocketEventWhatsapp(data))
   }
   if (['new_notification'].includes(data.action)) {
+    if (data.payload.message) {
+      store.dispatch(setNotification(data.payload.message))
+    }
     store.dispatch(fetchNotifications())
   }
   if (data.action === 'whatsapp_message_seen') {
