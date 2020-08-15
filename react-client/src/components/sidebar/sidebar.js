@@ -94,7 +94,7 @@ class Sidebar extends Component {
         livechat: false,
         smartReplies: false,
         waitingResponse: false,
-        abandonedCarts: true
+        abandonedCarts: false
       })
     } else if (url === 'staging.kibopush.com') {
       console.log('staging')
@@ -1325,7 +1325,7 @@ class Sidebar extends Component {
                   {this.showGrowthToolsItems()}
                   {this.showManagePagesItems()}
                   {this.showOrganizationItems()}
-                  {this.props.user && this.props.user.platform === 'messenger' && this.showAbandonedCarts()}
+                  {false && this.props.user && this.props.user.platform === 'messenger' && this.showAbandonedCarts()}
                   {this.showSettings()}
                   {this.showUserGuide()}
                 </ul>
