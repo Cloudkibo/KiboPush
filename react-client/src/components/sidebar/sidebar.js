@@ -3,16 +3,16 @@
  * Created by sojharo on 20/07/2017.
  */
 
-import React, {Component} from 'react'
+import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { getAutomatedOptions } from '../../redux/actions/basicinfo.actions'
 import { bindActionCreators } from 'redux'
-import {getCurrentProduct} from '../../utility/utils'
+import { getCurrentProduct } from '../../utility/utils'
 import { fetchSingleSession, fetchUserChats, resetSocket } from '../../redux/actions/livechat.actions'
 
 class Sidebar extends Component {
-  constructor (props, context) {
+  constructor(props, context) {
     super(props, context)
     this.state = {
       isShowingModal: false,
@@ -61,7 +61,7 @@ class Sidebar extends Component {
     this.openUserGuide = this.openUserGuide.bind(this)
     this.closeUserGuide = this.closeUserGuide.bind(this)
   }
-  UNSAFE_componentWillMount () {
+  UNSAFE_componentWillMount() {
     let url = window.location.hostname
     console.log('url', url)
     if (url === 'skibochat.cloudkibo.com' || url === 'kibochat.cloudkibo.com') {
@@ -147,40 +147,40 @@ class Sidebar extends Component {
     this.props.getAutomatedOptions()
   }
 
-  openUserGuide () {
-    this.setState({isShowingModal: true})
+  openUserGuide() {
+    this.setState({ isShowingModal: true })
   }
 
-  closeUserGuide () {
-    this.setState({isShowingModal: false})
+  closeUserGuide() {
+    this.setState({ isShowingModal: false })
   }
 
-  UNSAFE_componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     console.log('nextProps in sidebar', nextProps)
 
-   /* if (nextProps.user) {
-      this.setState({broadcasts: nextProps.user.uiMode.broadcasts,
-        polls: nextProps.user.uiMode.polls,
-        surveys: nextProps.user.uiMode.surveys,
-        sequenceMessaging: nextProps.user.uiMode.sequenceMessaging,
-        templates: nextProps.user.uiMode.templates,
-        livechat: nextProps.user.uiMode.livechat,
-        smartReplies: nextProps.user.uiMode.smartReplies,
-        abandonedCarts: nextProps.user.uiMode.abandonedCarts,
-        subscribers: nextProps.user.uiMode.subscribers,
-        segmentSubscribers: nextProps.user.uiMode.segmentSubscribers,
-        autoposting: nextProps.user.uiMode.autoposting,
-        persistentMenu: nextProps.user.uiMode.persistentMenu,
-        pages: nextProps.user.uiMode.pages,
-        phoneNumber: nextProps.user.uiMode.phoneNumber,
-        inviteMembers: nextProps.user.uiMode.inviteMembers,
-        members: nextProps.user.uiMode.members,
-        welcomeMessage: nextProps.user.uiMode.welcomeMessage,
-        commentCapture: nextProps.user.uiMode.commentCapture})
-    }   */
+    /* if (nextProps.user) {
+       this.setState({broadcasts: nextProps.user.uiMode.broadcasts,
+         polls: nextProps.user.uiMode.polls,
+         surveys: nextProps.user.uiMode.surveys,
+         sequenceMessaging: nextProps.user.uiMode.sequenceMessaging,
+         templates: nextProps.user.uiMode.templates,
+         livechat: nextProps.user.uiMode.livechat,
+         smartReplies: nextProps.user.uiMode.smartReplies,
+         abandonedCarts: nextProps.user.uiMode.abandonedCarts,
+         subscribers: nextProps.user.uiMode.subscribers,
+         segmentSubscribers: nextProps.user.uiMode.segmentSubscribers,
+         autoposting: nextProps.user.uiMode.autoposting,
+         persistentMenu: nextProps.user.uiMode.persistentMenu,
+         pages: nextProps.user.uiMode.pages,
+         phoneNumber: nextProps.user.uiMode.phoneNumber,
+         inviteMembers: nextProps.user.uiMode.inviteMembers,
+         members: nextProps.user.uiMode.members,
+         welcomeMessage: nextProps.user.uiMode.welcomeMessage,
+         commentCapture: nextProps.user.uiMode.commentCapture})
+     }   */
   }
 
-  showAbandonedCarts () {
+  showAbandonedCarts() {
     if (this.props.user) {
       if (this.state.abandonedCarts && this.props.user.isSuperUser) {
         // include user persmissions
@@ -198,7 +198,7 @@ class Sidebar extends Component {
     }
   }
 
-  showOperationalDashboard () {
+  showOperationalDashboard() {
     if (this.props.user) {
       if (this.props.user.isSuperUser && (getCurrentProduct() === 'KiboEngage' || getCurrentProduct() === 'localhost')) {
         return (
@@ -215,12 +215,12 @@ class Sidebar extends Component {
     }
   }
 
-  showDashboard () {
+  showDashboard() {
     if (this.props.user) {
       if (this.props.user.permissions.dashboardPermission && this.props.user.plan.dashboard) {
         return (
           <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-            <Link to='/dashboard'  state={{isKiboLite: this.state.businessGateway}} className='m-menu__link m-menu__toggle'>
+            <Link to='/dashboard' state={{ isKiboLite: this.state.businessGateway }} className='m-menu__link m-menu__toggle'>
               <i className='m-menu__link-icon flaticon-squares-4' title='Dashboard' />
               <span className='m-menu__link-text'>Dashboard</span>
             </Link>
@@ -232,7 +232,7 @@ class Sidebar extends Component {
     }
   }
 
-  showSubscribersItem () {
+  showSubscribersItem() {
     if (this.props.user) {
       if (this.state.subscribers && this.props.user.permissions.subscriberPermission && this.props.user.plan.manage_subscribers) {
         return (
@@ -283,27 +283,27 @@ class Sidebar extends Component {
     }
   }
 
-  showSponsoredMessaging () {
+  showSponsoredMessaging() {
     if (this.props.user) {
       // include user persmissions
 
-        return (
-          <li className='m-menu__item' aria-haspopup='true' >
-            <Link to='/sponsoredMessaging' className='m-menu__link'>
-              <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
-                <span />
-              </i>
-              <span className='m-menu__link-text'>
-                Sponsored Broadcast (Beta)
+      return (
+        <li className='m-menu__item' aria-haspopup='true' >
+          <Link to='/sponsoredMessaging' className='m-menu__link'>
+            <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
+              <span />
+            </i>
+            <span className='m-menu__link-text'>
+              Sponsored Broadcast (Beta)
               </span>
-            </Link>
-          </li>
-        )
+          </Link>
+        </li>
+      )
 
     }
   }
 
-  showBroadcastingItems () {
+  showBroadcastingItems() {
     if (!this.state.isKiboChat && !this.state.isKiboLite) {
       return (
         <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
@@ -339,11 +339,11 @@ class Sidebar extends Component {
     }
   }
 
-  showLiveChatItem () {
+  showLiveChatItem() {
     if (this.props.user) {
       if (this.state.livechat && this.props.user.permissions.livechatPermission && this.props.user.plan.livechat && this.props.automated_options &&
-          (this.props.automated_options.automated_options === 'MIX_CHAT' ||
-           this.props.automated_options.automated_options === 'HUMAN_CHAT')) {
+        (this.props.automated_options.automated_options === 'MIX_CHAT' ||
+          this.props.automated_options.automated_options === 'HUMAN_CHAT')) {
         return (
           <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
             <Link to={this.props.user.platform === 'sms' ? 'smsChat' : this.props.user.platform === 'messenger' ? '/liveChat' : 'whatsAppChat'} className='m-menu__link m-menu__toggle'>
@@ -358,8 +358,8 @@ class Sidebar extends Component {
     }
   }
 
-  showAutomationItems () {
-    if (!this.state.isKiboLite && this.props.user && this.props.user.platform === 'messenger') {
+  showAutomationItems() {
+    if (!this.state.isKiboLite && this.props.user && (this.props.user.platform === 'messenger' || this.props.user.platform === 'whatsApp')) {
       return (
         <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
           <span className='m-menu__link m-menu__toggle'>
@@ -377,13 +377,24 @@ class Sidebar extends Component {
                   </span>
                 </span>
               </li>
-              {this.showSmartRespliesItem()}
-              {this.showChatbotAutomation()}
-              {this.showChatbotAutomationNew()}
-              {this.showAutoPostingItem()}
-              {this.showRssIntegrationItem()}
-              {this.showNewsIntegrationItem()}
-              {this.showSequenceMessaging()}
+              {
+                this.props.user.platform === 'messenger' &&
+                <>
+                  {this.showSmartRespliesItem()}
+                  {this.showChatbotAutomation()}
+                  {this.showChatbotAutomationNew()}
+                  {this.showAutoPostingItem()}
+                  {this.showRssIntegrationItem()}
+                  {this.showNewsIntegrationItem()}
+                  {this.showSequenceMessaging()}
+                </>
+              }
+              {
+                this.props.user.platform === 'whatsApp' &&
+                <>
+                  {this.showWhatsAppChatbot()}
+                </>
+              }
             </ul>
           </div>
         </li>
@@ -395,7 +406,7 @@ class Sidebar extends Component {
     }
   }
 
-  showSubscriptionsItem () {
+  showSubscriptionsItem() {
     if (!this.state.isKiboLite && this.props.user && this.props.user.platform === 'messenger') {
       return (
         <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
@@ -430,7 +441,7 @@ class Sidebar extends Component {
     }
   }
 
-  showGrowthToolsItems () {
+  showGrowthToolsItems() {
     if (this.props.user && this.props.user.platform === 'messenger' && (window.location.host.includes('kiboengage.cloudkibo.com') || window.location.host === 'localhost:3021' || window.location.host === 'localhost:3000')) {
       return (
         <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
@@ -468,7 +479,7 @@ class Sidebar extends Component {
     }
   }
 
-  showManagePagesItems () {
+  showManagePagesItems() {
     if (this.props.user && this.props.user.platform === 'messenger') {
       return (
         <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
@@ -498,7 +509,7 @@ class Sidebar extends Component {
     }
   }
 
-  showOrganizationItems () {
+  showOrganizationItems() {
     if (this.props.user && (this.props.user.currentPlan.unique_ID === 'plan_C' || this.props.user.currentPlan.unique_ID === 'plan_D')) {
       return (
         <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
@@ -527,7 +538,7 @@ class Sidebar extends Component {
     }
   }
 
-  showSettings () {
+  showSettings() {
     if (this.state.settings) {
       return (
         <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
@@ -540,7 +551,7 @@ class Sidebar extends Component {
     }
   }
 
-  showUserGuide () {
+  showUserGuide() {
     if (this.state.settings) {
       return (
         <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
@@ -553,7 +564,7 @@ class Sidebar extends Component {
     }
   }
 
-  showBroadcastsItem () {
+  showBroadcastsItem() {
     if (this.props.user) {
       if (this.state.broadcasts && this.props.user.permissions.broadcastPermission && this.props.user.plan.broadcasts) {
         return (
@@ -574,7 +585,7 @@ class Sidebar extends Component {
     }
   }
 
-  showSurveysItem () {
+  showSurveysItem() {
     if (this.props.user) {
       if (this.state.surveys && this.props.user.permissions.surveyPermission && this.props.user.plan.surveys) {
         return (
@@ -595,7 +606,7 @@ class Sidebar extends Component {
     }
   }
 
-  showPollsItem () {
+  showPollsItem() {
     if (this.props.user) {
       if (this.state.polls && this.props.user.permissions.pollsPermission && this.props.user.plan.polls) {
         return (
@@ -616,7 +627,7 @@ class Sidebar extends Component {
     }
   }
 
-  showSegmentSubscribers () {
+  showSegmentSubscribers() {
     // add paid plan check later
     if (this.state.segmentSubscribers && this.props.user) {
       return (
@@ -636,7 +647,7 @@ class Sidebar extends Component {
     }
   }
 
-  showTemplates () {
+  showTemplates() {
     // add paid plan check later
     if (this.props.user && this.state.templates) {
       if ((this.props.user.role === 'buyer' || this.props.user.role === 'admin' || this.props.user.isSuperUser)) {
@@ -658,9 +669,9 @@ class Sidebar extends Component {
     }
   }
 
-  showSmartRespliesItem () {
+  showSmartRespliesItem() {
     if (this.props.user && this.props.user.isSuperUser && this.state.smartReplies && this.props.automated_options && (this.props.automated_options.automated_options === 'MIX_CHAT' ||
-     this.props.automated_options.automated_options === 'AUTOMATED_CHAT')) {
+      this.props.automated_options.automated_options === 'AUTOMATED_CHAT')) {
       return (
         <li className='m-menu__item' aria-haspopup='true' >
           <Link to='/bots' className='m-menu__link'>
@@ -678,7 +689,26 @@ class Sidebar extends Component {
     }
   }
 
-  showChatbotAutomation () {
+  showWhatsAppChatbot() {
+    if (this.props.user && this.props.user.platform === 'whatsApp' && (this.state.isKiboChat || this.state.isLocalhost)) {
+      return (
+        <li className='m-menu__item' aria-haspopup='true' >
+          <Link to='/whatsAppChatbot' className='m-menu__link'>
+            <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
+              <span />
+            </i>
+            <span className='m-menu__link-text'>
+              WhatsApp Chatbot
+            </span>
+          </Link>
+        </li>
+      )
+    } else {
+      return (null)
+    }
+  }
+
+  showChatbotAutomation() {
     if (this.props.user && (this.state.isKiboChat || this.state.isLocalhost)) {
       return (
         <li className='m-menu__item' aria-haspopup='true' >
@@ -697,7 +727,7 @@ class Sidebar extends Component {
     }
   }
 
-  showChatbotAutomationNew () {
+  showChatbotAutomationNew() {
     if (this.props.user && this.props.user.isSuperUser && (this.state.isKiboChat || this.state.isLocalhost)) {
       return (
         <li className='m-menu__item' aria-haspopup='true' >
@@ -716,7 +746,7 @@ class Sidebar extends Component {
     }
   }
 
-  showAutoPostingItem () {
+  showAutoPostingItem() {
     if (this.props.user) {
       if (this.state.autoposting && this.props.user.permissions.autopostingPermission && this.props.user.plan.autoposting) {
         return (
@@ -737,64 +767,64 @@ class Sidebar extends Component {
     }
   }
 
-  showRssIntegrationItem () {
-      if (this.state.rssIntegration) {
-        return (
-          <li className='m-menu__item' aria-haspopup='true' >
-            <Link to='/rssIntegration' className='m-menu__link'>
-              <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
-                <span />
-              </i>
-              <span className='m-menu__link-text'>
-                Rss Integration
+  showRssIntegrationItem() {
+    if (this.state.rssIntegration) {
+      return (
+        <li className='m-menu__item' aria-haspopup='true' >
+          <Link to='/rssIntegration' className='m-menu__link'>
+            <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
+              <span />
+            </i>
+            <span className='m-menu__link-text'>
+              Rss Integration
               </span>
-            </Link>
-          </li>
-        )
-      } else {
-        return (null)
-      }
+          </Link>
+        </li>
+      )
+    } else {
+      return (null)
+    }
   }
 
-  showNewsIntegrationItem () {
-      if (this.state.newsIntegration) {
-        return (
-          <li className='m-menu__item' aria-haspopup='true' >
-            <Link to='/newsIntegration' className='m-menu__link'>
-              <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
-                <span />
-              </i>
-              <span className='m-menu__link-text'>
-                News Integration
+  showNewsIntegrationItem() {
+    if (this.state.newsIntegration) {
+      return (
+        <li className='m-menu__item' aria-haspopup='true' >
+          <Link to='/newsIntegration' className='m-menu__link'>
+            <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
+              <span />
+            </i>
+            <span className='m-menu__link-text'>
+              News Integration
               </span>
-            </Link>
-          </li>
-        )
-      } else {
-        return (null)
-      }
+          </Link>
+        </li>
+      )
+    } else {
+      return (null)
+    }
   }
 
-  showSequenceMessaging () {
+  showSequenceMessaging() {
     if (this.props.user && this.state.sequenceMessaging) {
-        return (
-          <li className='m-menu__item' aria-haspopup='true' >
-            <Link to='/sequenceMessaging' className='m-menu__link'>
-              <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
-                <span />
-              </i>
-              <span className='m-menu__link-text'>
-                Sequence Messaging
+      return (
+        <li className='m-menu__item' aria-haspopup='true' >
+          <Link to='/sequenceMessaging' className='m-menu__link'>
+            <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
+              <span />
+            </i>
+            <span className='m-menu__link-text'>
+              Sequence Messaging
               </span>
-            </Link>
-          </li>
-        )
-      } else {
-        return (null)
-      }
+          </Link>
+        </li>
+      )
+    } else {
+      return (null)
+    }
   }
 
-  showCommentCapture () {
+  showCommentCapture() {
     if (this.props.user) {
       // include user persmissions
       if (this.state.commentCapture) {
@@ -816,7 +846,7 @@ class Sidebar extends Component {
     }
   }
 
-  showLandingPages () {
+  showLandingPages() {
     if (this.props.user && this.props.user.isSuperUser) {
       // include user persmissions
       if (this.state.landingPages) {
@@ -837,7 +867,7 @@ class Sidebar extends Component {
       }
     }
   }
-  showOverlayWidgets () {
+  showOverlayWidgets() {
     if (this.props.user && this.props.user.isSuperUser) {
       // include user persmissions
       if (this.state.overlayWidgets) {
@@ -859,7 +889,7 @@ class Sidebar extends Component {
     }
   }
 
-  showMessengerRefURL () {
+  showMessengerRefURL() {
     if (this.props.user) {
       // include user persmissions
       if (this.state.messengerRefURL) {
@@ -881,7 +911,7 @@ class Sidebar extends Component {
     }
   }
 
-  showMessengerAds () {
+  showMessengerAds() {
     if (this.props.user && this.props.user.isSuperUser) {
       // include user persmissions
       if (this.state.messengerAds) {
@@ -903,7 +933,7 @@ class Sidebar extends Component {
     }
   }
 
-  showMessageUs () {
+  showMessageUs() {
     if (this.props.user) {
       // include user persmissions
       if (this.state.messageUs) {
@@ -925,7 +955,7 @@ class Sidebar extends Component {
     }
   }
 
-  showChatWidget () {
+  showChatWidget() {
     if (this.props.user) {
       // include user persmissions
       if (this.state.chatWidget) {
@@ -969,7 +999,7 @@ class Sidebar extends Component {
     }
   }
 
-  showMessengerCode () {
+  showMessengerCode() {
     if (this.props.user) {
       // include user persmissions
       if (this.state.messengerCode) {
@@ -990,7 +1020,7 @@ class Sidebar extends Component {
       }
     }
   }
-  showDiscoverTabs () {
+  showDiscoverTabs() {
     if (this.props.user) {
       return (
         <li className='m-menu__item' aria-haspopup='true' >
@@ -1008,7 +1038,7 @@ class Sidebar extends Component {
       return (null)
     }
   }
-  showInviteUsingPhoneNumber () {
+  showInviteUsingPhoneNumber() {
     // add paid plan check later
     if (this.props.user && this.state.phoneNumber) {
       return (
@@ -1028,7 +1058,7 @@ class Sidebar extends Component {
     }
   }
 
-  showInviteSubscribers () {
+  showInviteSubscribers() {
     // add paid plan check later
     if (this.props.user && this.state.phoneNumber) {
       return (
@@ -1048,7 +1078,7 @@ class Sidebar extends Component {
     }
   }
 
-  showHTMLWidget () {
+  showHTMLWidget() {
     return (
       <li className='m-menu__item' aria-haspopup='true' >
         <span className='m-menu__link'>
@@ -1063,7 +1093,7 @@ class Sidebar extends Component {
     )
   }
 
-  showKiboPushWidget () {
+  showKiboPushWidget() {
     return (
       <li className='m-menu__item' aria-haspopup='true' >
         <span className='m-menu__link'>
@@ -1078,7 +1108,7 @@ class Sidebar extends Component {
     )
   }
 
-  showPagesItem () {
+  showPagesItem() {
     if (this.props.user) {
       if (this.state.pages && this.props.user.permissions.pagesPermission && this.props.user.plan.manage_pages) {
         return (
@@ -1099,7 +1129,7 @@ class Sidebar extends Component {
     }
   }
 
-  showPersistentMenuItem () {
+  showPersistentMenuItem() {
     if (this.props.user) {
       if (this.state.persistentMenu && this.props.user.permissions.menuPermission && this.props.user.plan.menu) {
         return (
@@ -1120,7 +1150,7 @@ class Sidebar extends Component {
     }
   }
 
-  showWelcomeMessageItem () {
+  showWelcomeMessageItem() {
     if (this.props.user) {
       if (this.state.welcomeMessage && this.props.user.permissions.pagesPermission) {
         return (
@@ -1141,7 +1171,7 @@ class Sidebar extends Component {
     }
   }
 
-  showGreetingText () {
+  showGreetingText() {
     return (
       <li className='m-menu__item' aria-haspopup='true' >
         <Link to='/greetingMessage' className='m-menu__link'>
@@ -1156,7 +1186,7 @@ class Sidebar extends Component {
     )
   }
 
-  showInviteMembersItem () {
+  showInviteMembersItem() {
     if (this.props.user) {
       if (this.state.inviteMembers && (this.props.user.permissions.inviteAdminPermission || this.props.user.permissions.inviteAgentPermission) && this.props.user.plan.invite_team) {
         return (
@@ -1177,7 +1207,7 @@ class Sidebar extends Component {
     }
   }
 
-  showMembersItem () {
+  showMembersItem() {
     if (this.props.user) {
       if (this.state.members && this.props.user.permissions.membersPermission && this.props.user.plan.team_members_management) {
         return (
@@ -1198,7 +1228,7 @@ class Sidebar extends Component {
     }
   }
 
-  showTeams () {
+  showTeams() {
     if (this.props.user) {
       if (this.props.user.currentPlan.unique_ID === 'plan_C' || this.props.user.currentPlan.unique_ID === 'plan_D') {
         return (
@@ -1219,7 +1249,7 @@ class Sidebar extends Component {
     }
   }
 
-  showBusinessGateway () {
+  showBusinessGateway() {
     if (this.props.user && this.state.businessGateway) {
       return (
         <li className='m-menu__item' aria-haspopup='true' >
@@ -1238,7 +1268,7 @@ class Sidebar extends Component {
     }
   }
 
-  uploadContacts () {
+  uploadContacts() {
     // if (this.props.user && this.props.user.platform !== 'messenger') {
     //   return (
     //     <li className='m-menu__item' aria-haspopup='true' >
@@ -1273,7 +1303,7 @@ class Sidebar extends Component {
     }
   }
 
-  inviteSubscribers () {
+  inviteSubscribers() {
     if (this.props.user && this.props.user.platform === 'whatsApp') {
       return (
         <li className='m-menu__item' aria-haspopup='true' >
@@ -1292,11 +1322,11 @@ class Sidebar extends Component {
     }
   }
 
-  render () {
+  render() {
     console.log('this.state', this.state)
 
     if (this.props.user && this.props.user.permissionsRevoked) {
-      this.props.history.push({pathname: '/connectFb', state: {permissionsRevoked: true}})
+      this.props.history.push({ pathname: '/connectFb', state: { permissionsRevoked: true } })
     }
     return (
       <div id='sidebarDiv'>
@@ -1309,33 +1339,33 @@ class Sidebar extends Component {
             className='m-aside-menu  m-aside-menu--skin-dark m-aside-menu--submenu-skin-dark m-scroller mCustomScrollbar _mCS_2 mCS-autoHide'
             data-menu-vertical='1'
             data-menu-scrollable='1'>
-            <div id='mCSB_2' className='mCustomScrollBox mCS-minimal-dark mCSB_vertical mCSB_outside' tabIndex='0' style={{maxHeight: 'none'}}>
-              <div id='mCSB_2_container' className='mCSB_container' style={{position: 'relative', top: '0px', left: '0px'}} dir='ltr'>
+            <div id='mCSB_2' className='mCustomScrollBox mCS-minimal-dark mCSB_vertical mCSB_outside' tabIndex='0' style={{ maxHeight: 'none' }}>
+              <div id='mCSB_2_container' className='mCSB_container' style={{ position: 'relative', top: '0px', left: '0px' }} dir='ltr'>
                 {this.props.user &&
-                <ul className='m-menu__nav  m-menu__nav--dropdown-submenu-arrow '>
-                  {this.showOperationalDashboard()}
-                  {this.showDashboard()}
-                  {this.showSubscriptionsItem()}
-                  {this.showBusinessGateway()}
-                  {this.showBroadcastingItems()}
-                  {this.uploadContacts()}
-                  {this.inviteSubscribers()}
-                  {this.showLiveChatItem()}
-                  {this.showAutomationItems()}
-                  {this.showGrowthToolsItems()}
-                  {this.showManagePagesItems()}
-                  {this.showOrganizationItems()}
-                  {this.props.user && this.props.user.platform === 'messenger' && this.showAbandonedCarts()}
-                  {this.showSettings()}
-                  {this.showUserGuide()}
-                </ul>
-              }
+                  <ul className='m-menu__nav  m-menu__nav--dropdown-submenu-arrow '>
+                    {this.showOperationalDashboard()}
+                    {this.showDashboard()}
+                    {this.showSubscriptionsItem()}
+                    {this.showBusinessGateway()}
+                    {this.showBroadcastingItems()}
+                    {this.uploadContacts()}
+                    {this.inviteSubscribers()}
+                    {this.showLiveChatItem()}
+                    {this.showAutomationItems()}
+                    {this.showGrowthToolsItems()}
+                    {this.showManagePagesItems()}
+                    {this.showOrganizationItems()}
+                    {this.props.user && this.props.user.platform === 'messenger' && this.showAbandonedCarts()}
+                    {this.showSettings()}
+                    {this.showUserGuide()}
+                  </ul>
+                }
               </div>
             </div>
-            <div id='mCSB_2_scrollbar_vertical' className='mCSB_scrollTools mCSB_2_scrollbar mCS-minimal-dark mCSB_scrollTools_vertical' style={{display: 'block'}}>
+            <div id='mCSB_2_scrollbar_vertical' className='mCSB_scrollTools mCSB_2_scrollbar mCS-minimal-dark mCSB_scrollTools_vertical' style={{ display: 'block' }}>
               <div className='mCSB_draggerContainer'>
-                <div id='mCSB_2_dragger_vertical' className='mCSB_dragger' style={{position: 'absolute', minHeight: '50px', display: 'block', maxHeight: '303px', top: '0px'}}>
-                  <div className='mCSB_dragger_bar' style={{lineHeight: '50px'}} />
+                <div id='mCSB_2_dragger_vertical' className='mCSB_dragger' style={{ position: 'absolute', minHeight: '50px', display: 'block', maxHeight: '303px', top: '0px' }}>
+                  <div className='mCSB_dragger_bar' style={{ lineHeight: '50px' }} />
                 </div>
                 <div className='mCSB_draggerRail' />
               </div>
@@ -1347,7 +1377,7 @@ class Sidebar extends Component {
     )
   }
 }
-function mapStateToProps (state) {
+function mapStateToProps(state) {
   console.log('state in sidebar', state)
   return {
     sessions: (state.liveChat.sessions),
@@ -1360,7 +1390,7 @@ function mapStateToProps (state) {
   }
 }
 
-function mapDispatchToProps (dispatch) {
+function mapDispatchToProps(dispatch) {
   return bindActionCreators({
     getAutomatedOptions: getAutomatedOptions,
     fetchUserChats: fetchUserChats,
