@@ -89,7 +89,7 @@ socket.on('message', (data) => {
     store.dispatch(handleSocketEventWhatsapp(data))
   }
   if (['new_notification'].includes(data.action)) {
-    if (data.payload.message) {
+    if (data.payload) {
       store.dispatch(setNotification(data.payload))
     }
     store.dispatch(fetchNotifications())
