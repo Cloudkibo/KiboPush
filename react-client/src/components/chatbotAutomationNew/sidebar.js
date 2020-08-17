@@ -48,13 +48,13 @@ class Sidebar extends React.Component {
   }
 
   setItems (data, currentBlock) {
-    const items = this.props.data.filter((d) => d.parentId && d.parentId.toString() === currentBlock.uniqueId.toString())
+    const items = data.filter((d) => d.parentId && d.parentId.toString() === currentBlock.uniqueId.toString())
     this.setState({items})
   }
 
   backToParent () {
-    const parentId = this.props.data.find((item) =>  item.id.toString() === this.state.selectedItem.value).parentId
-    const currentBlock = this.props.blocks.find((item) =>  item.uniqueId.toString() === parentId)
+    const parentId = this.props.data.find((item) => item.id.toString() === this.state.selectedItem.value.toString()).parentId
+    const currentBlock = this.props.blocks.find((item) => item.uniqueId.toString() === parentId)
     this.props.updateParentState({currentBlock})
   }
 
@@ -122,14 +122,14 @@ class Sidebar extends React.Component {
                       style={{fontSize: '2rem', cursor: 'not-allowed'}}
                       data-tip='Back to parent'
                       data-place='bottom'
-                      className='la la-level-up'
+                      className='la la-mail-reply'
                     />
                     : <i
                       style={{fontSize: '2rem', cursor: 'pointer'}}
                       onClick={this.backToParent}
                       data-tip='Back to parent'
                       data-place='bottom'
-                      className='la la-level-up'
+                      className='la la-mail-reply'
                     />
                   }
                 </div>
@@ -137,7 +137,7 @@ class Sidebar extends React.Component {
                   <Select
                     className="basic-single"
                     classNamePrefix="select"
-                    isSearchable={true}
+                    isDisabled={true}
                     options={this.getSelectOptions()}
                     value={this.state.selectedItem}
                     onChange={this.onBlockChange}
