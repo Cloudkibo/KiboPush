@@ -23,6 +23,9 @@ class App extends Component {
     }
     this.handleDemoSSAPage = this.handleDemoSSAPage.bind(this)
     this.onNotificationClick = this.onNotificationClick.bind(this)
+    this.checkTrialPeriod = this.checkTrialPeriod.bind(this)
+    this.getTrialModalContent = this.getTrialModalContent.bind(this)
+    this.onPurchaseSubscription = this.onPurchaseSubscription.bind(this)
 
     props.getuserdetails(joinRoom)
   }
@@ -52,7 +55,6 @@ class App extends Component {
       })
     }
 
-    console.log('browser history', this.props.history)
     this.unlisten = this.props.history.listen(location => {
       this.setState({path: location.pathname})
       if (!this.isWizardOrLogin(location.pathname)) {
@@ -74,6 +76,46 @@ class App extends Component {
         }
       }, 1000)
     }
+  }
+
+  checkTrialPeriod () {
+    if (this.props.history.location.pathname.toLowerCase() !== '/settings') {
+      if (this.props.user &&
+        this.props.user.trialPeriod &&
+        this.props.user.trialPeriod.status &&
+        new Date(this.props.user.trialPeriod.endDate) < new Date()
+      ) {
+        this.refs._open_trial_modal.click()
+      }
+    }
+  }
+
+  getTrialModalContent () {
+    return (
+      <div>
+        <p>Your trial period has ended. If you wish to continue using the Premium plan, we suggest you to kindly purchase its subscription. Else, you can choose to switch to our Basic (free) plan.</p>
+        <div style={{ width: '100%', textAlign: 'center' }}>
+          <div style={{ display: 'inline-block', padding: '5px' }}>
+            <button className='btn btn-secondary' onClick={this.props.switchToBasicPlan} data-dismiss='modal'>
+              Switch to Basic Plan
+            </button>
+          </div>
+          <div style={{ display: 'inline-block', padding: '5px' }}>
+            <button onClick={this.onPurchaseSubscription} className='btn btn-primary' data-dismiss='modal'>
+              Purchase Subscription
+            </button>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  onPurchaseSubscription () {
+    this.refs._open_trial_modal.click()
+    this.props.history.push({
+      pathname: '/settings',
+      state: 'payment_methods'
+    })
   }
 
   componentWillUnmount () {
@@ -130,7 +172,7 @@ class App extends Component {
     }
     return (
       <div>
-         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
+        <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <button
           style={{display: 'none'}}
           ref='_open_trial_modal'
