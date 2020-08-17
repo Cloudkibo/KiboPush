@@ -72,7 +72,7 @@ class ConfigureChatbot extends React.Component {
   onAnalytics () {
     this.props.history.push({
       pathname: '/chatbotAnalytics',
-      state: {chatbot: this.state.chatbot, page: this.props.location.state.page}
+      state: {chatbot: this.state.chatbot, page: this.props.location.state.page, backUrl: '/configureChatbotNew'}
     })
   }
 
@@ -362,6 +362,7 @@ class ConfigureChatbot extends React.Component {
                 onClick={this.state.chatbot.published ? this.onDisable : this.onPublish}
                 data-tip={this.state.chatbot.published ? 'Disable Chatbot' : 'Publish Chatbot'}
                 data-place='bottom'
+                disabled={this.state.progress !== 100}
               >
                 {
                   this.state.powerLoading
@@ -376,9 +377,20 @@ class ConfigureChatbot extends React.Component {
                 onClick={this.showTestModal}
                 data-tip='Test Chatbot'
                 data-place='bottom'
-                disabled={!(this.state.progress === 100)}
+                disabled={this.state.progress !== 100}
               >
                 <i className="fa flaticon-paper-plane"></i>
+              </button>
+              <button
+                id='_chatbot_message_area_header_analytics'
+                style={{marginLeft: '10px', borderColor: '#36a3f7'}}
+                className="pull-right btn btn-info m-btn m-btn--icon m-btn--icon-only m-btn--custom m-btn--pill m-btn--air"
+                onClick={this.onAnalytics}
+                data-tip='Test Chatbot'
+                data-place='bottom'
+                disabled={!this.state.chatbot.published}
+              >
+                <i className="fa flaticon-analytics"></i>
               </button>
             </div>
           </div>

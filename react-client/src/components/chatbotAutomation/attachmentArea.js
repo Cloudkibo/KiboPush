@@ -296,7 +296,7 @@ class AttachmentArea extends React.Component {
                 type="text"
                 id='_attachment_in_chatbot'
                 className="form-control m-input"
-                placeholder="Paste url or upload an image or video"
+                placeholder="Paste url or upload an attachment"
                 value={this.getInputValue()}
                 onChange={this.onInputChange}
                 disabled={this.state.isUploaded || this.state.waitingForAttachment}

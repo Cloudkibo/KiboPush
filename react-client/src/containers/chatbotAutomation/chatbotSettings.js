@@ -65,7 +65,7 @@ class ChatbotSettings extends React.Component {
 
   onBack() {
     this.props.history.push({
-      pathname: '/chatbotAutomation'
+      pathname: this.props.location.state.backUrl
     })
   }
 

@@ -54,7 +54,7 @@ class Sidebar extends React.Component {
 
   backToParent () {
     const parentId = this.props.data.find((item) => item.id.toString() === this.state.selectedItem.value.toString()).parentId
-    const currentBlock = this.props.blocks.find((item) => item.uniqueId.toString() === parentId)
+    const currentBlock = this.props.blocks.find((item) => item.uniqueId.toString() === parentId.toString())
     this.props.updateParentState({currentBlock})
   }
 
@@ -111,7 +111,7 @@ class Sidebar extends React.Component {
   render () {
     return (
       <div id='_chatbot_sidebar' style={{border: '1px solid #ccc', backgroundColor: 'white', padding: '0px'}} className='col-md-3'>
-        <div style={{margin: '0px'}} className='m-portlet m-portlet-mobile'>
+        <div style={{margin: '0px', height: '100%'}} className='m-portlet m-portlet-mobile'>
           <div className='m-portlet__head'>
             <div className='m-portlet__head-caption'>
               <div className='row'>

@@ -29,6 +29,7 @@ class MessageArea extends React.Component {
     this.afterDisable = this.afterDisable.bind(this)
     this.renameBlock = this.renameBlock.bind(this)
     this.onAddChild = this.onAddChild.bind(this)
+    this.canDeleteBlock = this.canDeleteBlock.bind(this)
   }
 
   componentDidMount () {
@@ -195,17 +196,21 @@ class MessageArea extends React.Component {
   }
 
   onDelete () {
-    let blockUniqueIds = this.props.sidebarItems.filter((item) => item.parentId && item.parentId.toString() === this.props.block.uniqueId.toString()).map((item) => item.id)
-    blockUniqueIds = [...blockUniqueIds, this.props.block.uniqueId]
+    let blockUniqueIds = this.props.sidebarItems.filter((item) => item.parentId && item.parentId.toString() === this.props.block.uniqueId.toString()).map((item) => item.id.toString())
+    blockUniqueIds = [...blockUniqueIds, this.props.block.uniqueId.toString()]
     const blockIds = this.props.blocks.filter((item) => item._id && blockUniqueIds.includes(item.uniqueId)).map((item) => item._id)
     console.log('blockIds', blockIds)
-    this.props.deleteMessageBlock(blockIds, (res) => this.afterDelete(res, blockUniqueIds))
+    if (blockIds.includes('welcome-id') || blockIds.length === 0) {
+      this.afterDelete({status: 'success'}, blockUniqueIds)
+    } else {
+      this.props.deleteMessageBlock(blockIds, (res) => this.afterDelete(res, blockUniqueIds))
+    }
   }
 
   afterDelete (res, blockUniqueIds) {
     if (res.status === 'success') {
       this.props.alertMsg.success('Message block deleted successfully')
-      let blocks = this.props.blocks.filter((item) => !blockUniqueIds.includes(item.uniqueId))
+      let blocks = this.props.blocks.filter((item) => !blockUniqueIds.includes(item.uniqueId.toString()))
       let sidebarItems = this.props.sidebarItems.filter((item) => !blockUniqueIds.includes(item.id))
       let currentBlock = {}
       if (blocks.length === 0) {
@@ -225,7 +230,7 @@ class MessageArea extends React.Component {
         currentBlock = blocks[0]
       } else {
         const parentId = this.props.sidebarItems.find((item) =>  item.id.toString() === this.props.block.uniqueId.toString()).parentId
-        const parent = this.props.blocks.find((item) => item.uniqueId.toString() === parentId)
+        const parent = this.props.blocks.find((item) => item.uniqueId.toString() === parentId.toString())
         const quickReplies = parent.payload[parent.payload.length - 1].quickReplies
         const qrIndex = quickReplies.findIndex((item) => item.title === this.props.block.title)
         quickReplies.splice(qrIndex, 1)
@@ -271,38 +276,51 @@ class MessageArea extends React.Component {
   }
 
   onAddChild (title) {
-    const currentBlock = this.props.block
-    const options = this.state.quickReplies
-    const id = new Date().getTime()
-    const newBlock = {title, payload: [], uniqueId: `${id}`, triggers: [title.toLowerCase()]}
-    const sidebarItems = this.props.sidebarItems
-    const index = sidebarItems.findIndex((item) => item.id.toString() === currentBlock.uniqueId.toString())
-    sidebarItems[index].isParent = true
-    const newSidebarItem = {title, isParent: false, id: `${id}`, parentId: currentBlock.uniqueId}
-    const blocks = [...this.props.blocks, newBlock]
-    const completed = blocks.filter((item) => item.payload.length > 0).length
-    const progress = Math.floor((completed / blocks.length) * 100)
-    const option = {
-      content_type: 'text',
-      title,
-      payload: JSON.stringify([{action: '_chatbot', blockUniqueId: `${id}`, payloadAction: 'create'}])
-    }
-    options.push(option)
-    if (currentBlock.payload.length > 0) {
-      currentBlock.payload[currentBlock.payload.length - 1].quickReplies = options
+    const childTitles = this.state.quickReplies.map((item) => item.title)
+    if (childTitles.includes(title)) {
+      this.props.alertMsg.error('You can not create two children with same name.')
     } else {
-      currentBlock.payload.push({quickReplies: options})
+      const currentBlock = this.props.block
+      const options = this.state.quickReplies
+      const id = new Date().getTime()
+      const newBlock = {title, payload: [], uniqueId: `${id}`, triggers: [title.toLowerCase()]}
+      const sidebarItems = this.props.sidebarItems
+      const index = sidebarItems.findIndex((item) => item.id.toString() === currentBlock.uniqueId.toString())
+      sidebarItems[index].isParent = true
+      const newSidebarItem = {title, isParent: false, id: `${id}`, parentId: currentBlock.uniqueId}
+      const blocks = [...this.props.blocks, newBlock]
+      const completed = blocks.filter((item) => item.payload.length > 0).length
+      const progress = Math.floor((completed / blocks.length) * 100)
+      const option = {
+        content_type: 'text',
+        title,
+        payload: JSON.stringify([{action: '_chatbot', blockUniqueId: `${id}`, payloadAction: 'create'}])
+      }
+      options.push(option)
+      if (currentBlock.payload.length > 0) {
+        currentBlock.payload[currentBlock.payload.length - 1].quickReplies = options
+      } else {
+        currentBlock.payload.push({quickReplies: options})
+      }
+      this.props.updateParentState({
+        blocks,
+        currentBlock,
+        progress,
+        sidebarItems: [...sidebarItems, newSidebarItem],
+        unsavedChanges: true
+      })
+      this.setState({quickReplies: options, triggers: [title.toLowerCase()]}, () => {
+        this.onNext(() => {})
+      })
     }
-    this.props.updateParentState({
-      blocks,
-      currentBlock,
-      progress,
-      sidebarItems: [...sidebarItems, newSidebarItem],
-      unsavedChanges: true
-    })
-    this.setState({quickReplies: options, triggers: [title.toLowerCase()]}, () => {
-      this.onNext(() => {})
-    })
+  }
+
+  canDeleteBlock () {
+    if (this.props.block._id === 'welcome-id' && this.props.block.payload.length === 0) {
+      return false
+    } else {
+      return true
+    }
   }
 
   UNSAFE_componentWillReceiveProps (nextProps) {
@@ -323,9 +341,11 @@ class MessageArea extends React.Component {
               alertMsg={this.props.alertMsg}
               onRename={this.renameBlock}
               blocks={this.props.blocks}
+              sidebarItems={this.props.sidebarItems}
+              block={this.props.block}
               onAddChild={this.onAddChild}
-              canAddChild={!(!this.state.text && Object.keys(this.state.attachment).length === 0)}
-              canDelete={this.props.block._id && this.props.block._id !== 'welcome-id' ? true : false}
+              canAddChild={!(!this.state.text && Object.keys(this.state.attachment).length === 0) && this.state.quickReplies.length < 13}
+              canDelete={this.canDeleteBlock()}
             />
             <div className='m--space-30' />
             <TRIGGERAREA
