@@ -499,8 +499,6 @@ class Convo extends React.Component {
                       </h3>
                     </div>
                   </div>
-                  {
-                    this.props.user.permissions['create_broadcasts'] &&
                     <div className='m-portlet__head-tools'>
                       <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' disabled={this.props.subscribersCount === 0}  data-toggle="modal" data-target="#create" onClick={this.showDialog}>
                         <span>
@@ -510,9 +508,7 @@ class Convo extends React.Component {
                               </span>
                         </span>
                       </button>
-
                     </div>
-                  }
                 </div>
                 <div className='m-portlet__body'>
                   <div className='row align-items-center'>
