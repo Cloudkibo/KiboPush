@@ -38,7 +38,9 @@ class App extends Component {
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.toastrNotification) {
-      this.msg.info(nextProps.toastrNotification)
+      if (nextProps.agentId === nextProps.user._id) {
+        this.msg.info(nextProps.toastrNotification.message)
+      }
       nextProps.setNotification(null)
     }
   }
