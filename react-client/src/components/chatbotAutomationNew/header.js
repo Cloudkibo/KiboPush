@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import CONFIRMATIONMODAL from '../extras/confirmationModal'
+import MODAL from '../extras/modal'
 
 class Header extends React.Component {
   constructor(props, context) {
@@ -9,7 +10,8 @@ class Header extends React.Component {
       waitingForPublish: false,
       waitingForDisable: false,
       title: props.title,
-      editTitle: false
+      editTitle: false,
+      childTitle: ''
     }
     this.onDelete = this.onDelete.bind(this)
     this.afterDelete = this.afterDelete.bind(this)
@@ -17,6 +19,9 @@ class Header extends React.Component {
     this.onCancelEdit = this.onCancelEdit.bind(this)
     this.onRename = this.onRename.bind(this)
     this.onTitleChange = this.onTitleChange.bind(this)
+    this.getAddChildModalContent = this.getAddChildModalContent.bind(this)
+    this.onAddChild = this.onAddChild.bind(this)
+    this.onChildTitleChange = this.onChildTitleChange.bind(this)
   }
 
   onDelete () {
@@ -55,6 +60,46 @@ class Header extends React.Component {
 
   onTitleChange (e) {
     this.setState({title: e.target.value})
+  }
+
+  getAddChildModalContent () {
+    return (
+      <div className='row'>
+        <div className='col-md-9'>
+          <div className="form-group m-form__group">
+            <input
+              ref={(input) => {this._cb_ma_add_child_input = input}}
+              type='text'
+              className="form-control m-input"
+              placeholder="Enter title..."
+              value={this.state.childTitle}
+              onChange={this.onChildTitleChange}
+            />
+          </div>
+        </div>
+        <div className='col-md-3'>
+          <button
+            type='button'
+            className='btn btn-primary'
+            disabled={!this.state.childTitle}
+            onClick={this.onAddChild}
+          >
+            Add
+          </button>
+        </div>
+      </div>
+    )
+  }
+
+  onAddChild () {
+    this.props.onAddChild(this.state.childTitle)
+    this.refs._add_child.click()
+  }
+
+  onChildTitleChange (e) {
+    if (e.target.value.length <= 20) {
+      this.setState({childTitle: e.target.value})
+    }
   }
 
   UNSAFE_componentWillReceiveProps (nextProps) {
@@ -108,6 +153,10 @@ class Header extends React.Component {
             style={{marginLeft: '10px'}}
             type='button'
             className='pull-right btn btn-primary'
+            onClick={() => {
+              this.refs._add_child.click()
+              setTimeout(() => {this._cb_ma_add_child_input.focus()}, 500)
+            }}
           >
             Add Child
           </button>
@@ -128,6 +177,12 @@ class Header extends React.Component {
           description='Are you sure you want to delete this step?'
           onConfirm={this.onDelete}
         />
+        <button style={{display: 'none'}} ref='_add_child' data-toggle='modal' data-target='#_cb_ma_add_child' />
+        <MODAL
+          id='_cb_ma_add_child'
+          title='Add Child'
+          content={this.getAddChildModalContent()}
+        />
       </div>
     )
   }
@@ -137,7 +192,8 @@ Header.propTypes = {
   'title': PropTypes.string.isRequired,
   'onDelete': PropTypes.func.isRequired,
   'onRename': PropTypes.func.isRequired,
-  'blocks': PropTypes.array.isRequired
+  'blocks': PropTypes.array.isRequired,
+  'onAddChild': PropTypes.func.isRequired
 }
 
 export default Header
