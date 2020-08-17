@@ -8,9 +8,11 @@ import Sidebar from './components/sidebar/sidebar'
 import auth from './utility/auth.service'
 import $ from 'jquery'
 import { getuserdetails, switchToBasicPlan } from './redux/actions/basicinfo.actions'
+import { setNotification } from './redux/actions/notifications.actions'
 import { joinRoom } from './utility/socketio'
 import Notification from 'react-web-notification'
 import MODAL from './components/extras/modal'
+import AlertContainer from 'react-alert'
 
 class App extends Component {
   constructor (props) {
@@ -32,6 +34,13 @@ class App extends Component {
     const sidebar = document.getElementById('sidebarDiv')
     sidebar.parentNode.removeChild(sidebar)
     document.getElementsByTagName('body')[0].className = 'm-page--fluid m--skin- m-content--skin-light2 m-header--fixed m-header--fixed-mobile m-footer--push'
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.toastrNotification) {
+      this.msg.info(nextProps.toastrNotification)
+      nextProps.setNotification(null)
+    }
   }
 
   componentDidMount () {
@@ -145,12 +154,23 @@ class App extends Component {
   }
 
   render () {
+    console.log("Public URL ", process.env.PUBLIC_URL)
+    console.log('auth.getToken', auth.getToken())
+    console.log('browser history', this.props.history)
+    
+    var alertOptions = {
+      offset: 14,
+      position: 'top right',
+      theme: 'dark',
+      time: 5000,
+      transition: 'scale'
+    }
     if (this.refs._open_trial_modal) {
       this.checkTrialPeriod()
     }
     return (
       <div>
-
+        <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <button
           style={{display: 'none'}}
           ref='_open_trial_modal'
@@ -209,14 +229,16 @@ function mapStateToProps (state) {
   console.log('store state in app', state)
   return {
     socketData: (state.socketInfo.socketData),
-    user: (state.basicInfo.user)
+    user: (state.basicInfo.user),
+    toastrNotification: (state.notificationsInfo.toastr_notification)
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
       getuserdetails,
-      switchToBasicPlan
+      switchToBasicPlan,
+      setNotification
     }, dispatch)
 }
 
