@@ -49,18 +49,36 @@ class Header extends React.Component {
   }
 
   onRename () {
-    const titles = this.props.blocks.map((item) => item.title.toLowerCase())
-    if (titles.indexOf(this.state.title.toLowerCase()) > -1) {
-      this.props.alertMsg.error('A block with this title already exists. Please choose a diffrent title')
+    let error = ''
+    if (this.state.title) {
+      const parentId = this.props.sidebarItems.find((item) => item.id.toString() === this.props.block.uniqueId.toString()).parentId
+      let childTitles = []
+      if (parentId) {
+        const parent = this.props.blocks.find((item) => item.uniqueId.toString() === parentId.toString())
+        const quickReplies = parent.payload[parent.payload.length - 1].quickReplies
+        childTitles = quickReplies.map((item) => item.title)
+      }
+      if (childTitles.includes(this.state.title) && this.state.title !== this.props.title) {
+        error = 'Two children with same name can not exist.'
+      } else {
+        this.setState({editTitle: false}, () => {
+          this.props.onRename(this.state.title)
+        })
+      }
     } else {
-      this.setState({editTitle: false}, () => {
-        this.props.onRename(this.state.title)
-      })
+      error = 'Title can not be empty.'
+    }
+    if (error) {
+      this.props.alertMsg.error(error)
+      document.getElementById('_chatbot_message_area_header_title_input').focus()
     }
   }
 
   onTitleChange (e) {
-    this.setState({title: e.target.value})
+    const str = e.target.value
+    if ((str.split(' ').join('').length > 0 || str.length === 0) && str.length <= 20) {
+      this.setState({title: e.target.value})
+    }
   }
 
   getAddChildModalContent () {
@@ -200,6 +218,8 @@ Header.propTypes = {
   'onDelete': PropTypes.func.isRequired,
   'onRename': PropTypes.func.isRequired,
   'blocks': PropTypes.array.isRequired,
+  'sidebarItems': PropTypes.array.isRequired,
+  'block': PropTypes.object.isRequired,
   'onAddChild': PropTypes.func.isRequired,
   'canAddChild': PropTypes.bool.isRequired,
   'canDelete': PropTypes.bool.isRequired

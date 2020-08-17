@@ -87,7 +87,7 @@ class Analytics extends React.Component {
 
   onBack() {
     this.props.history.push({
-      pathname: '/configureChatbot',
+      pathname: this.props.location.state.backUrl,
       state: {chatbot: this.props.location.state.chatbot, page: this.props.location.state.page}
     })
   }

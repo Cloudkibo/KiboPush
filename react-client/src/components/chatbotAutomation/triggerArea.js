@@ -53,7 +53,9 @@ class TriggerArea extends React.Component {
   }
 
   handleInputChange (inputValue) {
-    this.setState({inputValue})
+    if (inputValue.length <= 50) {
+      this.setState({inputValue})
+    }
   }
 
   handleKeyDown (event) {
@@ -104,6 +106,15 @@ class TriggerArea extends React.Component {
               onKeyDown={this.handleKeyDown}
               placeholder="Type something and press enter..."
               value={this.state.value}
+              styles={
+                  {
+                      valueContainer: (base) => ({
+                          ...base,
+                          maxHeight: '70px',
+                          overflowY: 'scroll'
+                      })
+                  }
+              }
             />
           </div>
         </div>
