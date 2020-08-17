@@ -94,7 +94,7 @@ class Sidebar extends Component {
         livechat: false,
         smartReplies: false,
         waitingResponse: false,
-        abandonedCarts: true
+        abandonedCarts: false
       })
     } else if (url === 'staging.kibopush.com') {
       console.log('staging')
@@ -1342,24 +1342,24 @@ class Sidebar extends Component {
             <div id='mCSB_2' className='mCustomScrollBox mCS-minimal-dark mCSB_vertical mCSB_outside' tabIndex='0' style={{ maxHeight: 'none' }}>
               <div id='mCSB_2_container' className='mCSB_container' style={{ position: 'relative', top: '0px', left: '0px' }} dir='ltr'>
                 {this.props.user &&
-                  <ul className='m-menu__nav  m-menu__nav--dropdown-submenu-arrow '>
-                    {this.showOperationalDashboard()}
-                    {this.showDashboard()}
-                    {this.showSubscriptionsItem()}
-                    {this.showBusinessGateway()}
-                    {this.showBroadcastingItems()}
-                    {this.uploadContacts()}
-                    {this.inviteSubscribers()}
-                    {this.showLiveChatItem()}
-                    {this.showAutomationItems()}
-                    {this.showGrowthToolsItems()}
-                    {this.showManagePagesItems()}
-                    {this.showOrganizationItems()}
-                    {this.props.user && this.props.user.platform === 'messenger' && this.showAbandonedCarts()}
-                    {this.showSettings()}
-                    {this.showUserGuide()}
-                  </ul>
-                }
+                <ul className='m-menu__nav  m-menu__nav--dropdown-submenu-arrow '>
+                  {this.showOperationalDashboard()}
+                  {this.showDashboard()}
+                  {this.showSubscriptionsItem()}
+                  {this.showBusinessGateway()}
+                  {this.showBroadcastingItems()}
+                  {this.uploadContacts()}
+                  {this.inviteSubscribers()}
+                  {this.showLiveChatItem()}
+                  {this.showAutomationItems()}
+                  {this.showGrowthToolsItems()}
+                  {this.showManagePagesItems()}
+                  {this.showOrganizationItems()}
+                  {false && this.props.user && this.props.user.platform === 'messenger' && this.showAbandonedCarts()}
+                  {this.showSettings()}
+                  {this.showUserGuide()}
+                </ul>
+              }
               </div>
             </div>
             <div id='mCSB_2_scrollbar_vertical' className='mCSB_scrollTools mCSB_2_scrollbar mCS-minimal-dark mCSB_scrollTools_vertical' style={{ display: 'block' }}>
