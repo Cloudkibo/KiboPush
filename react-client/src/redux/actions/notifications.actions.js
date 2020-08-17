@@ -12,10 +12,10 @@ export function showNotifications (data) {
   }
 }
 
-export function setNotification (msg) {
+export function setNotification (data) {
   return {
     type: ActionTypes.SHOW_TOASTR_NOTIFICATION,
-    data: msg
+    data: data
   }
 }
 

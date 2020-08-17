@@ -90,7 +90,7 @@ socket.on('message', (data) => {
   }
   if (['new_notification'].includes(data.action)) {
     if (data.payload.message) {
-      store.dispatch(setNotification(data.payload.message))
+      store.dispatch(setNotification(data.payload))
     }
     store.dispatch(fetchNotifications())
   }
