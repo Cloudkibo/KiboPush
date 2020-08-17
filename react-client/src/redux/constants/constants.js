@@ -283,6 +283,7 @@ export const CLEAR_SUBSCRIBER_TAGS = 'CLEAR_SUBSCRIBER_TAGS'
 
 // constants for notifications
 export const SHOW_NOTIFICATIONS = 'SHOW_NOTIFICATIONS'
+export const SHOW_TOASTR_NOTIFICATION = 'SHOW_TOASTR_NOTIFICATION'
 
 // constants for bots
 export const SHOW_BOTS = 'SHOW_BOTS'
