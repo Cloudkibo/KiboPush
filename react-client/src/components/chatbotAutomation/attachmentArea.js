@@ -46,6 +46,7 @@ class AttachmentArea extends React.Component {
       typingTimer = setTimeout(() => {
         if (isWebURL(this.state.inputValue)) {
           this.props.handleAttachment({
+            isYoutubePlayable: this.props.chatbot.isYoutubePlayable,
             pageId: this.props.chatbot.pageId,
             url: this.state.inputValue
           }, this.onUrlResponse)
@@ -106,7 +107,11 @@ class AttachmentArea extends React.Component {
       if (data.attachment_id || data.type === 'fb_video') {
         helpMessage = `${helpMessage} This will be sent as a playable video on messenger.`
       } else if (validateYoutubeURL(this.state.inputValue)) {
-        helpMessage = `${helpMessage} Video size is greater than 25MB and it will be sent as a card.`
+        if (this.props.chatbot.isYoutubePlayable) {
+          helpMessage = `${helpMessage} Video size is greater than 25MB and it will be sent as a card.`
+        } else {
+          helpMessage = `${helpMessage} This will be sent as a card.`
+        }
       } else {
         helpMessage =`${helpMessage} This will be sent as a card.`
       }

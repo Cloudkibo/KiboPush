@@ -18,12 +18,14 @@ class ChatbotSettings extends React.Component {
       blocks: [],
       text: '',
       options: '',
-      fallbackReplyEnabled: false
+      fallbackReplyEnabled: false,
+      isYoutubePlayable: true
     }
     this.setStateData = this.setStateData.bind(this)
     this.onBack = this.onBack.bind(this)
     this.updateState = this.updateState.bind(this)
     this.handleSwitch = this.handleSwitch.bind(this)
+    this.handleYoutubeSwitch = this.handleYoutubeSwitch.bind(this)
     this.handleChatbotDetails = this.handleChatbotDetails.bind(this)
     this.addOption = this.addOption.bind(this)
     this.updateOption = this.updateOption.bind(this)
@@ -45,7 +47,8 @@ class ChatbotSettings extends React.Component {
       this.setState({
         text: payload[0].text,
         options: payload[0].quickReplies,
-        fallbackReplyEnabled: this.state.chatbot.fallbackReplyEnabled
+        fallbackReplyEnabled: this.state.chatbot.fallbackReplyEnabled,
+        isYoutubePlayable: this.state.chatbot.isYoutubePlayable
       })
     } else {
       this.setState({
@@ -71,6 +74,10 @@ class ChatbotSettings extends React.Component {
 
   handleSwitch (e) {
     this.setState({fallbackReplyEnabled: e.target.checked})
+  }
+
+  handleYoutubeSwitch (e) {
+    this.setState({isYoutubePlayable: e.target.checked})
   }
 
   handleChatbotDetails (res) {
@@ -131,7 +138,8 @@ class ChatbotSettings extends React.Component {
       const data = {
         chatbotId: this.state.chatbot._id,
         fallbackReply: this.preparePayload(this.state),
-        fallbackReplyEnabled: this.state.fallbackReplyEnabled
+        fallbackReplyEnabled: this.state.fallbackReplyEnabled,
+        isYoutubePlayable: this.state.isYoutubePlayable
       }
       console.log('fallbackReply to save for message block', data)
       this.props.updateChatbot(data, this.afterSave)
@@ -190,6 +198,19 @@ class ChatbotSettings extends React.Component {
                 </div>
                 <div className='m-portlet__body'>
                   <div className="m-form">
+                    <div className="m-form__group form-group row" style={{padding: 0}}>
+                      <label className="col-6 col-form-label">
+                        Play YouTube video (size less than 25MB) inside Facebook Messenger:
+                      </label>
+                      <div className="col-3">
+                        <span className="m-switch m-switch--icon">
+                          <label>
+                            <input type="checkbox" onChange={this.handleYoutubeSwitch} checked={this.state.isYoutubePlayable} name="" />
+                            <span />
+                          </label>
+                        </span>
+                      </div>
+                    </div>
                     <div className="m-form__group form-group row">
                       <label className="col-3 col-form-label">
                         Enable fallback reply:
