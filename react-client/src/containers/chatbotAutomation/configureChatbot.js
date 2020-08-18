@@ -64,7 +64,7 @@ class ConfigureChatbot extends React.Component {
   onAnalytics () {
     this.props.history.push({
       pathname: '/chatbotAnalytics',
-      state: {chatbot: this.state.chatbot, page: this.props.location.state.page}
+      state: {chatbot: this.state.chatbot, page: this.props.location.state.page, backUrl: '/configureChatbot'}
     })
   }
 

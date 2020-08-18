@@ -46,7 +46,7 @@ export function showAdminAlerts (data) {
   }
 }
 
-export function showWhiteListDomains(data) {
+export function showWhiteListDomains (data) {
   return {
     type: ActionTypes.SHOW_WHITELIST_DOMAINS,
     data
@@ -61,7 +61,7 @@ export function showAdvancedSettings(data) {
   }
 }
 
-export function showcannedResponses(data) {
+export function showcannedResponses (data) {
   return {
     type: ActionTypes.GET_CANNED_RESPONSES,
     data
@@ -166,7 +166,7 @@ export function updateNotificationSettings (data, msg) {
   }
 }
 
-export function updatePermission(updatedPermissions, msg) {
+export function updatePermission (updatedPermissions, msg) {
   return (dispatch) => {
     callApi('permissions/updatePermissions', 'post', updatedPermissions)
       .then(res => {
@@ -692,8 +692,7 @@ export function getAdvancedSettings() {
   }
 }
 
-
-export function loadcannedResponses() {
+export function loadcannedResponses () {
   return (dispatch) => {
     callApi('cannedResponses')
       .then(res => {
