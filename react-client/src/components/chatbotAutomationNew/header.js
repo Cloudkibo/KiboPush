@@ -116,7 +116,8 @@ class Header extends React.Component {
   }
 
   onChildTitleChange (e) {
-    if (e.target.value.length <= 20) {
+    const str = e.target.value
+    if ((str.split(' ').join('').length > 0 || str.length === 0) && str.length <= 20) {
       this.setState({childTitle: e.target.value})
     }
   }
