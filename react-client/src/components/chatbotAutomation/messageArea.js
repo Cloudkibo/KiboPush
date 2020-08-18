@@ -175,6 +175,7 @@ class MessageArea extends React.Component {
         uniqueId: `${this.props.block.uniqueId}`,
         title: this.props.block.title,
         chatbotId: this.props.chatbot._id,
+        updateStartingBlockId: (this.props.block._id === 'welcome-id'),
         payload: this.preparePayload(this.state)
       }
       const dataToShow = data
