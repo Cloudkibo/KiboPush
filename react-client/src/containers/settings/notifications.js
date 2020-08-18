@@ -14,6 +14,7 @@ class Notifications extends React.Component {
     this.expandRowToggle = this.expandRowToggle.bind(this)
     this.updateNotificationSettings = this.updateNotificationSettings.bind(this)
     this.getAlertTitle = this.getAlertTitle.bind(this)
+    this.getAlertDescription = this.getAlertDescription.bind(this)
     this.saveNotificationSettings = this.saveNotificationSettings.bind(this)
   }
   getAlertTitle(type) {
@@ -21,6 +22,13 @@ class Notifications extends React.Component {
       return 'Unresolved Session Alert'
     } else if (type === 'pendingSessionAlert') {
       return 'Pending Session Alert'
+    }
+  }
+  getAlertDescription(type) {
+    if (type === 'unresolveSessionAlert') {
+      return 'This alert will let the assigned team members know that a livechat session has been unresolved for the last `n` minutes'
+    } else if (type === 'pendingSessionAlert') {
+      return 'This alert will let the assigned team members know that a livechat session has been pending response for the last `n` minutes'
     }
   }
   saveNotificationSettings () {
@@ -90,9 +98,9 @@ class Notifications extends React.Component {
       transition: 'scale'
     }
     return (
-      <div id='target' className='col-lg-8 col-md-8 col-sm-8 col-xs-12'>
+      <div id='target' className='col-lg-8 col-md-8 col-sm-8 col-xs-12' style={{minHeight: '900px'}}>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        <div className='m-portlet m-portlet--full-height m-portlet--tabs  '>
+        <div className='m-portlet m-portlet--full-height m-portlet--tabs'>
           <div className='m-portlet__head'>
             <div className='m-portlet__head-tools'>
               <ul className='nav nav-tabs m-tabs m-tabs-line   m-tabs-line--left m-tabs-line--primary' role='tablist'>
@@ -110,7 +118,7 @@ class Notifications extends React.Component {
             <div style={{textAlign: 'center'}} className='alert m-alert m-alert--default' role='alert'>
                 Need help in understanding Admin Alerts? Here is the <a href='https://kibopush.com/admin-alerts/' target='_blank' rel='noopener noreferrer'>documentation</a>.
               </div>
-              <div style={{ maxHeight: '580px', overflow: 'auto' }}>
+              <div style={{overflow: 'auto' }}>
                 {
                   this.state.notifications && this.state.notifications.length > 0 &&  this.state.notifications.map((notification, i) => 
                     <div key={notification._id} className='accordion' id={`accordion${notification._id}`} style={{ marginTop: '15px' }}>
@@ -143,7 +151,7 @@ class Notifications extends React.Component {
                           <div className='card-body'>
                             <div className='row'>
                               <div className='col-12'>
-                                <p style={{ wordBreak: 'break-word', whiteSpace: 'pre-line' }}>{notification.description}
+                                <p style={{ wordBreak: 'break-word', whiteSpace: 'pre-line' }}> {this.getAlertDescription(notification._id)}
                                 </p>
                               </div>
                               </div>
