@@ -9,7 +9,8 @@ class Sidebar extends React.Component {
     super(props, context)
     this.state = {
       items: [],
-      selectedItem: ''
+      selectedItem: '',
+      emptyBlocks: 0
     }
     this.setItems = this.setItems.bind(this)
     this.onNodeSelect = this.onNodeSelect.bind(this)
@@ -17,11 +18,12 @@ class Sidebar extends React.Component {
     this.getSelectOptions = this.getSelectOptions.bind(this)
     this.onBlockChange = this.onBlockChange.bind(this)
     this.backToParent = this.backToParent.bind(this)
+    this.gotoEmptyBlock = this.gotoEmptyBlock.bind(this)
   }
 
   componentDidMount () {
     if (this.props.data && this.props.data.length > 0) {
-      this.setItems(this.props.data, this.props.currentBlock)
+      this.setItems(this.props.data, this.props.currentBlock, this.props.blocks)
     }
     const selectedItem = {
       label: this.props.currentBlock.title,
@@ -47,15 +49,36 @@ class Sidebar extends React.Component {
     })
   }
 
-  setItems (data, currentBlock) {
+  setItems (data, currentBlock, blocks) {
     const items = data.filter((d) => d.parentId && d.parentId.toString() === currentBlock.uniqueId.toString())
-    this.setState({items})
+    const emptyBlocks = blocks.filter((item) => item.payload.length === 0)
+    this.setState({items, emptyBlocks: emptyBlocks.length})
   }
 
   backToParent () {
     const parentId = this.props.data.find((item) => item.id.toString() === this.state.selectedItem.value.toString()).parentId
-    const currentBlock = this.props.blocks.find((item) => item.uniqueId.toString() === parentId.toString())
-    this.props.updateParentState({currentBlock})
+    if (parentId) {
+      const currentBlock = this.props.blocks.find((item) => item.uniqueId.toString() === parentId.toString())
+      if (this.props.unsavedChanges) {
+        if (this.props.currentBlock.payload && this.props.currentBlock.payload.length === 0) {
+          this.props.alertMsg.error('Text or attachment is required')
+        } else {
+          const data = {
+            triggers: this.props.currentBlock.triggers,
+            uniqueId: `${this.props.currentBlock.uniqueId}`,
+            title: this.props.currentBlock.title,
+            chatbotId: this.props.chatbot._id,
+            payload: this.props.currentBlock.payload
+          }
+          console.log('data to save for message block', data)
+          this.props.handleMessageBlock(data, (res) => this.afterSave(res, data, currentBlock))
+        }
+      } else {
+        this.props.updateParentState({currentBlock})
+      }
+    } else {
+      this.props.updateParentState({currentBlock: this.props.blocks[0]})
+    }
   }
 
   onNodeSelect (event, value) {
@@ -95,9 +118,30 @@ class Sidebar extends React.Component {
     }
   }
 
+  gotoEmptyBlock () {
+    const block = this.props.blocks.find((item) => item.payload.length === 0)
+    if (this.props.unsavedChanges) {
+      if (this.props.currentBlock.payload && this.props.currentBlock.payload.length === 0) {
+        this.props.alertMsg.error('Text or attachment is required')
+      } else {
+        const data = {
+          triggers: this.props.currentBlock.triggers,
+          uniqueId: `${this.props.currentBlock.uniqueId}`,
+          title: this.props.currentBlock.title,
+          chatbotId: this.props.chatbot._id,
+          payload: this.props.currentBlock.payload
+        }
+        console.log('data to save for message block', data)
+        this.props.handleMessageBlock(data, (res) => this.afterSave(res, data, block))
+      }
+    } else {
+      this.props.updateParentState({currentBlock: block})
+    }
+  }
+
   UNSAFE_componentWillReceiveProps (nextProps) {
     if (nextProps.data && nextProps.data.length > 0) {
-      this.setItems(nextProps.data, nextProps.currentBlock)
+      this.setItems(nextProps.data, nextProps.currentBlock, nextProps.blocks)
     }
     if (nextProps.currentBlock) {
       const selectedItem = {
@@ -176,18 +220,25 @@ class Sidebar extends React.Component {
           >
 						<div className="row align-items-center">
 							<div className="col-lg-12">
-                <button
-                  style={{
-                    background: 'none',
-                    border: 'none',
-                    float: 'right',
-                    cursor: 'pointer'
-                  }}
-                  className="m-link m--font-boldest m-btn m-btn--icon"
-                >
-                  <span>
-                  </span>
-                </button>
+                <span className='pull-right'>
+                  Empty blocks: {this.state.emptyBlocks}
+                  {
+                    this.state.emptyBlocks > 0 &&
+                    <button
+                      style={{
+                        background: 'none',
+                        border: 'none',
+                        cursor: 'pointer'
+                      }}
+                      onClick={this.gotoEmptyBlock}
+                      className="m-link m--font-boldest m-btn"
+                    >
+                      <span>
+                        (Fix)
+                      </span>
+                    </button>
+                  }
+                </span>
   						</div>
   					</div>
           </div>
