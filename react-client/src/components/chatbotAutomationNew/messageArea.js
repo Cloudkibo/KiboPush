@@ -30,6 +30,9 @@ class MessageArea extends React.Component {
     this.renameBlock = this.renameBlock.bind(this)
     this.onAddChild = this.onAddChild.bind(this)
     this.canDeleteBlock = this.canDeleteBlock.bind(this)
+    this.showBackHomeButtons = this.showBackHomeButtons.bind(this)
+    this.linkBlock = this.linkBlock.bind(this)
+    this.removeLink = this.removeLink.bind(this)
   }
 
   componentDidMount () {
@@ -282,6 +285,8 @@ class MessageArea extends React.Component {
     const childTitles = this.state.quickReplies.map((item) => item.title)
     if (childTitles.includes(title)) {
       this.props.alertMsg.error('You can not create two children with same name.')
+    } else if (['Back', 'Home'].includes(title)) {
+      this.props.alertMsg.error(`Child name ${title} is not allowed. Please enter a different name.`)
     } else {
       const currentBlock = this.props.block
       const options = this.state.quickReplies
@@ -318,11 +323,75 @@ class MessageArea extends React.Component {
     }
   }
 
+  linkBlock (title) {
+    if (['Back', 'Home'].includes(title)) {
+      let uniqueId = ''
+      if (title === 'Back') {
+        const parentId = this.props.sidebarItems.find((item) => item.id.toString() === this.props.block.uniqueId.toString()).parentId
+        uniqueId = this.props.blocks.find((item) => item.uniqueId.toString() === parentId.toString()).uniqueId
+      } else {
+        uniqueId = this.props.blocks.find((item) => item._id === this.props.chatbot.startingBlockId).uniqueId
+      }
+      let quickReplies = this.state.quickReplies
+      quickReplies.push({
+        content_type: 'text',
+        title,
+        payload: JSON.stringify([{action: '_chatbot', blockUniqueId: uniqueId}])
+      })
+
+      const currentBlock = this.props.block
+      if (currentBlock.payload.length > 0) {
+        currentBlock.payload[currentBlock.payload.length - 1].quickReplies = quickReplies
+      } else {
+        currentBlock.payload.push({quickReplies})
+      }
+
+      this.setState({quickReplies}, () => {
+        this.props.updateParentState({currentBlock, unsavedChanges: true})
+      })
+    }
+  }
+
+  removeLink (title) {
+    if (['Back', 'Home'].includes(title)) {
+      let uniqueId = ''
+      if (title === 'Back') {
+        const parentId = this.props.sidebarItems.find((item) => item.id.toString() === this.props.block.uniqueId.toString()).parentId
+        uniqueId = this.props.blocks.find((item) => item.uniqueId.toString() === parentId.toString()).uniqueId
+      } else {
+        uniqueId = this.props.blocks.find((item) => item._id === this.props.chatbot.startingBlockId).uniqueId
+      }
+      let quickReplies = this.state.quickReplies
+      const index = quickReplies.findIndex((item) => item.title === title)
+      quickReplies.splice(index, 1)
+
+      const currentBlock = this.props.block
+      if (currentBlock.payload.length > 0) {
+        currentBlock.payload[currentBlock.payload.length - 1].quickReplies = quickReplies
+      } else {
+        currentBlock.payload.push({quickReplies})
+      }
+
+      this.setState({quickReplies}, () => {
+        this.props.updateParentState({currentBlock, unsavedChanges: true})
+      })
+    }
+  }
+
   canDeleteBlock () {
     if (this.props.block._id === 'welcome-id' && this.props.block.payload.length === 0) {
       return false
     } else {
       return true
+    }
+  }
+
+  showBackHomeButtons () {
+    const parentId = this.props.sidebarItems.find((item) => item.id.toString() === this.props.block.uniqueId.toString()).parentId
+    if (parentId) {
+      return true
+    } else {
+      return false
     }
   }
 
@@ -378,6 +447,10 @@ class MessageArea extends React.Component {
             <FOOTER
               onNext={this.onNext}
               disableNext={this.state.disableNext}
+              showBackHomeButtons={this.showBackHomeButtons()}
+              linkBlock={this.linkBlock}
+              removeLink={this.removeLink}
+              currentBlock={this.props.block}
             />
           </div>
         </div>
