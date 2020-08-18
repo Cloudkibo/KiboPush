@@ -80,6 +80,7 @@ class ChatbotAutomation extends React.Component {
   }
 
   onSettingsClick (chatbot) {
+    chatbot.backUrl = '/chatbotAutomation'
     this.props.history.push({
       pathname: '/chatbotSettings',
       state: chatbot
@@ -137,7 +138,7 @@ class ChatbotAutomation extends React.Component {
                                 onSettingsClick={() => this.onSettingsClick(chatbot)}
                               />
                             ))
-                            : (!this.props.chatbots) ? 
+                            : (!this.props.chatbots) ?
                             <p>Loading chatbots...</p>
                             : <p>No data to display</p>
                           }
@@ -192,11 +193,11 @@ class ChatbotAutomation extends React.Component {
                               : <div>
                                 You have created the chatbot for all your connected pages.
                               </div>
-                            : (!this.props.pages) ? 
+                            : (!this.props.pages) ?
                             <div>
-                              Loading Pages...        
+                              Loading Pages...
                             </div>
-                            : 
+                            :
                             <div>
                               Please connect a Facebook page to continue
                               <Link to='/addPages' style={{border: '1px solid', marginLeft: '10px'}} className="btn btn-outline-success">
