@@ -228,6 +228,7 @@ class MessageArea extends React.Component {
           isParent: false
         }]
         currentBlock = blocks[0]
+        this.props.updateParentState({blocks, sidebarItems, currentBlock})
       } else {
         const parentId = this.props.sidebarItems.find((item) =>  item.id.toString() === this.props.block.uniqueId.toString()).parentId
         const parent = this.props.blocks.find((item) => item.uniqueId.toString() === parentId.toString())
@@ -238,10 +239,12 @@ class MessageArea extends React.Component {
         const bIndex = this.props.blocks.findIndex((item) => item._id === parent._id)
         blocks[bIndex] = parent
         currentBlock = parent
-        this.props.handleMessageBlock({...parent, chatbotId: this.props.chatbot._id}, (res) => {})
+        this.props.handleMessageBlock({...parent, chatbotId: this.props.chatbot._id}, (res) => {
+          const completed = blocks.filter((item) => item.payload.length > 0).length
+          const progress = Math.floor((completed / blocks.length) * 100)
+          this.props.updateParentState({blocks, sidebarItems, currentBlock, progress, unsavedChanges: false})
+        })
       }
-      console.log('after delete', {blocks, sidebarItems, currentBlock})
-      this.props.updateParentState({blocks, sidebarItems, currentBlock})
     } else {
       this.props.alertMsg.error('Failed to delete message block')
     }

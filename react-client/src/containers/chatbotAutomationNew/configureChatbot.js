@@ -352,7 +352,7 @@ class ConfigureChatbot extends React.Component {
         <div className='m-subheader '>
           <div className='d-flex align-items-center'>
             <div className='mr-auto'>
-              <h3 className='m-subheader__title'>Configure Chatbot</h3>
+              <h3 className='m-subheader__title'>Configure Chatbot - {this.props.location.state.page.pageName}</h3>
             </div>
             <div className='pull-right'>
               <button
@@ -386,7 +386,7 @@ class ConfigureChatbot extends React.Component {
                 style={{marginLeft: '10px', borderColor: '#36a3f7'}}
                 className="pull-right btn btn-info m-btn m-btn--icon m-btn--icon-only m-btn--custom m-btn--pill m-btn--air"
                 onClick={this.onAnalytics}
-                data-tip='Test Chatbot'
+                data-tip='Chatbot Analytics'
                 data-place='bottom'
                 disabled={!this.state.chatbot.published}
               >

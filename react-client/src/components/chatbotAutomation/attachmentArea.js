@@ -355,6 +355,21 @@ class AttachmentArea extends React.Component {
 							+ Attach button
 						</button>
           }
+          {
+            this.state.showPopover &&
+            <div style={{
+                background: 'rgba(33, 37, 41, 0.6)',
+                position: 'fixed',
+                top: 0,
+                bottom: 0,
+                right: 0,
+                left: 0,
+                width: '100vw',
+                height: '100vh',
+                zIndex: 1050
+              }}
+            />
+          }
           <div id='_action_in_chatbot'>
             <Popover
               placement='right'
