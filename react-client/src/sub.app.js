@@ -8,8 +8,10 @@ import Sidebar from './components/sidebar/sidebar'
 import auth from './utility/auth.service'
 import $ from 'jquery'
 import { getuserdetails } from './redux/actions/basicinfo.actions'
+import { setNotification } from './redux/actions/notifications.actions'
 import { joinRoom } from './utility/socketio'
 import Notification from 'react-web-notification'
+import AlertContainer from 'react-alert'
 
 class App extends Component {
   constructor (props) {
@@ -30,6 +32,15 @@ class App extends Component {
     document.getElementsByTagName('body')[0].className = 'm-page--fluid m--skin- m-content--skin-light2 m-header--fixed m-header--fixed-mobile m-footer--push'
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.toastrNotification) {
+      if (nextProps.toastrNotification.agentId === nextProps.user._id) {
+        this.msg.info(nextProps.toastrNotification.message)
+      }
+      nextProps.setNotification(null)
+    }
+  }
+
   componentDidMount () {
     if (this.props.history.location.pathname.toLowerCase() === '/demossa') {
       this.handleDemoSSAPage()
@@ -40,7 +51,6 @@ class App extends Component {
       })
     }
 
-    console.log('browser history', this.props.history)
     this.unlisten = this.props.history.listen(location => {
       this.setState({path: location.pathname})
       if (!this.isWizardOrLogin(location.pathname)) {
@@ -105,8 +115,17 @@ class App extends Component {
     console.log("Public URL ", process.env.PUBLIC_URL)
     console.log('auth.getToken', auth.getToken())
     console.log('browser history', this.props.history)
+    
+    var alertOptions = {
+      offset: 14,
+      position: 'top right',
+      theme: 'dark',
+      time: 5000,
+      transition: 'scale'
+    }
     return (
       <div>
+        <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         {
           this.props.socketData && this.props.socketData.showNotification &&
           <Notification
@@ -151,13 +170,15 @@ function mapStateToProps (state) {
   console.log('store state in app', state)
   return {
     socketData: (state.socketInfo.socketData),
-    user: (state.basicInfo.user)
+    user: (state.basicInfo.user),
+    toastrNotification: (state.notificationsInfo.toastr_notification)
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-      getuserdetails
+      getuserdetails,
+      setNotification
     }, dispatch)
 }
 

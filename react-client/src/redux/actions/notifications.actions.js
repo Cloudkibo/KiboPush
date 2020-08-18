@@ -12,6 +12,13 @@ export function showNotifications (data) {
   }
 }
 
+export function setNotification (data) {
+  return {
+    type: ActionTypes.SHOW_TOASTR_NOTIFICATION,
+    data: data
+  }
+}
+
 export function fetchNotifications () {
   console.log('fetchNotifications')
   return (dispatch) => {
