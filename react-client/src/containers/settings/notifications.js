@@ -107,7 +107,7 @@ class Notifications extends React.Component {
                 <li className='nav-item m-tabs__item'>
                   <span className='nav-link m-tabs__link active'>
                     <i className='flaticon-share m--hide' />
-                    Notifications Settings
+                    Message Alerts Settings
                   </span>
                 </li>
               </ul>
