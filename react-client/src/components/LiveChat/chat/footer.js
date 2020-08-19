@@ -31,7 +31,6 @@ class Footer extends React.Component {
       zoomCountdown: this.initialZoomCountdown,
       zoomUserId: '',
       zoomMeetingUrl: '',
-      zoomUserId: '',
       zoomMeetingCreationError: false,
       cannedMessages: [],
       dataForSearch: [],
@@ -76,12 +75,7 @@ class Footer extends React.Component {
     this.onMouseLeave = this.onMouseLeave.bind(this)
     this.responseMessageHandleChange = this.responseMessageHandleChange.bind(this)
     this.listDataDisplay = this.listDataDisplay.bind(this)
-    this.selectZoomUser = this.selectZoomUser.bind(this)
     this.onCaptionChange = this.onCaptionChange.bind(this)
-  }
-
-  selectZoomUser (e) {
-    this.setState({zoomUserId: e.target.value})
   }
 
   componentDidMount () {

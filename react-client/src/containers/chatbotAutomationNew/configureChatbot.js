@@ -42,6 +42,7 @@ class ConfigureChatbot extends React.Component {
       progress: 0,
       showWhitelistDomains: false,
       unsavedChanges: false,
+      attachmentUploading: false,
       allTriggers: []
     }
 
@@ -388,7 +389,6 @@ class ConfigureChatbot extends React.Component {
                 onClick={this.onAnalytics}
                 data-tip='Chatbot Analytics'
                 data-place='bottom'
-                disabled={!this.state.chatbot.published}
               >
                 <i className="fa flaticon-analytics"></i>
               </button>
@@ -417,6 +417,7 @@ class ConfigureChatbot extends React.Component {
                 chatbot={this.state.chatbot}
                 alertMsg={this.msg}
                 unsavedChanges={this.state.unsavedChanges}
+                attachmentUploading={this.state.attachmentUploading}
                 handleMessageBlock={this.props.handleMessageBlock}
               />
               <MESSAGEAREA
@@ -440,6 +441,7 @@ class ConfigureChatbot extends React.Component {
                 toggleWhitelistModal={this.toggleWhitelistModal}
                 onAnalytics={this.onAnalytics}
                 allTriggers={this.state.allTriggers}
+                attachmentUploading={this.state.attachmentUploading}
               />
             </div>
             <PROGRESS progress={`${this.state.progress}%`} />
