@@ -107,9 +107,10 @@ class TextArea extends React.Component {
           <div style={{position: 'relative'}} className="form-group m-form__group">
             <span className='m--font-boldest'>{`${this.props.label}:`}</span>
             <textarea
+              style={{resize: 'none'}}
               id='_chatbot_message_area_text_input'
               placeholder='Please type here...'
-              rows='3'
+              rows='4'
               value={this.state.text}
               onChange={this.onTextChange}
               className='form-control'

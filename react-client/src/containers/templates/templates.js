@@ -48,13 +48,16 @@ class templates extends React.Component {
           </div>
         </div>
         <div className='m-content'>
-          <TemplateBroadcasts history={this.props.history} location={this.props.location} kiboPushTemplates={kiboPushTemplates} userTemplates={userTemplates} />
           {
-            this.props.user && this.props.user.isSuperUser &&
+            this.props.user && this.props.user.plan['broadcasts_templates'] && this.props.user.permissions['view_templates'] &&
+            <TemplateBroadcasts history={this.props.history} location={this.props.location} kiboPushTemplates={kiboPushTemplates} userTemplates={userTemplates} />
+          }
+          {
+            this.props.user && this.props.user.isSuperUser && this.props.user.plan['survey_templates'] &&
             <TemplateSurveys history={this.props.history} location={this.props.location} kiboPushTemplates={kiboPushTemplates} />
           }
           {
-            this.props.user && this.props.user.isSuperUser &&
+            this.props.user && this.props.user.isSuperUser && this.props.user.plan['poll_templates'] &&
             <TemplatePolls history={this.props.history} location={this.props.location} kiboPushTemplates={kiboPushTemplates} />
           }
         </div>

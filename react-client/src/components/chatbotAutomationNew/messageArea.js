@@ -13,8 +13,7 @@ class MessageArea extends React.Component {
       triggers: [],
       text: '',
       attachment: {},
-      quickReplies: [],
-      disableNext: false
+      quickReplies: []
     }
     this.onNext = this.onNext.bind(this)
     this.preparePayload = this.preparePayload.bind(this)
@@ -29,6 +28,10 @@ class MessageArea extends React.Component {
     this.afterDisable = this.afterDisable.bind(this)
     this.renameBlock = this.renameBlock.bind(this)
     this.onAddChild = this.onAddChild.bind(this)
+    this.canDeleteBlock = this.canDeleteBlock.bind(this)
+    this.showBackHomeButtons = this.showBackHomeButtons.bind(this)
+    this.linkBlock = this.linkBlock.bind(this)
+    this.removeLink = this.removeLink.bind(this)
   }
 
   componentDidMount () {
@@ -90,9 +93,16 @@ class MessageArea extends React.Component {
       currentBlock.payload = payload
       currentBlock.triggers = this.state.triggers
       const chatbot = this.props.chatbot
-      let parentState = {currentBlock, chatbot, unsavedChanges: true}
+      let parentState = {
+        currentBlock,
+        chatbot,
+        unsavedChanges: true
+      }
       if (allTriggers) {
         parentState.allTriggers = allTriggers
+      }
+      if (state.attachmentUploading !== undefined) {
+        parentState.attachmentUploading = state.attachmentUploading
       }
       this.props.updateParentState(parentState)
     })
@@ -161,7 +171,12 @@ class MessageArea extends React.Component {
       let blocks = this.props.blocks
       const index = blocks.findIndex((item) => item.uniqueId.toString() === data.uniqueId.toString())
       if (index !== -1) {
-        blocks.splice(index, 1)
+        const deletedItem = blocks.splice(index, 1)
+        if (res.payload.upserted && res.payload.upserted.length > 0) {
+          data._id = res.payload.upserted[0]._id
+        } else {
+          data._id = deletedItem[0]._id
+        }
       }
       blocks = [...blocks, data]
       const completed = blocks.filter((item) => item.payload.length > 0).length
@@ -190,22 +205,55 @@ class MessageArea extends React.Component {
   }
 
   onDelete () {
-    this.props.deleteMessageBlock(this.props.block._id, this.afterDelete)
+    let blockUniqueIds = this.props.sidebarItems.filter((item) => item.parentId && item.parentId.toString() === this.props.block.uniqueId.toString()).map((item) => item.id.toString())
+    blockUniqueIds = [...blockUniqueIds, this.props.block.uniqueId.toString()]
+    const blockIds = this.props.blocks.filter((item) => item._id && blockUniqueIds.includes(item.uniqueId)).map((item) => item._id)
+    console.log('blockIds', blockIds)
+    if (blockIds.includes('welcome-id') || blockIds.length === 0) {
+      this.afterDelete({status: 'success'}, blockUniqueIds)
+    } else {
+      this.props.deleteMessageBlock(blockIds, (res) => this.afterDelete(res, blockUniqueIds))
+    }
   }
 
-  afterDelete (res) {
+  afterDelete (res, blockUniqueIds) {
     if (res.status === 'success') {
       this.props.alertMsg.success('Message block deleted successfully')
-      const { blocks, sidebarItems } = this.props
-      const blockIndex = blocks.findIndex((item) => item.uniqueId.toString() === this.props.block.uniqueId.toString())
-      const sidebarIndex = sidebarItems.findIndex((item) => item.id.toString() === this.props.block.uniqueId.toString())
-      if (blockIndex > -1) {
-        blocks.splice(blockIndex, 1)
+      let blocks = this.props.blocks.filter((item) => !blockUniqueIds.includes(item.uniqueId.toString()))
+      let sidebarItems = this.props.sidebarItems.filter((item) => !blockUniqueIds.includes(item.id))
+      let currentBlock = {}
+      if (blocks.length === 0) {
+        const id = new Date().getTime()
+        blocks = [{
+          _id: 'welcome-id',
+          title: 'Welcome',
+          payload: [],
+          uniqueId: id,
+          triggers: []
+        }]
+        sidebarItems = [{
+          title: 'Welcome',
+          id,
+          isParent: false
+        }]
+        currentBlock = blocks[0]
+        this.props.updateParentState({blocks, sidebarItems, currentBlock})
+      } else {
+        const parentId = this.props.sidebarItems.find((item) =>  item.id.toString() === this.props.block.uniqueId.toString()).parentId
+        const parent = this.props.blocks.find((item) => item.uniqueId.toString() === parentId.toString())
+        const quickReplies = parent.payload[parent.payload.length - 1].quickReplies
+        const qrIndex = quickReplies.findIndex((item) => item.title === this.props.block.title)
+        quickReplies.splice(qrIndex, 1)
+        parent.quickReplies = quickReplies
+        const bIndex = this.props.blocks.findIndex((item) => item._id === parent._id)
+        blocks[bIndex] = parent
+        currentBlock = parent
+        this.props.handleMessageBlock({...parent, chatbotId: this.props.chatbot._id}, (res) => {
+          const completed = blocks.filter((item) => item.payload.length > 0).length
+          const progress = Math.floor((completed / blocks.length) * 100)
+          this.props.updateParentState({blocks, sidebarItems, currentBlock, progress, unsavedChanges: false})
+        })
       }
-      if (sidebarIndex > -1) {
-        sidebarItems.splice(sidebarIndex, 1)
-      }
-      this.props.updateParentState({blocks, sidebarItems, currentBlock: blocks[0]})
     } else {
       this.props.alertMsg.error('Failed to delete message block')
     }
@@ -240,9 +288,11 @@ class MessageArea extends React.Component {
   }
 
   onAddChild (title) {
-    const titles = this.props.blocks.map((item) => item.title.toLowerCase())
-    if (titles.indexOf(title.toLowerCase()) > -1) {
-      this.props.alertMsg.error('A block with this title already exists. Please choose a diffrent title')
+    const childTitles = this.state.quickReplies.map((item) => item.title)
+    if (childTitles.includes(title)) {
+      this.props.alertMsg.error('You can not create two children with same name.')
+    } else if (['Back', 'Home'].includes(title)) {
+      this.props.alertMsg.error(`Child name ${title} is not allowed. Please enter a different name.`)
     } else {
       const currentBlock = this.props.block
       const options = this.state.quickReplies
@@ -279,6 +329,71 @@ class MessageArea extends React.Component {
     }
   }
 
+  linkBlock (title) {
+    if (['Back', 'Home'].includes(title)) {
+      let uniqueId = ''
+      if (title === 'Back') {
+        const parentId = this.props.sidebarItems.find((item) => item.id.toString() === this.props.block.uniqueId.toString()).parentId
+        uniqueId = this.props.blocks.find((item) => item.uniqueId.toString() === parentId.toString()).uniqueId
+      } else {
+        uniqueId = this.props.blocks.find((item) => item._id === this.props.chatbot.startingBlockId).uniqueId
+      }
+      let quickReplies = this.state.quickReplies
+      quickReplies.push({
+        content_type: 'text',
+        title,
+        payload: JSON.stringify([{action: '_chatbot', blockUniqueId: uniqueId}])
+      })
+
+      const currentBlock = this.props.block
+      if (currentBlock.payload.length > 0) {
+        currentBlock.payload[currentBlock.payload.length - 1].quickReplies = quickReplies
+      } else {
+        currentBlock.payload.push({quickReplies})
+      }
+
+      this.setState({quickReplies}, () => {
+        this.props.updateParentState({currentBlock, unsavedChanges: true})
+      })
+    }
+  }
+
+  removeLink (title) {
+    if (['Back', 'Home'].includes(title)) {
+      let quickReplies = this.state.quickReplies
+      const index = quickReplies.findIndex((item) => item.title === title)
+      quickReplies.splice(index, 1)
+
+      const currentBlock = this.props.block
+      if (currentBlock.payload.length > 0) {
+        currentBlock.payload[currentBlock.payload.length - 1].quickReplies = quickReplies
+      } else {
+        currentBlock.payload.push({quickReplies})
+      }
+
+      this.setState({quickReplies}, () => {
+        this.props.updateParentState({currentBlock, unsavedChanges: true})
+      })
+    }
+  }
+
+  canDeleteBlock () {
+    if (this.props.block._id === 'welcome-id' && this.props.block.payload.length === 0) {
+      return false
+    } else {
+      return true
+    }
+  }
+
+  showBackHomeButtons () {
+    const parentId = this.props.sidebarItems.find((item) => item.id.toString() === this.props.block.uniqueId.toString()).parentId
+    if (parentId) {
+      return true
+    } else {
+      return false
+    }
+  }
+
   UNSAFE_componentWillReceiveProps (nextProps) {
     if (nextProps.block) {
       this.setStateData(nextProps.block)
@@ -297,7 +412,11 @@ class MessageArea extends React.Component {
               alertMsg={this.props.alertMsg}
               onRename={this.renameBlock}
               blocks={this.props.blocks}
+              sidebarItems={this.props.sidebarItems}
+              block={this.props.block}
               onAddChild={this.onAddChild}
+              canAddChild={!(!this.state.text && Object.keys(this.state.attachment).length === 0) && this.state.quickReplies.length < 13}
+              canDelete={this.canDeleteBlock()}
             />
             <div className='m--space-30' />
             <TRIGGERAREA
@@ -326,7 +445,11 @@ class MessageArea extends React.Component {
             <div className='m--space-10' />
             <FOOTER
               onNext={this.onNext}
-              disableNext={this.state.disableNext}
+              disableNext={this.props.attachmentUploading}
+              showBackHomeButtons={this.showBackHomeButtons()}
+              linkBlock={this.linkBlock}
+              removeLink={this.removeLink}
+              currentBlock={this.props.block}
             />
           </div>
         </div>
@@ -353,7 +476,8 @@ MessageArea.propTypes = {
   'updateParentState': PropTypes.func.isRequired,
   'checkWhitelistedDomains': PropTypes.func.isRequired,
   'toggleWhitelistModal': PropTypes.func.isRequired,
-  'allTriggers': PropTypes.array.isRequired
+  'allTriggers': PropTypes.array.isRequired,
+  'attachmentUploading': PropTypes.bool.isRequired
 }
 
 export default MessageArea

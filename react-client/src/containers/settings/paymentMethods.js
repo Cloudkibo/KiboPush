@@ -16,6 +16,11 @@ class PaymentMethods extends React.Component {
     this.change = this.change.bind(this)
     this.setCard = this.setCard.bind(this)
     this.closeDialog = this.closeDialog.bind(this)
+    this.onSuccessCallback = this.onSuccessCallback.bind(this)
+  }
+
+  onSuccessCallback () {
+    document.getElementById('_close_payment_modal').click()
   }
 
   closeDialog () {
@@ -28,7 +33,7 @@ class PaymentMethods extends React.Component {
   }
   setCard (payload, value) {
     console.log('in setCard', payload)
-    this.props.updateCard({companyId: this.props.user.companyId, stripeToken: payload}, this.msg)
+    this.props.updateCard({companyId: this.props.user.companyId, stripeToken: payload}, this.msg, this.onSuccessCallback)
     this.setState({change: false})
   }
   render () {
@@ -97,7 +102,7 @@ class PaymentMethods extends React.Component {
                               <h5 className="modal-title" id="exampleModalLabel">
                                 Credit/Debit Card Details
 									            </h5>
-                              <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                              <button id='_close_payment_modal' style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">
                                   &times;
 											          </span>

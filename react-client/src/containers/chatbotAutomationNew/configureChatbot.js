@@ -42,6 +42,7 @@ class ConfigureChatbot extends React.Component {
       progress: 0,
       showWhitelistDomains: false,
       unsavedChanges: false,
+      attachmentUploading: false,
       allTriggers: []
     }
 
@@ -72,7 +73,7 @@ class ConfigureChatbot extends React.Component {
   onAnalytics () {
     this.props.history.push({
       pathname: '/chatbotAnalytics',
-      state: {chatbot: this.state.chatbot, page: this.props.location.state.page}
+      state: {chatbot: this.state.chatbot, page: this.props.location.state.page, backUrl: '/configureChatbotNew'}
     })
   }
 
@@ -352,7 +353,7 @@ class ConfigureChatbot extends React.Component {
         <div className='m-subheader '>
           <div className='d-flex align-items-center'>
             <div className='mr-auto'>
-              <h3 className='m-subheader__title'>Configure Chatbot</h3>
+              <h3 className='m-subheader__title'>Configure Chatbot - {this.props.location.state.page.pageName}</h3>
             </div>
             <div className='pull-right'>
               <button
@@ -362,6 +363,7 @@ class ConfigureChatbot extends React.Component {
                 onClick={this.state.chatbot.published ? this.onDisable : this.onPublish}
                 data-tip={this.state.chatbot.published ? 'Disable Chatbot' : 'Publish Chatbot'}
                 data-place='bottom'
+                disabled={this.state.progress !== 100}
               >
                 {
                   this.state.powerLoading
@@ -376,9 +378,19 @@ class ConfigureChatbot extends React.Component {
                 onClick={this.showTestModal}
                 data-tip='Test Chatbot'
                 data-place='bottom'
-                disabled={!(this.state.progress === 100)}
+                disabled={this.state.progress !== 100}
               >
                 <i className="fa flaticon-paper-plane"></i>
+              </button>
+              <button
+                id='_chatbot_message_area_header_analytics'
+                style={{marginLeft: '10px', borderColor: '#36a3f7'}}
+                className="pull-right btn btn-info m-btn m-btn--icon m-btn--icon-only m-btn--custom m-btn--pill m-btn--air"
+                onClick={this.onAnalytics}
+                data-tip='Chatbot Analytics'
+                data-place='bottom'
+              >
+                <i className="fa flaticon-analytics"></i>
               </button>
             </div>
           </div>
@@ -405,6 +417,7 @@ class ConfigureChatbot extends React.Component {
                 chatbot={this.state.chatbot}
                 alertMsg={this.msg}
                 unsavedChanges={this.state.unsavedChanges}
+                attachmentUploading={this.state.attachmentUploading}
                 handleMessageBlock={this.props.handleMessageBlock}
               />
               <MESSAGEAREA
@@ -428,6 +441,7 @@ class ConfigureChatbot extends React.Component {
                 toggleWhitelistModal={this.toggleWhitelistModal}
                 onAnalytics={this.onAnalytics}
                 allTriggers={this.state.allTriggers}
+                attachmentUploading={this.state.attachmentUploading}
               />
             </div>
             <PROGRESS progress={`${this.state.progress}%`} />

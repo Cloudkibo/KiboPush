@@ -22,6 +22,7 @@ class Header extends React.Component {
     this.getAddChildModalContent = this.getAddChildModalContent.bind(this)
     this.onAddChild = this.onAddChild.bind(this)
     this.onChildTitleChange = this.onChildTitleChange.bind(this)
+    this.onAddChildClick = this.onAddChildClick.bind(this)
   }
 
   onDelete () {
@@ -48,18 +49,36 @@ class Header extends React.Component {
   }
 
   onRename () {
-    const titles = this.props.blocks.map((item) => item.title.toLowerCase())
-    if (titles.indexOf(this.state.title.toLowerCase()) > -1) {
-      this.props.alertMsg.error('A block with this title already exists. Please choose a diffrent title')
+    let error = ''
+    if (this.state.title) {
+      const parentId = this.props.sidebarItems.find((item) => item.id.toString() === this.props.block.uniqueId.toString()).parentId
+      let childTitles = []
+      if (parentId) {
+        const parent = this.props.blocks.find((item) => item.uniqueId.toString() === parentId.toString())
+        const quickReplies = parent.payload[parent.payload.length - 1].quickReplies
+        childTitles = quickReplies.map((item) => item.title)
+      }
+      if (childTitles.includes(this.state.title) && this.state.title !== this.props.title) {
+        error = 'Two children with same name can not exist.'
+      } else {
+        this.setState({editTitle: false}, () => {
+          this.props.onRename(this.state.title)
+        })
+      }
     } else {
-      this.setState({editTitle: false}, () => {
-        this.props.onRename(this.state.title)
-      })
+      error = 'Title can not be empty.'
+    }
+    if (error) {
+      this.props.alertMsg.error(error)
+      document.getElementById('_chatbot_message_area_header_title_input').focus()
     }
   }
 
   onTitleChange (e) {
-    this.setState({title: e.target.value})
+    const str = e.target.value
+    if ((str.split(' ').join('').length > 0 || str.length === 0) && str.length <= 20) {
+      this.setState({title: e.target.value})
+    }
   }
 
   getAddChildModalContent () {
@@ -97,9 +116,17 @@ class Header extends React.Component {
   }
 
   onChildTitleChange (e) {
-    if (e.target.value.length <= 20) {
+    const str = e.target.value
+    if ((str.split(' ').join('').length > 0 || str.length === 0) && str.length <= 20) {
       this.setState({childTitle: e.target.value})
     }
+  }
+
+  onAddChildClick () {
+    this.refs._add_child.click()
+    this.setState({childTitle: ''}, () => {
+      setTimeout(() => {this._cb_ma_add_child_input.focus()}, 500)
+    })
   }
 
   UNSAFE_componentWillReceiveProps (nextProps) {
@@ -153,10 +180,8 @@ class Header extends React.Component {
             style={{marginLeft: '10px'}}
             type='button'
             className='pull-right btn btn-primary'
-            onClick={() => {
-              this.refs._add_child.click()
-              setTimeout(() => {this._cb_ma_add_child_input.focus()}, 500)
-            }}
+            onClick={this.onAddChildClick}
+            disabled={!this.props.canAddChild}
           >
             Add Child
           </button>
@@ -166,6 +191,7 @@ class Header extends React.Component {
             type='button'
             className='pull-right btn btn-primary'
             onClick={() => this.refs._delete_message_block.click()}
+            disabled={!this.props.canDelete}
           >
             Delete
           </button>
@@ -174,7 +200,7 @@ class Header extends React.Component {
         <CONFIRMATIONMODAL
           id='_cb_ma_delete_mb'
           title='Delete Step'
-          description='Are you sure you want to delete this step?'
+          description='Deleting this step will delete all its children (if any) as well. Are you sure you want to delete this step?'
           onConfirm={this.onDelete}
         />
         <button style={{display: 'none'}} ref='_add_child' data-toggle='modal' data-target='#_cb_ma_add_child' />
@@ -193,7 +219,11 @@ Header.propTypes = {
   'onDelete': PropTypes.func.isRequired,
   'onRename': PropTypes.func.isRequired,
   'blocks': PropTypes.array.isRequired,
-  'onAddChild': PropTypes.func.isRequired
+  'sidebarItems': PropTypes.array.isRequired,
+  'block': PropTypes.object.isRequired,
+  'onAddChild': PropTypes.func.isRequired,
+  'canAddChild': PropTypes.bool.isRequired,
+  'canDelete': PropTypes.bool.isRequired
 }
 
 export default Header
