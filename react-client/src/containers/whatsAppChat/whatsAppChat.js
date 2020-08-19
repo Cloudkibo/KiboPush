@@ -688,7 +688,6 @@ function mapDispatchToProps(dispatch) {
     createNewContact,
     editSubscriberWhatsApp,
     loadcannedResponses,
-    editSubscriberWhatsApp,
     getWhatsAppMessageTemplates
   }, dispatch)
 }

@@ -13,8 +13,7 @@ class MessageArea extends React.Component {
       triggers: [],
       text: '',
       attachment: {},
-      quickReplies: [],
-      disableNext: false
+      quickReplies: []
     }
     this.onNext = this.onNext.bind(this)
     this.preparePayload = this.preparePayload.bind(this)
@@ -94,9 +93,16 @@ class MessageArea extends React.Component {
       currentBlock.payload = payload
       currentBlock.triggers = this.state.triggers
       const chatbot = this.props.chatbot
-      let parentState = {currentBlock, chatbot, unsavedChanges: true}
+      let parentState = {
+        currentBlock,
+        chatbot,
+        unsavedChanges: true
+      }
       if (allTriggers) {
         parentState.allTriggers = allTriggers
+      }
+      if (state.attachmentUploading !== undefined) {
+        parentState.attachmentUploading = state.attachmentUploading
       }
       this.props.updateParentState(parentState)
     })
@@ -354,13 +360,6 @@ class MessageArea extends React.Component {
 
   removeLink (title) {
     if (['Back', 'Home'].includes(title)) {
-      let uniqueId = ''
-      if (title === 'Back') {
-        const parentId = this.props.sidebarItems.find((item) => item.id.toString() === this.props.block.uniqueId.toString()).parentId
-        uniqueId = this.props.blocks.find((item) => item.uniqueId.toString() === parentId.toString()).uniqueId
-      } else {
-        uniqueId = this.props.blocks.find((item) => item._id === this.props.chatbot.startingBlockId).uniqueId
-      }
       let quickReplies = this.state.quickReplies
       const index = quickReplies.findIndex((item) => item.title === title)
       quickReplies.splice(index, 1)
@@ -446,7 +445,7 @@ class MessageArea extends React.Component {
             <div className='m--space-10' />
             <FOOTER
               onNext={this.onNext}
-              disableNext={this.state.disableNext}
+              disableNext={this.props.attachmentUploading}
               showBackHomeButtons={this.showBackHomeButtons()}
               linkBlock={this.linkBlock}
               removeLink={this.removeLink}
@@ -477,7 +476,8 @@ MessageArea.propTypes = {
   'updateParentState': PropTypes.func.isRequired,
   'checkWhitelistedDomains': PropTypes.func.isRequired,
   'toggleWhitelistModal': PropTypes.func.isRequired,
-  'allTriggers': PropTypes.array.isRequired
+  'allTriggers': PropTypes.array.isRequired,
+  'attachmentUploading': PropTypes.bool.isRequired
 }
 
 export default MessageArea

@@ -41,6 +41,7 @@ class ConfigureChatbot extends React.Component {
       progress: 0,
       showWhitelistDomains: false,
       unsavedChanges: false,
+      attachmentUploading: false,
       allTriggers: []
     }
 
@@ -316,6 +317,7 @@ class ConfigureChatbot extends React.Component {
                 toggleWhitelistModal={this.toggleWhitelistModal}
                 onAnalytics={this.onAnalytics}
                 allTriggers={this.state.allTriggers}
+                attachmentUploading={this.state.attachmentUploading}
               />
             </div>
             <PROGRESS progress={`${this.state.progress}%`} />
