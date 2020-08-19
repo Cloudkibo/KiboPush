@@ -55,7 +55,7 @@ class AttachmentArea extends React.Component {
             invalidUrl: false,
             helpMessage: 'Validating url...'
           }, () => {
-            this.props.updateParentState({disableNext: true})
+            this.props.updateParentState({attachmentUploading: true})
           })
         } else if (this.state.inputValue) {
           this.setState({
@@ -133,7 +133,7 @@ class AttachmentArea extends React.Component {
         fileData: (data.attachment_id || data.type === 'fb_video') ? {url: this.state.inputValue} : {},
         buttons: this.state.buttons
       }
-      this.props.updateParentState({attachment, disableNext: false})
+      this.props.updateParentState({attachment, attachmentUploading: false})
     } else {
       this.setState({
         waitingForUrlData: false,
@@ -145,7 +145,7 @@ class AttachmentArea extends React.Component {
         fileData: {url: this.state.inputValue},
         buttons: this.state.buttons
       }
-      this.props.updateParentState({attachment, disableNext: false})
+      this.props.updateParentState({attachment, attachmentUploading: false})
     }
   }
 
@@ -210,11 +210,11 @@ class AttachmentArea extends React.Component {
         },
         buttons: this.state.buttons
       }
-      this.props.updateParentState({attachment, disableNext: false})
+      this.props.updateParentState({attachment, attachmentUploading: false})
     } else {
       this.props.alertMsg.error('Failed to upload attachment. Please try again later')
       this.setState({waitingForAttachment: false})
-      this.props.updateParentState({disableNext: false})
+      this.props.updateParentState({attachmentUploading: false})
     }
   }
 
@@ -236,7 +236,7 @@ class AttachmentArea extends React.Component {
           helpMessage: '',
           invalidUrl: false
         }, () => {
-          this.props.updateParentState({disableNext: true})
+          this.props.updateParentState({attachmentUploading: true})
         })
         const fileData = new FormData()
         fileData.append('file', file)

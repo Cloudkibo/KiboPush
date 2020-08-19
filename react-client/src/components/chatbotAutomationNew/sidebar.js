@@ -56,9 +56,36 @@ class Sidebar extends React.Component {
   }
 
   backToParent () {
-    const parentId = this.props.data.find((item) => item.id.toString() === this.state.selectedItem.value.toString()).parentId
-    if (parentId) {
-      const currentBlock = this.props.blocks.find((item) => item.uniqueId.toString() === parentId.toString())
+    if (!this.props.attachmentUploading) {
+      const parentId = this.props.data.find((item) => item.id.toString() === this.state.selectedItem.value.toString()).parentId
+      if (parentId) {
+        const currentBlock = this.props.blocks.find((item) => item.uniqueId.toString() === parentId.toString())
+        if (this.props.unsavedChanges) {
+          if (this.props.currentBlock.payload && this.props.currentBlock.payload.length === 0) {
+            this.props.alertMsg.error('Text or attachment is required')
+          } else {
+            const data = {
+              triggers: this.props.currentBlock.triggers,
+              uniqueId: `${this.props.currentBlock.uniqueId}`,
+              title: this.props.currentBlock.title,
+              chatbotId: this.props.chatbot._id,
+              payload: this.props.currentBlock.payload
+            }
+            console.log('data to save for message block', data)
+            this.props.handleMessageBlock(data, (res) => this.afterSave(res, data, currentBlock))
+          }
+        } else {
+          this.props.updateParentState({currentBlock})
+        }
+      } else {
+        this.props.updateParentState({currentBlock: this.props.blocks[0]})
+      }
+    }
+  }
+
+  onNodeSelect (event, value) {
+    if (!this.props.attachmentUploading) {
+      const currentBlock = this.props.blocks.find((item) => item.uniqueId.toString() === value)
       if (this.props.unsavedChanges) {
         if (this.props.currentBlock.payload && this.props.currentBlock.payload.length === 0) {
           this.props.alertMsg.error('Text or attachment is required')
@@ -76,29 +103,6 @@ class Sidebar extends React.Component {
       } else {
         this.props.updateParentState({currentBlock})
       }
-    } else {
-      this.props.updateParentState({currentBlock: this.props.blocks[0]})
-    }
-  }
-
-  onNodeSelect (event, value) {
-    const currentBlock = this.props.blocks.find((item) => item.uniqueId.toString() === value)
-    if (this.props.unsavedChanges) {
-      if (this.props.currentBlock.payload && this.props.currentBlock.payload.length === 0) {
-        this.props.alertMsg.error('Text or attachment is required')
-      } else {
-        const data = {
-          triggers: this.props.currentBlock.triggers,
-          uniqueId: `${this.props.currentBlock.uniqueId}`,
-          title: this.props.currentBlock.title,
-          chatbotId: this.props.chatbot._id,
-          payload: this.props.currentBlock.payload
-        }
-        console.log('data to save for message block', data)
-        this.props.handleMessageBlock(data, (res) => this.afterSave(res, data, currentBlock))
-      }
-    } else {
-      this.props.updateParentState({currentBlock})
     }
   }
 
@@ -255,7 +259,8 @@ Sidebar.propTypes = {
   'updateParentState': PropTypes.func.isRequired,
   'chatbot': PropTypes.object.isRequired,
   'unsavedChanges': PropTypes.bool.isRequired,
-  'handleMessageBlock': PropTypes.func.isRequired
+  'handleMessageBlock': PropTypes.func.isRequired,
+  'attachmentUploading': PropTypes.bool.isRequired
 }
 
 export default Sidebar

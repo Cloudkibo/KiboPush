@@ -36,12 +36,6 @@ class ZoomIntegration extends React.Component {
     })
   }
 
-  setDeleteZoomIntegration(integration) {
-    this.setState({ deleteZoomIngeration: integration }, () => {
-      this.refs.toggleDisconnectZoom.click()
-    })
-  }
-
   redirectToAuthorizeZoom(url) {
     window.location.replace(url)
   }
