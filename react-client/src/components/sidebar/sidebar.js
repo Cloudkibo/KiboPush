@@ -5,7 +5,7 @@ import { bindActionCreators } from 'redux'
 import MENUITEM from './menuItem'
 
 class Sidebar extends Component {
-  constructor (props, context) {
+  constructor(props, context) {
     super(props, context)
     this.state = {
       menuItems: []
@@ -426,10 +426,10 @@ class Sidebar extends Component {
                 </ul>
               </div>
             </div>
-            <div id='mCSB_2_scrollbar_vertical' className='mCSB_scrollTools mCSB_2_scrollbar mCS-minimal-dark mCSB_scrollTools_vertical' style={{display: 'block'}}>
+            <div id='mCSB_2_scrollbar_vertical' className='mCSB_scrollTools mCSB_2_scrollbar mCS-minimal-dark mCSB_scrollTools_vertical' style={{ display: 'block' }}>
               <div className='mCSB_draggerContainer'>
-                <div id='mCSB_2_dragger_vertical' className='mCSB_dragger' style={{position: 'absolute', minHeight: '50px', display: 'block', maxHeight: '303px', top: '0px'}}>
-                  <div className='mCSB_dragger_bar' style={{lineHeight: '50px'}} />
+                <div id='mCSB_2_dragger_vertical' className='mCSB_dragger' style={{ position: 'absolute', minHeight: '50px', display: 'block', maxHeight: '303px', top: '0px' }}>
+                  <div className='mCSB_dragger_bar' style={{ lineHeight: '50px' }} />
                 </div>
                 <div className='mCSB_draggerRail' />
               </div>
@@ -450,7 +450,7 @@ function mapStateToProps (state) {
   }
 }
 
-function mapDispatchToProps (dispatch) {
+function mapDispatchToProps(dispatch) {
   return bindActionCreators({
     getAutomatedOptions
   }, dispatch)
