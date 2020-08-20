@@ -42,6 +42,7 @@ class HelpWidget extends React.Component {
       <ul className="m-nav-sticky" style={{marginTop: '30px', backgroundColor: '#716aca'}}>
 
         <ReactTooltip
+          id='documentation'
           place='left'
           type='dark'
           effect='solid'
@@ -95,7 +96,7 @@ class HelpWidget extends React.Component {
     					<i
                 style={{fontSize: '25px', color: 'white'}}
                 className={this.documentation.iconClass}
-                data-tip={this.documentation.title}
+                data-tip={this.documentation.title} data-for='documentation'
               />
     				</a>
     			</li>
@@ -107,7 +108,7 @@ class HelpWidget extends React.Component {
     					<i
                 style={{fontSize: '25px', color: 'white'}}
                 className={this.videoTutorial.iconClass}
-                data-tip={this.videoTutorial.title}
+                data-tip={this.videoTutorial.title} data-for='documentation'
               />
     				</span>
     			</li>
