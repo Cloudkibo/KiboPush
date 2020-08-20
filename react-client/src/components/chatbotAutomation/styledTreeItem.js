@@ -3,12 +3,13 @@ import TreeItem from '@material-ui/lab/TreeItem'
 
 function StyledTreeItem (props) {
   const {nodeId, label, completed, selected} = props
+  const onNodeSelect = props.onNodeSelect || (() => {})
   return (
     <TreeItem
       nodeId={nodeId}
       label={
         <div>
-          <span className={`${selected && 'm--font-boldest'} ${completed && 'm--font-success'}`}>
+          <span onClick={() => {onNodeSelect(nodeId)}} className={`${selected && 'm--font-boldest'} ${completed && 'm--font-success'}`}>
             {label}
             {
               completed &&
