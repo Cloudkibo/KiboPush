@@ -297,7 +297,7 @@ class MessageArea extends React.Component {
       const currentBlock = this.props.block
       const options = this.state.quickReplies
       const id = new Date().getTime()
-      const newBlock = {title, payload: [], uniqueId: `${id}`, triggers: [title.toLowerCase()]}
+      const newBlock = {title, payload: [], uniqueId: `${id}`, triggers: []}
       const sidebarItems = this.props.sidebarItems
       const index = sidebarItems.findIndex((item) => item.id.toString() === currentBlock.uniqueId.toString())
       sidebarItems[index].isParent = true
