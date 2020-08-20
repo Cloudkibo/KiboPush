@@ -28,7 +28,7 @@ class Notifications extends React.Component {
     if (type === 'unresolveSessionAlert') {
       return 'This alert will let the assigned team members know that a livechat session is unresolved for the last `n` minutes'
     } else if (type === 'pendingSessionAlert') {
-      return 'This alert will let the assigned team members know that a livechat session has been pending response for the last `n` minutes'
+      return 'This alert will let the assigned team members know that a new livechat session has been pending response for the last `n` minutes'
     }
   }
   saveNotificationSettings () {
