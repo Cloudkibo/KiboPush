@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { fetchAnalytics } from '../../redux/actions/chatbotAutomation.actions'
+import { fetchAnalytics, fetchChatbots } from '../../redux/actions/chatbotAutomation.actions'
 import BACKBUTTON from '../../components/extras/backButton'
 import LIFETIMESTATISTICS from '../../components/chatbotAutomation/lifeTimeStatistics'
 import PERIODICSTATISTICS from '../../components/chatbotAutomation/periodicStatistics'
@@ -11,10 +11,11 @@ class Analytics extends React.Component {
     super(props, context)
     this.state = {
       loading: true,
-      chatbot: props.location.state.chatbot,
+      chatbot: '',
       periodicAnalytics: '',
       days: '30'
     }
+    this.handleChatbots = this.handleChatbots.bind(this)
     this.handleAnalytics = this.handleAnalytics.bind(this)
     this.onDaysChange = this.onDaysChange.bind(this)
     this.onBack = this.onBack.bind(this)
@@ -29,6 +30,7 @@ class Analytics extends React.Component {
   }
 
   componentDidMount () {
+    this.props.fetchChatbots(this.handleChatbots)
     this.props.fetchAnalytics(this.props.location.state.chatbot._id, parseInt(this.state.days), this.handleAnalytics)
     document.getElementsByTagName('body')[0].className = 'm-page--fluid m--skin- m-content--skin-light2 m-header--fixed m-header--fixed-mobile m-footer--push'
     document.title = 'KiboChat | Configure ChatBot'
@@ -50,6 +52,11 @@ class Analytics extends React.Component {
     } else {
       this.setState({loading: false})
     }
+  }
+
+  handleChatbots (res) {
+    let chatbot = res.payload.filter(a => a._id === this.props.location.state.chatbot._id)[0]
+    this.setState({chatbot: chatbot})
   }
 
   onBack() {
@@ -113,7 +120,8 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-    fetchAnalytics
+    fetchAnalytics,
+    fetchChatbots
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Analytics)

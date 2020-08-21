@@ -10,13 +10,14 @@ function showChatbots (data) {
   }
 }
 
-export function fetchChatbots () {
+export function fetchChatbots (callback) {
   return (dispatch) => {
     callApi('chatbots')
       .then(res => {
         console.log('response from fetchChatbots', res)
         if (res.status === 'success') {
           dispatch(showChatbots(res.payload))
+          if (callback) callback(res)
         } else {
           dispatch(showChatbots([]))
         }
