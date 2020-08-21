@@ -3,16 +3,22 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { updateChatbot, createChatbot, fetchChatbot } from '../../redux/actions/whatsAppChatbot.actions'
 import AlertContainer from 'react-alert'
+import MODAL from '../../components/extras/modal'
+import { validateCommaSeparatedPhoneNumbers } from "../../utility/utils"
+import { UncontrolledTooltip } from 'reactstrap'
+import { fetchStore } from '../../redux/actions/shopify.actions'
 
 class WhatsAppChatbot extends React.Component {
   constructor(props, context) {
     super(props, context)
     this.state = {
-      storeUrl: '',
+      store: '',
       paymentMethod: '',
       returnPolicy: '',
       faqs: '',
-      published: false
+      published: false,
+      testSubscribers: '',
+      arePhoneNumbersValid: false
     }
     this.selectStore = this.selectStore.bind(this)
     this.setPublished = this.setPublished.bind(this)
@@ -20,8 +26,13 @@ class WhatsAppChatbot extends React.Component {
     this.setReturnPolicy = this.setReturnPolicy.bind(this)
     this.setFAQs = this.setFAQs.bind(this)
     this.saveChatbot = this.saveChatbot.bind(this)
+    this.getTestChatbotContent = this.getTestChatbotContent.bind(this)
+    this.handleTestSubscribers = this.handleTestSubscribers.bind(this)
+    this.saveTestSubscribers = this.saveTestSubscribers.bind(this)
+    this.clearTestSubscribers = this.clearTestSubscribers.bind(this)
 
     props.fetchChatbot()
+    props.fetchStore()
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
@@ -63,7 +74,7 @@ class WhatsAppChatbot extends React.Component {
 
   selectStore(e) {
     this.setState({
-      storeUrl: e.target.value
+      store: e.target.value
     })
   }
 
@@ -110,6 +121,102 @@ class WhatsAppChatbot extends React.Component {
     }
   }
 
+  handleTestSubscribers(e) {
+    if (validateCommaSeparatedPhoneNumbers(e.target.value)) {
+      this.setState({ arePhoneNumbersValid: true, testSubscribers: e.target.value })
+    } else {
+      this.setState({ arePhoneNumbersValid: false, testSubscribers: e.target.value })
+    }
+  }
+
+  saveTestSubscribers(e) {
+    e.preventDefault()
+    if (!this.props.chatbot) {
+      let modalClose = document.getElementById('_close_test_subscribers')
+      if (modalClose) {
+        modalClose.click()
+      }
+      this.props.createChatbot({
+        botLinks: {
+          paymentMethod: this.state.paymentMethod,
+          returnPolicy: this.state.returnPolicy,
+          faqs: this.state.faqs
+        },
+        testSubscribers: this.state.testSubscribers.split(",").map(number => number.replace(/ /g, ''))
+      }, (res) => {
+        if (res.status === 'success') {
+          this.msg.success(res.description)
+        } else {
+          this.msg.error(res.description)
+        }
+      })
+    } else {
+      let modalClose = document.getElementById('_close_test_subscribers')
+      if (modalClose) {
+        modalClose.click()
+      }
+      this.props.updateChatbot({
+        testSubscribers: this.state.testSubscribers.split(",").map(number => number.replace(/ /g, ''))
+      }, (res) => {
+        if (res.status === 'success') {
+          this.msg.success(res.description)
+        } else {
+          this.msg.error(res.description)
+        }
+      })
+    }
+  }
+
+  clearTestSubscribers() {
+    this.setState({
+      testSubscribers: '',
+      arePhoneNumbersValid: false
+    })
+  }
+
+  getTestChatbotContent() {
+    return (
+      <form onSubmit={this.saveTestSubscribers} className="m-form m-form--fit m-form--label-align-right">
+        <div className="m-portlet__body">
+          <div className="form-group m-form__group">
+            <label htmlFor="exampleInputEmail1">
+              Phone Numbers
+            </label>
+            <div style={{ display: 'flex' }}>
+              <input
+                required
+                value={this.state.testSubscribers}
+                onChange={this.handleTestSubscribers}
+                type="text"
+                className={"m-input " + (this.state.arePhoneNumbersValid ? 'form-control' : 'form-control border-danger')}
+                id="_testSubscribers"
+                aria-describedby="testSubscribers"
+                placeholder="Enter Phone Numbers separated by commas" />
+              {!this.state.arePhoneNumbersValid &&
+                <div style={{ marginLeft: '5px', marginTop: '3px' }}>
+                  <UncontrolledTooltip style={{ minWidth: '100px', opacity: '1.0' }} target='phoneNumbersWarning'>
+                    <span>Please enter valid phone numbers separated by commas</span>
+                  </UncontrolledTooltip>
+                  <i id='phoneNumbersWarning' className='flaticon-exclamation m--font-danger' />
+                </div>
+              }
+            </div>
+            <span className="m-form__help">
+              These phone numbers will receive chatbot messages even if your chatbot is unpublished
+            </span>
+          </div>
+        </div>
+        <div className="m-portlet__foot m-portlet__foot--fit">
+          <div style={{ float: 'right', paddingBottom: '0' }} className="m-form__actions">
+            <button disabled={!this.state.arePhoneNumbersValid ? true : null} type="submit" className="btn btn-primary">
+              Submit
+            </button>
+          </div>
+        </div>
+      </form>
+    )
+  }
+
   render() {
     var alertOptions = {
       offset: 75,
@@ -121,6 +228,12 @@ class WhatsAppChatbot extends React.Component {
     return (
       <div>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
+        <MODAL
+          id='_test_subscribers'
+          title='Add Test Subscribers'
+          content={this.getTestChatbotContent()}
+          onClose={this.clearTestSubscribers}
+        />
         <div className='m-subheader'>
           <h3 className='m-subheader__title'>WhatsApp Chatbot</h3>
 
@@ -154,15 +267,12 @@ class WhatsAppChatbot extends React.Component {
                         <div className="m-form m-form--fit row">
 
                           <div className="form-group m-form__group col-lg-8">
-                            <h6>Store URL:</h6>
-                            <select required onChange={this.selectStore} className="form-control m-input" value={this.state.storeUrl} id="_store_select" required>
-                              <option key='' value='' disabled>Select a Store...</option>
-                              <option value='shopify'>Shopify</option>
-                            </select>
+                            <h6>Store:</h6>
+                            <input required type="text" disabled value={this.props.store ? this.props.store.name : ''} className="form-control m-input" id="_shopify_store" />
                           </div>
 
                           <div className="col-lg-4">
-                            <img style={{ width: '100px', marginTop: '15px', opacity: this.state.storeUrl ? '1' : '0.5' }} src='https://i.pcmag.com/imagery/reviews/02lLbDwVdtIQN2uDFnHeN41-11..v_1569480019.jpg' />
+                            <img alt="shopify-logo" style={{ width: '100px', marginTop: '15px', opacity: this.props.store ? '1' : '0.5' }} src='https://i.pcmag.com/imagery/reviews/02lLbDwVdtIQN2uDFnHeN41-11..v_1569480019.jpg' />
                           </div>
 
                           <div className="form-group m-form__group col-lg-8">
@@ -217,7 +327,14 @@ class WhatsAppChatbot extends React.Component {
                             <button type='submit' disabled={this.state.zoomMeetingLoading} style={{ float: 'right', marginLeft: '20px' }} className="btn btn-primary">
                               Save
                             </button>
-                            <button type='button' disabled={this.state.zoomMeetingLoading} style={{ float: 'right', marginLeft: '20px' }} className="btn btn-primary">
+                            <button
+                              data-target='#_test_subscribers'
+                              data-backdrop="static"
+                              data-keyboard="false"
+                              data-toggle='modal'
+                              type='button'
+                              style={{ float: 'right', marginLeft: '20px' }}
+                              className="btn btn-primary">
                               Test
                             </button>
                           </div>
@@ -253,7 +370,8 @@ class WhatsAppChatbot extends React.Component {
 function mapStateToProps(state) {
   return {
     user: (state.basicInfo.user),
-    chatbot: (state.whatsAppChatbot.chatbot)
+    chatbot: (state.whatsAppChatbot.chatbot),
+    store: (state.shopifyInfo.store)
   }
 }
 
@@ -261,7 +379,8 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators({
     updateChatbot,
     createChatbot,
-    fetchChatbot
+    fetchChatbot,
+    fetchStore
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(WhatsAppChatbot)
