@@ -23,6 +23,7 @@ import BACKBUTTON from '../../components/extras/backButton'
 import HELPWIDGET from '../../components/extras/helpWidget'
 import MODAL from '../../components/extras/modal'
 import WHITELISTDOMAINS from '../../components/chatbotAutomation/whitelistDomains'
+import TREESTRUCTURE from '../../components/chatbotAutomationNew/treeStructure'
 import $ from 'jquery'
 
 const MessengerPlugin = require('react-messenger-plugin').default
@@ -42,7 +43,9 @@ class ConfigureChatbot extends React.Component {
       progress: 0,
       showWhitelistDomains: false,
       unsavedChanges: false,
-      allTriggers: []
+      attachmentUploading: false,
+      allTriggers: [],
+      showTreeStructure: false
     }
 
     this.fetchChatbotDetails = this.fetchChatbotDetails.bind(this)
@@ -65,6 +68,8 @@ class ConfigureChatbot extends React.Component {
     this.showTestModal = this.showTestModal.bind(this)
     this.getTestModalContent = this.getTestModalContent.bind(this)
     this.toggleTestModalContent = this.toggleTestModalContent.bind(this)
+    this.showTreeStructure = this.showTreeStructure.bind(this)
+    this.closeTreeStructure = this.closeTreeStructure.bind(this)
 
     props.getFbAppId()
   }
@@ -326,6 +331,14 @@ class ConfigureChatbot extends React.Component {
     }
   }
 
+  showTreeStructure () {
+    this.setState({showTreeStructure: true})
+  }
+
+  closeTreeStructure () {
+    this.setState({showTreeStructure: false})
+  }
+
   componentWillUnmount () {
     document.getElementsByTagName('body')[0].className = 'm-page--fluid m--skin- m-content--skin-light2 m-aside-left--fixed m-header--fixed m-header--fixed-mobile m-aside-left--enabled m-aside-left--skin-dark m-aside-left--offcanvas m-footer--push m-aside--offcanvas-default'
   }
@@ -388,9 +401,18 @@ class ConfigureChatbot extends React.Component {
                 onClick={this.onAnalytics}
                 data-tip='Chatbot Analytics'
                 data-place='bottom'
-                disabled={!this.state.chatbot.published}
               >
                 <i className="fa flaticon-analytics"></i>
+              </button>
+              <button
+                id='_chatbot_message_area_header_analytics'
+                style={{marginLeft: '10px', borderColor: '#ffb822'}}
+                className="pull-right btn btn-warning m-btn m-btn--icon m-btn--icon-only m-btn--custom m-btn--pill m-btn--air"
+                onClick={this.showTreeStructure}
+                data-tip='View Tree Structure'
+                data-place='bottom'
+              >
+                <i className="fa flaticon-network"></i>
               </button>
             </div>
           </div>
@@ -417,6 +439,7 @@ class ConfigureChatbot extends React.Component {
                 chatbot={this.state.chatbot}
                 alertMsg={this.msg}
                 unsavedChanges={this.state.unsavedChanges}
+                attachmentUploading={this.state.attachmentUploading}
                 handleMessageBlock={this.props.handleMessageBlock}
               />
               <MESSAGEAREA
@@ -440,6 +463,7 @@ class ConfigureChatbot extends React.Component {
                 toggleWhitelistModal={this.toggleWhitelistModal}
                 onAnalytics={this.onAnalytics}
                 allTriggers={this.state.allTriggers}
+                attachmentUploading={this.state.attachmentUploading}
               />
             </div>
             <PROGRESS progress={`${this.state.progress}%`} />
@@ -465,6 +489,15 @@ class ConfigureChatbot extends React.Component {
               onClose={this.toggleTestModalContent}
             />
           </div>
+        }
+        {
+          this.state.showTreeStructure &&
+          <TREESTRUCTURE
+            data={this.state.sidebarItems}
+            blocks={this.state.blocks}
+            onClose={this.closeTreeStructure}
+            updateParentState={this.updateState}
+          />
         }
       </div>
     )

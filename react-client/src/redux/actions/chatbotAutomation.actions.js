@@ -151,3 +151,13 @@ export function fetchAnalytics (id, days, callback) {
       })
   }
 }
+
+export function downloadAnalytics (data, callback) {
+  return (dispatch) => {
+    callApi(`chatbots/downloadAnalytics`, 'post', data)
+      .then(res => {
+        console.log('response from downloadAnalytics', res)
+        callback(res)
+      })
+  }
+}

@@ -26,9 +26,9 @@ class Notifications extends React.Component {
   }
   getAlertDescription(type) {
     if (type === 'unresolveSessionAlert') {
-      return 'This alert will let the assigned team members know that a livechat session has been unresolved for the last `n` minutes'
+      return 'This alert will let the assigned team members know that a livechat session is unresolved for the last `n` minutes'
     } else if (type === 'pendingSessionAlert') {
-      return 'This alert will let the assigned team members know that a livechat session has been pending response for the last `n` minutes'
+      return 'This alert will let the assigned team members know that a new livechat session has been pending response for the last `n` minutes'
     }
   }
   saveNotificationSettings () {
@@ -107,7 +107,7 @@ class Notifications extends React.Component {
                 <li className='nav-item m-tabs__item'>
                   <span className='nav-link m-tabs__link active'>
                     <i className='flaticon-share m--hide' />
-                    Notifications Settings
+                    Message Alerts Settings
                   </span>
                 </li>
               </ul>
