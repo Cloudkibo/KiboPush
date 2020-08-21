@@ -4,6 +4,7 @@ import { bindActionCreators } from 'redux'
 import AlertContainer from 'react-alert'
 import { loadcannedResponses, deleteCannedResponse } from '../../../redux/actions/settings.actions'
 import CreateCannedResponse from './createCannedResponse'
+import YouTube from 'react-youtube'
 
 class cannedResponses extends React.Component {
   constructor (props, context) {
@@ -14,7 +15,8 @@ class cannedResponses extends React.Component {
       searchValue: '',
       dataForSearch: [],
       currentcannedResponse: null,
-      indexEdit:0
+      indexEdit:0,
+      openVideo: false
     }
     this.props.loadcannedResponses()
     this.expendRowToggle = this.expendRowToggle.bind(this)
@@ -22,6 +24,14 @@ class cannedResponses extends React.Component {
     this.createCannedResponse = this.createCannedResponse.bind(this)
     this.updateCannedResponse = this.updateCannedResponse.bind(this)
     this.deleteCannedResponse = this.deleteCannedResponse.bind(this)
+    this.openVideoTutorial = this.openVideoTutorial.bind(this)
+  }
+
+  openVideoTutorial () {
+    this.setState({
+      openVideo: true
+    })
+    this.refs.videoCanned.click()
   }
 
   deleteCannedResponse (cannedResponse) {
@@ -96,6 +106,41 @@ UNSAFE_componentWillReceiveProps (nextProps) {
     return (
       <div id='target' className='col-lg-8 col-md-8 col-sm-8 col-xs-12'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
+        <a href='#/' style={{ display: 'none' }} ref='videoCanned' data-toggle='modal' data-backdrop='static' data-keyboard='false' data-target="#videoCanned">videoCanned</a>
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="videoCanned" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog modal-lg" role="document">
+            <div className="modal-content" style={{width: '687px', top: '100'}}>
+              <div style={{ display: 'block'}} className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">
+                  Message Alerts Video Tutorial
+                </h5>
+                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" 
+                aria-label="Close"
+                onClick={() => {
+                  this.setState({
+                    openVideo: false
+                  })}}>
+                  <span aria-hidden="true">
+                    &times;
+                    </span>
+                </button>
+              </div>
+              <div style={{color: 'black'}} className="modal-body">
+                {this.state.openVideo && <YouTube
+                  videoId='Xadh0-usfrE'
+                  opts={{
+                    height: '390',
+                    width: '640',
+                    playerVars: { // https://developers.google.com/youtube/player_parameters
+                      autoplay: 0
+                    }
+                  }}
+                />
+              }
+              </div>
+            </div>
+          </div>
+        </div>
         <a href='#/' style={{ display: 'none' }} ref='DeleteModal' data-toggle='modal' data-target='#delete_confirmation_modal'>DeleteModal</a>
         <a href='#/' style={{ display: 'none' }} ref='cannedReponseModal' data-toggle='modal' data-target='#create_modal'>CustomFieldModal</a>
         <CreateCannedResponse cannedResponse={this.state.currentcannedResponse ? { ...this.state.currentcannedResponse } : null} index = {this.state.indexEdit} />
@@ -153,6 +198,7 @@ UNSAFE_componentWillReceiveProps (nextProps) {
             <div className='m-content'>
             <div style={{textAlign: 'center'}} className='alert m-alert m-alert--default' role='alert'>
                         Need help in understanding Canned Responses? Here is the <a href='https://kibopush.com/canned-responses/' target='_blank' rel='noopener noreferrer'>documentation</a>.
+                        Or check out this <a href='#/' onClick={this.openVideoTutorial}>video tutorial</a>
               </div>
               {
                 (this.state.isSearchFilter || (this.state.cannedResponses && this.state.cannedResponses.length > 0)) &&                

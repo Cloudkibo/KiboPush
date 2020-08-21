@@ -2,13 +2,15 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import AlertContainer from 'react-alert'
+import YouTube from 'react-youtube'
 import { fetchNotifications, updateNotificationSettings } from '../../redux/actions/settings.actions'
 
 class Notifications extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      notifications: []
+      notifications: [],
+      openVideo: false
     }
     props.fetchNotifications()
     this.expandRowToggle = this.expandRowToggle.bind(this)
@@ -16,6 +18,13 @@ class Notifications extends React.Component {
     this.getAlertTitle = this.getAlertTitle.bind(this)
     this.getAlertDescription = this.getAlertDescription.bind(this)
     this.saveNotificationSettings = this.saveNotificationSettings.bind(this)
+    this.openVideoTutorial = this.openVideoTutorial.bind(this)
+  }
+  openVideoTutorial () {
+    this.setState({
+      openVideo: true
+    })
+    this.refs.videoAlerts.click()
   }
   getAlertTitle(type) {
     if (type === 'unresolveSessionAlert') {
@@ -100,6 +109,41 @@ class Notifications extends React.Component {
     return (
       <div id='target' className='col-lg-8 col-md-8 col-sm-8 col-xs-12' style={{minHeight: '900px'}}>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
+        <a href='#/' style={{ display: 'none' }} ref='videoAlerts' data-toggle='modal' data-backdrop='static' data-keyboard='false' data-target="#videoAlerts">videoAlerts</a>
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="videoAlerts" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog modal-lg" role="document">
+            <div className="modal-content" style={{width: '687px', top: '100'}}>
+              <div style={{ display: 'block'}} className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">
+                  Message Alerts Video Tutorial
+                </h5>
+                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" 
+                aria-label="Close"
+                onClick={() => {
+                  this.setState({
+                    openVideo: false
+                  })}}>
+                  <span aria-hidden="true">
+                    &times;
+                    </span>
+                </button>
+              </div>
+              <div style={{color: 'black'}} className="modal-body">
+                {this.state.openVideo && <YouTube
+                  videoId='M3k3zV_INTM'
+                  opts={{
+                    height: '390',
+                    width: '640',
+                    playerVars: { // https://developers.google.com/youtube/player_parameters
+                      autoplay: 0
+                    }
+                  }}
+                />
+              }
+              </div>
+            </div>
+          </div>
+        </div>
         <div className='m-portlet m-portlet--full-height m-portlet--tabs'>
           <div className='m-portlet__head'>
             <div className='m-portlet__head-tools'>
@@ -116,7 +160,8 @@ class Notifications extends React.Component {
           <div className='tab-content'>
             <div className='m-content'>
             <div style={{textAlign: 'center'}} className='alert m-alert m-alert--default' role='alert'>
-                Need help in understanding Admin Alerts? Here is the <a href='https://kibopush.com/admin-alerts/' target='_blank' rel='noopener noreferrer'>documentation</a>.
+                Need help in understanding Message Alerts? Here is the <a href='https://kibopush.com/messageAlerts/' target='_blank' rel='noopener noreferrer'>documentation</a>.
+                Or check out this <a href='#/' onClick={this.openVideoTutorial}>video tutorial</a>
               </div>
               <div style={{overflow: 'auto' }}>
                 {
