@@ -35,6 +35,7 @@ class Analytics extends React.Component {
   }
 
   prepareExportData (res) {
+    let self = this
     if (res.status === 'success') {
       var blocksData = res.payload
       var info = blocksData
@@ -49,7 +50,7 @@ class Analytics extends React.Component {
         if (err) {
         } else {
           fileDownload(csv, 'BlockData.csv')
-          this.msg.success('Data Dowloaded Successfully')
+          self.msg.success('Data Dowloaded Successfully')
         }
       })
     } else {
