@@ -33,6 +33,11 @@ export function settingsInfo (state = initialState, action) {
       return Object.assign({}, state, {
         adminAlerts: action.data
       })
+    
+    case ActionTypes.SHOW_USER_PERMISSIONS:
+      return Object.assign({}, state, {
+        userPermissions: action.data
+      })
 
 case ActionTypes.GET_CANNED_RESPONSES:
   return Object.assign({}, state, {
