@@ -72,7 +72,6 @@ class ShopifyIntegration extends React.Component {
       <div id='target' className='col-lg-8 col-md-8 col-sm-8 col-xs-12'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <button ref='toggleDisconnectShopify' data-toggle='modal' data-target='#_confirm_shopify_disconnect' style={{display: 'none'}} />
-        <a ref='disconnectShopify' style={{display: 'none'}} target='_blank' rel="noopener noreferrer" href={`https://marketplace.zoom.us/user/installed`} />
         <CONFIRMATIONMODAL
           id='_confirm_shopify_disconnect'
           title='Disconnect Shopify Integration'

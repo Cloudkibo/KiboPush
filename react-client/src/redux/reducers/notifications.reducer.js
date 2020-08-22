@@ -7,8 +7,8 @@ export function notificationsInfo (state = {}, action) {
         notifications: action.data
       })
       case ActionTypes.SHOW_TOASTR_NOTIFICATION:
-        return Object.assign({}, state, {
-          toastr_notification: action.data
+      return Object.assign({}, state, {
+        toastr_notification: action.data
       })
     default:
       return state
