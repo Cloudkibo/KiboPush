@@ -606,7 +606,7 @@ class Settings extends React.Component {
                       </a>
                     </li>
                     }
-                    { 
+                    { this.props.user &&
                     <li className='m-nav__item'>
                       <a href='#/' className='m-nav__link' onClick={this.setNotificationSettings} style={{cursor: 'pointer'}} >
                         <i className='m-nav__link-icon flaticon-chat' />
