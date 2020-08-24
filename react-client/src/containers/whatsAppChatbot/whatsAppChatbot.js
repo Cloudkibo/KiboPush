@@ -1,5 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import { Link } from 'react-router-dom'
 import { bindActionCreators } from 'redux'
 import { updateChatbot, createChatbot, fetchChatbot } from '../../redux/actions/whatsAppChatbot.actions'
 import AlertContainer from 'react-alert'
@@ -237,12 +238,27 @@ class WhatsAppChatbot extends React.Component {
         <div className='m-subheader'>
           <h3 className='m-subheader__title'>WhatsApp Chatbot</h3>
 
+
           <span style={{ float: 'right' }} className={"m-switch m-switch--lg m-switch--icon " + (this.state.published ? "m-switch--success" : "m-switch--danger")}>
             <label>
               <input disabled={!this.props.chatbot ? true : null} checked={this.state.published} onChange={this.setPublished} type="checkbox" />
               <span />
             </label>
           </span>
+          <Link to="/whatsAppChatbotAnalytics" >
+            <button
+              id='_chatbot_message_area_header_analytics'
+              style={{ marginRight: '20px', marginTop: '5px' }}
+              type='button'
+              className='btn btn-info pull-right m-btn m-btn--icon'
+            >
+              <span>
+                <i className='fa flaticon-analytics' />
+                <span>Analytics</span>
+              </span>
+            </button>
+          </Link>
+
         </div>
         <div className='m-content'>
           <div className='row'>
@@ -362,7 +378,7 @@ class WhatsAppChatbot extends React.Component {
             </div>
           </div>
         </div>
-      </div>
+      </div >
     )
   }
 }
