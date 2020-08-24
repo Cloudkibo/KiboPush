@@ -645,7 +645,7 @@ class LiveChat extends React.Component {
                     showEmoji={true}
                     showGif={true}
                     showThumbsUp={true}
-                    showZoom={this.props.user.isSuperUser ? (this.props.zoomIntegrations.length === 0 ? (this.props.user.role === 'admin' || this.props.user.role === 'buyer') ? true : false : true) : false}
+                    showZoom={this.props.user ? (this.props.zoomIntegrations.length === 0 ? (this.props.user.role === 'admin' || this.props.user.role === 'buyer') ? true : false : true) : false}
                     setMessageData={this.setMessageData}
                     filesAccepted={'image/*, audio/*, video/*, application/*, text/*'}
                     showAgentName={this.props.showAgentName}
