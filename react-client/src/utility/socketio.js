@@ -77,7 +77,7 @@ socket.on('new_chat', (data) => {
 socket.on('message', (data) => {
   console.log('socket called', data)
   if (['new_chat', 'agent_replied', 'session_pending_response', 'unsubscribe'].includes(data.action)) {
-    if (data.action === 'new_chat') data.showNotification = true
+    if (data.action === 'new_chat' && data.payload && data.payload.message && data.payload.message.format === 'facebook') data.showNotification = true
     store.dispatch(handleSocketEvent(data))
   }
   if (['new_chat_sms', 'agent_replied_sms', 'session_pending_response_sms', 'unsubscribe_sms', 'session_status_sms'].includes(data.action)) {
