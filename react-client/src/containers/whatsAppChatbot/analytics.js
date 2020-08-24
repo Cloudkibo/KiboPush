@@ -1,8 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { fetchAnalytics, fetchChatbots, downloadAnalytics } from '../../redux/actions/chatbotAutomation.actions'
-import BACKBUTTON from '../../components/extras/backButton'
+import { fetchAnalytics, fetchChatbots } from '../../redux/actions/chatbotAutomation.actions'
 import LIFETIMESTATISTICS from '../../components/chatbotAutomation/lifeTimeStatistics'
 import PERIODICSTATISTICS from '../../components/chatbotAutomation/periodicStatistics'
 import AlertContainer from 'react-alert'
@@ -179,7 +178,6 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return bindActionCreators({
     fetchAnalytics,
-    downloadAnalytics,
     fetchChatbots
   }, dispatch)
 }
