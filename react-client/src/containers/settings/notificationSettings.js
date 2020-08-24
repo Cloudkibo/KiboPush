@@ -23,7 +23,7 @@ class NotificationSettings extends React.Component {
 
   saveNotificationSettings () {
     var muteNotifications = []
-    this.state.selectedPages.map(page => {
+    this.state.selectedPages && this.state.selectedPages.map(page => {
       muteNotifications.push(page.value)
     })
     var payload= {muteNotifications: muteNotifications}
@@ -31,7 +31,7 @@ class NotificationSettings extends React.Component {
   }
   handlePageChange (value) {
     this.setState({
-      selectedPages: value
+      selectedPages: value ? value : []
     })
   }
   componentDidMount () {
