@@ -215,7 +215,7 @@ class Sidebar extends Component {
           route: '/sequenceMessaging'
         })
       }
-      if ((isKiboChat || isLocalhost)) {
+      if ((isKiboChat || isLocalhost) && platform === 'whatsApp') {
         submenu.push({
           priority: 'g',
           name: 'Chatbot',
