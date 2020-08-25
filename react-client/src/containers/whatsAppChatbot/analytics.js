@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { fetchAnalytics, fetchChatbots } from '../../redux/actions/chatbotAutomation.actions'
+import { fetchAnalytics } from '../../redux/actions/whatsAppChatbot.actions'
 import LIFETIMESTATISTICS from '../../components/chatbotAutomation/lifeTimeStatistics'
 import PERIODICSTATISTICS from '../../components/chatbotAutomation/periodicStatistics'
 import AlertContainer from 'react-alert'
@@ -13,11 +13,9 @@ class Analytics extends React.Component {
     super(props, context)
     this.state = {
       loading: false,
-      chatbot: '',
       periodicAnalytics: '',
       days: '30'
     }
-    this.handleChatbots = this.handleChatbots.bind(this)
     this.handleAnalytics = this.handleAnalytics.bind(this)
     this.onDaysChange = this.onDaysChange.bind(this)
     this.onBack = this.onBack.bind(this)
@@ -29,7 +27,7 @@ class Analytics extends React.Component {
     var value = e.target.value
     this.setState({ days: value })
     if (value && value !== '' && parseInt(value) !== 0) {
-      this.props.fetchAnalytics(this.props.location.state.chatbot._id, parseInt(value), this.handleAnalytics)
+      this.props.fetchAnalytics(this.props.chatbot._id, parseInt(value), this.handleAnalytics)
     }
   }
 
@@ -58,25 +56,13 @@ class Analytics extends React.Component {
   }
 
   exportRecords() {
-    this.props.downloadAnalytics({ pageName: this.props.location.state.page.pageName, chatBotId: this.state.chatbot._id }, this.prepareExportData)
+    this.props.downloadAnalytics({ chatBotId: this.props.chatbot._id }, this.prepareExportData)
     this.msg.info('DOWNLOADING DATA.... YOU WILL BE NOTIFIED WHEN IT IS DOWNLOADED.')
   }
 
   componentDidMount() {
-    // this.props.fetchChatbots(this.handleChatbots)
-    // this.props.fetchAnalytics(this.props.location.state.chatbot._id, parseInt(this.state.days), this.handleAnalytics)
-    document.getElementsByTagName('body')[0].className = 'm-page--fluid m--skin- m-content--skin-light2 m-header--fixed m-header--fixed-mobile m-footer--push'
-    document.title = 'KiboChat | Configure ChatBot'
-
-    var addScript = document.createElement('script')
-    addScript.setAttribute('type', 'text/javascript')
-    addScript.setAttribute('src', 'https://cdn.cloudkibo.com/public/assets/demo/default/custom/components/base/toastr.js')
-    addScript.type = 'text/javascript'
-    document.body.appendChild(addScript)
-
-    // /* eslint-disable */
-    // $('#sidebarDiv').addClass('hideSideBar')
-    // /* eslint-enable */
+    this.props.fetchAnalytics(this.props.chatbot._id, parseInt(this.state.days), this.handleAnalytics)
+    document.title = 'KiboChat | WhatsApp Chatbot Analytics'
   }
 
   handleAnalytics(res) {
@@ -87,20 +73,10 @@ class Analytics extends React.Component {
     }
   }
 
-  handleChatbots(res) {
-    let chatbot = res.payload.filter(a => a._id === this.props.location.state.chatbot._id)[0]
-    this.setState({ chatbot: chatbot })
-  }
-
   onBack() {
     this.props.history.push({
-      pathname: this.props.location.state.backUrl,
-      state: { chatbot: this.props.location.state.chatbot, page: this.props.location.state.page }
+      pathname: '/whatsAppChatbot'
     })
-  }
-
-  componentWillUnmount() {
-    document.getElementsByTagName('body')[0].className = 'm-page--fluid m--skin- m-content--skin-light2 m-aside-left--fixed m-header--fixed m-header--fixed-mobile m-aside-left--enabled m-aside-left--skin-dark m-aside-left--offcanvas m-footer--push m-aside--offcanvas-default'
   }
 
   render() {
@@ -127,20 +103,21 @@ class Analytics extends React.Component {
                   style={{ marginLeft: '20px', marginTop: '5px' }}
                   type='button'
                   className='btn btn-primary pull-right m-btn m-btn--icon'
+                  onClick={this.onBack}
                 >
                   <span>
                     <i className="la la-arrow-left" />
                     <span>Back</span>
                   </span>
                 </button>
-                <button style={{ marginTop: '5px' }} className='btn btn-success m-btn m-btn--icon pull-right' onClick={this.exportRecords}>
+                {/* <button style={{ marginTop: '5px' }} className='btn btn-success m-btn m-btn--icon pull-right' onClick={this.exportRecords}>
                   <span>
                     <i className='fa fa-download' />
                     <span>
                       Export Records in CSV File
                     </span>
                   </span>
-                </button>
+                </button> */}
 
                 <div className='d-flex align-items-center'>
                   <div className='mr-auto'>
@@ -149,16 +126,16 @@ class Analytics extends React.Component {
                 </div>
               </div>
               <div className='m-content'>
+
                 <LIFETIMESTATISTICS
-                  triggerWordsMatched={0}
-                  newSubscribers={0}
+                  triggerWordsMatched={this.props.chatbot.stats ? this.props.chatbot.stats.triggerWordsMatched : 0}
+                  newSubscribers={this.props.chatbot.stats ? this.props.chatbot.stats.newSubscribers : 0}
                 />
                 <PERIODICSTATISTICS
-                  newSubscribersCount={0}
-                  triggerWordsMatched={0}
-                  urlBtnClickedCount={0}
-                  sentCount={0}
-                  returningSubscribers={0}
+                  newSubscribersCount={this.state.periodicAnalytics.newSubscribers ? this.state.periodicAnalytics.newSubscribers : 0}
+                  triggerWordsMatched={this.state.periodicAnalytics.triggerWordsMatched ? this.state.periodicAnalytics.triggerWordsMatched : 0}
+                  sentCount={this.state.periodicAnalytics.sentCount ? this.state.periodicAnalytics.sentCount : 0}
+                  returningSubscribers={this.state.periodicAnalytics.returningSubscribers ? this.state.periodicAnalytics.returningSubscribers : 0}
                   days={this.state.days}
                   onDaysChange={this.onDaysChange}
                 />
@@ -172,13 +149,13 @@ class Analytics extends React.Component {
 
 function mapStateToProps(state) {
   return {
+    chatbot: (state.whatsAppChatbot.chatbot),
   }
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators({
-    fetchAnalytics,
-    fetchChatbots
+    fetchAnalytics
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Analytics)

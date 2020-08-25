@@ -49,3 +49,16 @@ export function fetchChatbot() {
       })
   }
 }
+
+export function fetchAnalytics(id, days, callback) {
+  return (dispatch) => {
+    callApi(`whatsAppChatbot/${id}/stats/${days}`)
+      .then(res => {
+        console.log('whatsAppChatbot fetchAnalytics response', res.payload)
+        if (res.status === 'success') {
+          console.log('response from fetchAnalytics', res)
+          callback(res)
+        }
+      })
+  }
+}

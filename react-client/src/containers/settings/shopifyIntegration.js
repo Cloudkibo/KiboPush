@@ -8,7 +8,7 @@ import YouTube from 'react-youtube'
 import CONFIRMATIONMODAL from '../../components/extras/confirmationModal'
 
 class ShopifyIntegration extends React.Component {
-  constructor (props, context) {
+  constructor(props, context) {
     super(props, context)
     this.state = {
       deleteShopifyIntegration: {
@@ -30,37 +30,37 @@ class ShopifyIntegration extends React.Component {
     this.setDeleteShopifyIntegration = this.setDeleteShopifyIntegration.bind(this)
   }
 
-  setDeleteShopifyIntegration (integration) {
-    this.setState({deleteShopifyIntegration: integration}, () => {
+  setDeleteShopifyIntegration(integration) {
+    this.setState({ deleteShopifyIntegration: integration }, () => {
       this.refs.toggleDisconnectShopify.click()
     })
   }
 
-  redirectToAuthorizeShopify (url) {
+  redirectToAuthorizeShopify(url) {
     window.location.replace(url)
   }
 
-  openVideoTutorial () {
+  openVideoTutorial() {
     this.setState({
       openVideo: true
     })
     this.refs.videoTutorial.click()
   }
 
-  UNSAFE_componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     console.log('nextProps in ShopifyIntegration', nextProps)
     if (nextProps.shopifyIntegration && nextProps.shopifyIntegration.connected) {
       let shopifyIntegration = this.state.shopifyIntegration
       shopifyIntegration.enabled = true
-      this.setState({shopifyIntegration})
+      this.setState({ shopifyIntegration })
     } else if (!nextProps.shopifyIntegration || !nextProps.shopifyIntegration.connected) {
       let shopifyIntegration = this.state.shopifyIntegration
       shopifyIntegration.enabled = false
-      this.setState({shopifyIntegration})
+      this.setState({ shopifyIntegration })
     }
   }
 
-  render () {
+  render() {
     var alertOptions = {
       offset: 75,
       position: 'bottom right',
@@ -71,11 +71,12 @@ class ShopifyIntegration extends React.Component {
     return (
       <div id='target' className='col-lg-8 col-md-8 col-sm-8 col-xs-12'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        <button ref='toggleDisconnectShopify' data-toggle='modal' data-target='#_confirm_shopify_disconnect' style={{display: 'none'}} />
+        <button ref='toggleDisconnectShopify' data-toggle='modal' data-target='#_confirm_shopify_disconnect' style={{ display: 'none' }} />
+        <a target='_blank' rel='noopener noreferrer' href="https://partners.shopify.com/1033294/apps/2954997/test" ref='disconnectShopify' style={{ display: 'none' }}> </a>
         <CONFIRMATIONMODAL
           id='_confirm_shopify_disconnect'
           title='Disconnect Shopify Integration'
-          description={`Are you sure you want to disconnect this Shopify integration?`}
+          description={`Are you sure you want to disconnect this Shopify integration? By Clicking on "Yes", you will be redirected to the Shopify page from where you can uninstall our app.`}
           onConfirm={() => this.refs.disconnectShopify.click()}
         />
         <button style={{ display: 'none' }} ref='videoTutorial' data-toggle='modal' data-backdrop='static' data-keyboard='false' data-target="#videoTutorial">videoTutorial</button>
@@ -133,97 +134,97 @@ class ShopifyIntegration extends React.Component {
           </div>
           <div className='tab-content'>
             <div className='m-content'>
-              <div style={{textAlign: 'center'}} className='alert m-alert m-alert--default' role='alert'>
+              <div style={{ textAlign: 'center' }} className='alert m-alert m-alert--default' role='alert'>
                 Need help in understanding Shopify Integration? Here is the <a href='https://kibopush.com/livechat/#shopifyIntegration' target='_blank' rel='noopener noreferrer'>documentation</a>.
                 Or check out this  <a href='#/' onClick={this.openVideoTutorial}>video tutorial</a> to understand this feature.
               </div>
               <div className='row'>
                 <div className='col-xl-12 col-md-12 col-sm-12'>
                   <div>
-              <div style={{padding: '5px', paddingLeft: '20px'}} className='alert m-alert--default'>
-                <div className='tab-content'>
-                  <div className='tab-pane active' id='m_widget4_tab1_content'>
-                    <div className='m-widget4'>
+                    <div style={{ padding: '5px', paddingLeft: '20px' }} className='alert m-alert--default'>
+                      <div className='tab-content'>
+                        <div className='tab-pane active' id='m_widget4_tab1_content'>
+                          <div className='m-widget4'>
 
-                      <div className='m-widget4__item'>
-                          <div className='m-widget4__img m-widget4__img--logo'>
-                            <span className='btn btn-success m-btn m-btn--icon m-btn--icon-only m-btn--custom m-btn--pill' style={{width: '50px', height: '50px', cursor: 'initial', backgroundColor: 'white', borderColor: this.state.shopifyIntegration.color}}>
-                              <i className={this.state.shopifyIntegration.icon} style={{color: this.state.shopifyIntegration.color, fontSize: 'x-large'}}></i>
-                            </span>
+                            <div className='m-widget4__item'>
+                              <div className='m-widget4__img m-widget4__img--logo'>
+                                <span className='btn btn-success m-btn m-btn--icon m-btn--icon-only m-btn--custom m-btn--pill' style={{ width: '50px', height: '50px', cursor: 'initial', backgroundColor: 'white', borderColor: this.state.shopifyIntegration.color }}>
+                                  <i className={this.state.shopifyIntegration.icon} style={{ color: this.state.shopifyIntegration.color, fontSize: 'x-large' }}></i>
+                                </span>
+                              </div>
+                              <span style={{ paddingLeft: '25px' }} className='m-widget4__ext'>
+                                {this.state.shopifyIntegration.description}
+                              </span>
+                            </div>
+
                           </div>
-                          <span style={{paddingLeft: '25px'}} className='m-widget4__ext'>
-                            {this.state.shopifyIntegration.description}
-                          </span>
+                        </div>
                       </div>
-
                     </div>
+
+                    <div>
+                      {
+                        this.props.shopifyIntegrations.map((integration, i) => (
+                          <div style={{ display: 'flex', justifyContent: 'center', marginTop: '25px' }} className='m-widget4'>
+                            <div style={{ borderBottom: '1px dashed', paddingBottom: '25px' }} className='m-widget4__item' key={i}>
+                              <div className='m-widget4__img m-widget4__img--logo'>
+                                <span className='btn m-btn m-btn--icon m-btn--icon-only m-btn--custom m-btn--pill' style={{ width: '50px', height: '50px', cursor: 'initial', backgroundColor: 'white' }}>
+                                  <img alt='' style={{ width: '100%', height: '100%' }} onError={(e) => e.target.src = 'https://login.vivaldi.net/profile/avatar/default-avatar.png'} src={integration.profilePic ? integration.profilePic : 'https://login.vivaldi.net/profile/avatar/default-avatar.png'} />
+                                </span>
+                              </div>
+                              <div className='m-widget4__info' style={{ width: '140px' }}>
+                                <span className='m-widget4__title'>
+                                  {integration.firstName + " " + integration.lastName}
+                                </span>
+                              </div>
+                              <span className='m-widget4__ext' style={{ paddingLeft: '150px' }}>
+                                {integration.connected
+                                  ? <button onClick={() => this.setDeleteShopifyIntegration(integration)} className='m-btn m-btn--pill m-btn--hover-danger btn btn-danger' style={{ borderColor: '#f4516c', color: '#f4516c', marginRight: '10px' }}>
+                                    Disconnect
+                                    </button>
+                                  : <a target='_blank' rel='noopener noreferrer' href="https://partners.shopify.com/1033294/apps/2954997/test" className='m-btn m-btn--pill m-btn--hover-success btn btn-success' style={{ borderColor: '#34bfa3', color: '#34bfa3', marginRight: '10px' }}>
+                                    Connect
+                                    </a>
+                                }
+                              </span>
+                              <hr style={{ borderTop: '1px dashed #36a3f7' }} />
+                            </div>
+                          </div>
+                        ))
+                      }
+                    </div>
+
+
+                    {
+                      this.props.shopifyIntegrations.length < 3 &&
+                      <div style={{ display: 'flex', justifyContent: 'center', marginTop: '50px' }}>
+                        <button
+                          onClick={() => this.props.integrateShopify(this.redirectToAuthorizeShopify)}
+                          style={{ border: '1px dashed #36a3f7', cursor: 'pointer' }}
+                          type="button"
+                          className="btn m-btn--pill btn-outline-info m-btn m-btn--custom"
+                        >
+                          {this.props.shopifyIntegrations.length > 0 ? '+ Connect New' : '+ Connect'}
+                        </button>
+                      </div>
+                    }
                   </div>
                 </div>
               </div>
-
-              <div>
-                {
-                this.props.shopifyIntegrations.map((integration, i) => (
-                  <div style={{display: 'flex', justifyContent: 'center', marginTop: '25px'}} className='m-widget4'>
-                    <div style={{borderBottom: '1px dashed', paddingBottom: '25px'}} className='m-widget4__item' key={i}>
-                      <div className='m-widget4__img m-widget4__img--logo'>
-                        <span className='btn m-btn m-btn--icon m-btn--icon-only m-btn--custom m-btn--pill' style={{width: '50px', height: '50px', cursor: 'initial', backgroundColor: 'white'}}>
-                          <img alt='' style={{width: '100%', height: '100%'}} onError={(e) => e.target.src = 'https://login.vivaldi.net/profile/avatar/default-avatar.png'} src={integration.profilePic ? integration.profilePic : 'https://login.vivaldi.net/profile/avatar/default-avatar.png'}/>
-                        </span>
-                      </div>
-                      <div className='m-widget4__info' style={{width: '140px'}}>
-                        <span className='m-widget4__title'>
-                          {integration.firstName + " " + integration.lastName}
-                        </span>
-                      </div>
-                      <span className='m-widget4__ext' style={{paddingLeft: '150px'}}>
-                          {integration.connected
-                            ? <button onClick={() => this.setDeleteShopifyIntegration(integration)} className='m-btn m-btn--pill m-btn--hover-danger btn btn-danger' style={{borderColor: '#f4516c', color: '#f4516c', marginRight: '10px'}}>
-                              Disconnect
-                            </button>
-                            : <button onClick={() => this.props.integrateShopify(this.redirectToAuthorizeShopify)} className='m-btn m-btn--pill m-btn--hover-success btn btn-success' style={{borderColor: '#34bfa3', color: '#34bfa3', marginRight: '10px'}}>
-                            Connect
-                          </button>
-                          }
-                      </span>
-                      <hr style={{borderTop: '1px dashed #36a3f7'}} />
-                    </div>
-                  </div>
-                ))
-                }
-              </div>
-
-
-              {
-                this.props.shopifyIntegrations.length < 3 &&
-                <div style={{display: 'flex', justifyContent: 'center', marginTop: '50px'}}>
-                  <button
-                    onClick={() => this.props.integrateShopify(this.redirectToAuthorizeShopify)}
-                    style={{border: '1px dashed #36a3f7', cursor: 'pointer'}}
-                    type="button"
-                    className="btn m-btn--pill btn-outline-info m-btn m-btn--custom"
-                  >
-                    {this.props.shopifyIntegrations.length > 0 ? '+ Connect New' : '+ Connect'}
-                  </button>
-                </div>
-              }
             </div>
           </div>
         </div>
       </div>
-    </div>
-  </div>
-</div>
     )
   }
 }
-function mapStateToProps (state) {
+function mapStateToProps(state) {
   return {
     user: (state.basicInfo.user),
     shopifyIntegrations: (state.settingsInfo.shopifyIntegrations)
   }
 }
-function mapDispatchToProps (dispatch) {
+function mapDispatchToProps(dispatch) {
   return bindActionCreators({
     getShopifyIntegrations,
     integrateShopify

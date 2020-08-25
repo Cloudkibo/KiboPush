@@ -245,19 +245,22 @@ class WhatsAppChatbot extends React.Component {
               <span />
             </label>
           </span>
-          <Link to="/whatsAppChatbotAnalytics" >
-            <button
-              id='_chatbot_message_area_header_analytics'
-              style={{ marginRight: '20px', marginTop: '5px' }}
-              type='button'
-              className='btn btn-info pull-right m-btn m-btn--icon'
-            >
-              <span>
-                <i className='fa flaticon-analytics' />
-                <span>Analytics</span>
-              </span>
-            </button>
-          </Link>
+          {
+            this.props.chatbot &&
+            <Link to='/whatsAppChatbotAnalytics' >
+              <button
+                id='_chatbot_message_area_header_analytics'
+                style={{ marginRight: '20px', marginTop: '5px' }}
+                type='button'
+                className='btn btn-brand pull-right m-btn m-btn--icon'
+              >
+                <span>
+                  <i className='fa flaticon-analytics' />
+                  <span>Analytics</span>
+                </span>
+              </button>
+            </Link>
+          }
 
         </div>
         <div className='m-content'>

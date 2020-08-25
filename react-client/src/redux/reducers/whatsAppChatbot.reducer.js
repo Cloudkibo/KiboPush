@@ -1,8 +1,6 @@
 import * as ActionTypes from '../constants/constants'
 
-const initialState = {
-  chatbot: null
-}
+const initialState = {}
 
 export function whatsAppChatbot(state = initialState, action) {
   switch (action.type) {
