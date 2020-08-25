@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux'
 import AlertContainer from 'react-alert'
 import { loadcannedResponses, deleteCannedResponse } from '../../../redux/actions/settings.actions'
 import CreateCannedResponse from './createCannedResponse'
-import HELPWIDGET from '../../../components/extras/helpWidget'
+import HelpWidget from '../../../components/extras/helpWidget'
 
 class cannedResponses extends React.Component {
   constructor (props, context) {
@@ -101,7 +101,7 @@ UNSAFE_componentWillReceiveProps (nextProps) {
           videoTutorial={{visibility: true, videoId: 'Xadh0-usfrE'}}
         /> 
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        <HELPWIDGET
+        <HelpWidget
               documentation={{visibility: true, link: 'https://kibopush.com/canned-responses/'}}
               videoTutorial={{visibility: true, videoId: 'Xadh0-usfrE'}}
             />
