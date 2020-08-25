@@ -12,9 +12,9 @@ export function showNotifications (data) {
   }
 }
 
-export function setNotification (data) {
+export function setMessageAlert(data) {
   return {
-    type: ActionTypes.SHOW_TOASTR_NOTIFICATION,
+    type: ActionTypes.SHOW_MESSAGE_ALERT,
     data: data
   }
 }

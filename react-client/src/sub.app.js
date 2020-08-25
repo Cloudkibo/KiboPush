@@ -7,21 +7,26 @@ import SimpleHeader from './containers/wizard/header'
 import Sidebar from './components/sidebar/sidebar'
 import auth from './utility/auth.service'
 import $ from 'jquery'
-import { getuserdetails } from './redux/actions/basicinfo.actions'
-import { setNotification } from './redux/actions/notifications.actions'
+import { getuserdetails, switchToBasicPlan } from './redux/actions/basicinfo.actions'
+import { setMessageAlert } from './redux/actions/notifications.actions'
 import { joinRoom } from './utility/socketio'
 import Notification from 'react-web-notification'
+import MODAL from './components/extras/modal'
 import AlertContainer from 'react-alert'
 
 class App extends Component {
   constructor (props) {
     super(props)
     this.state = {
+      message_alert: null,
       path: '/',
       showContent: (auth.getToken() !== undefined && auth.getToken() !== '')
     }
     this.handleDemoSSAPage = this.handleDemoSSAPage.bind(this)
     this.onNotificationClick = this.onNotificationClick.bind(this)
+    this.checkTrialPeriod = this.checkTrialPeriod.bind(this)
+    this.getTrialModalContent = this.getTrialModalContent.bind(this)
+    this.onPurchaseSubscription = this.onPurchaseSubscription.bind(this)
 
     props.getuserdetails(joinRoom)
   }
@@ -33,12 +38,13 @@ class App extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.toastrNotification) {
-      if (nextProps.toastrNotification.agentId === nextProps.user._id) {
-        this.msg.info(nextProps.toastrNotification.message)
-      }
-      nextProps.setNotification(null)
-    }
+    if (nextProps.message_alert) {
+      nextProps.setMessageAlert(null)
+    } 
+    this.setState({
+      message_alert: nextProps.message_alert
+    })
+
   }
 
   componentDidMount () {
@@ -72,6 +78,46 @@ class App extends Component {
         }
       }, 1000)
     }
+  }
+
+  checkTrialPeriod () {
+    if (this.props.history.location.pathname.toLowerCase() !== '/settings') {
+      if (this.props.user &&
+        this.props.user.trialPeriod &&
+        this.props.user.trialPeriod.status &&
+        new Date(this.props.user.trialPeriod.endDate) < new Date()
+      ) {
+        this.refs._open_trial_modal.click()
+      }
+    }
+  }
+
+  getTrialModalContent () {
+    return (
+      <div>
+        <p>Your trial period has ended. If you wish to continue using the Premium plan, we suggest you to kindly purchase its subscription. Else, you can choose to switch to our Basic (free) plan.</p>
+        <div style={{ width: '100%', textAlign: 'center' }}>
+          <div style={{ display: 'inline-block', padding: '5px' }}>
+            <button className='btn btn-secondary' onClick={this.props.switchToBasicPlan} data-dismiss='modal'>
+              Switch to Basic Plan
+            </button>
+          </div>
+          <div style={{ display: 'inline-block', padding: '5px' }}>
+            <button onClick={this.onPurchaseSubscription} className='btn btn-primary' data-dismiss='modal'>
+              Purchase Subscription
+            </button>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  onPurchaseSubscription () {
+    this.refs._open_trial_modal.click()
+    this.props.history.push({
+      pathname: '/settings',
+      state: 'payment_methods'
+    })
   }
 
   componentWillUnmount () {
@@ -123,19 +169,36 @@ class App extends Component {
       time: 5000,
       transition: 'scale'
     }
+    if (this.refs._open_trial_modal) {
+      this.checkTrialPeriod()
+    }
     return (
       <div>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
+        <button
+          style={{display: 'none'}}
+          ref='_open_trial_modal'
+          data-target='#_trial_period'
+          data-backdrop="static"
+          data-keyboard="false"
+          data-toggle='modal'
+        />
+        <MODAL
+          id='_trial_period'
+          title='Trial Period Ended'
+          content={this.getTrialModalContent()}
+        />
+
         {
-          this.props.socketData && this.props.socketData.showNotification &&
+          this.state.message_alert && !this.state.message_alert.muteNotification && this.state.message_alert.agentId === this.props.user._id &&
           <Notification
-            title='New Message'
+            title='Message Alert'
             onClick={this.onNotificationClick}
             options={{
-              body: `You got a new message from ${this.props.socketData.payload.subscriber.firstName} ${this.props.socketData.payload.subscriber.lastName}: ${this.props.socketData.payload.text ? this.props.socketData.payload.text : this.props.socketData.payload.message.payload.attachments[0].type}`,
+              body: this.state.message_alert.message,
               lang: 'en',
               dir: 'ltr',
-              icon: this.props.socketData.payload.subscriber ? this.props.socketData.payload.subscriber.profilePic : ''
+              icon: this.state.message_alert.subscriber ? this.state.message_alert.subscriber.profilePic : ''
             }}
           />
         }
@@ -169,16 +232,16 @@ App.propTypes = {
 function mapStateToProps (state) {
   console.log('store state in app', state)
   return {
-    socketData: (state.socketInfo.socketData),
     user: (state.basicInfo.user),
-    toastrNotification: (state.notificationsInfo.toastr_notification)
+    message_alert: (state.notificationsInfo.message_alert)
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
       getuserdetails,
-      setNotification
+      switchToBasicPlan,
+      setMessageAlert
     }, dispatch)
 }
 

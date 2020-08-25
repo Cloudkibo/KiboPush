@@ -46,7 +46,7 @@ export function showAdminAlerts (data) {
   }
 }
 
-export function showWhiteListDomains(data) {
+export function showWhiteListDomains (data) {
   return {
     type: ActionTypes.SHOW_WHITELIST_DOMAINS,
     data
@@ -61,7 +61,7 @@ export function showAdvancedSettings(data) {
   }
 }
 
-export function showcannedResponses(data) {
+export function showcannedResponses (data) {
   return {
     type: ActionTypes.GET_CANNED_RESPONSES,
     data
@@ -91,6 +91,13 @@ export function getResponseMethod(data) {
 export function getPermissionsSuccess(data) {
   return {
     type: ActionTypes.GET_PERMISSIONS_SUCCESS,
+    data
+  }
+}
+
+export function showUserPermissions(data) {
+  return {
+    type: ActionTypes.SHOW_USER_PERMISSIONS,
     data
   }
 }
@@ -141,6 +148,20 @@ export function getPermissions() {
   }
 }
 
+export function getUserPermissions() {
+  return (dispatch) => {
+    callApi('permissions/fetchUserPermissions')
+      .then(res => {
+        console.log('getUserPermissions', res)
+        if (res.status === 'success') {
+          console.log('permissions', res.payload)
+          dispatch(showUserPermissions(res.payload))
+        }
+      })
+  }
+}
+
+
 export function fetchNotifications () {
   return (dispatch) => {
     callApi('adminAlerts/')
@@ -166,7 +187,7 @@ export function updateNotificationSettings (data, msg) {
   }
 }
 
-export function updatePermission(updatedPermissions, msg) {
+export function updatePermission (updatedPermissions, msg) {
   return (dispatch) => {
     callApi('permissions/updatePermissions', 'post', updatedPermissions)
       .then(res => {
@@ -176,6 +197,19 @@ export function updatePermission(updatedPermissions, msg) {
           dispatch(getUpdatedPermissionsSuccess(res.payload))
         } else if (res.status === 'failed') {
           msg.success('Permission Update Failed')
+        }
+      })
+  }
+}
+export function setPermission(updatedPermissions, msg) {
+  return (dispatch) => {
+    callApi('permissions/changePermissions', 'post', updatedPermissions)
+      .then(res => {
+        if (res.status === 'success') {
+          msg.success('Changes updated successfully')
+          dispatch(getUserPermissions())
+        } else if (res.status === 'failed') {
+          msg.success('Failed to update changes')
         }
       })
   }
@@ -692,8 +726,7 @@ export function getAdvancedSettings() {
   }
 }
 
-
-export function loadcannedResponses() {
+export function loadcannedResponses () {
   return (dispatch) => {
     callApi('cannedResponses')
       .then(res => {
