@@ -95,6 +95,13 @@ export function getPermissionsSuccess(data) {
   }
 }
 
+export function showUserPermissions(data) {
+  return {
+    type: ActionTypes.SHOW_USER_PERMISSIONS,
+    data
+  }
+}
+
 export function getUpdatedPermissionsSuccess(data) {
   return {
     type: ActionTypes.GET_UPDATED_PERMISSIONS_SUCCESS,
@@ -141,6 +148,20 @@ export function getPermissions() {
   }
 }
 
+export function getUserPermissions() {
+  return (dispatch) => {
+    callApi('permissions/fetchUserPermissions')
+      .then(res => {
+        console.log('getUserPermissions', res)
+        if (res.status === 'success') {
+          console.log('permissions', res.payload)
+          dispatch(showUserPermissions(res.payload))
+        }
+      })
+  }
+}
+
+
 export function fetchNotifications () {
   return (dispatch) => {
     callApi('adminAlerts/')
@@ -176,6 +197,19 @@ export function updatePermission (updatedPermissions, msg) {
           dispatch(getUpdatedPermissionsSuccess(res.payload))
         } else if (res.status === 'failed') {
           msg.success('Permission Update Failed')
+        }
+      })
+  }
+}
+export function setPermission(updatedPermissions, msg) {
+  return (dispatch) => {
+    callApi('permissions/changePermissions', 'post', updatedPermissions)
+      .then(res => {
+        if (res.status === 'success') {
+          msg.success('Changes updated successfully')
+          dispatch(getUserPermissions())
+        } else if (res.status === 'failed') {
+          msg.success('Failed to update changes')
         }
       })
   }

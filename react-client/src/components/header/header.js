@@ -43,6 +43,14 @@ class Header extends React.Component {
     this.removeActingAsUser = this.removeActingAsUser.bind(this)
     this.showViewingAsDropDown = this.showViewingAsDropDown.bind(this)
     this.redirectToDashboard = this.redirectToDashboard.bind(this)
+    this.goToSettings = this.goToSettings.bind(this)
+  }
+
+  goToSettings () {
+    this.props.history.push({
+      pathname: '/settings',
+      state: {tab: 'notificationSettings'}
+    })
   }
 
   removeActingAsUser() {
@@ -494,18 +502,21 @@ class Header extends React.Component {
                         <div className='m-dropdown__wrapper'>
                           <span className='m-dropdown__arrow m-dropdown__arrow--center' />
                           <div className='m-dropdown__inner'>
-                            <div className='m-dropdown__header m--align-center' style={{ background: 'assets/app/media/img/misc/notification_bg.jpg', backgroundSize: 'cover' }}>
-                              {this.props.notifications && this.state.unseenNotifications.length > 0
-                                ? <span className='m-dropdown__header-title'>
-                                  {this.state.unseenNotifications.length} New
-                            </span>
-                                : <span className='m-dropdown__header-title'>
-                                  No New
-                            </span>
-                              }
+                            <div className='m-dropdown__header' style={{ background: 'assets/app/media/img/misc/notification_bg.jpg', backgroundSize: 'cover' }}>
+                              <div className='m--align-center'>
+                                {this.props.notifications && this.state.unseenNotifications.length > 0
+                                  ? <span className='m-dropdown__header-title'>
+                                    {this.state.unseenNotifications.length} New
+                              </span>
+                                  : <span className='m-dropdown__header-title'>
+                                    No New
+                              </span>
+                                }
                               <span className='m-dropdown__header-subtitle'>
                                 Notifications
-                            </span>
+                              </span>
+                            </div>
+                            <div className='m--align-right' style={{position: 'relative', top: '-32px'}}><i onClick={this.goToSettings} style={{fontSize: '1.5rem', cursor: 'pointer'}} className='la la-gear'/></div>
                             </div>
                             {this.props.notifications && (this.state.seenNotifications.length > 0 || this.state.unseenNotifications.length > 0) &&
                               <div className='m-dropdown__body'>

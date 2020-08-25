@@ -8,7 +8,7 @@ import Sidebar from './components/sidebar/sidebar'
 import auth from './utility/auth.service'
 import $ from 'jquery'
 import { getuserdetails, switchToBasicPlan } from './redux/actions/basicinfo.actions'
-import { setNotification } from './redux/actions/notifications.actions'
+import { setMessageAlert } from './redux/actions/notifications.actions'
 import { joinRoom } from './utility/socketio'
 import Notification from 'react-web-notification'
 import MODAL from './components/extras/modal'
@@ -18,6 +18,7 @@ class App extends Component {
   constructor (props) {
     super(props)
     this.state = {
+      message_alert: null,
       path: '/',
       showContent: (auth.getToken() !== undefined && auth.getToken() !== '')
     }
@@ -37,12 +38,13 @@ class App extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.toastrNotification) {
-      if (nextProps.toastrNotification.agentId === nextProps.user._id) {
-        this.msg.info(nextProps.toastrNotification.message)
-      }
-      nextProps.setNotification(null)
-    }
+    if (nextProps.message_alert) {
+      nextProps.setMessageAlert(null)
+    } 
+    this.setState({
+      message_alert: nextProps.message_alert
+    })
+
   }
 
   componentDidMount () {
@@ -188,15 +190,15 @@ class App extends Component {
         />
 
         {
-          this.props.socketData && this.props.socketData.showNotification &&
+          this.state.message_alert && !this.state.message_alert.muteNotification && this.state.message_alert.agentId === this.props.user._id &&
           <Notification
-            title='New Message'
+            title='Message Alert'
             onClick={this.onNotificationClick}
             options={{
-              body: `You got a new message from ${this.props.socketData.payload.subscriber.firstName} ${this.props.socketData.payload.subscriber.lastName}: ${this.props.socketData.payload.text ? this.props.socketData.payload.text : this.props.socketData.payload.message.payload.attachments[0].type}`,
+              body: this.state.message_alert.message,
               lang: 'en',
               dir: 'ltr',
-              icon: this.props.socketData.payload.subscriber ? this.props.socketData.payload.subscriber.profilePic : ''
+              icon: this.state.message_alert.subscriber ? this.state.message_alert.subscriber.profilePic : ''
             }}
           />
         }
@@ -230,9 +232,8 @@ App.propTypes = {
 function mapStateToProps (state) {
   console.log('store state in app', state)
   return {
-    socketData: (state.socketInfo.socketData),
     user: (state.basicInfo.user),
-    toastrNotification: (state.notificationsInfo.toastr_notification)
+    message_alert: (state.notificationsInfo.message_alert)
   }
 }
 
@@ -240,7 +241,7 @@ function mapDispatchToProps (dispatch) {
   return bindActionCreators({
       getuserdetails,
       switchToBasicPlan,
-      setNotification
+      setMessageAlert
     }, dispatch)
 }
 
