@@ -103,6 +103,7 @@ class Analytics extends React.Component {
                   style={{ marginLeft: '20px', marginTop: '5px' }}
                   type='button'
                   className='btn btn-primary pull-right m-btn m-btn--icon'
+                  onClick={this.onBack}
                 >
                   <span>
                     <i className="la la-arrow-left" />
