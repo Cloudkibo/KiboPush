@@ -198,14 +198,16 @@ class ShopifyIntegration extends React.Component {
                     {
                       this.props.shopifyIntegrations.length < 3 &&
                       <div style={{ display: 'flex', justifyContent: 'center', marginTop: '50px' }}>
-                        <button
-                          onClick={() => this.props.integrateShopify(this.redirectToAuthorizeShopify)}
+                        <a
+                          target='_blank'
+                          rel='noopener noreferrer'
+                          href="https://partners.shopify.com/1033294/apps/2954997/test"
                           style={{ border: '1px dashed #36a3f7', cursor: 'pointer' }}
                           type="button"
                           className="btn m-btn--pill btn-outline-info m-btn m-btn--custom"
                         >
                           {this.props.shopifyIntegrations.length > 0 ? '+ Connect New' : '+ Connect'}
-                        </button>
+                        </a>
                       </div>
                     }
                   </div>
