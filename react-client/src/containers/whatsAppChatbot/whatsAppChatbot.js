@@ -28,9 +28,12 @@ class WhatsAppChatbot extends React.Component {
     this.setFAQs = this.setFAQs.bind(this)
     this.saveChatbot = this.saveChatbot.bind(this)
     this.getTestChatbotContent = this.getTestChatbotContent.bind(this)
+    this.setTestSubscribers = this.setTestSubscribers.bind(this)
     this.handleTestSubscribers = this.handleTestSubscribers.bind(this)
     this.saveTestSubscribers = this.saveTestSubscribers.bind(this)
     this.clearTestSubscribers = this.clearTestSubscribers.bind(this)
+    this.goToShopifySettings = this.goToShopifySettings.bind(this)
+    this.getConnectShopifyContent = this.getConnectShopifyContent.bind(this)
 
     props.fetchChatbot()
     props.fetchStore()
@@ -89,36 +92,57 @@ class WhatsAppChatbot extends React.Component {
     })
   }
 
+  setTestSubscribers() {
+    if (!this.props.store) {
+      let shopifyConnectModal = document.getElementById('_shopify_integration_trigger')
+      if (shopifyConnectModal) {
+        shopifyConnectModal.click()
+      }
+    } else {
+      let testSubscribersModal = document.getElementById('_test_subscribers_trigger')
+      if (testSubscribersModal) {
+        testSubscribersModal.click()
+      }
+    }
+  }
+
   saveChatbot(e) {
     e.preventDefault()
-    if (!this.props.chatbot) {
-      this.props.createChatbot({
-        botLinks: {
-          paymentMethod: this.state.paymentMethod,
-          returnPolicy: this.state.returnPolicy,
-          faqs: this.state.faqs
-        }
-      }, (res) => {
-        if (res.status === 'success') {
-          this.msg.success(res.description)
-        } else {
-          this.msg.error(res.description)
-        }
-      })
+    if (!this.props.store) {
+      let shopifyConnectModal = document.getElementById('_shopify_integration_trigger')
+      if (shopifyConnectModal) {
+        shopifyConnectModal.click()
+      }
     } else {
-      this.props.updateChatbot({
-        botLinks: {
-          paymentMethod: this.state.paymentMethod,
-          returnPolicy: this.state.returnPolicy,
-          faqs: this.state.faqs
-        }
-      }, (res) => {
-        if (res.status === 'success') {
-          this.msg.success(res.description)
-        } else {
-          this.msg.error(res.description)
-        }
-      })
+      if (!this.props.chatbot) {
+        this.props.createChatbot({
+          botLinks: {
+            paymentMethod: this.state.paymentMethod,
+            returnPolicy: this.state.returnPolicy,
+            faqs: this.state.faqs
+          }
+        }, (res) => {
+          if (res.status === 'success') {
+            this.msg.success(res.description)
+          } else {
+            this.msg.error(res.description)
+          }
+        })
+      } else {
+        this.props.updateChatbot({
+          botLinks: {
+            paymentMethod: this.state.paymentMethod,
+            returnPolicy: this.state.returnPolicy,
+            faqs: this.state.faqs
+          }
+        }, (res) => {
+          if (res.status === 'success') {
+            this.msg.success(res.description)
+          } else {
+            this.msg.error(res.description)
+          }
+        })
+      }
     }
   }
 
@@ -218,6 +242,31 @@ class WhatsAppChatbot extends React.Component {
     )
   }
 
+  goToShopifySettings() {
+    document.getElementById('_close_shopify_integration').click()
+    this.props.history.push({
+      pathname: '/settings',
+      state: { tab: 'shopifyIntegration' }
+    })
+  }
+
+  getConnectShopifyContent() {
+    return (
+      <div>
+        <div>
+          <span>
+            You have not integrated Shopify with KiboPush. Please integrate Shopify to continue.
+        </span>
+        </div>
+        <div style={{ marginTop: '25px', textAlign: 'center' }}>
+          <div onClick={this.goToShopifySettings} className='btn btn-primary'>
+            Integrate
+        </div>
+        </div>
+      </div>
+    )
+  }
+
   render() {
     var alertOptions = {
       offset: 75,
@@ -235,6 +284,33 @@ class WhatsAppChatbot extends React.Component {
           content={this.getTestChatbotContent()}
           onClose={this.clearTestSubscribers}
         />
+        <button
+          id="_test_subscribers_trigger"
+          data-target='#_test_subscribers'
+          data-backdrop="static"
+          data-keyboard="false"
+          data-toggle='modal'
+          type='button'
+          style={{ display: 'none' }}>
+          Test Subscribers Modal
+        </button>
+        <MODAL
+          id='_shopify_integration'
+          title='Shopify Integration'
+          content={this.getConnectShopifyContent()}
+        />
+        <button
+          id="_shopify_integration_trigger"
+          data-target='#_shopify_integration'
+          data-backdrop="static"
+          data-keyboard="false"
+          data-toggle='modal'
+          type='button'
+          style={{ display: 'none' }}>
+          Shopify Integration Modal
+        </button>
+
+
         <div className='m-subheader'>
           <h3 className='m-subheader__title'>WhatsApp Chatbot</h3>
 
@@ -340,17 +416,14 @@ class WhatsAppChatbot extends React.Component {
                           </div>
 
                           <div className="m-form__actions col-12">
-                            <button type='button' disabled={this.state.zoomMeetingLoading} className="btn btn-secondary">
+                            {/* <button type='button' className="btn btn-secondary">
                               Back
-                            </button>
-                            <button type='submit' disabled={this.state.zoomMeetingLoading} style={{ float: 'right', marginLeft: '20px' }} className="btn btn-primary">
+                            </button> */}
+                            <button type='submit' style={{ float: 'right', marginLeft: '20px' }} className="btn btn-primary">
                               Save
                             </button>
                             <button
-                              data-target='#_test_subscribers'
-                              data-backdrop="static"
-                              data-keyboard="false"
-                              data-toggle='modal'
+                              onClick={this.setTestSubscribers}
                               type='button'
                               style={{ float: 'right', marginLeft: '20px' }}
                               className="btn btn-primary">
