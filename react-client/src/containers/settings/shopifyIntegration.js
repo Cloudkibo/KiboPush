@@ -164,8 +164,6 @@ class ShopifyIntegration extends React.Component {
                       !this.props.store &&
                       <div style={{ display: 'flex', justifyContent: 'center', marginTop: '50px' }}>
                         <a
-                          target='_blank'
-                          rel='noopener noreferrer'
                           href="https://partners.shopify.com/1033294/apps/2954997/test"
                           style={{ border: '1px dashed #36a3f7', cursor: 'pointer' }}
                           type="button"

@@ -370,7 +370,7 @@ class WhatsAppChatbot extends React.Component {
                             <img alt="shopify-logo" style={{ width: '100px', marginTop: '15px', opacity: this.props.store ? '1' : '0.5' }} src='https://i.pcmag.com/imagery/reviews/02lLbDwVdtIQN2uDFnHeN41-11..v_1569480019.jpg' />
                           </div>
 
-                          <div className="form-group m-form__group col-lg-8">
+                          {/* <div className="form-group m-form__group col-lg-8">
                             <h6>
                               Payment Methods (Optional):
                             </h6>
@@ -380,14 +380,14 @@ class WhatsAppChatbot extends React.Component {
                               If you wish to provide other payment methods as well then please provide a link to other payment methods.
                               If you leave this empty, then only "Cash on delivery" option will be shown as a payment method to your subscribers.
                             </span>
-                          </div>
+                          </div> */}
 
-                          <div className="form-group m-form__group col-lg-8">
+                          {/* <div className="form-group m-form__group col-lg-8">
                             <h6>
                               Refund Policy URL (Optional):
                             </h6>
                             <input type="text" onChange={this.setReturnPolicy} value={this.state.returnPolicy} className="form-control m-input" id="_refund_policy_url" placeholder="Enter refund policy URL..." />
-                          </div>
+                          </div> */}
 
                           <div className="form-group m-form__group col-lg-8">
                             <h6>
