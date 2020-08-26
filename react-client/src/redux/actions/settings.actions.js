@@ -209,7 +209,7 @@ export function setPermission(updatedPermissions, msg) {
           msg.success('Changes updated successfully')
           dispatch(getUserPermissions())
         } else if (res.status === 'failed') {
-          msg.success('Failed to update changes')
+          msg.error('Failed to update changes')
         }
       })
   }
