@@ -185,11 +185,7 @@ class Settings extends React.Component {
       openTab: 'notifications'
     })
   }
-  setNotification () {
-    this.setState({
-      openTab: 'notifications'
-    })
-  }
+
   setWhiteListDomains () {
     this.setState({
       openTab: 'whitelistDomains'

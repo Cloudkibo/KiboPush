@@ -23,9 +23,9 @@ class NotificationSettings extends React.Component {
 
   saveNotificationSettings () {
     var muteNotifications = []
-    this.state.selectedPages && this.state.selectedPages.map(page => {
+    this.state.selectedPages && this.state.selectedPages.map(page => (
       muteNotifications.push(page.value)
-    })
+    ))
     var payload= {muteNotifications: muteNotifications}
     this.props.setPermission({payload: payload}, this.msg)
   }
@@ -52,6 +52,7 @@ class NotificationSettings extends React.Component {
           nextProps.userPermissions.muteNotifications.map(pageId => {
             var page = nextProps.pages.filter((page) => { return (page._id === pageId) })
             selectedPages.push({ 'value': page[0]._id, 'label': page[0].pageName })
+            return selectedPages
           })
           this.setState({
             selectedPages: selectedPages
