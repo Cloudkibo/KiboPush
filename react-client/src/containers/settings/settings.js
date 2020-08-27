@@ -26,6 +26,7 @@ import CannedResponses from './cannedResponses/cannedResponses'
 import ZoomIntegration from './zoomIntegration'
 import Notifications from './notifications'
 import ShopifyIntegration from './shopifyIntegration'
+import NotificationSettings from './notificationSettings'
 
 class Settings extends React.Component {
   constructor (props, context) {
@@ -84,6 +85,7 @@ class Settings extends React.Component {
     this.setUploadCustomerFile = this.setUploadCustomerFile.bind(this)
     this.setCannedResponses = this.setCannedResponses.bind(this)
     this.setNotification = this.setNotification.bind(this)
+    this.setNotificationSettings = this.setNotificationSettings.bind(this)
   }
 
   UNSAFE_componentWillMount () {
@@ -286,6 +288,11 @@ class Settings extends React.Component {
       openTab: 'deleteUserData'
     })
   }
+  setNotificationSettings () {
+    this.setState({
+      openTab: 'notificationSettings'
+    })
+  }
 
   scrollToTop () {
     this.top.scrollIntoView({behavior: 'instant'})
@@ -321,6 +328,12 @@ class Settings extends React.Component {
     if (this.props.location.state && this.props.location.state.tab) {
       if (this.props.location.state.tab === 'zoomIntegration') {
         this.setZoomIntegration()
+      }
+    }
+
+    if (this.props.location.state && this.props.location.state.tab) {
+      if (this.props.location.state.tab === 'notificationSettings') {
+        this.setNotificationSettings()
       }
     }
     if (this.props.location.state && this.props.location.state.tab) {
@@ -594,6 +607,14 @@ class Settings extends React.Component {
                       </a>
                     </li>
                     }
+                    { this.props.user &&
+                    <li className='m-nav__item'>
+                      <a href='#/' className='m-nav__link' onClick={this.setNotificationSettings} style={{cursor: 'pointer'}} >
+                        <i className='m-nav__link-icon flaticon-chat' />
+                        <span className='m-nav__link-text'>Notifications Settings</span>
+                      </a>
+                    </li>
+                    }
                     { this.props.user && this.props.user.role === 'buyer' && this.state.isKiboChat &&
                     <li className='m-nav__item'>
                       {/* this.props.user.currentPlan.unique_ID === 'plan_A' || this.props.user.currentPlan.unique_ID === 'plan_C' */}
@@ -795,12 +816,15 @@ class Settings extends React.Component {
             { this.state.openTab === 'notifications' &&
               <Notifications history= {this.props.history}/>
             }
+             { this.state.openTab === 'notificationSettings' &&
+              <NotificationSettings history= {this.props.history}/>
+            }
             { this.state.openTab === 'advancedSettings' &&
               <AdvancedSetting />
             }
             { this.state.openTab === 'cannedResponses' &&
               <CannedResponses history= {this.props.history}/>
-            }	
+            } 
             {
               this.state.openTab === 'zoomIntegration' &&
               <ZoomIntegration />
