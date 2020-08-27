@@ -2,13 +2,13 @@ import React from 'react'
 import IconStack from '../Dashboard/IconStack'
 
 class PeriodicAnalytics extends React.Component {
-  constructor (props, context) {
+  constructor(props, context) {
     super(props, context)
     this.state = {
     }
   }
 
-  render () {
+  render() {
     return (
       <div className='row'>
         <div className='col-xl-12'>
@@ -22,18 +22,18 @@ class PeriodicAnalytics extends React.Component {
                 </div>
               </div>
               <div className='m-portlet__head-tools'>
-                <div style={{display: 'flex', float: 'right'}}>
-                <span htmlFor='example-text-input' className='col-form-label'>
-                  Show records for last:&nbsp;&nbsp;
+                <div style={{ display: 'flex', float: 'right' }}>
+                  <span htmlFor='example-text-input' className='col-form-label'>
+                    Show records for last:&nbsp;&nbsp;
                 </span>
-                <div style={{width: '200px'}}>
-                  <input placeholder='Enter number of days' type='number' min='1' step='1' value={this.props.days} className='form-control' onChange={this.props.onDaysChange} />
+                  <div style={{ width: '200px' }}>
+                    <input placeholder='Enter number of days' type='number' min='1' step='1' value={this.props.days} className='form-control' onChange={this.props.onDaysChange} />
+                  </div>
+                  <span htmlFor='example-text-input' className='col-form-label'>
+                    &nbsp;&nbsp;days
+                </span>
                 </div>
-                <span htmlFor='example-text-input' className='col-form-label'>
-                &nbsp;&nbsp;days
-                </span>
               </div>
-            </div>
             </div>
             <div className='m-portlet__body'>
               <div className='row'>
@@ -78,21 +78,6 @@ class PeriodicAnalytics extends React.Component {
                 </div>
                 <div className='col-md-3'>
                   <IconStack
-                    icon='la la-hand-pointer-o'
-                    title={this.props.urlBtnClickedCount}
-                    subtitle='Times attachment button clicked'
-                    iconStyle='primary'
-                    id='triggers'
-                    iconFontSize='1.8rem'
-                    titleFontSize='20px'
-                    iconHeight='50px'
-                    iconWidth='50px'
-                  />
-                </div>
-              </div>
-              <div className='row' style={{marginTop: '35px'}}>
-                <div className='col-md-3'>
-                  <IconStack
                     icon='la la-check'
                     title={this.props.triggerWordsMatched}
                     subtitle='Times bot started using triggers'
@@ -104,6 +89,24 @@ class PeriodicAnalytics extends React.Component {
                     iconWidth='50px'
                   />
                 </div>
+              </div>
+              <div className='row' style={{ marginTop: '35px' }}>
+                {
+                  this.props.urlBtnClickedCount !== undefined &&
+                  <div className='col-md-3'>
+                    <IconStack
+                      icon='la la-hand-pointer-o'
+                      title={this.props.urlBtnClickedCount}
+                      subtitle='Times attachment button clicked'
+                      iconStyle='primary'
+                      id='triggers'
+                      iconFontSize='1.8rem'
+                      titleFontSize='20px'
+                      iconHeight='50px'
+                      iconWidth='50px'
+                    />
+                  </div>
+                }
               </div>
             </div>
           </div>

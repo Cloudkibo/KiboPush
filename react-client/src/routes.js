@@ -168,6 +168,7 @@ import ChatbotAutomation from './containers/chatbotAutomation/chatbotAutomation'
 import ChatbotAutomationNew from './containers/chatbotAutomationNew/chatbotAutomation'
 import ChatbotSettings from './containers/chatbotAutomation/chatbotSettings'
 import IntegrateZoom from './containers/zoomIntegration/integrateZoom'
+import WhatsAppChatbot from './containers/whatsAppChatbot/whatsAppChatbot'
 
 const Subscriber = asyncComponent(() => import("./containers/subscriber/subscriber"))
 const OperationalDashboard = asyncComponent(() => import("./containers/operationalDashboard/operationalDashboard"))
@@ -186,8 +187,9 @@ const SurveyResult = asyncComponent(() => import("./containers/survey/SurveyResu
 const ConfigureChatbot = asyncComponent(() => import('./containers/chatbotAutomation/configureChatbot'))
 const ConfigureChatbotNew = asyncComponent(() => import('./containers/chatbotAutomationNew/configureChatbot'))
 const ChatbotAnalytics = asyncComponent(() => import('./containers/chatbotAutomation/analytics'))
+const WhatsAppChatbotAnalytics = asyncComponent(() => import('./containers/whatsAppChatbot/analytics'))
 
-function requireAuth (nextState, replace) {
+function requireAuth(nextState, replace) {
   if (!auth.loggedIn()) {
     replace({
       pathname: '/',
@@ -196,7 +198,7 @@ function requireAuth (nextState, replace) {
   }
 }
 
-function redirectAuthUsers (nextState, replace) {
+function redirectAuthUsers(nextState, replace) {
   if (auth.loggedIn()) {
     if (auth.getNext() === 'addPages') {
       auth.removeNext()
@@ -407,6 +409,8 @@ const Routes = () => (
     <Route path='/successMessage' component={successMessage} onEnter={requireAuth} />
     <Route path='/alreadyConnected' component={AlreadyConnected} onEnter={requireAuth} />
     <Route path='/ErrorMessage' component={ErrorMessage} onEnter={requireAuth} />
+    <Route path='/whatsAppChatbot' component={WhatsAppChatbot} onEnter={requireAuth} />
+    <Route path='/whatsAppChatbotAnalytics' component={WhatsAppChatbotAnalytics} onEnter={requireAuth} />
     <Route path='*' render={() => <Redirect to='/' />} />
   </Switch>
 
