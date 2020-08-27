@@ -1,4 +1,4 @@
-import React, {Component} from 'react'
+import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { getAutomatedOptions } from '../../redux/actions/basicinfo.actions'
 import { bindActionCreators } from 'redux'
@@ -15,7 +15,7 @@ class Sidebar extends Component {
     this.props.getAutomatedOptions()
   }
 
-  setMenuItems (user, automated_options) {
+  setMenuItems(user, automated_options) {
     const url = window.location.hostname
     let menuItems = []
     const isLocalhost = url.includes('localhost')
@@ -36,7 +36,7 @@ class Sidebar extends Component {
         priority: 'b',
         name: 'Dashboard',
         route: '/dashboard',
-        routeState: {isKiboLite},
+        routeState: { isKiboLite },
         icon: 'flaticon-squares-4'
       })
     }
@@ -173,14 +173,14 @@ class Sidebar extends Component {
           route: '/bots'
         })
       }
-      if ((isKiboChat || isLocalhost) && user.plan['chatbot_automation'] && user.permissions['configure_chatbot_automation']) {
+      if (platform === 'messenger' && (isKiboChat || isLocalhost) && user.plan['chatbot_automation'] && user.permissions['configure_chatbot_automation']) {
         submenu.push({
           priority: 'b',
           name: 'Chatbot Automation',
           route: '/chatbotAutomation'
         })
       }
-      if ((isKiboChat || isLocalhost) && user.isSuperUser && user.plan['chatbot_automation'] && user.permissions['configure_chatbot_automation']) {
+      if (platform === 'messenger' && (isKiboChat || isLocalhost) && user.isSuperUser && user.plan['chatbot_automation'] && user.permissions['configure_chatbot_automation']) {
         submenu.push({
           priority: 'b',
           name: 'Chatbot Automation (NEW)',
@@ -215,10 +215,10 @@ class Sidebar extends Component {
           route: '/sequenceMessaging'
         })
       }
-      if ((isKiboChat || isLocalhost) && platform === 'whatsApp') {
+      if (platform === 'whatsApp' && (isKiboChat || isLocalhost) && platform === 'whatsApp') {
         submenu.push({
           priority: 'g',
-          name: 'Chatbot',
+          name: 'Shopify Chatbot',
           route: '/whatsAppChatbot'
         })
       }
@@ -381,12 +381,12 @@ class Sidebar extends Component {
       })
     }
     if (platform === 'messenger' && user.isSuperUser) {
-//       menuItems.push({
-//         priority: 'l',
-//         name: 'Abandoned Carts',
-//         route: '/abandonedCarts',
-//         icon: 'flaticon-comment'
-//       })
+      //       menuItems.push({
+      //         priority: 'l',
+      //         name: 'Abandoned Carts',
+      //         route: '/abandonedCarts',
+      //         icon: 'flaticon-comment'
+      //       })
     }
     menuItems.push({
       priority: 'm',
@@ -403,13 +403,13 @@ class Sidebar extends Component {
     return menuItems.sort((a, b) => (a.priority > b.priority) ? 1 : -1)
   }
 
-  UNSAFE_componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.user && nextProps.automated_options) {
-       this.setState({menuItems: this.setMenuItems(nextProps.user, nextProps.automated_options)})
+      this.setState({ menuItems: this.setMenuItems(nextProps.user, nextProps.automated_options) })
     }
   }
 
-  render () {
+  render() {
     return (
       <div id='sidebarDiv'>
         <button className='m-aside-left-close m-aside-left-close--skin-dark' id='m_aside_left_close_btn'>
@@ -422,8 +422,8 @@ class Sidebar extends Component {
             data-menu-vertical='1'
             data-menu-scrollable='1'
           >
-            <div id='mCSB_2' className='mCustomScrollBox mCS-minimal-dark mCSB_vertical mCSB_outside' tabIndex='0' style={{maxHeight: 'none'}}>
-              <div id='mCSB_2_container' className='mCSB_container' style={{position: 'relative', top: '0px', left: '0px'}} dir='ltr'>
+            <div id='mCSB_2' className='mCustomScrollBox mCS-minimal-dark mCSB_vertical mCSB_outside' tabIndex='0' style={{ maxHeight: 'none' }}>
+              <div id='mCSB_2_container' className='mCSB_container' style={{ position: 'relative', top: '0px', left: '0px' }} dir='ltr'>
                 <ul className='m-menu__nav  m-menu__nav--dropdown-submenu-arrow '>
                   {
                     this.state.menuItems.map((item, index) => (
@@ -449,7 +449,7 @@ class Sidebar extends Component {
   }
 }
 
-function mapStateToProps (state) {
+function mapStateToProps(state) {
   console.log('mapStateToProps in sidebar', state)
   return {
     user: (state.basicInfo.user),
