@@ -486,7 +486,7 @@ class WhatsAppChat extends React.Component {
               }
               <HELPWIDGET
                 documentation={{ visibility: true, link: 'https://kibopush.com/livechat-whatsapp/' }}
-                videoTutorial={{ visibility: true, videoId: 'WmZZyc1IgLA' }}
+                videoTutorial={{ visibility: true, videoId: 'I3rS_AXT7tw' }}
               />
               <div className='row'>
                 <SESSIONS
