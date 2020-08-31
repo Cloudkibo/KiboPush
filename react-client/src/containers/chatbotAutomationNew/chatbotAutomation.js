@@ -50,7 +50,7 @@ class ChatbotAutomation extends React.Component {
     chatbot.pageId = chatbot.pageId._id
     chatbot.startingBlockId = chatbot.startingBlockId || 'welcome-id'
     this.props.history.push({
-      pathname: '/configureChatbot',
+      pathname: '/configureChatbotNew',
       state: {chatbot, page}
     })
   }
@@ -62,7 +62,7 @@ class ChatbotAutomation extends React.Component {
     chatbot.startingBlockId = chatbot.startingBlockId || 'welcome-id'
     if (res.status === 'success') {
       this.props.history.push({
-        pathname: '/configureChatbot',
+        pathname: '/configureChatbotNew',
         state: {chatbot, page}
       })
     } else {
@@ -80,7 +80,7 @@ class ChatbotAutomation extends React.Component {
   }
 
   onSettingsClick (chatbot) {
-    chatbot.backUrl = '/chatbotAutomation'
+    chatbot.backUrl = '/chatbotAutomationNew'
     this.props.history.push({
       pathname: '/chatbotSettings',
       state: chatbot
@@ -144,20 +144,17 @@ class ChatbotAutomation extends React.Component {
                           }
                         </div>
                       }
-                      {
-                        this.props.user.permissions['create_chatbot_automation'] &&
-                        <label className="m-radio m-radio--bold m-radio--state-brand">
-                          <input
-                            type="radio"
-                            onClick={this.onRadioClick}
-                            onChange={() => {}}
-                            value='create'
-                            checked={this.state.selectedRadio === 'create'}
-                          />
-                            Create New Chatbot
-                          <span />
-                        </label>
-                      }
+                      <label className="m-radio m-radio--bold m-radio--state-brand">
+                        <input
+                          type="radio"
+                          onClick={this.onRadioClick}
+                          onChange={() => {}}
+                          value='create'
+                          checked={this.state.selectedRadio === 'create'}
+                        />
+                          Create New Chatbot
+                        <span />
+                      </label>
                       {
                         this.state.selectedRadio === 'create' &&
                         <div style={{marginLeft: '50px'}} className='row'>

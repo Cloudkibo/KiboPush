@@ -12,6 +12,13 @@ export function showNotifications (data) {
   }
 }
 
+export function setMessageAlert(data) {
+  return {
+    type: ActionTypes.SHOW_MESSAGE_ALERT,
+    data: data
+  }
+}
+
 export function fetchNotifications () {
   console.log('fetchNotifications')
   return (dispatch) => {

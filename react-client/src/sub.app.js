@@ -8,14 +8,17 @@ import Sidebar from './components/sidebar/sidebar'
 import auth from './utility/auth.service'
 import $ from 'jquery'
 import { getuserdetails, switchToBasicPlan } from './redux/actions/basicinfo.actions'
+import { setMessageAlert } from './redux/actions/notifications.actions'
 import { joinRoom } from './utility/socketio'
 import Notification from 'react-web-notification'
 import MODAL from './components/extras/modal'
+import AlertContainer from 'react-alert'
 
 class App extends Component {
   constructor (props) {
     super(props)
     this.state = {
+      message_alert: null,
       path: '/',
       showContent: (auth.getToken() !== undefined && auth.getToken() !== '')
     }
@@ -32,6 +35,16 @@ class App extends Component {
     const sidebar = document.getElementById('sidebarDiv')
     sidebar.parentNode.removeChild(sidebar)
     document.getElementsByTagName('body')[0].className = 'm-page--fluid m--skin- m-content--skin-light2 m-header--fixed m-header--fixed-mobile m-footer--push'
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.message_alert) {
+      nextProps.setMessageAlert(null)
+    } 
+    this.setState({
+      message_alert: nextProps.message_alert
+    })
+
   }
 
   componentDidMount () {
@@ -127,6 +140,7 @@ class App extends Component {
       '/sessionInvalidated',
       '/addfbpages',
       '/configureChatbot',
+      '/configureChatbotNew',
       '/chatbotAnalytics',
       '/integrations'
     ].includes(path)) {
@@ -144,12 +158,23 @@ class App extends Component {
   }
 
   render () {
+    console.log("Public URL ", process.env.PUBLIC_URL)
+    console.log('auth.getToken', auth.getToken())
+    console.log('browser history', this.props.history)
+    
+    var alertOptions = {
+      offset: 14,
+      position: 'top right',
+      theme: 'dark',
+      time: 5000,
+      transition: 'scale'
+    }
     if (this.refs._open_trial_modal) {
       this.checkTrialPeriod()
     }
     return (
       <div>
-
+        <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <button
           style={{display: 'none'}}
           ref='_open_trial_modal'
@@ -165,24 +190,24 @@ class App extends Component {
         />
 
         {
-          this.props.socketData && this.props.socketData.showNotification &&
+          this.state.message_alert && !this.state.message_alert.muteNotification && this.state.message_alert.agentId === this.props.user._id &&
           <Notification
-            title='New Message'
+            title='Message Alert'
             onClick={this.onNotificationClick}
             options={{
-              body: `You got a new message from ${this.props.socketData.payload.subscriber.firstName} ${this.props.socketData.payload.subscriber.lastName}: ${this.props.socketData.payload.text ? this.props.socketData.payload.text : this.props.socketData.payload.message.payload.attachments[0].type}`,
+              body: this.state.message_alert.message,
               lang: 'en',
               dir: 'ltr',
-              icon: this.props.socketData.payload.subscriber ? this.props.socketData.payload.subscriber.profilePic : ''
+              icon: this.state.message_alert.subscriber ? this.state.message_alert.subscriber.profilePic : ''
             }}
           />
         }
         <div>
           {
-            auth.loggedIn() && ['/addfbpages', '/facebookIntegration', '/integrations', '/configureChatbot', '/chatbotAnalytics'].indexOf(this.state.path) === -1
+            auth.loggedIn() && ['/addfbpages', '/facebookIntegration', '/integrations', '/configureChatbot', '/configureChatbotNew', '/chatbotAnalytics'].indexOf(this.state.path) === -1
             ? <Header history={this.props.history} location={this.props.location} />
-          : ['/addfbpages', '/facebookIntegration', '/integrations', '/configureChatbot', '/chatbotAnalytics'].indexOf(this.state.path) > -1 &&
-            <SimpleHeader showTitle={['/configureChatbot', '/chatbotAnalytics'].indexOf(this.state.path) > -1} history={this.props.history} location={this.props.location} />
+          : ['/addfbpages', '/facebookIntegration', '/integrations', '/configureChatbot', '/configureChatbotNew', '/chatbotAnalytics'].indexOf(this.state.path) > -1 &&
+            <SimpleHeader showTitle={['/configureChatbot', '/configureChatbotNew', '/chatbotAnalytics'].indexOf(this.state.path) > -1} history={this.props.history} location={this.props.location} />
           }
           {
             this.state.showContent &&
@@ -207,15 +232,16 @@ App.propTypes = {
 function mapStateToProps (state) {
   console.log('store state in app', state)
   return {
-    socketData: (state.socketInfo.socketData),
-    user: (state.basicInfo.user)
+    user: (state.basicInfo.user),
+    message_alert: (state.notificationsInfo.message_alert)
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
       getuserdetails,
-      switchToBasicPlan
+      switchToBasicPlan,
+      setMessageAlert
     }, dispatch)
 }
 

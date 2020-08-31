@@ -21,14 +21,14 @@ import { loadSubscribersCount } from '../../redux/actions/subscribers.actions'
 import {
   createbroadcast
 } from '../../redux/actions/broadcast.actions'
-import {checkSubscriptionPermissions} from '../../redux/actions/rssIntegration.actions'
+import { checkSubscriptionPermissions } from '../../redux/actions/rssIntegration.actions'
 import AlertContainer from 'react-alert'
 import YouTube from 'react-youtube'
 import { RingLoader } from 'halogenium'
 //  import GettingStarted from './gettingStarted'
 import { registerAction } from '../../utility/socketio'
 import { readShopifyInstallRequest } from '../../utility/utils'
-import { validateUserAccessToken, isFacebookConnected} from '../../redux/actions/basicinfo.actions'
+import { validateUserAccessToken, isFacebookConnected } from '../../redux/actions/basicinfo.actions'
 // import Reports from './reports'
 // import TopPages from './topPages'
 import moment from 'moment'
@@ -38,7 +38,7 @@ import fileDownload from 'js-file-download'
 var json2csv = require('json2csv')
 
 class Dashboard extends React.Component {
-  constructor (props, context) {
+  constructor(props, context) {
     super(props, context)
     this.state = {
       isShowingModal: false,
@@ -72,38 +72,38 @@ class Dashboard extends React.Component {
     this.getNewsPages = this.getNewsPages.bind(this)
     this.handlePermissions = this.handlePermissions.bind(this)
     this.checkFacebookConnected = this.checkFacebookConnected.bind(this)
-    if(window.location.hostname.includes('kiboengage.cloudkibo.com')) {
+    if (window.location.hostname.includes('kiboengage.cloudkibo.com')) {
       this.props.checkSubscriptionPermissions(this.handlePermissions)
     }
   }
 
-  getNewsPages (permissions) {
-    var newsPages =  this.props.permissions.filter(permission => permission.smpStatus === 'approved')
+  getNewsPages(permissions) {
+    var newsPages = this.props.permissions.filter(permission => permission.smpStatus === 'approved')
     return newsPages
   }
 
-  handlePermissions (permissions) {
+  handlePermissions(permissions) {
     var newsPages = this.getNewsPages(permissions)
     this.setState({
       newsPages: newsPages
     })
   }
-  openVideoTutorial () {
+  openVideoTutorial() {
     this.setState({
       openVideo: true
     })
     this.refs.videoDashboard.click()
   }
 
-  checkFacebookConnected (response) {
-    if(this.props.user && this.props.user.role!== 'buyer' && !response.payload.buyerInfo.connectFacebook) {
+  checkFacebookConnected(response) {
+    if (this.props.user && this.props.user.role !== 'buyer' && !response.payload.buyerInfo.connectFacebook) {
       this.props.history.push({
         pathname: '/sessionInvalidated',
         state: { session_inavalidated: false, role: response.payload.role, buyerInfo: response.payload.buyerInfo }
       })
     }
   }
-  UNSAFE_componentWillMount () {
+  UNSAFE_componentWillMount() {
 
     this.props.validateUserAccessToken(this.checkUserAccessToken)
     this.props.isFacebookConnected(this.checkFacebookConnected)
@@ -115,13 +115,13 @@ class Dashboard extends React.Component {
     this.props.loadGraphData(0)
     this.props.loadTopPages()
     this.props.loadMyPagesList()
-    this.props.loadSubscriberSummary({pageId: 'all', days: 'all'})
-    this.props.loadSentSeen({pageId: 'all', days: '30'})
+    this.props.loadSubscriberSummary({ pageId: 'all', days: 'all' })
+    this.props.loadSentSeen({ pageId: 'all', days: '30' })
   }
-  checkUserAccessToken (response) {
+  checkUserAccessToken(response) {
     console.log('checkUserAccessToken response', response)
     if (response.status === 'failed' && response.payload.error &&
-    response.payload.error.code === 190 && this.props.user && this.props.user.platform === 'messenger') {
+      response.payload.error.code === 190 && this.props.user && this.props.user.platform === 'messenger') {
       if (this.props.user.role === 'buyer') {
         this.props.history.push({
           pathname: '/sessionInvalidated',
@@ -135,27 +135,27 @@ class Dashboard extends React.Component {
       }
     }
   }
-  goToSettings () {
+  goToSettings() {
     this.props.history.push({
       pathname: `/settings`,
-      state: {module: 'pro'}
+      state: { module: 'pro' }
     })
   }
 
-  scrollToTop () {
-    this.top.scrollIntoView({behavior: 'instant'})
+  scrollToTop() {
+    this.top.scrollIntoView({ behavior: 'instant' })
   }
-  formatDate (data) {
+  formatDate(data) {
     var formattedData = []
     for (var i = 0; i < data.length; i++) {
       var recordId = data[i]._id
       var date = `${recordId.year}-${recordId.month}-${recordId.day}`
-      var tempObj = {'_id': date, 'count': data[i].count}
+      var tempObj = { '_id': date, 'count': data[i].count }
       formattedData.push(tempObj)
     }
     return formattedData
   }
-  prepareExportData () {
+  prepareExportData() {
     // console.log('prepareExportData')
     var data = []
     var dashboardObj = {}
@@ -189,7 +189,7 @@ class Dashboard extends React.Component {
         dashboardObj['No.of chat session created on different days'] = this.formatDate(this.props.graphData.sessionsgraphdata)
       }
     }
-   // console.log('this.props.topPages', this.props.topPages)
+    // console.log('this.props.topPages', this.props.topPages)
     if (this.props.topPages && this.props.topPages.length > 1) {
       for (var i = 0; i < this.props.topPages.length; i++) {
         dashboardObj['Top Page ' + (i + 1)] = this.props.topPages[i]
@@ -198,7 +198,7 @@ class Dashboard extends React.Component {
     data.push(dashboardObj)
     return data
   }
-  exportDashboardInformation () {
+  exportDashboardInformation() {
     var data = this.prepareExportData()
     var info = data
     var keys = []
@@ -216,21 +216,21 @@ class Dashboard extends React.Component {
       }
     })
   }
-  onDaysChange (e) {
+  onDaysChange(e) {
     var defaultVal = 10
     var value = e.target.value
-    this.setState({selectedDays: value})
+    this.setState({ selectedDays: value })
     if (value && value !== '') {
       if (value.indexOf('.') !== -1) {
         value = Math.floor(value)
       }
       this.props.loadGraphData(value)
     } else if (value === '') {
-      this.setState({selectedDays: ''})
+      this.setState({ selectedDays: '' })
       this.props.loadGraphData(defaultVal)
     }
   }
-  UNSAFE_componentWillReceiveProps (nextprops) {
+  UNSAFE_componentWillReceiveProps(nextprops) {
     console.log('in UNSAFE_componentWillReceiveProps dashboard', nextprops)
     if (nextprops.user && nextprops.pages) {
       if (nextprops.user.emailVerified === false) {
@@ -238,75 +238,75 @@ class Dashboard extends React.Component {
           pathname: '/resendVerificationEmail'
         })
       } else
-      if (nextprops.automated_options && !nextprops.user.facebookInfo && !nextprops.automated_options.twilio && !nextprops.automated_options.flockSendWhatsApp && nextprops.user.role === 'buyer') {
-        this.props.history.push({
-          pathname: '/integrations'
-        })
-      }
-      //  else if (nextprops.user.platform === 'messenger' && !nextprops.user.facebookInfo) {
-      //   this.props.history.push({
-      //     pathname: '/integrations',
-      //     state: {showCancel: 'messenger'}
-      //   })
-      // } else if (nextprops.user.platform === 'sms' && nextprops.automated_options && !nextprops.automated_options.twilio) {
-      //   this.props.history.push({
-      //     pathname: '/integrations',
-      //     state: {showCancel: 'sms'}
-      //   })
-      // } else if (nextprops.user.platform === 'whatsApp' && nextprops.automated_options && !nextprops.automated_options.twilioWhatsApp) {
-      //   this.props.history.push({
-      //     pathname: '/integrations',
-      //     state: {showCancel: 'whatsApp'}
-      //   })
-      // }
-      // else if ((nextprops.user.currentPlan.unique_ID === 'plan_A' || nextprops.user.currentPlan.unique_ID === 'plan_B') && !nextprops.user.facebookInfo) {
-      //   this.props.history.push({
-      //     pathname: '/connectFb',
-      //     state: { account_type: 'individual' }
-      //   })
-      // } else if ((nextprops.user.currentPlan.unique_ID === 'plan_C' || nextprops.user.currentPlan.unique_ID === 'plan_D') && !nextprops.user.facebookInfo && nextprops.user.role === 'buyer' && !nextprops.user.skippedFacebookConnect) {
-      //   if (nextprops.pages && nextprops.pages.length === 0) {
-      //     console.log('going to push')
-      //     this.props.history.push({
-      //       pathname: '/connectFb',
-      //       state: { account_type: 'team' }
-      //     })
-      //   }
-      // }
-      else if (nextprops.user.platform === 'messenger' && nextprops.pages && nextprops.pages.length === 0) {
-        console.log('nextprops pages', nextprops)
-        this.props.history.push({
-          pathname: '/addfbpages'
-        })
-      } else if (nextprops.user.platform === 'messenger' && (nextprops.user.role === 'admin' || nextprops.user.role === 'buyer') && !nextprops.user.wizardSeen) {
-        console.log('going to push add page wizard')
-        this.props.history.push({
-          pathname: '/inviteUsingLinkWizard'
-        })
-      } else if (readShopifyInstallRequest() && readShopifyInstallRequest() !== '') {
-        this.props.history.push({
-          pathname: '/abandonedCarts'
-        })
-      } else if (nextprops.user.platform === 'messenger' && nextprops.subscribersCount > 0) {
-        // this means more than 0 subscribers
-        this.setState({isShowingModal: false})
-      } else if (nextprops.user.platform === 'messenger' && nextprops.pages && nextprops.pages.length > 0 && nextprops.subscribersCount === 0) {
-        // this means 0 subscribers
-        this.setState({isShowingModal: true})
-      } else if (nextprops.pages && nextprops.pages.length === 0) {
-      // this means connected pages in 0
-        // this.props.history.push({
+        if (nextprops.automated_options && !nextprops.user.facebookInfo && !nextprops.automated_options.twilio && !nextprops.automated_options.whatsApp && nextprops.user.role === 'buyer') {
+          this.props.history.push({
+            pathname: '/integrations'
+          })
+        }
+        //  else if (nextprops.user.platform === 'messenger' && !nextprops.user.facebookInfo) {
+        //   this.props.history.push({
+        //     pathname: '/integrations',
+        //     state: {showCancel: 'messenger'}
+        //   })
+        // } else if (nextprops.user.platform === 'sms' && nextprops.automated_options && !nextprops.automated_options.twilio) {
+        //   this.props.history.push({
+        //     pathname: '/integrations',
+        //     state: {showCancel: 'sms'}
+        //   })
+        // } else if (nextprops.user.platform === 'whatsApp' && nextprops.automated_options && !nextprops.automated_options.twilioWhatsApp) {
+        //   this.props.history.push({
+        //     pathname: '/integrations',
+        //     state: {showCancel: 'whatsApp'}
+        //   })
+        // }
+        // else if ((nextprops.user.currentPlan.unique_ID === 'plan_A' || nextprops.user.currentPlan.unique_ID === 'plan_B') && !nextprops.user.facebookInfo) {
+        //   this.props.history.push({
+        //     pathname: '/connectFb',
+        //     state: { account_type: 'individual' }
+        //   })
+        // } else if ((nextprops.user.currentPlan.unique_ID === 'plan_C' || nextprops.user.currentPlan.unique_ID === 'plan_D') && !nextprops.user.facebookInfo && nextprops.user.role === 'buyer' && !nextprops.user.skippedFacebookConnect) {
+        //   if (nextprops.pages && nextprops.pages.length === 0) {
+        //     console.log('going to push')
+        //     this.props.history.push({
+        //       pathname: '/connectFb',
+        //       state: { account_type: 'team' }
+        //     })
+        //   }
+        // }
+        else if (nextprops.user.platform === 'messenger' && nextprops.pages && nextprops.pages.length === 0) {
+          console.log('nextprops pages', nextprops)
+          this.props.history.push({
+            pathname: '/addfbpages'
+          })
+        } else if (nextprops.user.platform === 'messenger' && (nextprops.user.role === 'admin' || nextprops.user.role === 'buyer') && !nextprops.user.wizardSeen) {
+          console.log('going to push add page wizard')
+          this.props.history.push({
+            pathname: '/inviteUsingLinkWizard'
+          })
+        } else if (readShopifyInstallRequest() && readShopifyInstallRequest() !== '') {
+          this.props.history.push({
+            pathname: '/abandonedCarts'
+          })
+        } else if (nextprops.user.platform === 'messenger' && nextprops.subscribersCount > 0) {
+          // this means more than 0 subscribers
+          this.setState({ isShowingModal: false })
+        } else if (nextprops.user.platform === 'messenger' && nextprops.pages && nextprops.pages.length > 0 && nextprops.subscribersCount === 0) {
+          // this means 0 subscribers
+          this.setState({ isShowingModal: true })
+        } else if (nextprops.pages && nextprops.pages.length === 0) {
+          // this means connected pages in 0
+          // this.props.history.push({
           // pathname: '/addPages',
           // state: {showMsg: true}
-        // })
-      }
+          // })
+        }
       if (nextprops.dashboard && nextprops.sentseendata && nextprops.graphData) {
-        this.setState({loading: false})
+        this.setState({ loading: false })
       }
       if (nextprops.sentseendata) {
         var temp = []
         temp.push(nextprops.sentseendata)
-        this.setState({sentseendata1: nextprops.sentseendata})
+        this.setState({ sentseendata1: nextprops.sentseendata })
       }
       if (nextprops.graphData) {
         this.setChartData(nextprops.graphData)
@@ -317,7 +317,7 @@ class Dashboard extends React.Component {
     //   this.props.sentVsSeen(nextprops.pages[0].pageId)
     // }
   }
-  setChartData (graphData) {
+  setChartData(graphData) {
     const url = window.location.hostname
     if (url.includes('kiboengage.cloudkibo.com')) {
       if (graphData.broadcastsgraphdata && graphData.broadcastsgraphdata.length > 0) {
@@ -335,17 +335,17 @@ class Dashboard extends React.Component {
       }
       let dataChart = this.prepareLineChartData(surveysData, pollsData, broadcastData)
       console.log('dataChart', dataChart)
-      this.setState({chartData: dataChart})
+      this.setState({ chartData: dataChart })
     } else {
       if (graphData.sessionsgraphdata && graphData.sessionsgraphdata.length > 0) {
         var sessionsData = graphData.sessionsgraphdata
         sessionsData = this.includeZeroCounts(sessionsData)
       }
       let dataChart = this.prepareLineChartData([], [], [], sessionsData)
-      this.setState({chartData: dataChart})
+      this.setState({ chartData: dataChart })
     }
   }
-  includeZeroCounts (data) {
+  includeZeroCounts(data) {
     var dataArray = []
     var days = this.state.days
     var index = 0
@@ -377,7 +377,7 @@ class Dashboard extends React.Component {
     }
     return dataArray.reverse()
   }
-  prepareLineChartData (surveys, polls, broadcasts, sessions) {
+  prepareLineChartData(surveys, polls, broadcasts, sessions) {
     var dataChart = []
     if (surveys && surveys.length > 0) {
       for (var i = 0; i < surveys.length; i++) {
@@ -470,7 +470,7 @@ class Dashboard extends React.Component {
     }
     return dataChart
   }
-  componentDidMount () {
+  componentDidMount() {
     console.log('location', this.props.location)
     // if (this.props.currentPage) {
     //   console.log('updating sentVsSeen currentPage')
@@ -494,7 +494,7 @@ class Dashboard extends React.Component {
     })
   }
 
-  changePage (page) {
+  changePage(page) {
     // let index = 0
     // for (let i = 0; i < this.props.pages.length; i++) {
     //   if (page === this.props.pages[i].pageId) {
@@ -506,33 +506,33 @@ class Dashboard extends React.Component {
     // }
     // this.props.sentVsSeen(this.props.pages[index].pageId)
     if (page === 'all') {
-      this.setState({pageId: 'all'})
-      this.props.loadSentSeen({pageId: 'all', days: this.state.days})
+      this.setState({ pageId: 'all' })
+      this.props.loadSentSeen({ pageId: 'all', days: this.state.days })
     } else {
-      this.setState({pageId: page.pageId, selectedPage: page})
-      this.props.loadSentSeen({pageId: page.pageId, days: this.state.days})
+      this.setState({ pageId: page.pageId, selectedPage: page })
+      this.props.loadSentSeen({ pageId: page.pageId, days: this.state.days })
     }
   }
 
-  changeDays (e) {
-    this.setState({days: e.target.value})
-    this.props.loadSentSeen({pageId: this.state.pageId, days: e.target.value})
+  changeDays(e) {
+    this.setState({ days: e.target.value })
+    this.props.loadSentSeen({ pageId: this.state.pageId, days: e.target.value })
   }
 
-  showDropDown () {
-    this.setState({showDropDown: true})
+  showDropDown() {
+    this.setState({ showDropDown: true })
   }
 
-  hideDropDown () {
-    this.setState({showDropDown: false})
+  hideDropDown() {
+    this.setState({ showDropDown: false })
   }
 
-  onKeyDown (e) {
+  onKeyDown(e) {
     if (e.keyCode === 13) {
       e.preventDefault()
     }
   }
-  render () {
+  render() {
     var alertOptions = {
       offset: 14,
       position: 'top right',
@@ -545,66 +545,67 @@ class Dashboard extends React.Component {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="upgrade" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
-              <div className="modal-content">
-                <div style={{ display: 'block' }} className="modal-header">
-                  <h5 className="modal-title" id="exampleModalLabel">
-                    Upgrade to Pro
+          <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+            <div className="modal-content">
+              <div style={{ display: 'block' }} className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">
+                  Upgrade to Pro
 									</h5>
-                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">
-                      &times;
+                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">
+                    &times;
 											</span>
-                  </button>
-                </div>
-                <div style={{color: 'black'}} className="modal-body">
-                  <p>This feature is not available in free account. Kindly updrade your account to use this feature.</p>
-                  <div style={{width: '100%', textAlign: 'center'}}>
-                    <div style={{display: 'inline-block', padding: '5px'}}>
-                      <button className='btn btn-primary' onClick={() => this.goToSettings()} data-dismiss='modal'>
-                        Upgrade to Pro
+                </button>
+              </div>
+              <div style={{ color: 'black' }} className="modal-body">
+                <p>This feature is not available in free account. Kindly updrade your account to use this feature.</p>
+                <div style={{ width: '100%', textAlign: 'center' }}>
+                  <div style={{ display: 'inline-block', padding: '5px' }}>
+                    <button className='btn btn-primary' onClick={() => this.goToSettings()} data-dismiss='modal'>
+                      Upgrade to Pro
                       </button>
-                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-          <a href='#/' style={{ display: 'none' }} ref='videoDashboard' data-toggle='modal' data-backdrop='static' data-keyboard='false' data-target="#videoDashboard">videoMessengerRefModal</a>
+        </div>
+        <a href='#/' style={{ display: 'none' }} ref='videoDashboard' data-toggle='modal' data-backdrop='static' data-keyboard='false' data-target="#videoDashboard">videoMessengerRefModal</a>
         <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="videoDashboard" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog modal-lg" role="document">
-              <div className="modal-content" style={{width: '687px', top: '100'}}>
-              <div style={{ display: 'block'}} className="modal-header">
-                  <h5 className="modal-title" id="exampleModalLabel">
-                    Dashboard Video Tutorial
+          <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog modal-lg" role="document">
+            <div className="modal-content" style={{ width: '687px', top: '100' }}>
+              <div style={{ display: 'block' }} className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">
+                  Dashboard Video Tutorial
 									</h5>
-                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal"
-                   aria-label="Close"
-                   onClick={() => {
+                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal"
+                  aria-label="Close"
+                  onClick={() => {
                     this.setState({
                       openVideo: false
-                    })}}>
-                    <span aria-hidden="true">
-                      &times;
+                    })
+                  }}>
+                  <span aria-hidden="true">
+                    &times;
 											</span>
-                  </button>
-                </div>
-                <div style={{color: 'black'}} className="modal-body">
+                </button>
+              </div>
+              <div style={{ color: 'black' }} className="modal-body">
                 {this.state.openVideo && <YouTube
-                    videoId='NhqPaGp3TF8'
-                    opts={{
-                      height: '390',
-                      width: '640',
-                      playerVars: { // https://developers.google.com/youtube/player_parameters
-                        autoplay: 0
-                      }
-                    }}
-                    />
-                  }
-                </div>
+                  videoId='NhqPaGp3TF8'
+                  opts={{
+                    height: '390',
+                    width: '640',
+                    playerVars: { // https://developers.google.com/youtube/player_parameters
+                      autoplay: 0
+                    }
+                  }}
+                />
+                }
               </div>
             </div>
           </div>
+        </div>
         <div className='m-subheader '>
           <div className='d-flex align-items-center'>
             <div className='mr-auto'>
@@ -617,14 +618,14 @@ class Dashboard extends React.Component {
             this.props.user && this.props.user.platform === 'messenger' && this.props.pages && this.props.pages.length === 0 &&
             <div className='m-alert m-alert--icon m-alert--icon-solid m-alert--outline alert alert-warning alert-dismissible fade show' role='alert'>
               <div className='m-alert__icon'>
-                <i className='flaticon-exclamation-1' style={{color: 'white'}} />
+                <i className='flaticon-exclamation-1' style={{ color: 'white' }} />
                 <span />
               </div>
               <div className='m-alert__text'>
                 <strong>
-                0 Pages Connected!&nbsp;
+                  0 Pages Connected!&nbsp;
                 </strong>
-                You have no pages connected. Please connect your facebook pages to get started.&nbsp; <Link style={{cursor: 'pointer'}} to='/addPages' >Connect Page</Link>
+                You have no pages connected. Please connect your facebook pages to get started.&nbsp; <Link style={{ cursor: 'pointer' }} to='/addPages' >Connect Page</Link>
               </div>
             </div>
           }
@@ -641,71 +642,71 @@ class Dashboard extends React.Component {
           {
             this.props.user && (((this.props.user.currentPlan === 'plan_A' || this.props.user.currentPlan === 'plan_ B') && !this.props.user.facebookInfo) || (this.props.user.emailVerified === false &&
               (this.props.user.currentPlan === 'plan_C' || this.props.user.currentPlan === 'plan_D')))
-            ? null
-            : <div>
-              {/* this.props.user && (this.props.user.role === 'admin' || this.props.user.role === 'buyer') && !this.props.user.wizardSeen &&
+              ? null
+              : <div>
+                {/* this.props.user && (this.props.user.role === 'admin' || this.props.user.role === 'buyer') && !this.props.user.wizardSeen &&
               <GettingStarted pages={this.props.pages} /> */ }
-            </div>
+              </div>
           }
           {this.state.loading
-          ? <div className='align-center'><center><RingLoader color='#FF5E3A' /></center></div>
-          : <div>
-            <div className='row'>
+            ? <div className='align-center'><center><RingLoader color='#FF5E3A' /></center></div>
+            : <div>
+              <div className='row'>
+                {
+                  this.props.dashboard &&
+                  <CardBoxesContainer data={this.props.dashboard} />
+                }
+              </div>
               {
-                this.props.dashboard &&
-                <CardBoxesContainer data={this.props.dashboard} />
+                (url.includes('kibochat.cloudkibo.com') || url.includes('kiboengage.cloudkibo.com')) &&
+                <div className='row'>
+                  <SubscriberSummary includeZeroCounts={this.includeZeroCounts} msg={this.msg} />
+                </div>
               }
-            </div>
-            {
-              (url.includes('kibochat.cloudkibo.com') || url.includes('kiboengage.cloudkibo.com')) &&
-            <div className='row'>
-              <SubscriberSummary includeZeroCounts={this.includeZeroCounts} msg = {this.msg}/>
-            </div>
-            }
-            {
-              (url.includes('kibochat.cloudkibo.com') || url.includes('kiboengage.cloudkibo.com')) &&
-            <div className='row'>
               {
-              this.props.pages && this.props.sentseendata && (url.includes('kiboengage.cloudkibo.com'))
-              ? <ProgressBoxKiboEngage
-                lineChartData={this.state.chartData}
-                pages={this.props.pages}
-                data={this.props.sentseendata}
-                changePage={this.changePage}
-                days={this.state.days}
-                pageId={this.state.pageId}
-                selectedPage={this.state.selectedPage}
-                changeDays={this.changeDays}
-                onKeyDown={this.onKeyDown} />
-              : <ProgressBoxKiboChat
-                lineChartData={this.state.chartData}
-                pages={this.props.pages}
-                data={this.props.sentseendata}
-                changePage={this.changePage}
-                days={this.state.days}
-                pageId={this.state.pageId}
-                selectedPage={this.state.selectedPage}
-                changeDays={this.changeDays}
-                onKeyDown={this.onKeyDown} />
-            }
-            </div>
-            }
-            {(url.includes('kiboengage.cloudkibo.com') || url.includes('localhost')) &&
-              <div className='row'>
-                <AutopostingSummary />
-              </div>
-            }
-            {(url.includes('kiboengage.cloudkibo.com') || url.includes('localhost')) && this.state.newsPages.length > 0 &&
-              <div className='row'>
-                <NewsIntegrationsSummary />
-              </div>
-            }
-            {(url.includes('kiboengage.cloudkibo.com') || url.includes('localhost')) && this.state.newsPages.length > 0  &&
-              <div className='row'>
-                <IntegrationsSummary />
-              </div>
-            }
-            {/*
+                (url.includes('kibochat.cloudkibo.com') || url.includes('kiboengage.cloudkibo.com')) &&
+                <div className='row'>
+                  {
+                    this.props.pages && this.props.sentseendata && (url.includes('kiboengage.cloudkibo.com'))
+                      ? <ProgressBoxKiboEngage
+                        lineChartData={this.state.chartData}
+                        pages={this.props.pages}
+                        data={this.props.sentseendata}
+                        changePage={this.changePage}
+                        days={this.state.days}
+                        pageId={this.state.pageId}
+                        selectedPage={this.state.selectedPage}
+                        changeDays={this.changeDays}
+                        onKeyDown={this.onKeyDown} />
+                      : <ProgressBoxKiboChat
+                        lineChartData={this.state.chartData}
+                        pages={this.props.pages}
+                        data={this.props.sentseendata}
+                        changePage={this.changePage}
+                        days={this.state.days}
+                        pageId={this.state.pageId}
+                        selectedPage={this.state.selectedPage}
+                        changeDays={this.changeDays}
+                        onKeyDown={this.onKeyDown} />
+                  }
+                </div>
+              }
+              {(url.includes('kiboengage.cloudkibo.com') || url.includes('localhost')) &&
+                <div className='row'>
+                  <AutopostingSummary />
+                </div>
+              }
+              {(url.includes('kiboengage.cloudkibo.com') || url.includes('localhost')) && this.state.newsPages.length > 0 &&
+                <div className='row'>
+                  <NewsIntegrationsSummary />
+                </div>
+              }
+              {(url.includes('kiboengage.cloudkibo.com') || url.includes('localhost')) && this.state.newsPages.length > 0 &&
+                <div className='row'>
+                  <IntegrationsSummary />
+                </div>
+              }
+              {/*
             {
              this.props.topPages && this.props.topPages.length > 1 &&
                <div className='row'>
@@ -722,30 +723,30 @@ class Dashboard extends React.Component {
                 />
             </div>
             */}
-            <div className='row'>
-              <div className='m-form m-form--label-align-right m--margin-bottom-30 col-12'>
-                {
-                  this.props.user.plan['csv_exports'] &&
-                  <button className='btn btn-success m-btn m-btn--icon pull-right' onClick={this.exportDashboardInformation}>
-                    <span>
-                      <i className='fa fa-download' />
+              <div className='row'>
+                <div className='m-form m-form--label-align-right m--margin-bottom-30 col-12'>
+                  {
+                    this.props.user.plan['csv_exports'] &&
+                    <button className='btn btn-success m-btn m-btn--icon pull-right' onClick={this.exportDashboardInformation}>
                       <span>
-                        Export Records in CSV File
+                        <i className='fa fa-download' />
+                        <span>
+                          Export Records in CSV File
                       </span>
-                    </span>
-                  </button>
-                }
+                      </span>
+                    </button>
+                  }
+                </div>
               </div>
             </div>
-          </div>
-        }
+          }
         </div>
       </div>
     )
   }
-  }
+}
 
-function mapStateToProps (state) {
+function mapStateToProps(state) {
   console.log('state', state)
   return {
     user: (state.basicInfo.user),
@@ -760,7 +761,7 @@ function mapStateToProps (state) {
   }
 }
 
-function mapDispatchToProps (dispatch) {
+function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
       checkSubscriptionPermissions: checkSubscriptionPermissions,

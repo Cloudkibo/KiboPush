@@ -30,7 +30,7 @@ class Modal extends React.Component {
   }
 }
 
-Modal.defaultPropTypes = {
+Modal.defaultProps = {
   'zIndex': 1050,
   'closeModal': true
 }

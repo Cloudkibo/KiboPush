@@ -163,7 +163,7 @@ class WhiteListDomains extends React.Component {
                   </div>
                   <p>Third-party domains that are accessible in the Messenger webview.</p>
                   {this.state.domains && this.state.domains.length > 0 &&
-                    <div className='row' style={{minWidth: '150px', padding: '10px'}}>
+                    <div className='row' style={{minWidth: '150px', padding: '10px', wordBreak: 'break-all'}}>
                       {
                         this.state.domains.map((domain, i) => (
                           <span key={i} style={{display: 'flex'}} className='tagLabel'>
