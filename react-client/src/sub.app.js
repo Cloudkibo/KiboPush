@@ -188,7 +188,6 @@ class App extends Component {
           title='Trial Period Ended'
           content={this.getTrialModalContent()}
         />
-
         {
           this.state.message_alert && !this.state.message_alert.muteNotification && this.state.message_alert.agentId === this.props.user._id &&
           <Notification

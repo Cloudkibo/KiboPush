@@ -19,7 +19,7 @@ class WhatsAppChatbot extends React.Component {
       faqs: '',
       published: false,
       testSubscribers: '',
-      arePhoneNumbersValid: false
+      arePhoneNumbersValid: true
     }
     this.selectStore = this.selectStore.bind(this)
     this.setPublished = this.setPublished.bind(this)
@@ -45,11 +45,13 @@ class WhatsAppChatbot extends React.Component {
         paymentMethod: nextProps.chatbot.botLinks.paymentMethod,
         returnPolicy: nextProps.chatbot.botLinks.returnPolicy,
         faqs: nextProps.chatbot.botLinks.faqs,
-        published: nextProps.chatbot.published
+        published: nextProps.chatbot.published,
+        testSubscribers: nextProps.chatbot.testSubscribers.join(',')
       })
     } else if (nextProps.chatbot) {
       this.setState({
-        published: nextProps.chatbot.published
+        published: nextProps.chatbot.published,
+        testSubscribers: nextProps.chatbot.testSubscribers.join(',')
       })
     }
   }
@@ -147,7 +149,7 @@ class WhatsAppChatbot extends React.Component {
   }
 
   handleTestSubscribers(e) {
-    if (validateCommaSeparatedPhoneNumbers(e.target.value)) {
+    if (!e.target.value || validateCommaSeparatedPhoneNumbers(e.target.value)) {
       this.setState({ arePhoneNumbersValid: true, testSubscribers: e.target.value })
     } else {
       this.setState({ arePhoneNumbersValid: false, testSubscribers: e.target.value })
@@ -194,8 +196,8 @@ class WhatsAppChatbot extends React.Component {
 
   clearTestSubscribers() {
     this.setState({
-      testSubscribers: '',
-      arePhoneNumbersValid: false
+      testSubscribers: this.props.chatbot.testSubscribers.join(','),
+      arePhoneNumbersValid: true
     })
   }
 
@@ -209,7 +211,6 @@ class WhatsAppChatbot extends React.Component {
             </label>
             <div style={{ display: 'flex' }}>
               <input
-                required
                 value={this.state.testSubscribers}
                 onChange={this.handleTestSubscribers}
                 type="text"
