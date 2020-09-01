@@ -502,7 +502,7 @@ class Header extends React.Component {
                         <div className='m-dropdown__wrapper'>
                           <span className='m-dropdown__arrow m-dropdown__arrow--center' />
                           <div className='m-dropdown__inner'>
-                            <div className='m-dropdown__header' style={{ background: 'assets/app/media/img/misc/notification_bg.jpg', backgroundSize: 'cover' }}>
+                            <div className='m-dropdown__header' style={{ background: 'assets/app/media/img/misc/notification_bg.jpg', backgroundSize: 'cover', height:'100px' }}>
                               <div className='m--align-center'>
                                 {this.props.notifications && this.state.unseenNotifications.length > 0
                                   ? <span className='m-dropdown__header-title'>
@@ -516,7 +516,7 @@ class Header extends React.Component {
                                 Notifications
                               </span>
                             </div>
-                            <div className='m--align-right' style={{position: 'relative', top: '-32px'}}><i onClick={this.goToSettings} style={{fontSize: '1.5rem', cursor: 'pointer'}} className='la la-gear'/></div>
+                            <div className='m--align-right' style={{position: 'relative', top: '-40px'}}><i onClick={this.goToSettings} style={{fontSize: '2rem', cursor: 'pointer', color: 'white'}} className='la la-gear'/></div>
                             </div>
                             {this.props.notifications && (this.state.seenNotifications.length > 0 || this.state.unseenNotifications.length > 0) &&
                               <div className='m-dropdown__body'>
