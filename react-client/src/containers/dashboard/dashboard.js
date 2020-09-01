@@ -14,7 +14,7 @@ import SubscriberSummary from './subscriberSummary'
 import AutopostingSummary from './autopostingSummary'
 import IntegrationsSummary from './integrationsSummary'
 import NewsIntegrationsSummary from './newsIntegrationsSummary'
-import { loadDashboardData, loadSubscriberSummary, sentVsSeen, loadGraphData, loadTopPages, updateSubscriptionPermission, loadSentSeen } from '../../redux/actions/dashboard.actions'
+import { loadDashboardData, loadSubscriberSummary, sentVsSeen, loadGraphData, loadTopPages, loadSentSeen } from '../../redux/actions/dashboard.actions'
 import { bindActionCreators } from 'redux'
 import { loadMyPagesList, updateCurrentPage } from '../../redux/actions/pages.actions'
 import { loadSubscribersCount } from '../../redux/actions/subscribers.actions'
@@ -108,7 +108,6 @@ class Dashboard extends React.Component {
     this.props.validateUserAccessToken(this.checkUserAccessToken)
     this.props.isFacebookConnected(this.checkFacebookConnected)
     this.props.loadDashboardData()
-    this.props.updateSubscriptionPermission()
     if (window.location.hostname.includes('kiboengage.cloudkibo.com')) {
       this.props.loadSubscribersCount({})
     }
@@ -778,7 +777,6 @@ function mapDispatchToProps(dispatch) {
       checkSubscriptionPermissions: checkSubscriptionPermissions,
       updateCurrentPage: updateCurrentPage,
       loadDashboardData: loadDashboardData,
-      updateSubscriptionPermission: updateSubscriptionPermission,
       loadMyPagesList: loadMyPagesList,
       loadSubscribersCount: loadSubscribersCount,
       createbroadcast: createbroadcast,
