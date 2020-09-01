@@ -1942,7 +1942,8 @@ class Subscriber extends React.Component {
                                     : <div style={{ display: 'block', marginTop: '5px' }}>
                                       <i style={{ fontWeight: 'bold' }} className='la la-times-circle' />
                                       unsubscribed
-                                    {this.state.subscriber.unSubscribedBy !== 'subscriber' &&
+                                      {
+                                        this.state.subscriber.unSubscribedBy !== 'subscriber' && this.props.user.plan['unsubscribe_subscribers'] && this.props.user.permissions['unsubsubscribe_subscribers'] &&
                                         <a href='#/' onClick={this.subscribe} style={{ color: 'blue', textDecoration: 'underline', cursor: 'pointer' }}> {'(Subscribe)'}</a>
                                       }
                                     </div>

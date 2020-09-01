@@ -38,6 +38,7 @@ class CreateTeam extends React.Component {
     this.exists = this.exists.bind(this)
     this.existsPage = this.existsPage.bind(this)
     this.profilePicError = this.profilePicError.bind(this)
+    this.afterCreateTeam = this.afterCreateTeam.bind(this)
   }
   showDropDown () {
     this.setState({showDropDown: true})
@@ -105,15 +106,23 @@ class CreateTeam extends React.Component {
         pageNames.push(this.state.pageIds[j].pageName)
       }
       if (this.props.user.platform === 'messenger') {
-        this.props.createTeam({name: this.state.name, description: this.state.description, teamPages: pageNames, agentIds: agents, pageIds: pageIds, platform: 'messenger'})
+        this.props.createTeam({name: this.state.name, description: this.state.description, teamPages: pageNames, agentIds: agents, pageIds: pageIds, platform: 'messenger'}, this.afterCreateTeam)
       } else {
-        this.props.createTeam({name: this.state.name, description: this.state.description, agentIds: agents, platform: this.props.user.platform })
+        this.props.createTeam({name: this.state.name, description: this.state.description, agentIds: agents, platform: this.props.user.platform }, this.afterCreateTeam)
       }
+    }
+  }
+
+  afterCreateTeam (res) {
+    if (res.status === 'success') {
       this.props.history.push({
         pathname: `/teams`
       })
+    } else {
+      this.msg.error(res.description)
     }
   }
+
   updateDescription (e) {
     this.setState({description: e.target.value})
   }

@@ -91,11 +91,7 @@ class Sequence extends React.Component {
     if (this.state.name === '') {
       this.setState({ error: true })
     } else {
-      this.props.createSequence({ name: this.state.name })
-      this.props.history.push({
-        pathname: `/editSequence`,
-        state: { name: this.state.name, module: 'create' }
-      })
+      this.props.createSequence({ name: this.state.name }, this.msg, this.props.history)
     }
   }
   showDialogDelete (id) {
