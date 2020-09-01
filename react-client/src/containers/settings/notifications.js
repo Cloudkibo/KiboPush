@@ -2,6 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import AlertContainer from 'react-alert'
+import HELPWIDGET from '../../components/extras/helpWidget'
 import { fetchNotifications, updateNotificationSettings } from '../../redux/actions/settings.actions'
 
 class Notifications extends React.Component {
@@ -99,6 +100,10 @@ class Notifications extends React.Component {
     }
     return (
       <div id='target' className='col-lg-8 col-md-8 col-sm-8 col-xs-12' style={{minHeight: '900px'}}>
+        <HELPWIDGET
+          documentation={{visibility: true, link: 'https://kibopush.com/messageAlerts/'}}
+          videoTutorial={{visibility: true, videoId: 'M3k3zV_INTM'}}
+        />
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div className='m-portlet m-portlet--full-height m-portlet--tabs'>
           <div className='m-portlet__head'>
@@ -115,9 +120,6 @@ class Notifications extends React.Component {
           </div>
           <div className='tab-content'>
             <div className='m-content'>
-            <div style={{textAlign: 'center'}} className='alert m-alert m-alert--default' role='alert'>
-                Need help in understanding Admin Alerts? Here is the <a href='https://kibopush.com/admin-alerts/' target='_blank' rel='noopener noreferrer'>documentation</a>.
-              </div>
               <div style={{overflow: 'auto' }}>
                 {
                   this.state.notifications && this.state.notifications.length > 0 &&  this.state.notifications.map((notification, i) => 
