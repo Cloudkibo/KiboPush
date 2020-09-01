@@ -48,7 +48,7 @@ class MediaModal extends React.Component {
           canBeDeleted = false
           break
         }
-      } 
+      }
       if (canBeDeleted) {
         if (this.state.file.fileurl.id !== this.state.initialFile) {
           deleteFile(this.state.initialFile)
@@ -183,6 +183,8 @@ class MediaModal extends React.Component {
                 <AddButton
                   replyWithMessage={this.props.replyWithMessage}
                   buttons={this.state.buttons}
+                  canCreateNewLevel={this.props.canCreateNewLevel}
+                  alertMsg={this.props.alertMsg}
                   finalButtons={this.props.buttons}
                   buttonLimit={this.state.buttonLimit}
                   pageId={this.props.pageId}

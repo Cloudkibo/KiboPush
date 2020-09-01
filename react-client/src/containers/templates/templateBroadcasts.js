@@ -40,13 +40,9 @@ class TemplateBroadcasts extends React.Component {
 
   goToCreate () {
     if (!this.props.user.isSuperUser) {
-      if (this.props.userCount < this.props.userTemplates) {
-        this.props.history.push({
-          pathname: `/createBroadcastTemplate`
-        })
-      } else {
-        this.msg.error(`Cannot create more Broadcast Templates!`)
-      }
+      this.props.history.push({
+        pathname: `/createBroadcastTemplate`
+      })
     } else {
       if (this.props.superUserCount < this.props.kiboPushTemplates) {
         this.props.history.push({
