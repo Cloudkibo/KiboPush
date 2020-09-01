@@ -75,15 +75,6 @@ export function loadDashboardData () {
   }
 }
 
-export function updateSubscriptionPermission () {
-  // here we will fetch list of subscribers from endpoint
-  return (dispatch) => {
-    callApi('dashboard/updateSubscriptionPermission')
-      .then(res => {
-      })
-  }
-}
-
 export function sentVsSeen (pageId) {
   // here we will fetch list of subscribers from endpoint
   return (dispatch) => {
