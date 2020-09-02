@@ -71,6 +71,18 @@ export function formatDateTime(x) {
 
   return s
 }
+export function getCurrentEnvironment() {
+  const hostname = window.location.hostname
+  if (hostname.includes('skiboengage.cloudkibo.com') || hostname.includes('skibochat.cloudkibo.com')) {
+    console.log('staging')
+    return 'staging'
+  } else if (hostname.includes('kibochat.cloudkibo.com') || hostname.includes('kiboengage.cloudkibo.com') ) {
+    console.log('production')
+    return 'production'
+  } else {
+    return 'localhost'
+  }
+}
 
 export function getCurrentProduct() {
   const hostname = window.location.hostname
