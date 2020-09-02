@@ -9,7 +9,10 @@ import auth from './utility/auth.service'
 import $ from 'jquery'
 import { getuserdetails } from './redux/actions/basicinfo.actions'
 import { setMessageAlert } from './redux/actions/notifications.actions'
+import { updateLiveChatInfo } from './redux/actions/livechat.actions'
+import { clearSocketData } from './redux/actions/socket.actions'
 import { joinRoom } from './utility/socketio'
+import { handleSocketEvent } from './handleSocketEvent'
 import Notification from 'react-web-notification'
 import AlertContainer from 'react-alert'
 
@@ -36,7 +39,7 @@ class App extends Component {
   componentWillReceiveProps(nextProps) {
     if (nextProps.message_alert) {
       nextProps.setMessageAlert(null)
-    } 
+    }
     this.setState({
       message_alert: nextProps.message_alert
     })
@@ -113,11 +116,23 @@ class App extends Component {
     })
   }
 
+  UNSAFE_componentWillReceiveProps (nextProps) {
+    if (nextProps.socketData && this.props.history.location.pathname !== '/liveChat') {
+      handleSocketEvent(
+        nextProps.socketData,
+        nextProps,
+        nextProps.updateLiveChatInfo,
+        nextProps.user,
+        nextProps.clearSocketData
+      )
+    }
+  }
+
   render () {
     console.log("Public URL ", process.env.PUBLIC_URL)
     console.log('auth.getToken', auth.getToken())
     console.log('browser history', this.props.history)
-    
+
     var alertOptions = {
       offset: 14,
       position: 'top right',
@@ -172,14 +187,18 @@ function mapStateToProps (state) {
   console.log('store state in app', state)
   return {
     user: (state.basicInfo.user),
-    message_alert: (state.notificationsInfo.message_alert)
+    message_alert: (state.notificationsInfo.message_alert),
+    allChatMessages: (state.liveChat.allChatMessages),
+    socketData: (state.socketInfo.socketData)
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-      getuserdetails,                                                             
-      setMessageAlert
+      getuserdetails,
+      setMessageAlert,
+      updateLiveChatInfo,
+      clearSocketData
     }, dispatch)
 }
 
