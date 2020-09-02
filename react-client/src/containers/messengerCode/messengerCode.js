@@ -258,7 +258,7 @@ class MessengerCode extends React.Component {
                   <h5 className="modal-title" id="exampleModalLabel">
                     Messenger Code Video Tutorial
 									</h5>
-                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" 
+                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal"
                   aria-label="Close"
                   onClick={() => {
                     this.setState({
@@ -380,26 +380,29 @@ class MessengerCode extends React.Component {
                       </h3>
                     </div>
                   </div>
-                  <div className='m-portlet__head-tools'>
-                    {this.props.pages && this.props.pages.length > 0
-                      ? <a href='#/' data-toggle="modal" data-target="#create" onClick={this.showCreateDialog} className='addLink btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
-                        <span>
-                          <i className='la la-plus' />
+                  {
+                    this.props.user.permissions['create_messenger_codes'] &&
+                    <div className='m-portlet__head-tools'>
+                      {this.props.pages && this.props.pages.length > 0
+                        ? <a href='#/' data-toggle="modal" data-target="#create" onClick={this.showCreateDialog} className='addLink btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
                           <span>
-                            Create New
+                            <i className='la la-plus' />
+                            <span>
+                              Create New
+                        </span>
+                          </span>
+                        </a>
+                        : <Link disabled className='addLink btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
+                          <span>
+                            <i className='la la-plus' />
+                            <span>
+                              Create New
                       </span>
-                        </span>
-                      </a>
-                      : <Link disabled className='addLink btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
-                        <span>
-                          <i className='la la-plus' />
-                          <span>
-                            Create New
-                    </span>
-                        </span>
-                      </Link>
-                    }
-                  </div>
+                          </span>
+                        </Link>
+                      }
+                    </div>
+                  }
                 </div>
                 <div className='m-portlet__body'>
                   <div className='form-row'>
@@ -431,12 +434,18 @@ class MessengerCode extends React.Component {
                                       <button className='btn btn-primary btn-sm' style={{ float: 'left', margin: 2, marginLeft: '40px' }} data-toggle="modal" data-target="#preview" onClick={() => this.showPreviewDialog(messengerCode)}>
                                         QRCode
                                       </button>
-                                      <button className='btn btn-primary btn-sm' style={{ float: 'left', margin: 2 }} onClick={() => this.onEdit(messengerCode)}>
-                                        Edit
-                                      </button>
-                                      <button className='btn btn-primary btn-sm' style={{ float: 'left', margin: 2 }} data-toggle="modal" data-target="#delete" onClick={() => this.showDialogDelete(messengerCode._id)}>
-                                        Delete
-                                      </button>
+                                      {
+                                        this.props.user.permissions['update_messenger_codes'] &&
+                                        <button className='btn btn-primary btn-sm' style={{ float: 'left', margin: 2 }} onClick={() => this.onEdit(messengerCode)}>
+                                          Edit
+                                        </button>
+                                      }
+                                      {
+                                        this.props.user.permissions['delete_messenger_codes'] &&
+                                        <button className='btn btn-primary btn-sm' style={{ float: 'left', margin: 2 }} data-toggle="modal" data-target="#delete" onClick={() => this.showDialogDelete(messengerCode._id)}>
+                                          Delete
+                                        </button>
+                                      }
                                     </span>
                                   </td>
                                 </tr>
@@ -479,7 +488,7 @@ function mapStateToProps(state) {
     pages: (state.pagesInfo.pages),
     messengerCodes: (state.messengerCodeInfo.messengerCodes),
     messengerCode: state.messengerCodeInfo.messengerCode,
-
+    user: (state.basicInfo.user)
   }
 }
 
