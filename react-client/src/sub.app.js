@@ -8,6 +8,7 @@ import Sidebar from './components/sidebar/sidebar'
 import auth from './utility/auth.service'
 import $ from 'jquery'
 import { getuserdetails, switchToBasicPlan } from './redux/actions/basicinfo.actions'
+import { loadMyPagesListNew } from './redux/actions/pages.actions'
 import { joinRoom } from './utility/socketio'
 import Notification from 'react-web-notification'
 import MODAL from './components/extras/modal'
@@ -24,8 +25,24 @@ class App extends Component {
     this.checkTrialPeriod = this.checkTrialPeriod.bind(this)
     this.getTrialModalContent = this.getTrialModalContent.bind(this)
     this.onPurchaseSubscription = this.onPurchaseSubscription.bind(this)
+    this.redirectToConnectPage = this.redirectToConnectPage.bind(this)
 
     props.getuserdetails(joinRoom)
+    props.loadMyPagesListNew({
+      last_id: 'none',
+      number_of_records: 10,
+      first_page: 'first',
+      filter: false,
+      filter_criteria: { search_value: '' }
+    }, this.redirectToConnectPage)
+  }
+
+  redirectToConnectPage (count) {
+    if (count === 0) {
+      this.props.history.push({
+        pathname: '/addfbpages'
+      })
+    }
   }
 
   handleDemoSSAPage () {
@@ -143,6 +160,8 @@ class App extends Component {
     })
   }
 
+  UNSAFE_componentWillReceiveProps (nextProps) {}
+
   render () {
     if (this.refs._open_trial_modal) {
       this.checkTrialPeriod()
@@ -215,7 +234,8 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
       getuserdetails,
-      switchToBasicPlan
+      switchToBasicPlan,
+      loadMyPagesListNew
     }, dispatch)
 }
 
