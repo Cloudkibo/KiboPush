@@ -46,6 +46,7 @@ class AttachmentArea extends React.Component {
       typingTimer = setTimeout(() => {
         if (isWebURL(this.state.inputValue)) {
           this.props.handleAttachment({
+            isYoutubePlayable: this.props.chatbot.isYoutubePlayable,
             pageId: this.props.chatbot.pageId,
             url: this.state.inputValue
           }, this.onUrlResponse)
@@ -54,7 +55,7 @@ class AttachmentArea extends React.Component {
             invalidUrl: false,
             helpMessage: 'Validating url...'
           }, () => {
-            this.props.updateParentState({disableNext: true})
+            this.props.updateParentState({attachmentUploading: true})
           })
         } else if (this.state.inputValue) {
           this.setState({
@@ -106,7 +107,11 @@ class AttachmentArea extends React.Component {
       if (data.attachment_id || data.type === 'fb_video') {
         helpMessage = `${helpMessage} This will be sent as a playable video on messenger.`
       } else if (validateYoutubeURL(this.state.inputValue)) {
-        helpMessage = `${helpMessage} Video size is greater than 25MB and it will be sent as a card.`
+        if (this.props.chatbot.isYoutubePlayable) {
+          helpMessage = `${helpMessage} Video size is greater than 25MB and it will be sent as a card.`
+        } else {
+          helpMessage = `${helpMessage} This will be sent as a card.`
+        }
       } else {
         helpMessage =`${helpMessage} This will be sent as a card.`
       }
@@ -128,7 +133,7 @@ class AttachmentArea extends React.Component {
         fileData: (data.attachment_id || data.type === 'fb_video') ? {url: this.state.inputValue} : {},
         buttons: this.state.buttons
       }
-      this.props.updateParentState({attachment, disableNext: false})
+      this.props.updateParentState({attachment, attachmentUploading: false})
     } else {
       this.setState({
         waitingForUrlData: false,
@@ -140,7 +145,7 @@ class AttachmentArea extends React.Component {
         fileData: {url: this.state.inputValue},
         buttons: this.state.buttons
       }
-      this.props.updateParentState({attachment, disableNext: false})
+      this.props.updateParentState({attachment, attachmentUploading: false})
     }
   }
 
@@ -205,11 +210,11 @@ class AttachmentArea extends React.Component {
         },
         buttons: this.state.buttons
       }
-      this.props.updateParentState({attachment, disableNext: false})
+      this.props.updateParentState({attachment, attachmentUploading: false})
     } else {
       this.props.alertMsg.error('Failed to upload attachment. Please try again later')
       this.setState({waitingForAttachment: false})
-      this.props.updateParentState({disableNext: false})
+      this.props.updateParentState({attachmentUploading: false})
     }
   }
 
@@ -218,8 +223,8 @@ class AttachmentArea extends React.Component {
       const file = e.target.files[0]
       if (file.size > 25000000) {
         this.props.alertMsg.error('Attachment exceeds the limit of 25MB')
-      } else if (file.type === 'text/javascript' || file.type === 'text/exe') {
-        this.props.alertMsg.error('Cannot add js or exe files. Please select another file')
+      } else if (['application/zip', 'text/javascript', 'text/exe'].includes(file.type)) {
+        this.props.alertMsg.error('Cannot add js, exe or zip files. Please select another file')
       } else {
         const type = this.getComponentType(file.type)
         this.setState({
@@ -231,7 +236,7 @@ class AttachmentArea extends React.Component {
           helpMessage: '',
           invalidUrl: false
         }, () => {
-          this.props.updateParentState({disableNext: true})
+          this.props.updateParentState({attachmentUploading: true})
         })
         const fileData = new FormData()
         fileData.append('file', file)
@@ -286,7 +291,7 @@ class AttachmentArea extends React.Component {
               ref='_upload_attachment_in_chatbot'
               style={{display: 'none'}}
               type='file'
-              accept='image/*, video/*'
+              accept='image/*, video/*, audio/*, application/*, text/*'
               onChange={this.onFileChange}
               onClick={(e) => {e.target.value = ''}}
             />
@@ -296,7 +301,7 @@ class AttachmentArea extends React.Component {
                 type="text"
                 id='_attachment_in_chatbot'
                 className="form-control m-input"
-                placeholder="Paste url or upload an image or video"
+                placeholder="Paste url or upload an attachment"
                 value={this.getInputValue()}
                 onChange={this.onInputChange}
                 disabled={this.state.isUploaded || this.state.waitingForAttachment}
@@ -324,6 +329,8 @@ class AttachmentArea extends React.Component {
             </span>
           </div>
           {
+            this.state.attachmentType &&
+            ['file', 'audio'].indexOf(this.state.attachmentType) === -1 &&
             this.state.buttons.length > 0 &&
             <button
               id='_attach_button_in_chatbot'
@@ -347,6 +354,21 @@ class AttachmentArea extends React.Component {
             >
 							+ Attach button
 						</button>
+          }
+          {
+            this.state.showPopover &&
+            <div style={{
+                background: 'rgba(33, 37, 41, 0.6)',
+                position: 'fixed',
+                top: 0,
+                bottom: 0,
+                right: 0,
+                left: 0,
+                width: '100vw',
+                height: '100vh',
+                zIndex: 1050
+              }}
+            />
           }
           <div id='_action_in_chatbot'>
             <Popover

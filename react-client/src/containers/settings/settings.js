@@ -25,6 +25,8 @@ import AdvancedSetting from './advancedSettings'
 import CannedResponses from './cannedResponses/cannedResponses'
 import ZoomIntegration from './zoomIntegration'
 import Notifications from './notifications'
+import ShopifyIntegration from './shopifyIntegration'
+import NotificationSettings from './notificationSettings'
 
 class Settings extends React.Component {
   constructor (props, context) {
@@ -63,6 +65,7 @@ class Settings extends React.Component {
     this.setConfiguration = this.setConfiguration.bind(this)
     this.setIntegrations = this.setIntegrations.bind(this)
     this.setZoomIntegration = this.setZoomIntegration.bind(this)
+    this.setShopifyIntegration = this.setShopifyIntegration.bind(this)
     this.setAdvancedSettings = this.setAdvancedSettings.bind(this)
     this.setNGP = this.setNGP.bind(this)
     this.setConnectFb = this.setConnectFb.bind(this)
@@ -82,6 +85,7 @@ class Settings extends React.Component {
     this.setUploadCustomerFile = this.setUploadCustomerFile.bind(this)
     this.setCannedResponses = this.setCannedResponses.bind(this)
     this.setNotification = this.setNotification.bind(this)
+    this.setNotificationSettings = this.setNotificationSettings.bind(this)
   }
 
   UNSAFE_componentWillMount () {
@@ -211,10 +215,16 @@ class Settings extends React.Component {
       openTab: 'cannedResponses'
     })
   }
-  
+
   setZoomIntegration () {
     this.setState({
       openTab: 'zoomIntegration'
+    })
+  }
+
+  setShopifyIntegration () {
+    this.setState({
+      openTab: 'shopifyIntegration'
     })
   }
 
@@ -283,6 +293,11 @@ class Settings extends React.Component {
       openTab: 'deleteUserData'
     })
   }
+  setNotificationSettings () {
+    this.setState({
+      openTab: 'notificationSettings'
+    })
+  }
 
   scrollToTop () {
     this.top.scrollIntoView({behavior: 'instant'})
@@ -318,6 +333,17 @@ class Settings extends React.Component {
     if (this.props.location.state && this.props.location.state.tab) {
       if (this.props.location.state.tab === 'zoomIntegration') {
         this.setZoomIntegration()
+      }
+    }
+
+    if (this.props.location.state && this.props.location.state.tab) {
+      if (this.props.location.state.tab === 'notificationSettings') {
+        this.setNotificationSettings()
+      }
+    }
+    if (this.props.location.state && this.props.location.state.tab) {
+      if (this.props.location.state.tab === 'shopifyIntegration') {
+        this.setShopifyIntegration()
       }
     }
   }
@@ -541,6 +567,14 @@ class Settings extends React.Component {
                       </a>
                     </li>
                     }
+                    { (url.includes('localhost') || (url.includes('kibochat.cloudkibo.com') && this.props.user.isSuperUser)) && (this.props.user.role === 'admin' || this.props.user.role === 'buyer') &&
+                    <li className='m-nav__item'>
+                      <a href='#/' className='m-nav__link' onClick={this.setShopifyIntegration} style={{cursor: 'pointer'}} >
+                        <i className='m-nav__link-icon flaticon-network' />
+                        <span className='m-nav__link-text'>Shopify Integration</span>
+                      </a>
+                    </li>
+                    }
                     { url.includes('kiboengage.cloudkibo.com') && (this.props.user.role === 'admin' || this.props.user.role === 'buyer') &&
                     (this.props.user.plan['hubspot_integration'] || this.props.user.plan['dialogflow_integration'] || this.props.user.plan['google_sheets_integration']) &&
                     this.props.user.permissions['manage_integrations'] &&
@@ -559,11 +593,11 @@ class Settings extends React.Component {
                       </a>
                     </li>
                     }
-                    { (url.includes('localhost') || url.includes('kibochat.cloudkibo.com')) && (this.props.user.role === 'buyer') &&  (this.props.user.currentPlan.unique_ID === 'plan_C' || this.props.user.currentPlan.unique_ID === 'plan_D') &&
+                    { (url.includes('localhost') || url.includes('kibochat.cloudkibo.com')) && (this.props.user.role === 'buyer' || this.props.user.role === 'admin' ) &&  (this.props.user.currentPlan.unique_ID === 'plan_C' || this.props.user.currentPlan.unique_ID === 'plan_D') &&
                     <li className='m-nav__item'>
                       <a href='#/' className='m-nav__link' onClick={this.setNotification} style={{cursor: 'pointer'}} >
                         <i className='m-nav__link-icon flaticon-bell' />
-                        <span className='m-nav__link-text'>Notifications</span>
+                        <span className='m-nav__link-text'>Message Alerts</span>
                       </a>
                     </li>
                     }
@@ -580,6 +614,14 @@ class Settings extends React.Component {
                       <a href='#/' className='m-nav__link' onClick={this.setPermissions} style={{cursor: 'pointer'}}>
                         <i className='m-nav__link-icon flaticon-mark' />
                         <span className='m-nav__link-text'>User Permissions</span>
+                      </a>
+                    </li>
+                    }
+                    { this.props.user &&
+                    <li className='m-nav__item'>
+                      <a href='#/' className='m-nav__link' onClick={this.setNotificationSettings} style={{cursor: 'pointer'}} >
+                        <i className='m-nav__link-icon flaticon-chat' />
+                        <span className='m-nav__link-text'>Notifications Settings</span>
                       </a>
                     </li>
                     }
@@ -767,18 +809,25 @@ class Settings extends React.Component {
             { this.state.openTab === 'integrations' &&
               <Integrations history= {this.props.history}/>
             }
+            { this.state.openTab === 'cannedResponses' &&
+              <CannedResponses history= {this.props.history}/>
+            }
             { this.state.openTab === 'notifications' &&
               <Notifications history= {this.props.history}/>
+            }
+             { this.state.openTab === 'notificationSettings' &&
+              <NotificationSettings history= {this.props.history}/>
             }
             { this.state.openTab === 'advancedSettings' &&
               <AdvancedSetting />
             }
-            { this.state.openTab === 'cannedResponses' &&
-              <CannedResponses history= {this.props.history}/>
-            }	
             {
               this.state.openTab === 'zoomIntegration' &&
               <ZoomIntegration />
+            }
+            {
+              this.state.openTab === 'shopifyIntegration' &&
+              <ShopifyIntegration />
             }
           </div>
         </div>

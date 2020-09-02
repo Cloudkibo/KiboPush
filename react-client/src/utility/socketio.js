@@ -14,7 +14,7 @@ import { loadSurveysListNew } from './../redux/actions/surveys.actions'
 import {updateCustomFieldValue, addCustomField, removeCustomField, updateSingleCustomField} from './../redux/actions/customFields.actions'
 import { addTag, removeTag, updateTag, assignTag, unassignTag } from './../redux/actions/tags.actions'
 import { loadAllSubscribersListNew, updateCustomFieldForSubscriber } from './../redux/actions/subscribers.actions'
-import { fetchNotifications } from './../redux/actions/notifications.actions'
+import { fetchNotifications, setMessageAlert } from './../redux/actions/notifications.actions'
 import { handleSocketEvent, handleSocketEventSms, handleSocketEventWhatsapp } from '../redux/actions/socket.actions'
 import { addToSponsoredMessages, updateSponsoredMessagesListItemStatus } from './../redux/actions/sponsoredMessaging.actions'
 import { removeZoomIntegration } from './../redux/actions/settings.actions'
@@ -77,7 +77,7 @@ socket.on('new_chat', (data) => {
 socket.on('message', (data) => {
   console.log('socket called', data)
   if (['new_chat', 'agent_replied', 'session_pending_response', 'unsubscribe'].includes(data.action)) {
-    if (data.action === 'new_chat') data.showNotification = true
+    if (data.action === 'new_chat' && data.payload && data.payload.message && data.payload.message.format === 'facebook') data.showNotification = true
     store.dispatch(handleSocketEvent(data))
   }
   if (['new_chat_sms', 'agent_replied_sms', 'session_pending_response_sms', 'unsubscribe_sms', 'session_status_sms'].includes(data.action)) {
@@ -89,6 +89,9 @@ socket.on('message', (data) => {
     store.dispatch(handleSocketEventWhatsapp(data))
   }
   if (['new_notification'].includes(data.action)) {
+    if (data.payload) {
+      store.dispatch(setMessageAlert(data.payload))
+    }
     store.dispatch(fetchNotifications())
   }
   if (data.action === 'whatsapp_message_seen') {

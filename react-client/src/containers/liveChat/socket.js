@@ -22,10 +22,6 @@ const handleIncomingMessage = (payload, state, props, updateLiveChatInfo, clearS
   let session = payload.subscriber
   let data = {}
   const index = sessions.findIndex((s) => s._id === payload.subscriber._id)
-  console.log('handleIncomingMessage index', index)
-  console.log('handleIncomingMessage state', state)
-  console.log('handleIncomingMessage payload', payload)
-  console.log('handleIncomingMessage props', props)
   if (state.activeSession._id === payload.subscriber._id) {
     let userChat = state.userChat
     userChat.push(payload.message)
@@ -35,7 +31,9 @@ const handleIncomingMessage = (payload, state, props, updateLiveChatInfo, clearS
     session.unreadCount = session.unreadCount ? session.unreadCount + 1 : 1
     session.lastPayload = payload.message.payload
     session.last_activity_time = new Date()
-    session.lastMessagedAt = new Date()
+    if (payload.message.format === 'facebook') {
+      session.lastMessagedAt = new Date()
+    }
     session.pendingResponse = true
     if (state.tabValue === 'open') {
       sessions = [session, ...sessions]
@@ -59,7 +57,9 @@ const handleIncomingMessage = (payload, state, props, updateLiveChatInfo, clearS
     session.unreadCount = session.unreadCount ? session.unreadCount + 1 : 1
     session.lastPayload = payload.message.payload
     session.last_activity_time = new Date()
-    session.lastMessagedAt = new Date()
+    if (payload.message.format === 'facebook') {
+      session.lastMessagedAt = new Date()
+    }
     session.pendingResponse = true
     session.status = 'new'
     if (state.tabValue === 'open') sessions = [session, ...sessions]
@@ -82,7 +82,9 @@ const handleIncomingMessage = (payload, state, props, updateLiveChatInfo, clearS
     session.name = `${session.firstName} ${session.lastName}`
     session.lastPayload = payload.message.payload
     session.last_activity_time = new Date()
-    session.lastMessagedAt = new Date()
+    if (payload.message.format === 'facebook') {
+      session.lastMessagedAt = new Date()
+    }
     session.pendingResponse = true
     session.status = 'new'
     sessions = [session, ...sessions]

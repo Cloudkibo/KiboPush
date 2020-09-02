@@ -183,7 +183,7 @@ class ButtonAction extends React.Component {
   							<span>
   								Webview Height:
   							</span>
-                <select className="form-control m-input" onChange={this.handleWebviewHeight}>
+                <select className="form-control m-input" value={this.state.webview.height} onChange={this.handleWebviewHeight}>
   								<option value='full'>
   									FULL
   								</option>
@@ -197,7 +197,7 @@ class ButtonAction extends React.Component {
   						</div>
             }
             {
-              this.state.webview.invalidUrl &&
+              this.state.webview.openWebview && this.state.webview.invalidUrl &&
               <span className='m-form__help m--font-danger'>
                 {this.state.webview.helpMessage}
               </span>

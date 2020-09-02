@@ -1,24 +1,38 @@
-import {getAutomatedOptions, getuserdetails} from './basicinfo.actions'
+import { getAutomatedOptions, getuserdetails } from './basicinfo.actions'
 import * as ActionTypes from '../constants/constants'
 import callApi from '../../utility/api.caller.service'
 import auth from '../../utility/auth.service'
 export const API_URL = '/api'
 
-export function updateZoomIntegrations (data) {
+export function updateZoomIntegrations(data) {
   return {
     type: ActionTypes.UPDATE_ZOOM_INTEGRATIONS,
     data
   }
 }
 
-export function removeZoomIntegration (data) {
+export function removeZoomIntegration(data) {
   return {
     type: ActionTypes.REMOVE_ZOOM_INTEGRATION,
     data
   }
 }
 
-export function showIntegrations (data) {
+export function updateShopifyIntegrations (data) {
+  return {
+    type: ActionTypes.UPDATE_SHOPIFY_INTEGRATIONS,
+    data
+  }
+}
+
+export function removeShopifyIntegration (data) {
+  return {
+    type: ActionTypes.REMOVE_SHOPIFY_INTEGRATION,
+    data
+  }
+}
+
+export function showIntegrations(data) {
   return {
     type: ActionTypes.GET_INTEGRATIONS,
     data
@@ -39,13 +53,14 @@ export function showWhiteListDomains (data) {
   }
 }
 
-export function showAdvancedSettings (data) {
+export function showAdvancedSettings(data) {
   console.log(data)
   return {
     type: ActionTypes.GET_ADVANCED_SETTINGS,
     data
   }
 }
+
 export function showcannedResponses (data) {
   return {
     type: ActionTypes.GET_CANNED_RESPONSES,
@@ -53,67 +68,74 @@ export function showcannedResponses (data) {
   }
 }
 
-export function editCannedResponse (data) {
+export function editCannedResponse(data) {
   return {
     type: ActionTypes.UPDATE_CANNED_RESPONSE,
     data
   }
 }
-export function RemoveCannedResponse (data) {
+export function RemoveCannedResponse(data) {
   return {
     type: ActionTypes.DELETE_CANNED_RESPONSE,
     data
   }
 }
 
-export function getResponseMethod (data) {
+export function getResponseMethod(data) {
   return {
     type: ActionTypes.RESPONSE_METHOD,
     data
   }
 }
 
-export function getPermissionsSuccess (data) {
+export function getPermissionsSuccess(data) {
   return {
     type: ActionTypes.GET_PERMISSIONS_SUCCESS,
     data
   }
 }
 
-export function getUpdatedPermissionsSuccess (data) {
+export function showUserPermissions(data) {
+  return {
+    type: ActionTypes.SHOW_USER_PERMISSIONS,
+    data
+  }
+}
+
+export function getUpdatedPermissionsSuccess(data) {
   return {
     type: ActionTypes.GET_UPDATED_PERMISSIONS_SUCCESS,
     data
   }
 }
 
-export function showGreetingMessage (data) {
+export function showGreetingMessage(data) {
   return {
     type: ActionTypes.GET_GREETING_MESSAGE,
     data: data
   }
 }
-export function showWebhook (data) {
+export function showWebhook(data) {
   return {
     type: ActionTypes.SHOW_WEBHOOK,
     data
   }
 }
-export function showWebhookResponse (data) {
+export function showWebhookResponse(data) {
   return {
     type: ActionTypes.SHOW_WEBHOOK_RESPONSE,
     data
   }
 }
 
-export function updateWhatsAppMessageTemplates (data) {
+export function updateWhatsAppMessageTemplates(data) {
   return {
     type: ActionTypes.UPDATE_WHATSAPP_MESSAGE_TEMPLATES,
     data
   }
 }
 
-export function getPermissions () {
+export function getPermissions() {
   return (dispatch) => {
     callApi('permissions/fetchPermissions')
       .then(res => {
@@ -125,6 +147,20 @@ export function getPermissions () {
       })
   }
 }
+
+export function getUserPermissions() {
+  return (dispatch) => {
+    callApi('permissions/fetchUserPermissions')
+      .then(res => {
+        console.log('getUserPermissions', res)
+        if (res.status === 'success') {
+          console.log('permissions', res.payload)
+          dispatch(showUserPermissions(res.payload))
+        }
+      })
+  }
+}
+
 
 export function fetchNotifications () {
   return (dispatch) => {
@@ -150,6 +186,7 @@ export function updateNotificationSettings (data, msg) {
       })
   }
 }
+
 export function updatePermission (updatedPermissions, msg) {
   return (dispatch) => {
     callApi('permissions/updatePermissions', 'post', updatedPermissions)
@@ -164,97 +201,110 @@ export function updatePermission (updatedPermissions, msg) {
       })
   }
 }
+export function setPermission(updatedPermissions, msg) {
+  return (dispatch) => {
+    callApi('permissions/changePermissions', 'post', updatedPermissions)
+      .then(res => {
+        if (res.status === 'success') {
+          msg.success('Changes updated successfully')
+          dispatch(getUserPermissions())
+        } else if (res.status === 'failed') {
+          msg.error('Failed to update changes')
+        }
+      })
+  }
+}
 
 /*
 NGP API WORK STARTS
  */
 
-export function enableSuccessNGP (data) {
+export function enableSuccessNGP(data) {
   return {
     type: ActionTypes.ENABLE_SUCCESS_NGP,
     data
   }
 }
 
-export function disableSuccessNGP (data) {
+export function disableSuccessNGP(data) {
   return {
     type: ActionTypes.DISABLE_SUCCESS_NGP,
     data
   }
 }
 
-export function saveSuccessNGP (data) {
-  console.log('saveSuccessNGP',data )
+export function saveSuccessNGP(data) {
+  console.log('saveSuccessNGP', data)
   return {
     type: ActionTypes.RESET_SUCCESS_NGP,
     data
   }
 }
 
-export function getAPISuccessNGP (data) {
+export function getAPISuccessNGP(data) {
   return {
     type: ActionTypes.GET_API_SUCCESS_NGP,
     data
   }
 }
 
-export function getAPIFailureNGP (data) {
+export function getAPIFailureNGP(data) {
   return {
     type: ActionTypes.GET_API_FAILURE_NGP,
     data
   }
 }
 
-export function enableNGP (API) {
+export function enableNGP(API) {
   return (dispatch) => {
     callApi('api_ngp/enable', 'post', API)
-    .then(res => {
-      if (res.status === 'success') {
-        console.log('enable ngp', res.payload)
-        dispatch(enableSuccessNGP(res.payload))
-      }
-    })
+      .then(res => {
+        if (res.status === 'success') {
+          console.log('enable ngp', res.payload)
+          dispatch(enableSuccessNGP(res.payload))
+        }
+      })
   }
 }
-export function disableNGP (API) {
+export function disableNGP(API) {
   return (dispatch) => {
     callApi('api_ngp/disable', 'post', API)
-    .then(res => {
-      if (res.status === 'success') {
-        console.log('disable', res.payload)
-        dispatch(disableSuccessNGP(res.payload))
-      }
-    })
+      .then(res => {
+        if (res.status === 'success') {
+          console.log('disable', res.payload)
+          dispatch(disableSuccessNGP(res.payload))
+        }
+      })
   }
 }
 
-export function saveNGP (API, msg) {
+export function saveNGP(API, msg) {
   console.log(API)
   return (dispatch) => {
     callApi('api_ngp/save', 'post', API)
-    .then(res => {
-      if (res.status === 'success') {
-        console.log('reset', res.payload)
-        msg.success('Saved successfully')
-        dispatch(saveSuccessNGP(res.payload))
-      } else {
-        msg.error(res.description)
-      }
-    })
+      .then(res => {
+        if (res.status === 'success') {
+          console.log('reset', res.payload)
+          msg.success('Saved successfully')
+          dispatch(saveSuccessNGP(res.payload))
+        } else {
+          msg.error(res.description)
+        }
+      })
   }
 }
 
-export function getNGP (API) {
+export function getNGP(API) {
   return (dispatch) => {
     callApi('api_ngp/', 'post', API)
-    .then(res => {
-      if (res.status === 'success') {
-        console.log('reset', res.payload)
-        dispatch(getAPISuccessNGP(res.payload))
-      } else if (res.status === 'failed') {
-        dispatch(getAPIFailureNGP(res.description))
-      }
-    })
+      .then(res => {
+        if (res.status === 'success') {
+          console.log('reset', res.payload)
+          dispatch(getAPISuccessNGP(res.payload))
+        } else if (res.status === 'failed') {
+          dispatch(getAPIFailureNGP(res.description))
+        }
+      })
   }
 }
 
@@ -262,7 +312,7 @@ export function getNGP (API) {
 NGP API WORK ENDS
  */
 
-export function changePass (data, msg) {
+export function changePass(data, msg) {
   return (dispatch) => {
     callApi('reset_password/change', 'post', data)
       .then(res => {
@@ -276,7 +326,7 @@ export function changePass (data, msg) {
   }
 }
 
-export function saveGreetingMessage (data, msg) {
+export function saveGreetingMessage(data, msg) {
   return (dispatch) => {
     callApi('pages/saveGreetingText', 'post', data)
       .then(res => {
@@ -288,7 +338,7 @@ export function saveGreetingMessage (data, msg) {
       })
   }
 }
-export function saveWhiteListDomains (data, msg, handleResponse) {
+export function saveWhiteListDomains(data, msg, handleResponse) {
   return (dispatch) => {
     callApi('pages/whitelistDomain', 'post', data)
       .then(res => {
@@ -300,7 +350,7 @@ export function saveWhiteListDomains (data, msg, handleResponse) {
       })
   }
 }
-export function saveResponseMethod (data, msg) {
+export function saveResponseMethod(data, msg) {
   console.log('data for saveResponseMethod', data)
   return (dispatch) => {
     callApi('company/updateAutomatedOptions', 'post', data)
@@ -317,7 +367,7 @@ export function saveResponseMethod (data, msg) {
   }
 }
 
-export function findResponseMethod () {
+export function findResponseMethod() {
   return (dispatch) => {
     callApi('company/getAutomatedOptions')
       .then(res => {
@@ -330,7 +380,7 @@ export function findResponseMethod () {
       })
   }
 }
-export function loadWebhook () {
+export function loadWebhook() {
   return (dispatch) => {
     callApi('webhooks')
       .then(res => {
@@ -340,7 +390,7 @@ export function loadWebhook () {
       })
   }
 }
-export function createEndpoint (data, msg) {
+export function createEndpoint(data, msg) {
   console.log('data for createEndpoint', data)
   return (dispatch) => {
     callApi('webhooks/create', 'post', data)
@@ -355,7 +405,7 @@ export function createEndpoint (data, msg) {
       })
   }
 }
-export function editEndpoint (data, msg) {
+export function editEndpoint(data, msg) {
   console.log('data for editEndpoint', data)
   return (dispatch) => {
     callApi('webhooks/edit', 'post', data)
@@ -370,7 +420,7 @@ export function editEndpoint (data, msg) {
       })
   }
 }
-export function enabled (data, msg) {
+export function enabled(data, msg) {
   console.log('data for enabled', data)
   return (dispatch) => {
     callApi('webhooks/enabled', 'post', data)
@@ -389,7 +439,7 @@ export function enabled (data, msg) {
       })
   }
 }
-export function saveDeleteOption (data, msg, handleSave) {
+export function saveDeleteOption(data, msg, handleSave) {
   return (dispatch) => {
     callApi('users/enableDelete', 'post', data)
       .then(res => {
@@ -403,7 +453,7 @@ export function saveDeleteOption (data, msg, handleSave) {
       })
   }
 }
-export function authenticatePassword (data, msg, handleAuthentication) {
+export function authenticatePassword(data, msg, handleAuthentication) {
   return (dispatch) => {
     callApi('users/authenticatePassword', 'post', data)
       .then(res => {
@@ -415,7 +465,7 @@ export function authenticatePassword (data, msg, handleAuthentication) {
       })
   }
 }
-export function cancelDeletion (msg, handleCancel) {
+export function cancelDeletion(msg, handleCancel) {
   return (dispatch) => {
     callApi('users/cancelDeletion')
       .then(res => {
@@ -427,7 +477,7 @@ export function cancelDeletion (msg, handleCancel) {
       })
   }
 }
-export function uploadCustomerInfoFile (data, msg) {
+export function uploadCustomerInfoFile(data, msg) {
   return (dispatch) => {
     callApi('demoApp/uploadCustomerInfo', 'post', data)
       .then(res => {
@@ -438,7 +488,7 @@ export function uploadCustomerInfoFile (data, msg) {
       })
   }
 }
-export function fetchWhiteListedDomains (pageId, handleFetch) {
+export function fetchWhiteListedDomains(pageId, handleFetch) {
   return (dispatch) => {
     callApi(`pages/fetchWhitelistedDomains/${pageId}`)
       .then(res => {
@@ -455,14 +505,14 @@ export function fetchWhiteListedDomains (pageId, handleFetch) {
   }
 }
 
-export function deleteDomain (payload, msg, handleDelete) {
+export function deleteDomain(payload, msg, handleDelete) {
   return (dispatch) => {
     callApi('pages/deleteWhitelistDomain', 'post', payload)
       .then(res => {
         console.log('whitelisted domains', res)
         if (res.status === 'success') {
           if (handleDelete) {
-           handleDelete(res)
+            handleDelete(res)
           }
         } else {
           msg.error(res.description)
@@ -471,7 +521,7 @@ export function deleteDomain (payload, msg, handleDelete) {
   }
 }
 
-export function updatePlatformSettings (data, msg, clearFields, platform) {
+export function updatePlatformSettings(data, msg, clearFields, platform) {
   console.log('data for updatePlatformSettings', data)
   return (dispatch) => {
     callApi('company/updatePlatform', 'post', data)
@@ -502,7 +552,7 @@ export function fetchValidCallerIds(data) {
       })
   }
 }
-export function disconnect (data) {
+export function disconnect(data) {
   console.log('data for disconnect', data)
   return (dispatch) => {
     callApi('company/disconnect', 'post', data)
@@ -515,7 +565,7 @@ export function disconnect (data) {
       })
   }
 }
-export function deleteWhatsApp (data, handleResponse) {
+export function deleteWhatsApp(data, handleResponse) {
   console.log('data for deleteWhatsApp', data)
   return (dispatch) => {
     callApi('company/deleteWhatsAppInfo', 'post', data)
@@ -529,24 +579,22 @@ export function deleteWhatsApp (data, handleResponse) {
       })
   }
 }
-export function updatePlatformWhatsApp (data, msg, clearFields, handleResponse) {
+export function updatePlatformWhatsApp(data, msg, clearFields, handleResponse) {
   console.log('data for updatePlatformWhatsApp', data)
   return (dispatch) => {
     callApi('company/updatePlatformWhatsApp', 'post', data)
       .then(res => {
         console.log('response from updatePlatformWhatsApp', res)
         if (res.status === 'success') {
-          if (!data.changeWhatsAppFlockSend) {
-            dispatch(getAutomatedOptions())
-            dispatch(getuserdetails())
-          }
+          dispatch(getAutomatedOptions())
+          dispatch(getuserdetails())
           if (handleResponse) {
             handleResponse(res.payload)
           } else {
             msg.success('Saved Successfully')
           }
         } else {
-          msg.error(res.payload)
+          msg.error(res.description)
           if (clearFields) {
             clearFields()
           }
@@ -555,17 +603,30 @@ export function updatePlatformWhatsApp (data, msg, clearFields, handleResponse) 
   }
 }
 
-export function getWhatsAppMessageTemplates () {
+export function getWhatsAppMessageTemplates() {
   return (dispatch) => {
     callApi('company/getWhatsAppMessageTemplates')
       .then(res => {
         console.log('response from getWhatsAppMessageTemplates', res)
         dispatch(updateWhatsAppMessageTemplates(res.payload))
-    })
+      })
   }
 }
 
-export function integrateZoom (cb) {
+export function integrateShopify (cb) {
+  return (dispatch) => {
+    // TODO: Under construction by Sojharo
+  }
+}
+
+export function getShopifyIntegrations () {
+  return (dispatch) => {
+    // TODO: Under construction by Sojharo
+    dispatch(updateShopifyIntegrations([]))
+  }
+}
+
+export function integrateZoom(cb) {
   return (dispatch) => {
     fetch('/auth/zoom', {
       method: 'get',
@@ -579,7 +640,7 @@ export function integrateZoom (cb) {
   }
 }
 
-export function getZoomIntegrations () {
+export function getZoomIntegrations() {
   return (dispatch) => {
     callApi('zoom/users')
       .then(res => {
@@ -605,7 +666,7 @@ export function getZoomIntegrations () {
   }
 }
 
-export function createZoomMeeting (data, callback) {
+export function createZoomMeeting(data, callback) {
   return (dispatch) => {
     callApi('zoom/meetings', 'post', data)
       .then(res => {
@@ -616,7 +677,7 @@ export function createZoomMeeting (data, callback) {
   }
 }
 
-export function getIntegrations () {
+export function getIntegrations() {
   return (dispatch) => {
     callApi('integrations')
       .then(res => {
@@ -624,7 +685,7 @@ export function getIntegrations () {
       })
   }
 }
-export function createIntegration () {
+export function createIntegration() {
   console.log('createIntegration called')
   return (dispatch) => {
     callApi('sheetsIntegrations/auth')
@@ -632,7 +693,7 @@ export function createIntegration () {
       })
   }
 }
-export function updateIntegration (id, body) {
+export function updateIntegration(id, body) {
   return (dispatch) => {
     callApi(`integrations/update/${id}`, 'post', body)
       .then(res => {
@@ -643,7 +704,7 @@ export function updateIntegration (id, body) {
   }
 }
 
-export function updateAdvancedSettings (data, advancedSettings, msg) {
+export function updateAdvancedSettings(data, advancedSettings, msg) {
   return (dispatch) => {
     callApi('company/updateAdvancedSettings', 'post', data)
       .then(res => {
@@ -656,7 +717,7 @@ export function updateAdvancedSettings (data, advancedSettings, msg) {
   }
 }
 
-export function getAdvancedSettings () {
+export function getAdvancedSettings() {
   return (dispatch) => {
     callApi('company/getAdvancedSettings')
       .then(res => {
@@ -678,38 +739,38 @@ export function loadcannedResponses () {
   }
 }
 
-export function createCannedResponses (data, cb) {
+export function createCannedResponses(data, cb) {
   return (dispatch) => {
     callApi('cannedResponses', 'post', data)
       .then(res => {
-        if(res.status === 'success') {
-        dispatch(loadcannedResponses())
+        if (res.status === 'success') {
+          dispatch(loadcannedResponses())
         }
         cb(res)
-     })
+      })
   }
 }
 
-export function updateCannedResponse (data, cb) {
+export function updateCannedResponse(data, cb) {
   return (dispatch) => {
     callApi('cannedResponses/edit', 'post', data)
       .then(res => {
         cb(res)
         if (res.status === 'success') {
-        dispatch(editCannedResponse(data))
+          dispatch(editCannedResponse(data))
         }
       })
   }
 }
-export function deleteCannedResponse (data, msg) {
+export function deleteCannedResponse(data, msg) {
   return (dispatch) => {
     callApi('cannedResponses/delete', 'post', data)
       .then(res => {
         if (res.status === 'success') {
           msg.success(res.payload)
-          if(res.status === 'success') {
+          if (res.status === 'success') {
             dispatch(RemoveCannedResponse(data))
-            }
+          }
         } else {
           msg.error('Unable to delete canned Response')
         }

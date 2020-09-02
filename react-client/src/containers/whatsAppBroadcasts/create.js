@@ -12,13 +12,13 @@ import { updateCurrentCustomersInfo, setDefaultCustomersInfo } from '../../redux
 import GenericMessage from '../../components/SimplifiedBroadcastUI/GenericMessage'
 
 class CreateWhatsAppBroadcast extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = {
       broadcast: [],
       convoTitle: 'Broadcast Title',
       message: 'Your appointment is coming up on {{1}} at {{2}}',
-      fileColumns: [{'value': 'name', 'label': 'name'}, {'value': 'number', 'label': 'number'}],
+      fileColumns: [{ 'value': 'name', 'label': 'name' }, { 'value': 'number', 'label': 'number' }],
       segmentationErrors: [],
       title: 'Broadcast Title',
       tabActive: 'broadcast',
@@ -41,11 +41,11 @@ class CreateWhatsAppBroadcast extends React.Component {
     this.updateConditions = this.updateConditions.bind(this)
     this.debounce = this.debounce.bind(this)
     this.checkIfOnlyTemplates = this.checkIfOnlyTemplates.bind(this)
-    props.setDefaultCustomersInfo({filter: []})
+    props.setDefaultCustomersInfo({ filter: [] })
     props.getCount([], this.onGetCount)
   }
 
-  checkIfOnlyTemplates () {
+  checkIfOnlyTemplates() {
     for (let i = 0; i < this.state.broadcast.length; i++) {
       if (!this.state.broadcast[i].templateName) {
         return false
@@ -55,28 +55,28 @@ class CreateWhatsAppBroadcast extends React.Component {
   }
 
 
-  debounce () {
-    this.props.getCount({segmentation: this.state.conditions, onlyTemplates: this.checkIfOnlyTemplates()}, this.onGetCount)
+  debounce() {
+    this.props.getCount({ segmentation: this.state.conditions, onlyTemplates: this.checkIfOnlyTemplates() }, this.onGetCount)
   }
 
-  updateConditions (conditions, update) {
+  updateConditions(conditions, update) {
     console.log('updating conditions', conditions)
-    this.setState({conditions})
+    this.setState({ conditions })
     if (update) {
       if (this.validateConditions(conditions)) {
-        this.props.getCount({segmentation: this.state.conditions, onlyTemplates: this.checkIfOnlyTemplates()}, this.onGetCount)
+        this.props.getCount({ segmentation: this.state.conditions, onlyTemplates: this.checkIfOnlyTemplates() }, this.onGetCount)
       } else {
-        this.setState({subscribersCount: 0})
+        this.setState({ subscribersCount: 0 })
       }
     }
   }
 
-  onGetCount (data) {
+  onGetCount(data) {
     console.log('recieved count', data)
-    this.setState({subscribersCount: data.subscribersCount})
+    this.setState({ subscribersCount: data.subscribersCount })
   }
 
-  onNext (e) {
+  onNext(e) {
     console.log('in onNext', this.state.broadcast)
     /* eslint-disable */
     $('#tab_1').removeClass('active')
@@ -84,87 +84,87 @@ class CreateWhatsAppBroadcast extends React.Component {
     $('#titleBroadcast').removeClass('active')
     $('#titleTarget').addClass('active')
     /* eslint-enable */
-    this.setState({tabActive: 'target'})
+    this.setState({ tabActive: 'target' })
   }
 
-  onPrevious () {
+  onPrevious() {
     /* eslint-disable */
     $('#tab_1').addClass('active')
     $('#tab_2').removeClass('active')
     $('#titleBroadcast').addClass('active')
     $('#titleTarget').removeClass('active')
     /* eslint-enable */
-    this.setState({tabActive: 'broadcast'})
+    this.setState({ tabActive: 'broadcast' })
   }
 
-  initTab () {
+  initTab() {
     /* eslint-disable */
     $('#tab_1').addClass('active')
     $('#tab_2').removeClass('active')
     $('#titleBroadcast').addClass('active')
     $('#titleTarget').removeClass('active')
     /* eslint-enable */
-    this.setState({tabActive: 'broadcast'})
+    this.setState({ tabActive: 'broadcast' })
   }
-  onBroadcastClick () {
+  onBroadcastClick() {
     /* eslint-disable */
     $('#tab_1').addClass('active')
     $('#tab_2').removeClass('active')
     $('#titleBroadcast').addClass('active')
     $('#titleTarget').removeClass('active')
     /* eslint-enable */
-    this.setState({tabActive: 'broadcast'})
+    this.setState({ tabActive: 'broadcast' })
   }
-  onTargetClick (e) {
+  onTargetClick(e) {
     /* eslint-disable */
     $('#tab_1').removeClass('active')
     $('#tab_2').addClass('active')
     $('#titleBroadcast').removeClass('active')
     $('#titleTarget').addClass('active')
     /* eslint-enable */
-    this.setState({tabActive: 'target'})
+    this.setState({ tabActive: 'target' })
   }
 
 
-  handleChange (state) {
+  handleChange(state) {
     this.setState(state, () => {
       this.debounce()
     })
   }
 
-  setInputValue (value) {
+  setInputValue(value) {
     if (value === 'appointment') {
-      this.setState({message: 'Your appointment is coming up on {{1}} at {{2}}'})
+      this.setState({ message: 'Your appointment is coming up on {{1}} at {{2}}' })
     } else if (value === 'order') {
-      this.setState({message: 'Your {{1}} order of {{2}} has shipped and should be delivered on {{3}}. Details: {{4}}'})
+      this.setState({ message: 'Your {{1}} order of {{2}} has shipped and should be delivered on {{3}}. Details: {{4}}' })
     } else if (value === 'verification') {
-      this.setState({message: 'Your {{1}} code is {{2}}'})
+      this.setState({ message: 'Your {{1}} code is {{2}}' })
     }
   }
 
-  onTitleChange (e) {
-    this.setState({title: e.target.value})
+  onTitleChange(e) {
+    this.setState({ title: e.target.value })
   }
 
-  clearFields () {
+  clearFields() {
     this.initTab()
     this.reset(false)
     this.targeting.getWrappedInstance().resetCondition()
   }
 
-  validateConditions (conditions) {
+  validateConditions(conditions) {
     let invalid = false
     for (let i = 0; i < conditions.length; i++) {
       if (conditions[i].condition === '' && conditions[i].criteria === '' && conditions[i].text === '') {
         continue
       } else if (conditions[i].condition === '' || conditions[i].criteria === '' || conditions[i].text === '') {
-       invalid = true
+        invalid = true
       }
     }
     return !invalid
   }
 
-  validateSegmentation (customersInfo) {
+  validateSegmentation(customersInfo) {
     let errors = false
     let errorMessages = []
     let conditionErrors = []
@@ -178,43 +178,45 @@ class CreateWhatsAppBroadcast extends React.Component {
       if (customersInfo.filter[i].condition === '') {
         isErrorInCondition = true
         errors = true
-        conditionError = {field: 'condition', index: i, message: 'Please choose a valid condition'}
+        conditionError = { field: 'condition', index: i, message: 'Please choose a valid condition' }
         conditionErrors.push(conditionError)
       }
       if (customersInfo.filter[i].criteria === '') {
         isErrorInCondition = true
         errors = true
-        conditionError = {field: 'criteria', index: i, message: 'Please choose a valid criteria'}
+        conditionError = { field: 'criteria', index: i, message: 'Please choose a valid criteria' }
         conditionErrors.push(conditionError)
       }
       if (customersInfo.filter[i].text === '') {
         isErrorInCondition = true
         errors = true
-        conditionError = {field: 'text', index: i, message: 'Please choose a valid value'}
+        conditionError = { field: 'text', index: i, message: 'Please choose a valid value' }
         conditionErrors.push(conditionError)
       }
     }
     if (isErrorInCondition) {
-      errorMessages.push({error: 'conditions', message: conditionErrors})
-      this.setState({segmentationErrors: errorMessages})
+      errorMessages.push({ error: 'conditions', message: conditionErrors })
+      this.setState({ segmentationErrors: errorMessages })
     }
     return !errors
   }
 
-  onMessageChange (e) {
-    this.setState({message: e.target.value})
+  onMessageChange(e) {
+    this.setState({ message: e.target.value })
   }
 
-  sendBroadcast () {
+  sendBroadcast() {
     console.log('this.props.location.state.number', this.props.location)
-    console.log('sending broadcast', {payload: this.state.broadcast,
-        platform: 'Twilio WhatsApp',
-        title: this.state.title,
-        segmentation: this.props.customersInfo && this.props.customersInfo.filter ? this.props.customersInfo.filter : ''
-      })
+    console.log('sending broadcast', {
+      payload: this.state.broadcast,
+      platform: 'Twilio WhatsApp',
+      title: this.state.title,
+      segmentation: this.props.customersInfo && this.props.customersInfo.filter ? this.props.customersInfo.filter : ''
+    })
     if (this.state.title === '') {
       this.msg.error('Please enter the title of the broadcast')
     } else if (this.validateSegmentation(this.props.customersInfo)) {
+      this.setState({ newFiles: [] })
       this.props.sendBroadcast({
         payload: this.state.broadcast,
         onlyTemplates: this.checkIfOnlyTemplates(),
@@ -226,7 +228,7 @@ class CreateWhatsAppBroadcast extends React.Component {
     }
   }
 
-  render () {
+  render() {
     var alertOptions = {
       offset: 14,
       position: 'top right',
@@ -253,7 +255,7 @@ class CreateWhatsAppBroadcast extends React.Component {
                     </div>
                   </div>
 
-                  <p style={{fontSize: '1.1em', marginTop: '30px', marginLeft: '30px'}}><strong>Note:</strong> Broadcasts will only be sent to those subscribers who have messaged you in the past 24 hours. Only templates can be sent outside of that 24 hour window.</p>
+                  <p style={{ fontSize: '1.1em', marginTop: '30px', marginLeft: '30px' }}><strong>Note:</strong> Broadcasts will only be sent to those subscribers who have messaged you in the past 24 hours. Only templates can be sent outside of that 24 hour window.</p>
 
                   <div className='m-portlet__body'>
                     <div className='row'>
@@ -261,7 +263,7 @@ class CreateWhatsAppBroadcast extends React.Component {
                         {
                           this.state.tabActive === 'broadcast' &&
                           <div className='pull-right'>
-                            <button className='btn btn-primary' disabled={(this.state.broadcast.length === 0)} style={{marginRight: '10px'}} onClick={this.reset}>
+                            <button className='btn btn-primary' disabled={(this.state.broadcast.length === 0)} style={{ marginRight: '10px' }} onClick={this.reset}>
                               Reset
                             </button>
                             <button className='btn btn-primary' disabled={(this.state.broadcast.length === 0)} onClick={this.onNext}>
@@ -272,7 +274,7 @@ class CreateWhatsAppBroadcast extends React.Component {
                         {
                           this.state.tabActive === 'target' &&
                           <div className='pull-right'>
-                            <button className='btn btn-primary' style={{marginRight: '10px'}} onClick={this.onPrevious}>
+                            <button className='btn btn-primary' style={{ marginRight: '10px' }} onClick={this.onPrevious}>
                               Previous
                             </button>
                             <button disabled={this.state.subscribersCount === 0 || !this.validateConditions(this.state.conditions)} id='send' onClick={this.sendBroadcast} className='btn btn-primary'>
@@ -299,7 +301,7 @@ class CreateWhatsAppBroadcast extends React.Component {
                         <div className='tab-content'>
                           <div className='tab-pane fade active in' id='tab_1'>
                             <GenericMessage
-                              module = 'whatsapp'
+                              module='whatsapp'
                               hideUserOptions
                               hiddenComponents={['link', 'card', 'audio']}
                               handleChange={this.handleChange}
@@ -311,14 +313,15 @@ class CreateWhatsAppBroadcast extends React.Component {
                               pages={undefined}
                               buttonActions={this.state.buttonActions}
                               showQuickReplies={false}
-                              />
+                              newFiles={this.state.newFiles}
+                            />
                           </div>
                           <div className='tab-pane' id='tab_2'>
-                            <span style={{marginLeft: '20px'}}>
+                            <span style={{ marginLeft: '20px' }}>
                               <i className='flaticon-exclamation m--font-brand' />
-                              <p style={{display: 'inline', fontSize: '1.1em'}}> {`This broadcast will be sent to ${this.state.subscribersCount} ${this.state.subscribersCount === 1 ? 'subscriber' : 'subscribers'}`}</p>
+                              <p style={{ display: 'inline', fontSize: '1.1em' }}> {`This broadcast will be sent to ${this.state.subscribersCount} ${this.state.subscribersCount === 1 ? 'subscriber' : 'subscribers'}`}</p>
                             </span>
-                            <TargetCustomers msg = {this.msg} ref={instance => { this.targeting = instance; }} debounce={this.debounce} updateConditions={this.updateConditions} style={{marginTop: '20px'}} fileColumns={this.state.fileColumns} segmentationErrors={this.state.segmentationErrors} resetErrors={() => { this.setState({segmentationErrors: []}) }} />
+                            <TargetCustomers msg={this.msg} ref={instance => { this.targeting = instance; }} debounce={this.debounce} updateConditions={this.updateConditions} style={{ marginTop: '20px' }} fileColumns={this.state.fileColumns} segmentationErrors={this.state.segmentationErrors} resetErrors={() => { this.setState({ segmentationErrors: [] }) }} />
                           </div>
                         </div>
                       </div>
@@ -334,13 +337,13 @@ class CreateWhatsAppBroadcast extends React.Component {
   }
 }
 
-function mapStateToProps (state) {
+function mapStateToProps(state) {
   return {
     customersInfo: (state.businessGatewayInfo.customersInfo)
   }
 }
 
-function mapDispatchToProps (dispatch) {
+function mapDispatchToProps(dispatch) {
   return bindActionCreators({
     loadBroadcastsList,
     sendBroadcast,

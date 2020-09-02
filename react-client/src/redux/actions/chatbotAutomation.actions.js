@@ -10,13 +10,14 @@ function showChatbots (data) {
   }
 }
 
-export function fetchChatbots () {
+export function fetchChatbots (callback) {
   return (dispatch) => {
     callApi('chatbots')
       .then(res => {
         console.log('response from fetchChatbots', res)
         if (res.status === 'success') {
           dispatch(showChatbots(res.payload))
+          if (callback) callback(res)
         } else {
           dispatch(showChatbots([]))
         }
@@ -90,9 +91,9 @@ export function updateChatbot (data, callback) {
   }
 }
 
-export function deleteMessageBlock (id, callback) {
+export function deleteMessageBlock (ids, callback) {
   return (dispatch) => {
-    callApi(`messageBlock/${id}`, 'delete')
+    callApi('messageBlock', 'delete', {ids})
       .then(res => {
         console.log('response from deleteMessageBlock', res)
         callback(res)
@@ -146,6 +147,16 @@ export function fetchAnalytics (id, days, callback) {
     callApi(`chatbots/${id}/stats/${days}`, 'get')
       .then(res => {
         console.log('response from fetchAnalytics', res)
+        callback(res)
+      })
+  }
+}
+
+export function downloadAnalytics (data, callback) {
+  return (dispatch) => {
+    callApi(`chatbots/downloadAnalytics`, 'post', data)
+      .then(res => {
+        console.log('response from downloadAnalytics', res)
         callback(res)
       })
   }

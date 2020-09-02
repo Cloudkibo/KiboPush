@@ -391,7 +391,7 @@ class Sequence extends React.Component {
               <button style={{ float: 'right' }}
                 className='btn btn-primary btn-sm'
                 onClick={() => {
-                  let sequence = this.state.sequencesData.find(s => s._id === this.state.deleteid)
+                  let sequence = this.state.sequencesData.find(s => s.sequence._id === this.state.deleteid)
                   for (let i = 0; i < sequence.messages.length; i++) {
                     deleteFiles(sequence.messages[i].payload)
                   }

@@ -8,7 +8,7 @@ import YouTube from 'react-youtube'
 import CONFIRMATIONMODAL from '../../components/extras/confirmationModal'
 
 class ZoomIntegration extends React.Component {
-  constructor (props, context) {
+  constructor(props, context) {
     super(props, context)
     this.state = {
       deleteZoomIngeration: {
@@ -36,31 +36,31 @@ class ZoomIntegration extends React.Component {
     })
   }
 
-  redirectToAuthorizeZoom (url) {
+  redirectToAuthorizeZoom(url) {
     window.location.replace(url)
   }
 
-  openVideoTutorial () {
+  openVideoTutorial() {
     this.setState({
       openVideo: true
     })
     this.refs.videoTutorial.click()
   }
 
-  UNSAFE_componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     console.log('nextProps in ZoomIntegration', nextProps)
     if (nextProps.zoomIntegration && nextProps.zoomIntegration.connected) {
       let zoomIntegration = this.state.zoomIntegration
       zoomIntegration.enabled = true
-      this.setState({zoomIntegration})
+      this.setState({ zoomIntegration })
     } else if (!nextProps.zoomIntegration || !nextProps.zoomIntegration.connected) {
       let zoomIntegration = this.state.zoomIntegration
       zoomIntegration.enabled = false
-      this.setState({zoomIntegration})
+      this.setState({ zoomIntegration })
     }
   }
 
-  render () {
+  render() {
     var alertOptions = {
       offset: 75,
       position: 'bottom right',
@@ -71,8 +71,8 @@ class ZoomIntegration extends React.Component {
     return (
       <div id='target' className='col-lg-8 col-md-8 col-sm-8 col-xs-12'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        <button ref='toggleDisconnectZoom' data-toggle='modal' data-target='#_confirm_zoom_disconnect' style={{display: 'none'}} />
-        <a ref='disconnectZoom' style={{display: 'none'}} target='_blank' rel="noopener noreferrer" href={`https://marketplace.zoom.us/user/installed`} />
+        <button ref='toggleDisconnectZoom' data-toggle='modal' data-target='#_confirm_zoom_disconnect' style={{ display: 'none' }} />
+        <a ref='disconnectZoom' style={{ display: 'none' }} target='_blank' rel="noopener noreferrer" href={`https://marketplace.zoom.us/user/installed`}>Disconnect Zoom</a>
         <CONFIRMATIONMODAL
           id='_confirm_zoom_disconnect'
           title='Disconnect Zoom Integration'
@@ -134,33 +134,33 @@ class ZoomIntegration extends React.Component {
           </div>
           <div className='tab-content'>
             <div className='m-content'>
-              <div style={{textAlign: 'center'}} className='alert m-alert m-alert--default' role='alert'>
+              <div style={{ textAlign: 'center' }} className='alert m-alert m-alert--default' role='alert'>
                 Need help in understanding Zoom Integration? Here is the <a href='https://kibopush.com/livechat/#zoomIntegration' target='_blank' rel='noopener noreferrer'>documentation</a>.
                 Or check out this  <a href='#/' onClick={this.openVideoTutorial}>video tutorial</a> to understand this feature.
               </div>
               <div className='row'>
                 <div className='col-xl-12 col-md-12 col-sm-12'>
                   <div>
-              <div style={{padding: '5px', paddingLeft: '20px'}} className='alert m-alert--default'>
-                <div className='tab-content'>
-                  <div className='tab-pane active' id='m_widget4_tab1_content'>
-                    <div className='m-widget4'>
+                    <div style={{ padding: '5px', paddingLeft: '20px' }} className='alert m-alert--default'>
+                      <div className='tab-content'>
+                        <div className='tab-pane active' id='m_widget4_tab1_content'>
+                          <div className='m-widget4'>
 
-                      <div className='m-widget4__item'>
-                          <div className='m-widget4__img m-widget4__img--logo'>
-                            <span className='btn btn-success m-btn m-btn--icon m-btn--icon-only m-btn--custom m-btn--pill' style={{width: '50px', height: '50px', cursor: 'initial', backgroundColor: 'white', borderColor: this.state.zoomIntegration.color}}>
-                              <i className={this.state.zoomIntegration.icon} style={{color: this.state.zoomIntegration.color, fontSize: 'x-large'}}></i>
-                            </span>
+                            <div className='m-widget4__item'>
+                              <div className='m-widget4__img m-widget4__img--logo'>
+                                <span className='btn btn-success m-btn m-btn--icon m-btn--icon-only m-btn--custom m-btn--pill' style={{ width: '50px', height: '50px', cursor: 'initial', backgroundColor: 'white', borderColor: this.state.zoomIntegration.color }}>
+                                  <i className={this.state.zoomIntegration.icon} style={{ color: this.state.zoomIntegration.color, fontSize: 'x-large' }}></i>
+                                </span>
+                              </div>
+                              <span style={{ paddingLeft: '25px' }} className='m-widget4__ext'>
+                                {this.state.zoomIntegration.description}
+                              </span>
+                            </div>
+
                           </div>
-                          <span style={{paddingLeft: '25px'}} className='m-widget4__ext'>
-                            {this.state.zoomIntegration.description}
-                          </span>
+                        </div>
                       </div>
-
                     </div>
-                  </div>
-                </div>
-              </div>
 
               <div>
                 {
@@ -185,46 +185,46 @@ class ZoomIntegration extends React.Component {
                             : <button onClick={() => this.props.integrateZoom(this.redirectToAuthorizeZoom)} className='m-btn m-btn--pill m-btn--hover-success btn btn-success' style={{borderColor: '#34bfa3', color: '#34bfa3', marginRight: '10px'}}>
                             Connect
                           </button>
-                          }
-                      </span>
-                      <hr style={{borderTop: '1px dashed #36a3f7'}} />
+                                }
+                              </span>
+                              <hr style={{ borderTop: '1px dashed #36a3f7' }} />
+                            </div>
+                          </div>
+                        ))
+                      }
                     </div>
+
+
+                    {
+                      this.props.zoomIntegrations.length < 3 &&
+                      <div style={{ display: 'flex', justifyContent: 'center', marginTop: '50px' }}>
+                        <button
+                          onClick={() => this.props.integrateZoom(this.redirectToAuthorizeZoom)}
+                          style={{ border: '1px dashed #36a3f7', cursor: 'pointer' }}
+                          type="button"
+                          className="btn m-btn--pill btn-outline-info m-btn m-btn--custom"
+                        >
+                          {this.props.zoomIntegrations.length > 0 ? '+ Connect New' : '+ Connect'}
+                        </button>
+                      </div>
+                    }
                   </div>
-                ))
-                }
-              </div>
-
-
-              {
-                this.props.zoomIntegrations.length < 3 &&
-                <div style={{display: 'flex', justifyContent: 'center', marginTop: '50px'}}>
-                  <button
-                    onClick={() => this.props.integrateZoom(this.redirectToAuthorizeZoom)}
-                    style={{border: '1px dashed #36a3f7', cursor: 'pointer'}}
-                    type="button"
-                    className="btn m-btn--pill btn-outline-info m-btn m-btn--custom"
-                  >
-                    {this.props.zoomIntegrations.length > 0 ? '+ Connect New' : '+ Connect'}
-                  </button>
                 </div>
-              }
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-  </div>
-</div>
     )
   }
 }
-function mapStateToProps (state) {
+function mapStateToProps(state) {
   return {
     user: (state.basicInfo.user),
     zoomIntegrations: (state.settingsInfo.zoomIntegrations)
   }
 }
-function mapDispatchToProps (dispatch) {
+function mapDispatchToProps(dispatch) {
   return bindActionCreators({
     getZoomIntegrations,
     integrateZoom
