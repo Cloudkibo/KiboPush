@@ -119,8 +119,7 @@ class Header extends React.Component {
   }
   logout() {
     this.props.updateShowIntegrations({ showIntegrations: true })
-    auth.logout()
-    this.props.logout()
+    this.props.logout(auth.logout())
   }
   showDropDown() {
     console.log('showDropDown')

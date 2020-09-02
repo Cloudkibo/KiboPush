@@ -247,11 +247,12 @@ export function updatePlatform (data) {
   }
 }
 
-export function logout() {
+export function logout(cb) {
   return (dispatch) => {
     callApi('users/logout', 'get', {}).then(res => {
       if (res.status === 'success') {
         console.log('send logout successfully', res)
+        cb()
       } else {
         console.log('Failed to update platform', res)
       }
