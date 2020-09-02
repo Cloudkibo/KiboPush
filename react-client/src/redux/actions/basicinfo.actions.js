@@ -257,8 +257,8 @@ export function updatePlatform (data) {
 export function logout(cb) {
   return (dispatch) => {
     console.log('called logout')
-    callApi('users/logout', 'get', {}).then(res => {
-      if (res.status === 'success') {
+    callApi('users/logout').then(res => {
+        if (res.status === 'success') {
         console.log('send logout successfully', res)
         cb()
       } else {
