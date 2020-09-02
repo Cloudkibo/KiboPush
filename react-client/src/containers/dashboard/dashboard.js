@@ -34,6 +34,7 @@ import { validateUserAccessToken, isFacebookConnected } from '../../redux/action
 import moment from 'moment'
 import fileDownload from 'js-file-download'
 // import Connect from '../facebookConnect/connect'
+import cookie from 'react-cookie'
 
 var json2csv = require('json2csv')
 
@@ -70,6 +71,7 @@ class Dashboard extends React.Component {
     this.onKeyDown = this.onKeyDown.bind(this)
     this.openVideoTutorial = this.openVideoTutorial.bind(this)
     this.getNewsPages = this.getNewsPages.bind(this)
+    this.shopifySetupState = this.shopifySetupState.bind(this)
     this.handlePermissions = this.handlePermissions.bind(this)
     this.checkFacebookConnected = this.checkFacebookConnected.bind(this)
     if (window.location.hostname.includes('kiboengage.cloudkibo.com')) {
@@ -80,6 +82,29 @@ class Dashboard extends React.Component {
   getNewsPages(permissions) {
     var newsPages = this.props.permissions.filter(permission => permission.smpStatus === 'approved')
     return newsPages
+  }
+
+  shopifySetupState() {
+    let shopifyState = cookie.load('shopifySetupState')
+    console.log('shopifyState', shopifyState)
+    switch (shopifyState) {
+      case 'completedUsingAuth':
+        console.log('shopifyState', shopifyState)
+        this.props.history.push({
+          pathname: '/successMessage'
+        })
+        break
+      case 'already exists':
+        this.props.history.push({
+          pathname: '/alreadyConnected'
+        })
+        break
+      case 'failed':
+        this.props.history.push({
+          pathname: '/ErrorMessage'
+        })
+        break
+    }
   }
 
   handlePermissions(permissions) {
@@ -116,6 +141,7 @@ class Dashboard extends React.Component {
     this.props.loadMyPagesList()
     this.props.loadSubscriberSummary({ pageId: 'all', days: 'all' })
     this.props.loadSentSeen({ pageId: 'all', days: '30' })
+    this.shopifySetupState()
   }
   checkUserAccessToken(response) {
     console.log('checkUserAccessToken response', response)
