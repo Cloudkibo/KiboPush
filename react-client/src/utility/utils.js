@@ -71,6 +71,7 @@ export function formatDateTime(x) {
 
   return s
 }
+
 export function getCurrentProduct() {
   const hostname = window.location.hostname
   if (hostname.includes('kiboengage.cloudkibo.com') || window.location.port.includes('3021')) {
