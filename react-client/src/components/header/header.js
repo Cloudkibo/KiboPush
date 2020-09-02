@@ -119,7 +119,6 @@ class Header extends React.Component {
   }
   logout() {
     this.props.updateShowIntegrations({ showIntegrations: true })
-    this.props.logout(auth.logout())
   }
   showDropDown() {
     console.log('showDropDown')
@@ -828,7 +827,7 @@ class Header extends React.Component {
                                   </li>
                                   <li className='m-nav__separator m-nav__separator--fit' />
                                   <li className='m-nav__item'>
-                                    <span onClick={() => { auth.logout() }} className='btn m-btn--pill    btn-secondary m-btn m-btn--custom m-btn--label-brand m-btn--bolder'>
+                                    <span onClick={() => {this.props.logout(auth.logout()) }} className='btn m-btn--pill    btn-secondary m-btn m-btn--custom m-btn--label-brand m-btn--bolder'>
                                       Logout
                                     </span>
                                   </li>
