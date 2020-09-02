@@ -246,3 +246,15 @@ export function updatePlatform (data) {
     })
   }
 }
+
+export function logout() {
+  return (dispatch) => {
+    callApi('users/logout', 'get', {}).then(res => {
+      if (res.status === 'success') {
+        console.log('send logout successfully', res)
+      } else {
+        console.log('Failed to update platform', res)
+      }
+    })
+  }
+}

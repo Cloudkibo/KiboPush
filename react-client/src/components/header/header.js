@@ -9,7 +9,8 @@ import {
   disconnectFacebook,
   updateMode,
   updatePlatform,
-  updatePicture
+  updatePicture,
+  logout
 } from '../../redux/actions/basicinfo.actions'
 import { fetchNotifications, markRead } from '../../redux/actions/notifications.actions'
 import { resetSocket } from '../../redux/actions/livechat.actions'
@@ -119,6 +120,7 @@ class Header extends React.Component {
   logout() {
     this.props.updateShowIntegrations({ showIntegrations: true })
     auth.logout()
+    this.props.logout()
   }
   showDropDown() {
     console.log('showDropDown')
@@ -902,7 +904,8 @@ function mapDispatchToProps(dispatch) {
     updateShowIntegrations,
     disconnectFacebook,
     updatePlatform,
-    updatePicture
+    updatePicture,
+    logout
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Header)

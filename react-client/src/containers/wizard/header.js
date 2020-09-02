@@ -8,7 +8,7 @@ import auth from '../../utility/auth.service'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { Link } from 'react-router-dom'
-
+import  {  logout } from '../../redux/actions/basicinfo.actions'
 class Header extends React.Component {
   constructor (props, context) {
     super(props, context)
@@ -248,7 +248,7 @@ class Header extends React.Component {
                                 </li>
                                 <li className='m-nav__separator m-nav__separator--fit' />
                                 <li className='m-nav__item'>
-                                  <a href='#/' onClick={() => { auth.logout() }} className='btn m-btn--pill    btn-secondary m-btn m-btn--custom m-btn--label-brand m-btn--bolder'>
+                                  <a href='#/' onClick={() => { auth.logout(); this.props.logout()}} className='btn m-btn--pill    btn-secondary m-btn m-btn--custom m-btn--label-brand m-btn--bolder'>
                                     Logout
                                   </a>
                                 </li>
@@ -283,6 +283,7 @@ function mapStateToProps (state) {
 }
 
 function mapDispatchToProps (dispatch) {
-  return bindActionCreators({}, dispatch)
+  return bindActionCreators(
+    {logout}, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Header)
