@@ -15,8 +15,8 @@ import { fetchNotifications, markRead } from '../../redux/actions/notifications.
 import { resetSocket } from '../../redux/actions/livechat.actions'
 import { bindActionCreators } from 'redux'
 import { Link } from 'react-router-dom'
+import cookie from 'react-cookie'
 import AlertContainer from 'react-alert'
-import { getCurrentEnvironment } from '../../utility/utils'
 
 class Header extends React.Component {
   constructor(props, context) {
@@ -30,7 +30,8 @@ class Header extends React.Component {
       showDropDown: false,
       showViewingAsDropDown: false,
       mode: 'All',
-      userView: false
+      userView: false,
+      environment: cookie.load('environment')
     }
     this.toggleSidebar = this.toggleSidebar.bind(this)
     this.getPlanInfo = this.getPlanInfo.bind(this)
@@ -274,7 +275,7 @@ class Header extends React.Component {
       }
     }
 
-    const environment = getCurrentEnvironment()
+    console.log('environment header', this.state.environment)
     return productUrls[product][environment]
   }
 
