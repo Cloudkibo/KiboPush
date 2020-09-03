@@ -49,6 +49,7 @@ class FacebookIntegration extends React.Component {
     this.updateWhatsAppData = this.updateWhatsAppData.bind(this)
     this.clearFieldsWapp = this.clearFieldsWapp.bind(this)
     this.handleResponse = this.handleResponse.bind(this)
+    this.updateData =this.updateData.bind(this)
   }
 
   updateWhatsAppData(e, data) {
@@ -126,9 +127,26 @@ class FacebookIntegration extends React.Component {
     }
   }
 
+  updateData () {
+    let whatsappData = this.state.whatsappData[this.state.whatsappProvider]
+    whatsappData.connected = true
+    this.props.updatePlatformWhatsApp(whatsappData, this.msg, null, this.handleResponse)
+  }
+
+
   submitWapp(event) {
     event.preventDefault()
-    this.props.updatePlatformWhatsApp(this.state.whatsappData[this.state.whatsappProvider], this.msg, null, this.handleResponse)
+    if(this.props.automated_options.whatsApp && this.props.automated_options.whatsApp.connected === false) {
+      let whatsappData = this.state.whatsappData[this.state.whatsappProvider]
+      let businessNmber = whatsappData.businessNumber.replace(/[- )(]/g, '')
+      if(businessNmber !== this.props.automated_options.whatsApp.businessNumber) {
+        this.refs.createModal.click()
+      } else {
+        this.updateData ()
+      }
+    } else {
+      this.updateData ()
+    }
   }
 
   UNSAFE_componentWillMount() {
@@ -246,7 +264,7 @@ class FacebookIntegration extends React.Component {
                     <br />
                   </div>
                   <div className='m-widget4__ext'>
-                    {this.props.automated_options && this.props.automated_options.whatsApp
+                    {this.props.automated_options && this.props.automated_options.whatsApp &&  this.props.automated_options.whatsApp.connected !== false
                       ? <button className='m-btn m-btn--pill m-btn--hover-secondary btn btn-secondary' disabled>
                         Connected
                       </button>
@@ -275,6 +293,37 @@ class FacebookIntegration extends React.Component {
                     }
                   </center>
                 }
+              </div>
+            </div>
+          </div>
+        </div>
+
+          <a href='#/' style={{ display: 'none' }} ref='createModal' data-toggle='modal' data-target='#create_confirmation_modal'>DeleteModal</a>
+          <div style={{background: 'rgba(33, 37, 41, 0.6)', zIndex: 99991}} className='modal fade' id='create_confirmation_modal' tabIndex='-1' role='dialog' aria-labelledby='exampleModalLabel' aria-hidden='true'>
+          <div style={{ transform: 'translate(0, 0)', paddingLeft: '70px', marginTop: '150px' }} className='modal-dialog' role='document'>
+            <div className='modal-content' style={{ width: '400px' }} >
+              <div style={{ display: 'block' }} className='modal-header'>
+                <h5 className='modal-title' id='exampleModalLabel'>
+                  Are You Sure?
+                </h5>
+                <button style={{ marginTop: '-10px', opacity: '0.5' }} type='button' className='close'
+                  data-dismiss='modal' aria-label='Close'>
+                  <span aria-hidden='true'>
+                    &times;
+                  </span>
+                </button>
+              </div>
+              <div className='modal-body'>
+                <p>{`you had previously connected different account from this number ${(this.props.automated_options && this.props.automated_options.whatsApp) ? this.props.automated_options.whatsApp.businessNumber: 0}. If you choose to connect the new Number then all the old data will be deleted...` }</p>
+                <button style={{float: 'right', marginLeft: '10px'}}
+                  className='btn btn-primary btn-sm'
+                  onClick={() => {
+                    this.updateData()
+                  }} data-dismiss='modal'>Yes
+                </button>
+                <button style={{float: 'right'}} className='btn btn-primary btn-sm' data-dismiss='modal'>
+                  Cancel
+                </button>
               </div>
             </div>
           </div>
