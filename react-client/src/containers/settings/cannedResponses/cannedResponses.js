@@ -96,6 +96,10 @@ UNSAFE_componentWillReceiveProps (nextProps) {
     }
     return (
       <div id='target' className='col-lg-8 col-md-8 col-sm-8 col-xs-12'>
+        <HELPWIDGET
+          documentation={{visibility: true, link: 'https://kibopush.com/canned-responses'}}
+          videoTutorial={{visibility: true, videoId: 'Xadh0-usfrE'}}
+        /> 
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <HelpWidget
               documentation={{visibility: true, link: 'https://kibopush.com/canned-responses/'}}
