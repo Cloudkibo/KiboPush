@@ -186,6 +186,8 @@ class AddButton extends React.Component {
                     scrollTo={!this.finalButtons[index] && visibleButtons.length-1 === index}
                     edit={this.props.edit}
                     handleText={this.props.handleText}
+                    canCreateNewLevel={this.props.canCreateNewLevel}
+                    alertMsg={this.props.alertMsg}
                     updateButtonStatus={this.updateButtonStatus}
                     button={this.finalButtons[index]}
                     tempButton = {this.tempButtons ? this.tempButtons[index] : null}

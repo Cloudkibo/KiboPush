@@ -17,6 +17,15 @@ class WhatsAppMetrics extends React.Component {
           <div className='row'>
             <div className='col-md-4'>
               <IconStack
+                icon='flaticon-business'
+                title={this.props.metrics.companiesCount}
+                subtitle='Total Companies'
+                iconStyle='primary'
+                id='companiesCount'
+              />
+            </div>
+            <div className='col-md-4'>
+              <IconStack
                 icon='fa fa-users'
                 title={this.props.metrics.activeSubscribersCount}
                 subtitle='Active Subscribers'
@@ -33,6 +42,9 @@ class WhatsAppMetrics extends React.Component {
                 id='messagesSent'
               />
             </div>
+          </div>
+          <div className='m--space-30'></div>
+          <div className='row'>
             <div className='col-md-4'>
               <IconStack
                 icon='fa fa-edit'
@@ -42,9 +54,6 @@ class WhatsAppMetrics extends React.Component {
                 id='templateMessagesSent'
               />
             </div>
-          </div>
-          <div className='m--space-30'></div>
-          <div className='row'>
             <div className='col-md-4'>
               <IconStack
                 icon='fa fa-envelope'

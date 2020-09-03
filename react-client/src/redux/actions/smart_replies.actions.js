@@ -119,7 +119,8 @@ export function createBot (data, msg, cb) {
         if (res.status === 'success') {
           dispatch(showCreatedBot(res.payload))
         } else {
-          msg.error(res.payload)
+          const errorMsg = res.description || res.payload
+          msg.error(errorMsg)
         }
         cb(res)
       })
