@@ -276,7 +276,7 @@ class Header extends React.Component {
     }
 
     console.log('environment header', this.state.environment)
-    return productUrls[product][environment]
+    return productUrls[product][this.state.environment]
   }
 
   render() {
