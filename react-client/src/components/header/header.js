@@ -31,7 +31,8 @@ class Header extends React.Component {
       showDropDown: false,
       showViewingAsDropDown: false,
       mode: 'All',
-      userView: false
+      userView: false,
+      environment: cookie.load('environment')
     }
     this.toggleSidebar = this.toggleSidebar.bind(this)
     this.getPlanInfo = this.getPlanInfo.bind(this)
@@ -275,9 +276,8 @@ class Header extends React.Component {
       }
     }
 
-    const environment = cookie.load('environment')
-    console.log('environment header', environment)
-    return productUrls[product][environment]
+    console.log('environment header', this.state.environment)
+    return productUrls[product][this.state.environment]
   }
 
   render() {
