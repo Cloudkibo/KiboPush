@@ -9,7 +9,8 @@ import {
   disconnectFacebook,
   updateMode,
   updatePlatform,
-  updatePicture
+  updatePicture,
+  logout
 } from '../../redux/actions/basicinfo.actions'
 import { fetchNotifications, markRead } from '../../redux/actions/notifications.actions'
 import { resetSocket } from '../../redux/actions/livechat.actions'
@@ -30,7 +31,8 @@ class Header extends React.Component {
       showDropDown: false,
       showViewingAsDropDown: false,
       mode: 'All',
-      userView: false
+      userView: false,
+      environment: cookie.load('environment')
     }
     this.toggleSidebar = this.toggleSidebar.bind(this)
     this.getPlanInfo = this.getPlanInfo.bind(this)
@@ -118,7 +120,7 @@ class Header extends React.Component {
   }
   logout() {
     this.props.updateShowIntegrations({ showIntegrations: true })
-    auth.logout()
+    // auth.logout()
   }
   showDropDown() {
     console.log('showDropDown')
@@ -152,6 +154,11 @@ class Header extends React.Component {
     if (nextProps.user) {
       let mode = nextProps.user.uiMode && nextProps.user.uiMode.mode === 'kiboengage' ? 'Customer Engagement' : nextProps.user.uiMode.mode === 'kibochat' ? 'Customer Chat' : nextProps.user.uiMode.mode === 'kibocommerce' ? 'E-Commerce' : 'All'
       this.setState({ mode: mode })
+      if (nextProps.user.role === 'buyer' && nextProps.user.platform === '') {
+        this.props.history.push({
+          pathname: '/integrations',
+        })
+      }
       // FS.identify(nextProps.user.email, {
       //   displayName: nextProps.user.name,
       //   email: nextProps.user.email,
@@ -162,6 +169,7 @@ class Header extends React.Component {
       // console.log('FS identify Executed')
       var plan = nextProps.user.currentPlan.unique_ID
       this.getPlanInfo(plan)
+
     }
     if (nextProps.notifications) {
       var seen = []
@@ -186,13 +194,13 @@ class Header extends React.Component {
   getPlanInfo(plan) {
     var planInfo
     if (plan === 'plan_A') {
-      planInfo = 'Individual, Premium Account'
+      planInfo = 'Basic, Free Plan'
     } else if (plan === 'plan_B') {
-      planInfo = 'Individual, Free Account'
+      planInfo = 'Standard, Paid Plan'
     } else if (plan === 'plan_C') {
-      planInfo = 'Team, Premium Account'
+      planInfo = 'Premium, Paid Plan'
     } else if (plan === 'plan_D') {
-      planInfo = 'Team, Free Account'
+      planInfo = 'Enterprise, Paid Plan'
     } else {
       planInfo = ''
     }
@@ -274,9 +282,8 @@ class Header extends React.Component {
       }
     }
 
-    const environment = cookie.load('environment')
-    console.log('environment header', environment)
-    return productUrls[product][environment]
+    console.log('environment header', this.state.environment)
+    return productUrls[product][this.state.environment]
   }
 
   render() {
@@ -502,7 +509,7 @@ class Header extends React.Component {
                         <div className='m-dropdown__wrapper'>
                           <span className='m-dropdown__arrow m-dropdown__arrow--center' />
                           <div className='m-dropdown__inner'>
-                            <div className='m-dropdown__header' style={{ background: 'assets/app/media/img/misc/notification_bg.jpg', backgroundSize: 'cover' }}>
+                            <div className='m-dropdown__header' style={{ background: 'assets/app/media/img/misc/notification_bg.jpg', backgroundSize: 'cover', height:'100px' }}>
                               <div className='m--align-center'>
                                 {this.props.notifications && this.state.unseenNotifications.length > 0
                                   ? <span className='m-dropdown__header-title'>
@@ -516,7 +523,7 @@ class Header extends React.Component {
                                 Notifications
                               </span>
                             </div>
-                            <div className='m--align-right' style={{position: 'relative', top: '-32px'}}><i onClick={this.goToSettings} style={{fontSize: '1.5rem', cursor: 'pointer'}} className='la la-gear'/></div>
+                            <div className='m--align-right' style={{position: 'relative', top: '-40px'}}><i onClick={this.goToSettings} style={{fontSize: '2rem', cursor: 'pointer', color: 'white'}} className='la la-gear'/></div>
                             </div>
                             {this.props.notifications && (this.state.seenNotifications.length > 0 || this.state.unseenNotifications.length > 0) &&
                               <div className='m-dropdown__body'>
@@ -804,7 +811,7 @@ class Header extends React.Component {
                                       </Link>
                                     }
                                   </li>
-                                  {this.props.user && this.props.user.role === 'buyer' &&
+                                  {this.props.user && this.props.user.permissions['connect_facebook_account'] &&
                                     <li className='m-nav__item'>
                                       <span data-toggle="modal" data-target="#disconnectFacebook" className='m-nav__link'>
                                         <i className='m-nav__link-icon la la-unlink' />
@@ -827,7 +834,7 @@ class Header extends React.Component {
                                   </li>
                                   <li className='m-nav__separator m-nav__separator--fit' />
                                   <li className='m-nav__item'>
-                                    <span onClick={() => { auth.logout() }} className='btn m-btn--pill    btn-secondary m-btn m-btn--custom m-btn--label-brand m-btn--bolder'>
+                                    <span onClick={() => {this.props.logout(auth.logout)}} className='btn m-btn--pill    btn-secondary m-btn m-btn--custom m-btn--label-brand m-btn--bolder'>
                                       Logout
                                     </span>
                                   </li>
@@ -902,7 +909,8 @@ function mapDispatchToProps(dispatch) {
     updateShowIntegrations,
     disconnectFacebook,
     updatePlatform,
-    updatePicture
+    updatePicture,
+    logout
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Header)

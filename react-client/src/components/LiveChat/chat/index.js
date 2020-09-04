@@ -148,9 +148,10 @@ class Chat extends React.Component {
 
         <HEADER
           activeSession={this.props.activeSession}
-          showSearch={this.props.showSearch}
+          openSearch={this.props.showSearch}
           changeStatus={this.props.changeStatus}
           handlePendingResponse={this.props.handlePendingResponse}
+          showSearch={this.props.user.plan.search_chat}
         />
 
         <BODY

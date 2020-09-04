@@ -6,31 +6,36 @@ import {StripeProvider, Elements} from 'react-stripe-elements'
 import InjectedCheckoutForm from './../wizard/checkout'
 import { updateCard, getKeys } from '../../redux/actions/basicinfo.actions'
 import AlertContainer from 'react-alert'
+
 class PaymentMethods extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      change: false
+      showCardModal: false
     }
     props.getKeys()
-    this.change = this.change.bind(this)
     this.setCard = this.setCard.bind(this)
-    this.closeDialog = this.closeDialog.bind(this)
+    this.showCardModal = this.showCardModal.bind(this)
+    this.closeCardModal = this.closeCardModal.bind(this)
+    this.onSuccessCallback = this.onSuccessCallback.bind(this)
   }
 
-  closeDialog () {
-    this.setState({change: false})
+  onSuccessCallback () {
+    document.getElementById('_close_payment_modal').click()
   }
-  change (value) {
-    this.setState({change: value})
+
+  closeCardModal () {
+    this.setState({showCardModal: false})
   }
-  componentDidMount () {
+
+  showCardModal () {
+    this.setState({showCardModal: true})
   }
+
   setCard (payload, value) {
-    console.log('in setCard', payload)
-    this.props.updateCard({companyId: this.props.user.companyId, stripeToken: payload}, this.msg)
-    this.setState({change: false})
+    this.props.updateCard({companyId: this.props.user.companyId, stripeToken: payload}, this.msg, this.onSuccessCallback)
   }
+
   render () {
     var alertOptions = {
       offset: 14,
@@ -53,7 +58,7 @@ class PaymentMethods extends React.Component {
                   </span>
                 </li>
               </ul>
-              <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' data-toggle="modal" data-target="#paymentMethode" onClick={this.change} style={{marginTop: '15px'}}>
+              <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' onClick={this.showCardModal} data-toggle="modal" data-backdrop='static' data-keyboard='false' data-target="#paymentMethode" style={{marginTop: '15px'}}>
                 <span>
                   <i className='la la-plus' />
                   <span>
@@ -65,30 +70,32 @@ class PaymentMethods extends React.Component {
           </div>
           <div className='tab-content'>
             <div className='m-content'>
-              {this.props.user && !this.props.user.last4 &&
-              <label style={{fontWeight: 'inherit'}} onClick={this.change}>
-                You haven't provided any payment method as yet. Click on Add button to enter credit/debit card details
-              </label>
+              {
+                this.props.user && !this.props.user.last4 &&
+                <label style={{fontWeight: 'inherit'}} onClick={this.change}>
+                  You haven't provided any payment method as yet. Click on Add button to enter credit/debit card details
+                </label>
               }
               <div className='row'>
                 <div className='col-xl-12 col-md-12 col-sm-12'>
                   <div>
                     <div className='m-portlet__body'>
                       <div className='tab-content'>
-                        {this.props.user && this.props.user.last4 &&
-                        <div className='tab-pane active' id='m_widget4_tab1_content'>
-                          <div className='m-widget4' >
-                            <div className='m-widget4__item'>
-                              <div className='m-widget4__info'>
-                                <i className='fa fa-credit-card-alt' />&nbsp;&nbsp;
-                                <span className='m-widget4__title'>
-                                 xxxx xxxx xxxx {this.props.user.last4}
-                                </span>
+                        {
+                          this.props.user && this.props.user.last4 &&
+                          <div className='tab-pane active' id='m_widget4_tab1_content'>
+                            <div className='m-widget4' >
+                              <div className='m-widget4__item'>
+                                <div className='m-widget4__info'>
+                                  <i className='fa fa-credit-card-alt' />&nbsp;&nbsp;
+                                  <span className='m-widget4__title'>
+                                   xxxx xxxx xxxx {this.props.user.last4}
+                                  </span>
+                                </div>
                               </div>
                             </div>
                           </div>
-                        </div>
-                      }
+                        }
                       </div>
                       <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="paymentMethode" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                         <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
@@ -97,22 +104,26 @@ class PaymentMethods extends React.Component {
                               <h5 className="modal-title" id="exampleModalLabel">
                                 Credit/Debit Card Details
 									            </h5>
-                              <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                              <button id='_close_payment_modal' onClick={this.closeCardModal} style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" data-dismiss='modal' className="close" aria-label="Close">
                                 <span aria-hidden="true">
                                   &times;
 											          </span>
                               </button>
                             </div>
                             <div style={{ color: 'black' }} className="modal-body">
-                              <div className='col-12'>
-                                {this.props.stripeKey && this.props.captchaKey &&
-                                  <StripeProvider apiKey={this.props.stripeKey}>
-                                    <Elements>
-                                      <InjectedCheckoutForm setCard={this.setCard} captchaKey={this.props.captchaKey} />
-                                    </Elements>
-                                  </StripeProvider>
-                                }
-                              </div>
+                              {
+                                this.state.showCardModal &&
+                                <div className='col-12'>
+                                  {
+                                    this.props.stripeKey && this.props.captchaKey &&
+                                    <StripeProvider apiKey={this.props.stripeKey}>
+                                      <Elements>
+                                        <InjectedCheckoutForm setCard={this.setCard} captchaKey={this.props.captchaKey} />
+                                      </Elements>
+                                    </StripeProvider>
+                                  }
+                                </div>
+                              }
                             </div>
                           </div>
                         </div>

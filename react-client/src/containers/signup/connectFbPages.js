@@ -13,6 +13,7 @@ import {
 } from '../../redux/actions/pages.actions'
 import { bindActionCreators } from 'redux'
 import $ from 'jquery'
+import AlertContainer from 'react-alert'
 
 class AddPage extends React.Component {
   constructor (props) {
@@ -68,9 +69,7 @@ class AddPage extends React.Component {
   }
 
   UNSAFE_componentWillReceiveProps (nextprops) {
-    if (nextprops.message && nextprops.message !== '') {
-      this.setState({showAlert: true, alertmsg: 'The page you are trying to connect is not published on Facebook. Please go to Facebook Page settings to publish your page and then try connecting this page.'})
-    } else if (nextprops.page_connected && nextprops.page_connected !== '') {
+    if (nextprops.page_connected && nextprops.page_connected !== '') {
       this.setState({showAlert: true, alertmsg: nextprops.page_connected})
     } else {
       this.setState({showAlert: false, alertmsg: ''})
@@ -85,8 +84,16 @@ class AddPage extends React.Component {
   }
 
   render () {
+    var alertOptions = {
+      offset: 14,
+      position: 'top right',
+      theme: 'dark',
+      time: 5000,
+      transition: 'scale'
+    }
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+        <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <a href='#/' style={{ display: 'none' }} ref='permissions' data-toggle="modal" data-target="#permissions">Permissions</a>
         <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="permissions" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
@@ -192,7 +199,7 @@ class AddPage extends React.Component {
                             }
                             {
                               (!page.connected) &&
-                              <a href='#/' onClick={() => this.props.enablePage(page, this.showErrorDialog)} className='m-widget4__icon'>
+                              <a href='#/' onClick={() => this.props.enablePage(page, this.showErrorDialog, this.msg)} className='m-widget4__icon'>
                                 <button type='button' className='btn m-btn--pill btn-primary btn-sm m-btn m-btn--custom'>Connect</button>
                               </a>
                             }

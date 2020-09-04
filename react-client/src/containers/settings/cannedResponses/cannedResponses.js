@@ -4,6 +4,7 @@ import { bindActionCreators } from 'redux'
 import AlertContainer from 'react-alert'
 import { loadcannedResponses, deleteCannedResponse } from '../../../redux/actions/settings.actions'
 import CreateCannedResponse from './createCannedResponse'
+import HelpWidget from '../../../components/extras/helpWidget'
 
 class cannedResponses extends React.Component {
   constructor (props, context) {
@@ -95,7 +96,15 @@ UNSAFE_componentWillReceiveProps (nextProps) {
     }
     return (
       <div id='target' className='col-lg-8 col-md-8 col-sm-8 col-xs-12'>
+        <HELPWIDGET
+          documentation={{visibility: true, link: 'https://kibopush.com/canned-responses'}}
+          videoTutorial={{visibility: true, videoId: 'Xadh0-usfrE'}}
+        /> 
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
+        <HelpWidget
+              documentation={{visibility: true, link: 'https://kibopush.com/canned-responses/'}}
+              videoTutorial={{visibility: true, videoId: 'Xadh0-usfrE'}}
+            />
         <a href='#/' style={{ display: 'none' }} ref='DeleteModal' data-toggle='modal' data-target='#delete_confirmation_modal'>DeleteModal</a>
         <a href='#/' style={{ display: 'none' }} ref='cannedReponseModal' data-toggle='modal' data-target='#create_modal'>CustomFieldModal</a>
         <CreateCannedResponse cannedResponse={this.state.currentcannedResponse ? { ...this.state.currentcannedResponse } : null} index = {this.state.indexEdit} />
@@ -151,9 +160,6 @@ UNSAFE_componentWillReceiveProps (nextProps) {
           </div>
           <div className='tab-content'>
             <div className='m-content'>
-            <div style={{textAlign: 'center'}} className='alert m-alert m-alert--default' role='alert'>
-                        Need help in understanding Canned Responses? Here is the <a href='https://kibopush.com/canned-responses/' target='_blank' rel='noopener noreferrer'>documentation</a>.
-              </div>
               {
                 (this.state.isSearchFilter || (this.state.cannedResponses && this.state.cannedResponses.length > 0)) &&                
                   <div className='m-input-icon m-input-icon--left col-md-7 col-lg-7 col-xl-7' style= {{marginBottom: '20px'}}>
