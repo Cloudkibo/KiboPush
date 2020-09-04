@@ -235,11 +235,14 @@ export function disconnectFacebook (callback) {
   }
 }
 
-export function updatePlatform (data) {
+export function updatePlatform (data, fetchNotifications) {
   return (dispatch) => {
     callApi('users/updatePlatform', 'post', data).then(res => {
       if (res.status === 'success') {
         dispatch(getuserdetails())
+        if (fetchNotifications) {
+          fetchNotifications()
+        }
       } else {
         console.log('Failed to update platform', res)
       }
