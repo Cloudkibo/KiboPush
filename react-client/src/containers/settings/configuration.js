@@ -52,7 +52,7 @@ class Configuration extends React.Component {
     this.handleCheckbox = this.handleCheckbox.bind(this)
     this.logout = this.logout.bind(this)
     this.updateData =this.updateData.bind(this)
-    props.getAutomatedOptions() 
+    props.getAutomatedOptions()
   }
   handleCheckbox (e) {
     console.log('e.target.value', e.target.checked)
@@ -350,7 +350,7 @@ class Configuration extends React.Component {
                 <button style={{ float: 'right' }}
                   className='btn btn-primary btn-sm'
                   onClick={() => {
-                    this.logout()
+                    // this.logout()
                     this.props.disconnectFacebook()
                   }} data-dismiss='modal'>Yes
                   </button>
