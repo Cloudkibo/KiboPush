@@ -10,6 +10,7 @@ import AlertContainer from 'react-alert'
 import { updatePlatformSettings, updatePlatformWhatsApp } from '../../redux/actions/settings.actions'
 import { updatePlatform } from '../../redux/actions/basicinfo.actions'
 import { validatePhoneNumber } from '../../utility/utils'
+import ConfirmationModal from '../../components/extras/confirmationModal'
 
 class FacebookIntegration extends React.Component {
   constructor(props, context) {
@@ -49,6 +50,7 @@ class FacebookIntegration extends React.Component {
     this.updateWhatsAppData = this.updateWhatsAppData.bind(this)
     this.clearFieldsWapp = this.clearFieldsWapp.bind(this)
     this.handleResponse = this.handleResponse.bind(this)
+    this.updateData =this.updateData.bind(this)
   }
 
   updateWhatsAppData(e, data) {
@@ -126,9 +128,26 @@ class FacebookIntegration extends React.Component {
     }
   }
 
+  updateData () {
+    let whatsappData = this.state.whatsappData[this.state.whatsappProvider]
+    whatsappData.connected = true
+    this.props.updatePlatformWhatsApp(whatsappData, this.msg, null, this.handleResponse)
+  }
+
+
   submitWapp(event) {
     event.preventDefault()
-    this.props.updatePlatformWhatsApp(this.state.whatsappData[this.state.whatsappProvider], this.msg, null, this.handleResponse)
+    if(this.props.automated_options.whatsApp && this.props.automated_options.whatsApp.connected === false) {
+      let whatsappData = this.state.whatsappData[this.state.whatsappProvider]
+      let businessNmber = whatsappData.businessNumber.replace(/[- )(]/g, '')
+      if(businessNmber !== this.props.automated_options.whatsApp.businessNumber) {
+        this.refs.createModal.click()
+      } else {
+        this.updateData ()
+      }
+    } else {
+      this.updateData ()
+    }
   }
 
   UNSAFE_componentWillMount() {
@@ -246,7 +265,7 @@ class FacebookIntegration extends React.Component {
                     <br />
                   </div>
                   <div className='m-widget4__ext'>
-                    {this.props.automated_options && this.props.automated_options.whatsApp
+                    {this.props.automated_options && this.props.automated_options.whatsApp &&  this.props.automated_options.whatsApp.connected !== false
                       ? <button className='m-btn m-btn--pill m-btn--hover-secondary btn btn-secondary' disabled>
                         Connected
                       </button>
@@ -279,6 +298,14 @@ class FacebookIntegration extends React.Component {
             </div>
           </div>
         </div>
+
+          <a href='#/' style={{ display: 'none' }} ref='createModal' data-toggle='modal' data-target='#create_confirmation_modal'>DeleteModal</a>
+          <ConfirmationModal
+          id = 'create_confirmation_modal'
+          title = 'Are You Sure?'
+          description = {`You had previously connected different account from this number ${this.props.automated_options.whatsApp ? this.props.automated_options.whatsApp.businessNumber: 0}. If you choose to connect the new Number then all the old data will be deleted...` }
+          onConfirm = {this.updateData}
+        />
         <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="connect" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
             <div className="modal-content">
