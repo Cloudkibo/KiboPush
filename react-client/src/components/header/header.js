@@ -80,7 +80,7 @@ class Header extends React.Component {
         })
       } else {
         this.redirectToDashboard(value)
-        this.props.updatePlatform({ platform: value })
+        this.props.updatePlatform({ platform: value }, this.props.fetchNotifications)
       }
     } else {
       if (value === 'sms' && this.props.automated_options && !this.props.automated_options.twilio) {
@@ -89,7 +89,7 @@ class Header extends React.Component {
         this.msg.error('WhatsApp is not connected. Please ask your account buyer to connect it.')
       } else {
         this.redirectToDashboard(value)
-        this.props.updatePlatform({ platform: value })
+        this.props.updatePlatform({ platform: value },  this.props.fetchNotifications)
       }
     }
   }
