@@ -10,6 +10,7 @@ import AlertContainer from 'react-alert'
 import { updatePlatformSettings, updatePlatformWhatsApp } from '../../redux/actions/settings.actions'
 import { updatePlatform } from '../../redux/actions/basicinfo.actions'
 import { validatePhoneNumber } from '../../utility/utils'
+import ConfirmationModal from '../../components/extras/confirmationModal'
 
 class FacebookIntegration extends React.Component {
   constructor(props, context) {
@@ -299,35 +300,12 @@ class FacebookIntegration extends React.Component {
         </div>
 
           <a href='#/' style={{ display: 'none' }} ref='createModal' data-toggle='modal' data-target='#create_confirmation_modal'>DeleteModal</a>
-          <div style={{background: 'rgba(33, 37, 41, 0.6)', zIndex: 99991}} className='modal fade' id='create_confirmation_modal' tabIndex='-1' role='dialog' aria-labelledby='exampleModalLabel' aria-hidden='true'>
-          <div style={{ transform: 'translate(0, 0)', paddingLeft: '70px', marginTop: '150px' }} className='modal-dialog' role='document'>
-            <div className='modal-content' style={{ width: '400px' }} >
-              <div style={{ display: 'block' }} className='modal-header'>
-                <h5 className='modal-title' id='exampleModalLabel'>
-                  Are You Sure?
-                </h5>
-                <button style={{ marginTop: '-10px', opacity: '0.5' }} type='button' className='close'
-                  data-dismiss='modal' aria-label='Close'>
-                  <span aria-hidden='true'>
-                    &times;
-                  </span>
-                </button>
-              </div>
-              <div className='modal-body'>
-                <p>{`you had previously connected different account from this number ${(this.props.automated_options && this.props.automated_options.whatsApp) ? this.props.automated_options.whatsApp.businessNumber: 0}. If you choose to connect the new Number then all the old data will be deleted...` }</p>
-                <button style={{float: 'right', marginLeft: '10px'}}
-                  className='btn btn-primary btn-sm'
-                  onClick={() => {
-                    this.updateData()
-                  }} data-dismiss='modal'>Yes
-                </button>
-                <button style={{float: 'right'}} className='btn btn-primary btn-sm' data-dismiss='modal'>
-                  Cancel
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
+          <ConfirmationModal
+          id = 'create_confirmation_modal'
+          title = 'Are You Sure?'
+          description = {`You had previously connected different account from this number ${this.props.automated_options.whatsApp ? this.props.automated_options.whatsApp.businessNumber: 0}. If you choose to connect the new Number then all the old data will be deleted...` }
+          onConfirm = {this.updateData}
+        />
         <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="connect" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
             <div className="modal-content">
