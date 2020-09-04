@@ -221,7 +221,7 @@ class App extends Component {
           content={this.getTrialModalContent()}
         />
         {
-          this.state.message_alert && !this.state.message_alert.muteNotification && this.state.message_alert.agentId === this.props.user._id &&
+          this.state.message_alert && !this.state.message_alert.muteNotification && this.state.message_alert.agentId === this.props.user._id && this.props.user.platform === this.state.message_alert.platform &&
           <Notification
             title='Message Alert'
             onClick={this.onNotificationClick}
