@@ -1,11 +1,12 @@
 /* eslint-disable no-useless-constructor */
 import React from 'react'
 import { updatePlatformSettings, updatePlatformWhatsApp, disconnect, deleteWhatsApp } from '../../redux/actions/settings.actions'
-import { getAutomatedOptions, disconnectFacebook } from '../../redux/actions/basicinfo.actions'
+import { getAutomatedOptions, disconnectFacebook, updateShowIntegrations } from '../../redux/actions/basicinfo.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import AlertContainer from 'react-alert'
 import WhatsAppDeleteModal from '../../components/extras/deleteWithPassword'
+import ConfirmationModal from '../../components/extras/confirmationModal'
 import { validatePhoneNumber } from '../../utility/utils'
 
 class Configuration extends React.Component {
@@ -31,7 +32,8 @@ class Configuration extends React.Component {
       type: '',
       deleteType: '',
       whatsappProvider: '',
-      whatsappData: JSON.parse(JSON.stringify(this.initialWhatsappData))
+      whatsappData: JSON.parse(JSON.stringify(this.initialWhatsappData)),
+      retainData: false
     }
     this.updateToken = this.updateToken.bind(this)
     this.updateSID = this.updateSID.bind(this)
@@ -47,7 +49,21 @@ class Configuration extends React.Component {
     this.setType = this.setType.bind(this)
     this.changeWhatsAppProvider = this.changeWhatsAppProvider.bind(this)
     this.updateWhatsAppData = this.updateWhatsAppData.bind(this)
-    props.getAutomatedOptions()
+    this.handleCheckbox = this.handleCheckbox.bind(this)
+    this.logout = this.logout.bind(this)
+    this.updateData =this.updateData.bind(this)
+    props.getAutomatedOptions() 
+  }
+  handleCheckbox (e) {
+    console.log('e.target.value', e.target.checked)
+    this.setState({retainData : e.target.checked})
+  }
+  logout() {
+    this.props.history.push({
+      pathname: '/facebookIntegration'
+    })
+    this.props.updateShowIntegrations({ showIntegrations: true })
+    // auth.logout()
   }
 
   updateWhatsAppData(e, data) {
@@ -88,7 +104,9 @@ class Configuration extends React.Component {
       let data = {
         accessToken: this.state.whatsappData[this.state.whatsappProvider].accessToken,
         type: this.state.deleteType,
-        password: password
+        password: password,
+        connected: !this.state.retainData,
+        Date: new Date().toJSON().slice(0,10).replace(/-/g,'/')
       }
       this.props.deleteWhatsApp(data, this.handleDeleteWhatsAppResponse)
     }
@@ -112,7 +130,8 @@ class Configuration extends React.Component {
     if (nextProps.automated_options && nextProps.automated_options.twilio) {
       this.setState({ SID: nextProps.automated_options.twilio.accountSID, token: nextProps.automated_options.twilio.authToken })
     }
-    if (nextProps.automated_options && nextProps.automated_options.whatsApp) {
+    // console.log('nextProps.automated_options', nextProps.automated_options.whatsApp.connected)
+    if (nextProps.automated_options && nextProps.automated_options.whatsApp && (nextProps.automated_options.whatsApp.connected !== false)) {
       let whatsappData = JSON.parse(JSON.stringify(this.initialWhatsappData))
       whatsappData[nextProps.automated_options.whatsApp.provider] = nextProps.automated_options.whatsApp
       this.setState({
@@ -164,9 +183,26 @@ class Configuration extends React.Component {
     this.msg.success('Saved Successfully')
   }
 
+  updateData () {
+    let whatsappData = this.state.whatsappData[this.state.whatsappProvider]
+    whatsappData.connected = true
+    this.props.updatePlatformWhatsApp(whatsappData, this.msg, null, this.handleResponse)
+  }
+
+
   submitWapp(event) {
     event.preventDefault()
-    this.props.updatePlatformWhatsApp(this.state.whatsappData[this.state.whatsappProvider], this.msg, null, this.handleResponse)
+    if(this.props.automated_options.whatsApp && this.props.automated_options.whatsApp.connected === false) {
+      let whatsappData = this.state.whatsappData[this.state.whatsappProvider]
+      let businessNmber = whatsappData.businessNumber.replace(/[- )(]/g, '')
+      if(businessNmber !== this.props.automated_options.whatsApp.businessNumber) {
+        this.refs.createModal.click()
+      } else {
+        this.updateData ()
+      }
+    } else {
+      this.updateData ()
+    }
   }
 
   clearFields() {
@@ -178,7 +214,7 @@ class Configuration extends React.Component {
   }
 
   clearFieldsWapp() {
-    if (this.props.automated_options && this.props.automated_options.whatsApp) {
+    if (this.props.automated_options && this.props.automated_options.whatsApp && this.props.automated_options.whatsApp.connected !== false) {
       let whatsappData = JSON.parse(JSON.stringify(this.initialWhatsappData))
       whatsappData[this.props.automated_options.whatsApp.provider] = this.props.automated_options.whatsApp
       this.setState({
@@ -219,6 +255,16 @@ class Configuration extends React.Component {
           title={`${this.state.deleteType} WhatsApp Account`}
           content={`Are you sure you want to ${this.state.deleteType} your WhatsApp Account? Doing so will remove all of your subscribers, their chat history and the broadcasts you have created.`}
           deleteWithPassword={this.deleteWhatsApp}
+          handleCheckbox = {this.handleCheckbox}
+          retainData= {this.state.retainData}
+        />
+        <a href='#/' style={{ display: 'none' }} ref='createModal' data-toggle='modal' data-target='#create_confirmation_modal'>DeleteModal</a>
+        <ConfirmationModal
+          id = 'create_confirmation_modal'
+          title = 'Are You Sure?'
+          description = {`you had previously connected different account from this number ${this.props.automated_options.whatsApp ? this.props.automated_options.whatsApp.businessNumber: 0}. If you choose to connect the new Number then all the old data will be deleted...` }
+          onConfirm = {this.updateData}
+          zIndex= {99991}
         />
         <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="disconnect" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
@@ -286,7 +332,7 @@ class Configuration extends React.Component {
             </div>
           </div>
         </div>
-        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="disconnectFacebook" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="disconnectFacebookConfiguration" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
             <div className="modal-content">
               <div style={{ display: 'block' }} className="modal-header">
@@ -304,8 +350,8 @@ class Configuration extends React.Component {
                 <button style={{ float: 'right' }}
                   className='btn btn-primary btn-sm'
                   onClick={() => {
-                    this.props.disconnectFacebook()
                     this.logout()
+                    this.props.disconnectFacebook()
                   }} data-dismiss='modal'>Yes
                   </button>
               </div>
@@ -474,7 +520,7 @@ class Configuration extends React.Component {
                                           </div>
                                           <div className='m-widget4__ext'>
                                             {this.props.user.facebookInfo
-                                              ? <a href='#/' data-toggle="modal" data-target="#disconnectFacebook" className='m-btn m-btn--pill m-btn--hover-danger btn btn-danger' style={{ borderColor: '#d9534f', color: '#d9534f', marginRight: '10px' }}>
+                                              ? <a href='#/' data-toggle="modal" data-target="#disconnectFacebookConfiguration" className='m-btn m-btn--pill m-btn--hover-danger btn btn-danger' style={{ borderColor: '#d9534f', color: '#d9534f', marginRight: '10px' }}>
                                                 Disconnect
                                             </a>
                                               : <a href='/auth/facebook' className='m-btn m-btn--pill m-btn--hover-success btn btn-success' style={{ borderColor: '#34bfa3', color: '#34bfa3', marginRight: '10px' }}>
@@ -524,10 +570,10 @@ class Configuration extends React.Component {
                                             <button className='m-btn m-btn--pill m-btn--hover-success btn btn-success'
                                               style={{ borderColor: '#34bfa3', color: '#34bfa3', marginRight: '10px' }}
                                               onClick={() => this.setType('Change')}>
-                                              {this.props.automated_options && this.props.automated_options.whatsApp ? 'Edit' : 'Connect'}
+                                              {this.props.automated_options && this.props.automated_options.whatsApp ? this.props.automated_options.whatsApp.connected === false ? 'Connect' : 'Edit' : 'Connect'}
                                             </button>
                                           </div>
-                                          {this.props.automated_options && this.props.automated_options.whatsApp &&
+                                          {this.props.automated_options && this.props.automated_options.whatsApp && (!(this.props.automated_options.whatsApp.connected === false)) &&
                                             <div className='m-widget4__ext'>
                                               <button className='m-btn m-btn--pill m-btn--hover-danger btn btn-danger'
                                                 style={{ borderColor: '#d9534f', color: '#d9534f', marginRight: '10px' }}
@@ -571,7 +617,8 @@ function mapDispatchToProps(dispatch) {
     updatePlatformWhatsApp: updatePlatformWhatsApp,
     disconnect: disconnect,
     disconnectFacebook: disconnectFacebook,
-    deleteWhatsApp: deleteWhatsApp
+    deleteWhatsApp: deleteWhatsApp,
+    updateShowIntegrations
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Configuration)
