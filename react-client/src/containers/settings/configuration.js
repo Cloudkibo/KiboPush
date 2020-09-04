@@ -305,7 +305,7 @@ class Configuration extends React.Component {
                   className='btn btn-primary btn-sm'
                   onClick={() => {
                     this.props.disconnectFacebook()
-                    this.logout()
+                    // this.logout()
                   }} data-dismiss='modal'>Yes
                   </button>
               </div>
