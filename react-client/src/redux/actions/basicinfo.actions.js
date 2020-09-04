@@ -88,6 +88,7 @@ export function getuserdetails (joinRoom) {
         auth.logout()
       } else {
         if (joinRoom) joinRoom(res.payload.companyId)
+        console.log('userdetails', res.payload)
         dispatch(showuserdetails(res.payload))
       }
     })

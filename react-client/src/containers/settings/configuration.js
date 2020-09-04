@@ -120,22 +120,22 @@ class Configuration extends React.Component {
         whatsappData
       })
     }
-    if (nextProps.user && nextProps.user.platform === 'sms' && nextProps.automated_options && !nextProps.automated_options.twilio) {
-      this.props.history.push({
-        pathname: '/integrations',
-        state: 'sms'
-      })
-    } else if (nextProps.user && nextProps.user.platform === 'whatsApp' && nextProps.automated_options && !nextProps.automated_options.whatsApp) {
-      this.props.history.push({
-        pathname: '/integrations',
-        state: 'whatsApp'
-      })
-    } else if (nextProps.user && nextProps.user.platform === 'messenger' && (nextProps.user.role === 'buyer' && !nextProps.user.facebookInfo)) {
-      this.props.history.push({
-        pathname: '/integrations',
-        state: 'messenger'
-      })
-    }
+    // if (nextProps.user && nextProps.user.platform === 'sms' && nextProps.automated_options && !nextProps.automated_options.twilio) {
+    //   this.props.history.push({
+    //     pathname: '/integrations',
+    //     state: 'sms'
+    //   })
+    // } else if (nextProps.user && nextProps.user.platform === 'whatsApp' && nextProps.automated_options && !nextProps.automated_options.whatsApp) {
+    //   this.props.history.push({
+    //     pathname: '/integrations',
+    //     state: 'whatsApp'
+    //   })
+    // } else if (nextProps.user && nextProps.user.platform === 'messenger' && (nextProps.user.role === 'buyer' && !nextProps.user.facebookInfo)) {
+    //   this.props.history.push({
+    //     pathname: '/integrations',
+    //     state: 'messenger'
+    //   })
+    // }
   }
 
   disconnect() {
