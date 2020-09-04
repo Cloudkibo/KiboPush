@@ -1,7 +1,7 @@
 /* eslint-disable no-useless-constructor */
 import React from 'react'
 import { updatePlatformSettings, updatePlatformWhatsApp, disconnect, deleteWhatsApp } from '../../redux/actions/settings.actions'
-import { getAutomatedOptions, disconnectFacebook } from '../../redux/actions/basicinfo.actions'
+import { getAutomatedOptions, disconnectFacebook, updateShowIntegrations } from '../../redux/actions/basicinfo.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import AlertContainer from 'react-alert'
@@ -47,7 +47,16 @@ class Configuration extends React.Component {
     this.setType = this.setType.bind(this)
     this.changeWhatsAppProvider = this.changeWhatsAppProvider.bind(this)
     this.updateWhatsAppData = this.updateWhatsAppData.bind(this)
+    this.logout = this.logout.bind(this)
     props.getAutomatedOptions()
+  }
+
+  logout() {
+    this.props.history.push({
+      pathname: '/facebookIntegration'
+    })
+    this.props.updateShowIntegrations({ showIntegrations: true })
+    // auth.logout()
   }
 
   updateWhatsAppData(e, data) {
@@ -286,7 +295,7 @@ class Configuration extends React.Component {
             </div>
           </div>
         </div>
-        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="disconnectFacebook" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="disconnectFacebookConfiguration" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
             <div className="modal-content">
               <div style={{ display: 'block' }} className="modal-header">
@@ -304,8 +313,8 @@ class Configuration extends React.Component {
                 <button style={{ float: 'right' }}
                   className='btn btn-primary btn-sm'
                   onClick={() => {
-                    this.props.disconnectFacebook()
                     this.logout()
+                    this.props.disconnectFacebook()
                   }} data-dismiss='modal'>Yes
                   </button>
               </div>
@@ -474,7 +483,7 @@ class Configuration extends React.Component {
                                           </div>
                                           <div className='m-widget4__ext'>
                                             {this.props.user.facebookInfo
-                                              ? <a href='#/' data-toggle="modal" data-target="#disconnectFacebook" className='m-btn m-btn--pill m-btn--hover-danger btn btn-danger' style={{ borderColor: '#d9534f', color: '#d9534f', marginRight: '10px' }}>
+                                              ? <a href='#/' data-toggle="modal" data-target="#disconnectFacebookConfiguration" className='m-btn m-btn--pill m-btn--hover-danger btn btn-danger' style={{ borderColor: '#d9534f', color: '#d9534f', marginRight: '10px' }}>
                                                 Disconnect
                                             </a>
                                               : <a href='/auth/facebook' className='m-btn m-btn--pill m-btn--hover-success btn btn-success' style={{ borderColor: '#34bfa3', color: '#34bfa3', marginRight: '10px' }}>
@@ -571,7 +580,8 @@ function mapDispatchToProps(dispatch) {
     updatePlatformWhatsApp: updatePlatformWhatsApp,
     disconnect: disconnect,
     disconnectFacebook: disconnectFacebook,
-    deleteWhatsApp: deleteWhatsApp
+    deleteWhatsApp: deleteWhatsApp,
+    updateShowIntegrations
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Configuration)
