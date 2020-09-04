@@ -56,7 +56,6 @@ class Configuration extends React.Component {
       pathname: '/facebookIntegration'
     })
     this.props.updateShowIntegrations({ showIntegrations: true })
-    // auth.logout()
   }
 
   updateWhatsAppData(e, data) {
