@@ -262,7 +262,7 @@ class Configuration extends React.Component {
         <ConfirmationModal
           id = 'create_confirmation_modal'
           title = 'Are You Sure?'
-          description = {`you had previously connected different account from this number ${this.props.automated_options.whatsApp ? this.props.automated_options.whatsApp.businessNumber: 0}. If you choose to connect the new Number then all the old data will be deleted...` }
+          description = {`You had previously connected different account from this number ${(this.props.automated_options && this.props.automated_options.whatsApp) ? this.props.automated_options.whatsApp.businessNumber: 0}. If you choose to connect the new Number then all the old data will be deleted...` }
           onConfirm = {this.updateData}
           zIndex= {99991}
         />
