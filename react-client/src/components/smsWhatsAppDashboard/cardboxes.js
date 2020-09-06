@@ -44,7 +44,7 @@ class CardBoxesContainer extends React.Component {
             <Link to={url.includes('kibochat.cloudkibo.com') ? (this.props.platform === 'sms' ? '/smsChat' : '/whatsAppChat') : (this.props.platform === 'sms' ? '/smsBroadcasts' : '/whatsAppBroadcasts')} >
               <CardBox
                 style='accent'
-                value={url.includes('kibochat.cloudkibo.com') ? this.props.cardBoxesData.chats : this.props.cardBoxesData.broadcasts}
+                value={url.includes('kibochat.cloudkibo.com') ? this.props.cardBoxesData.chats : this.props.cardBoxesData.broadcasts ? this.props.cardBoxesData.broadcasts : 0}
                 label={url.includes('kibochat.cloudkibo.com') ? 'New Messages' : 'Broadcasts'}
                 id='properties'
               />
