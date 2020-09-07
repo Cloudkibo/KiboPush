@@ -36,14 +36,32 @@ class App extends Component {
     document.getElementsByTagName('body')[0].className = 'm-page--fluid m--skin- m-content--skin-light2 m-header--fixed m-header--fixed-mobile m-footer--push'
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.message_alert) {
       nextProps.setMessageAlert(null)
+    }
+    if (nextProps.user) {
+      if (!nextProps.user.emailVerified) {
+        this.props.history.push({
+          pathname: '/resendVerificationEmail'
+        })
+      } else if (nextProps.user.platform === '' && nextProps.user.role === 'buyer') {
+        this.props.history.push({
+          pathname: '/integrations'
+        })
+      } else if (nextProps.user.platform === 'messenger') {
+        this.props.loadMyPagesListNew({
+          last_id: 'none',
+          number_of_records: 10,
+          first_page: 'first',
+          filter: false,
+          filter_criteria: { search_value: '' }
+        }, this.redirectToConnectPage)
+      }
     }
     this.setState({
       message_alert: nextProps.message_alert
     })
-
   }
 
   componentDidMount () {
