@@ -37,6 +37,7 @@ class App extends Component {
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
+    console.log('nextProps in sub', nextProps.user)
     if (nextProps.message_alert) {
       nextProps.setMessageAlert(null)
     }
@@ -49,12 +50,10 @@ class App extends Component {
         this.props.history.push({
           pathname: '/integrations'
         })
-      } else if (nextProps.user.platform === 'messenger') {
-        if ((!nextProps.user.facebookInfo || !nextProps.user.connectFacebook) && nextProps.user.role === 'buyer') {
+      } else if (nextProps.user.platform === 'messenger' && (!nextProps.user.facebookInfo || !nextProps.user.connectFacebook) && nextProps.user.role === 'buyer') {
           this.props.history.push({
             pathname: '/integrations'
           })
-        }
       } else if (nextProps.user.platform === 'sms' && nextProps.automated_options && !nextProps.automated_options.twilio && nextProps.user.role === 'buyer') {
         this.props.history.push({
           pathname: '/integrations',

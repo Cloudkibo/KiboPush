@@ -71,7 +71,7 @@ class Header extends React.Component {
           pathname: '/integrations',
           state: 'whatsApp'
         })
-      } else if (value === 'messenger' && this.props.user && !this.props.user.facebookInfo) {
+      } else if (value === 'messenger' && this.props.user && (!this.props.user.facebookInfo || !this.props.user.connectFacebook)) {
         this.props.history.push({
           pathname: '/integrations',
           state: 'messenger'
