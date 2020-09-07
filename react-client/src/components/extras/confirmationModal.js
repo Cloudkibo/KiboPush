@@ -9,7 +9,7 @@ import PropTypes from 'prop-types'
 class ConfirmationModal extends React.Component {
   render () {
     return (
-      <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id={this.props.id} tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div style={{ background: 'rgba(33, 37, 41, 0.6)', zIndex: this.props.zIndex}} className="modal fade" id={this.props.id} tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
           <div className="modal-content">
             <div style={{ display: 'block' }} className="modal-header">
@@ -44,11 +44,16 @@ class ConfirmationModal extends React.Component {
   }
 }
 
+ConfirmationModal.defaultProps = {
+  'zIndex': 1050,
+}
+
 ConfirmationModal.propTypes = {
   'id': PropTypes.string.isRequired,
   'title': PropTypes.string.isRequired,
   'description': PropTypes.string.isRequired,
-  'onConfirm': PropTypes.func.isRequired
+  'onConfirm': PropTypes.func.isRequired,
+  'zIndex': PropTypes.number,
 }
 
 export default ConfirmationModal

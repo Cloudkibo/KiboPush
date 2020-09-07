@@ -584,19 +584,24 @@ class Button extends React.Component {
   }
 
   replyWithMessage() {
-    let postbackPayload = this.state.postbackPayload
-    postbackPayload.push({
-      action: 'send_message_block'
-    })
-    this.setState({
-      openCreateMessage: true,
-      postbackPayload
-    }, () => {
-      this.scrollToElement(`send_message_block${this.buttonId}`)
-      if (this.props.updateButtonStatus) {
-        this.props.updateButtonStatus({ buttonDisabled: !this.checkValid() })
-      }
-    })
+    const broadcastLevel = this.props.canCreateNewLevel()
+    if (broadcastLevel.canCreate) {
+      let postbackPayload = this.state.postbackPayload
+      postbackPayload.push({
+        action: 'send_message_block'
+      })
+      this.setState({
+        openCreateMessage: true,
+        postbackPayload
+      }, () => {
+        this.scrollToElement(`send_message_block${this.buttonId}`)
+        if (this.props.updateButtonStatus) {
+          this.props.updateButtonStatus({ buttonDisabled: !this.checkValid() })
+        }
+      })
+    } else {
+      this.props.alertMsg.error(broadcastLevel.errorMessage)
+    }
   }
 
   removeReplyWithMessage(index) {

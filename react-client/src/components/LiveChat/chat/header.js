@@ -31,7 +31,10 @@ class Header extends React.Component {
               className='la la-user-plus'
             />
           }
-          <i style={{ cursor: 'pointer', color: '#212529', fontSize: '25px', marginRight: '5px' }} onClick={this.props.showSearch} data-tip='Search' className='la la-search' />
+          {
+            this.props.showSearch &&
+            <i style={{ cursor: 'pointer', color: '#212529', fontSize: '25px', marginRight: '5px' }} onClick={this.props.openSearch} data-tip='Search' className='la la-search' />
+          }
           {
             this.props.activeSession.status === 'new'
             ? <i
@@ -56,9 +59,10 @@ class Header extends React.Component {
 
 Header.propTypes = {
   'activeSession': PropTypes.object.isRequired,
-  'showSearch': PropTypes.func.isRequired,
+  'openSearch': PropTypes.func.isRequired,
   'changeStatus': PropTypes.func.isRequired,
-  'handlePendingResponse': PropTypes.func.isRequired
+  'handlePendingResponse': PropTypes.func.isRequired,
+  'showSearch': PropTypes.bool.isRequired
 }
 
 export default Header

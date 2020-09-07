@@ -369,7 +369,7 @@ class Bot extends React.Component {
                 <h5 className="modal-title" id="exampleModalLabel">
                   Dashboard Video Tutorial
 									</h5>
-                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" 
+                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal"
                 aria-label="Close"
                 onClick={() => {
                   this.setState({
@@ -596,33 +596,34 @@ class Bot extends React.Component {
                       </h3>
                     </div>
                   </div>
-                  <div className='m-portlet__head-tools'>
-                    {
-                      this.props.pages && this.props.pages.length === 0
-                        ? <div>
-                          <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' onClick={this.showDialog} >
-                            <span>
-                              <i className='la la-plus' />
-                              <span>
-                                Create New
-                            </span>
-                            </span>
-                          </button>
-                        </div>
-                        : <div>
-                          {this.props.user && this.props.user.role !== 'agent' &&
-                            <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' onClick={this.showDialog}>
+                  {
+                    this.props.user.permissions['create_bots'] &&
+                    <div className='m-portlet__head-tools'>
+                      {
+                        this.props.pages && this.props.pages.length === 0
+                          ? <div>
+                            <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' onClick={this.showDialog} >
                               <span>
                                 <i className='la la-plus' />
                                 <span>
                                   Create New
-                            </span>
+                              </span>
                               </span>
                             </button>
-                          }
-                        </div>
-                    }
-                  </div>
+                          </div>
+                          : <div>
+                              <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' onClick={this.showDialog}>
+                                <span>
+                                  <i className='la la-plus' />
+                                  <span>
+                                    Create New
+                              </span>
+                                </span>
+                              </button>
+                          </div>
+                      }
+                    </div>
+                  }
                 </div>
                 {
                   this.props.bots && this.props.bots.length > 0
@@ -729,33 +730,36 @@ class Bot extends React.Component {
                                 </span>
                               </span>
                             </div>
-                            <div
-                              className="m-widget5__stats2"
-                              style={{
-                                textAlign: 'center',
-                                width: '7.1rem',
-                                color: 'red',
-                                paddingLeft: '0px'
-                              }}>
-                              <span
-                                onClick={() => this.showDialogDelete(bot._id)}
-                                style={{ cursor: 'pointer' }}
-                              >
-                                <span className="m-widget5__number">
-                                  <i
-                                    className='la la-trash-o'
-                                    style={{
-                                      fontSize: '26px',
-                                      paddingLeft: '0px',
-                                      color: 'red',
-                                    }} />
+                            {
+                              this.props.user.permissions['delete_bots'] &&
+                              <div
+                                className="m-widget5__stats2"
+                                style={{
+                                  textAlign: 'center',
+                                  width: '7.1rem',
+                                  color: 'red',
+                                  paddingLeft: '0px'
+                                }}>
+                                <span
+                                  onClick={() => this.showDialogDelete(bot._id)}
+                                  style={{ cursor: 'pointer' }}
+                                >
+                                  <span className="m-widget5__number">
+                                    <i
+                                      className='la la-trash-o'
+                                      style={{
+                                        fontSize: '26px',
+                                        paddingLeft: '0px',
+                                        color: 'red',
+                                      }} />
+                                  </span>
+                                  <br />
+                                  <span className="m-widget5__votes" style={{ color: 'red' }}>
+                                    Delete
+                                  </span>
                                 </span>
-                                <br />
-                                <span className="m-widget5__votes" style={{ color: 'red' }}>
-                                  Delete
-                                </span>
-                              </span>
-                            </div>
+                              </div>
+                            }
                           </div>
                         ))
                         }
