@@ -57,14 +57,39 @@ class App extends Component {
     document.getElementsByTagName('body')[0].className = 'm-page--fluid m--skin- m-content--skin-light2 m-header--fixed m-header--fixed-mobile m-footer--push'
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
+    console.log('nextProps in sub', nextProps.user)
     if (nextProps.message_alert) {
       nextProps.setMessageAlert(null)
+    }
+    if (nextProps.user) {
+      if (!nextProps.user.emailVerified) {
+        this.props.history.push({
+          pathname: '/resendVerificationEmail'
+        })
+      } else if (nextProps.user.platform === '' && nextProps.user.role === 'buyer') {
+        this.props.history.push({
+          pathname: '/integrations'
+        })
+      } else if (nextProps.user.platform === 'messenger' && (!nextProps.user.facebookInfo || !nextProps.user.connectFacebook) && nextProps.user.role === 'buyer') {
+          this.props.history.push({
+            pathname: '/integrations'
+          })
+      } else if (nextProps.user.platform === 'sms' && nextProps.automated_options && !nextProps.automated_options.twilio && nextProps.user.role === 'buyer') {
+        this.props.history.push({
+          pathname: '/integrations',
+          state: 'sms'
+        })
+      } else if (nextProps.user.platform === 'whatsApp' && nextProps.automated_options && !nextProps.automated_options.whatsApp && nextProps.user.role === 'buyer') {
+        this.props.history.push({
+          pathname: '/integrations',
+          state: 'whatsApp'
+        })
+      }
     }
     this.setState({
       message_alert: nextProps.message_alert
     })
-
   }
 
   componentDidMount () {

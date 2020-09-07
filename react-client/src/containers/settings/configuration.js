@@ -519,9 +519,8 @@ class Configuration extends React.Component {
                                             <br />
                                           </div>
                                           <div className='m-widget4__ext'>
-                                            {this.props.user.facebookInfo
-                                              ? <a href='#/' data-toggle="modal" data-target="#disconnectFacebookConfiguration" className='m-btn m-btn--pill m-btn--hover-danger btn btn-danger' style={{ borderColor: '#d9534f', color: '#d9534f', marginRight: '10px' }}>
-                                                Disconnect
+                                            {this.props.user.facebookInfo && this.props.user.connectFacebook
+                                              ? <a href='#/' data-toggle="modal" data-target="#disconnectFacebookConfiguration" className='m-btn m-btn--pill m-btn--hover-danger btn btn-danger' style={{ borderColor: '#d9534f', color: '#d9534f', marginRight: '10px' }}>                                                Disconnect
                                             </a>
                                               : <a href='/auth/facebook' className='m-btn m-btn--pill m-btn--hover-success btn btn-success' style={{ borderColor: '#34bfa3', color: '#34bfa3', marginRight: '10px' }}>
                                                 Connect

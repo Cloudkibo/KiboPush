@@ -73,7 +73,7 @@ class Header extends React.Component {
           pathname: '/integrations',
           state: 'whatsApp'
         })
-      } else if (value === 'messenger' && this.props.user && !this.props.user.facebookInfo) {
+      } else if (value === 'messenger' && this.props.user && (!this.props.user.facebookInfo || !this.props.user.connectFacebook)) {
         this.props.history.push({
           pathname: '/integrations',
           state: 'messenger'
@@ -154,11 +154,6 @@ class Header extends React.Component {
     if (nextProps.user) {
       let mode = nextProps.user.uiMode && nextProps.user.uiMode.mode === 'kiboengage' ? 'Customer Engagement' : nextProps.user.uiMode.mode === 'kibochat' ? 'Customer Chat' : nextProps.user.uiMode.mode === 'kibocommerce' ? 'E-Commerce' : 'All'
       this.setState({ mode: mode })
-      if (nextProps.user.role === 'buyer' && nextProps.user.platform === '') {
-        this.props.history.push({
-          pathname: '/integrations',
-        })
-      }
       // FS.identify(nextProps.user.email, {
       //   displayName: nextProps.user.name,
       //   email: nextProps.user.email,
@@ -169,7 +164,6 @@ class Header extends React.Component {
       // console.log('FS identify Executed')
       var plan = nextProps.user.currentPlan.unique_ID
       this.getPlanInfo(plan)
-
     }
     if (nextProps.notifications) {
       var seen = []
