@@ -50,13 +50,21 @@ class App extends Component {
           pathname: '/integrations'
         })
       } else if (nextProps.user.platform === 'messenger') {
-        this.props.loadMyPagesListNew({
-          last_id: 'none',
-          number_of_records: 10,
-          first_page: 'first',
-          filter: false,
-          filter_criteria: { search_value: '' }
-        }, this.redirectToConnectPage)
+        if ((!nextProps.user.facebookInfo || !nextProps.user.connectFacebook) && nextProps.user.role === 'buyer') {
+          this.props.history.push({
+            pathname: '/integrations'
+          })
+        }
+      } else if (nextProps.user.platform === 'sms' && nextProps.automated_options && !nextProps.automated_options.twilio && nextProps.user.role === 'buyer') {
+        this.props.history.push({
+          pathname: '/integrations',
+          state: 'sms'
+        })
+      } else if (nextProps.user.platform === 'whatsApp' && nextProps.automated_options && !nextProps.automated_options.whatsApp && nextProps.user.role === 'buyer') {
+        this.props.history.push({
+          pathname: '/integrations',
+          state: 'whatsApp'
+        })
       }
     }
     this.setState({
