@@ -13,6 +13,7 @@ import AlertContainer from 'react-alert'
 import Select from 'react-select'
 import YouTube from 'react-youtube'
 import fileDownload from 'js-file-download'
+import moment from 'moment'
 var json2csv = require('json2csv')
 
 
@@ -518,6 +519,11 @@ class Contact extends React.Component {
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
                             <span style={{width: '100px'}}>Status</span>
                           </th>
+                          <th data-field='subscribedDate'
+                            className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                            <span style={{width: '100px'}}>Subscribed</span>
+                          </th>
+
                           {
                             this.props.user.platform === 'sms' &&
                             <th data-field='lists'
@@ -540,6 +546,7 @@ class Contact extends React.Component {
                             <td data-field='name' className='m-datatable__cell--center m-datatable__cell'><span style={contact.isSubscribed ? subscribedStyle : unsubscribedStyle}>{contact.name}</span></td>
                             <td data-field='number' className='m-datatable__cell--center m-datatable__cell'><span style={contact.isSubscribed ? subscribedStyle : unsubscribedStyle}>{contact.number}</span></td>
                             <td data-field='status' className='m-datatable__cell--center m-datatable__cell'><span style={contact.isSubscribed ? subscribedStyle : unsubscribedStyle}>{contact.isSubscribed ? 'Subscribed' : 'Unsubscribed'}</span></td>
+                            <td data-field='subscribedDate' className='m-datatable__cell--center m-datatable__cell'><span style={contact.isSubscribed ? subscribedStyle : unsubscribedStyle}>{moment(contact.datetime).fromNow()}</span></td>
                             {
                               this.props.user.platform === 'sms' &&  <td data-field='lists' className='m-datatable__cell--center m-datatable__cell'><span style={contact.isSubscribed ? subscribedStyle : unsubscribedStyle}>{this.getLists(contact)}</span></td>
                             }
