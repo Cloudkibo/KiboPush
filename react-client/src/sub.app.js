@@ -62,6 +62,9 @@ class App extends Component {
     if (nextProps.message_alert) {
       nextProps.setMessageAlert(null)
     }
+    this.setState({
+      message_alert: nextProps.message_alert
+    })
     if (nextProps.user) {
       if (!nextProps.user.emailVerified) {
         this.props.history.push({
@@ -87,9 +90,15 @@ class App extends Component {
         })
       }
     }
-    this.setState({
-      message_alert: nextProps.message_alert
-    })
+    if (nextProps.socketData && this.props.history.location.pathname !== '/liveChat') {
+      handleSocketEvent(
+        nextProps.socketData,
+        nextProps,
+        nextProps.updateLiveChatInfo,
+        nextProps.user,
+        nextProps.clearSocketData
+      )
+    }
   }
 
   componentDidMount () {
@@ -200,18 +209,6 @@ class App extends Component {
       pathname: '/liveChat',
       state: { subscriber_id: this.props.socketData.payload.subscriber_id }
     })
-  }
-
-  UNSAFE_componentWillReceiveProps (nextProps) {
-    if (nextProps.socketData && this.props.history.location.pathname !== '/liveChat') {
-      handleSocketEvent(
-        nextProps.socketData,
-        nextProps,
-        nextProps.updateLiveChatInfo,
-        nextProps.user,
-        nextProps.clearSocketData
-      )
-    }
   }
 
   render () {
