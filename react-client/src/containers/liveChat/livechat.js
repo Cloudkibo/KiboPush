@@ -91,7 +91,8 @@ class LiveChat extends React.Component {
       selected: [],
       showingBulkActions: false,
       allSelected: false,
-      cannedResponses: []
+      cannedResponses: [],
+      showChatWidget: !this.props.isMobile
     }
 
     this.fetchSessions = this.fetchSessions.bind(this)
@@ -120,6 +121,7 @@ class LiveChat extends React.Component {
     this.isSMPApproved = this.isSMPApproved.bind(this)
     this.setMessageData = this.setMessageData.bind(this)
     this.markSessionsRead = this.markSessionsRead.bind(this)
+    this.backToSessions = this.backToSessions.bind(this)
     this.props.loadcannedResponses()
     this.fetchSessions(true, 'none', true)
     props.getSMPStatus(this.handleSMPStatus)
@@ -297,7 +299,8 @@ class LiveChat extends React.Component {
     const message = (status === 'resolved') ? 'Session has been marked as resolved successfully' : 'Session has been reopened successfully'
     this.setState({
       userChat: [],
-      activeSession: (session._id === this.state.activeSession._id) ? {} : this.state.activeSession
+      activeSession: (session._id === this.state.activeSession._id) ? {} : this.state.activeSession,
+      showChat: !this.props.isMobile
     })
     this.alertMsg.success(message)
     let notificationMessage = (status === 'resolved')
@@ -404,7 +407,8 @@ class LiveChat extends React.Component {
         subscriberTags: null,
         searchChatMsgs: null,
         loadingChat: true,
-        showSearch: false
+        showSearch: false,
+        showChat: true
       }, () => {
         this.loadActiveSession({...session})
       })
@@ -483,6 +487,13 @@ class LiveChat extends React.Component {
   getAgents (members) {
     let agents = members.filter(a => !a.userId.disableMember).map(m => m.userId)
     return agents
+  }
+
+  backToSessions () {
+    this.setState({
+      showChat: false,
+      activeSession: {}
+    })
   }
 
   UNSAFE_componentWillReceiveProps (nextProps) {
@@ -586,38 +597,44 @@ class LiveChat extends React.Component {
                   </div>
                 </div>
               }
-            <HELPWIDGET
-              documentation={{visibility: true, link: 'http://kibopush.com/livechat/'}}
-              videoTutorial={{visibility: true, videoId: 'bLotpQLvsfE'}}
-            />
-              <div className='row'>
-                <SESSIONS
-                  pages={this.props.pages}
-                  loading={this.state.sessionsLoading}
-                  tabValue={this.state.tabValue}
-                  sessions={this.state.sessions}
-                  sessionsCount={this.state.sessionsCount}
-                  filterSort={this.state.filterSort}
-                  filterPage={this.state.filterPage}
-                  filterSearch={this.state.filterSearch}
-                  filterPending={this.state.filterPending}
-                  filterUnread={this.state.filterUnread}
-                  activeSession={this.state.activeSession}
-                  changeActiveSession={this.changeActiveSession}
-                  profilePicError={this.profilePicError}
-                  changeStatus={this.changeStatus}
-                  changeTab={this.changeTab}
-                  updateState={this.updateState}
-                  fetchSessions={this.fetchSessions}
-                  getChatPreview={this.getChatPreview}
-                  markSessionsRead={this.markSessionsRead}
-                  selected={this.state.selected}
-                  showingBulkActions={this.state.showingBulkActions}
-                  showBulkActions={true}
-                  allSelected={this.state.allSelected}
+              {
+                !this.props.isMobile &&
+                <HELPWIDGET
+                  documentation={{visibility: true, link: 'http://kibopush.com/livechat/'}}
+                  videoTutorial={{visibility: true, videoId: 'bLotpQLvsfE'}}
                 />
+              }
+              <div style={{marginTop: this.props.isMobile ? '20px' : '0px'}} className='row'>
                 {
-                  this.state.activeSession.constructor === Object && Object.keys(this.state.activeSession).length > 0 &&
+                  ((this.props.isMobile && !this.state.showChat) || !this.props.isMobile) &&
+                  <SESSIONS
+                    pages={this.props.pages}
+                    loading={this.state.sessionsLoading}
+                    tabValue={this.state.tabValue}
+                    sessions={this.state.sessions}
+                    sessionsCount={this.state.sessionsCount}
+                    filterSort={this.state.filterSort}
+                    filterPage={this.state.filterPage}
+                    filterSearch={this.state.filterSearch}
+                    filterPending={this.state.filterPending}
+                    filterUnread={this.state.filterUnread}
+                    activeSession={this.state.activeSession}
+                    changeActiveSession={this.changeActiveSession}
+                    profilePicError={this.profilePicError}
+                    changeStatus={this.changeStatus}
+                    changeTab={this.changeTab}
+                    updateState={this.updateState}
+                    fetchSessions={this.fetchSessions}
+                    getChatPreview={this.getChatPreview}
+                    markSessionsRead={this.markSessionsRead}
+                    selected={this.state.selected}
+                    showingBulkActions={this.state.showingBulkActions}
+                    showBulkActions={true}
+                    allSelected={this.state.allSelected}
+                  />
+                }
+                {
+                  this.state.showChat && this.state.activeSession.constructor === Object && Object.keys(this.state.activeSession).length > 0 &&
                   <CHAT
                     cannedResponses = {this.state.cannedResponses}
                     userChat={this.state.userChat}
@@ -656,10 +673,12 @@ class LiveChat extends React.Component {
                     zoomIntegrations={this.props.zoomIntegrations}
                     createZoomMeeting={this.props.createZoomMeeting}
                     showSubscriberNameOnMessage={true}
+                    isMobile={this.props.isMobile}
+                    backToSessions={this.backToSessions}
                   />
                 }
                 {
-                   this.state.activeSession.constructor === Object && Object.keys(this.state.activeSession).length > 0 && !this.state.showSearch &&
+                   !this.props.isMobile && this.state.activeSession.constructor === Object && Object.keys(this.state.activeSession).length > 0 && !this.state.showSearch &&
                    <PROFILE
                       updateState={this.updateState}
                       teams={this.props.teams ? this.props.teams : []}
@@ -685,11 +704,11 @@ class LiveChat extends React.Component {
                       setCustomFieldValue={this.saveCustomField}
                       showTags={true}
                       showCustomFields={true}
-                      showUnsubscribe={true}
+                      showUnsubscribe={(this.props.user && this.props.user.plan['unsubscribe_subscribers'] && this.props.user.permissions['unsubsubscribe_subscribers'])}
                     />
                 }
                 {
-                  Object.keys(this.state.activeSession).length > 0 && this.state.activeSession.constructor === Object && this.state.showSearch &&
+                  !this.props.isMobile && Object.keys(this.state.activeSession).length > 0 && this.state.activeSession.constructor === Object && this.state.showSearch &&
                   <SEARCHAREA
                     clearSearchResults={this.clearSearchResults}
                     activeSession={this.state.activeSession}
@@ -702,7 +721,7 @@ class LiveChat extends React.Component {
                   />
                 }
                 {
-                  this.state.activeSession.constructor === Object && Object.keys(this.state.activeSession).length === 0 &&
+                  !this.props.isMobile && this.state.activeSession.constructor === Object && Object.keys(this.state.activeSession).length === 0 &&
                   <div style={{border: '1px solid #F2F3F8',
                     marginBottom: '0px',
                     display: 'flex',
@@ -733,6 +752,7 @@ function mapStateToProps(state) {
     chatCount: (state.liveChat.chatCount),
     pages: (state.pagesInfo.pages),
     user: (state.basicInfo.user),
+    isMobile: (state.basicInfo.isMobile),
     customers: (state.liveChat.customers),
     members: (state.membersInfo.members),
     teams: (state.teamsInfo.teams),

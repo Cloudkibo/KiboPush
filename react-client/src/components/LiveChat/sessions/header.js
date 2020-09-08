@@ -76,102 +76,99 @@ class SessionsHeader extends React.Component {
   render () {
     return (
       <div className='m-portlet__head'>
-
-          {
-            this.props.showingBulkActions ?
-            <div style={{paddingTop: '20px'}} className='row'>
-              <span onClick={this.props.markSessionsRead} style={{borderColor: '#f4516c', color: '#f4516c'}}
-                className='btn btn-outline-danger m-btn m-btn--pill m-btn--wide btn-sm'>
-                    Mark Selected Sessions as Read
-              </span>
-            </div> :
-            <div style={{paddingTop: '20px'}} className='row'>
-                        <div className='col-md-10'>
-            <div className='m-input-icon m-input-icon--left'>
-              <input type='text' value={this.state.filterSearch} onChange={this.handleSearch} className='form-control m-input m-input--solid' placeholder='Search...' id='generalSearch' />
-              <span className='m-input-icon__icon m-input-icon__icon--left'>
-                <span><i className='la la-search' /></span>
-              </span>
+        {
+          this.props.showingBulkActions
+          ? <div style={{paddingTop: '20px'}} className='row'>
+            <span onClick={this.props.markSessionsRead} style={{borderColor: '#f4516c', color: '#f4516c'}} className='btn btn-outline-danger m-btn m-btn--pill m-btn--wide btn-sm'>
+              Mark Selected Sessions as Read
+            </span>
+          </div> :
+          <div style={{paddingTop: '20px'}} className='row'>
+            <div className='col-10'>
+              <div className='m-input-icon m-input-icon--left'>
+                <input type='text' value={this.state.filterSearch} onChange={this.handleSearch} className='form-control m-input m-input--solid' placeholder='Search...' id='generalSearch' />
+                <span className='m-input-icon__icon m-input-icon__icon--left'>
+                  <span><i className='la la-search' /></span>
+                </span>
+              </div>
             </div>
-          </div>
-          <div style={{paddingLeft: 0}} className='col-md-2'>
-            <div className='m-portlet__head-tools'>
-              <ul className='m-portlet__nav'>
-                <li className='m-portlet__nav-item m-dropdown m-dropdown--inline m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push' data-dropdown-toggle='click'>
-                  <a href='#/' className='m-portlet__nav-link m-portlet__nav-link--icon m-dropdown__toggle'>
-                    <i onClick={this.showDropDown} style={{cursor: 'pointer', fontSize: '40px'}} className='la la-ellipsis-h' />
-                  </a>
-                  {
-                    this.state.showDropDown &&
-                    <div className='m-dropdown__wrapper'>
-                      <span className='m-dropdown__arrow m-dropdown__arrow--right m-dropdown__arrow--adjust' />
-                      <div className='m-dropdown__inner'>
-                        <div className='m-dropdown__body'>
-                          <div className='m-dropdown__content' style={{maxHeight: '500px', overflowY: 'auto'}}>
-                            <ul className='m-nav'>
-                                <li className='m-nav__section m-nav__section--first'>
+            <div style={{paddingLeft: 0}} className='col-2'>
+              <div className='m-portlet__head-tools'>
+                <ul className='m-portlet__nav'>
+                  <li className='m-portlet__nav-item m-dropdown m-dropdown--inline m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push' data-dropdown-toggle='click'>
+                    <a href='#/' className='m-portlet__nav-link m-portlet__nav-link--icon m-dropdown__toggle'>
+                      <i onClick={this.showDropDown} style={{cursor: 'pointer', fontSize: '40px'}} className='la la-ellipsis-h' />
+                    </a>
+                    {
+                      this.state.showDropDown &&
+                      <div className='m-dropdown__wrapper'>
+                        <span className='m-dropdown__arrow m-dropdown__arrow--right m-dropdown__arrow--adjust' />
+                          <div className='m-dropdown__inner'>
+                            <div className='m-dropdown__body'>
+                              <div className='m-dropdown__content' style={{maxHeight: '500px', overflowY: 'auto'}}>
+                                <ul className='m-nav'>
+                                  <li className='m-nav__section m-nav__section--first'>
                                     <span className='m-nav__section-text'>
-                                    Sort By:
+                                      Sort By:
                                     </span>
-                                </li>
-                                <DropdownItem
+                                  </li>
+                                  <DropdownItem
                                     selected={this.props.filterSort === 1}
                                     option='Oldest to Newest'
                                     action={() => this.handleSort(1)}
-                                />
+                                  />
 
-                                <DropdownItem
+                                  <DropdownItem
                                     selected={this.props.filterSort === -1}
                                     option='Newest to Oldest'
                                     action={() => this.handleSort(-1)}
-                                />
+                                  />
 
-                              <li className='m-nav__section m-nav__section--first'>
-                                <span className='m-nav__section-text'>
-                                  Filter by:
-                                </span>
-                              </li>
+                                  <li className='m-nav__section m-nav__section--first'>
+                                    <span className='m-nav__section-text'>
+                                      Filter by:
+                                    </span>
+                                  </li>
 
-                                <DropdownItem
+                                  <DropdownItem
                                     selected={this.props.filterUnread}
                                     option='Unread Messages'
                                     action={() => this.handleUnreadFilter()}
-                                />
+                                  />
 
-                                <DropdownItem
+                                  <DropdownItem
                                     selected={this.props.filterPending}
                                     option='Pending Sessions'
                                     action={() => this.handlePendingFilter()}
-                                />
+                                  />
 
-                              {
-                                this.props.showPageInfo && this.props.pages.map((page, i) => (
+                                  {
+                                    this.props.showPageInfo && this.props.pages.map((page, i) => (
                                     <DropdownItem
                                         selected={page._id === this.props.filterPage}
                                         option={page.pageName}
                                         action={() => this.handlePageFilter(page._id)}
                                     />
-                                ))
-                              }
-                            { (this.props.filterPage !== '' || this.props.filterUnread !== '' || this.props.filterPending !== '') &&
-                            <li className='m-nav__item'>
-                              <span onClick={this.removeFilters} style={{borderColor: '#f4516c', color: '#f4516c'}}
-                                className='btn btn-outline-danger m-btn m-btn--pill m-btn--wide btn-sm'>
-                                    Remove Filters
-                              </span>
-                            </li>
-                            }
-                            </ul>
+                                  ))
+                                  }
+                                  {
+                                    (this.props.filterPage !== '' || this.props.filterUnread !== '' || this.props.filterPending !== '') &&
+                                    <li className='m-nav__item'>
+                                      <span onClick={this.removeFilters} style={{borderColor: '#f4516c', color: '#f4516c'}} className='btn btn-outline-danger m-btn m-btn--pill m-btn--wide btn-sm'>
+                                        Remove Filters
+                                      </span>
+                                    </li>
+                                  }
+                                </ul>
+                              </div>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    </div>
-                  }
-                </li>
-              </ul>
-            </div>
-          </div>
-
+                      }
+                    </li>
+                  </ul>
+                </div>
+              </div>
             </div>
           }
       </div>

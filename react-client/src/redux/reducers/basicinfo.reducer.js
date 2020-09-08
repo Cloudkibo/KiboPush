@@ -24,9 +24,21 @@ export function basicInfo (state = initialState, action) {
         browserVersion: action.data
       })
 
+    case ActionTypes.SET_IS_MOBILE:
+      return Object.assign({}, state, {
+        isMobile: action.data
+      })
+
     case ActionTypes.GET_AUTOMATED_OPTIONS:
       return Object.assign({}, state, {
         automated_options: action.data
+      })
+
+    case ActionTypes.UPDATE_TRIAL_PERIOD:
+      let user = state.user
+      user.trial.status = false
+      return Object.assign({}, state, {
+        user
       })
 
     case ActionTypes.LOAD_USER_DETAILS:
@@ -65,10 +77,6 @@ export function basicInfo (state = initialState, action) {
       return Object.assign({}, state, {
         captchaKey: action.captchaKey,
         stripeKey: action.stripeKey
-      })
-    case ActionTypes.FETCH_PLAN:
-      return Object.assign({}, state, {
-        error: action.data
       })
 
     default:

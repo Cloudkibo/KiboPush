@@ -103,13 +103,16 @@ class Chat extends React.Component {
 
   render() {
     return (
-      <div id='_chat_area' style={{padding: '0px', border: '1px solid #F2F3F8', overflow: 'hidden', marginBottom: '0px'}} className='col-xl-5 m-portlet'>
-
-        <ReactTooltip
-          place='bottom'
-          type='dark'
-          effect='solid'
-        />
+      <div id='_chat_area' style={{padding: '0px', border: '1px solid #F2F3F8', overflow: 'hidden', marginBottom: '0px'}} className='col-xl-5'>
+        <div className='m-portlet'>
+        {
+          !this.props.isMobile &&
+          <ReactTooltip
+            place='bottom'
+            type='dark'
+            effect='solid'
+          />
+        }
 
         <CONFIRMATIONMODAL
           id='_resolve-chat-session'
@@ -148,9 +151,12 @@ class Chat extends React.Component {
 
         <HEADER
           activeSession={this.props.activeSession}
-          showSearch={this.props.showSearch}
+          openSearch={this.props.showSearch}
           changeStatus={this.props.changeStatus}
           handlePendingResponse={this.props.handlePendingResponse}
+          isMobile={this.props.isMobile}
+          backToSessions={this.props.backToSessions}
+          showSearch={this.props.user.plan.search_chat}
         />
 
         <BODY
@@ -168,6 +174,7 @@ class Chat extends React.Component {
           newMessage={this.newMessage}
           updateNewMessage={this.updateNewMessage}
           showSubscriberNameOnMessage={this.props.showSubscriberNameOnMessage}
+          isMobile={this.props.isMobile}
         />
 
         {
@@ -175,11 +182,12 @@ class Chat extends React.Component {
           ? <div
             className='m-messenger'
             style={{
-              position: 'absolute',
+              position: this.props.isMobile ? '' : 'absolute',
               bottom: 0,
               borderTop: '1px solid #ebedf2',
               width: '100%',
-              padding: '15px'
+              padding: '15px',
+              background: 'white'
             }}
           >
             <span>
@@ -194,11 +202,12 @@ class Chat extends React.Component {
           ? <div
             className='m-messenger'
             style={{
-              position: 'absolute',
+              position: this.props.isMobile ? '' : 'absolute',
               bottom: 0,
               borderTop: '1px solid #ebedf2',
               width: '100%',
-              padding: '15px'
+              padding: '15px',
+              background: 'white'
             }}
           >
             <span>
@@ -245,6 +254,7 @@ class Chat extends React.Component {
             zoomIntegrations={this.props.zoomIntegrations}
             createZoomMeeting={this.props.createZoomMeeting}
             showCaption={this.props.showCaption}
+            isMobile={this.props.isMobile}
           />
         }
 
@@ -261,7 +271,7 @@ class Chat extends React.Component {
             </PopoverBody>
           </Popover>
         </div>
-
+        </div>
       </div>
     )
   }
@@ -296,7 +306,9 @@ Chat.propTypes = {
   'showEmoji': PropTypes.bool.isRequired,
   'showGif': PropTypes.bool.isRequired,
   'showThumbsUp': PropTypes.bool.isRequired,
-  'showSubscriberNameOnMessage': PropTypes.bool.isRequired
+  'showSubscriberNameOnMessage': PropTypes.bool.isRequired,
+  'isMobile': PropTypes.bool.isRequired,
+  'backToSessions': PropTypes.func.isRequired
 }
 Chat.defaultProps = {
   showTemplates: false,
