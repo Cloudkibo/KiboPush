@@ -572,11 +572,16 @@ class QuickReplies extends React.Component {
   }
 
   selectAction (action) {
+    const broadcastLevel = this.props.canCreateNewLevel()
+    if (broadcastLevel.canCreate) {
       let currentActions = this.state.currentActions
       currentActions.push({action})
       this.setState({selectedAction: action, addingAction: false, currentActions}, () => {
         this.checkIfEdited()
-    })
+      })
+    } else {
+      this.props.alertMsg.error(broadcastLevel.errorMessage)
+    }
   }
 
   toggleAddQuickReply () {

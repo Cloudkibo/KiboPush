@@ -9,7 +9,8 @@ import {
   disconnectFacebook,
   updateMode,
   updatePlatform,
-  updatePicture
+  updatePicture,
+  logout
 } from '../../redux/actions/basicinfo.actions'
 import { fetchNotifications, markRead } from '../../redux/actions/notifications.actions'
 import { resetSocket } from '../../redux/actions/livechat.actions'
@@ -30,7 +31,8 @@ class Header extends React.Component {
       showDropDown: false,
       showViewingAsDropDown: false,
       mode: 'All',
-      userView: false
+      userView: false,
+      environment: cookie.load('environment')
     }
     this.toggleSidebar = this.toggleSidebar.bind(this)
     this.getPlanInfo = this.getPlanInfo.bind(this)
@@ -71,14 +73,14 @@ class Header extends React.Component {
           pathname: '/integrations',
           state: 'whatsApp'
         })
-      } else if (value === 'messenger' && this.props.user && !this.props.user.facebookInfo) {
+      } else if (value === 'messenger' && this.props.user && (!this.props.user.facebookInfo || !this.props.user.connectFacebook)) {
         this.props.history.push({
           pathname: '/integrations',
           state: 'messenger'
         })
       } else {
         this.redirectToDashboard(value)
-        this.props.updatePlatform({ platform: value })
+        this.props.updatePlatform({ platform: value }, this.props.fetchNotifications)
       }
     } else {
       if (value === 'sms' && this.props.automated_options && !this.props.automated_options.twilio) {
@@ -87,7 +89,7 @@ class Header extends React.Component {
         this.msg.error('WhatsApp is not connected. Please ask your account buyer to connect it.')
       } else {
         this.redirectToDashboard(value)
-        this.props.updatePlatform({ platform: value })
+        this.props.updatePlatform({ platform: value },  this.props.fetchNotifications)
       }
     }
   }
@@ -118,7 +120,7 @@ class Header extends React.Component {
   }
   logout() {
     this.props.updateShowIntegrations({ showIntegrations: true })
-    auth.logout()
+    // auth.logout()
   }
   showDropDown() {
     console.log('showDropDown')
@@ -186,13 +188,13 @@ class Header extends React.Component {
   getPlanInfo(plan) {
     var planInfo
     if (plan === 'plan_A') {
-      planInfo = 'Individual, Premium Account'
+      planInfo = 'Basic, Free Plan'
     } else if (plan === 'plan_B') {
-      planInfo = 'Individual, Free Account'
+      planInfo = 'Standard, Paid Plan'
     } else if (plan === 'plan_C') {
-      planInfo = 'Team, Premium Account'
+      planInfo = 'Premium, Paid Plan'
     } else if (plan === 'plan_D') {
-      planInfo = 'Team, Free Account'
+      planInfo = 'Enterprise, Paid Plan'
     } else {
       planInfo = ''
     }
@@ -274,9 +276,8 @@ class Header extends React.Component {
       }
     }
 
-    const environment = cookie.load('environment')
-    console.log('environment header', environment)
-    return productUrls[product][environment]
+    console.log('environment header', this.state.environment)
+    return productUrls[product][this.state.environment]
   }
 
   render() {
@@ -804,7 +805,7 @@ class Header extends React.Component {
                                       </Link>
                                     }
                                   </li>
-                                  {this.props.user && this.props.user.role === 'buyer' &&
+                                  {this.props.user && this.props.user.permissions['connect_facebook_account'] &&
                                     <li className='m-nav__item'>
                                       <span data-toggle="modal" data-target="#disconnectFacebook" className='m-nav__link'>
                                         <i className='m-nav__link-icon la la-unlink' />
@@ -827,7 +828,7 @@ class Header extends React.Component {
                                   </li>
                                   <li className='m-nav__separator m-nav__separator--fit' />
                                   <li className='m-nav__item'>
-                                    <span onClick={() => { auth.logout() }} className='btn m-btn--pill    btn-secondary m-btn m-btn--custom m-btn--label-brand m-btn--bolder'>
+                                    <span onClick={() => {this.props.logout(auth.logout)}} className='btn m-btn--pill    btn-secondary m-btn m-btn--custom m-btn--label-brand m-btn--bolder'>
                                       Logout
                                     </span>
                                   </li>
@@ -902,7 +903,8 @@ function mapDispatchToProps(dispatch) {
     updateShowIntegrations,
     disconnectFacebook,
     updatePlatform,
-    updatePicture
+    updatePicture,
+    logout
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Header)
