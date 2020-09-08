@@ -345,7 +345,7 @@ class Sidebar extends Component {
         (this.props.automated_options.automated_options === 'MIX_CHAT' ||
           this.props.automated_options.automated_options === 'HUMAN_CHAT')) {
         return (
-          <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
+          <li onClick={() => {document.getElementById('m_aside_left_close_btn').click()}} className='m-menu__item  m-menu__item--submenu' aria-haspopup='true'>
             <Link to={this.props.user.platform === 'sms' ? 'smsChat' : this.props.user.platform === 'messenger' ? '/liveChat' : 'whatsAppChat'} className='m-menu__link m-menu__toggle'>
               <i className='m-menu__link-icon flaticon-chat-1' title='Live Chat' />
               <span className='m-menu__link-text'>Live Chat (Beta)</span>
