@@ -503,7 +503,7 @@ class Header extends React.Component {
                         <div className='m-dropdown__wrapper'>
                           <span className='m-dropdown__arrow m-dropdown__arrow--center' />
                           <div className='m-dropdown__inner'>
-                            <div className='m-dropdown__header' style={{ background: 'assets/app/media/img/misc/notification_bg.jpg', backgroundSize: 'cover', height:'100px' }}>
+                            <div className='m-dropdown__header' style={{ background: 'assets/app/media/img/misc/notification_bg.jpg', backgroundSize: 'cover', height: '100px' }}>
                               <div className='m--align-center'>
                                 {this.props.notifications && this.state.unseenNotifications.length > 0
                                   ? <span className='m-dropdown__header-title'>

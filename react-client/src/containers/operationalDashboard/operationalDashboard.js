@@ -114,8 +114,13 @@ class OperationalDashboard extends React.Component {
     this.setState({days: value})
     if (value === '') {
       this.props.fetchPageAnalytics({days: ''})
-    } else if (parseInt(value) > 0) {
-      this.props.fetchPageAnalytics({days: parseInt(value)})
+    } else if (Number(value) > 0) {
+      let startDate = new Date() // Current date
+      let validNumber = startDate.setDate(startDate.getDate() - Number(value))
+      if(!Number.isNaN(validNumber)) {
+         console.log('range', validNumber)
+         this.props.fetchPageAnalytics({days: Number(value)})
+      } 
     }
   }
 
