@@ -14,7 +14,7 @@ class MenuItem extends React.Component {
       <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
         {
           route.route
-          ? <Link to={route.route} state={route.state} className='m-menu__link m-menu__toggle'>
+          ? <Link onClick={() => {document.getElementById('m_aside_left_close_btn').click()}} to={route.route} state={route.state} className='m-menu__link m-menu__toggle'>
             {
               icon
               ? <i className={`m-menu__link-icon ${icon}`} title={name} />
