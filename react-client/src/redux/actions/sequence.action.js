@@ -31,13 +31,17 @@ export function showCreatedSequence (data) {
   }
 }
 
-export function createSequence (data, msg) {
+export function createSequence (data, msg, history) {
   return (dispatch) => {
     callApi('sequenceMessaging/createSequence', 'post', data)
       .then(res => {
         console.log('response from createBot', res)
         if (res.status === 'success') {
           dispatch(showCreatedSequence(res.payload))
+          history.push({
+            pathname: `/editSequence`,
+            state: { ...data, module: 'create' }
+          })
         } else {
           msg.error(res.description)
         }
