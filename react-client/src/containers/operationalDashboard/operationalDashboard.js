@@ -43,7 +43,6 @@ import { saveUserInformation } from '../../redux/dispatchers/backdoor.dispatcher
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import AlertContainer from 'react-alert'
-import auth from '../../utility/auth.service'
 import {localeCodeToEnglish} from '../../utility/utils'
 
 class OperationalDashboard extends React.Component {
@@ -121,7 +120,7 @@ class OperationalDashboard extends React.Component {
   }
 
   setUsersView (user) {
-    this.props.setUsersView({type: 'set', actingAsUser: user.domain_email}, this.handleUsersView)
+    this.props.setUsersView({type: 'set', domain_email: user.domain_email, name: user.name}, this.handleUsersView)
   }
 
   handleUsersView () {

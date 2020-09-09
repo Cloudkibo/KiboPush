@@ -79,7 +79,7 @@ class Header extends React.Component {
                                             <ul className='m-nav'>
                                               <li style={{textAlign: 'center'}} className='m-nav__item'>
                                                 <span>
-                                                  Currently viewing as: <strong>{auth.getActingAsUserName()} </strong>
+                                                  Currently viewing as: <strong>{this.props.user.actingAsUser.name}</strong>
                                                 </span>
                                               </li>
                                               <li style={{textAlign: 'center'}} className='m-nav__item'>
