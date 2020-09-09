@@ -9,7 +9,8 @@ import {
   disconnectFacebook,
   updateMode,
   updatePlatform,
-  updatePicture
+  updatePicture,
+  saveEnvironment
 } from '../../redux/actions/basicinfo.actions'
 import { fetchNotifications, markRead } from '../../redux/actions/notifications.actions'
 import { resetSocket } from '../../redux/actions/livechat.actions'
@@ -275,8 +276,8 @@ class Header extends React.Component {
       }
     }
 
-    console.log('environment header', this.state.environment)
-    return productUrls[product][environment]
+    console.log('environment header', this.props.currentEnvironment)
+    return productUrls[product][this.props.currentEnvironment]
   }
 
   render() {
@@ -889,7 +890,7 @@ function mapStateToProps(state) {
     updatedUser: (state.basicInfo.updatedUser),
     automated_options: (state.basicInfo.automated_options),
     userView: (state.backdoorInfo.userView),
-
+    currentEnvironment: (state.basicInfo.currentEnvironment)
   }
 }
 
@@ -902,7 +903,8 @@ function mapDispatchToProps(dispatch) {
     updateShowIntegrations,
     disconnectFacebook,
     updatePlatform,
-    updatePicture
+    updatePicture,
+    saveEnvironment
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Header)

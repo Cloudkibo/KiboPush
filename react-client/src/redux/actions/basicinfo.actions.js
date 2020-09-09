@@ -16,6 +16,13 @@ export function fetchPlan (data) {
   }
 }
 
+export function saveEnvironment (data) {
+  return {
+    type: ActionTypes.CURRENT_ENVIRONMENT,
+    data
+  }
+}
+
 export function showuserdetails (data) {
   // NOTE: don't remove following auth method call
   console.log('user details', data)
