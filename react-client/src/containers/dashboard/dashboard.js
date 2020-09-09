@@ -232,52 +232,11 @@ class Dashboard extends React.Component {
   UNSAFE_componentWillReceiveProps(nextprops) {
     console.log('in UNSAFE_componentWillReceiveProps dashboard', nextprops)
     if (nextprops.user && nextprops.pages) {
-      if (nextprops.user.emailVerified === false) {
-        this.props.history.push({
-          pathname: '/resendVerificationEmail'
-        })
-      } else
-        if (nextprops.automated_options && !nextprops.user.facebookInfo && !nextprops.automated_options.twilio && !nextprops.automated_options.whatsApp && nextprops.user.role === 'buyer') {
-          this.props.history.push({
-            pathname: '/integrations'
-          })
-        }
-        //  else if (nextprops.user.platform === 'messenger' && !nextprops.user.facebookInfo) {
-        //   this.props.history.push({
-        //     pathname: '/integrations',
-        //     state: {showCancel: 'messenger'}
-        //   })
-        // } else if (nextprops.user.platform === 'sms' && nextprops.automated_options && !nextprops.automated_options.twilio) {
-        //   this.props.history.push({
-        //     pathname: '/integrations',
-        //     state: {showCancel: 'sms'}
-        //   })
-        // } else if (nextprops.user.platform === 'whatsApp' && nextprops.automated_options && !nextprops.automated_options.twilioWhatsApp) {
-        //   this.props.history.push({
-        //     pathname: '/integrations',
-        //     state: {showCancel: 'whatsApp'}
-        //   })
-        // }
-        // else if ((nextprops.user.currentPlan.unique_ID === 'plan_A' || nextprops.user.currentPlan.unique_ID === 'plan_B') && !nextprops.user.facebookInfo) {
-        //   this.props.history.push({
-        //     pathname: '/connectFb',
-        //     state: { account_type: 'individual' }
-        //   })
-        // } else if ((nextprops.user.currentPlan.unique_ID === 'plan_C' || nextprops.user.currentPlan.unique_ID === 'plan_D') && !nextprops.user.facebookInfo && nextprops.user.role === 'buyer' && !nextprops.user.skippedFacebookConnect) {
-        //   if (nextprops.pages && nextprops.pages.length === 0) {
-        //     console.log('going to push')
-        //     this.props.history.push({
-        //       pathname: '/connectFb',
-        //       state: { account_type: 'team' }
-        //     })
-        //   }
-        // }
-        else if (nextprops.user.platform === 'messenger' && nextprops.pages && nextprops.pages.length === 0) {
-          console.log('nextprops pages', nextprops)
+        if (nextprops.pages.length === 0) {
           this.props.history.push({
             pathname: '/addfbpages'
           })
-        } else if (nextprops.user.platform === 'messenger' && (nextprops.user.role === 'admin' || nextprops.user.role === 'buyer') && !nextprops.user.wizardSeen) {
+        } else if ((nextprops.user.role === 'admin' || nextprops.user.role === 'buyer') && !nextprops.user.wizardSeen) {
           console.log('going to push add page wizard')
           this.props.history.push({
             pathname: '/inviteUsingLinkWizard'
@@ -286,13 +245,13 @@ class Dashboard extends React.Component {
           this.props.history.push({
             pathname: '/abandonedCarts'
           })
-        } else if (nextprops.user.platform === 'messenger' && nextprops.subscribersCount > 0) {
+        } else if (nextprops.subscribersCount > 0) {
           // this means more than 0 subscribers
           this.setState({ isShowingModal: false })
-        } else if (nextprops.user.platform === 'messenger' && nextprops.pages && nextprops.pages.length > 0 && nextprops.subscribersCount === 0) {
+        } else if (nextprops.pages.length > 0 && nextprops.subscribersCount === 0) {
           // this means 0 subscribers
           this.setState({ isShowingModal: true })
-        } else if (nextprops.pages && nextprops.pages.length === 0) {
+        } else if (nextprops.pages.length === 0) {
           // this means connected pages in 0
           // this.props.history.push({
           // pathname: '/addPages',
