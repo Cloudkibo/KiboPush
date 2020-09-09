@@ -9,7 +9,8 @@ import {
   disconnectFacebook,
   updateMode,
   updatePlatform,
-  updatePicture
+  updatePicture,
+  logout
 } from '../../redux/actions/basicinfo.actions'
 import { fetchNotifications, markRead } from '../../redux/actions/notifications.actions'
 import { resetSocket } from '../../redux/actions/livechat.actions'
@@ -827,7 +828,7 @@ class Header extends React.Component {
                                   </li>
                                   <li className='m-nav__separator m-nav__separator--fit' />
                                   <li className='m-nav__item'>
-                                    <span onClick={() => { auth.logout() }} className='btn m-btn--pill    btn-secondary m-btn m-btn--custom m-btn--label-brand m-btn--bolder'>
+                                    <span onClick={() => {this.props.logout(auth.logout)}} className='btn m-btn--pill    btn-secondary m-btn m-btn--custom m-btn--label-brand m-btn--bolder'>
                                       Logout
                                     </span>
                                   </li>
@@ -902,7 +903,8 @@ function mapDispatchToProps(dispatch) {
     updateShowIntegrations,
     disconnectFacebook,
     updatePlatform,
-    updatePicture
+    updatePicture,
+    logout
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Header)
