@@ -1,5 +1,6 @@
 import callApi from '../../utility/api.caller.service'
 import fileDownload from 'js-file-download'
+import {getuserdetails} from './basicinfo.actions'
 import {
   handleAction,
   updateUsersList,
@@ -694,6 +695,18 @@ export function showMetrics (data) {
     data
   }
 }
+
+export function setUsersView (data, callback) {
+  return (dispatch) => {
+    callApi('backdoor/actingAsUser', 'post', data).then(res => {
+      if (res.status === 'success') {
+        dispatch(getuserdetails())
+        callback()
+      }
+    })
+  }
+}
+
 export function loadMetricsWhatsApp (data) {
   return (dispatch) => {
     callApi('backdoor/metricsWhatsApp', 'post', data).then(res => {
