@@ -10,6 +10,7 @@ import {
   updateMode,
   updatePlatform,
   updatePicture,
+  saveEnvironment,
   logout
 } from '../../redux/actions/basicinfo.actions'
 import { fetchNotifications, markRead } from '../../redux/actions/notifications.actions'
@@ -35,8 +36,7 @@ class Header extends React.Component {
       showViewingAsDropDown: false,
       mode: 'All',
       userView: false,
-      selectedPlatform: {},
-      environment: cookie.load('environment')
+      selectedPlatform: {}
     }
     this.toggleSidebar = this.toggleSidebar.bind(this)
     this.getPlanInfo = this.getPlanInfo.bind(this)
@@ -171,7 +171,11 @@ class Header extends React.Component {
     $('body').toggleClass(' m-aside-left--minimize m-brand--minimize')
     /* eslint-enable */
   }
-
+  componentDidMount () {
+    if (cookie.load('environment')) {
+      this.props.saveEnvironment(cookie.load('environment'))
+    }
+  }
   UNSAFE_componentWillReceiveProps(nextProps) {
     console.log('nextProps in header', nextProps)
     if (nextProps.userView) {
@@ -315,9 +319,8 @@ class Header extends React.Component {
         'staging': 'https://kiboapi.cloudkibo.com/'
       }
     }
-
-    console.log('environment header', this.state.environment)
-    return productUrls[product][this.state.environment]
+    console.log('environment header', this.props.currentEnvironment)
+    return productUrls[product][this.props.currentEnvironment]
   }
 
   render() {
@@ -892,7 +895,7 @@ function mapStateToProps(state) {
     updatedUser: (state.basicInfo.updatedUser),
     automated_options: (state.basicInfo.automated_options),
     userView: (state.backdoorInfo.userView),
-
+    currentEnvironment: (state.basicInfo.currentEnvironment)
   }
 }
 
@@ -906,6 +909,7 @@ function mapDispatchToProps(dispatch) {
     disconnectFacebook,
     updatePlatform,
     updatePicture,
+    saveEnvironment,
     logout
   }, dispatch)
 }
