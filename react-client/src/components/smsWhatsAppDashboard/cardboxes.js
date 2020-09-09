@@ -41,14 +41,27 @@ class CardBoxesContainer extends React.Component {
             }
           </UncontrolledTooltip>
           <div className='col-sm-6 col-md-6 col-lg-6'>
-            <Link to={url.includes('kibochat.cloudkibo.com') ? (this.props.platform === 'sms' ? '/smsChat' : '/whatsAppChat') : (this.props.platform === 'sms' ? '/smsBroadcasts' : '/whatsAppBroadcasts')} >
+            { url.includes('kibochat.cloudkibo.com') && 
+            <Link to={(this.props.platform === 'sms' ? '/smsChat' : '/whatsAppChat')} >
               <CardBox
                 style='accent'
-                value={url.includes('kibochat.cloudkibo.com') ? this.props.cardBoxesData.chats : this.props.cardBoxesData.broadcasts ? this.props.cardBoxesData.broadcasts : 0}
-                label={url.includes('kibochat.cloudkibo.com') ? 'New Messages' : 'Broadcasts'}
+                value={ this.props.cardBoxesData.chats ?  this.props.cardBoxesData.chats : 0}
+                label={'New Messages'}
                 id='properties'
               />
             </Link>
+          }
+
+          { url.includes('kiboengage.cloudkibo.com') && 
+            <Link to={(this.props.platform === 'sms' ? '/smsBroadcasts' : '/whatsAppBroadcasts')} >
+              <CardBox
+                style='accent'
+                value={this.props.cardBoxesData.broadcasts ? this.props.cardBoxesData.broadcasts : 0}
+                label={'Broadcasts'}
+                id='properties'
+              />
+            </Link>
+          }
           </div>
         </div>
       </div>
