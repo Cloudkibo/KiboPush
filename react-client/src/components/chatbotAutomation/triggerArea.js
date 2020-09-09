@@ -32,7 +32,7 @@ class TriggerArea extends React.Component {
   handleChange (value, actionMeta) {
     console.log('value', value)
     console.log('actionMeta', actionMeta)
-    if (actionMeta.action === 'remove-value') {
+    if ((actionMeta.action === 'remove-value' || actionMeta.action === 'pop-value')) {
       let allTriggers = this.props.allTriggers
       const removeIndex = allTriggers.indexOf(actionMeta.removedValue.value)
       allTriggers.splice(removeIndex, 1)
