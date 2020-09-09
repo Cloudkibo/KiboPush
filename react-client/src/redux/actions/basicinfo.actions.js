@@ -2,6 +2,13 @@ import * as ActionTypes from '../constants/constants'
 import callApi from '../../utility/api.caller.service'
 import auth from '../../utility/auth.service'
 
+export function setIsMobile (data) {
+  return {
+    type: ActionTypes.SET_IS_MOBILE,
+    data
+  }
+}
+
 export function setBrowserName (data) {
   return {
     type: ActionTypes.LOAD_BROWSER_NAME,
