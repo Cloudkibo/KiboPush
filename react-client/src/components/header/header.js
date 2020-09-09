@@ -96,11 +96,12 @@ class Header extends React.Component {
   }
 
   updatePlatformValue(value) {
+    document.getElementById('m_aside_header_menu_mobile_close_btn').click()
     const userRole = this.props.user.role
     if (
-      (!this.props.user.facebookInfo) ||
+      (value === 'messenger' && (!this.props.user.facebookInfo || !this.props.user.connectFacebook)) ||
       (this.props.automated_options &&
-        (!this.props.automated_options.twilio || !this.props.automated_options.whatsApp)
+        ((value === 'sms' && !this.props.automated_options.twilio) || (value === 'whatsApp' && !this.props.automated_options.whatsApp))
       )
     ) {
       if (userRole === 'buyer') {
