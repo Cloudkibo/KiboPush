@@ -13,6 +13,9 @@ import {
   disconnectFacebook,
   logout
 } from '../../redux/actions/basicinfo.actions'
+import {
+  setUsersView
+} from '../../redux/actions/backdoor.actions'
 import { fetchNotifications, markRead } from '../../redux/actions/notifications.actions'
 import auth from '../../utility/auth.service'
 
@@ -321,6 +324,7 @@ class Header extends React.Component {
                 otherPages={this.props.otherPages}
                 updatePicture={this.props.updatePicture}
                 logout={this.props.logout}
+                setUsersView={this.props.setUsersView}
               />
             </div>
           </div>
@@ -401,7 +405,8 @@ function mapDispatchToProps(dispatch) {
     updatePicture,
     updateShowIntegrations,
     disconnectFacebook,
-    logout
+    logout,
+    setUsersView
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Header)

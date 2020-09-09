@@ -13,7 +13,6 @@ class Header extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      userView: false,
       showViewingAsDropDown: false,
     }
     this.showViewingAsDropDown = this.showViewingAsDropDown.bind(this)
@@ -31,9 +30,6 @@ class Header extends React.Component {
 
   UNSAFE_componentWillReceiveProps (nextProps) {
     console.log('nextProps in header', nextProps)
-    if(nextProps.userView) {
-      this.setState({userView: nextProps.userView})
-    }
   }
 
   render () {
@@ -62,7 +58,7 @@ class Header extends React.Component {
               <div id='m_header_topbar' className='m-topbar  m-stack m-stack--ver m-stack--general'>
                 <div className='m-stack__item m-topbar__nav-wrapper'>
                   <ul className='m-topbar__nav m-nav m-nav--inline'>
-                  {this.props.user.isSuperUser && (auth.getActingAsUser() !== undefined || this.state.userView) &&
+                  {this.props.user.isSuperUser && this.props.user.actingAsUser &&
                         <li style={{marginRight: '20px', padding: '0'}} className='m-nav__item m-topbar__user-profile m-topbar__user-profile--img  m-dropdown m-dropdown--medium m-dropdown--arrow m-dropdown--header-bg-fill m-dropdown--align-right m-dropdown--mobile-full-width m-dropdown--skin-light' data-dropdown-toggle='click'>
                           <div style={{marginTop: '15px'}}>
                             <span className='m-topbar__userpic'>
@@ -278,7 +274,6 @@ function mapStateToProps (state) {
     user: (state.basicInfo.user),
     subscribers: (state.subscribersInfo.subscribers),
     otherPages: (state.pagesInfo.otherPages),
-    userView: (state.backdoorInfo.userView)
   }
 }
 
