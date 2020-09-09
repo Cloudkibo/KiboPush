@@ -174,11 +174,7 @@ class Header extends React.Component {
     $('body').toggleClass(' m-aside-left--minimize m-brand--minimize')
     /* eslint-enable */
   }
-  componentDidMount () {
-    if (cookie.load('environment')) {
-      this.props.saveEnvironment(cookie.load('environment'))
-    }
-  }
+
   UNSAFE_componentWillReceiveProps(nextProps) {
     console.log('nextProps in header', nextProps)
     if (nextProps.userView) {
