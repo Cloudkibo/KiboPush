@@ -35,7 +35,7 @@ import {
   fetchOtherAnalytics,
   fetchPageAnalytics,
   alUserslLocales,
-  saveUserView,
+  setUsersView,
   loadMetricsWhatsApp,
   sendWhatsAppMetricsEmail
 } from '../../redux/actions/backdoor.actions'
@@ -107,6 +107,7 @@ class OperationalDashboard extends React.Component {
     this.debounce = this.debounce.bind(this)
     this.setUsersView = this.setUsersView.bind(this)
     this.onDaysChangePlatform = this.onDaysChangePlatform.bind(this)
+    this.handleUsersView = this.handleUsersView.bind(this)
   }
 
   onDaysChangePlatform (e) {
@@ -120,8 +121,10 @@ class OperationalDashboard extends React.Component {
   }
 
   setUsersView (user) {
-    auth.putActingAsUser(user.domain_email, user.name)
-    this.props.saveUserView(true)
+    this.props.setUsersView({type: 'set', actingAsUser: user.domain_email}, this.handleUsersView)
+  }
+
+  handleUsersView () {
     this.props.history.push({
       pathname: `/dashboard`
     })
@@ -693,7 +696,7 @@ function mapDispatchToProps (dispatch) {
     alUserslLocales,
     fetchOtherAnalytics,
     fetchPageAnalytics,
-    saveUserView,
+    setUsersView,
     loadMetricsWhatsApp,
     sendWhatsAppMetricsEmail
   },
