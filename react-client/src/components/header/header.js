@@ -19,6 +19,9 @@ import { Link } from 'react-router-dom'
 import cookie from 'react-cookie'
 import AlertContainer from 'react-alert'
 
+// Components
+import SELECTPLATFROM from './selectPlatform'
+
 class Header extends React.Component {
   constructor(props, context) {
     super(props, context)
@@ -32,6 +35,7 @@ class Header extends React.Component {
       showViewingAsDropDown: false,
       mode: 'All',
       userView: false,
+      selectedPlatform: {},
       environment: cookie.load('environment')
     }
     this.toggleSidebar = this.toggleSidebar.bind(this)
@@ -46,6 +50,39 @@ class Header extends React.Component {
     this.showViewingAsDropDown = this.showViewingAsDropDown.bind(this)
     this.redirectToDashboard = this.redirectToDashboard.bind(this)
     this.goToSettings = this.goToSettings.bind(this)
+    this.setPlatform = this.setPlatform.bind(this)
+  }
+
+  componentDidMount () {
+    if (this.props.user) {
+      this.setPlatform(this.props.user)
+    }
+  }
+
+  setPlatform (user) {
+    let selectedPlatform = {}
+    switch (user.platform) {
+      case 'messenger':
+        selectedPlatform = {
+          platform: 'Messenger',
+          icon: 'fa fa-facebook-square'
+        }
+        break
+      case 'sms':
+        selectedPlatform = {
+          platform: 'SMS',
+          icon: 'flaticon flaticon-chat-1'
+        }
+        break
+      case 'whatsApp':
+        selectedPlatform = {
+          platform: 'WhatsApp',
+          icon: 'socicon socicon-whatsapp'
+        }
+        break
+      default:
+    }
+    this.setState({selectedPlatform})
   }
 
   goToSettings () {
@@ -60,37 +97,25 @@ class Header extends React.Component {
     window.location.reload()
   }
 
-  updatePlatformValue(e, value) {
-    console.log('in updatePlatformValue', value)
-    if (this.props.user && this.props.user.role === 'buyer') {
-      if (value === 'sms' && this.props.automated_options && !this.props.automated_options.twilio) {
+  updatePlatformValue(value) {
+    const userRole = this.props.user.role
+    if (
+      (!this.props.user.facebookInfo || !this.props.user.connectFacebook) ||
+      (this.props.automated_options &&
+        (!this.props.automated_options.twilio || !this.props.automated_options.whatsApp)
+      )
+    ) {
+      if (userRole === 'buyer') {
         this.props.history.push({
           pathname: '/integrations',
-          state: 'sms'
-        })
-      } else if (value === 'whatsApp' && this.props.automated_options && !this.props.automated_options.whatsApp) {
-        this.props.history.push({
-          pathname: '/integrations',
-          state: 'whatsApp'
-        })
-      } else if (value === 'messenger' && this.props.user && (!this.props.user.facebookInfo || !this.props.user.connectFacebook)) {
-        this.props.history.push({
-          pathname: '/integrations',
-          state: 'messenger'
+          state: value
         })
       } else {
-        this.redirectToDashboard(value)
-        this.props.updatePlatform({ platform: value }, this.props.fetchNotifications)
+        this.msg.error(`${value} platform is not configured for your account. Please contact your account buyer.`)
       }
     } else {
-      if (value === 'sms' && this.props.automated_options && !this.props.automated_options.twilio) {
-        this.msg.error('SMS Twilio is not connected. Please ask your account buyer to connect it.')
-      } else if (value === 'whatsApp' && this.props.automated_options && !this.props.automated_options.whatsApp) {
-        this.msg.error('WhatsApp is not connected. Please ask your account buyer to connect it.')
-      } else {
-        this.redirectToDashboard(value)
-        this.props.updatePlatform({ platform: value },  this.props.fetchNotifications)
-      }
+      this.redirectToDashboard(value)
+      this.props.updatePlatform({ platform: value }, this.props.fetchNotifications)
     }
   }
 
@@ -152,6 +177,7 @@ class Header extends React.Component {
       this.setState({ userView: nextProps.userView })
     }
     if (nextProps.user) {
+      this.setPlatform(nextProps.user)
       let mode = nextProps.user.uiMode && nextProps.user.uiMode.mode === 'kiboengage' ? 'Customer Engagement' : nextProps.user.uiMode.mode === 'kibochat' ? 'Customer Chat' : nextProps.user.uiMode.mode === 'kibocommerce' ? 'E-Commerce' : 'All'
       this.setState({ mode: mode })
       // FS.identify(nextProps.user.email, {
@@ -346,50 +372,10 @@ class Header extends React.Component {
                 <ul className='m-menu__nav  m-menu__nav--submenu-arrow '>
                   {
                     this.props.user && !this.state.url &&
-                    <li className='m-menu__item  m-menu__item--submenu m-menu__item--relm-portlet__nav-item m-dropdown m-dropdown--inline m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push' data-dropdown-toggle='click'>
-                      <span>Select Platform: </span>&nbsp;&nbsp;&nbsp;
-                      <span onClick={this.showDropDown} className='m-portlet__nav-link m-dropdown__toggle dropdown-toggle btn btn--sm m-btn--pill btn-secondary m-btn m-btn--label-brand'>
-                        {this.props.user && this.props.user.platform === 'messenger' ? 'Messenger' : this.props.user.platform === 'sms' ? 'SMS' : 'WhatsApp'}
-                      </span>
-                      {
-                        this.state.showDropDown &&
-                        <div className='m-dropdown__wrapper'>
-                          <span className='m-dropdown__arrow m-dropdown__arrow--left m-dropdown__arrow--adjust' />
-                          <div className='m-dropdown__inner'>
-                            <div className='m-dropdown__body'>
-                              <div className='m-dropdown__content'>
-                                <ul className='m-nav'>
-                                  <li key={'messenger'} className='m-nav__item'>
-                                    <span onClick={(e) => this.updatePlatformValue(e, 'messenger')} className='m-nav__link' style={{ cursor: 'pointer' }}>
-                                      <i className='m-nav__link-icon fa fa-facebook-square' />
-                                      <span className='m-nav__link-text'>
-                                        Messenger
-                                      </span>
-                                    </span>
-                                  </li>
-                                  <li key={'sms'} className='m-nav__item'>
-                                    <span onClick={(e) => this.updatePlatformValue(e, 'sms')} className='m-nav__link' style={{ cursor: 'pointer' }}>
-                                      <i className='m-nav__link-icon flaticon flaticon-chat-1' />
-                                      <span className='m-nav__link-text'>
-                                        SMS
-                                      </span>
-                                    </span>
-                                  </li>
-                                  <li key={'whatsApp'} className='m-nav__item'>
-                                    <span onClick={(e) => this.updatePlatformValue(e, 'whatsApp')} className='m-nav__link' style={{ cursor: 'pointer' }}>
-                                      <i className='m-nav__link-icon socicon socicon-whatsapp' />
-                                      <span className='m-nav__link-text'>
-                                        WhatsApp
-                                      </span>
-                                    </span>
-                                  </li>
-                                </ul>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      }
-                    </li>
+                    <SELECTPLATFROM
+                      selectedPlatform={this.state.selectedPlatform}
+                      changePlatform={this.updatePlatformValue}
+                    />
                   }
                   {
                     this.props.user && this.props.user.isSuperUser
