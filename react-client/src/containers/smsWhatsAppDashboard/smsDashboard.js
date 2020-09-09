@@ -141,22 +141,28 @@ class Dashboard extends React.Component {
             <div className='row'>
               <CardBoxesContainer cardBoxesData={this.props.cardBoxesData} platform='sms' />
             </div>
-            <div className='row'>
-              <SubscriberSummary
-                loadSubscriberSummary={this.props.loadSubscriberSummarySms}
-                platform='sms'
-                subscriberSummary={this.props.subscriberSummary}
-                subscriberGraph={this.state.subscriberGraph}
-                 />
-            </div>
-            <div className='row'>
-              <SentSeen
-                loadSentSeen={this.props.loadSentSeenSms}
-                platform='sms'
-                sentSeenData={this.props.sentSeenData}
-                sentSeenGraph={this.state.sentSeenGraph}
-                 />
-            </div>
+            {
+              !this.props.isMobile &&
+              <div className='row'>
+                <SubscriberSummary
+                  loadSubscriberSummary={this.props.loadSubscriberSummarySms}
+                  platform='sms'
+                  subscriberSummary={this.props.subscriberSummary}
+                  subscriberGraph={this.state.subscriberGraph}
+                   />
+              </div>
+            }
+            {
+              !this.props.isMobile &&
+              <div className='row'>
+                <SentSeen
+                  loadSentSeen={this.props.loadSentSeenSms}
+                  platform='sms'
+                  sentSeenData={this.props.sentSeenData}
+                  sentSeenGraph={this.state.sentSeenGraph}
+                   />
+              </div>
+            }
           </div>
         }
         </div>
@@ -169,6 +175,7 @@ function mapStateToProps (state) {
   return {
     cardBoxesData: (state.smsWhatsAppDashboardInfo.cardBoxesData),
     user: (state.basicInfo.user),
+    isMobile: (state.basicInfo.isMobile),
     subscriberSummary: (state.smsWhatsAppDashboardInfo.subscriberSummary),
     sentSeenData: (state.smsWhatsAppDashboardInfo.sentSeenData),
     automated_options: (state.basicInfo.automated_options)
