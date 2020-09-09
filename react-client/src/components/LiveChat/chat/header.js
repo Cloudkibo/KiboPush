@@ -11,42 +11,88 @@ class Header extends React.Component {
   render() {
     return (
       <div style={{ padding: '1.3rem', borderBottom: '1px solid #ebedf2' }}>
+        {
+          this.props.isMobile &&
+          <button
+            className="btn btn-secondary m-btn m-btn--icon m-btn--icon-only"
+            onClick={this.props.backToSessions}
+            style={{border: 'none'}}
+          >
+            <i
+              style={{color: '#212529', fontSize: '25px', marginRight: '5px'}}
+              className='la la-arrow-left'
+            />
+          </button>
+        }
         <button style={{ backgroundColor: 'white', pointerEvents: 'none' }} className='btn'>
           {this.props.activeSession.name}
         </button>
         <div style={{ float: 'right' }}>
           {
             this.props.activeSession.pendingResponse
-            ? <i
-              style={{cursor: 'pointer', color: '#212529', fontSize: '25px', marginRight: '5px'}}
+            ? <button
+              className="btn btn-secondary m-btn m-btn--icon m-btn--icon-only"
               data-target='#_remove-pending-response'
               data-toggle='modal'
               data-tip='Remove Pending Flag'
-              className='la la-user-times'
-            />
-            : <i
-              style={{cursor: 'pointer', color: '#212529', fontSize: '25px', marginRight: '5px'}}
+              style={{border: 'none'}}
+            >
+              <i
+                style={{color: '#212529', fontSize: '25px', marginRight: '5px'}}
+                className='la la-user-times'
+              />
+            </button>
+            : <button
+              className="btn btn-secondary m-btn m-btn--icon m-btn--icon-only"
               onClick={() => this.props.handlePendingResponse(this.props.activeSession, true)}
               data-tip='Add Pending Flag'
-              className='la la-user-plus'
-            />
+              style={{border: 'none'}}
+            >
+              <i
+                style={{color: '#212529', fontSize: '25px', marginRight: '5px'}}
+                className='la la-user-plus'
+              />
+            </button>
           }
-          <i style={{ cursor: 'pointer', color: '#212529', fontSize: '25px', marginRight: '5px' }} onClick={this.props.showSearch} data-tip='Search' className='la la-search' />
+          {
+            !this.props.isMobile && this.props.showSearch &&
+            <button
+              className="btn btn-secondary m-btn m-btn--icon m-btn--icon-only"
+              onClick={this.props.showSearch}
+              data-tip='Search'
+              style={{border: 'none'}}
+            >
+              <i
+                style={{ color: '#212529', fontSize: '25px', marginRight: '5px' }}
+                className='la la-search'
+              />
+            </button>
+          }
           {
             this.props.activeSession.status === 'new'
-            ? <i
-              style={{ cursor: 'pointer', color: '#34bfa3', fontSize: '25px', fontWeight: 'bold' }}
-              data-tip='Mark as done'
-              className='la la-check'
-              data-toggle="modal"
+            ? <button
+              className="btn btn-secondary m-btn m-btn--icon m-btn--icon-only"
               data-target="#_resolve-chat-session"
-            />
-            : <i
-              style={{ cursor: 'pointer', color: '#34bfa3', fontSize: '25px', fontWeight: 'bold' }}
-              data-tip='Reopen'
+              data-toggle='modal'
+              data-tip='Mark as done'
+              style={{border: 'none'}}
+            >
+              <i
+                style={{ color: '#34bfa3', fontSize: '25px', fontWeight: 'bold' }}
+                className='la la-check'
+              />
+            </button>
+            : <button
+              className="btn btn-secondary m-btn m-btn--icon m-btn--icon-only"
               onClick={() => {this.props.changeStatus('new', this.props.activeSession)}}
-              className='fa fa-envelope-open-o'
-            />
+              data-tip='Reopen'
+              style={{border: 'none'}}
+            >
+              <i
+                style={{ color: '#34bfa3', fontSize: '25px', fontWeight: 'bold' }}
+                className='fa fa-envelope-open-o'
+              />
+            </button>
           }
         </div>
       </div>
@@ -56,9 +102,12 @@ class Header extends React.Component {
 
 Header.propTypes = {
   'activeSession': PropTypes.object.isRequired,
-  'showSearch': PropTypes.func.isRequired,
+  'openSearch': PropTypes.func.isRequired,
   'changeStatus': PropTypes.func.isRequired,
-  'handlePendingResponse': PropTypes.func.isRequired
+  'handlePendingResponse': PropTypes.func.isRequired,
+  'isMobile': PropTypes.bool.isRequired,
+  'backToSessions': PropTypes.func.isRequired,
+  'showSearch': PropTypes.bool.isRequired
 }
 
 export default Header

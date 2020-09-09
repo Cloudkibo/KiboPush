@@ -2,16 +2,16 @@ import * as ActionTypes from '../constants/constants'
 import callApi from '../../utility/api.caller.service'
 import auth from '../../utility/auth.service'
 
-export function setBrowserName (data) {
+export function setIsMobile (data) {
   return {
-    type: ActionTypes.LOAD_BROWSER_NAME,
+    type: ActionTypes.SET_IS_MOBILE,
     data
   }
 }
 
-export function fetchPlan (data) {
+export function setBrowserName (data) {
   return {
-    type: ActionTypes.FETCH_PLAN,
+    type: ActionTypes.LOAD_BROWSER_NAME,
     data
   }
 }
@@ -30,6 +30,12 @@ export function showuserdetails (data) {
   return {
     type: ActionTypes.LOAD_USER_DETAILS,
     data
+  }
+}
+
+export function updateTrialPeriod () {
+  return {
+    type: ActionTypes.UPDATE_TRIAL_PERIOD
   }
 }
 
@@ -122,6 +128,13 @@ export function getAutomatedOptions () {
   }
 }
 
+export function switchToBasicPlan () {
+  return (dispatch) => {
+    callApi('company/switchToBasicPlan')
+      .then(res => dispatch(updateTrialPeriod()))
+  }
+}
+
 export function getFbAppId () {
   return (dispatch) => {
     callApi('users/fbAppId').then(res => dispatch(storeFbAppId(res.payload)))
@@ -166,22 +179,23 @@ export function updatePlan (data, msg) {
       console.log('response from updatePlan', res)
       if (res.status === 'success') {
         msg.success('Plan updated successfully')
-        dispatch(fetchPlan('success'))
         dispatch(getuserdetails())
       } else {
-        dispatch(fetchPlan(res.description))
+        const error = res.description || 'Failed to update plan'
+        msg.error(error)
       }
     })
   }
 }
 
-export function updateCard (data, msg) {
+export function updateCard (data, msg, callback) {
   console.log('data for updateMode', data)
   return (dispatch) => {
     callApi('company/setCard', 'post', data).then(res => {
       console.log('response from updatePlan', res)
       if (res.status === 'success') {
         msg.success('Card added successfully')
+        callback()
         dispatch(getuserdetails())
       }
     })
@@ -242,11 +256,28 @@ export function disconnectFacebook (callback) {
   }
 }
 
-export function updatePlatform (data) {
+export function updatePlatform (data, fetchNotifications) {
   return (dispatch) => {
     callApi('users/updatePlatform', 'post', data).then(res => {
       if (res.status === 'success') {
         dispatch(getuserdetails())
+        if (fetchNotifications) {
+          fetchNotifications()
+        }
+      } else {
+        console.log('Failed to update platform', res)
+      }
+    })
+  }
+}
+
+export function logout(cb) {
+  return (dispatch) => {
+    console.log('called logout')
+    callApi('users/logout').then(res => {
+        if (res.status === 'success') {
+        console.log('send logout successfully', res)
+        cb()
       } else {
         console.log('Failed to update platform', res)
       }

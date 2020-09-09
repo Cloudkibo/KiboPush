@@ -91,11 +91,7 @@ class Sequence extends React.Component {
     if (this.state.name === '') {
       this.setState({ error: true })
     } else {
-      this.props.createSequence({ name: this.state.name })
-      this.props.history.push({
-        pathname: `/editSequence`,
-        state: { name: this.state.name, module: 'create' }
-      })
+      this.props.createSequence({ name: this.state.name }, this.msg, this.props.history)
     }
   }
   showDialogDelete (id) {
@@ -395,7 +391,7 @@ class Sequence extends React.Component {
               <button style={{ float: 'right' }}
                 className='btn btn-primary btn-sm'
                 onClick={() => {
-                  let sequence = this.state.sequencesData.find(s => s._id === this.state.deleteid)
+                  let sequence = this.state.sequencesData.find(s => s.sequence._id === this.state.deleteid)
                   for (let i = 0; i < sequence.messages.length; i++) {
                     deleteFiles(sequence.messages[i].payload)
                   }
@@ -561,18 +557,21 @@ class Sequence extends React.Component {
                       </h3>
                     </div>
                   </div>
-                  <div className='m-portlet__head-tools'>
-                    <Link data-toggle="modal" data-target="#create">
-                      <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
-                        <span>
-                          <i className='la la-plus' />
+                  {
+                    this.props.user.permissions['create_sequences'] &&
+                    <div className='m-portlet__head-tools'>
+                      <Link data-toggle="modal" data-target="#create">
+                        <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
                           <span>
-                            Create New Sequence
-                            </span>
-                        </span>
-                      </button>
-                    </Link>
-                  </div>
+                            <i className='la la-plus' />
+                            <span>
+                              Create New Sequence
+                              </span>
+                          </span>
+                        </button>
+                      </Link>
+                    </div>
+                  }
                 </div>
                 <div className='m-portlet__body'>
                   {
@@ -592,8 +591,10 @@ class Sequence extends React.Component {
                             ? <div>{
                               this.state.sequencesData.map((sequence, i) => (
                                 <div key={i} className='sequence-box' style={{height: '10em'}}>
-                                  <div className='sequence-close-icon' data-toggle="modal" data-target="#delete" onClick={() => this.showDialogDelete(sequence.sequence._id)} />
-
+                                  {
+                                    this.props.user.permissions['delete_sequences'] &&
+                                    <div className='sequence-close-icon' data-toggle="modal" data-target="#delete" onClick={() => this.showDialogDelete(sequence.sequence._id)} />
+                                  }
                                   <span>
                                     <span className='sequence-name'>
                                       {sequence.sequence.name}
@@ -628,12 +629,14 @@ class Sequence extends React.Component {
                                     <br />
                                     <span>Messages</span>
                                   </span>
-
-                                  <span className='sequence-text sequence-centered-text' style={{ position: 'absolute', left: '90%', cursor: 'pointer', top: '40%' }} onClick={() => this.goToEdit(sequence.sequence)}>
-                                    <i className='fa fa-edit' style={{ fontSize: '24px' }} />
-                                    <br />
-                                    <span>Edit</span>
-                                  </span>
+                                  {
+                                    this.props.user.permissions['update_sequences'] &&
+                                    <span className='sequence-text sequence-centered-text' style={{ position: 'absolute', left: '90%', cursor: 'pointer', top: '40%' }} onClick={() => this.goToEdit(sequence.sequence)}>
+                                      <i className='fa fa-edit' style={{ fontSize: '24px' }} />
+                                      <br />
+                                      <span>Edit</span>
+                                    </span>
+                                  }
                                 </div>
                               ))
                             }
@@ -673,7 +676,8 @@ function mapStateToProps (state) {
   console.log(state)
   return {
     sequences: (state.sequenceInfo.sequences),
-    polls: (state.pollsInfo.polls)
+    polls: (state.pollsInfo.polls),
+    user: (state.basicInfo.user)
   }
 }
 
