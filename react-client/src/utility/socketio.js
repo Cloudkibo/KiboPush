@@ -9,6 +9,7 @@ import { loadMyPagesList } from './../redux/actions/pages.actions'
 import { fetchAllSequence } from './../redux/actions/sequence.action'
 import { loadDashboardData, sentVsSeen } from './../redux/actions/dashboard.actions'
 // import { allBroadcasts } from './../redux/actions/broadcast.actions'
+import auth from './auth.service'
 import { loadPollsListNew } from './../redux/actions/poll.actions'
 import { loadSurveysListNew } from './../redux/actions/surveys.actions'
 import {updateCustomFieldValue, addCustomField, removeCustomField, updateSingleCustomField} from './../redux/actions/customFields.actions'
@@ -179,6 +180,9 @@ socket.on('message', (data) => {
     store.dispatch(updateSponsoredMessagesListItemStatus(data.payload))
   } else if (data.action === 'zoom_uninstall') {
     store.dispatch(removeZoomIntegration(data.payload))
+  }
+  else if (data.action === 'logout') {
+    auth.logout()
   }
   if (callbacks[data.action]) {
     callbacks[data.action](data.payload)
