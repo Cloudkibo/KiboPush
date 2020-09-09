@@ -38,15 +38,19 @@ class Analytics extends React.Component {
     let self = this
     if (res.status === 'success') {
       var blocksData = res.payload
+      const result = blocksData.reduce((p, c) => 
+        (Object.keys(p).length > Object.keys(c).length) ? p : c
+      )
       var info = blocksData
       var keys = []
-      var val = info[0]
-
-      for (var j in val) {
-        var subKey = j
-        keys.push(subKey)
-      }
-      json2csv({ data: info, fields: keys }, function (err, csv) {
+      // console.log('resultArray', result)
+       var val = Object.keys(result)
+      // console.log('result', val)
+      // for (var j in val) {
+      //   var subKey = j
+      //   keys.push(subKey)
+      // }
+      json2csv({ data: info, fields: val }, function (err, csv) {
         if (err) {
         } else {
           fileDownload(csv, 'BlockData.csv')
