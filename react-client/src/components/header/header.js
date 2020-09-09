@@ -35,7 +35,8 @@ class Header extends React.Component {
       showDropDown: false,
       showViewingAsDropDown: false,
       mode: 'All',
-      userView: false
+      userView: false,
+      selectedPlatform: {}
     }
     this.toggleSidebar = this.toggleSidebar.bind(this)
     this.getPlanInfo = this.getPlanInfo.bind(this)
