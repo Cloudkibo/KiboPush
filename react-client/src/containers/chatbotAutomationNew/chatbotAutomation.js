@@ -444,7 +444,8 @@ function mapStateToProps(state) {
   return {
     chatbots: (state.chatbotsInfo.chatbots),
     pages: (state.pagesInfo.pages),
-    user: (state.basicInfo.user)
+    user: (state.basicInfo.user),
+    store: (state.shopifyInfo.store)
   }
 }
 
