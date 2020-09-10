@@ -21,7 +21,9 @@ import EditTags from './editTags'
 import AlertMessage from '../../components/alertMessages/alertMessage'
 import moment from 'moment'
 import YouTube from 'react-youtube'
-import {localeCodeToEnglish, handleDate} from '../../utility/utils'
+import {localeCodeToEnglish, handleDate, validateEmail, isWebURL,validatePhoneNumber} from '../../utility/utils'
+import InputDebounce from '../../components/extras/inputDebounce'
+
 var json2csv = require('json2csv')
 
 class Subscriber extends React.Component {
@@ -81,7 +83,8 @@ class Subscriber extends React.Component {
       createCustomField: false,
       selectedTagValue: '',
       subscribersLoaded: false,
-      openVideo: false
+      openVideo: false,
+      isvalidCustomField: true
     }
     props.allLocales()
     props.fetchAllSequence()
@@ -166,6 +169,25 @@ class Subscriber extends React.Component {
     this.openVideoTutorial = this.openVideoTutorial.bind(this)
     this.getSubscriberSource = this.getSubscriberSource.bind(this)
     this.getInputComponent = this.getInputComponent.bind(this)
+    this.validateCustomField = this.validateCustomField.bind(this)
+  }
+
+  validateCustomField (inputText) {
+    let isvalid = true
+    console.log('selectedField.type', this.state.selectedBulkField)
+    let selectedField = this.state.selectedBulkField
+    if(selectedField.type === 'email') {
+      isvalid = validateEmail(inputText)
+    } else if(selectedField.type === 'phoneNumber') {
+      isvalid = isWebURL(inputText)
+
+    } else if(selectedField.type === 'url') {
+      isvalid = validatePhoneNumber(inputText)
+
+    }
+    console.log('isvalid', isvalid)
+    this.setState({isvalidCustomField: isvalid})
+    this.handleBulkSetCustomField(inputText)
   }
 
   getSubscriberSource () {
@@ -264,7 +286,7 @@ class Subscriber extends React.Component {
       _id: this.state.selectedBulkField._id,
       label: this.state.selectedBulkField.label,
       type: this.state.selectedBulkField.type,
-      value: event.target.value
+      value: event.target ? event.target.value : event
     }
     this.setState({ selectedBulkField: temp })
   }
@@ -1355,6 +1377,10 @@ class Subscriber extends React.Component {
             <option key='2' value='false'>False</option>
           </select>
         )
+      } else if (selectedField.type === 'email' || selectedField.type === 'phoneNumber' || selectedField.type === 'url') {
+        return (
+          <InputDebounce inputId = 'customFieldInput' placeholder='Enter custom field value...' callback = {this.validateCustomField}/>
+        )
       }
     }
   }
@@ -1708,19 +1734,21 @@ class Subscriber extends React.Component {
                             </div>
                             {
                               (this.state.selectedBulkField && this.state.selectedBulkField._id) &&
-                                <div className='col-3'>
+                                <div className='col-3' style= {{top: '10px'}}>
                                   {this.getInputComponent(this.state.selectedBulkField, this.handleBulkSetCustomField)}
-                                </div>
+                                  <div style={this.state.isvalidCustomField ? { color: 'white'} : { color: 'red'}}>Please enter correct {this.state.selectedBulkField.type}</div>
+                                </div>                               
                             }
                             {
                               (this.state.selectedBulkField && this.state.selectedBulkField._id) &&
                               <div className='col-3'>
-                                <button disabled={!this.state.selectedBulkField.value ? true : false} onClick={() => this.saveSetCustomField()} className='btn btn-primary'>
+                                <button disabled={(this.state.selectedBulkField.value && this.state.isvalidCustomField) ? false : true} onClick={() => this.saveSetCustomField()} className='btn btn-primary'>
                                   Save
                                 </button>
                               </div>
                             }
                           </div>
+                          
                         </div>
                             }
                           </div>

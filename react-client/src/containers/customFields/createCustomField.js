@@ -158,10 +158,14 @@ class CreateCustomField extends React.Component {
                         <select disabled={this.props.customField ? true : false} className='custom-select' id='type' value={this.state.type} style={{ width: '250px' }} tabIndex='-98' onChange={this.typeHandleChange} required>
                           <option key='' value='' selected disabled>...Select...</option>
                           <option key='string' value='text'>Text</option>
+                          <option key='email' value='email'>Email</option>
+                          <option key='phoneNumber' value='phoneNumber'>Phone Number</option>
+                          <option key='url' value='url'>URL</option>
                           <option key='number' value='number'>Number</option>
                           <option key='date' value='date'>Date</option>
                           <option key='datetime' value='datetime'>Date and Time</option>
                           <option key='boolean' value='true/false'>True/False</option>
+
                         </select>
                       </div>
                     </div>
