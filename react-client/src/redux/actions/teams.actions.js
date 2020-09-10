@@ -25,13 +25,16 @@ export function showAgentsList (data) {
   }
 }
 
-export function createTeam (data) {
+export function createTeam (data, callback) {
   console.log('data forcreateTeam ', data)
   return (dispatch) => {
     callApi('teams/create', 'post', data)
       .then(res => {
         console.log('response from createTeam', res)
-        dispatch(loadTeamsList())
+        if (res.status === 'success') {
+          dispatch(loadTeamsList())
+        }
+        callback(res)
       })
   }
 }
