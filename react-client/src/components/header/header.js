@@ -115,7 +115,7 @@ class Header extends React.Component {
       }
     } else {
       this.redirectToDashboard(value)
-      this.props.updatePlatform({ platform: value })
+      this.props.updatePlatform({ platform: value }, this.props.fetchNotifications)
     }
   }
 
@@ -267,10 +267,23 @@ class Header extends React.Component {
         state: { module: 'pro' }
       })
     } else {
-      this.props.history.push({
-        pathname: `/liveChat`,
-        state: { id: id }
-      })
+      if (this.props.user.platform === 'messenger') {
+        this.props.history.push({
+          pathname: `/liveChat`,
+          state: { id: id }
+        })
+      } else if (this.props.user.platform === 'whatsApp') {
+        this.props.history.push({
+          pathname: `/whatsAppChat`,
+          state: { id: id }
+        })
+      } else if (this.props.user.platform === 'sms') {
+        this.props.history.push({
+          pathname: `/smsChat`,
+          state: { id: id }
+        })
+      
+      }
     }
   }
 
@@ -504,8 +517,10 @@ class Header extends React.Component {
                                 Notifications
                               </span>
                             </div>
-                            <div className='m--align-right' style={{position: 'relative', top: '-40px'}}><i onClick={this.goToSettings} style={{fontSize: '2rem', cursor: 'pointer', color: 'white'}} className='la la-gear'/></div>
-                            </div>
+                            { this.props.user.platform === 'messenger' &&
+                              <div className='m--align-right' style={{position: 'relative', top: '-40px'}}><i onClick={this.goToSettings} style={{fontSize: '2rem', cursor: 'pointer', color: 'white'}} className='la la-gear'/></div>                         
+                            }
+                             </div>
                             {this.props.notifications && (this.state.seenNotifications.length > 0 || this.state.unseenNotifications.length > 0) &&
                               <div className='m-dropdown__body'>
                                 <div className='m-dropdown__content'>
