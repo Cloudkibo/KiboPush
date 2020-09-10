@@ -10,6 +10,7 @@ import {
   updateMode,
   updatePlatform,
   updatePicture,
+  saveEnvironment,
   logout
 } from '../../redux/actions/basicinfo.actions'
 import { fetchNotifications, markRead } from '../../redux/actions/notifications.actions'
@@ -55,6 +56,9 @@ class Header extends React.Component {
   componentDidMount () {
     if (this.props.user) {
       this.setPlatform(this.props.user)
+    }
+    if (cookie.load('environment')) {
+      this.props.saveEnvironment(cookie.load('environment'))
     }
   }
 
@@ -115,7 +119,7 @@ class Header extends React.Component {
       }
     } else {
       this.redirectToDashboard(value)
-      this.props.updatePlatform({ platform: value })
+      this.props.updatePlatform({ platform: value }, this.props.fetchNotifications)
     }
   }
 
@@ -145,7 +149,7 @@ class Header extends React.Component {
   }
   logout() {
     this.props.updateShowIntegrations({ showIntegrations: true })
-    auth.logout()
+    // auth.logout()
   }
   showDropDown() {
     console.log('showDropDown')
@@ -214,13 +218,13 @@ class Header extends React.Component {
   getPlanInfo(plan) {
     var planInfo
     if (plan === 'plan_A') {
-      planInfo = 'Individual, Premium Account'
+      planInfo = 'Basic, Free Plan'
     } else if (plan === 'plan_B') {
-      planInfo = 'Individual, Free Account'
+      planInfo = 'Standard, Paid Plan'
     } else if (plan === 'plan_C') {
-      planInfo = 'Team, Premium Account'
+      planInfo = 'Premium, Paid Plan'
     } else if (plan === 'plan_D') {
-      planInfo = 'Team, Free Account'
+      planInfo = 'Enterprise, Paid Plan'
     } else {
       planInfo = ''
     }
@@ -267,10 +271,23 @@ class Header extends React.Component {
         state: { module: 'pro' }
       })
     } else {
-      this.props.history.push({
-        pathname: `/liveChat`,
-        state: { id: id }
-      })
+      if (this.props.user.platform === 'messenger') {
+        this.props.history.push({
+          pathname: `/liveChat`,
+          state: { id: id }
+        })
+      } else if (this.props.user.platform === 'whatsApp') {
+        this.props.history.push({
+          pathname: `/whatsAppChat`,
+          state: { id: id }
+        })
+      } else if (this.props.user.platform === 'sms') {
+        this.props.history.push({
+          pathname: `/smsChat`,
+          state: { id: id }
+        })
+      
+      }
     }
   }
 
@@ -301,10 +318,8 @@ class Header extends React.Component {
         'staging': 'https://kiboapi.cloudkibo.com/'
       }
     }
-
-    const environment = cookie.load('environment')
-    console.log('environment header', environment)
-    return productUrls[product][environment]
+    console.log('environment header', this.props.currentEnvironment)
+    return productUrls[product][this.props.currentEnvironment]
   }
 
   render() {
@@ -504,8 +519,10 @@ class Header extends React.Component {
                                 Notifications
                               </span>
                             </div>
-                            <div className='m--align-right' style={{position: 'relative', top: '-40px'}}><i onClick={this.goToSettings} style={{fontSize: '2rem', cursor: 'pointer', color: 'white'}} className='la la-gear'/></div>
-                            </div>
+                            { this.props.user.platform === 'messenger' &&
+                              <div className='m--align-right' style={{position: 'relative', top: '-40px'}}><i onClick={this.goToSettings} style={{fontSize: '2rem', cursor: 'pointer', color: 'white'}} className='la la-gear'/></div>                         
+                            }
+                             </div>
                             {this.props.notifications && (this.state.seenNotifications.length > 0 || this.state.unseenNotifications.length > 0) &&
                               <div className='m-dropdown__body'>
                                 <div className='m-dropdown__content'>
@@ -792,7 +809,7 @@ class Header extends React.Component {
                                       </Link>
                                     }
                                   </li>
-                                  {this.props.user && this.props.user.role === 'buyer' &&
+                                  {this.props.user && this.props.user.permissions['connect_facebook_account'] &&
                                     <li className='m-nav__item'>
                                       <span data-toggle="modal" data-target="#disconnectFacebook" className='m-nav__link'>
                                         <i className='m-nav__link-icon la la-unlink' />
@@ -877,7 +894,7 @@ function mapStateToProps(state) {
     updatedUser: (state.basicInfo.updatedUser),
     automated_options: (state.basicInfo.automated_options),
     userView: (state.backdoorInfo.userView),
-
+    currentEnvironment: (state.basicInfo.currentEnvironment)
   }
 }
 
@@ -891,6 +908,7 @@ function mapDispatchToProps(dispatch) {
     disconnectFacebook,
     updatePlatform,
     updatePicture,
+    saveEnvironment,
     logout
   }, dispatch)
 }
