@@ -92,7 +92,7 @@ class LiveChat extends React.Component {
       showingBulkActions: false,
       allSelected: false,
       cannedResponses: [],
-      showChatWidget: !this.props.isMobile
+      showChat: !this.props.isMobile
     }
 
     this.fetchSessions = this.fetchSessions.bind(this)
