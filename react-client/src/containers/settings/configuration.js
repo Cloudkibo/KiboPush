@@ -120,22 +120,22 @@ class Configuration extends React.Component {
         whatsappData
       })
     }
-    if (nextProps.user && nextProps.user.platform === 'sms' && nextProps.automated_options && !nextProps.automated_options.twilio) {
-      this.props.history.push({
-        pathname: '/integrations',
-        state: 'sms'
-      })
-    } else if (nextProps.user && nextProps.user.platform === 'whatsApp' && nextProps.automated_options && !nextProps.automated_options.whatsApp) {
-      this.props.history.push({
-        pathname: '/integrations',
-        state: 'whatsApp'
-      })
-    } else if (nextProps.user && nextProps.user.platform === 'messenger' && (nextProps.user.role === 'buyer' && !nextProps.user.facebookInfo)) {
-      this.props.history.push({
-        pathname: '/integrations',
-        state: 'messenger'
-      })
-    }
+    // if (nextProps.user && nextProps.user.platform === 'sms' && nextProps.automated_options && !nextProps.automated_options.twilio) {
+    //   this.props.history.push({
+    //     pathname: '/integrations',
+    //     state: 'sms'
+    //   })
+    // } else if (nextProps.user && nextProps.user.platform === 'whatsApp' && nextProps.automated_options && !nextProps.automated_options.whatsApp) {
+    //   this.props.history.push({
+    //     pathname: '/integrations',
+    //     state: 'whatsApp'
+    //   })
+    // } else if (nextProps.user && nextProps.user.platform === 'messenger' && (nextProps.user.role === 'buyer' && !nextProps.user.facebookInfo)) {
+    //   this.props.history.push({
+    //     pathname: '/integrations',
+    //     state: 'messenger'
+    //   })
+    // }
   }
 
   disconnect() {
@@ -305,7 +305,7 @@ class Configuration extends React.Component {
                   className='btn btn-primary btn-sm'
                   onClick={() => {
                     this.props.disconnectFacebook()
-                    this.logout()
+                    // this.logout()
                   }} data-dismiss='modal'>Yes
                   </button>
               </div>
@@ -473,7 +473,7 @@ class Configuration extends React.Component {
                                             <br />
                                           </div>
                                           <div className='m-widget4__ext'>
-                                            {this.props.user.facebookInfo
+                                            {this.props.user.facebookInfo && this.props.user.connectFacebook
                                               ? <a href='#/' data-toggle="modal" data-target="#disconnectFacebook" className='m-btn m-btn--pill m-btn--hover-danger btn btn-danger' style={{ borderColor: '#d9534f', color: '#d9534f', marginRight: '10px' }}>
                                                 Disconnect
                                             </a>

@@ -855,10 +855,12 @@ class Footer extends React.Component {
       <div
         className='m-messenger'
         style={{
-          position: 'absolute',
+          position: this.props.isMobile ? '' : 'absolute',
           bottom: 0,
           width: '100%',
-          padding: '15px'
+          padding: '15px',
+          borderTop: '1px solid #ebedf2',
+          background: 'white'
         }}
       >
         <MODAL
@@ -957,25 +959,28 @@ class Footer extends React.Component {
                       onKeyPress={this.onEnter}
                       className='m-messenger__form-input'
                     />
-                    <span onClick={() => this.openPicker('emoji')} style={{cursor: 'pointer'}} className='m-input-icon__icon m-input-icon__icon--right'>
-                      <span>
-                        {
-                          this.props.showEmoji &&
-                          <i
-                              style={{
-                              cursor: this.state.uploaded ? 'not-allowed' : 'pointer',
-                              fontSize: '20px',
-                              margin: '0px 5px',
-                              pointerEvents: this.state.uploaded && 'none',
-                              opacity: this.state.uploaded && '0.5'
-                            }}
-                            data-tip='Emoticons'
-                            className='fa fa-smile-o'
-                            id='_emoji_picker'
-                          />
-                        }
+                    {
+                      !this.props.isMobile &&
+                      <span onClick={() => this.openPicker('emoji')} style={{cursor: 'pointer'}} className='m-input-icon__icon m-input-icon__icon--right'>
+                        <span>
+                          {
+                            this.props.showEmoji &&
+                            <i
+                                style={{
+                                cursor: this.state.uploaded ? 'not-allowed' : 'pointer',
+                                fontSize: '20px',
+                                margin: '0px 5px',
+                                pointerEvents: this.state.uploaded && 'none',
+                                opacity: this.state.uploaded && '0.5'
+                              }}
+                              data-tip='Emoticons'
+                              className='fa fa-smile-o'
+                              id='_emoji_picker'
+                            />
+                          }
+                        </span>
                       </span>
-                    </span>
+                    }
                   </div>
                   </div>
            }
@@ -1154,6 +1159,7 @@ Footer.propTypes = {
   'showThumbsUp': PropTypes.bool.isRequired,
   'filesAccepted': PropTypes.string,
   'showCaption': PropTypes.bool,
+  'isMobile': PropTypes.bool.isRequired
 }
 
 export default Footer

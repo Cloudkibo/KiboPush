@@ -57,12 +57,6 @@ class Dashboard extends React.Component {
   UNSAFE_componentWillReceiveProps(nextprops) {
     if (nextprops.user) {
       joinRoom(nextprops.user.companyId)
-      if (nextprops.user.platform === 'whatsApp' && nextprops.automated_options && !nextprops.automated_options.whatsApp && nextprops.user.role === 'buyer') {
-        this.props.history.push({
-          pathname: '/integrations',
-          state: 'whatsApp'
-        })
-      }
     }
     if (nextprops.cardBoxesData && nextprops.subscriberSummary && (nextprops.sentSeenData || nextprops.metrics)) {
       this.setState({ loading: false })
@@ -156,33 +150,39 @@ class Dashboard extends React.Component {
               <div className='row'>
                 <CardBoxesContainer cardBoxesData={this.props.cardBoxesData} platform='whatsApp' />
               </div>
-              <div className='row'>
-                <SubscriberSummary
-                  loadSubscriberSummary={this.props.loadSubscriberSummaryWhatsApp}
-                  platform='whatsApp'
-                  subscriberSummary={this.props.subscriberSummary}
-                  subscriberGraph={this.state.subscriberGraph}
-                />
-              </div>
-              <div className='row'>
-                {url.includes('kibochat.cloudkibo.com')
-                  ? <WhatsAppMetrics
-                    startDate={this.state.startDate}
-                    endDate={this.state.endDate}
-                    metrics={this.props.metrics}
-                    loadMetrics={this.props.loadMetrics}
-                    showToggle={false}
-                    showMetrics={true}
-                  />
-                  : url.includes('kiboengage.cloudkibo.com') &&
-                  <SentSeen
-                    loadSentSeen={this.props.loadSentSeenWhatsApp}
+              {
+                !this.props.isMobile &&
+                <div className='row'>
+                  <SubscriberSummary
+                    loadSubscriberSummary={this.props.loadSubscriberSummaryWhatsApp}
                     platform='whatsApp'
-                    sentSeenData={this.props.sentSeenData}
-                    sentSeenGraph={this.state.sentSeenGraph}
+                    subscriberSummary={this.props.subscriberSummary}
+                    subscriberGraph={this.state.subscriberGraph}
                   />
-                }
-              </div>
+                </div>
+              }
+              {
+                !this.props.isMobile &&
+                <div className='row'>
+                  {url.includes('kibochat.cloudkibo.com')
+                    ? <WhatsAppMetrics
+                      startDate={this.state.startDate}
+                      endDate={this.state.endDate}
+                      metrics={this.props.metrics}
+                      loadMetrics={this.props.loadMetrics}
+                      showToggle={false}
+                      showMetrics={true}
+                    />
+                    : url.includes('kiboengage.cloudkibo.com') &&
+                    <SentSeen
+                      loadSentSeen={this.props.loadSentSeenWhatsApp}
+                      platform='whatsApp'
+                      sentSeenData={this.props.sentSeenData}
+                      sentSeenGraph={this.state.sentSeenGraph}
+                    />
+                  }
+                </div>
+              }
             </div>
           }
         </div>
@@ -195,6 +195,7 @@ function mapStateToProps(state) {
   return {
     cardBoxesData: (state.smsWhatsAppDashboardInfo.cardBoxesData),
     user: (state.basicInfo.user),
+    isMobile: (state.basicInfo.isMobile),
     subscriberSummary: (state.smsWhatsAppDashboardInfo.subscriberSummary),
     sentSeenData: (state.smsWhatsAppDashboardInfo.sentSeenData),
     automated_options: (state.basicInfo.automated_options),

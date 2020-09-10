@@ -32,7 +32,8 @@
     "moment": "^2.24.0",
     "moment-range": "^3.1.1",
     "nice-try": "^2.0.0",
-    "papaparse": "^4.6.3",
+    "npm-audit-html": "^1.4.3",
+    "papaparse": "^5.2.0",
     "raf": "^3.4.1",
     "react": "^16.13.0",
     "react-addons-pure-render-mixin": "^15.6.0",
@@ -100,7 +101,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
-  "proxy": "http://localhost:3021",
+  "proxy": "http://localhost:3022",
   "eslintConfig": {
     "extends": "react-app"
   },
