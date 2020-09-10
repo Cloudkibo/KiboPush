@@ -315,8 +315,9 @@ class Header extends React.Component {
       }
     }
 
-    console.log('environment header', this.state.environment)
-    return productUrls[product][this.state.environment]
+    const environment = cookie.load('environment')
+    console.log('environment header', environment)
+    return productUrls[product][environment]
   }
 
   render() {
