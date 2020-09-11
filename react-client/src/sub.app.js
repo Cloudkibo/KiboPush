@@ -66,6 +66,15 @@ class App extends Component {
         })
       }
     }
+    if (nextProps.socketData && this.props.history.location.pathname !== '/liveChat') {
+      handleSocketEvent(
+        nextProps.socketData,
+        nextProps,
+        nextProps.updateLiveChatInfo,
+        nextProps.user,
+        nextProps.clearSocketData
+      )
+    }
     this.setState({
       message_alert: nextProps.message_alert
     })
@@ -141,18 +150,6 @@ class App extends Component {
     })
   }
 
-  UNSAFE_componentWillReceiveProps (nextProps) {
-    if (nextProps.socketData && this.props.history.location.pathname !== '/liveChat') {
-      handleSocketEvent(
-        nextProps.socketData,
-        nextProps,
-        nextProps.updateLiveChatInfo,
-        nextProps.user,
-        nextProps.clearSocketData
-      )
-    }
-  }
-
   render () {
     console.log("Public URL ", process.env.PUBLIC_URL)
     console.log('auth.getToken', auth.getToken())
@@ -183,7 +180,7 @@ class App extends Component {
         }
         <div>
           {
-            auth.loggedIn() && ['/addfbpages', '/facebookIntegration', '/integrations', '/configureChatbot', '/configureChatbotNew', '/chatbotAnalytics'].indexOf(this.state.path) === -1
+            auth.loggedIn() && ['/addfbpages', '/facebookIntegration', '/integrations', '/configureChatbot', '/configureChatbotNew', '/chatbotAnalytics', '/resendVerificationEmail'].indexOf(this.state.path) === -1
             ? <Header history={this.props.history} location={this.props.location} />
           : ['/addfbpages', '/facebookIntegration', '/integrations', '/configureChatbot', '/configureChatbotNew', '/chatbotAnalytics'].indexOf(this.state.path) > -1 &&
             <SimpleHeader showTitle={['/configureChatbot', '/configureChatbotNew', '/chatbotAnalytics'].indexOf(this.state.path) > -1} history={this.props.history} location={this.props.location} />
