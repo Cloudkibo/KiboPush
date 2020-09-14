@@ -44,7 +44,8 @@ class AssignCustomFields extends React.Component {
   validateCustomFieldType (question, customFieldId) {
     if (customFieldId) {
       let customFieldType = this.getCustomFieldType(customFieldId)
-      return (question.type === 'number' && customFieldType === question.type) || (customFieldType === 'text' && question.type !== 'number')
+      return (question.type.toUpperCase() === customFieldType.toUpperCase())
+      // return (question.type === 'number' && customFieldType === question.type) || (customFieldType === 'text' && question.type !== 'number')
     }
   }
 
