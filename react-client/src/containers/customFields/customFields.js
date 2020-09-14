@@ -47,7 +47,7 @@ class CustomFields extends React.Component {
   deleteCustomField (customField) {
     this.setState({
         currentCustomField: customField
-    }, () => { 
+    }, () => {
         this.refs.DeleteModal.click()
     })
   }
@@ -151,7 +151,7 @@ class CustomFields extends React.Component {
           <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog modal-lg" role="document">
             <div className="modal-content">
               <div style={{ display: 'block' }} className="modal-header">
-                <button style={{ marginTop: '-60px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" 
+                <button style={{ marginTop: '-60px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal"
                 aria-label="Close"
                 onClick={() => {
                   this.setState({
@@ -340,20 +340,23 @@ class CustomFields extends React.Component {
                         </h3>
                       </div>
                     </div>
-                    <div className='m-portlet__head-tools'>
-                      <ul className='m-portlet__nav'>
-                        <li className='m-portlet__nav-item'>
-                          <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' onClick={this.createCustomField}>
-                            <span>
-                              <i className='la la-plus' />
+                    {
+                      this.props.user.permissions['create_custom_fields'] &&
+                      <div className='m-portlet__head-tools'>
+                        <ul className='m-portlet__nav'>
+                          <li className='m-portlet__nav-item'>
+                            <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' onClick={this.createCustomField}>
                               <span>
-                                New Field
+                                <i className='la la-plus' />
+                                <span>
+                                  New Field
+                                </span>
                               </span>
-                            </span>
-                          </button>
-                        </li>
-                      </ul>
-                    </div>
+                            </button>
+                          </li>
+                        </ul>
+                      </div>
+                    }
                   </div>
                   <div className='m-portlet__body'>
                     {/* <div className='row align-items-center'>
@@ -401,16 +404,22 @@ class CustomFields extends React.Component {
                                   <td data-field='description' className='m-datatable__cell--center m-datatable__cell'><span style={{ width: '200px' }}>{field.description}</span></td>
                                   <td data-field='actions' className='m-datatable__cell--center m-datatable__cell'>
                                     <span style={{ width: '150px' }}>
-                                        <button className='btn btn-primary btn-sm'
-                                            style={{ float: 'right', margin: 2 }}
-                                            onClick={() => this.deleteCustomField(field)}>
-                                            Delete
-                                        </button>
-                                        <button className='btn btn-primary btn-sm'
-                                            onClick={() => this.updateCustomField(field)}
-                                            style={{ float: 'right', margin: 2 }}>
-                                            Edit
-                                        </button>
+                                        {
+                                          this.props.user.permissions['delete_custom_fields'] &&
+                                          <button className='btn btn-primary btn-sm'
+                                              style={{ float: 'right', margin: 2 }}
+                                              onClick={() => this.deleteCustomField(field)}>
+                                              Delete
+                                          </button>
+                                        }
+                                        {
+                                          this.props.user.permissions['update_custom_fields'] &&
+                                          <button className='btn btn-primary btn-sm'
+                                              onClick={() => this.updateCustomField(field)}
+                                              style={{ float: 'right', margin: 2 }}>
+                                              Edit
+                                          </button>
+                                        }
                                     </span>
                                   </td>
                                 </tr>
@@ -453,7 +462,8 @@ class CustomFields extends React.Component {
 
 function mapStateToProps(state) {
   return {
-    customFields: (state.customFieldInfo.customFields)
+    customFields: (state.customFieldInfo.customFields),
+    user: (state.basicInfo.user)
   }
 }
 

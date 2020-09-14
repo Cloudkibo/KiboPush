@@ -135,21 +135,24 @@ class Campaign extends React.Component {
               </div>
             }
             </span>
-            <span className='radio'>
-              <input
-                type='radio'
-                value='new'
-                onChange={this.handleCampaignType}
-                checked={this.state.campaignType === 'new'} />
-                Create New Campaign
-              <span />
-              <br /><br />
-              {this.state.campaignType === 'new' &&
-                <div className='form-group m-form__group'>
-                  <input type='text' className='form-control m-input' placeholder='Enter Campaign Name...' value={this.state.campaignName} onChange={this.changeCampaignName} style={{borderRadius: '20px', width: '50%'}} />
-                </div>
-              }
-            </span>
+            {
+              this.props.isCreatable &&
+              <span className='radio'>
+                <input
+                  type='radio'
+                  value='new'
+                  onChange={this.handleCampaignType}
+                  checked={this.state.campaignType === 'new'} />
+                  Create New Campaign
+                <span />
+                <br /><br />
+                {this.state.campaignType === 'new' &&
+                  <div className='form-group m-form__group'>
+                    <input type='text' className='form-control m-input' placeholder='Enter Campaign Name...' value={this.state.campaignName} onChange={this.changeCampaignName} style={{borderRadius: '20px', width: '50%'}} />
+                  </div>
+                }
+              </span>
+            }
           </div>
         <Footer
           currentStep='campaign'
