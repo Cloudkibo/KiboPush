@@ -16,6 +16,7 @@ import {
 } from '../../redux/actions/basicinfo.actions'
 import { fetchNotifications, markRead } from '../../redux/actions/notifications.actions'
 import auth from '../../utility/auth.service'
+import cookie from 'react-cookie'
 
 // Components
 import HEADERMENU from './headerMenu'
