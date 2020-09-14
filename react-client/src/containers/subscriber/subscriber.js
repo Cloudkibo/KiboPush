@@ -296,7 +296,8 @@ class Subscriber extends React.Component {
     console.log('handleSelectBulkCustomField', customField)
     if (customField) {
       this.setState({
-        selectedBulkField: customField
+        selectedBulkField: customField,
+        isvalidCustomField: true
       })
     }
     // console.log('findme', value)
