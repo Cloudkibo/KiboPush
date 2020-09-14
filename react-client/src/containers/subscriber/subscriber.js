@@ -21,7 +21,9 @@ import EditTags from './editTags'
 import AlertMessage from '../../components/alertMessages/alertMessage'
 import moment from 'moment'
 import YouTube from 'react-youtube'
-import {localeCodeToEnglish, handleDate} from '../../utility/utils'
+import {localeCodeToEnglish, handleDate, validateEmail, isWebURL,validatePhoneNumber} from '../../utility/utils'
+import InputDebounce from '../../components/extras/inputDebounce'
+
 var json2csv = require('json2csv')
 
 class Subscriber extends React.Component {
@@ -81,7 +83,8 @@ class Subscriber extends React.Component {
       createCustomField: false,
       selectedTagValue: '',
       subscribersLoaded: false,
-      openVideo: false
+      openVideo: false,
+      isvalidCustomField: true
     }
     props.allLocales()
     props.fetchAllSequence()
@@ -166,6 +169,25 @@ class Subscriber extends React.Component {
     this.openVideoTutorial = this.openVideoTutorial.bind(this)
     this.getSubscriberSource = this.getSubscriberSource.bind(this)
     this.getInputComponent = this.getInputComponent.bind(this)
+    this.validateCustomField = this.validateCustomField.bind(this)
+  }
+
+  validateCustomField (inputText) {
+    let isvalid = true
+    console.log('selectedField.type', this.state.selectedBulkField)
+    let selectedField = this.state.selectedBulkField
+    if(selectedField.type === 'email') {
+      isvalid = validateEmail(inputText)
+    } else if(selectedField.type === 'phoneNumber') {
+      isvalid = isWebURL(inputText)
+
+    } else if(selectedField.type === 'url') {
+      isvalid = validatePhoneNumber(inputText)
+
+    }
+    console.log('isvalid', isvalid)
+    this.setState({isvalidCustomField: isvalid})
+    this.handleBulkSetCustomField(inputText)
   }
 
   getSubscriberSource () {
@@ -264,7 +286,7 @@ class Subscriber extends React.Component {
       _id: this.state.selectedBulkField._id,
       label: this.state.selectedBulkField.label,
       type: this.state.selectedBulkField.type,
-      value: event.target.value
+      value: event.target ? event.target.value : event
     }
     this.setState({ selectedBulkField: temp })
   }
@@ -274,7 +296,8 @@ class Subscriber extends React.Component {
     console.log('handleSelectBulkCustomField', customField)
     if (customField) {
       this.setState({
-        selectedBulkField: customField
+        selectedBulkField: customField,
+        isvalidCustomField: true
       })
     }
     // console.log('findme', value)
@@ -441,7 +464,7 @@ class Subscriber extends React.Component {
   }
   setSubscriber(s) {
     this.settingSubscriber = true
-    this.setState({ 
+    this.setState({
       subscriber: s,
       selectedField: null,
       existingSelectedField: null,
@@ -972,7 +995,7 @@ class Subscriber extends React.Component {
           'Gender': subscriber.gender,
           'tags': subscriber.tags.join(),
           'SubscriberId': subscriber.senderId,
-          'subscriptionDateTime' : new Date(subscriber.datetime).toUTCString() 
+          'subscriptionDateTime' : new Date(subscriber.datetime).toUTCString()
         }
         for (var c = 0 ; c < subscriber.customFields.length; c++) {
           subscriberObj[subscriber.customFields[c].name] = subscriber.customFields[c].value
@@ -1215,9 +1238,9 @@ class Subscriber extends React.Component {
 
   handleFilterByPage(e) {
     if (e.target.value !== '' && e.target.value !== 'all') {
-      this.setState({ 
-        filter: true, 
-        filterByPage: e.target.value, 
+      this.setState({
+        filter: true,
+        filterByPage: e.target.value,
         pageSelected: 0,
         selectAllChecked: false,
         showBulkActions: false,
@@ -1226,12 +1249,12 @@ class Subscriber extends React.Component {
         this.loadSubscribers()
       })
     } else {
-      this.setState({ 
+      this.setState({
       filterPage: e.target.value,
-      filterByPage: '', 
-      pageSelected: 0, 
+      filterByPage: '',
+      pageSelected: 0,
       selectAllChecked: false,
-      showBulkActions: false 
+      showBulkActions: false
     }, () => {
         this.loadSubscribers()
       })
@@ -1354,6 +1377,10 @@ class Subscriber extends React.Component {
             <option key='1' value='true'>True</option>
             <option key='2' value='false'>False</option>
           </select>
+        )
+      } else if (selectedField.type === 'email' || selectedField.type === 'phoneNumber' || selectedField.type === 'url') {
+        return (
+          <InputDebounce inputId = 'customFieldInput' placeholder='Enter custom field value...' callback = {this.validateCustomField}/>
         )
       }
     }
@@ -1617,39 +1644,45 @@ class Subscriber extends React.Component {
                             <div className='col-xl-12 order-2 order-xl-1'>
                             <h5 style={{marginTop: '20px', marginBottom: '-10px'}}>Bulk Actions:</h5>
                             <div className='row filters' style={{ marginTop: '25px', display: 'flex' }}>
-                              <div className='col-md-3'>
-                                <div className='m-form__group m-form__group--inline'>
-                                  <div className='m-form__control'>
-                                    <select className='custom-select' id='m_form_status' style={{ width: '200px' }} tabIndex='-98' onChange={this.addTags} value=''>
-                                      <option key='' value='' disabled>Assign Tag</option>
-                                      {
-                                        this.state.options.map((option, i) => {
-                                          return (
-                                            <option key={i} value={option.value}>{option.label}</option>
-                                          )
-                                        })
-                                      }
-                                    </select>
+                              {
+                                this.props.user.permissions['assign_tags'] &&
+                                <div className='col-md-3'>
+                                  <div className='m-form__group m-form__group--inline'>
+                                    <div className='m-form__control'>
+                                      <select className='custom-select' id='m_form_status' style={{ width: '200px' }} tabIndex='-98' onChange={this.addTags} value=''>
+                                        <option key='' value='' disabled>Assign Tag</option>
+                                        {
+                                          this.state.options.map((option, i) => {
+                                            return (
+                                              <option key={i} value={option.value}>{option.label}</option>
+                                            )
+                                          })
+                                        }
+                                      </select>
+                                    </div>
                                   </div>
-                              </div>
-                              <div className='d-md-none m--margin-bottom-10' />
-                            </div>
-                            <div className='col-md-3'>
-                              <div className='m-form__group m-form__group--inline'>
-                                <div className='m-form__control'>
-                                  <select className='custom-select' style={{ width: '200px' }} id='m_form_type' tabIndex='-98' value='' onChange={this.removeTags}>
-                                    <option key='' value='' disabled>Unassign Tag</option>
-                                    {
-                                      this.state.options.map((option, i) => {
-                                        return (
-                                          <option key={i} value={option.value}>{option.label}</option>
-                                        )
-                                      })
-                                    }
-                                  </select>
+                                  <div className='d-md-none m--margin-bottom-10' />
                                 </div>
-                              </div>
-                            </div>
+                              }
+                              {
+                                this.props.user.permissions['assign_tags'] &&
+                                <div className='col-md-3'>
+                                  <div className='m-form__group m-form__group--inline'>
+                                    <div className='m-form__control'>
+                                      <select className='custom-select' style={{ width: '200px' }} id='m_form_type' tabIndex='-98' value='' onChange={this.removeTags}>
+                                        <option key='' value='' disabled>Unassign Tag</option>
+                                        {
+                                          this.state.options.map((option, i) => {
+                                            return (
+                                              <option key={i} value={option.value}>{option.label}</option>
+                                            )
+                                          })
+                                        }
+                                      </select>
+                                    </div>
+                                  </div>
+                                </div>
+                              }
                             <div className='col-md-3'>
                               <div className='m-form__group m-form__group--inline'>
                                 <div className='m-form__control'>
@@ -1679,48 +1712,52 @@ class Subscriber extends React.Component {
                               </div>
                             </div>
                           </div>
-                          <div style={{ marginTop: '15px' }} className='form-group m-form__group row align-items-center'>
-                            <div className='col-3'>
-                              <div className='m-form__group m-form__group--inline'>
-                                <div className='m-form__control'>
-                                  <select className='custom-select' value={this.state.selectedBulkField ? this.state.selectedBulkField._id : ''} style={{ width: '200px' }} id='m_form_type' tabIndex='-98' onChange={this.handleSelectBulkCustomField}>
-                                    <option key='' value='' disabled>Set Custom Field</option>
-                                    <optgroup label='Default Custom Fields'>
+                          {
+                            this.props.user.permissions['set_custom_fields'] &&
+                            <div style={{ marginTop: '15px' }} className='form-group m-form__group row align-items-center'>
+                              <div className='col-3'>
+                                <div className='m-form__group m-form__group--inline'>
+                                  <div className='m-form__control'>
+                                    <select className='custom-select' value={this.state.selectedBulkField ? this.state.selectedBulkField._id : ''} style={{ width: '200px' }} id='m_form_type' tabIndex='-98' onChange={this.handleSelectBulkCustomField}>
+                                      <option key='' value='' disabled>Set Custom Field</option>
+                                      <optgroup label='Default Custom Fields'>
+                                        {
+                                          this.state.customFieldOptions.filter(cf => !!cf.default).map((cf, i) => (
+                                            <option key={i} value={cf._id}>{cf.label}</option>
+                                          ))
+                                        }
+                                      </optgroup>
                                       {
-                                        this.state.customFieldOptions.filter(cf => !!cf.default).map((cf, i) => (
-                                          <option key={i} value={cf._id}>{cf.label}</option>
-                                        ))
+                                      this.state.customFieldOptions.filter(cf => !cf.default).length > 0 &&
+                                      <optgroup label='User Defined Custom Fields'>
+                                        {
+                                          this.state.customFieldOptions.filter(cf => !cf.default).map((cf, i) => (
+                                            <option key={i} value={cf._id}>{cf.label}</option>
+                                          ))
+                                        }
+                                      </optgroup>
                                       }
-                                    </optgroup>
-                                    {
-                                    this.state.customFieldOptions.filter(cf => !cf.default).length > 0 &&
-                                    <optgroup label='User Defined Custom Fields'>
-                                      {
-                                        this.state.customFieldOptions.filter(cf => !cf.default).map((cf, i) => (
-                                          <option key={i} value={cf._id}>{cf.label}</option>
-                                        ))
-                                      }
-                                    </optgroup>
-                                    }
-                                  </select>
+                                    </select>
+                                  </div>
                                 </div>
                               </div>
-                            </div>
                             {
                               (this.state.selectedBulkField && this.state.selectedBulkField._id) &&
-                                <div className='col-3'>
+                                <div className='col-3' style= {{top: '10px'}}>
                                   {this.getInputComponent(this.state.selectedBulkField, this.handleBulkSetCustomField)}
-                                </div>
+                                  <div style={this.state.isvalidCustomField ? { color: 'white'} : { color: 'red'}}>Please enter correct {this.state.selectedBulkField.type}</div>
+                                </div>                               
                             }
                             {
                               (this.state.selectedBulkField && this.state.selectedBulkField._id) &&
                               <div className='col-3'>
-                                <button disabled={!this.state.selectedBulkField.value ? true : false} onClick={() => this.saveSetCustomField()} className='btn btn-primary'>
+                                <button disabled={(this.state.selectedBulkField.value && this.state.isvalidCustomField) ? false : true} onClick={() => this.saveSetCustomField()} className='btn btn-primary'>
                                   Save
                                 </button>
                               </div>
                             }
                           </div>
+                          }
                         </div>
                             }
                           </div>
@@ -1797,21 +1834,21 @@ class Subscriber extends React.Component {
                                       <td data-toggle='modal' data-target='#m_modal_1_2' onClick={() => { this.setSubscriber(subscriber) }} data-field='Name'
                                         className='m-datatable__cell'>
                                         <span
-                                          style={subscriber.isSubscribed ? subscribedStyle : unsubscribedStyle}>{subscriber.firstName} {subscriber.lastName}</span>
+                                          style={(subscriber.isSubscribed && !subscriber.disabledByPlan) ? subscribedStyle : unsubscribedStyle}>{subscriber.firstName} {subscriber.lastName}</span>
                                       </td>
 
                                       <td data-toggle='modal' data-target='#m_modal_1_2' onClick={() => { this.setSubscriber(subscriber) }} data-field='Page'
                                         className='m-datatable__cell'>
                                         <span
-                                          style={subscriber.isSubscribed ? subscribedStyle : unsubscribedStyle}>
+                                          style={(subscriber.isSubscribed && !subscriber.disabledByPlan) ? subscribedStyle : unsubscribedStyle}>
                                           {subscriber.pageId.pageName}
                                         </span>
                                       </td>
                                       <td onClick={() => { this.setSubscriber(subscriber) }} data-field='Status'
                                         className='m-datatable__cell'>
                                         <span
-                                          style={subscriber.isSubscribed ? subscribedStyle : unsubscribedStyle}>
-                                          {subscriber.isSubscribed ? 'Subscribed' : 'Unsubscribed'}
+                                          style={(subscriber.isSubscribed && !subscriber.disabledByPlan) ? subscribedStyle : unsubscribedStyle}>
+                                          {subscriber.disabledByPlan ? 'Disabled' : subscriber.isSubscribed ? 'Subscribed' : 'Unsubscribed'}
                                         </span>
                                       </td>
                                       <td data-toggle='modal' data-target='#m_modal_1_2' onClick={() => { this.setSubscriber(subscriber) }} data-field='Gender' className='m-datatable__cell'>
@@ -1865,16 +1902,19 @@ class Subscriber extends React.Component {
                                 </span>
                               </div>
                             </div>
-                            <div className='m-form m-form--label-align-right m--margin-bottom-30'>
-                              <button className='btn btn-success m-btn m-btn--icon pull-right' onClick={this.exportRecords}>
-                                <span>
-                                  <i className='fa fa-download' />
+                            {
+                              this.props.user.permissions['export_subscribers'] &&
+                              <div className='m-form m-form--label-align-right m--margin-bottom-30'>
+                                <button className='btn btn-success m-btn m-btn--icon pull-right' onClick={this.exportRecords}>
                                   <span>
-                                    Export Records in CSV File
+                                    <i className='fa fa-download' />
+                                    <span>
+                                      Export Records in CSV File
+                                    </span>
                                   </span>
-                                </span>
-                              </button>
-                            </div>
+                                </button>
+                              </div>
+                            }
                           </div>
                           : <div className='table-responsive'>
                             {
@@ -1922,12 +1962,16 @@ class Subscriber extends React.Component {
                                     ? <div style={{ display: 'block', marginTop: '5px' }}>
                                       <i style={{ fontWeight: 'bold' }} className='la la-check-circle' />
                                       subscribed
-                                    <a href='#/' onClick={this.unSubscribe} style={{ color: 'blue', textDecoration: 'underline', cursor: 'pointer' }}> {'(Unsubscribe)'}</a>
+                                      {
+                                        this.props.user && this.props.user.plan['unsubscribe_subscribers'] && this.props.user.permissions['unsubsubscribe_subscribers'] &&
+                                        <a href='#/' onClick={this.unSubscribe} style={{ color: 'blue', textDecoration: 'underline', cursor: 'pointer' }}> {'(Unsubscribe)'}</a>
+                                      }
                                     </div>
                                     : <div style={{ display: 'block', marginTop: '5px' }}>
                                       <i style={{ fontWeight: 'bold' }} className='la la-times-circle' />
                                       unsubscribed
-                                    {this.state.subscriber.unSubscribedBy !== 'subscriber' &&
+                                      {
+                                        this.state.subscriber.unSubscribedBy !== 'subscriber' && this.props.user.plan['unsubscribe_subscribers'] && this.props.user.permissions['unsubsubscribe_subscribers'] &&
                                         <a href='#/' onClick={this.subscribe} style={{ color: 'blue', textDecoration: 'underline', cursor: 'pointer' }}> {'(Subscribe)'}</a>
                                       }
                                     </div>
@@ -1990,7 +2034,10 @@ class Subscriber extends React.Component {
                             <br />
                             <div className='row'>
                               <span style={{ fontWeight: 600, marginLeft: '15px' }}>User Tags:</span>
-                              <span id='assignIndividualTag' style={{ cursor: 'pointer', float: 'right', color: 'blue', marginLeft: '260px' }} onClick={this.showAddTagIndiviual}><i className='la la-plus' />Assign Tags</span>
+                              {
+                                this.props.user.permissions['assign_tags'] &&
+                                <span id='assignIndividualTag' style={{ cursor: 'pointer', float: 'right', color: 'blue', marginLeft: '260px' }} onClick={this.showAddTagIndiviual}><i className='la la-plus' />Assign Tags</span>
+                              }
                             </div>
                             {
                               this.props.tags && this.props.tags.length > 0 && this.state.subscriber.tags && this.state.subscriber.tags.length > 0
@@ -2060,7 +2107,7 @@ class Subscriber extends React.Component {
                               !this.settingSubscriber &&
                               <div className='row'>
                               {
-                                this.state.subscriber.customFields && this.state.subscriber.customFields.filter(cf => !!cf.value).length > 0 ? 
+                                this.state.subscriber.customFields && this.state.subscriber.customFields.filter(cf => !!cf.value).length > 0 ?
                                 <div id='customFields' style={{ padding: '15px' }} className='collapse'>
                                   {
                                     this.state.subscriber.customFields.filter(cf => !!cf.value).map((field, i) => {
@@ -2102,7 +2149,7 @@ class Subscriber extends React.Component {
                                             </button>
                                         </div>
                                       </PopoverBody>
-                                  </Popover> 
+                                  </Popover>
                                   }
                                 </div> :
                                 <div style={{ padding: '15px', maxHeight: '120px' }}>
@@ -2111,16 +2158,16 @@ class Subscriber extends React.Component {
                               }
                               </div>
                             }
-                          
+
                           {
-                            unassignedCustomFields.length > 0 &&
+                            this.props.user.permissions['set_custom_fields'] && unassignedCustomFields.length > 0 &&
                             <div className="row" style={{ marginTop: '15px', marginBottom: '15px' }}>
                               <div className='col-md-5'>
                                 <div className='m-form__control'>
                                   <select className='custom-select' value={(this.state.selectedField && this.state.selectedField._id) ? this.state.selectedField._id : ''} id='m_form_type' onChange={this.setSelectedField}>
                                     <option key='' value='' disabled>Set Custom Field</option>
                                     {
-                                    defaultCustomFields.length > 0 && 
+                                    defaultCustomFields.length > 0 &&
                                     <optgroup label='Default Custom Fields'>
                                       {
                                         defaultCustomFields.map((cf, i) => (

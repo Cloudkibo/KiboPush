@@ -55,8 +55,4 @@ SelectPlatform.propTypes = {
   'changePlatform': PropTypes.func.isRequired
 }
 
-SelectPlatform.defaultProps = {
-
-}
-
 export default SelectPlatform
