@@ -253,7 +253,8 @@ export function createCommentCapture (data, msg, handleCreate) {
                 msg.error(res.payload)
             }
           } else {
-            msg.error('Failed to create Comment Capture record')
+            const errorMsg = res.description || 'Failed to create Comment Capture record'
+            msg.error(errorMsg)
           }
         }
       })
