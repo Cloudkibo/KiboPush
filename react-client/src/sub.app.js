@@ -2,8 +2,6 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import Header from './components/header/header'
-import SimpleHeader from './containers/wizard/header'
 import Sidebar from './components/sidebar/sidebar'
 import auth from './utility/auth.service'
 import $ from 'jquery'
@@ -17,6 +15,8 @@ import { handleSocketEvent } from './handleSocketEvent'
 import Notification from 'react-web-notification'
 import MODAL from './components/extras/modal'
 import AlertContainer from 'react-alert'
+import HEADER from './components/header/header'
+import { getHiddenHeaderRoutes, getWhiteHeaderRoutes } from './utility/utils'
 
 class App extends Component {
   constructor (props) {
@@ -24,10 +24,12 @@ class App extends Component {
     this.state = {
       message_alert: null,
       path: '/',
-      showContent: (auth.getToken() !== undefined && auth.getToken() !== '')
+      showContent: (auth.getToken() !== undefined && auth.getToken() !== ''),
+      headerProps: {}
     }
     this.handleDemoSSAPage = this.handleDemoSSAPage.bind(this)
     this.onNotificationClick = this.onNotificationClick.bind(this)
+    this.setPathAndHeaderProps = this.setPathAndHeaderProps.bind(this)
     this.checkTrialPeriod = this.checkTrialPeriod.bind(this)
     this.getTrialModalContent = this.getTrialModalContent.bind(this)
     this.onPurchaseSubscription = this.onPurchaseSubscription.bind(this)
@@ -101,6 +103,28 @@ class App extends Component {
     }
   }
 
+  setPathAndHeaderProps (path) {
+    if (auth.loggedIn() && getHiddenHeaderRoutes().indexOf(path) === -1) {
+      this.setState({headerProps: {}, path})
+    } else if (getWhiteHeaderRoutes().indexOf(path) > -1) {
+      this.setState({
+        headerProps: {
+          skin: this.props.isMobile ? 'dark' : 'white',
+          showToggleSidebar: false,
+          showHeaderMenu: false,
+          showHeaderTopbar: true,
+          showSelectPlatform: false,
+          showPlanPermissions: false,
+          showNotifcations: false,
+          showQuickActions: false,
+          showAppChooser: true,
+          showDocumentation: true
+        },
+        path
+      })
+    }
+  }
+
   componentDidMount () {
     if (this.props.history.location.pathname.toLowerCase() === '/demossa') {
       this.handleDemoSSAPage()
@@ -112,14 +136,11 @@ class App extends Component {
     }
 
     this.unlisten = this.props.history.listen(location => {
-      this.setState({path: location.pathname})
+      this.setPathAndHeaderProps(location.pathname)
       if (!this.isWizardOrLogin(location.pathname)) {
         /* eslint-disable */
         if ($('#sidebarDiv')) {
           $('#sidebarDiv').removeClass('hideSideBar')
-        }
-        if ($('#headerDiv')) {
-          $('#headerDiv').removeClass('hideHeader')
         }
         /* eslint-enable */
       }
@@ -255,24 +276,22 @@ class App extends Component {
             }}
           />
         }
-        <div>
-          {
-            auth.loggedIn() && ['/addfbpages', '/facebookIntegration', '/integrations', '/configureChatbot', '/configureChatbotNew', '/chatbotAnalytics', '/resendVerificationEmail'].indexOf(this.state.path) === -1
-            ? <Header history={this.props.history} location={this.props.location} />
-          : ['/addfbpages', '/facebookIntegration', '/integrations', '/configureChatbot', '/configureChatbotNew', '/chatbotAnalytics'].indexOf(this.state.path) > -1 &&
-            <SimpleHeader showTitle={['/configureChatbot', '/configureChatbotNew', '/chatbotAnalytics'].indexOf(this.state.path) > -1} history={this.props.history} location={this.props.location} />
-          }
-          {
-            this.state.showContent &&
-            <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
-              {
-                auth.loggedIn() &&
-                <Sidebar history={this.props.history} location={this.props.location} />
-              }
-              { this.props.children }
-            </div>
-          }
-        </div>
+        <HEADER
+          alertMsg={this.msg}
+          history={this.props.history}
+          location={this.props.location}
+          {...this.state.headerProps}
+        />
+        {
+          this.state.showContent &&
+          <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
+            {
+              auth.loggedIn() &&
+              <Sidebar history={this.props.history} location={this.props.location} />
+            }
+            { this.props.children }
+          </div>
+        }
       </div>
     )
   }
@@ -286,6 +305,7 @@ function mapStateToProps (state) {
   console.log('store state in app', state)
   return {
     user: (state.basicInfo.user),
+    isMobile: (state.basicInfo.isMobile),
     message_alert: (state.notificationsInfo.message_alert),
     allChatMessages: (state.liveChat.allChatMessages),
     socketData: (state.socketInfo.socketData)
