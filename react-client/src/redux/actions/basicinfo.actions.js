@@ -169,6 +169,7 @@ export function updatePlan (data, msg) {
         dispatch(fetchPlan('success'))
         dispatch(getuserdetails())
       } else {
+        msg.error(res.description)
         dispatch(fetchPlan(res.description))
       }
     })
@@ -183,6 +184,8 @@ export function updateCard (data, msg) {
       if (res.status === 'success') {
         msg.success('Card added successfully')
         dispatch(getuserdetails())
+      } else {
+        msg.error(res.description)
       }
     })
   }

@@ -55,12 +55,12 @@ class Integrations extends React.Component {
   }
 
   disconnect (id) {
-    this.props.updateIntegration(id, {enabled: false})
+    this.props.updateIntegration(id, {enabled: false}, this.msg)
   }
 
   connect (id) {
     if (id) {
-      this.props.updateIntegration(id, {enabled: true})
+      this.props.updateIntegration(id, {enabled: true}, this.msg)
     } else {
       this.props.history.push({
         pathname: '/api/sheetsIntegrations/auth'

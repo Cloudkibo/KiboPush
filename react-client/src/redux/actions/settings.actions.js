@@ -167,7 +167,7 @@ export function fetchNotifications () {
     callApi('adminAlerts/')
       .then(res => {
         if (res.status === 'success') {
-          dispatch(showAdminAlerts(res.payload)) 
+          dispatch(showAdminAlerts(res.payload))
         }
       })
   }
@@ -177,10 +177,10 @@ export function updateNotificationSettings (data, msg) {
     callApi('adminAlerts/update', 'post', data)
       .then(res => {
         if (res.status === 'success') {
-          dispatch(fetchNotifications()) 
+          dispatch(fetchNotifications())
           msg.success('Notification settings updated successfully')
         } else {
-          msg.error('Unable to update notification settings')
+          msg.error(res.description || 'Unable to update notification settings')
           console.log(res.description)
         }
       })
@@ -196,7 +196,7 @@ export function updatePermission (updatedPermissions, msg) {
           msg.success('Permission Updated Successfully')
           dispatch(getUpdatedPermissionsSuccess(res.payload))
         } else if (res.status === 'failed') {
-          msg.success('Permission Update Failed')
+          msg.error(res.description || 'Permission Update Failed')
         }
       })
   }
@@ -209,7 +209,7 @@ export function setPermission(updatedPermissions, msg) {
           msg.success('Changes updated successfully')
           dispatch(getUserPermissions())
         } else if (res.status === 'failed') {
-          msg.error('Failed to update changes')
+          msg.error(res.description || 'Failed to update changes')
         }
       })
   }
@@ -434,7 +434,7 @@ export function enabled(data, msg) {
           }
           dispatch(loadWebhook())
         } else {
-          //  msg.error(res.description)
+           msg.error(res.description)
         }
       })
   }
@@ -472,6 +472,8 @@ export function cancelDeletion(msg, handleCancel) {
         console.log('response from msg', res)
         if (res.status === 'success') {
           msg.success('Request to cancel deletion process has been sent to admin.')
+        } else {
+          msg.error(res.description || 'Failed to cancel')
         }
         handleCancel(res)
       })
@@ -484,6 +486,8 @@ export function uploadCustomerInfoFile(data, msg) {
         console.log('response from msg', res)
         if (res.status === 'success') {
           msg.success('File uploaded successfully!')
+        } else {
+          msg.error(res.description || 'Failed to upload file')
         }
       })
   }
@@ -552,7 +556,7 @@ export function fetchValidCallerIds(data) {
       })
   }
 }
-export function disconnect(data) {
+export function disconnect(data, msg) {
   console.log('data for disconnect', data)
   return (dispatch) => {
     callApi('company/disconnect', 'post', data)
@@ -561,6 +565,8 @@ export function disconnect(data) {
         if (res.status === 'success') {
           dispatch(getAutomatedOptions())
           dispatch(getuserdetails())
+        } else {
+          msg.error(res.description || 'Failed to disconnect')
         }
       })
   }
@@ -645,7 +651,7 @@ export function getZoomIntegrations() {
     callApi('zoom/users')
       .then(res => {
         dispatch(updateZoomIntegrations(res.payload ? res.payload : []))
-        // dispatch(updateZoomIntegrations([    
+        // dispatch(updateZoomIntegrations([
         //     {
         //       _id: '123',
         //       profilePic: "https://platform-lookaside.fbsbx.com/platform/profilepic/?asid=10217280192532174&height=50&width=50&ext=1596610613&hash=AeTfTwYDbHqEJfmf",
@@ -693,12 +699,14 @@ export function createIntegration() {
       })
   }
 }
-export function updateIntegration(id, body) {
+export function updateIntegration(id, body, msg) {
   return (dispatch) => {
     callApi(`integrations/update/${id}`, 'post', body)
       .then(res => {
         if (res.status === 'success') {
           dispatch(getIntegrations())
+        } else {
+          msg.error(res.description || 'Failed to update integration')
         }
       })
   }
@@ -711,7 +719,7 @@ export function updateAdvancedSettings(data, advancedSettings, msg) {
         if (res.status === 'success') {
           dispatch(showAdvancedSettings(advancedSettings))
         } else {
-          msg.error('Unable to update advanced settings')
+          msg.error(res.description || 'Unable to update advanced settings')
         }
       })
   }
@@ -772,7 +780,7 @@ export function deleteCannedResponse(data, msg) {
             dispatch(RemoveCannedResponse(data))
           }
         } else {
-          msg.error('Unable to delete canned Response')
+          msg.error(res.description || 'Unable to delete canned Response')
         }
         // dispatch(showcannedResponses(res.payload))
       })

@@ -36,7 +36,7 @@ class Autoposting extends React.Component {
     })
     this.refs.videoAutoposting.click()
   }
-  
+
   gotoRssIntegration() {
     this.props.history.push({
       pathname: `/rssIntegration`
@@ -70,7 +70,7 @@ class Autoposting extends React.Component {
     this.refs.guide.click()
   }
   UNSAFE_componentWillReceiveProps(nextProps) {
-   
+
   }
 
   updateDeleteID(id) {
@@ -196,7 +196,7 @@ class Autoposting extends React.Component {
                 <h5 className="modal-title" id="exampleModalLabel">
                   Autoposting Video Tutorial
 									</h5>
-                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" 
+                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal"
                 aria-label="Close"
                 onClick={() => {
                   this.setState({
@@ -244,7 +244,7 @@ class Autoposting extends React.Component {
                 <button style={{ float: 'right' }}
                   className='btn btn-primary btn-sm'
                   onClick={() => {
-                    this.props.deleteautoposting(this.state.deleteid)
+                    this.props.deleteautoposting(this.state.deleteid, this.msg)
                   }}
                   data-dismiss='modal'>Delete
                           </button>
@@ -300,7 +300,7 @@ class Autoposting extends React.Component {
                           </span>
                         </span>
                       </button>
-                    </Link>       
+                    </Link>
                   </div>
                 </div>
                 <div className='m-portlet__body'>

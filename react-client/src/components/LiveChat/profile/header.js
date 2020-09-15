@@ -69,7 +69,7 @@ class ProfileHeader extends React.Component {
       this.props.alertMsg.success('Unsubscribed successfully')
       this.props.updateState({activeSession: {}})
     } else {
-      this.props.alertMsg.error('Unable to unsubscribe subscriber')
+      this.props.alertMsg.error(res.description || 'Unable to unsubscribe subscriber')
     }
   }
 
@@ -103,7 +103,7 @@ class ProfileHeader extends React.Component {
                       onChange={this.onNameChange}
                       readOnly={!this.state.editName}
                       disabled={this.state.savingName}
-                    /> 
+                    />
                     <span style={{display: 'inherit', marginLeft: '5px'}} className="m-card-profile__name">
                       <button disabled={this.state.savingName} style={{border: 'none'}} onClick={this.onSaveName} className="m-portlet__nav-link btn m-btn m-btn--hover-success m-btn--icon m-btn--icon-only m-btn--pill" title="Save">
                         {
@@ -121,8 +121,8 @@ class ProfileHeader extends React.Component {
                     </span>
                   </div>
                 </div>
-              
-            
+
+
               <div style={{display: !this.state.editName ? 'flex' : 'none'}}>
                 <span style={{maxWidth: '150px', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden'}} className="m-card-profile__name">
                   {this.state.name}
@@ -131,7 +131,7 @@ class ProfileHeader extends React.Component {
                   <i style={{color: 'black'}} className="fa fa-edit" />
                 </button>
               </div>
-              
+
               <br />
             </span> :
             <span className='m-card-profile__name'>{this.props.activeSession.name}</span>

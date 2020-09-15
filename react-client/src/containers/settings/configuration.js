@@ -109,7 +109,7 @@ class Configuration extends React.Component {
       this.refs.disconnectWhatsApp.click()
       this.msg.success(res.payload)
     } else {
-      this.msg.error(res.payload)
+      this.msg.error(res.description || res.payload)
     }
   }
 
@@ -150,7 +150,7 @@ class Configuration extends React.Component {
   }
 
   disconnect() {
-    this.props.disconnect({ type: this.state.type })
+    this.props.disconnect({ type: this.state.type }, this.msg)
   }
 
   updateSID(e) {
