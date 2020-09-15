@@ -120,7 +120,8 @@ export function createNewsFeed (data, msg, handle, toggleLoader) {
           if (toggleLoader) {
             toggleLoader()
           }
-          msg.error(res.payload)
+          const errorMsg = res.description || res.payload
+          msg.error(errorMsg)
         }
       })
   }
