@@ -85,10 +85,21 @@ class ConfigureShopifyChatbot extends React.Component {
     console.log('setPublished', e.target.checked)
     this.setState({
       published: e.target.checked
-    })
-    this.props.createShopifyChatbot({
-      pageId: this.state.page._id,
-      published: e.target.checked
+    }, () => {
+      this.props.createShopifyChatbot({
+        pageId: this.state.page._id,
+        published: this.state.published
+      }, (res) => {
+        if (res.status === 'success') {
+          if (this.state.published) {
+            this.msg.success('Shopify Chatbot Enabled')
+          } else {
+            this.msg.success('Shopify Chatbot Disabled')
+          }
+        } else {
+          this.msg.error(res.description)
+        }
+      })
     })
   }
 
@@ -126,7 +137,7 @@ class ConfigureShopifyChatbot extends React.Component {
   render() {
     var alertOptions = {
       offset: 75,
-      position: 'top right',
+      position: 'bottom right',
       theme: 'dark',
       time: 3000,
       transition: 'scale'

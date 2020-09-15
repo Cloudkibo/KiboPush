@@ -12,6 +12,7 @@ class Analytics extends React.Component {
     constructor(props, context) {
         super(props, context)
         this.state = {
+            store: this.props.location.state.store,
             chatbot: this.props.location.state.chatbot,
             page: this.props.location.state.page,
             loading: false,
