@@ -770,3 +770,26 @@ export function validDateRange(startDate, endDate) {
   }
   return { valid, dateRangeWarning }
 }
+
+export function getHiddenHeaderRoutes () {
+  return [
+    '/addfbpages',
+    '/facebookIntegration',
+    '/integrations',
+    '/configureChatbot',
+    '/configureChatbotNew',
+    '/chatbotAnalytics',
+    '/resendVerificationEmail'
+  ]
+}
+
+export function getWhiteHeaderRoutes () {
+  return [
+    '/addfbpages',
+    '/facebookIntegration',
+    '/integrations',
+    '/configureChatbot',
+    '/configureChatbotNew',
+    '/chatbotAnalytics'
+  ]
+}
