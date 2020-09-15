@@ -1761,13 +1761,17 @@ class Subscriber extends React.Component {
                                     this.state.customFieldOptions.filter(cf => !cf.default).length > 0 &&
                                     <optgroup label='User Defined Custom Fields'>
                                       {
-                                        this.state.customFieldOptions.filter(cf => !cf.default).map((cf, i) => (
-                                          <option key={i} value={cf._id}>{cf.label}</option>
-                                        ))
+                                      this.state.customFieldOptions.filter(cf => !cf.default).length > 0 &&
+                                      <optgroup label='User Defined Custom Fields'>
+                                        {
+                                          this.state.customFieldOptions.filter(cf => !cf.default).map((cf, i) => (
+                                            <option key={i} value={cf._id}>{cf.label}</option>
+                                          ))
+                                        }
+                                      </optgroup>
                                       }
-                                    </optgroup>
-                                    }
-                                  </select>
+                                    </select>
+                                  </div>
                                 </div>
                               </div>
                               <div className='d-md-none m--margin-bottom-10' />
@@ -1798,7 +1802,6 @@ class Subscriber extends React.Component {
                               </div>
                             }
                           </div>
-
                         </div>
                             }
                           </div>
@@ -1875,21 +1878,21 @@ class Subscriber extends React.Component {
                                       <td data-toggle='modal' data-target='#m_modal_1_2' onClick={() => { this.setSubscriber(subscriber) }} data-field='Name'
                                         className='m-datatable__cell'>
                                         <span
-                                          style={subscriber.isSubscribed ? subscribedStyle : unsubscribedStyle}>{subscriber.firstName} {subscriber.lastName}</span>
+                                          style={(subscriber.isSubscribed && !subscriber.disabledByPlan) ? subscribedStyle : unsubscribedStyle}>{subscriber.firstName} {subscriber.lastName}</span>
                                       </td>
 
                                       <td data-toggle='modal' data-target='#m_modal_1_2' onClick={() => { this.setSubscriber(subscriber) }} data-field='Page'
                                         className='m-datatable__cell'>
                                         <span
-                                          style={subscriber.isSubscribed ? subscribedStyle : unsubscribedStyle}>
+                                          style={(subscriber.isSubscribed && !subscriber.disabledByPlan) ? subscribedStyle : unsubscribedStyle}>
                                           {subscriber.pageId.pageName}
                                         </span>
                                       </td>
                                       <td onClick={() => { this.setSubscriber(subscriber) }} data-field='Status'
                                         className='m-datatable__cell'>
                                         <span
-                                          style={subscriber.isSubscribed ? subscribedStyle : unsubscribedStyle}>
-                                          {subscriber.isSubscribed ? 'Subscribed' : 'Unsubscribed'}
+                                          style={(subscriber.isSubscribed && !subscriber.disabledByPlan) ? subscribedStyle : unsubscribedStyle}>
+                                          {subscriber.disabledByPlan ? 'Disabled' : subscriber.isSubscribed ? 'Subscribed' : 'Unsubscribed'}
                                         </span>
                                       </td>
                                       <td data-toggle='modal' data-target='#m_modal_1_2' onClick={() => { this.setSubscriber(subscriber) }} data-field='Gender' className='m-datatable__cell'>
@@ -1943,16 +1946,19 @@ class Subscriber extends React.Component {
                                 </span>
                               </div>
                             </div>
-                            <div className='m-form m-form--label-align-right m--margin-bottom-30'>
-                              <button className='btn btn-success m-btn m-btn--icon pull-right' onClick={this.exportRecords}>
-                                <span>
-                                  <i className='fa fa-download' />
+                            {
+                              this.props.user.permissions['export_subscribers'] &&
+                              <div className='m-form m-form--label-align-right m--margin-bottom-30'>
+                                <button className='btn btn-success m-btn m-btn--icon pull-right' onClick={this.exportRecords}>
                                   <span>
-                                    Export Records in CSV File
+                                    <i className='fa fa-download' />
+                                    <span>
+                                      Export Records in CSV File
+                                    </span>
                                   </span>
-                                </span>
-                              </button>
-                            </div>
+                                </button>
+                              </div>
+                            }
                           </div>
                           : <div className='table-responsive'>
                             {
@@ -2000,12 +2006,16 @@ class Subscriber extends React.Component {
                                     ? <div style={{ display: 'block', marginTop: '5px' }}>
                                       <i style={{ fontWeight: 'bold' }} className='la la-check-circle' />
                                       subscribed
-                                    <a href='#/' onClick={this.unSubscribe} style={{ color: 'blue', textDecoration: 'underline', cursor: 'pointer' }}> {'(Unsubscribe)'}</a>
+                                      {
+                                        this.props.user && this.props.user.plan['unsubscribe_subscribers'] && this.props.user.permissions['unsubsubscribe_subscribers'] &&
+                                        <a href='#/' onClick={this.unSubscribe} style={{ color: 'blue', textDecoration: 'underline', cursor: 'pointer' }}> {'(Unsubscribe)'}</a>
+                                      }
                                     </div>
                                     : <div style={{ display: 'block', marginTop: '5px' }}>
                                       <i style={{ fontWeight: 'bold' }} className='la la-times-circle' />
                                       unsubscribed
-                                    {this.state.subscriber.unSubscribedBy !== 'subscriber' &&
+                                      {
+                                        this.state.subscriber.unSubscribedBy !== 'subscriber' && this.props.user.plan['unsubscribe_subscribers'] && this.props.user.permissions['unsubsubscribe_subscribers'] &&
                                         <a href='#/' onClick={this.subscribe} style={{ color: 'blue', textDecoration: 'underline', cursor: 'pointer' }}> {'(Subscribe)'}</a>
                                       }
                                     </div>
@@ -2068,7 +2078,10 @@ class Subscriber extends React.Component {
                             <br />
                             <div className='row'>
                               <span style={{ fontWeight: 600, marginLeft: '15px' }}>User Tags:</span>
-                              <span id='assignIndividualTag' style={{ cursor: 'pointer', float: 'right', color: 'blue', marginLeft: '260px' }} onClick={this.showAddTagIndiviual}><i className='la la-plus' />Assign Tags</span>
+                              {
+                                this.props.user.permissions['assign_tags'] &&
+                                <span id='assignIndividualTag' style={{ cursor: 'pointer', float: 'right', color: 'blue', marginLeft: '260px' }} onClick={this.showAddTagIndiviual}><i className='la la-plus' />Assign Tags</span>
+                              }
                             </div>
                             {
                               this.props.tags && this.props.tags.length > 0 && this.state.subscriber.tags && this.state.subscriber.tags.length > 0
@@ -2191,7 +2204,7 @@ class Subscriber extends React.Component {
                             }
 
                           {
-                            unassignedCustomFields.length > 0 &&
+                            this.props.user.permissions['set_custom_fields'] && unassignedCustomFields.length > 0 &&
                             <div className="row" style={{ marginTop: '15px', marginBottom: '15px' }}>
                               <div className='col-md-5'>
                                 <div className='m-form__control'>

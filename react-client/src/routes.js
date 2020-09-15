@@ -186,8 +186,10 @@ const AddSurvey = asyncComponent(() => import("./containers/survey/add_survey"))
 const SurveyResult = asyncComponent(() => import("./containers/survey/SurveyResult"))
 const ConfigureChatbot = asyncComponent(() => import('./containers/chatbotAutomation/configureChatbot'))
 const ConfigureChatbotNew = asyncComponent(() => import('./containers/chatbotAutomationNew/configureChatbot'))
+const ConfigureShopifyChatbot = asyncComponent(() => import('./containers/shopifyChatbot/configureShopifyChatbot'))
 const ChatbotAnalytics = asyncComponent(() => import('./containers/chatbotAutomation/analytics'))
 const WhatsAppChatbotAnalytics = asyncComponent(() => import('./containers/whatsAppChatbot/analytics'))
+const ShopifyChatbotAnalytics = asyncComponent(() => import('./containers/shopifyChatbot/analytics'))
 
 function requireAuth(nextState, replace) {
   if (!auth.loggedIn()) {
@@ -402,6 +404,7 @@ const Routes = () => (
     <Route path='/chatbotAutomationNew' component={ChatbotAutomationNew} onEnter={requireAuth} />
     <Route path='/configureChatbot' component={ConfigureChatbot} onEnter={requireAuth} />
     <Route path='/configureChatbotNew' component={ConfigureChatbotNew} onEnter={requireAuth} />
+    <Route path='/configureShopifyChatbot' component={ConfigureShopifyChatbot} onEnter={requireAuth} />
     <Route path='/chatbotSettings' component={ChatbotSettings} onEnter={requireAuth} />
     <Route path='/chatbotAnalytics' component={ChatbotAnalytics} onEnter={requireAuth} />
     <Route path='/chatbotSettings' component={ChatbotSettings} onEnter={requireAuth} />
@@ -411,6 +414,7 @@ const Routes = () => (
     <Route path='/ErrorMessage' component={ErrorMessage} onEnter={requireAuth} />
     <Route path='/whatsAppChatbot' component={WhatsAppChatbot} onEnter={requireAuth} />
     <Route path='/whatsAppChatbotAnalytics' component={WhatsAppChatbotAnalytics} onEnter={requireAuth} />
+    <Route path='/shopifyChatbotAnalytics' component={ShopifyChatbotAnalytics} onEnter={requireAuth} />
     <Route path='*' render={() => <Redirect to='/' />} />
   </Switch>
 
