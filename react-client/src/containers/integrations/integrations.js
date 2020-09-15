@@ -185,7 +185,6 @@ class FacebookIntegration extends React.Component {
     $('#sidebarDiv').addClass('hideSideBar')
     /* eslint-enable */
   }
-
   render() {
     var alertOptions = {
       offset: 75,

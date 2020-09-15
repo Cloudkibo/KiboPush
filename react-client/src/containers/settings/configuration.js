@@ -66,6 +66,10 @@ class Configuration extends React.Component {
     // auth.logout()
   }
 
+  handleCheckbox (e) {
+    console.log('e.target.value', e.target.checked)
+    this.setState({retainData : e.target.checked})
+  }
   updateWhatsAppData(e, data) {
     if (data.businessNumber) {
       if (!validatePhoneNumber(data.businessNumber)) {
