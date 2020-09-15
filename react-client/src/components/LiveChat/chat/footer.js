@@ -35,7 +35,7 @@ class Footer extends React.Component {
       cannedMessages: [],
       dataForSearch: [],
       showCannedMessages: this.props.showCannedMessage,
-      selectedCannMessage : false,
+      selectedCannMessage: false,
       selectedIndex: 0,
       caption: '',
     }
@@ -71,55 +71,55 @@ class Footer extends React.Component {
     this.appendInvitationUrl = this.appendInvitationUrl.bind(this)
     this.selectZoomUser = this.selectZoomUser.bind(this)
     this.selectCannMessage = this.selectCannMessage.bind(this)
-    this.toggleHover =this.toggleHover.bind(this)
+    this.toggleHover = this.toggleHover.bind(this)
     this.onMouseLeave = this.onMouseLeave.bind(this)
     this.responseMessageHandleChange = this.responseMessageHandleChange.bind(this)
     this.listDataDisplay = this.listDataDisplay.bind(this)
     this.onCaptionChange = this.onCaptionChange.bind(this)
   }
 
-  componentDidMount () {
+  componentDidMount() {
     window.onkeydown = (e) => {
       console.log(e.which)
       if (this.state.showCannedMessages) {
-      let selectedIndex = this.state.selectedIndex
-      if (e.which === 40 ) {
-        if(selectedIndex < this.state.cannedMessages.length-1 )
-        this.setState({selectedIndex: selectedIndex +1})
-        document.getElementById("cardBody").scrollTop +=55
+        let selectedIndex = this.state.selectedIndex
+        if (e.which === 40) {
+          if (selectedIndex < this.state.cannedMessages.length - 1)
+            this.setState({ selectedIndex: selectedIndex + 1 })
+          document.getElementById("cardBody").scrollTop += 55
 
-      } else if (e.which === 38) {
-        if(selectedIndex !== 0) {
-        this.setState({selectedIndex: selectedIndex - 1})
-        document.getElementById("cardBody").scrollTop -=55
+        } else if (e.which === 38) {
+          if (selectedIndex !== 0) {
+            this.setState({ selectedIndex: selectedIndex - 1 })
+            document.getElementById("cardBody").scrollTop -= 55
+          }
         }
       }
     }
   }
-}
-  responseMessageHandleChange (event) {
+  responseMessageHandleChange(event) {
     let selectedCannMessage = this.state.selectedCannMessage
     selectedCannMessage.responseMessage = event.target.value
     this.setState({ selectedCannMessage: selectedCannMessage })
   }
 
 
-  toggleHover (id) {
+  toggleHover(id) {
     // console.log('Hovver called', id)
     // document.getElementById(id).style.backgroundColor = 'lightgrey'
-    this.setState({selectedIndex: id})
+    this.setState({ selectedIndex: id })
 
   }
 
-  onMouseLeave (id) {
+  onMouseLeave(id) {
     // document.getElementById(id).style.backgroundColor = 'white'
   }
 
-  selectCannMessage (CannMessage) {
-    let cannResponse = {...CannMessage}
+  selectCannMessage(CannMessage) {
+    let cannResponse = { ...CannMessage }
     let activeSession = this.props.activeSession
     if (cannResponse.responseMessage.includes('{{user_full_name}}')) {
-      if(!activeSession.name) {
+      if (!activeSession.name) {
         cannResponse.responseMessage = cannResponse.responseMessage.replace(
           /{{user_full_name}}/g, activeSession.firstName + ' ' + activeSession.lastName)
       } else {
@@ -128,9 +128,9 @@ class Footer extends React.Component {
       }
     }
     if (cannResponse.responseMessage.includes('{{user_first_name}}')) {
-      if(!activeSession.name) {
-      cannResponse.responseMessage = cannResponse.responseMessage.replace(
-        /{{user_first_name}}/g, activeSession.firstName)
+      if (!activeSession.name) {
+        cannResponse.responseMessage = cannResponse.responseMessage.replace(
+          /{{user_first_name}}/g, activeSession.firstName)
       } else {
         let subscriberName = activeSession.name.split(' ')
         cannResponse.responseMessage = cannResponse.responseMessage.replace(
@@ -139,31 +139,31 @@ class Footer extends React.Component {
     }
     if (cannResponse.responseMessage.includes('{{user_last_name}}')) {
       if (!activeSession.name) {
-         cannResponse.responseMessage = cannResponse.responseMessage.replace(
-        /{{user_last_name}}/g, activeSession.lastName)
-    } else {
-      let subscriberName = activeSession.name.split(' ')
-      if (subscriberName.length >= 2) {
-       cannResponse.responseMessage = cannResponse.responseMessage.replace(
-        /{{user_last_name}}/g, subscriberName[subscriberName.length-1])
-    } else {
-      cannResponse.responseMessage = cannResponse.responseMessage.replace(
-        /{{user_last_name}}/g, '')
+        cannResponse.responseMessage = cannResponse.responseMessage.replace(
+          /{{user_last_name}}/g, activeSession.lastName)
+      } else {
+        let subscriberName = activeSession.name.split(' ')
+        if (subscriberName.length >= 2) {
+          cannResponse.responseMessage = cannResponse.responseMessage.replace(
+            /{{user_last_name}}/g, subscriberName[subscriberName.length - 1])
+        } else {
+          cannResponse.responseMessage = cannResponse.responseMessage.replace(
+            /{{user_last_name}}/g, '')
+        }
+      }
     }
-  }
-  }
-    this.setState({selectedCannMessage: cannResponse, text:`/${cannResponse.responseCode}`})
+    this.setState({ selectedCannMessage: cannResponse, text: `/${cannResponse.responseCode}` })
   }
 
-  onCaptionChange (e) {
-    this.setState({caption: e.target.value})
+  onCaptionChange(e) {
+    this.setState({ caption: e.target.value })
   }
 
-  selectZoomUser (e) {
-    this.setState({zoomUserId: e.target.value})
+  selectZoomUser(e) {
+    this.setState({ zoomUserId: e.target.value })
   }
 
-  resetZoomValues () {
+  resetZoomValues() {
     clearInterval(this.zoomCountdownTimer)
     this.setState({
       zoomTopic: '',
@@ -179,38 +179,38 @@ class Footer extends React.Component {
     })
   }
 
-  UNSAFE_componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     console.log('UNSAFE_componentWillReceiveProps called in footer', this.props.activeSession._id)
     console.log('UNSAFE_componentWillReceiveProps called in footer', nextProps.activeSession._id)
 
     if (nextProps.cannedResponses) {
       this.setState({ cannedMessages: nextProps.cannedResponses, dataForSearch: nextProps.cannedResponses })
     }
-    if(this.props.activeSession._id !== nextProps.activeSession._id) {
-      this.setState({showCannedMessages: false, text: ''})
+    if (this.props.activeSession._id !== nextProps.activeSession._id) {
+      this.setState({ showCannedMessages: false, text: '' })
     }
   }
 
-  appendInvitationUrl () {
+  appendInvitationUrl() {
     if (!this.state.zoomInvitationMessage.includes('invite_url')) {
-      this.setState({zoomInvitationMessage: this.state.zoomInvitationMessage + " [invite_url]"}, () => {
+      this.setState({ zoomInvitationMessage: this.state.zoomInvitationMessage + " [invite_url]" }, () => {
         document.getElementById('_zoom_invitation_message').setCustomValidity('')
       })
     }
   }
 
-  createZoomMeeting (event) {
+  createZoomMeeting(event) {
     event.preventDefault()
     const data = this.props.performAction('create a zoom meeting', this.props.activeSession)
     if (data.isAllowed) {
-      this.setState({zoomMeetingLoading: true}, () => {
+      this.setState({ zoomMeetingLoading: true }, () => {
         this.props.createZoomMeeting({
-            subscriberId: this.props.activeSession._id,
-            topic: this.state.zoomTopic,
-            agenda: this.state.zoomAgenda,
-            invitationMessage: this.state.zoomInvitationMessage,
-            zoomUserId: this.state.zoomUserId,
-            platform: this.props.user.platform
+          subscriberId: this.props.activeSession._id,
+          topic: this.state.zoomTopic,
+          agenda: this.state.zoomAgenda,
+          invitationMessage: this.state.zoomInvitationMessage,
+          zoomUserId: this.state.zoomUserId,
+          platform: this.props.user.platform
         }, (res) => {
           if (res.status === 'success' && res.payload) {
             this.setState({
@@ -221,7 +221,7 @@ class Footer extends React.Component {
             }, () => {
               document.getElementById('_close_zoom_integration').style.display = 'none'
               this.sendMessage()
-              this.zoomCountdownTimer= setInterval(() => {
+              this.zoomCountdownTimer = setInterval(() => {
                 if (this.state.zoomCountdown <= 1) {
                   if (this.state.zoomMeetingUrl) {
                     clearInterval(this.zoomCountdownTimer)
@@ -231,13 +231,13 @@ class Footer extends React.Component {
                     document.getElementById('_close_zoom_integration').click()
                   }
                 } else {
-                  this.setState({zoomCountdown: this.state.zoomCountdown - 1})
+                  this.setState({ zoomCountdown: this.state.zoomCountdown - 1 })
                 }
               }, 1000)
             })
           } else {
             console.log('error creating zoom meeting', res.description)
-            this.setState({zoomMeetingCreationError: true, zoomMeetingLoading: false})
+            this.setState({ zoomMeetingCreationError: true, zoomMeetingLoading: false })
           }
         })
       })
@@ -246,23 +246,23 @@ class Footer extends React.Component {
     }
   }
 
-  goToZoomIntegration () {
+  goToZoomIntegration() {
     document.getElementById('_close_zoom_integration').click()
     this.props.history.push({
       pathname: '/settings',
-      state: {tab: 'zoomIntegration'}
+      state: { tab: 'zoomIntegration' }
     })
   }
 
-  setEmoji (emoji) {
+  setEmoji(emoji) {
     if (this.state.uploaded) {
-      this.setState({caption: this.state.caption + emoji.native})
+      this.setState({ caption: this.state.caption + emoji.native })
     } else {
-      this.setState({text: this.state.text + emoji.native})
+      this.setState({ text: this.state.text + emoji.native })
     }
   }
 
-  updateChatData (data, payload) {
+  updateChatData(data, payload) {
     data._id = new Date().getTime()
     let sessions = this.props.sessions
     let session = this.props.activeSession
@@ -280,7 +280,7 @@ class Footer extends React.Component {
     })
   }
 
-  sendSticker (sticker) {
+  sendSticker(sticker) {
     const data = this.props.performAction('send messages', this.props.activeSession)
     if (data.isAllowed) {
       this.props.togglePopover()
@@ -297,7 +297,7 @@ class Footer extends React.Component {
     }
   }
 
-  sendGif (gif) {
+  sendGif(gif) {
     const data = this.props.performAction('send messages', this.props.activeSession)
     if (data.isAllowed) {
       this.props.togglePopover()
@@ -314,12 +314,12 @@ class Footer extends React.Component {
     }
   }
 
-  removeUrlMeta () {
-    this.setState({urlmeta: {}})
+  removeUrlMeta() {
+    this.setState({ urlmeta: {} })
     this.props.updateChatAreaHeight('57vh')
   }
 
-  handleUrlMeta (data) {
+  handleUrlMeta(data) {
     console.log('urlMeta', data)
     if (data) {
       this.setState({
@@ -336,29 +336,29 @@ class Footer extends React.Component {
     }
   }
 
-  onInputChange (e) {
+  onInputChange(e) {
     const text = e.target.value
     if (text[0] === '/') {
-      this.setState({ showCannedMessages: true , selectedIndex: 0})
+      this.setState({ showCannedMessages: true, selectedIndex: 0 })
       this.search(text)
     } else {
-      this.setState({ showCannedMessages: false, selectedCannMessage: null, selectedIndex: 0})
+      this.setState({ showCannedMessages: false, selectedCannMessage: null, selectedIndex: 0 })
     }
-    if(this.state.selectedCannMessage) {
+    if (this.state.selectedCannMessage) {
       if (/\s/.test(text)) {
         var regex = new RegExp("^/" + this.state.selectedCannMessage.responseCode, "g")
-        if(!text.match(regex)) {
-          this.setState({selectedCannMessage: null})
+        if (!text.match(regex)) {
+          this.setState({ selectedCannMessage: null })
           this.search(text)
         }
-     } else {
-       if(text !== `/${this.state.selectedCannMessage.responseCode}`) {
-       this.setState({selectedCannMessage: null})
-       this.search(text)
+      } else {
+        if (text !== `/${this.state.selectedCannMessage.responseCode}`) {
+          this.setState({ selectedCannMessage: null })
+          this.search(text)
+        }
       }
     }
-   }
-    let state = {text}
+    let state = { text }
     const url = getmetaurl(text)
     if (url && url !== this.state.currentUrl) {
       state.loadingUrlMeta = true
@@ -368,19 +368,19 @@ class Footer extends React.Component {
     this.setState(state)
   }
 
-  search (value) {
+  search(value) {
     if (this.state.dataForSearch.length > 0) {
       let searchArray = []
-      if (value[value.length-1] === ' ') {
+      if (value[value.length - 1] === ' ') {
         let text = value.trim().slice(1)
         this.state.dataForSearch.forEach(element => {
           if (element.responseCode.toLowerCase() === text.toLowerCase()) {
-            this.setState({selectedCannMessage: element})
+            this.setState({ selectedCannMessage: element })
             searchArray.push(element)
-        }
-      })
-      this.setState({ cannedMessages: searchArray })
-    }
+          }
+        })
+        this.setState({ cannedMessages: searchArray })
+      }
       else if (value !== '/') {
         let text = value.slice(1)
         this.state.dataForSearch.forEach(element => {
@@ -394,7 +394,7 @@ class Footer extends React.Component {
     }
   }
 
-  removeAttachment () {
+  removeAttachment() {
     this.props.deletefile(this.state.attachment.id)
     this.setState({
       attachment: {},
@@ -405,12 +405,12 @@ class Footer extends React.Component {
     })
   }
 
-  toggleAudioRecording (value) {
-    this.setState({showAudioRecording: value})
+  toggleAudioRecording(value) {
+    this.setState({ showAudioRecording: value })
   }
-  onDoneRecording (recordedBlob) {
+  onDoneRecording(recordedBlob) {
     console.log('recordedBlob object', recordedBlob)
-    const file = new File([recordedBlob.blob], 'recorded-audio.mp3', { type: recordedBlob.blob.type, lastModified: new Date()})
+    const file = new File([recordedBlob.blob], 'recorded-audio.mp3', { type: recordedBlob.blob.type, lastModified: new Date() })
     if (file) {
       if (this.state.attachment) {
         this.props.deletefile(this.state.attachment.id)
@@ -430,7 +430,7 @@ class Footer extends React.Component {
     }
   }
 
-  getRecordAudioContent () {
+  getRecordAudioContent() {
     if (this.state.showAudioRecording) {
       return (
         <AUDIORECORDER
@@ -443,15 +443,20 @@ class Footer extends React.Component {
     }
   }
 
-  setZoomTopic (e) {
-    this.setState({zoomTopic: e.target.value})
+  setZoomTopic(e) {
+    if (e.target.value.length > 80) {
+      e.target.setCustomValidity("Topic must be 80 characters or less.")
+    } else {
+      e.target.setCustomValidity("")
+    }
+    this.setState({ zoomTopic: e.target.value })
   }
 
-  setZoomAgenda (e) {
-    this.setState({zoomAgenda: e.target.value})
+  setZoomAgenda(e) {
+    this.setState({ zoomAgenda: e.target.value })
   }
 
-  setZoomInvitationMessage (e) {
+  setZoomInvitationMessage(e) {
     if (!e.target.value) {
       e.target.setCustomValidity("Please fill in this field.")
     } else if (!e.target.value.includes('[invite_url]')) {
@@ -459,14 +464,14 @@ class Footer extends React.Component {
     } else {
       e.target.setCustomValidity("")
     }
-    this.setState({zoomInvitationMessage: e.target.value})
+    this.setState({ zoomInvitationMessage: e.target.value })
   }
 
-  checkZoomDisabled () {
+  checkZoomDisabled() {
     return !this.state.zoomTopic || !this.state.zoomAgenda || !this.state.zoomInvitationMessage || !this.state.zoomUserId
   }
 
-  getZoomIntegrationContent () {
+  getZoomIntegrationContent() {
     if (this.props.zoomIntegrations.length === 0) {
       return (
         <div>
@@ -475,7 +480,7 @@ class Footer extends React.Component {
               You have not integrated Zoom Meetings with KiboPush. Please integrate Zoom to continue.
             </span>
           </div>
-          <div style={{marginTop: '25px', textAlign: 'center'}}>
+          <div style={{ marginTop: '25px', textAlign: 'center' }}>
             <div onClick={this.goToZoomIntegration} className='btn btn-primary'>
               Integrate
             </div>
@@ -488,7 +493,7 @@ class Footer extends React.Component {
           <div className="m-form m-form--fit m-form--label-align-right">
             <span>{`Please provide the following information to create a zoom meeting and send invitation to ${this.props.activeSession.firstName}.`}</span>
 
-            <div style={{marginTop: '20px', paddingLeft: '0', paddingRight: '0'}} class="form-group m-form__group row">
+            <div style={{ marginTop: '20px', paddingLeft: '0', paddingRight: '0' }} class="form-group m-form__group row">
               <label for="_zoom_users" className="col-2 col-form-label">
                 Account:
               </label>
@@ -498,7 +503,7 @@ class Footer extends React.Component {
                   {
                     this.props.zoomIntegrations.map((account) => {
                       return (
-                      <option value={account._id}>{account.firstName + " " + account.lastName}</option>
+                        <option value={account._id}>{account.firstName + " " + account.lastName}</option>
                       )
                     })
                   }
@@ -506,7 +511,7 @@ class Footer extends React.Component {
               </div>
             </div>
 
-            <div style={{paddingLeft: '0', paddingRight: '0'}} className="form-group m-form__group row">
+            <div style={{ paddingLeft: '0', paddingRight: '0' }} className="form-group m-form__group row">
               <label for="_zoom_topic" className="col-2 col-form-label">
                 Topic:
               </label>
@@ -516,7 +521,7 @@ class Footer extends React.Component {
               </div>
             </div>
 
-            <div style={{paddingLeft: '0', paddingRight: '0'}} className="form-group m-form__group row">
+            <div style={{ paddingLeft: '0', paddingRight: '0' }} className="form-group m-form__group row">
               <label for="_zoom_agenda" className="col-2 col-form-label">
                 Agenda:
               </label>
@@ -526,7 +531,7 @@ class Footer extends React.Component {
               </div>
             </div>
 
-            <div style={{paddingLeft: '0', paddingRight: '0'}} className="form-group m-form__group">
+            <div style={{ paddingLeft: '0', paddingRight: '0' }} className="form-group m-form__group">
               <label for="_zoom_invitation_message">
                 Invitation Message:
               </label>
@@ -555,26 +560,26 @@ class Footer extends React.Component {
               </div>
             </div>
 
-             <div style={{
-               fontSize: '12px',
-               marginTop: '-10px',
-               fontStyle: 'italic'
-             }}>{'Note: [invite_url] will be replaced by the generated zoom meeting invitation link'}</div>
+            <div style={{
+              fontSize: '12px',
+              marginTop: '-10px',
+              fontStyle: 'italic'
+            }}>{'Note: [invite_url] will be replaced by the generated zoom meeting invitation link'}</div>
 
-            <div style={{paddingBottom: '0', paddingRight: '0', paddingLeft: '0', float: 'right'}} className="m-form__actions">
-              <button disabled={this.state.zoomMeetingLoading} style={{float: 'right', marginLeft: '30px'}} type='submit' className="btn btn-primary">
+            <div style={{ paddingBottom: '0', paddingRight: '0', paddingLeft: '0', float: 'right' }} className="m-form__actions">
+              <button disabled={this.state.zoomMeetingLoading} style={{ float: 'right', marginLeft: '30px' }} type='submit' className="btn btn-primary">
                 {
                   this.state.zoomMeetingLoading ?
-                  <div>
-                    <div className="m-loader" style={{height: '10px', width: "30px", display: "inline-block"}}></div>
-                    <span>Loading...</span>
-                  </div>
-                  : <span>Create and Invite</span>
+                    <div>
+                      <div className="m-loader" style={{ height: '10px', width: "30px", display: "inline-block" }}></div>
+                      <span>Loading...</span>
+                    </div>
+                    : <span>Create and Invite</span>
                 }
               </button>
               {
                 this.state.zoomMeetingCreationError &&
-                <span style={{color: 'red'}}>There was an error creating the meeting. Please try again.</span>
+                <span style={{ color: 'red' }}>There was an error creating the meeting. Please try again.</span>
               }
             </div>
           </div>
@@ -584,7 +589,7 @@ class Footer extends React.Component {
       return (
         <div>
           <span>{`Zoom meeting has been successfully created and invitation has been sent to ${this.props.activeSession.firstName}. Redirecting you to Zoom Meetings in:`}</span>
-          <div style={{display: 'flex', justifyContent: 'center', marginTop: '50px', marginBottom: '50px'}}>
+          <div style={{ display: 'flex', justifyContent: 'center', marginTop: '50px', marginBottom: '50px' }}>
             <div className="numberCircle">{this.state.zoomCountdown}</div>
           </div>
         </div>
@@ -604,7 +609,7 @@ class Footer extends React.Component {
     }
   }
 
-  handleMessageResponse (res, data, payload) {
+  handleMessageResponse(res, data, payload) {
     if (res.status === 'success') {
       data.format = 'convos'
       this.setState({
@@ -618,12 +623,12 @@ class Footer extends React.Component {
         this.updateChatData(data, payload)
       })
     } else {
-      this.setState({loading: false})
+      this.setState({ loading: false })
       this.props.alertMsg.error('Failed to send message')
     }
   }
 
-  onAttachmentUpload (res) {
+  onAttachmentUpload(res) {
     if (res.status === 'success') {
       let attachment = this.state.attachment
       attachment.id = res.payload.id
@@ -643,7 +648,7 @@ class Footer extends React.Component {
     }
   }
 
-  onFileChange (e) {
+  onFileChange(e) {
     // debugger
     if (e.target.files.length > 0) {
       const file = e.target.files[0]
@@ -725,37 +730,37 @@ class Footer extends React.Component {
     return payload
   }
 
-  onEnter (e) {
+  onEnter(e) {
     if (e.which === 13) {
       e.preventDefault()
       console.log('this.state.selectedCannMessage', this.state.selectedCannMessage)
-      if(this.state.selectedCannMessage) {
+      if (this.state.selectedCannMessage) {
         let selectCannMessage = this.state.selectedCannMessage
-        if(selectCannMessage.responseMessage === '') {
+        if (selectCannMessage.responseMessage === '') {
           this.props.alertMsg.error('Canned Message response cannot be empty')
         } else {
           let text = this.state.text
-          if(text.includes(selectCannMessage.responseCode)) {
+          if (text.includes(selectCannMessage.responseCode)) {
             text = text.replace(`/${selectCannMessage.responseCode}`, selectCannMessage.responseMessage)
           } else {
             text = selectCannMessage.responseMessage
           }
-          this.setState({showCannedMessages: false, text: text, selectedCannMessage: null }, ()=> {
-          this.sendMessage()
-        })
+          this.setState({ showCannedMessages: false, text: text, selectedCannMessage: null }, () => {
+            this.sendMessage()
+          })
         }
       }
       else if (!this.state.selectedCannMessage && this.state.showCannedMessages) {
-        if(this.state.cannedMessages.length > 0) {
-        this.selectCannMessage(this.state.cannedMessages[this.state.selectedIndex])
+        if (this.state.cannedMessages.length > 0) {
+          this.selectCannMessage(this.state.cannedMessages[this.state.selectedIndex])
         } else {
-          this.setState({showCannedMessages: false})
+          this.setState({ showCannedMessages: false })
           this.sendMessage()
         }
       }
       else {
         if (!this.state.showCannedMessages)
-            this.sendMessage()
+          this.sendMessage()
       }
     }
   }
@@ -782,7 +787,7 @@ class Footer extends React.Component {
     }
   }
 
-  sendThumbsUp () {
+  sendThumbsUp() {
     const data = this.props.performAction('send messages', this.props.activeSession)
     if (data.isAllowed) {
       let payload = this.setDataPayload('thumbsUp')
@@ -795,10 +800,10 @@ class Footer extends React.Component {
     }
   }
 
-  sendAttachment () {
+  sendAttachment() {
     const data = this.props.performAction('send messages', this.props.activeSession)
     if (data.isAllowed) {
-      this.setState({loading: true})
+      this.setState({ loading: true })
       let payload = this.setDataPayload('attachment')
       let data = this.props.setMessageData(this.props.activeSession, payload)
       this.props.sendAttachment(data, (res) => this.handleMessageResponse(res, data, payload))
@@ -807,7 +812,7 @@ class Footer extends React.Component {
     }
   }
 
-  openPicker (type) {
+  openPicker(type) {
     const popoverOptions = {
       placement: 'top',
       target: `_${type}_picker`
@@ -823,34 +828,34 @@ class Footer extends React.Component {
     this.props.getPicker(type, popoverOptions, otherOptions)
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     if (this.state.attachment && this.state.attachment.id) {
       this.props.deletefile(this.state.attachment.id)
     }
   }
 
-  listDataDisplay () {
+  listDataDisplay() {
     let data = this.state.cannedMessages.map((item, index) => {
       let responseMessage = item.responseMessage
       if (responseMessage.length > 37) {
         responseMessage = responseMessage.trim().substring(0, 37) + "……"
       }
-      if(this.state.selectedIndex === index) {
-      return <li className='m-nav__item' style={{backgroundColor:'rgba(0,0,0,.03)'}} key={index} id ={`m-nav${index}`} onMouseOver={()=> this.toggleHover(index)} onMouseLeave={()=> this.onMouseLeave(`m-nav${index}`)}>
-          <p style={{ wordBreak: 'break-all', cursor: 'pointer', margin: 'auto'}} onClick={() => this.selectCannMessage(item)}>/{item.responseCode}</p>
-          <p style={{ wordBreak: 'break-all', cursor: 'pointer', color: 'grey'}} onClick={() => this.selectCannMessage(item)}>{responseMessage}</p>
-            </li>
+      if (this.state.selectedIndex === index) {
+        return <li className='m-nav__item' style={{ backgroundColor: 'rgba(0,0,0,.03)' }} key={index} id={`m-nav${index}`} onMouseOver={() => this.toggleHover(index)} onMouseLeave={() => this.onMouseLeave(`m-nav${index}`)}>
+          <p style={{ wordBreak: 'break-all', cursor: 'pointer', margin: 'auto' }} onClick={() => this.selectCannMessage(item)}>/{item.responseCode}</p>
+          <p style={{ wordBreak: 'break-all', cursor: 'pointer', color: 'grey' }} onClick={() => this.selectCannMessage(item)}>{responseMessage}</p>
+        </li>
       } else {
-        return <li className='m-nav__item' style={{backgroundColor:'white'}} key={index} id ={`m-nav${index}`} onMouseOver={()=> this.toggleHover(index)} onMouseLeave={()=> this.onMouseLeave(`m-nav${index}`)}>
-          <p style={{ wordBreak: 'break-all', cursor: 'pointer', margin: 'auto'}} onClick={() => this.selectCannMessage(item)}>/{item.responseCode}</p>
-          <p style={{ wordBreak: 'break-all', cursor: 'pointer', color: 'grey'}} onClick={() => this.selectCannMessage(item)}>{responseMessage}</p>
+        return <li className='m-nav__item' style={{ backgroundColor: 'white' }} key={index} id={`m-nav${index}`} onMouseOver={() => this.toggleHover(index)} onMouseLeave={() => this.onMouseLeave(`m-nav${index}`)}>
+          <p style={{ wordBreak: 'break-all', cursor: 'pointer', margin: 'auto' }} onClick={() => this.selectCannMessage(item)}>/{item.responseCode}</p>
+          <p style={{ wordBreak: 'break-all', cursor: 'pointer', color: 'grey' }} onClick={() => this.selectCannMessage(item)}>{responseMessage}</p>
         </li>
       }
     })
     return data
   }
 
-  render () {
+  render() {
     return (
       <div
         className='m-messenger'
@@ -867,7 +872,7 @@ class Footer extends React.Component {
           id='_record_audio'
           title='Record Audio'
           content={this.getRecordAudioContent()}
-          onClose={() => {this.toggleAudioRecording(false)}}
+          onClose={() => { this.toggleAudioRecording(false) }}
         />
         <MODAL
           id='_zoom_integration'
@@ -875,27 +880,27 @@ class Footer extends React.Component {
           content={this.getZoomIntegrationContent()}
           onClose={this.resetZoomValues}
         />
-        <a id='_zoomMeetingLink' style={{display: 'none'}} href={this.state.zoomMeetingUrl} target='_blank' rel="noopener noreferrer"> </a>
+        <a id='_zoomMeetingLink' style={{ display: 'none' }} href={this.state.zoomMeetingUrl} target='_blank' rel="noopener noreferrer"> </a>
         <div className='m-messenger__form'>
           <div className='m-messenger__form-controls'>
             {
               this.state.uploadingFile
                 ? <div className='align-center'>
                   <center>
-                    <div className="m-loader" style={{width: "30px", display: "inline-block"}} />
+                    <div className="m-loader" style={{ width: "30px", display: "inline-block" }} />
                     <span>Uploading...</span>
                   </center>
                 </div>
                 : this.state.uploaded
                   ? <div className='m-input-icon m-input-icon--right'>
                     <input
-                      style={{cursor: 'not-allowed'}}
+                      style={{ cursor: 'not-allowed' }}
                       type='text'
                       value={`Attachment: ${this.state.attachment.name.length > 20 ? this.state.attachment.name.substring(0, 20) + '...' : this.state.attachment.name}`}
                       className='m-messenger__form-input'
                       disabled
                     />
-                    <span onClick={this.removeAttachment} style={{cursor: 'pointer'}} className='m-input-icon__icon m-input-icon__icon--right'>
+                    <span onClick={this.removeAttachment} style={{ cursor: 'pointer' }} className='m-input-icon__icon m-input-icon__icon--right'>
                       <span>
                         <i className='la la-trash' />
                       </span>
@@ -912,35 +917,35 @@ class Footer extends React.Component {
                                 <li key={100} className='m-nav__item'>
                                   <div className='card-header'>
                                     <h4 className='mb-0'>
-                                      <div style={{cursor: 'auto'}}
+                                      <div style={{ cursor: 'auto' }}
                                         className='btn'
                                         data-toggle='collapse'
                                         aria-expanded='true'
                                       >
-                                      {this.state.selectedCannMessage ? this.state.selectedCannMessage.responseCode : 'Canned responses'}
+                                        {this.state.selectedCannMessage ? this.state.selectedCannMessage.responseCode : 'Canned responses'}
                                       </div>
                                     </h4>
                                   </div>
                                 </li>
                               </ul>
-                              <div className='card-body' id = 'cardBody' style={{ maxHeight: '230px', overflow: 'auto' }}>
+                              <div className='card-body' id='cardBody' style={{ maxHeight: '230px', overflow: 'auto' }}>
                                 {!this.state.selectedCannMessage ? this.state.cannedMessages.length > 0 ?
-                                <ul className='m-nav' >
-                                   {this.listDataDisplay()}
-                                </ul>
+                                  <ul className='m-nav' >
+                                    {this.listDataDisplay()}
+                                  </ul>
                                   : <ul className='m-nav'>
                                     <li key={0} className='m-nav__item'>
                                       <p style={{ wordBreak: 'break-all' }}>No Data to Display</p>
                                     </li>
                                   </ul>
-                                : <ul className='m-nav'>
-                                <li key={0} className='m-nav__item'>
-                                <textarea value={this.state.selectedCannMessage.responseMessage} onChange={this.responseMessageHandleChange}
-                                className='form-control m-input m-input--solid'
-                                id='description' rows='3'
-                                style={{ height: '100px', resize: 'none' }} maxlength='1000' required />
-                               </li>
-                              </ul>
+                                  : <ul className='m-nav'>
+                                    <li key={0} className='m-nav__item'>
+                                      <textarea value={this.state.selectedCannMessage.responseMessage} onChange={this.responseMessageHandleChange}
+                                        className='form-control m-input m-input--solid'
+                                        id='description' rows='3'
+                                        style={{ height: '100px', resize: 'none' }} maxlength='1000' required />
+                                    </li>
+                                  </ul>
                                 }
                               </div>
                             </div>
@@ -949,62 +954,62 @@ class Footer extends React.Component {
                       </div>
                     </div>
                   }
-                  <div className='m-input-icon m-input-icon--right'>
-                    <input
-                      autoFocus
-                      type='text'
-                      placeholder='Type here...'
-                      onChange={this.onInputChange}
-                      value={this.state.text}
-                      onKeyPress={this.onEnter}
-                      className='m-messenger__form-input'
-                    />
-                    {
-                      !this.props.isMobile &&
-                      <span onClick={() => this.openPicker('emoji')} style={{cursor: 'pointer'}} className='m-input-icon__icon m-input-icon__icon--right'>
-                        <span>
-                          {
-                            this.props.showEmoji &&
-                            <i
+                    <div className='m-input-icon m-input-icon--right'>
+                      <input
+                        autoFocus
+                        type='text'
+                        placeholder='Type here...'
+                        onChange={this.onInputChange}
+                        value={this.state.text}
+                        onKeyPress={this.onEnter}
+                        className='m-messenger__form-input'
+                      />
+                      {
+                        !this.props.isMobile &&
+                        <span onClick={() => this.openPicker('emoji')} style={{ cursor: 'pointer' }} className='m-input-icon__icon m-input-icon__icon--right'>
+                          <span>
+                            {
+                              this.props.showEmoji &&
+                              <i
                                 style={{
-                                cursor: this.state.uploaded ? 'not-allowed' : 'pointer',
-                                fontSize: '20px',
-                                margin: '0px 5px',
-                                pointerEvents: this.state.uploaded && 'none',
-                                opacity: this.state.uploaded && '0.5'
-                              }}
-                              data-tip='Emoticons'
-                              className='fa fa-smile-o'
-                              id='_emoji_picker'
-                            />
-                          }
+                                  cursor: this.state.uploaded ? 'not-allowed' : 'pointer',
+                                  fontSize: '20px',
+                                  margin: '0px 5px',
+                                  pointerEvents: this.state.uploaded && 'none',
+                                  opacity: this.state.uploaded && '0.5'
+                                }}
+                                data-tip='Emoticons'
+                                className='fa fa-smile-o'
+                                id='_emoji_picker'
+                              />
+                            }
+                          </span>
                         </span>
-                      </span>
-                    }
+                      }
+                    </div>
                   </div>
-                  </div>
-           }
+            }
           </div>
-          <div className='m-messenger__form-tools' style={{verticalAlign: 'bottom'}}>
-            <a href={this.state.downLink} download='record-audio.webm' style={{border: '1px solid #36a3f7'}} className='m-messenger__form-attachment' disabled={this.state.uploadingFile}>
+          <div className='m-messenger__form-tools' style={{ verticalAlign: 'bottom' }}>
+            <a href={this.state.downLink} download='record-audio.webm' style={{ border: '1px solid #36a3f7' }} className='m-messenger__form-attachment' disabled={this.state.uploadingFile}>
               {
                 this.state.loading
-                  ? <div className="m-loader" style={{width: "30px"}} />
+                  ? <div className="m-loader" style={{ width: "30px" }} />
                   : this.state.uploaded
-                    ? <i style={{color: '#36a3f7'}} onClick={this.sendAttachment} className='flaticon-paper-plane' />
+                    ? <i style={{ color: '#36a3f7' }} onClick={this.sendAttachment} className='flaticon-paper-plane' />
                     :
                     (
                       this.props.showThumbsUp ?
-                        <i style={{color: '#36a3f7'}} onClick={this.sendThumbsUp} className='la la-thumbs-o-up' />
+                        <i style={{ color: '#36a3f7' }} onClick={this.sendThumbsUp} className='la la-thumbs-o-up' />
                         :
-                        <i style={{color: '#36a3f7'}} onClick={this.sendMessage} className='flaticon-paper-plane' />
+                        <i style={{ color: '#36a3f7' }} onClick={this.sendMessage} className='flaticon-paper-plane' />
                     )
               }
             </a>
           </div>
         </div>
         {this.props.showCaption && this.state.uploaded && (this.state.componentType === 'image' || this.state.componentType === 'video') &&
-        <div className='m-messenger__form'>
+          <div className='m-messenger__form'>
             <div className='m-input-icon m-input-icon--right'>
               <input
                 autoFocus
@@ -1012,9 +1017,9 @@ class Footer extends React.Component {
                 placeholder='Enter Caption...'
                 onChange={this.onCaptionChange}
                 value={this.state.caption}
-                style={{outline: '0', borderWidth: '0 0 2px', borderColor: '#f4f5f8', color: '#575961', width: '300px', height: '30px'}}
+                style={{ outline: '0', borderWidth: '0 0 2px', borderColor: '#f4f5f8', color: '#575961', width: '300px', height: '30px' }}
               />
-            <span onClick={() => this.openPicker('caption_emoji')} style={{cursor: 'pointer'}} className='m-input-icon__icon m-input-icon__icon--right'>
+              <span onClick={() => this.openPicker('caption_emoji')} style={{ cursor: 'pointer' }} className='m-input-icon__icon m-input-icon__icon--right'>
                 <span>
                   <i
                     style={{
@@ -1033,9 +1038,9 @@ class Footer extends React.Component {
         }
         {
           this.state.loadingUrlMeta
-            ? <div style={{marginBottom: '10px'}} className='align-center'>
+            ? <div style={{ marginBottom: '10px' }} className='align-center'>
               <center>
-                <div className="m-loader" style={{width: "30px", display: "inline-block"}} />
+                <div className="m-loader" style={{ width: "30px", display: "inline-block" }} />
                 <span>Fetching url meta...</span>
               </center>
             </div>
@@ -1052,28 +1057,28 @@ class Footer extends React.Component {
                 marginBottom: '10px'
               }}
             >
-            <i style={{float: 'right', cursor: 'pointer'}} className='fa fa-times' onClick={this.removeUrlMeta} />
-            <CARD
-              title={this.state.urlmeta.ogTitle}
-              description={this.state.urlmeta.ogDescription}
-              image={this.state.urlmeta.ogImage && this.state.urlmeta.ogImage.url}
-            />
-          </div>
+              <i style={{ float: 'right', cursor: 'pointer' }} className='fa fa-times' onClick={this.removeUrlMeta} />
+              <CARD
+                title={this.state.urlmeta.ogTitle}
+                description={this.state.urlmeta.ogDescription}
+                image={this.state.urlmeta.ogImage && this.state.urlmeta.ogImage.url}
+              />
+            </div>
         }
-        <div style={{color: '#575962'}}>
+        <div style={{ color: '#575962' }}>
           {
             this.props.showUploadAttachment &&
-            <div style={{display: 'inline'}}>
+            <div style={{ display: 'inline' }}>
               <input
                 ref='_upload_attachment'
-                style={{display: 'none'}}
+                style={{ display: 'none' }}
                 type='file'
                 accept={this.props.filesAccepted}
                 onChange={this.onFileChange}
-                onClick={(e) => {e.target.value = ''}}
+                onClick={(e) => { e.target.value = '' }}
               />
               <i
-                style={{cursor: 'pointer', fontSize: '20px', margin: '0px 5px'}}
+                style={{ cursor: 'pointer', fontSize: '20px', margin: '0px 5px' }}
                 data-tip='Upload Attachment'
                 className='fa fa-paperclip'
                 onClick={() => this.refs._upload_attachment.click()}
@@ -1083,20 +1088,20 @@ class Footer extends React.Component {
           {
             this.props.showRecordAudio &&
             <i
-              style={{cursor: 'pointer', fontSize: '20px', margin: '0px 5px'}}
+              style={{ cursor: 'pointer', fontSize: '20px', margin: '0px 5px' }}
               data-tip='Record Audio'
               className='fa fa-microphone'
               data-target='#_record_audio'
               data-backdrop="static"
               data-keyboard="false"
               data-toggle='modal'
-              onClick={() => {this.toggleAudioRecording(true)}}
+              onClick={() => { this.toggleAudioRecording(true) }}
             />
           }
           {
             this.props.showSticker &&
             <i
-              style={{cursor: 'pointer', fontSize: '20px', margin: '0px 5px'}}
+              style={{ cursor: 'pointer', fontSize: '20px', margin: '0px 5px' }}
               data-tip='Stickers'
               className='fa fa-sticky-note'
               id='_sticker_picker'
@@ -1106,7 +1111,7 @@ class Footer extends React.Component {
           {
             this.props.showGif &&
             <img
-              style={{cursor: 'pointer', height: '20px', margin: '-5px 5px 0px 5px'}}
+              style={{ cursor: 'pointer', height: '20px', margin: '-5px 5px 0px 5px' }}
               data-tip='Gifs'
               alt='Gifs'
               src='https://cdn.cloudkibo.com/public/img/gif-icon.png'
@@ -1117,7 +1122,7 @@ class Footer extends React.Component {
           {
             this.props.showZoom &&
             <img
-              style={{cursor: 'pointer', height: '30px', margin: '-5px 5px 0px 5px'}}
+              style={{ cursor: 'pointer', height: '30px', margin: '-5px 5px 0px 5px' }}
               alt='Zoom'
               src='https://cdn.cloudkibo.com/public/img/zoom.png'
               id='_zoom_integration'
