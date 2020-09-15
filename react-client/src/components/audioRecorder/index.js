@@ -60,7 +60,7 @@ class AudioRecorder extends React.Component {
 
   render () {
     return (
-      <div>
+      <div style={{overflow: 'hidden'}}>
         {
           this.props.displaySoundWave &&
           <ReactMic style={{ width: '450px' }}

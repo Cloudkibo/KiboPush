@@ -77,8 +77,8 @@ class LiveChat extends React.Component {
       filterSort: -1,
       filterPage: '',
       filterSearch: '',
-      filterPending: false,
-      filterUnread: false,
+      filterPending: '',
+      filterUnread: '',
       sessions: [],
       sessionsCount: 0,
       activeSession: {},
@@ -91,7 +91,8 @@ class LiveChat extends React.Component {
       selected: [],
       showingBulkActions: false,
       allSelected: false,
-      cannedResponses: []
+      cannedResponses: [],
+      showChat: !this.props.isMobile
     }
 
     this.fetchSessions = this.fetchSessions.bind(this)
@@ -120,6 +121,7 @@ class LiveChat extends React.Component {
     this.isSMPApproved = this.isSMPApproved.bind(this)
     this.setMessageData = this.setMessageData.bind(this)
     this.markSessionsRead = this.markSessionsRead.bind(this)
+    this.backToSessions = this.backToSessions.bind(this)
     this.props.loadcannedResponses()
     this.fetchSessions(true, 'none', true)
     props.getSMPStatus(this.handleSMPStatus)
@@ -132,25 +134,25 @@ class LiveChat extends React.Component {
     }
   }
 
-  clearSearchResults () {
-    this.setState({searchChatMsgs: null})
+  clearSearchResults() {
+    this.setState({ searchChatMsgs: null })
   }
 
   hideSearch() {
     this.setState({ showSearch: false, searchChatMsgs: null })
   }
 
-  showSearch () {
-    this.setState({showSearch: !this.state.showSearch})
+  showSearch() {
+    this.setState({ showSearch: !this.state.showSearch })
   }
 
-  handleSMPStatus (res) {
+  handleSMPStatus(res) {
     if (res.status === 'success') {
-      this.setState({smpStatus: res.payload})
+      this.setState({ smpStatus: res.payload })
     }
   }
 
-  isSMPApproved () {
+  isSMPApproved() {
     const page = this.state.smpStatus.find((item) => item.pageId === this.state.activeSession.pageId._id)
     if (page && page.smpStatus === 'approved') {
       return true
@@ -159,23 +161,23 @@ class LiveChat extends React.Component {
     }
   }
 
-  updatePendingStatus (res, value, sessionId) {
+  updatePendingStatus(res, value, sessionId) {
     if (res.status === 'success') {
       let sessions = this.state.sessions
       let activeSession = this.state.activeSession
       let index = sessions.findIndex((session) => session._id === sessionId)
       sessions[index].pendingResponse = value
       activeSession.pendingResponse = value
-      this.setState({sessions, activeSession})
+      this.setState({ sessions, activeSession })
     } else {
       const message = value ? 'Failed to remove pending flag' : 'Failed to mark session as pending'
       this.alertMsg.error(message)
     }
   }
 
-  handlePendingResponse (session, value) {
+  handlePendingResponse(session, value) {
     this.props.updatePendingResponse(
-      {id: session._id, pendingResponse: value},
+      { id: session._id, pendingResponse: value },
       (res) => this.updatePendingStatus(res, value, session._id)
     )
   }
@@ -210,8 +212,8 @@ class LiveChat extends React.Component {
     }
     if (agentIds.length > 0) {
       let message = type && type === 'assigned'
-      ? `Session of subscriber ${this.state.activeSession.firstName + ' ' + this.state.activeSession.lastName} has been assigned to your team ${teamAgents[0].teamId.name}`
-      : `Session of subscriber ${this.state.activeSession.firstName + ' ' + this.state.activeSession.lastName} has been unassigned from your team ${teamAgents[0].teamId.name}`
+        ? `Session of subscriber ${this.state.activeSession.firstName + ' ' + this.state.activeSession.lastName} has been assigned to your team ${teamAgents[0].teamId.name}`
+        : `Session of subscriber ${this.state.activeSession.firstName + ' ' + this.state.activeSession.lastName} has been unassigned from your team ${teamAgents[0].teamId.name}`
       let notificationsData = {
         message: message,
         category: { type: 'chat_session', id: this.state.activeSession._id },
@@ -226,11 +228,11 @@ class LiveChat extends React.Component {
     this.props.fetchTeamAgents(id, this.handleAgents, type)
   }
 
-  showFetchingChat (fetchingChat) {
-    this.setState({fetchingChat})
+  showFetchingChat(fetchingChat) {
+    this.setState({ fetchingChat })
   }
 
-  changeTab (value) {
+  changeTab(value) {
     this.setState({
       sessions: value === 'open' ? this.props.openSessions : this.props.closeSessions,
       sessionsCount: value === 'open' ? this.props.openCount : this.props.closeCount,
@@ -240,7 +242,7 @@ class LiveChat extends React.Component {
     })
   }
 
-  getChatPreview (message, repliedBy, subscriberName) {
+  getChatPreview(message, repliedBy, subscriberName) {
     let chatPreview = ''
     if (message.componentType) {
       // agent
@@ -274,7 +276,7 @@ class LiveChat extends React.Component {
     return chatPreview
   }
 
-  updateState (state, callback) {
+  updateState(state, callback) {
     if (state.reducer) {
       const allChatMessages = this.props.allChatMessages
       allChatMessages[this.state.activeSession._id] = state.userChat
@@ -292,25 +294,26 @@ class LiveChat extends React.Component {
     }
   }
 
-  handleStatusChange (session, status) {
+  handleStatusChange(session, status) {
     console.log('in handleStatusChange', session)
     const message = (status === 'resolved') ? 'Session has been marked as resolved successfully' : 'Session has been reopened successfully'
     this.setState({
       userChat: [],
-      activeSession: (session._id === this.state.activeSession._id) ? {} : this.state.activeSession
+      activeSession: (session._id === this.state.activeSession._id) ? {} : this.state.activeSession,
+      showChat: !this.props.isMobile
     })
     this.alertMsg.success(message)
     let notificationMessage = (status === 'resolved')
       ? `Session of subscriber ${session.firstName + ' ' + session.lastName} has been marked as resolved by ${this.props.user.name}`
       : `Session of subscriber ${session.firstName + ' ' + session.lastName} has been reopened by ${this.props.user.name}`
     if (!session.assigned_to || !session.is_assigned) {
-        let notificationsData = {
-          message: notificationMessage,
-          category: { type: 'session_status', id: session._id },
-          agentIds: this.props.members.length > 0 ? this.props.members.filter(a => a.userId._id !== this.props.user._id).map(b => b.userId._id): [],
-          companyId: session.companyId
-        }
-        this.props.sendNotifications(notificationsData)
+      let notificationsData = {
+        message: notificationMessage,
+        category: { type: 'session_status', id: session._id },
+        agentIds: this.props.members.length > 0 ? this.props.members.filter(a => a.userId._id !== this.props.user._id).map(b => b.userId._id) : [],
+        companyId: session.companyId
+      }
+      this.props.sendNotifications(notificationsData)
     } else if (session.assigned_to && session.assigned_to.type === 'team') {
       this.props.fetchTeamAgents(session.assigned_to.id, (teamAgents) => {
         let agentIds = []
@@ -332,11 +335,11 @@ class LiveChat extends React.Component {
     }
   }
 
-  handleTeamAgents (agents) {
-    this.setState({teamAgents: agents})
+  handleTeamAgents(agents) {
+    this.setState({ teamAgents: agents })
   }
 
-  performAction (errorMsg, session) {
+  performAction(errorMsg, session) {
     let isAllowed = true
     if (session.is_assigned) {
       if (session.assigned_to.type === 'agent' && session.assigned_to.id !== this.props.user._id) {
@@ -353,14 +356,14 @@ class LiveChat extends React.Component {
       }
     }
     errorMsg = `You can not perform this action. ${errorMsg}`
-    return {isAllowed, errorMsg}
+    return { isAllowed, errorMsg }
   }
 
-  changeStatus (status, session) {
+  changeStatus(status, session) {
     let errorMsg = (status === 'resolved') ? 'mark this session as resolved' : 'reopen this session'
     const data = this.performAction(errorMsg, session)
     if (data.isAllowed) {
-      this.props.changeStatus({_id: session._id, status: status}, () => this.handleStatusChange(session, status))
+      this.props.changeStatus({ _id: session._id, status: status }, () => this.handleStatusChange(session, status))
     } else {
       this.alertMsg.error(data.errorMsg)
     }
@@ -376,11 +379,11 @@ class LiveChat extends React.Component {
     })
   }
 
-  saveCustomField (data) {
+  saveCustomField(data) {
     this.props.setCustomFieldValue(data, this.handleCustomFieldResponse)
   }
 
-  handleCustomFieldResponse (res, body) {
+  handleCustomFieldResponse(res, body) {
     if (res.status === 'success') {
       this.alertMsg.success('Value set successfully')
     } else {
@@ -392,7 +395,7 @@ class LiveChat extends React.Component {
     }
   }
 
-  changeActiveSession (session, e) {
+  changeActiveSession(session, e) {
     if (e && e.target.type === 'checkbox') {
       return
     }
@@ -404,14 +407,15 @@ class LiveChat extends React.Component {
         subscriberTags: null,
         searchChatMsgs: null,
         loadingChat: true,
-        showSearch: false
+        showSearch: false,
+        showChat: true
       }, () => {
-        this.loadActiveSession({...session})
+        this.loadActiveSession({ ...session })
       })
     }
   }
 
-  loadActiveSession (session) {
+  loadActiveSession(session) {
     console.log('loadActiveSession', session)
     if (session.unreadCount && session.unreadCount > 0) {
       session.unreadCount = 0
@@ -429,12 +433,12 @@ class LiveChat extends React.Component {
       this.props.fetchTeamAgents(session.assigned_to.id, this.handleTeamAgents)
     }
     if (this.props.user.currentPlan.unique_ID === 'plan_C' || this.props.user.currentPlan.unique_ID === 'plan_D') {
-      this.props.loadTeamsList({pageId: session.pageId._id})
+      this.props.loadTeamsList({ pageId: session.pageId._id })
     }
-    this.setState({activeSession: session})
+    this.setState({ activeSession: session })
   }
 
-  markSessionsRead (selectedSessions) {
+  markSessionsRead(selectedSessions) {
     let sessions = this.state.sessions
     for (let i = 0; i < selectedSessions.length; i++) {
       let session = selectedSessions[i]
@@ -444,7 +448,7 @@ class LiveChat extends React.Component {
         this.props.markRead(session._id)
       }
     }
-    this.setState({sessions})
+    this.setState({ sessions })
   }
 
   fetchSessions(firstPage, lastId, fetchBoth) {
@@ -474,23 +478,30 @@ class LiveChat extends React.Component {
       for (let i = 0; i < sessions.length; i++) {
         sessions[i].selected = false
       }
-      this.setState({sessions, allSelected: false, selected: [], showingBulkActions: false})
+      this.setState({ sessions, allSelected: false, selected: [], showingBulkActions: false })
     } else {
-      this.setState({allSelected: false})
+      this.setState({ allSelected: false })
     }
   }
 
-  getAgents (members) {
+  getAgents(members) {
     let agents = members.filter(a => !a.userId.disableMember).map(m => m.userId)
     return agents
   }
 
-  UNSAFE_componentWillReceiveProps (nextProps) {
+  backToSessions() {
+    this.setState({
+      showChat: false,
+      activeSession: {}
+    })
+  }
+
+  UNSAFE_componentWillReceiveProps(nextProps) {
     console.log('UNSAFE_componentWillMount called in live chat', nextProps)
     let state = {}
 
     if (nextProps.cannedResponses !== this.props.cannedResponses) {
-      this.setState({ cannedResponses: nextProps.cannedResponses})
+      this.setState({ cannedResponses: nextProps.cannedResponses })
     }
     if (nextProps.openSessions || nextProps.closeSessions) {
       state.loading = false
@@ -508,7 +519,7 @@ class LiveChat extends React.Component {
       state.sessionsCount = this.state.tabValue === 'open' ? nextProps.openCount : nextProps.closeCount
     }
 
-    if (nextProps.customFields && nextProps.customFieldValues ) {
+    if (nextProps.customFields && nextProps.customFieldValues) {
       let fieldOptions = []
       for (let a = 0; a < nextProps.customFields.length; a++) {
         if (nextProps.customFieldValues.customFields.length > 0) {
@@ -557,69 +568,75 @@ class LiveChat extends React.Component {
     }
   }
 
-  render () {
+  render() {
     return (
-      <div id='mainLiveChat' className='m-grid__item m-grid__item--fluid m-wrapper' style={{marginBottom: 0, overflow: 'hidden'}}>
+      <div id='mainLiveChat' className='m-grid__item m-grid__item--fluid m-wrapper' style={{ marginBottom: 0, overflow: 'hidden' }}>
         <AlertContainer ref={a => { this.alertMsg = a }} {...alertOptions} />
         {
           this.state.loading
-          ? <div
-            style={{
-              position: 'fixed',
-              top: '50%',
-              left: '50%',
-              width: '30em',
-              height: '18em',
-              marginLeft: '-10em'
-            }}
-            className='align-center'
-          >
-            <center><RingLoader color='#716aca' /></center>
-          </div>
-          : <div style={{padding: '10px 30px'}} className='m-content'>
+            ? <div
+              style={{
+                position: 'fixed',
+                top: '50%',
+                left: '50%',
+                width: '30em',
+                height: '18em',
+                marginLeft: '-10em'
+              }}
+              className='align-center'
+            >
+              <center><RingLoader color='#716aca' /></center>
+            </div>
+            : <div style={{ padding: '10px 30px' }} className='m-content'>
               {
                 this.state.fetchingChat &&
                 <div style={{ width: '100vw', height: '100vh', background: 'rgba(33, 37, 41, 0.6)', position: 'fixed', zIndex: '99999', top: '0', left: '0' }}>
                   <div style={{ position: 'fixed', top: '50%', left: '50%', width: '30em', height: '18em', marginLeft: '-10em' }}
-                  className='align-center'>
-                  <center><RingLoader color='#716aca' />Fetching chat...</center>
+                    className='align-center'>
+                    <center><RingLoader color='#716aca' />Fetching chat...</center>
                   </div>
                 </div>
               }
-            <HELPWIDGET
-              documentation={{visibility: true, link: 'http://kibopush.com/livechat/'}}
-              videoTutorial={{visibility: true, videoId: 'bLotpQLvsfE'}}
-            />
-              <div className='row'>
-                <SESSIONS
-                  pages={this.props.pages}
-                  loading={this.state.sessionsLoading}
-                  tabValue={this.state.tabValue}
-                  sessions={this.state.sessions}
-                  sessionsCount={this.state.sessionsCount}
-                  filterSort={this.state.filterSort}
-                  filterPage={this.state.filterPage}
-                  filterSearch={this.state.filterSearch}
-                  filterPending={this.state.filterPending}
-                  filterUnread={this.state.filterUnread}
-                  activeSession={this.state.activeSession}
-                  changeActiveSession={this.changeActiveSession}
-                  profilePicError={this.profilePicError}
-                  changeStatus={this.changeStatus}
-                  changeTab={this.changeTab}
-                  updateState={this.updateState}
-                  fetchSessions={this.fetchSessions}
-                  getChatPreview={this.getChatPreview}
-                  markSessionsRead={this.markSessionsRead}
-                  selected={this.state.selected}
-                  showingBulkActions={this.state.showingBulkActions}
-                  showBulkActions={true}
-                  allSelected={this.state.allSelected}
+              {
+                !this.props.isMobile &&
+                <HELPWIDGET
+                  documentation={{ visibility: true, link: 'http://kibopush.com/livechat/' }}
+                  videoTutorial={{ visibility: true, videoId: 'bLotpQLvsfE' }}
                 />
+              }
+              <div style={{ marginTop: this.props.isMobile ? '20px' : '0px' }} className='row'>
                 {
-                  this.state.activeSession.constructor === Object && Object.keys(this.state.activeSession).length > 0 &&
+                  ((this.props.isMobile && !this.state.showChat) || !this.props.isMobile) &&
+                  <SESSIONS
+                    pages={this.props.pages}
+                    loading={this.state.sessionsLoading}
+                    tabValue={this.state.tabValue}
+                    sessions={this.state.sessions}
+                    sessionsCount={this.state.sessionsCount}
+                    filterSort={this.state.filterSort}
+                    filterPage={this.state.filterPage}
+                    filterSearch={this.state.filterSearch}
+                    filterPending={this.state.filterPending}
+                    filterUnread={this.state.filterUnread}
+                    activeSession={this.state.activeSession}
+                    changeActiveSession={this.changeActiveSession}
+                    profilePicError={this.profilePicError}
+                    changeStatus={this.changeStatus}
+                    changeTab={this.changeTab}
+                    updateState={this.updateState}
+                    fetchSessions={this.fetchSessions}
+                    getChatPreview={this.getChatPreview}
+                    markSessionsRead={this.markSessionsRead}
+                    selected={this.state.selected}
+                    showingBulkActions={this.state.showingBulkActions}
+                    showBulkActions={true}
+                    allSelected={this.state.allSelected}
+                  />
+                }
+                {
+                  this.state.showChat && this.state.activeSession.constructor === Object && Object.keys(this.state.activeSession).length > 0 &&
                   <CHAT
-                    cannedResponses = {this.state.cannedResponses}
+                    cannedResponses={this.state.cannedResponses}
                     userChat={this.state.userChat}
                     chatCount={this.props.chatCount}
                     sessions={this.state.sessions}
@@ -656,40 +673,42 @@ class LiveChat extends React.Component {
                     zoomIntegrations={this.props.zoomIntegrations}
                     createZoomMeeting={this.props.createZoomMeeting}
                     showSubscriberNameOnMessage={true}
+                    isMobile={this.props.isMobile}
+                    backToSessions={this.backToSessions}
                   />
                 }
                 {
-                   this.state.activeSession.constructor === Object && Object.keys(this.state.activeSession).length > 0 && !this.state.showSearch &&
-                   <PROFILE
-                      updateState={this.updateState}
-                      teams={this.props.teams ? this.props.teams : []}
-                      tags={this.state.tags ? this.state.tags : []}
-                      agents={this.props.members ? this.getAgents(this.props.members) : []}
-                      subscriberTags={this.state.subscriberTags}
-                      activeSession={this.state.activeSession}
-                      user={this.props.user}
-                      profilePicError={this.profilePicError}
-                      alertMsg={this.alertMsg}
-                      unSubscribe={this.props.unSubscribe}
-                      customers={this.props.customers}
-                      getCustomers={this.props.getCustomers}
-                      fetchTeamAgents={this.fetchTeamAgents}
-                      assignToTeam={this.props.assignToTeam}
-                      appendSubscriber={this.props.appendSubscriber}
-                      sendNotifications={this.props.sendNotifications}
-                      assignToAgent={this.props.assignToAgent}
-                      assignTags={this.props.assignTags}
-                      unassignTags={this.props.unassignTags}
-                      createTag={this.props.createTag}
-                      customFieldOptions={this.state.customFieldOptions}
-                      setCustomFieldValue={this.saveCustomField}
-                      showTags={true}
-                      showCustomFields={true}
-                      showUnsubscribe={true}
-                    />
+                  !this.props.isMobile && this.state.activeSession.constructor === Object && Object.keys(this.state.activeSession).length > 0 && !this.state.showSearch &&
+                  <PROFILE
+                    updateState={this.updateState}
+                    teams={this.props.teams ? this.props.teams : []}
+                    tags={this.state.tags ? this.state.tags : []}
+                    agents={this.props.members ? this.getAgents(this.props.members) : []}
+                    subscriberTags={this.state.subscriberTags}
+                    activeSession={this.state.activeSession}
+                    user={this.props.user}
+                    profilePicError={this.profilePicError}
+                    alertMsg={this.alertMsg}
+                    unSubscribe={this.props.unSubscribe}
+                    customers={this.props.customers}
+                    getCustomers={this.props.getCustomers}
+                    fetchTeamAgents={this.fetchTeamAgents}
+                    assignToTeam={this.props.assignToTeam}
+                    appendSubscriber={this.props.appendSubscriber}
+                    sendNotifications={this.props.sendNotifications}
+                    assignToAgent={this.props.assignToAgent}
+                    assignTags={this.props.assignTags}
+                    unassignTags={this.props.unassignTags}
+                    createTag={this.props.createTag}
+                    customFieldOptions={this.state.customFieldOptions}
+                    setCustomFieldValue={this.saveCustomField}
+                    showTags={true}
+                    showCustomFields={true}
+                    showUnsubscribe={true}
+                  />
                 }
                 {
-                  Object.keys(this.state.activeSession).length > 0 && this.state.activeSession.constructor === Object && this.state.showSearch &&
+                  !this.props.isMobile && Object.keys(this.state.activeSession).length > 0 && this.state.activeSession.constructor === Object && this.state.showSearch &&
                   <SEARCHAREA
                     clearSearchResults={this.clearSearchResults}
                     activeSession={this.state.activeSession}
@@ -702,19 +721,21 @@ class LiveChat extends React.Component {
                   />
                 }
                 {
-                  this.state.activeSession.constructor === Object && Object.keys(this.state.activeSession).length === 0 &&
-                  <div style={{border: '1px solid #F2F3F8',
+                  !this.props.isMobile && this.state.activeSession.constructor === Object && Object.keys(this.state.activeSession).length === 0 &&
+                  <div style={{
+                    border: '1px solid #F2F3F8',
                     marginBottom: '0px',
                     display: 'flex',
                     justifyContent: 'center',
-                    alignItems: 'center'}} className='col-xl-8 m-portlet'>
+                    alignItems: 'center'
+                  }} className='col-xl-8 m-portlet'>
                     <div style={{ textAlign: 'center', padding: '20px' }}>
                       <p>Please select a session to view its chat.</p>
                     </div>
                   </div>
                 }
               </div>
-          </div>
+            </div>
         }
       </div>
     )
@@ -733,6 +754,7 @@ function mapStateToProps(state) {
     chatCount: (state.liveChat.chatCount),
     pages: (state.pagesInfo.pages),
     user: (state.basicInfo.user),
+    isMobile: (state.basicInfo.isMobile),
     customers: (state.liveChat.customers),
     members: (state.membersInfo.members),
     teams: (state.teamsInfo.teams),

@@ -232,52 +232,11 @@ class Dashboard extends React.Component {
   UNSAFE_componentWillReceiveProps(nextprops) {
     console.log('in UNSAFE_componentWillReceiveProps dashboard', nextprops)
     if (nextprops.user && nextprops.pages) {
-      if (nextprops.user.emailVerified === false) {
-        this.props.history.push({
-          pathname: '/resendVerificationEmail'
-        })
-      } else
-        if (nextprops.automated_options && !nextprops.user.facebookInfo && !nextprops.automated_options.twilio && !nextprops.automated_options.whatsApp && nextprops.user.role === 'buyer') {
-          this.props.history.push({
-            pathname: '/integrations'
-          })
-        }
-        //  else if (nextprops.user.platform === 'messenger' && !nextprops.user.facebookInfo) {
-        //   this.props.history.push({
-        //     pathname: '/integrations',
-        //     state: {showCancel: 'messenger'}
-        //   })
-        // } else if (nextprops.user.platform === 'sms' && nextprops.automated_options && !nextprops.automated_options.twilio) {
-        //   this.props.history.push({
-        //     pathname: '/integrations',
-        //     state: {showCancel: 'sms'}
-        //   })
-        // } else if (nextprops.user.platform === 'whatsApp' && nextprops.automated_options && !nextprops.automated_options.twilioWhatsApp) {
-        //   this.props.history.push({
-        //     pathname: '/integrations',
-        //     state: {showCancel: 'whatsApp'}
-        //   })
-        // }
-        // else if ((nextprops.user.currentPlan.unique_ID === 'plan_A' || nextprops.user.currentPlan.unique_ID === 'plan_B') && !nextprops.user.facebookInfo) {
-        //   this.props.history.push({
-        //     pathname: '/connectFb',
-        //     state: { account_type: 'individual' }
-        //   })
-        // } else if ((nextprops.user.currentPlan.unique_ID === 'plan_C' || nextprops.user.currentPlan.unique_ID === 'plan_D') && !nextprops.user.facebookInfo && nextprops.user.role === 'buyer' && !nextprops.user.skippedFacebookConnect) {
-        //   if (nextprops.pages && nextprops.pages.length === 0) {
-        //     console.log('going to push')
-        //     this.props.history.push({
-        //       pathname: '/connectFb',
-        //       state: { account_type: 'team' }
-        //     })
-        //   }
-        // }
-        else if (nextprops.user.platform === 'messenger' && nextprops.pages && nextprops.pages.length === 0) {
-          console.log('nextprops pages', nextprops)
+        if (nextprops.pages.length === 0) {
           this.props.history.push({
             pathname: '/addfbpages'
           })
-        } else if (nextprops.user.platform === 'messenger' && (nextprops.user.role === 'admin' || nextprops.user.role === 'buyer') && !nextprops.user.wizardSeen) {
+        } else if ((nextprops.user.role === 'admin' || nextprops.user.role === 'buyer') && !nextprops.user.wizardSeen) {
           console.log('going to push add page wizard')
           this.props.history.push({
             pathname: '/inviteUsingLinkWizard'
@@ -286,13 +245,13 @@ class Dashboard extends React.Component {
           this.props.history.push({
             pathname: '/abandonedCarts'
           })
-        } else if (nextprops.user.platform === 'messenger' && nextprops.subscribersCount > 0) {
+        } else if (nextprops.subscribersCount > 0) {
           // this means more than 0 subscribers
           this.setState({ isShowingModal: false })
-        } else if (nextprops.user.platform === 'messenger' && nextprops.pages && nextprops.pages.length > 0 && nextprops.subscribersCount === 0) {
+        } else if (nextprops.pages.length > 0 && nextprops.subscribersCount === 0) {
           // this means 0 subscribers
           this.setState({ isShowingModal: true })
-        } else if (nextprops.pages && nextprops.pages.length === 0) {
+        } else if (nextprops.pages.length === 0) {
           // this means connected pages in 0
           // this.props.history.push({
           // pathname: '/addPages',
@@ -647,7 +606,8 @@ class Dashboard extends React.Component {
               <GettingStarted pages={this.props.pages} /> */ }
               </div>
           }
-          {this.state.loading
+          {
+            this.state.loading
             ? <div className='align-center'><center><RingLoader color='#FF5E3A' /></center></div>
             : <div>
               <div className='row'>
@@ -657,13 +617,13 @@ class Dashboard extends React.Component {
                 }
               </div>
               {
-                (url.includes('kibochat.cloudkibo.com') || url.includes('kiboengage.cloudkibo.com')) &&
+                !this.props.isMobile && (url.includes('kibochat.cloudkibo.com') || url.includes('kiboengage.cloudkibo.com')) &&
                 <div className='row'>
                   <SubscriberSummary includeZeroCounts={this.includeZeroCounts} msg={this.msg} />
                 </div>
               }
               {
-                (url.includes('kibochat.cloudkibo.com') || url.includes('kiboengage.cloudkibo.com')) &&
+                !this.props.isMobile && (url.includes('kibochat.cloudkibo.com') || url.includes('kiboengage.cloudkibo.com')) &&
                 <div className='row'>
                   {
                     this.props.pages && this.props.sentseendata && (url.includes('kiboengage.cloudkibo.com'))
@@ -690,63 +650,52 @@ class Dashboard extends React.Component {
                   }
                 </div>
               }
-              {(url.includes('kiboengage.cloudkibo.com') || url.includes('localhost')) &&
+              {
+                !this.props.isMobile && (url.includes('kiboengage.cloudkibo.com') || url.includes('localhost')) &&
                 <div className='row'>
                   <AutopostingSummary />
                 </div>
               }
-              {(url.includes('kiboengage.cloudkibo.com') || url.includes('localhost')) && this.state.newsPages.length > 0 &&
+              {
+                !this.props.isMobile && (url.includes('kiboengage.cloudkibo.com') || url.includes('localhost')) && this.state.newsPages.length > 0 &&
                 <div className='row'>
                   <NewsIntegrationsSummary />
                 </div>
               }
-              {(url.includes('kiboengage.cloudkibo.com') || url.includes('localhost')) && this.state.newsPages.length > 0 &&
+              {
+                !this.props.isMobile && (url.includes('kiboengage.cloudkibo.com') || url.includes('localhost')) && this.state.newsPages.length > 0 &&
                 <div className='row'>
                   <IntegrationsSummary />
                 </div>
               }
-              {/*
-            {
-             this.props.topPages && this.props.topPages.length > 1 &&
-               <div className='row'>
-                 <TopPages pagesData={this.props.topPages} />
-               </div>
-            }
-            <div className='row'>
-              <Reports
-                iconClassName={'fa fa-line-chart'}
-                title={'Reports'}
-                lineChartData={this.state.chartData}
-                onDaysChange={this.onDaysChange}
-                selectedDays={this.state.selectedDays}
-                />
-            </div>
-            */}
               <div className='row'>
-                <div className='m-form m-form--label-align-right m--margin-bottom-30 col-12'>
-                  {
-                    this.props.user.currentPlan.unique_ID === 'plan_A' || this.props.user.currentPlan.unique_ID === 'plan_C'
-                      ? <button className='btn btn-success m-btn m-btn--icon pull-right' onClick={this.exportDashboardInformation}>
-                        <span>
-                          <i className='fa fa-download' />
+                {
+                  !this.props.isMobile &&
+                  <div className='m-form m-form--label-align-right m--margin-bottom-30 col-12'>
+                    {
+                      this.props.user.currentPlan.unique_ID === 'plan_A' || this.props.user.currentPlan.unique_ID === 'plan_C'
+                        ? <button className='btn btn-success m-btn m-btn--icon pull-right' onClick={this.exportDashboardInformation}>
                           <span>
-                            Export Records in CSV File
-                  </span>
-                        </span>
-                      </button>
-                      : <button className='btn btn-success m-btn m-btn--icon pull-right' data-toggle="modal" data-target="#upgrade">
-                        <span>
-                          <i className='fa fa-download' />
-                          <span>
-                            Export Records in CSV File
-                  </span>&nbsp;&nbsp;
-                  <span style={{ border: '1px solid #f4516c', padding: '0px 5px', borderRadius: '10px', fontSize: '12px' }}>
-                            <span style={{ color: '#f4516c' }}>PRO</span>
+                            <i className='fa fa-download' />
+                            <span>
+                              Export Records in CSV File
+                    </span>
                           </span>
-                        </span>
-                      </button>
-                  }
-                </div>
+                        </button>
+                        : <button className='btn btn-success m-btn m-btn--icon pull-right' data-toggle="modal" data-target="#upgrade">
+                          <span>
+                            <i className='fa fa-download' />
+                            <span>
+                              Export Records in CSV File
+                    </span>&nbsp;&nbsp;
+                    <span style={{ border: '1px solid #f4516c', padding: '0px 5px', borderRadius: '10px', fontSize: '12px' }}>
+                              <span style={{ color: '#f4516c' }}>PRO</span>
+                            </span>
+                          </span>
+                        </button>
+                    }
+                  </div>
+                }
               </div>
             </div>
           }
@@ -760,6 +709,7 @@ function mapStateToProps(state) {
   console.log('state', state)
   return {
     user: (state.basicInfo.user),
+    isMobile: (state.basicInfo.isMobile),
     dashboard: (state.dashboardInfo.dashboard),
     sentseendata: (state.dashboardInfo.sentseendata),
     pages: (state.pagesInfo.pages),
