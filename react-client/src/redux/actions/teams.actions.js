@@ -25,16 +25,15 @@ export function showAgentsList (data) {
   }
 }
 
-export function createTeam (data, msg) {
+export function createTeam (data, cb) {
   console.log('data forcreateTeam ', data)
   return (dispatch) => {
     callApi('teams/create', 'post', data)
       .then(res => {
         if (res.status === 'success') {
           dispatch(loadTeamsList())
-        } else {
-          msg.error(res.description || 'Failed to create team')
         }
+        if (cb) cb(res)
       })
   }
 }
