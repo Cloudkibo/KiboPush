@@ -91,6 +91,7 @@ class ConfigureShopifyChatbot extends React.Component {
         published: this.state.published
       }, (res) => {
         if (res.status === 'success') {
+          this.setState({ chatbot: res.payload })
           if (this.state.published) {
             this.msg.success('Shopify Chatbot Enabled')
           } else {
@@ -101,13 +102,6 @@ class ConfigureShopifyChatbot extends React.Component {
         }
       })
     })
-  }
-
-  setTestSubscribers() {
-    let testSubscribersModal = document.getElementById('_test_subscribers_trigger')
-    if (testSubscribersModal) {
-      testSubscribersModal.click()
-    }
   }
 
   saveChatbot(e) {
@@ -121,6 +115,7 @@ class ConfigureShopifyChatbot extends React.Component {
       }
     }, (res) => {
       if (res.status === 'success') {
+        this.setState({ chatbot: res.payload })
         this.msg.success(res.description)
       } else {
         this.msg.error(res.description)
@@ -150,7 +145,6 @@ class ConfigureShopifyChatbot extends React.Component {
           id='_test_chatbot'
           title='Test Chatbot'
           content={this.getTestModalContent()}
-          onClose={this.toggleTestModalContent}
         />
 
 
