@@ -1596,106 +1596,106 @@ class Subscriber extends React.Component {
                                           <option key='other' value='other'>Other</option>
                                         </select>
                                       </div>
-                                    </div>
-                                    <div className='d-md-none m--margin-bottom-10' />
                                   </div>
-                                  <div className='col-md-3'>
-                                    <div className='m-form__group m-form__group--inline'>
-                                      <div className='m-form__control'>
-                                        <select className='custom-select' style={{ width: '200px' }} id='m_form_type' tabIndex='-98' value={this.state.filterLocale} onChange={this.handleFilterByLocale}>
-                                          <option key='' value='' disabled>Filter by Locale...</option>
-                                          <option key='ALL' value='all'>All</option>
-                                          {
-                                            this.props.locales && this.props.locales.length > 0 && this.props.locales[0] &&
-                                            this.props.locales.map((locale, i) => (
-                                              <option key={i} value={locale.value}>{locale.text}</option>
-                                            ))
-                                          }
-                                        </select>{/* </div> */}
-                                      </div>
+                                  <div className='d-md-none m--margin-bottom-10' />
+                                </div>
+                                <div className='col-md-3'>
+                                  <div className='m-form__group m-form__group--inline'>
+                                    <div className='m-form__control'>
+                                      <select className='custom-select' style={{ width: '200px' }} id='m_form_type' tabIndex='-98' value={this.state.filterLocale} onChange={this.handleFilterByLocale}>
+                                        <option key='' value='' disabled>Filter by Locale...</option>
+                                        <option key='ALL' value='all'>All</option>
+                                        {
+                                          this.props.locales && this.props.locales.length > 0 && this.props.locales[0] &&
+                                          this.props.locales.map((locale, i) => (
+                                            <option key={i} value={locale.value}>{locale.text}</option>
+                                          ))
+                                        }
+                                      </select>{/* </div> */}
                                     </div>
-                                    <div className='d-md-none m--margin-bottom-10' />
                                   </div>
-                                  <div className='col-md-3'>
-                                    <div className='m-form__group m-form__group--inline'>
-                                      <div className='m-form__control'>
-                                        <select className='custom-select' style={{ width: '200px' }} id='m_form_type' tabIndex='-98' value={this.state.tagValue} onChange={this.handleFilterByTag}>
-                                          <option key='' value='' disabled>Filter by Tags...</option>
-                                          <option key='ALL' value='all'>All</option>
-                                          {
-                                            this.state.options.map((tag, i) => (
-                                              <option key={i} value={tag.label}>{tag.label}</option>
-                                            ))
-                                          }
-                                        </select>
-                                      </div>
+                                  <div className='d-md-none m--margin-bottom-10' />
+                                </div>
+                                <div className='col-md-3'>
+                                  <div className='m-form__group m-form__group--inline'>
+                                    <div className='m-form__control'>
+                                      <select className='custom-select' style={{ width: '200px' }} id='m_form_type' tabIndex='-98' value={this.state.tagValue} onChange={this.handleFilterByTag}>
+                                        <option key='' value='' disabled>Filter by Tags...</option>
+                                        <option key='ALL' value='all'>All</option>
+                                        {
+                                          this.state.options.map((tag, i) => (
+                                            <option key={i} value={tag.label}>{tag.label}</option>
+                                          ))
+                                        }
+                                      </select>
                                     </div>
-                                    <div className='d-md-none m--margin-bottom-10' />
                                   </div>
-                                  <div className='col-md-3'>
-                                    <div className='m-form__group m-form__group--inline'>
-                                      <div className='m-form__control'>
-                                        <select className='custom-select' style={{ width: '200px' }} id='m_form_type' tabIndex='-98' value={this.state.statusValue} onChange={this.handleFilterByStatus}>
-                                          <option key='' value='' disabled>Filter by Status...</option>
-                                          <option key='ALL' value='all'>All</option>
-                                          <option key='subscribed' value='subscribed'>Subscribed</option>
-                                          <option key='unsubscribed' value='unsubscribed'>Unsubscribed</option>
-                                        </select>
-                                      </div>
+                                  <div className='d-md-none m--margin-bottom-10' />
+                                </div>
+                                <div className='col-md-3'>
+                                  <div className='m-form__group m-form__group--inline'>
+                                    <div className='m-form__control'>
+                                      <select className='custom-select' style={{ width: '200px' }} id='m_form_type' tabIndex='-98' value={this.state.statusValue} onChange={this.handleFilterByStatus}>
+                                        <option key='' value='' disabled>Filter by Status...</option>
+                                        <option key='ALL' value='all'>All</option>
+                                        <option key='subscribed' value='subscribed'>Subscribed</option>
+                                        <option key='unsubscribed' value='unsubscribed'>Unsubscribed</option>
+                                      </select>
                                     </div>
                                   </div>
                                 </div>
-                                <div className='row filters' style={{ marginTop: '10px', display: 'flex' }}>
-                                  <div className='col-md-3'>
-                                      <div className='m-form__group m-form__group--inline'>
-                                        <div className='m-form__control'>
-                                          <select className='custom-select' id='m_form_status' style={{ width: '200px' }} tabIndex='-98' value={this.state.filterSource} onChange={this.handleFilterBySource}>
-                                            <option value='' disabled>Filter by Source...</option>
-                                            <option value='all'>All</option>
-                                            <option value='direct_message'>Direct Message</option>
-                                            <option value='customer_matching'>Phone Number</option>
-                                            <option value='chat_plugin'>Chat Plugin</option>
-                                            <option value='messaging_referrals'>Messaging Referral</option>
-                                            <option value='landing_page'>Landing Page</option>
-                                            <option value='comment_capture'>Comment Capture</option>
-                                            <option value='shopify'>Shopify</option>
-                                          </select>
-                                        </div>
-                                    </div>
-                                    <div className='d-md-none m--margin-bottom-10' />
-                                  </div>
-                                </div>
-                                <div style={{ marginTop: '15px' }} className='form-group m-form__group row align-items-center'>
-                                  <div className='col-12 col-md-6'>
-                                    <div className='m-input-icon m-input-icon--left'>
-                                      <input type='text' className='form-control m-input m-input--solid' value={this.state.searchValue} placeholder='Search...' id='generalSearch' onChange={this.searchSubscriber} />
-                                      <span className='m-input-icon__icon m-input-icon__icon--left'>
-                                        <span><i className='la la-search' /></span>
-                                      </span>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div> :
-                              <div className='col-xl-12 order-2 order-xl-1'>
-                                <h5 style={{marginTop: '20px', marginBottom: '-10px'}}>Bulk Actions:</h5>
-                                  <div className='row filters' style={{ marginTop: '25px', display: 'flex' }}>
-                                  <div className='col-md-3'>
+                              </div>
+                              <div className='row filters' style={{ marginTop: '10px', display: 'flex' }}>
+                                <div className='col-md-3'>
                                     <div className='m-form__group m-form__group--inline'>
                                       <div className='m-form__control'>
-                                        <select className='custom-select' id='m_form_status' style={{ width: '200px' }} tabIndex='-98' onChange={this.addTags} value=''>
-                                          <option key='' value='' disabled>Assign Tag</option>
-                                          {
-                                            this.state.options.map((option, i) => {
-                                              return (
-                                                <option key={i} value={option.value}>{option.label}</option>
-                                              )
-                                            })
-                                          }
+                                        <select className='custom-select' id='m_form_status' style={{ width: '200px' }} tabIndex='-98' value={this.state.filterSource} onChange={this.handleFilterBySource}>
+                                          <option value='' disabled>Filter by Source...</option>
+                                          <option value='all'>All</option>
+                                          <option value='direct_message'>Direct Message</option>
+                                          <option value='customer_matching'>Phone Number</option>
+                                          <option value='chat_plugin'>Chat Plugin</option>
+                                          <option value='messaging_referrals'>Messaging Referral</option>
+                                          <option value='landing_page'>Landing Page</option>
+                                          <option value='comment_capture'>Comment Capture</option>
+                                          <option value='shopify'>Shopify</option>
                                         </select>
                                       </div>
                                   </div>
                                   <div className='d-md-none m--margin-bottom-10' />
                                 </div>
+                              </div>
+                              <div style={{ marginTop: '15px' }} className='form-group m-form__group row align-items-center'>
+                                <div className='col-12 col-md-6'>
+                                  <div className='m-input-icon m-input-icon--left'>
+                                    <input type='text' className='form-control m-input m-input--solid' value={this.state.searchValue} placeholder='Search...' id='generalSearch' onChange={this.searchSubscriber} />
+                                    <span className='m-input-icon__icon m-input-icon__icon--left'>
+                                      <span><i className='la la-search' /></span>
+                                    </span>
+                                  </div>
+                                </div>
+                              </div>
+                            </div> :
+                            <div className='col-xl-12 order-2 order-xl-1'>
+                            <h5 style={{marginTop: '20px', marginBottom: '-10px'}}>Bulk Actions:</h5>
+                            <div className='row filters' style={{ marginTop: '25px', display: 'flex' }}>
+                              <div className='col-md-3'>
+                                <div className='m-form__group m-form__group--inline'>
+                                  <div className='m-form__control'>
+                                    <select className='custom-select' id='m_form_status' style={{ width: '200px' }} tabIndex='-98' onChange={this.addTags} value=''>
+                                      <option key='' value='' disabled>Assign Tag</option>
+                                      {
+                                        this.state.options.map((option, i) => {
+                                          return (
+                                            <option key={i} value={option.value}>{option.label}</option>
+                                          )
+                                        })
+                                      }
+                                    </select>
+                                  </div>
+                              </div>
+                              <div className='d-md-none m--margin-bottom-10' />
+                            </div>
                             <div className='col-md-3'>
                               <div className='m-form__group m-form__group--inline'>
                                 <div className='m-form__control'>
@@ -1761,17 +1761,13 @@ class Subscriber extends React.Component {
                                     this.state.customFieldOptions.filter(cf => !cf.default).length > 0 &&
                                     <optgroup label='User Defined Custom Fields'>
                                       {
-                                      this.state.customFieldOptions.filter(cf => !cf.default).length > 0 &&
-                                      <optgroup label='User Defined Custom Fields'>
-                                        {
-                                          this.state.customFieldOptions.filter(cf => !cf.default).map((cf, i) => (
-                                            <option key={i} value={cf._id}>{cf.label}</option>
-                                          ))
-                                        }
-                                      </optgroup>
+                                        this.state.customFieldOptions.filter(cf => !cf.default).map((cf, i) => (
+                                          <option key={i} value={cf._id}>{cf.label}</option>
+                                        ))
                                       }
-                                    </select>
-                                  </div>
+                                    </optgroup>
+                                    }
+                                  </select>
                                 </div>
                               </div>
                               <div className='d-md-none m--margin-bottom-10' />
@@ -1802,6 +1798,7 @@ class Subscriber extends React.Component {
                               </div>
                             }
                           </div>
+
                         </div>
                             }
                           </div>
@@ -1878,21 +1875,21 @@ class Subscriber extends React.Component {
                                       <td data-toggle='modal' data-target='#m_modal_1_2' onClick={() => { this.setSubscriber(subscriber) }} data-field='Name'
                                         className='m-datatable__cell'>
                                         <span
-                                          style={(subscriber.isSubscribed && !subscriber.disabledByPlan) ? subscribedStyle : unsubscribedStyle}>{subscriber.firstName} {subscriber.lastName}</span>
+                                          style={subscriber.isSubscribed ? subscribedStyle : unsubscribedStyle}>{subscriber.firstName} {subscriber.lastName}</span>
                                       </td>
 
                                       <td data-toggle='modal' data-target='#m_modal_1_2' onClick={() => { this.setSubscriber(subscriber) }} data-field='Page'
                                         className='m-datatable__cell'>
                                         <span
-                                          style={(subscriber.isSubscribed && !subscriber.disabledByPlan) ? subscribedStyle : unsubscribedStyle}>
+                                          style={subscriber.isSubscribed ? subscribedStyle : unsubscribedStyle}>
                                           {subscriber.pageId.pageName}
                                         </span>
                                       </td>
                                       <td onClick={() => { this.setSubscriber(subscriber) }} data-field='Status'
                                         className='m-datatable__cell'>
                                         <span
-                                          style={(subscriber.isSubscribed && !subscriber.disabledByPlan) ? subscribedStyle : unsubscribedStyle}>
-                                          {subscriber.disabledByPlan ? 'Disabled' : subscriber.isSubscribed ? 'Subscribed' : 'Unsubscribed'}
+                                          style={subscriber.isSubscribed ? subscribedStyle : unsubscribedStyle}>
+                                          {subscriber.isSubscribed ? 'Subscribed' : 'Unsubscribed'}
                                         </span>
                                       </td>
                                       <td data-toggle='modal' data-target='#m_modal_1_2' onClick={() => { this.setSubscriber(subscriber) }} data-field='Gender' className='m-datatable__cell'>
@@ -1946,19 +1943,16 @@ class Subscriber extends React.Component {
                                 </span>
                               </div>
                             </div>
-                            {
-                              this.props.user.permissions['export_subscribers'] &&
-                              <div className='m-form m-form--label-align-right m--margin-bottom-30'>
-                                <button className='btn btn-success m-btn m-btn--icon pull-right' onClick={this.exportRecords}>
+                            <div className='m-form m-form--label-align-right m--margin-bottom-30'>
+                              <button className='btn btn-success m-btn m-btn--icon pull-right' onClick={this.exportRecords}>
+                                <span>
+                                  <i className='fa fa-download' />
                                   <span>
-                                    <i className='fa fa-download' />
-                                    <span>
-                                      Export Records in CSV File
-                                    </span>
+                                    Export Records in CSV File
                                   </span>
-                                </button>
-                              </div>
-                            }
+                                </span>
+                              </button>
+                            </div>
                           </div>
                           : <div className='table-responsive'>
                             {
@@ -2006,16 +2000,12 @@ class Subscriber extends React.Component {
                                     ? <div style={{ display: 'block', marginTop: '5px' }}>
                                       <i style={{ fontWeight: 'bold' }} className='la la-check-circle' />
                                       subscribed
-                                      {
-                                        this.props.user && this.props.user.plan['unsubscribe_subscribers'] && this.props.user.permissions['unsubsubscribe_subscribers'] &&
-                                        <a href='#/' onClick={this.unSubscribe} style={{ color: 'blue', textDecoration: 'underline', cursor: 'pointer' }}> {'(Unsubscribe)'}</a>
-                                      }
+                                    <a href='#/' onClick={this.unSubscribe} style={{ color: 'blue', textDecoration: 'underline', cursor: 'pointer' }}> {'(Unsubscribe)'}</a>
                                     </div>
                                     : <div style={{ display: 'block', marginTop: '5px' }}>
                                       <i style={{ fontWeight: 'bold' }} className='la la-times-circle' />
                                       unsubscribed
-                                      {
-                                        this.state.subscriber.unSubscribedBy !== 'subscriber' && this.props.user.plan['unsubscribe_subscribers'] && this.props.user.permissions['unsubsubscribe_subscribers'] &&
+                                    {this.state.subscriber.unSubscribedBy !== 'subscriber' &&
                                         <a href='#/' onClick={this.subscribe} style={{ color: 'blue', textDecoration: 'underline', cursor: 'pointer' }}> {'(Subscribe)'}</a>
                                       }
                                     </div>
@@ -2078,10 +2068,7 @@ class Subscriber extends React.Component {
                             <br />
                             <div className='row'>
                               <span style={{ fontWeight: 600, marginLeft: '15px' }}>User Tags:</span>
-                              {
-                                this.props.user.permissions['assign_tags'] &&
-                                <span id='assignIndividualTag' style={{ cursor: 'pointer', float: 'right', color: 'blue', marginLeft: '260px' }} onClick={this.showAddTagIndiviual}><i className='la la-plus' />Assign Tags</span>
-                              }
+                              <span id='assignIndividualTag' style={{ cursor: 'pointer', float: 'right', color: 'blue', marginLeft: '260px' }} onClick={this.showAddTagIndiviual}><i className='la la-plus' />Assign Tags</span>
                             </div>
                             {
                               this.props.tags && this.props.tags.length > 0 && this.state.subscriber.tags && this.state.subscriber.tags.length > 0
@@ -2204,7 +2191,7 @@ class Subscriber extends React.Component {
                             }
 
                           {
-                            this.props.user.permissions['set_custom_fields'] && unassignedCustomFields.length > 0 &&
+                            unassignedCustomFields.length > 0 &&
                             <div className="row" style={{ marginTop: '15px', marginBottom: '15px' }}>
                               <div className='col-md-5'>
                                 <div className='m-form__control'>
