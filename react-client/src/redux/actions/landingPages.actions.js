@@ -35,7 +35,7 @@ export function deleteLandingPage (id, msg) {
         msg.success('Landing Page has been deleted')
         dispatch(fetchLandingPages())
       } else {
-        msg.error('Failed to delete Landing Page')
+        msg.error(res.description || 'Failed to delete Landing Page')
       }
     })
   }
@@ -49,7 +49,7 @@ export function createLandingPage (data, msg) {
       if (res.status === 'success') {
         msg.success('Landing Page saved successfully')
       } else {
-        msg.error('failed to save landing page')
+        msg.error(res.description || 'failed to save landing page')
       }
     })
   }
@@ -68,7 +68,7 @@ export function editLandingPage (id, data, msg, msgDescription) {
         else msg.success('Landing Page saved successfully')
         dispatch(fetchLandingPages())
       } else {
-        msg.error('Failed to save landing page')
+        msg.error(res.description || 'Failed to save landing page')
       }
     })
   }

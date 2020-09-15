@@ -78,10 +78,14 @@ export function saveMenu (data, handleSaveMenu, msg) {
       } else {
         dispatch(saveMenuFailure(res))
         if (res.description) {
-          var description = JSON.parse(res.description)
-          if (description.message) {
-            msg.error(description.message)
-          } else {
+          try {
+            var description = JSON.parse(res.description)
+            if (description.message) {
+              msg.error(description.message)
+            } else {
+              msg.error(res.description)
+            }
+          } catch (e) {
             msg.error(res.description)
           }
         } else {
@@ -99,7 +103,7 @@ export function removeMenu (data, handleRemoveMenu, msg) {
         msg.success('Menu has been reset')
         handleRemoveMenu()
       } else {
-        msg.error('Failed to reset menu')
+        msg.error(res.description || 'Failed to reset menu')
       }
     })
   }

@@ -92,7 +92,7 @@ export function assignTags (data, handleResponse, msg) {
         }
       }
       if (handleResponse) {
-        handleResponse() 
+        handleResponse()
       }
     })
   }
@@ -129,7 +129,7 @@ export function createTag (tag, handleResponse, msg) {
         if (msg && res.status === 'success' && res.payload) {
           msg.success(`Tag "${res.payload.tag}" created succesfully`)
         } else {
-          msg.error('Unable to create tag')
+          msg.error(res.description || 'Unable to create tag')
         }
         // if (res.status === 'success' && res.payload) {
         //   dispatch(loadTags())
