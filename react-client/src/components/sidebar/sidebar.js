@@ -236,7 +236,7 @@ class Sidebar extends Component {
     if (this.props.user) {
       if (this.state.subscribers && this.props.user.permissions.subscriberPermission && this.props.user.plan.manage_subscribers) {
         return (
-          <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
+          <li onClick={() => {document.getElementById('m_aside_left_close_btn').click()}} className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
             <Link to={this.props.user.platform === 'messenger' ? '/subscribers' : '/smsSubscribers'} className='m-menu__link m-menu__toggle'>
               <i className='m-menu__link-icon flaticon-user-ok' title='Subscribers' />
               <span className='m-menu__link-text'>Subscribers</span>
