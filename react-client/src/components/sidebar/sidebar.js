@@ -23,7 +23,8 @@ class Sidebar extends Component {
     const isKiboEngage = url.includes('kiboengage.cloudkibo.com')
     const isKiboLite = url.includes('kibolite.cloudkibo.com')
     const platform = user.platform
-    if (user.isSuperUser && (isKiboEngage || isLocalhost)) {
+    const isMobile = this.props.isMobile
+    if (!isMobile && user.isSuperUser && (isKiboEngage || isLocalhost)) {
       menuItems.push({
         priority: 'a',
         name: 'Operational Dashboard',
@@ -50,7 +51,7 @@ class Sidebar extends Component {
           icon: 'flaticon-user-ok'
         })
       }
-      if (user.plan['custom_fields'] && user.permissions['view_custom_fields']) {
+      if (!isMobile && user.plan['custom_fields'] && user.permissions['view_custom_fields']) {
         submenu.push({
           priority: 'b',
           name: 'Custom Fields',
@@ -58,7 +59,7 @@ class Sidebar extends Component {
           icon: 'flaticon-profile'
         })
       }
-      if (user.plan['tags'] && user.permissions['view_tags']) {
+      if (!isMobile && user.plan['tags'] && user.permissions['view_tags']) {
         submenu.push({
           priority: 'c',
           name: 'Tags',
@@ -81,7 +82,7 @@ class Sidebar extends Component {
         icon: 'flaticon-user-ok'
       })
     }
-    if (isKiboLite) {
+    if (!isMobile && isKiboLite) {
       menuItems.push({
         priority: 'd',
         name: 'Broadcast',
@@ -89,7 +90,7 @@ class Sidebar extends Component {
         icon: 'flaticon-network'
       })
     }
-    if (isKiboEngage || isLocalhost) {
+    if (!isMobile && (isKiboEngage || isLocalhost)) {
       let submenu = []
       if (user.plan['broadcasts'] && user.permissions['view_broadcasts']) {
         submenu.push({
@@ -164,7 +165,7 @@ class Sidebar extends Component {
         icon: 'flaticon-chat-1'
       })
     }
-    if (isKiboEngage || isKiboChat || isLocalhost) {
+    if (!isMobile && (isKiboEngage || isKiboChat || isLocalhost)) {
       let submenu = []
       if ((isKiboChat || isLocalhost) && user.plan['smart_replies'] && user.permissions['view_bots'] && ['MIX_CHAT', 'AUTOMATED_CHAT'].includes(automated_options.automated_options)) {
         submenu.push({
@@ -229,7 +230,7 @@ class Sidebar extends Component {
         icon: 'flaticon-share'
       })
     }
-    if (isKiboEngage || isLocalhost) {
+    if (!isMobile && (isKiboEngage || isLocalhost)) {
       let submenu = []
       if (user.plan['comment_capture'] && user.permissions['view_comment_capture_rules']) {
         submenu.push({
@@ -322,21 +323,21 @@ class Sidebar extends Component {
           route: '/pages'
         })
       }
-      if (user.plan['menu'] && user.permissions['set_persistent_menu']) {
+      if (!isMobile && user.plan['menu'] && user.permissions['set_persistent_menu']) {
         submenu.push({
           priority: 'b',
           name: 'Persistent Menu',
           route: '/menu'
         })
       }
-      if (user.plan['welcome_message'] && user.permissions['manage_welcome_message']) {
+      if (!isMobile && user.plan['welcome_message'] && user.permissions['manage_welcome_message']) {
         submenu.push({
           priority: 'c',
           name: 'Welcome Message',
           route: '/welcomeMessage'
         })
       }
-      if (user.plan['greeting_text'] && user.permissions['manage_greeting_text']) {
+      if (!isMobile && user.plan['greeting_text'] && user.permissions['manage_greeting_text']) {
         submenu.push({
           priority: 'd',
           name: 'Greeting Text',
@@ -350,7 +351,7 @@ class Sidebar extends Component {
         icon: 'flaticon-add'
       })
     }
-    if (true) {
+    if (!isMobile) {
       let submenu = []
       if (user.plan['invite_members'] && user.permissions['invite_members']) {
         submenu.push({
@@ -388,12 +389,14 @@ class Sidebar extends Component {
       //         icon: 'flaticon-comment'
       //       })
     }
-    menuItems.push({
-      priority: 'm',
-      name: 'Settings',
-      route: '/settings',
-      icon: 'flaticon-cogwheel'
-    })
+    if (!isMobile) {
+      menuItems.push({
+        priority: 'm',
+        name: 'Settings',
+        route: '/settings',
+        icon: 'flaticon-cogwheel'
+      })
+    }
     menuItems.push({
       priority: 'n',
       name: 'User Guide',
@@ -453,6 +456,7 @@ function mapStateToProps(state) {
   console.log('mapStateToProps in sidebar', state)
   return {
     user: (state.basicInfo.user),
+    isMobile: (state.basicInfo.isMobile),
     automated_options: (state.basicInfo.automated_options)
   }
 }
