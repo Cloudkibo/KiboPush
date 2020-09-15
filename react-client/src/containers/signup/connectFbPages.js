@@ -13,6 +13,7 @@ import {
 } from '../../redux/actions/pages.actions'
 import { bindActionCreators } from 'redux'
 import $ from 'jquery'
+import AlertContainer from 'react-alert'
 
 class AddPage extends React.Component {
   constructor (props) {
@@ -85,8 +86,16 @@ class AddPage extends React.Component {
   }
 
   render () {
+    var alertOptions = {
+      offset: 14,
+      position: 'top right',
+      theme: 'dark',
+      time: 5000,
+      transition: 'scale'
+    }
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+        <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <a href='#/' style={{ display: 'none' }} ref='permissions' data-toggle="modal" data-target="#permissions">Permissions</a>
         <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="permissions" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
@@ -186,7 +195,7 @@ class AddPage extends React.Component {
                           <div className='m-widget4__ext'>
                             {
                               (page.connected) &&
-                              <a href='#/' onClick={() => this.props.removePageInAddPage(page)} className='m-widget4__icon'>
+                              <a href='#/' onClick={() => this.props.removePageInAddPage(page, this.msg)} className='m-widget4__icon'>
                                 <button type='button' className='btn m-btn--pill btn-danger btn-sm m-btn m-btn--custom'>Disconnect</button>
                               </a>
                             }

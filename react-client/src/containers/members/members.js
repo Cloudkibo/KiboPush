@@ -127,7 +127,7 @@ class Members extends React.Component {
       companyId: member.companyId,
       domain_email: member.domain_email,
       role
-    })
+    }, this.msg)
   }
   scrollToTop () {
     this.top.scrollIntoView({behavior: 'instant'})
@@ -140,7 +140,7 @@ class Members extends React.Component {
       time: 3000,
       transition: 'scale'
     }
-    
+
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
@@ -152,7 +152,7 @@ class Members extends React.Component {
                   <h5 className="modal-title" id="exampleModalLabel">
                     Dashboard Video Tutorial
 									</h5>
-                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" 
+                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal"
                   aria-label="Close"
                   onClick={() => {
                     this.setState({

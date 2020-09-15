@@ -127,7 +127,7 @@ class SmsChat extends React.Component {
       activeSession.pendingResponse = value
       this.setState({sessions, activeSession})
     } else {
-      const message = value ? 'Failed to remove pending flag' : 'Failed to mark session as pending'
+      const message = res.description || value ? 'Failed to remove pending flag' : 'Failed to mark session as pending'
       this.alertMsg.error(message)
     }
   }
@@ -224,13 +224,18 @@ class SmsChat extends React.Component {
     }
   }
 
-  handleStatusChange (session, status) {
-    const message = (status === 'resolved') ? 'Session has been marked as resoleved successfully' : 'Session has been reopened successfully'
-    this.setState({
-      userChat: [],
-      activeSession: (session._id === this.state.activeSession._id) ? {} : this.state.activeSession
-    })
-    this.alertMsg.success(message)
+  handleStatusChange (session, status, res) {
+    if (res.status === 'success') {
+      const message = (status === 'resolved') ? 'Session has been marked as resoleved successfully' : 'Session has been reopened successfully'
+      this.setState({
+        userChat: [],
+        activeSession: (session._id === this.state.activeSession._id) ? {} : this.state.activeSession
+      })
+      this.alertMsg.success(message)
+    } else {
+      let errorMsg = res.description || res.payload
+      this.alertMsg.error(errorMsg)
+    }
   }
 
   handleTeamAgents (agents) {
@@ -261,7 +266,7 @@ class SmsChat extends React.Component {
     let errorMsg = (status === 'resolved') ? 'mark this session as resolved' : 'reopen this session'
     const data = this.performAction(errorMsg, session)
     if (data.isAllowed) {
-      this.props.changeStatus({_id: session._id, status: status}, () => this.handleStatusChange(session, status))
+      this.props.changeStatus({_id: session._id, status: status}, (res) => this.handleStatusChange(session, status, res))
     } else {
       this.alertMsg.error(data.errorMsg)
     }

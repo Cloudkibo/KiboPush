@@ -72,30 +72,34 @@ export function createMessage (data, browserHistory, msg, sequenceName) {
             state: {module: 'view', _id: data.sequenceId, name: sequenceName}
           })
         } else {
-          msg.error('Failed to create message')
+          msg.error(res.description || 'Failed to create message')
         }
       })
   }
 }
 
-export function setSchedule (data) {
+export function setSchedule (data, msg) {
   return (dispatch) => {
     callApi('sequenceMessaging/setSchedule', 'post', data)
       .then(res => {
         if (res.status === 'success') {
           dispatch(fetchAllMessages(data.sequenceId))
+        } else {
+          msg.error(res.description || 'Failed to set schedule')
         }
       })
   }
 }
 
-export function setStatus (data, sequenceId) {
+export function setStatus (data, sequenceId, msg) {
   console.log('data', data)
   return (dispatch) => {
     callApi('sequenceMessaging/setStatus', 'post', data)
       .then(res => {
         if (res.status === 'success') {
           dispatch(fetchAllMessages(sequenceId))
+        } else {
+          msg.error(res.description || 'Failed to update status')
         }
       })
   }
@@ -108,6 +112,8 @@ export function editMessage (data, msg) {
       .then(res => {
         if (res.status === 'success') {
           msg.success('Message saved successfully')
+        } else {
+          msg.success(res.description || 'Failed to update Message')
         }
       })
   }
@@ -199,7 +205,7 @@ export function unsubscribeToSequence (data, msg, handleSeqResponse) {
           msg.success('Subscriber(s) have been unsubscribed successfully!')
           dispatch(getSubscriberSequences(data.subscriberIds[0]))
         } else {
-          msg.error('Failed to unsubscribe to sequence!')
+          msg.error(res.description || 'Failed to unsubscribe to sequence!')
         }
         if (handleSeqResponse) {
           handleSeqResponse(res)
