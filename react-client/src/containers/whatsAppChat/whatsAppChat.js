@@ -6,6 +6,7 @@ import { RingLoader } from 'halogenium'
 import { getZoomIntegrations, createZoomMeeting, loadcannedResponses, getWhatsAppMessageTemplates } from '../../redux/actions/settings.actions'
 import NEWMESSAGEBUTTON from './newMessageButton'
 import MESSAGETEMPLATE from '../../components/WhatsApp/messageTemplate'
+import MESSAGETEMPLATEMOBILE from '../../components/WhatsApp/messageTemplateMobile'
 
 // actions
 import {
@@ -73,7 +74,9 @@ class WhatsAppChat extends React.Component {
       customFieldOptions: [],
       showingCustomFieldPopover: false,
       sendingToNewNumber: false,
-      cannedResponses: []
+      cannedResponses: [],
+      showChat: !this.props.isMobile,
+      showMessageTemplateMobile: false
     }
 
     this.fetchSessions = this.fetchSessions.bind(this)
@@ -100,6 +103,8 @@ class WhatsAppChat extends React.Component {
     this.clearSearchResults = this.clearSearchResults.bind(this)
     this.setMessageData = this.setMessageData.bind(this)
     this.sendingToNewNumber = this.sendingToNewNumber.bind(this)
+    this.backToSessions = this.backToSessions.bind(this)
+    this.showMessageTemplateMobile = this.showMessageTemplateMobile.bind(this)
     this.props.loadcannedResponses()
     this.fetchSessions(true, 'none', true)
     if (props.user.currentPlan.unique_ID === 'plan_C' || props.user.currentPlan.unique_ID === 'plan_D') {
@@ -227,7 +232,8 @@ class WhatsAppChat extends React.Component {
     const message = (status === 'resolved') ? 'Session has been marked as resoleved successfully' : 'Session has been reopened successfully'
     this.setState({
       userChat: [],
-      activeSession: (session._id === this.state.activeSession._id) ? {} : this.state.activeSession
+      activeSession: (session._id === this.state.activeSession._id) ? {} : this.state.activeSession,
+      showChat: !this.props.isMobile
     })
     this.alertMsg.success(message)
   }
@@ -327,7 +333,8 @@ class WhatsAppChat extends React.Component {
         subscriberTags: null,
         searchChatMsgs: null,
         loadingChat: true,
-        showSearch: false
+        showSearch: false,
+        showChat: true
       }, () => {
         if (callback) {
           callback()
@@ -382,6 +389,20 @@ class WhatsAppChat extends React.Component {
   getAgents(members) {
     let agents = members.map(m => m.userId)
     return agents
+  }
+
+  backToSessions () {
+    this.setState({
+      showChat: false,
+      showMessageTemplateMobile: false,
+      activeSession: {}
+    })
+  }
+
+  showMessageTemplateMobile () {
+    this.setState({showMessageTemplateMobile: true}, () => {
+      this.sendingToNewNumber(true)
+    })
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
@@ -484,34 +505,40 @@ class WhatsAppChat extends React.Component {
                   </div>
                 </div>
               }
-              <HELPWIDGET
-                documentation={{ visibility: true, link: 'https://kibopush.com/livechat-whatsapp/' }}
-                videoTutorial={{ visibility: true, videoId: 'I3rS_AXT7tw' }}
-              />
-              <div className='row'>
-                <SESSIONS
-                  pages={this.props.pages}
-                  loading={this.state.sessionsLoading}
-                  tabValue={this.state.tabValue}
-                  sessions={this.state.sessions}
-                  sessionsCount={this.state.sessionsCount}
-                  filterSort={this.state.filterSort}
-                  filterPage={this.state.filterPage}
-                  filterSearch={this.state.filterSearch}
-                  filterPending={this.state.filterPending}
-                  filterUnread={this.state.filterUnread}
-                  activeSession={this.state.activeSession}
-                  changeActiveSession={this.changeActiveSession}
-                  profilePicError={this.profilePicError}
-                  changeStatus={this.changeStatus}
-                  changeTab={this.changeTab}
-                  updateState={this.updateState}
-                  fetchSessions={this.fetchSessions}
-                  getChatPreview={this.getChatPreview}
-                  showPageInfo={false}
+              {
+                !this.props.isMobile &&
+                <HELPWIDGET
+                  documentation={{ visibility: true, link: 'https://kibopush.com/livechat-whatsapp/' }}
+                  videoTutorial={{ visibility: true, videoId: 'I3rS_AXT7tw' }}
                 />
+              }
+              <div style={{marginTop: this.props.isMobile ? '20px' : '0px'}} className='row'>
                 {
-                  this.state.activeSession.constructor === Object && Object.keys(this.state.activeSession).length > 0 &&
+                  ((this.props.isMobile && (!this.state.showChat && !this.state.showMessageTemplateMobile)) || !this.props.isMobile) &&
+                  <SESSIONS
+                    pages={this.props.pages}
+                    loading={this.state.sessionsLoading}
+                    tabValue={this.state.tabValue}
+                    sessions={this.state.sessions}
+                    sessionsCount={this.state.sessionsCount}
+                    filterSort={this.state.filterSort}
+                    filterPage={this.state.filterPage}
+                    filterSearch={this.state.filterSearch}
+                    filterPending={this.state.filterPending}
+                    filterUnread={this.state.filterUnread}
+                    activeSession={this.state.activeSession}
+                    changeActiveSession={this.changeActiveSession}
+                    profilePicError={this.profilePicError}
+                    changeStatus={this.changeStatus}
+                    changeTab={this.changeTab}
+                    updateState={this.updateState}
+                    fetchSessions={this.fetchSessions}
+                    getChatPreview={this.getChatPreview}
+                    showPageInfo={false}
+                  />
+                }
+                {
+                  this.state.showChat && this.state.activeSession.constructor === Object && Object.keys(this.state.activeSession).length > 0 &&
                   <CHAT
                     cannedResponses={this.state.cannedResponses}
                     userChat={this.state.userChat}
@@ -551,10 +578,12 @@ class WhatsAppChat extends React.Component {
                     showCaption={true}
                     showSubscriberNameOnMessage={false}
                     whatsAppMessageTemplates={this.props.whatsAppMessageTemplates}
+                    isMobile={this.props.isMobile}
+                    backToSessions={this.backToSessions}
                   />
                 }
                 {
-                  this.state.activeSession.constructor === Object && Object.keys(this.state.activeSession).length > 0 && !this.state.showSearch &&
+                  !this.props.isMobile && this.state.activeSession.constructor === Object && Object.keys(this.state.activeSession).length > 0 && !this.state.showSearch &&
                   <PROFILE
                     updateState={this.updateState}
                     teams={this.props.teams ? this.props.teams : []}
@@ -578,7 +607,7 @@ class WhatsAppChat extends React.Component {
                   />
                 }
                 {
-                  Object.keys(this.state.activeSession).length > 0 && this.state.activeSession.constructor === Object && this.state.showSearch &&
+                  !this.props.isMobile && Object.keys(this.state.activeSession).length > 0 && this.state.activeSession.constructor === Object && this.state.showSearch &&
                   <SEARCHAREA
                     clearSearchResults={this.clearSearchResults}
                     activeSession={this.state.activeSession}
@@ -591,7 +620,7 @@ class WhatsAppChat extends React.Component {
                   />
                 }
                 {
-                  this.state.activeSession.constructor === Object && Object.keys(this.state.activeSession).length === 0 &&
+                  !this.props.isMobile && this.state.activeSession.constructor === Object && Object.keys(this.state.activeSession).length === 0 &&
                   <div style={{
                     border: '1px solid #F2F3F8',
                     marginBottom: '0px',
@@ -604,35 +633,64 @@ class WhatsAppChat extends React.Component {
                     </div>
                   </div>
                 }
+                {
+                  this.props.isMobile && this.state.showMessageTemplateMobile &&
+                  <MESSAGETEMPLATEMOBILE
+                    sendChatMessage={this.props.sendChatMessage}
+                    setMessageData={this.setMessageData}
+                    activeSession={this.state.activeSession}
+                    updateState={this.updateState}
+                    userChat={this.state.userChat}
+                    sessions={this.state.sessions}
+                    alertMsg={this.alertMsg}
+                    id='messageTemplateNewNumber'
+                    sendingToNewNumber={this.state.sendingToNewNumber}
+                    heading={'Send Message Template'}
+                    createNewContact={this.props.createNewContact}
+                    changeActiveSession={this.changeActiveSession}
+                    templates={this.props.whatsAppMessageTemplates}
+                    backToSessions={this.backToSessions}
+                  />
+                }
               </div>
             </div>
         }
-
-        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id='messageTemplateNewNumber' tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-          <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
-            <MESSAGETEMPLATE
-              sendChatMessage={this.props.sendChatMessage}
-              setMessageData={this.setMessageData}
-              activeSession={this.state.activeSession}
-              updateState={this.updateState}
-              userChat={this.state.userChat}
-              sessions={this.state.sessions}
-              alertMsg={this.alertMsg}
-              id='messageTemplateNewNumber'
-              sendingToNewNumber={this.state.sendingToNewNumber}
-              heading={'Send Message Template to WhatsApp Number'}
-              createNewContact={this.props.createNewContact}
-              changeActiveSession={this.changeActiveSession}
-              templates={this.props.whatsAppMessageTemplates}
-            />
+        {
+          !this.props.isMobile &&
+          <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id='messageTemplateNewNumber' tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+              <MESSAGETEMPLATE
+                sendChatMessage={this.props.sendChatMessage}
+                setMessageData={this.setMessageData}
+                activeSession={this.state.activeSession}
+                updateState={this.updateState}
+                userChat={this.state.userChat}
+                sessions={this.state.sessions}
+                alertMsg={this.alertMsg}
+                id='messageTemplateNewNumber'
+                sendingToNewNumber={this.state.sendingToNewNumber}
+                heading={'Send Message Template to WhatsApp Number'}
+                createNewContact={this.props.createNewContact}
+                changeActiveSession={this.changeActiveSession}
+                templates={this.props.whatsAppMessageTemplates}
+              />
+            </div>
           </div>
-        </div>
-        <NEWMESSAGEBUTTON
-          dataToggle='modal'
-          dataTarget='#messageTemplateNewNumber'
-          onClick={() => this.sendingToNewNumber(true)}
-        />
-
+        }
+        {
+          !this.props.isMobile &&
+          <NEWMESSAGEBUTTON
+            dataToggle='modal'
+            dataTarget='#messageTemplateNewNumber'
+            onClick={() => this.sendingToNewNumber(true)}
+          />
+        }
+        {
+          this.props.isMobile && (!this.state.showChat && !this.state.showMessageTemplateMobile) &&
+          <NEWMESSAGEBUTTON
+            onClick={this.showMessageTemplateMobile}
+          />
+        }
       </div>
     )
   }
@@ -648,6 +706,7 @@ function mapStateToProps(state) {
     userChat: (state.whatsAppChatInfo.chat),
     chatCount: (state.whatsAppChatInfo.chatCount),
     user: (state.basicInfo.user),
+    isMobile: (state.basicInfo.isMobile),
     members: (state.membersInfo.members),
     teams: (state.teamsInfo.teams),
     searchChatMsgs: (state.whatsAppChatInfo.searchChat),

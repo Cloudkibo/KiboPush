@@ -223,7 +223,7 @@ class FacebookIntegration extends React.Component {
                     <br />
                   </div>
                   <div className='m-widget4__ext'>
-                    {this.props.user && this.props.user.facebookInfo
+                    {this.props.user && this.props.user.connectFacebook
                       ? <button className='m-btn m-btn--pill m-btn--hover-secondary btn btn-secondary' disabled>
                         Connected
                       </button>
@@ -279,7 +279,7 @@ class FacebookIntegration extends React.Component {
                 <br /><br />
                 {this.props.automated_options && this.props.user &&
                   <center>
-                    <button onClick={this.goToNext} className='btn btn-primary m-btn m-btn--custom m-btn--icon' data-wizard-action='next' disabled={(!this.props.user.facebookInfo && !this.props.automated_options.twilio && !this.props.automated_options.whatsApp) || (this.props.location.state === 'sms' && !this.props.automated_options.twilio) || (this.props.location.state === 'messenger' && !this.props.user.facebookInfo) || (this.props.location.state === 'whatsApp' && !this.props.automated_options.whatsApp)}>
+                    <button onClick={this.goToNext} className='btn btn-primary m-btn m-btn--custom m-btn--icon' data-wizard-action='next' disabled={(!this.props.user.connectFacebook && !this.props.automated_options.twilio && !this.props.automated_options.whatsApp) || (this.props.location.state === 'sms' && !this.props.automated_options.twilio) || (this.props.location.state === 'messenger' && !this.props.user.facebookInfo) || (this.props.location.state === 'whatsApp' && !this.props.automated_options.whatsApp)}>
                       <span>
                         <span>Continue</span>&nbsp;&nbsp;
                         <i className='la la-arrow-right' />
