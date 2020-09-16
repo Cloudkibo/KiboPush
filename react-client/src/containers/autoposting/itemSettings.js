@@ -420,6 +420,8 @@ class ItemSettings extends React.Component {
       this.props.history.push({
         pathname: `/autoposting`
       })
+    } else {
+      this.msg.error(res.description || 'Failed to update autoposting');
     }
   }
 
