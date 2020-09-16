@@ -6,6 +6,7 @@ import { createShopifyChatbot } from '../../redux/actions/chatbotAutomation.acti
 import AlertContainer from 'react-alert'
 import MODAL from '../../components/extras/modal'
 import { getFbAppId } from '../../redux/actions/basicinfo.actions'
+import { registerAction } from '../../utility/socketio'
 
 const MessengerPlugin = require('react-messenger-plugin').default
 
@@ -48,13 +49,22 @@ class ConfigureShopifyChatbot extends React.Component {
         appId={this.props.fbAppId}
         pageId={this.state.page.pageId}
         size='large'
-        passthroughParams='_chatbot'
+        passthroughParams='_shopify_chatbot'
       />
     )
   }
 
   componentDidMount() {
     document.title = `KiboChat | Shopify Chatbot for ${this.state.page.pageName}`
+
+    let comp = this
+    registerAction({
+      event: 'chatbot.test.message',
+      action: function (data) {
+        comp.msg.success('Sent successfully on messenger')
+        comp.refs._open_test_chatbot_modal.click()
+      }
+    })
   }
 
   setPaymentMethod(e) {
