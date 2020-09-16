@@ -453,7 +453,7 @@ export function changeStatus (data, handleActiveSession) {
   console.log('changeStatus called')
   return (dispatch) => {
     callApi('sessions/changeStatus', 'post', data).then(res => {
-      handleActiveSession()
+      handleActiveSession(res)
     })
   }
 }
