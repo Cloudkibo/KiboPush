@@ -178,7 +178,7 @@ export function addCategory (data, msg) {
           msg.success('Category added successfully')
           dispatch(loadCategoriesList())
         } else {
-          let errorMsg = res.description || 'Please enter a category'
+          const errorMsg = res.description || 'Please enter a category'
           msg.error(errorMsg)
         }
       })

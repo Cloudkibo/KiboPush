@@ -37,7 +37,9 @@ import {
   alUserslLocales,
   setUsersView,
   loadMetricsWhatsApp,
-  sendWhatsAppMetricsEmail
+  sendWhatsAppMetricsEmail,
+  fetchPlatformStatsMonthly,
+  fetchPlatformStatsWeekly
 } from '../../redux/actions/backdoor.actions'
 import { saveUserInformation } from '../../redux/dispatchers/backdoor.dispatcher'
 import { bindActionCreators } from 'redux'
@@ -84,6 +86,8 @@ class OperationalDashboard extends React.Component {
     // props.loadPollsGraphData(0)
     // props.loadSurveysGraphData(0)
     // props.loadSessionsGraphData(0)
+    props.fetchPlatformStatsMonthly()
+    props.fetchPlatformStatsWeekly()
     props.fetchPageAnalytics({days: 10})
     // props.fetchAutopostingPlatformWise()
     props.fetchOtherAnalytics({days: 'all'})
@@ -702,7 +706,9 @@ function mapDispatchToProps (dispatch) {
     fetchPageAnalytics,
     setUsersView,
     loadMetricsWhatsApp,
-    sendWhatsAppMetricsEmail
+    sendWhatsAppMetricsEmail,
+    fetchPlatformStatsMonthly,
+    fetchPlatformStatsWeekly
   },
     dispatch)
 }

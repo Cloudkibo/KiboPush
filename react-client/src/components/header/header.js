@@ -11,6 +11,7 @@ import {
   updatePicture,
   updateShowIntegrations,
   disconnectFacebook,
+  saveEnvironment,
   logout
 } from '../../redux/actions/basicinfo.actions'
 import {
@@ -18,6 +19,7 @@ import {
 } from '../../redux/actions/backdoor.actions'
 import { fetchNotifications, markRead } from '../../redux/actions/notifications.actions'
 import auth from '../../utility/auth.service'
+import cookie from 'react-cookie'
 
 // Components
 import HEADERMENU from './headerMenu'
@@ -58,6 +60,9 @@ class Header extends React.Component {
   componentDidMount () {
     if (this.props.user) {
       this.setPlatform(this.props.user)
+    }
+    if (cookie.load('environment')) {
+      this.props.saveEnvironment(cookie.load('environment'))
     }
   }
 
@@ -205,7 +210,6 @@ class Header extends React.Component {
     if (interval > 1) {
       return interval + ' minutes ago'
     }
-
     return Math.floor(seconds) + ' seconds ago'
   }
 
@@ -392,7 +396,8 @@ function mapStateToProps(state) {
     userView: (state.backdoorInfo.userView),
     notifications: (state.notificationsInfo.notifications),
     subscribers: (state.subscribersInfo.subscribers),
-    otherPages: (state.pagesInfo.otherPages)
+    otherPages: (state.pagesInfo.otherPages),
+    currentEnvironment: (state.basicInfo.currentEnvironment)
   }
 }
 
@@ -406,6 +411,7 @@ function mapDispatchToProps(dispatch) {
     updateShowIntegrations,
     disconnectFacebook,
     logout,
+    saveEnvironment,
     setUsersView
   }, dispatch)
 }

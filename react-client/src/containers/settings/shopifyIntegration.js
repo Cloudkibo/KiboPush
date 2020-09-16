@@ -15,7 +15,7 @@ class ShopifyIntegration extends React.Component {
       shopifyIntegration: {
         name: 'Shopify Integration',
         icon: 'fa fa-cart-plus',
-        description: 'Shpify Integration allows you to create WhatsApp Ecommerce Chatbots which can handle all the customer purchase journey through messages.',
+        description: 'Shopify Integration allows you to create Ecommerce Chatbots which can handle the entire customer purchase journey through messages.',
         color: '#4A8CFF'
       }
     }
