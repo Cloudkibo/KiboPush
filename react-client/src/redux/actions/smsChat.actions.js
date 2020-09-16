@@ -242,7 +242,7 @@ export function changeStatus (data, handleActiveSession) {
   console.log('changeStatus called')
   return (dispatch) => {
     callApi('smsSessions/changeStatus', 'post', data).then(res => {
-      handleActiveSession()
+      handleActiveSession(changeStatus)
     })
   }
 }

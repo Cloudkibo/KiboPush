@@ -138,7 +138,7 @@ class WhatsAppChat extends React.Component {
       activeSession.pendingResponse = value
       this.setState({ sessions, activeSession })
     } else {
-      const message = res.description || value ? 'Failed to remove pending flag' : 'Failed to mark session as pending'
+      const message = res.description ? res.description : value ? 'Failed to remove pending flag' : 'Failed to mark session as pending'
       this.alertMsg.error(message)
     }
   }
@@ -297,9 +297,9 @@ class WhatsAppChat extends React.Component {
       this.alertMsg.success('Value set successfully')
     } else {
       if (res.status === 'failed') {
-        this.msg.error(`Unable to set Custom field value. ${res.description}`)
+        this.alertMsg.error(`Unable to set Custom field value. ${res.description}`)
       } else {
-        this.msg.error('Unable to set Custom Field value')
+        this.alertMsg.error('Unable to set Custom Field value')
       }
     }
   }

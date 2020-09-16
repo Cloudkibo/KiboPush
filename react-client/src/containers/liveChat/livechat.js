@@ -162,6 +162,7 @@ class LiveChat extends React.Component {
   }
 
   updatePendingStatus (res, value, sessionId) {
+    console.log('response from updatePendingStatus', res.description)
     if (res.status === 'success') {
       let sessions = this.state.sessions
       let activeSession = this.state.activeSession
@@ -170,7 +171,8 @@ class LiveChat extends React.Component {
       activeSession.pendingResponse = value
       this.setState({sessions, activeSession})
     } else {
-      const message = res.description || value ? 'Failed to remove pending flag' : 'Failed to mark session as pending'
+      let message = res.description ? res.description :  value ? 'Failed to remove pending flag' : 'Failed to mark session as pending'
+      console.log('message', message)
       this.alertMsg.error(message)
     }
   }
@@ -393,10 +395,10 @@ class LiveChat extends React.Component {
       this.alertMsg.success('Value set successfully')
     } else {
       if (res.status === 'failed') {
-        this.msg.error(`Unable to set Custom field value. ${res.description}`)
+        this.alertMsg.error(`Unable to set Custom field value. ${res.description}`)
       } else {
-        let msg = res.description || 'Unable to set Custom Field value'
-        this.msg.error(msg)
+        let errorMsg = res.description || 'Unable to set Custom Field value'
+        this.alertMsg.error(errorMsg)
       }
     }
   }

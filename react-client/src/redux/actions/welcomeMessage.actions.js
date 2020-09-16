@@ -38,8 +38,8 @@ export function createWelcomeMessage (messageData, msg) {
           dispatch(saveWelcomeMessage(messageData))
           msg.success('Message saved successfully')
         } else {
-          let msg = res.description || 'Message cannot be saved'
-          msg.error(msg)
+          let errorMsg = res.description || 'Message cannot be saved'
+          msg.error(errorMsg)
         }
       })
   }
