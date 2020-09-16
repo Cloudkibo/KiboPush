@@ -12,8 +12,10 @@ export function isWelcomeMessageEnabled (data, cb) {
         if (res.status === 'success') {
           dispatch(loadMyPagesList())
           if(cb) {
-            cb(data.isWelcomeMessageEnabled)
+            cb(res, data.isWelcomeMessageEnabled)
           }
+        } else {
+          if (cb) cb(res)
         }
       })
   }
@@ -36,7 +38,8 @@ export function createWelcomeMessage (messageData, msg) {
           dispatch(saveWelcomeMessage(messageData))
           msg.success('Message saved successfully')
         } else {
-          msg.error('Message cannot be saved')
+          let errorMsg = res.description || 'Message cannot be saved'
+          msg.error(errorMsg)
         }
       })
   }

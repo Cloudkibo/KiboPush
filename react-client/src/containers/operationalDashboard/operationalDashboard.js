@@ -35,15 +35,16 @@ import {
   fetchOtherAnalytics,
   fetchPageAnalytics,
   alUserslLocales,
-  saveUserView,
+  setUsersView,
   loadMetricsWhatsApp,
-  sendWhatsAppMetricsEmail
+  sendWhatsAppMetricsEmail,
+  fetchPlatformStatsMonthly,
+  fetchPlatformStatsWeekly
 } from '../../redux/actions/backdoor.actions'
 import { saveUserInformation } from '../../redux/dispatchers/backdoor.dispatcher'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import AlertContainer from 'react-alert'
-import auth from '../../utility/auth.service'
 import {localeCodeToEnglish} from '../../utility/utils'
 
 class OperationalDashboard extends React.Component {
@@ -85,6 +86,8 @@ class OperationalDashboard extends React.Component {
     // props.loadPollsGraphData(0)
     // props.loadSurveysGraphData(0)
     // props.loadSessionsGraphData(0)
+    props.fetchPlatformStatsMonthly()
+    props.fetchPlatformStatsWeekly()
     props.fetchPageAnalytics({days: 10})
     // props.fetchAutopostingPlatformWise()
     props.fetchOtherAnalytics({days: 'all'})
@@ -107,6 +110,7 @@ class OperationalDashboard extends React.Component {
     this.debounce = this.debounce.bind(this)
     this.setUsersView = this.setUsersView.bind(this)
     this.onDaysChangePlatform = this.onDaysChangePlatform.bind(this)
+    this.handleUsersView = this.handleUsersView.bind(this)
   }
 
   onDaysChangePlatform (e) {
@@ -125,8 +129,10 @@ class OperationalDashboard extends React.Component {
   }
 
   setUsersView (user) {
-    auth.putActingAsUser(user.domain_email, user.name)
-    this.props.saveUserView(true)
+    this.props.setUsersView({type: 'set', domain_email: user.domain_email, name: user.name}, this.handleUsersView)
+  }
+
+  handleUsersView () {
     this.props.history.push({
       pathname: `/dashboard`
     })
@@ -698,9 +704,11 @@ function mapDispatchToProps (dispatch) {
     alUserslLocales,
     fetchOtherAnalytics,
     fetchPageAnalytics,
-    saveUserView,
+    setUsersView,
     loadMetricsWhatsApp,
-    sendWhatsAppMetricsEmail
+    sendWhatsAppMetricsEmail,
+    fetchPlatformStatsMonthly,
+    fetchPlatformStatsWeekly
   },
     dispatch)
 }

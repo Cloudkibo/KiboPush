@@ -1,5 +1,6 @@
 import callApi from '../../utility/api.caller.service'
 import fileDownload from 'js-file-download'
+import {getuserdetails} from './basicinfo.actions'
 import {
   handleAction,
   updateUsersList,
@@ -489,6 +490,7 @@ export function fetchAutopostingPlatformWise () {
   }
 }
 
+
 // Fetch Autoposting Platform Stats Datewise
 export function fetchAutopostingPlatformWiseDateWise (startDate) {
   return (dispatch) => {
@@ -533,6 +535,18 @@ export function fetchPlatformStatsMonthly () {
       .then(res => {
         console.log('response from fetchPlatformStatsMonthly', res)
         dispatch(handleAction(ActionTypes.UPDATE_MONTHLY_PLATFORM_STATS, res.payload))
+      })
+  }
+}
+
+export function fetchPlatformStatsWeekly () {
+  let date = new Date()
+  date.setDate(date.getDate() - 10)
+  return (dispatch) => {
+    callApi(`operational/platformwise/ranged`, 'post', {startDate: date.toISOString()})
+      .then(res => {
+        console.log('response from fetchPlatformStatsWeekly', res)
+        dispatch(handleAction(ActionTypes.UPDATE_WEEKLY_PLATFORM_STATS, res.payload))
       })
   }
 }
@@ -694,6 +708,18 @@ export function showMetrics (data) {
     data
   }
 }
+
+export function setUsersView (data, callback) {
+  return (dispatch) => {
+    callApi('backdoor/actingAsUser', 'post', data).then(res => {
+      if (res.status === 'success') {
+        dispatch(getuserdetails())
+        callback()
+      }
+    })
+  }
+}
+
 export function loadMetricsWhatsApp (data) {
   return (dispatch) => {
     callApi('backdoor/metricsWhatsApp', 'post', data).then(res => {
