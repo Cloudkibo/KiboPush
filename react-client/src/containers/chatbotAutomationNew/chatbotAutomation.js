@@ -189,7 +189,7 @@ class ChatbotAutomation extends React.Component {
                         <div style={{ marginLeft: '50px' }} className='row'>
                           {
                             manualChatbots && manualChatbots.length > 0
-                              ? this.props.chatbots.map((chatbot) => (
+                              ? manualChatbots.map((chatbot) => (
                                 <CHATBOT
                                   key={chatbot._id}
                                   profilePic={chatbot.pageId.pagePic}
