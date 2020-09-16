@@ -10,7 +10,7 @@ class Header extends React.Component {
 
   render() {
     return (
-      <div style={{ padding: '1.3rem', borderBottom: '1px solid #ebedf2' }}>
+      <div style={{ padding: '1.3rem', borderBottom: '1px solid #ebedf2', flex: '0 0 auto' }}>
         {
           this.props.isMobile &&
           <button

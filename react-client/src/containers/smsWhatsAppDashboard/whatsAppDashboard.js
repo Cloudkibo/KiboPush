@@ -37,7 +37,7 @@ class Dashboard extends React.Component {
     this.props.loadSubscriberSummaryWhatsApp({ days: 'all' })
     window.location.hostname.includes('kiboengage.cloudkibo.com')
     if (window.location.hostname.includes('kiboengage.cloudkibo.com') || window.location.hostname.includes('localhost')) {
-      this.props.loadSentSeenWhatsApp({ days: 30 })
+      // this.props.loadSentSeenWhatsApp({ days: 30 })
     } else if (window.location.hostname.includes('kibochat.cloudkibo.com')) {
       let endDate = new Date()
       let startDate = new Date(
