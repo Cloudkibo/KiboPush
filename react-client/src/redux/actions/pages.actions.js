@@ -116,21 +116,27 @@ export function addPages (handleLoader) {
   }
 }
 
-export function removePage (page) {
+export function removePage (page, msg) {
   console.log('page data: ', page)
   return (dispatch) => {
     callApi('pages/disable', 'post', page)
       .then(res => {
+        if (res.status !== 'success') {
+          msg.error(res.description || 'Failed to remove page')
+        }
         console.log('res.payload', res.payload)
         dispatch(loadMyPagesListNew({last_id: 'none', number_of_records: 10, first_page: 'first', filter: false, filter_criteria: {search_value: ''}}))
       })
   }
 }
 
-export function removePageInAddPage (page) {
+export function removePageInAddPage (page, msg) {
   return (dispatch) => {
     callApi('pages/disable', 'post', page)
     .then(res => {
+      if (res.status !== 'success') {
+        msg.error(res.description || 'Failed to remove page')
+      }
       console.log('res.payload', res.payload)
       dispatch(addPages())
       dispatch(loadMyPagesListNew({last_id: 'none', number_of_records: 10, first_page: 'first', filter: false, filter_criteria: {search_value: ''}}))
@@ -180,7 +186,7 @@ export function refreshPages (handleLoader, msg) {
         } else {
           if(handleLoader) {
             handleLoader()
-            msg.error('Unable to refresh pages')
+            msg.error(res.description || 'Unable to refresh pages')
           }
         }
       })

@@ -124,7 +124,7 @@ class CreateSponsoredMessage extends React.Component {
         pathname: '/sponsoredMessaging'
       })
     } else {
-      this.msg.error(res.payload)
+      this.msg.error(res.description || res.payload)
     }
   }
 

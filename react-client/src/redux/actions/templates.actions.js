@@ -283,6 +283,8 @@ export function deleteCategory (id, msg) {
         if (res.status === 'success') {
           msg.success('Category deleted successfully')
           dispatch(loadCategoriesList())
+        } else {
+          msg.error(res.description)
         }
       })
   }
@@ -295,7 +297,8 @@ export function editCategory (data, msg) {
           msg.success('Category saved successfully')
           dispatch(loadCategoriesList())
         } else {
-          msg.error('Category edit failure')
+          let errorMsg = res.description || 'Category edit failure'
+          msg.error(errorMsg)
         }
       })
   }
@@ -308,7 +311,8 @@ export function editPoll (data, msg) {
           msg.success('Poll saved successfully')
           dispatch(loadPollsList())
         } else {
-          msg.error('Poll edit failure')
+          let errorMsg = res.description || 'Poll edit failure'
+          msg.error(errorMsg)
         }
       })
   }
@@ -321,7 +325,8 @@ export function editSurvey (data, msg) {
           msg.success('Survey edited successfully')
           dispatch(loadPollsList())
         } else {
-          msg.error('Survey edit failure')
+          let errorMsg = res.description || 'Survey edit failure'
+          msg.error(errorMsg)
         }
       })
   }
@@ -393,7 +398,8 @@ export function editBroadcast (data, msg) {
           msg.success('Broadcast updated successfully.')
           dispatch(loadBroadcastsList())
         } else {
-          msg.error('Failed to update broadcast.')
+          let errorMsg = res.description || 'Failed to update broadcast.'
+          msg.error(errorMsg)
         }
       })
   }

@@ -244,7 +244,7 @@ class Autoposting extends React.Component {
                 <button style={{ float: 'right' }}
                   className='btn btn-primary btn-sm'
                   onClick={() => {
-                    this.props.deleteautoposting(this.state.deleteid)
+                    this.props.deleteautoposting(this.state.deleteid, this.msg)
                   }}
                   data-dismiss='modal'>Delete
                           </button>

@@ -207,7 +207,7 @@ export function deletePost (id, msg) {
         dispatch(removePost(id))
         dispatch(fetchPostsAnalytics(res.payload))
       } else {
-        msg.error('Error in deleting post')
+        msg.error(res.description || 'Error in deleting post')
       }
     })
   }
@@ -253,8 +253,7 @@ export function createCommentCapture (data, msg, handleCreate) {
                 msg.error(res.payload)
             }
           } else {
-            const errorMsg = res.description || 'Failed to create Comment Capture record'
-            msg.error(errorMsg)
+            msg.error(res.description || 'Failed to create Comment Capture record')
           }
         }
       })
@@ -275,7 +274,7 @@ export function editCommentCapture (data, msg, handleEdit) {
           if (res.status === 'failed' && res.description) {
             msg.error(`Failed to save changes. ${res.description}`)
           } else {
-            msg.error('Failed to save changes')
+            msg.error(res.description || 'Failed to save changes')
           }
         }
       })

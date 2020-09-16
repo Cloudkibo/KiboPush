@@ -74,7 +74,7 @@ class InviteMembers extends React.Component {
         pathname: `/inviteMembers`
       })
     } else {
-      this.msg.error(res.description)
+      this.msg.error(res.description || res.payload)
     }
   }
 

@@ -197,6 +197,8 @@ export function updateCard (data, msg, callback) {
         msg.success('Card added successfully')
         callback()
         dispatch(getuserdetails())
+      } else {
+        msg.error(res.description)
       }
     })
   }

@@ -119,8 +119,7 @@ export function createBot (data, msg, cb) {
         if (res.status === 'success') {
           dispatch(showCreatedBot(res.payload))
         } else {
-          const errorMsg = res.description || res.payload
-          msg.error(errorMsg)
+          msg.error(res.description || res.payload)
         }
         cb(res)
       })
@@ -136,7 +135,7 @@ export function editBot (data, msg, cb) {
           dispatch(loadBotsList())
           msg.success(res.payload)
         } else {
-          msg.error(res.payload)
+          msg.error(res.description || res.payload)
         }
         cb(res.status)
       })
@@ -164,7 +163,7 @@ export function deleteBot (id, password, msg, cb) {
           msg.success('Bot deleted successfully')
         }
          else {
-          msg.error(res.payload)
+          msg.error(res.description || res.payload)
          }
          cb(res.status)
       })

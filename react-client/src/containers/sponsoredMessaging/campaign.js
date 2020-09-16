@@ -63,7 +63,7 @@ class Campaign extends React.Component {
       }
       this.props.changeCurrentStep('adSet')
     } else {
-      this.props.msg.error(res.payload)
+      this.props.msg.error(res.description || res.payload)
     }
   }
 

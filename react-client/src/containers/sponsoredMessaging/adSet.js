@@ -148,7 +148,7 @@ class AdSet extends React.Component {
       }
       this.props.changeCurrentStep('ad')
     } else {
-      this.props.msg.error(res.payload)
+      this.props.msg.error(res.description || res.payload)
     }
   }
 

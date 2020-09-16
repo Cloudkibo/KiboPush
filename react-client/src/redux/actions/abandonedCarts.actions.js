@@ -85,6 +85,8 @@ export function updateStoreStatus (data, msg) {
           // Add logic to display success Message
           console.log('updated successfully: ' + JSON.stringify(res))
           msg.success('Status updated successfully')
+        } else {
+          msg.error(res.description || 'Failed to update status')
         }
       })
   }
@@ -100,6 +102,8 @@ export function updateStoreInfo (id, data, msg) {
           // Add logic to display success Message
           console.log('updated successfully: ' + JSON.stringify(res))
           msg.success('Settings updated successfully')
+        } else {
+          msg.error(res.description || 'Failed to update status')
         }
       })
   }
@@ -115,7 +119,7 @@ export function sendAbandonedCartNow (data, msg) {
           msg.success('Abandoned Cart Sent Successfully')
           dispatch(updateSentCount(res.payload.id))
         } else if (res.status === 'failed') {
-          msg.error('Abandoned Cart Sent Failed')
+          msg.error(res.description || 'Abandoned Cart Sent Failed')
         }
       })
   }

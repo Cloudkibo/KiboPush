@@ -49,7 +49,7 @@ export function deleteNewsFeed (id, msg, filters) {
           msg.success('Feed has been deleted successfully')
           dispatch(fetchNewsFeed(fetchData))
         } else {
-          msg.error('Unable to delete Feed')
+          msg.error(res.description || 'Unable to delete Feed')
         }
       })
 
@@ -120,8 +120,7 @@ export function createNewsFeed (data, msg, handle, toggleLoader) {
           if (toggleLoader) {
             toggleLoader()
           }
-          const errorMsg = res.description || res.payload
-          msg.error(errorMsg)
+          msg.error(res.description || res.payload)
         }
       })
   }
@@ -171,7 +170,7 @@ export function updateNewsFeed (data, msg, fetchData, toggleLoader, filters) {
           if (res.payload) {
             msg.error(res.payload)
           } else {
-            msg.error('Failed to update feed ')
+            msg.error(res.description || 'Failed to update feed ')
           }
         }
       })
