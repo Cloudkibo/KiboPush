@@ -182,7 +182,7 @@ class Sidebar extends Component {
 
   showAbandonedCarts() {
     if (this.props.user) {
-      if (this.state.abandonedCarts && this.props.user.isSuperUser) {
+      if (!this.props.isMobile && this.state.abandonedCarts && this.props.user.isSuperUser) {
         // include user persmissions
         return (
           <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
@@ -200,7 +200,7 @@ class Sidebar extends Component {
 
   showOperationalDashboard() {
     if (this.props.user) {
-      if (this.props.user.isSuperUser && (getCurrentProduct() === 'KiboEngage' || getCurrentProduct() === 'localhost')) {
+      if (!this.props.isMobile && this.props.user.isSuperUser && (getCurrentProduct() === 'KiboEngage' || getCurrentProduct() === 'localhost')) {
         return (
           <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
             <Link to='/operationalDashboard' className='m-menu__link m-menu__toggle'>
@@ -236,7 +236,7 @@ class Sidebar extends Component {
     if (this.props.user) {
       if (this.state.subscribers && this.props.user.permissions.subscriberPermission && this.props.user.plan.manage_subscribers) {
         return (
-          <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
+          <li onClick={() => {document.getElementById('m_aside_left_close_btn').click()}} className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
             <Link to={this.props.user.platform === 'messenger' ? '/subscribers' : '/smsSubscribers'} className='m-menu__link m-menu__toggle'>
               <i className='m-menu__link-icon flaticon-user-ok' title='Subscribers' />
               <span className='m-menu__link-text'>Subscribers</span>
@@ -250,7 +250,7 @@ class Sidebar extends Component {
   }
 
   showCustomFields() {
-    if (this.props.user && this.props.user.platform === 'messenger') {
+    if (!this.props.isMobile && this.props.user && this.props.user.platform === 'messenger') {
       if (this.state.subscribers && this.props.user.permissions.subscriberPermission && this.props.user.plan.manage_subscribers) {
         return (
           <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
@@ -267,7 +267,7 @@ class Sidebar extends Component {
   }
 
   showTags() {
-    if (this.props.user && this.props.user.platform === 'messenger') {
+    if (!this.props.isMobile && this.props.user && this.props.user.platform === 'messenger') {
       if (this.state.subscribers && this.props.user.permissions.subscriberPermission && this.props.user.plan.manage_subscribers) {
         return (
           <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
@@ -284,7 +284,7 @@ class Sidebar extends Component {
   }
 
   showSponsoredMessaging() {
-    if (this.props.user) {
+    if (!this.props.isMobile && this.props.user) {
       // include user persmissions
 
       return (
@@ -304,7 +304,7 @@ class Sidebar extends Component {
   }
 
   showBroadcastingItems() {
-    if (!this.state.isKiboChat && !this.state.isKiboLite) {
+    if (!this.props.isMobile && !this.state.isKiboChat && !this.state.isKiboLite) {
       return (
         <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
           <span className='m-menu__link m-menu__toggle'>
@@ -359,7 +359,7 @@ class Sidebar extends Component {
   }
 
   showAutomationItems() {
-    if (!this.state.isKiboLite && this.props.user && (this.props.user.platform === 'messenger' || this.props.user.platform === 'whatsApp')) {
+    if (!this.props.isMobile && !this.state.isKiboLite && this.props.user && (this.props.user.platform === 'messenger' || this.props.user.platform === 'whatsApp')) {
       return (
         <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
           <span className='m-menu__link m-menu__toggle'>
@@ -442,7 +442,7 @@ class Sidebar extends Component {
   }
 
   showGrowthToolsItems() {
-    if (this.props.user && this.props.user.platform === 'messenger' && (window.location.host.includes('kiboengage.cloudkibo.com') || window.location.host === 'localhost:3021' || window.location.host === 'localhost:3000')) {
+    if (!this.props.isMobile && this.props.user && this.props.user.platform === 'messenger' && (window.location.host.includes('kiboengage.cloudkibo.com') || window.location.host === 'localhost:3021' || window.location.host === 'localhost:3000')) {
       return (
         <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
           <span className='m-menu__link m-menu__toggle'>
@@ -501,7 +501,7 @@ class Sidebar extends Component {
               {this.showPagesItem()}
               {this.showPersistentMenuItem()}
               {this.showWelcomeMessageItem()}
-              {this.showGreetingText()}
+              {!this.props.isMobile && this.showGreetingText()}
             </ul>
           </div>
         </li>
@@ -510,7 +510,7 @@ class Sidebar extends Component {
   }
 
   showOrganizationItems() {
-    if (this.props.user && (this.props.user.currentPlan.unique_ID === 'plan_C' || this.props.user.currentPlan.unique_ID === 'plan_D')) {
+    if (!this.props.isMobile && this.props.user && (this.props.user.currentPlan.unique_ID === 'plan_C' || this.props.user.currentPlan.unique_ID === 'plan_D')) {
       return (
         <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
           <span className='m-menu__link m-menu__toggle'>
@@ -539,7 +539,7 @@ class Sidebar extends Component {
   }
 
   showSettings() {
-    if (this.state.settings) {
+    if (!this.props.isMobile && this.state.settings) {
       return (
         <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
           <Link to='/settings' className='m-menu__link m-menu__toggle'>
@@ -1112,7 +1112,7 @@ class Sidebar extends Component {
     if (this.props.user) {
       if (this.state.pages && this.props.user.permissions.pagesPermission && this.props.user.plan.manage_pages) {
         return (
-          <li className='m-menu__item' aria-haspopup='true' >
+          <li onClick={() => {document.getElementById('m_aside_left_close_btn').click()}} className='m-menu__item' aria-haspopup='true' >
             <Link to='/pages' className='m-menu__link'>
               <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
                 <span />
@@ -1131,7 +1131,7 @@ class Sidebar extends Component {
 
   showPersistentMenuItem() {
     if (this.props.user) {
-      if (this.state.persistentMenu && this.props.user.permissions.menuPermission && this.props.user.plan.menu) {
+      if (!this.props.isMobile && this.state.persistentMenu && this.props.user.permissions.menuPermission && this.props.user.plan.menu) {
         return (
           <li className='m-menu__item' aria-haspopup='true' >
             <Link to='/menu' className='m-menu__link'>
@@ -1152,7 +1152,7 @@ class Sidebar extends Component {
 
   showWelcomeMessageItem() {
     if (this.props.user) {
-      if (this.state.welcomeMessage && this.props.user.permissions.pagesPermission) {
+      if (!this.props.isMobile && this.state.welcomeMessage && this.props.user.permissions.pagesPermission) {
         return (
           <li className='m-menu__item' aria-haspopup='true' >
             <Link to='/welcomeMessage' className='m-menu__link'>
@@ -1250,7 +1250,7 @@ class Sidebar extends Component {
   }
 
   showBusinessGateway() {
-    if (this.props.user && this.state.businessGateway) {
+    if (!this.props.isMobile && this.props.user && this.state.businessGateway) {
       return (
         <li className='m-menu__item' aria-haspopup='true' >
           <Link to='/businessGateway' className='m-menu__link'>
@@ -1382,6 +1382,7 @@ function mapStateToProps(state) {
   return {
     sessions: (state.liveChat.sessions),
     user: (state.basicInfo.user),
+    isMobile: (state.basicInfo.isMobile),
     updatedUser: (state.basicInfo.updatedUser),
     socketSession: (state.liveChat.socketSession),
     userChat: (state.liveChat.userChat),

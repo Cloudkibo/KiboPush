@@ -53,11 +53,7 @@ class ResendEmail extends React.Component {
                       KIBOPUSH
                     </h4>
                   </div>
-                </div>
-              </div>
-              <div style={{float: 'right'}} className='m-stack__item' id='m_header_nav'>
-                <div style={{padding: '0 30px', boxShadow: 'none', display: this.props.isMobile ? 'flex' : 'table'}} id='m_header_topbar' className='m-topbar  m-stack m-stack--ver m-stack--general'>
-                  <div className='m-stack__item m-stack__item--middle m-topbar__nav-wrapper'>
+                  <div className='m-stack__item m-stack__item--middle m-brand__tools'>
                     <a href='#/' onClick={() => { auth.logout() }} className='btn btn-focus m-btn m-btn--pill m-btn--custom m-btn--air'>
                       Logout
                     </a>
