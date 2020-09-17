@@ -1306,7 +1306,7 @@ class Sidebar extends Component {
   inviteSubscribers() {
     if (this.props.user && this.props.user.platform === 'whatsApp') {
       return (
-        <li className='m-menu__item' aria-haspopup='true' >
+        <li onClick={() => {document.getElementById('m_aside_left_close_btn').click()}} className='m-menu__item' aria-haspopup='true' >
           <Link to='/uploadContactsWhatsApp' className='m-menu__link'>
             <i className='m-menu__link-icon flaticon-user-add'>
               <span />
