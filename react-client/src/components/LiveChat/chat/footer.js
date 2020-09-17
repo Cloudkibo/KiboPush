@@ -865,7 +865,8 @@ class Footer extends React.Component {
           width: '100%',
           padding: '15px',
           borderTop: '1px solid #ebedf2',
-          background: 'white'
+          background: 'white',
+          flex: '0 0 auto'
         }}
       >
         <MODAL
