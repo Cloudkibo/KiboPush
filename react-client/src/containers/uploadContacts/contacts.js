@@ -13,6 +13,7 @@ import AlertContainer from 'react-alert'
 import Select from 'react-select'
 import YouTube from 'react-youtube'
 import fileDownload from 'js-file-download'
+import moment from 'moment'
 var json2csv = require('json2csv')
 
 
@@ -75,7 +76,7 @@ class Contact extends React.Component {
           'Subscription Datetime' : new Date(subscriber.datetime).toUTCString(),
           'Messages count': subscriber.messagesCount ? subscriber.messagesCount : '0',
           'Last Message Received': new Date(subscriber.lastMessagedAt).toUTCString(),
-          'Last Interaction with Subscriber': new Date(subscriber.last_activity_time).toUTCString() 
+          'Last Interaction with Subscriber': new Date(subscriber.last_activity_time).toUTCString()
         }
         data.push(subscriberObj)
       }
@@ -446,9 +447,24 @@ class Contact extends React.Component {
                         </h3>
                       </div>
                     </div>
-                    { this.props.user.platform === 'sms' &&
-                    <div className='m-portlet__head-tools'>
-                    <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' onClick={this.syncContacts}>
+                    {
+                      !this.props.isMobile && this.props.user.platform === 'sms' &&
+                      <div className='m-portlet__head-tools'>
+                        <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' onClick={this.syncContacts}>
+                          <span>
+                            <i className='la la-refresh' />
+                            <span>
+                              Sync contacts with Twilio
+                            </span>
+                          </span>
+                        </button>
+                      </div>
+                    }
+                  </div>
+                  {
+                    this.props.isMobile && this.props.user.platform === 'sms' &&
+                    <div className="col-xl-4 order-1 order-xl-2 m--align-right m--margin-top-20">
+                      <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' onClick={this.syncContacts}>
                         <span>
                           <i className='la la-refresh' />
                           <span>
@@ -456,42 +472,48 @@ class Contact extends React.Component {
                           </span>
                         </span>
                       </button>
+                      <div class="m-separator m-separator--dashed d-xl-none" />
                     </div>
-                    }
-                  </div>
+                  }
                   <div className='m-portlet__body'>
                     {
                       this.props.user.platform === 'sms' &&
-                      <div className='row filters' style={{ marginBottom: '25px', display: 'flex' }}>
-                        <div className='col-4'>
-                          <div className='m-input-icon m-input-icon--left'>
-                            <input type='text' className='form-control' value={this.state.searchValue} placeholder='Search...' id='generalSearch' onChange={this.searchSubscriber} />
-                            <span className='m-input-icon__icon m-input-icon__icon--left'>
-                              <span><i className='la la-search' /></span>
-                            </span>
+                      <div className='m-form m-form--label-align-right m--margin-bottom-30'>
+                        <div className='row align-items-center'>
+                          <div className='col-xl-12 order-2 order-xl-1'>
+                            <div className='row filters' style={{ display: 'flex' }}>
+                              <div className='col-12 col-md-4'>
+                                <div className='m-input-icon m-input-icon--left'>
+                                  <input type='text' className='form-control' value={this.state.searchValue} placeholder='Search...' id='generalSearch' onChange={this.searchSubscriber} />
+                                  <span className='m-input-icon__icon m-input-icon__icon--left'>
+                                    <span><i className='la la-search' /></span>
+                                  </span>
+                                </div>
+                                <div className='d-md-none m--margin-bottom-10' />
+                              </div>
+                              <div className='col-12 col-md-4'>
+                                <Select
+                                  isClearable
+                                  isSearchable
+                                  options={this.props.contactLists ? this.props.contactLists.map(list => { return {value: list._id, label: list.name} }).filter(x => x.value !== 'master') : []}
+                                  onChange={this.handleFilterByList}
+                                  value={this.state.list}
+                                  placeholder='Filter by List'
+                                />
+                                <div className='d-md-none m--margin-bottom-10' />
+                              </div>
+                              <div className='col-12 col-md-4'>
+                                <Select
+                                  isClearable
+                                  isSearchable
+                                  options={[{label: 'Subscribed', value: true}, {label: 'Unsubscribed', value: false}]}
+                                  onChange={this.handleFilterByStatus}
+                                  value={this.state.status}
+                                  placeholder='Filter by Status'
+                                />
+                              </div>
+                            </div>
                           </div>
-                        </div>
-
-                        <div className='col-4'>
-                          <Select
-                              isClearable
-                              isSearchable
-                              options={this.props.contactLists ? this.props.contactLists.map(list => { return {value: list._id, label: list.name} }).filter(x => x.value !== 'master') : []}
-                              onChange={this.handleFilterByList}
-                              value={this.state.list}
-                              placeholder='Filter by List'
-                            />
-                        </div>
-
-                        <div className='col-4'>
-                          <Select
-                            isClearable
-                            isSearchable
-                            options={[{label: 'Subscribed', value: true}, {label: 'Unsubscribed', value: false}]}
-                            onChange={this.handleFilterByStatus}
-                            value={this.state.status}
-                            placeholder='Filter by Status'
-                          />
                         </div>
                       </div>
                     }
@@ -518,6 +540,11 @@ class Contact extends React.Component {
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
                             <span style={{width: '100px'}}>Status</span>
                           </th>
+                          <th data-field='subscribedDate'
+                            className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                            <span style={{width: '100px'}}>Subscribed</span>
+                          </th>
+
                           {
                             this.props.user.platform === 'sms' &&
                             <th data-field='lists'
@@ -540,6 +567,7 @@ class Contact extends React.Component {
                             <td data-field='name' className='m-datatable__cell--center m-datatable__cell'><span style={contact.isSubscribed ? subscribedStyle : unsubscribedStyle}>{contact.name}</span></td>
                             <td data-field='number' className='m-datatable__cell--center m-datatable__cell'><span style={contact.isSubscribed ? subscribedStyle : unsubscribedStyle}>{contact.number}</span></td>
                             <td data-field='status' className='m-datatable__cell--center m-datatable__cell'><span style={contact.isSubscribed ? subscribedStyle : unsubscribedStyle}>{contact.isSubscribed ? 'Subscribed' : 'Unsubscribed'}</span></td>
+                            <td data-field='subscribedDate' className='m-datatable__cell--center m-datatable__cell'><span style={contact.isSubscribed ? subscribedStyle : unsubscribedStyle}>{moment(contact.datetime).fromNow()}</span></td>
                             {
                               this.props.user.platform === 'sms' &&  <td data-field='lists' className='m-datatable__cell--center m-datatable__cell'><span style={contact.isSubscribed ? subscribedStyle : unsubscribedStyle}>{this.getLists(contact)}</span></td>
                             }
@@ -606,7 +634,8 @@ function mapStateToProps (state) {
     count: (state.contactsInfo.count),
     user: (state.basicInfo.user),
     automated_options: (state.basicInfo.automated_options),
-    contactLists: (state.contactsInfo.contactLists)
+    contactLists: (state.contactsInfo.contactLists),
+    isMobile: (state.basicInfo.isMobile)
   }
 }
 
