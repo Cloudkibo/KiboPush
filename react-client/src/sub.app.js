@@ -114,8 +114,6 @@ class App extends Component {
       })
     }
 
-    console.log('called component Did mount in sub app.js')
-
     this.unlisten = this.props.history.listen(location => {
       this.setPathAndHeaderProps(location.pathname)
       if (!this.isWizardOrLogin(location.pathname)) {
