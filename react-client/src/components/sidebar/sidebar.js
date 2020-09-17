@@ -1287,7 +1287,7 @@ class Sidebar extends Component {
     // }
     if (this.props.user && this.props.user.platform === 'sms') {
       return (
-        <li className='m-menu__item' aria-haspopup='true' >
+        <li onClick={() => {document.getElementById('m_aside_left_close_btn').click()}} className='m-menu__item' aria-haspopup='true' >
           <Link to={'/uploadContacts'} className='m-menu__link'>
             <i className='m-menu__link-icon fa fa-id-card-o'>
               <span />
