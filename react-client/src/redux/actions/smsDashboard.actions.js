@@ -39,7 +39,7 @@ export function loadSubscriberSummarySms (data) {
       .then(res => {
         console.log('response from loadSubscriberSummary', res)
         if (res.status === 'success') {
-          // dispatch(showSubscriberSummary(res.payload))
+          dispatch(showSubscriberSummary(res.payload))
         }
       })
   }
