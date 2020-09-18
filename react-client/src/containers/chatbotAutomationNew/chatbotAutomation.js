@@ -295,7 +295,7 @@ class ChatbotAutomation extends React.Component {
                 </div>
                 <div className='m-portlet__body'>
                   {
-                    this.props.store &&
+                    !this.props.store &&
                     <div>
                       <h6 style={{ textAlign: 'center' }}>
                         You have not integrated Shopify with KiboPush. Please integrate Shopify to create a Shopify Chatbot.
@@ -308,7 +308,7 @@ class ChatbotAutomation extends React.Component {
                     </div>
                   }
                   {
-                    !this.props.store &&
+                    this.props.store &&
                     <div className="m-form__group form-group">
                       <div className="m-radio-list">
                         <label className="m-radio m-radio--bold m-radio--state-brand">
