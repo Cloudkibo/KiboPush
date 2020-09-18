@@ -72,10 +72,13 @@ export function saveFileForPhoneNumbers (filedata, handleResponse) {
   }
 }
 
-export function sendPhoneNumbers (data) {
+export function sendPhoneNumbers (data, msg) {
   return (dispatch) => {
     callApi('growthTools/sendNumbers', 'post', data)
       .then(res => {
+        if (res.status !== 'success') {
+          msg.error(res.description || 'Failed')
+        }
         console.log('Response', res)
         dispatch(sendresp(res))
         dispatch(loadCustomerListsNew({last_id: 'none', number_of_records: 10, first_page: 'first'}))

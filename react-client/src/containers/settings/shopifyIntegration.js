@@ -47,7 +47,13 @@ class ShopifyIntegration extends React.Component {
           id='_confirm_shopify_disconnect'
           title='Disconnect Shopify Integration'
           description={`Are you sure you want to disconnect this Shopify integration? By Clicking on "Yes", you will be redirected to the Shopify page from where you can uninstall our app.`}
-          onConfirm={() => this.refs.disconnectShopify.click()}
+          onConfirm={() => {
+            if (this.props.user.actingAsUser) {
+              this.msg.error('You are not allowed to perform this action')
+            } else {
+              this.refs.disconnectShopify.click()
+            }
+          }}
         />
         <button style={{ display: 'none' }} ref='videoTutorial' data-toggle='modal' data-backdrop='static' data-keyboard='false' data-target="#videoTutorial">videoTutorial</button>
         <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="videoTutorial" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -105,7 +111,7 @@ class ShopifyIntegration extends React.Component {
           <div className='tab-content'>
             <div className='m-content'>
               <div style={{ textAlign: 'center' }} className='alert m-alert m-alert--default' role='alert'>
-                Need help in understanding Shopify Integration? Here is the <a href='https://kibopush.com/whatsapp-shopify-chatbot/' target='_blank' rel='noopener noreferrer'>documentation</a>.
+                Need help in understanding Shopify Integration? Here is the <a href={this.props.user.platform === 'whatsApp' ? 'https://kibopush.com/whatsapp-shopify-chatbot/' : 'https://kibopush.com/messenger-shopify-chatbot/'} target='_blank' rel='noopener noreferrer'>documentation</a>.
                 {/* Or check out this  <a href='#/' onClick={this.openVideoTutorial}>video tutorial</a> to understand this feature. */}
               </div>
               <div className='row'>
@@ -163,14 +169,20 @@ class ShopifyIntegration extends React.Component {
                     {
                       !this.props.store &&
                       <div style={{ display: 'flex', justifyContent: 'center', marginTop: '50px' }}>
-                        <a
-                          href="https://partners.shopify.com/1033294/apps/2954997/test"
+                        <button
+                          onClick={() => {
+                            if (this.props.user.actingAsUser) {
+                              this.msg.error('You are not allowed to perform this action')
+                            } else {
+                              window.location.replace('https://partners.shopify.com/1033294/apps/2954997/test')
+                            }
+                          }}
                           style={{ border: '1px dashed #36a3f7', cursor: 'pointer' }}
                           type="button"
                           className="btn m-btn--pill btn-outline-info m-btn m-btn--custom"
                         >
                           {'+ Connect'}
-                        </a>
+                        </button>
                       </div>
                     }
                   </div>

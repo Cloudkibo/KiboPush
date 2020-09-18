@@ -57,7 +57,7 @@ class AdAccount extends React.Component {
       this.props.updateSponsoredMessage(this.props.sponsoredMessage, '', '', {adAccountId: this.state.selectedAdAccount, currency: currency})
       this.props.changeCurrentStep('campaign')
     } else {
-      this.props.msg.error(res.payload)
+      this.props.msg.error(res.description || res.payload)
     }
   }
 

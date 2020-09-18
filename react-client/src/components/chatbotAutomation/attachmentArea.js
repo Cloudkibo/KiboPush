@@ -223,7 +223,7 @@ class AttachmentArea extends React.Component {
       const file = e.target.files[0]
       if (file.size > 25000000) {
         this.props.alertMsg.error('Attachment exceeds the limit of 25MB')
-      } else if (['application/zip', 'text/javascript', 'text/exe'].includes(file.type)) {
+      } else if (['application/zip', 'text/javascript', 'text/exe', 'application/x-ms-dos-executable'].includes(file.type)) {
         this.props.alertMsg.error('Cannot add js, exe or zip files. Please select another file')
       } else {
         const type = this.getComponentType(file.type)
@@ -266,7 +266,7 @@ class AttachmentArea extends React.Component {
           attachment: nextProps.attachment.fileData || {},
           attachmentType: nextProps.attachment.type,
           buttons: nextProps.attachment.buttons,
-          isUploaded: nextProps.attachment.fileData && !nextProps.attachment.fileData.url ? true : false
+          isUploaded: nextProps.attachment.fileData && nextProps.attachment.type && !nextProps.attachment.fileData.url ? true : false
         })
       } else {
         this.setState({

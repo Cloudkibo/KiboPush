@@ -77,7 +77,13 @@ class ZoomIntegration extends React.Component {
           id='_confirm_zoom_disconnect'
           title='Disconnect Zoom Integration'
           description={`Are you sure you want to disconnect this Zoom integration?\n\nPlease make sure you are logged in on the Zoom platform from "${this.state.deleteZoomIngeration.firstName} ${this.state.deleteZoomIngeration.lastName}" account before clicking on "Yes".\n\n`}
-          onConfirm={() => this.refs.disconnectZoom.click()}
+          onConfirm={() => {
+            if (this.props.user.actingAsUser) {
+              this.msg.error('You are not allowed to perform this action')
+            } else {
+              this.refs.disconnectZoom.click()
+            }
+          }}
         />
         <button style={{ display: 'none' }} ref='videoTutorial' data-toggle='modal' data-backdrop='static' data-keyboard='false' data-target="#videoTutorial">videoTutorial</button>
         <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="videoTutorial" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -182,7 +188,14 @@ class ZoomIntegration extends React.Component {
                             ? <button onClick={() => this.setDeleteZoomIntegration(integration)} className='m-btn m-btn--pill m-btn--hover-danger btn btn-danger' style={{borderColor: '#f4516c', color: '#f4516c', marginRight: '10px'}}>
                               Disconnect
                             </button>
-                            : <button onClick={() => this.props.integrateZoom(this.redirectToAuthorizeZoom)} className='m-btn m-btn--pill m-btn--hover-success btn btn-success' style={{borderColor: '#34bfa3', color: '#34bfa3', marginRight: '10px'}}>
+                            : <button onClick={() => {
+                              if (this.props.user.actingAsUser) {
+                                this.msg.error('You are not allowed to perform this action')
+                              } else {
+                                this.props.integrateZoom(this.redirectToAuthorizeZoom)
+                              }
+                            }}
+                            className='m-btn m-btn--pill m-btn--hover-success btn btn-success' style={{borderColor: '#34bfa3', color: '#34bfa3', marginRight: '10px'}}>
                             Connect
                           </button>
                                 }
@@ -199,7 +212,13 @@ class ZoomIntegration extends React.Component {
                       this.props.zoomIntegrations.length < 3 &&
                       <div style={{ display: 'flex', justifyContent: 'center', marginTop: '50px' }}>
                         <button
-                          onClick={() => this.props.integrateZoom(this.redirectToAuthorizeZoom)}
+                          onClick={() => {
+                            if (this.props.user.actingAsUser) {
+                              this.msg.error('You are not allowed to perform this action')
+                              } else {
+                              this.props.integrateZoom(this.redirectToAuthorizeZoom)
+                            }
+                          }}
                           style={{ border: '1px dashed #36a3f7', cursor: 'pointer' }}
                           type="button"
                           className="btn m-btn--pill btn-outline-info m-btn m-btn--custom"

@@ -83,8 +83,8 @@ class RecordItem extends React.Component {
   render () {
     return (
       <tr data-row={this.props.index} className="m-datatable__row m-datatable__row--even" style={{height: '88px'}}>
-        <td data-field="Name" style={{width: '150px'}} className="m-datatable__cell m-datatable__cell--center">
-          <span>
+        <td data-field="Name" className="m-datatable__cell m-datatable__cell--center">
+          <span style={{width: '150px'}}>
             <input
               style={{
                 border: !this.state.edit && 'none',
@@ -101,8 +101,8 @@ class RecordItem extends React.Component {
             />
           </span>
         </td>
-        <td data-field="PhoneNumber" style={{width: '150px'}} className="m-datatable__cell m-datatable__cell--center">
-          <span>
+        <td data-field="PhoneNumber" className="m-datatable__cell m-datatable__cell--center">
+          <span style={{width: '150px'}}>
             <input
               style={{
                 border: !this.state.edit && 'none',
@@ -120,8 +120,8 @@ class RecordItem extends React.Component {
             />
           </span>
         </td>
-        <td data-field="Status" style={{width: '100px'}} className="m-datatable__cell m-datatable__cell--center">
-          <span>
+        <td data-field="Status" className="m-datatable__cell m-datatable__cell--center">
+          <span style={{width: '100px'}}>
             <input
               style={{
                 border: 'none',
@@ -137,10 +137,10 @@ class RecordItem extends React.Component {
             />
           </span>
         </td>
-        <td data-field="Actions" style={{width: '150px'}} className="m-datatable__cell m-datatable__cell--center">
+        <td data-field="Actions" className="m-datatable__cell m-datatable__cell--center">
           {
             this.state.edit
-            ? <span>
+            ? <span style={{width: '150px'}}>
               <button style={{border: 'none'}} onClick={this.onSave} className="m-portlet__nav-link btn m-btn m-btn--hover-success m-btn--icon m-btn--icon-only m-btn--pill" title="Save">
                 {
                   this.state.loading
@@ -152,7 +152,7 @@ class RecordItem extends React.Component {
                 <i className="la la-close" />
               </button>
             </span>
-            : <span>
+            : <span style={{width: '150px'}}>
               <button style={{border: 'none'}} onClick={this.onEdit} className="m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill" title="Edit">
                 <i className="la la-edit" />
               </button>

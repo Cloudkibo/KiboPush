@@ -28,7 +28,7 @@ class Body extends React.Component {
     console.log('scrollToBottom called')
     const lastMessage = document.getElementById(chat[chat.length - 1]._id)
     if (lastMessage) {
-      lastMessage.scrollIntoView({behavior: 'smooth', block: 'end'})
+      lastMessage.scrollIntoView({behavior: 'smooth'})
     }
   }
 
@@ -159,7 +159,7 @@ class Body extends React.Component {
 
   render() {
     return (
-      <div style={{padding: this.props.isMobile ? '0rem 0rem 0rem 2.2rem' : '2.2rem 0rem 2.2rem 2.2rem'}} className='m-portlet__body'>
+      <div style={{padding: this.props.isMobile ? '0rem 0rem 0rem 2.2rem' : '2.2rem 0rem 2.2rem 2.2rem', flex: '1 1 auto', overflowY: 'scroll'}} className='m-portlet__body'>
         <div className='tab-content'>
           <div className='tab-pane active m-scrollable' role='tabpanel'>
             <div className='m-messenger m-messenger--message-arrow m-messenger--skin-light'>
@@ -172,9 +172,9 @@ class Body extends React.Component {
                     </div>
                   </div>
                   : this.props.userChat.length > 0
-                  ? <div style={{height: this.props.chatAreaHieght, position: 'relative', overflow: 'hidden', touchAction: 'pinch-zoom'}} className='m-messenger__messages'>
-                    <div id='chat-container' ref='chatScroll' style={{position: 'relative', overflowY: 'scroll', height: '100%', maxWidth: '100%', maxHeight: 'none', outline: 0, direction: 'ltr'}}>
-                      <div style={{position: 'relative', top: 0, left: 0, overflow: 'hidden', width: 'auto', height: 'auto'}} >
+                  ? <div style={{position: 'relative', touchAction: 'pinch-zoom'}} className='m-messenger__messages'>
+                    <div id='chat-container' ref='chatScroll' style={{position: 'relative', height: '100%', maxWidth: '100%', maxHeight: 'none', outline: 0, direction: 'ltr'}}>
+                      <div style={{position: 'relative', top: 0, left: 0, width: 'auto', height: 'auto'}} >
                         {
                           !this.props.loadingChat && this.shoudLoadMore() &&
                           <div style={{textAlign: 'center'}}>

@@ -104,7 +104,7 @@ class Chat extends React.Component {
   render() {
     return (
       <div id='_chat_area' style={{padding: '0px', border: '1px solid #F2F3F8', overflow: 'hidden', marginBottom: '0px'}} className='col-xl-5'>
-        <div className='m-portlet'>
+        <div style={{display: 'flex', flexDirection: 'column', height: '80vh', overflow: 'hidden'}} className='m-portlet'>
         {
           !this.props.isMobile &&
           <ReactTooltip
@@ -151,11 +151,12 @@ class Chat extends React.Component {
 
         <HEADER
           activeSession={this.props.activeSession}
-          showSearch={this.props.showSearch}
+          openSearch={this.props.showSearch}
           changeStatus={this.props.changeStatus}
           handlePendingResponse={this.props.handlePendingResponse}
           isMobile={this.props.isMobile}
           backToSessions={this.props.backToSessions}
+          showSearch={this.props.user.plan.search_chat}
         />
 
         <BODY
@@ -186,7 +187,8 @@ class Chat extends React.Component {
               borderTop: '1px solid #ebedf2',
               width: '100%',
               padding: '15px',
-              background: 'white'
+              background: 'white',
+              flex: '0 0 auto'
             }}
           >
             <span>
@@ -206,7 +208,8 @@ class Chat extends React.Component {
               borderTop: '1px solid #ebedf2',
               width: '100%',
               padding: '15px',
-              background: 'white'
+              background: 'white',
+              flex: '0 0 auto'
             }}
           >
             <span>
