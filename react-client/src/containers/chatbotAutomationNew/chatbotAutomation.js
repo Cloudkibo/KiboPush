@@ -67,7 +67,7 @@ class ChatbotAutomation extends React.Component {
     }
   }
 
-  modifyChatbot(chatbot, type) {
+  modifyChatbot(chatbot, type, existingChatbot) {
     const page = chatbot.pageId
     if (type === 'manualChatbot') {
       chatbot.pageFbId = chatbot.pageId.pageId
@@ -75,12 +75,12 @@ class ChatbotAutomation extends React.Component {
       chatbot.startingBlockId = chatbot.startingBlockId || 'welcome-id'
       this.props.history.push({
         pathname: '/configureChatbotNew',
-        state: { chatbot, page }
+        state: { chatbot, page, existingChatbot }
       })
     } else if (type === 'shopifyChatbot') {
       this.props.history.push({
         pathname: '/configureShopifyChatbot',
-        state: { chatbot, page, store: this.props.store }
+        state: { chatbot, page, store: this.props.store, existingChatbot }
       })
     }
   }
@@ -90,16 +90,20 @@ class ChatbotAutomation extends React.Component {
       const chatbot = res.payload
       const page = this.props.pages.find((item) => item._id === this.state[type].selectedPage)
       if (type === 'manualChatbot') {
+        const shopifyChatbots = this.props.chatbots && this.props.chatbots.filter(chatbot => chatbot.type === 'automated' && chatbot.vertical === 'commerce')
+        const existingChatbot = shopifyChatbots.find(c => c.pageId._id == chatbot.pageId._id)
         chatbot.pageFbId = pageFbId
         chatbot.startingBlockId = chatbot.startingBlockId || 'welcome-id'
         this.props.history.push({
           pathname: '/configureChatbotNew',
-          state: { chatbot, page }
+          state: { chatbot, page, existingChatbot }
         })
       } else if (type === 'shopifyChatbot') {
+        const manualChatbots = this.props.chatbots && this.props.chatbots.filter(chatbot => chatbot.type === 'manual')
+        const existingChatbot = manualChatbots.find(c => c.pageId._id == chatbot.pageId._id)
         this.props.history.push({
           pathname: '/configureShopifyChatbot',
-          state: { chatbot, page, store: this.props.store }
+          state: { chatbot, page, store: this.props.store, existingChatbot }
         })
       }
     } else {
@@ -144,6 +148,8 @@ class ChatbotAutomation extends React.Component {
     let manualChatbots = this.props.chatbots && this.props.chatbots.filter(chatbot => chatbot.type === 'manual')
     let shopifyChatbots = this.props.chatbots && this.props.chatbots.filter(chatbot => chatbot.type === 'automated' && chatbot.vertical === 'commerce')
 
+    console.log('manualChatbots', manualChatbots)
+    console.log('shopifyChatbots', shopifyChatbots)
 
     let manualChatbotPages = this.getPages(manualChatbots)
     let shopifyChatbotPages = this.getPages(shopifyChatbots)
@@ -194,7 +200,7 @@ class ChatbotAutomation extends React.Component {
                                   key={chatbot._id}
                                   profilePic={chatbot.pageId.pagePic}
                                   name={chatbot.pageId.pageName}
-                                  onItemClick={() => this.modifyChatbot(chatbot, 'manualChatbot')}
+                                  onItemClick={() => this.modifyChatbot(chatbot, 'manualChatbot', shopifyChatbots.find((c) => c.pageId._id === chatbot.pageId._id))}
                                   onSettingsClick={() => this.onSettingsClick(chatbot)}
                                 />
                               ))
@@ -289,7 +295,7 @@ class ChatbotAutomation extends React.Component {
                 </div>
                 <div className='m-portlet__body'>
                   {
-                    !this.props.store &&
+                    this.props.store &&
                     <div>
                       <h6 style={{ textAlign: 'center' }}>
                         You have not integrated Shopify with KiboPush. Please integrate Shopify to create a Shopify Chatbot.
@@ -302,7 +308,7 @@ class ChatbotAutomation extends React.Component {
                     </div>
                   }
                   {
-                    this.props.store &&
+                    !this.props.store &&
                     <div className="m-form__group form-group">
                       <div className="m-radio-list">
                         <label className="m-radio m-radio--bold m-radio--state-brand">
@@ -326,7 +332,7 @@ class ChatbotAutomation extends React.Component {
                                     key={chatbot._id}
                                     profilePic={chatbot.pageId.pagePic}
                                     name={chatbot.pageId.pageName}
-                                    onItemClick={() => this.modifyChatbot(chatbot, 'shopifyChatbot')}
+                                    onItemClick={() => this.modifyChatbot(chatbot, 'shopifyChatbot', manualChatbots.find((c) => c.pageId._id === chatbot.pageId._id))}
                                   />
                                 ))
                                 : (!shopifyChatbots) ?
