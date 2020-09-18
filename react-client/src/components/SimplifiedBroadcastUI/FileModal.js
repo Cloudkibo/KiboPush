@@ -36,7 +36,7 @@ class FileModal extends React.Component {
           canBeDeleted = false
           break
         }
-      } 
+      }
       if (canBeDeleted) {
         if (this.state.file.id !== this.state.initialFile) {
           deleteFile(this.state.initialFile)
@@ -66,10 +66,11 @@ class FileModal extends React.Component {
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
-    this.setState({
-      disabled: false,
-      file: nextProps.file ? nextProps.file : ''
-    })
+    console.log('in file', nextProps)
+    // this.setState({
+    //   disabled: false,
+    //   file: nextProps.file ? nextProps.file : ''
+    // })
   }
 
   render() {
@@ -89,16 +90,16 @@ class FileModal extends React.Component {
           <div className='row'>
             <div className='col-6'>
               <h4>File:</h4>
-              <AddFile 
-                required 
+              <AddFile
+                required
                 setTempFiles={this.props.setTempFiles}
                 initialFile={this.state.initialFile}
                 initialFiles={this.props.initialFiles}
-                file={this.state.file} 
-                updateFile={this.updateFile} 
+                file={this.state.file}
+                updateFile={this.updateFile}
                 module={this.props.module}
                 pages={this.props.pages}
-                onFilesError={this.props.onFilesError} 
+                onFilesError={this.props.onFilesError}
                 showValidationModal= {this.props.showValidationModal}
               />
             </div>
@@ -110,7 +111,11 @@ class FileModal extends React.Component {
               <div className='ui-block' style={{ border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', minHeight: '250px', marginLeft: '-50px' }} >
                 <div className='discussion'>
                   <div className='bubble recipient' style={{ marginRight: '120px', marginTop: '100px', fontSize: '20px' }}>
-                    <span role='img' aria-label='file'>📁</span> <a href={this.state.file ? this.state.file.fileurl.url : null} target='_blank' rel='noopener noreferrer' download>{this.state.file ? this.state.file.fileName : 'File'}</a>
+                    <span role='img' aria-label='file'>📁</span>
+                    <a href={this.state.file ? this.state.file.fileurl.url : null}
+                      target='_blank' rel='noopener noreferrer' style={{wordBreak: 'break-all'}} download>
+                      {this.state.file ? this.state.file.fileName : 'File'}
+                    </a>
                   </div>
                 </div>
               </div>
