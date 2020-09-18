@@ -117,6 +117,18 @@ export function updateChatbot(data, callback) {
   }
 }
 
+export function getShopifyChatbotTriggers(chatbotId, callback) {
+  return (dispatch) => {
+    callApi(`chatbots/shopifyChatbotTriggers/${chatbotId}`)
+      .then(res => {
+        console.log('response from getChatbotTriggers', res)
+        if (callback) {
+          callback(res)
+        }
+      })
+  }
+}
+
 export function deleteMessageBlock(ids, callback) {
   return (dispatch) => {
     callApi('messageBlock', 'delete', { ids })

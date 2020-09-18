@@ -2,12 +2,13 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { bindActionCreators } from 'redux'
-import { updateShopifyChatbot, updateChatbot } from '../../redux/actions/chatbotAutomation.actions'
+import { updateShopifyChatbot, updateChatbot, getShopifyChatbotTriggers } from '../../redux/actions/chatbotAutomation.actions'
 import AlertContainer from 'react-alert'
 import MODAL from '../../components/extras/modal'
 import CONFIRMATIONMODAL from '../../components/extras/confirmationModal'
 import { getFbAppId } from '../../redux/actions/basicinfo.actions'
 import { registerAction } from '../../utility/socketio'
+import TRIGGERAREA from '../../components/chatbotAutomation/triggerArea'
 
 const MessengerPlugin = require('react-messenger-plugin').default
 
@@ -15,6 +16,7 @@ class ConfigureShopifyChatbot extends React.Component {
   constructor(props, context) {
     super(props, context)
     this.state = {
+      triggers: [],
       existingChatbot: props.location.state.existingChatbot,
       store: props.location.state.store,
       page: props.location.state.page,
@@ -36,8 +38,16 @@ class ConfigureShopifyChatbot extends React.Component {
     this.showTestModal = this.showTestModal.bind(this)
     this.getTestModalContent = this.getTestModalContent.bind(this)
     this.disableManualChatbot = this.disableManualChatbot.bind(this)
+    this.updateState = this.updateState.bind(this)
 
     props.getFbAppId()
+    props.getShopifyChatbotTriggers(this.state.chatbot._id, (res) => {
+      this.setState({ triggers: res.payload })
+    })
+  }
+
+  updateState(state) {
+    this.setState(state)
   }
 
   showTestModal() {
@@ -125,27 +135,32 @@ class ConfigureShopifyChatbot extends React.Component {
 
   saveChatbot(e) {
     e.preventDefault()
-    this.props.updateShopifyChatbot({
-      chatbotId: this.state.chatbot._id,
-      botLinks: {
-        paymentMethod: this.state.paymentMethod,
-        returnPolicy: this.state.returnPolicy,
-        faqs: this.state.faqs
-      }
-    }, (res) => {
-      if (res.status === 'success') {
-        let chatbot = this.state.chatbot
-        chatbot.botLinks = {
+    if (this.state.triggers.length === 0) {
+      this.msg.error('At least one trigger is required')
+    } else {
+      this.props.updateShopifyChatbot({
+        chatbotId: this.state.chatbot._id,
+        botLinks: {
           paymentMethod: this.state.paymentMethod,
           returnPolicy: this.state.returnPolicy,
           faqs: this.state.faqs
+        },
+        triggers: this.state.triggers
+      }, (res) => {
+        if (res.status === 'success') {
+          let chatbot = this.state.chatbot
+          chatbot.botLinks = {
+            paymentMethod: this.state.paymentMethod,
+            returnPolicy: this.state.returnPolicy,
+            faqs: this.state.faqs
+          }
+          this.setState({ chatbot })
+          this.msg.success(res.description)
+        } else {
+          this.msg.error(res.description)
         }
-        this.setState({ chatbot })
-        this.msg.success(res.description)
-      } else {
-        this.msg.error(res.description)
-      }
-    })
+      })
+    }
   }
 
   onBack() {
@@ -236,7 +251,7 @@ class ConfigureShopifyChatbot extends React.Component {
                         <div className="m-form m-form--fit row">
 
                           <div className="form-group m-form__group col-lg-8">
-                            <h6>Store:</h6>
+                            <span className='m--font-boldest'>Store:</span>
                             <input required type="text" disabled value={this.state.store ? this.state.store.name : ''} className="form-control m-input" id="_shopify_store" />
                           </div>
 
@@ -245,9 +260,15 @@ class ConfigureShopifyChatbot extends React.Component {
                           </div>
 
                           <div className="form-group m-form__group col-lg-8">
-                            <h6>
-                              FAQs URL (Optional):
-                            </h6>
+                            <TRIGGERAREA
+                              triggers={this.state.triggers}
+                              updateParentState={this.updateState}
+                              alertMsg={this.msg}
+                            />
+                          </div>
+
+                          <div className="form-group m-form__group col-lg-8">
+                            <span className='m--font-boldest'>FAQs URL (Optional):</span>
                             <input type="text" onChange={this.setFAQs} value={this.state.faqs} className="form-control m-input" id="_faqs_url" placeholder="Enter FAQs URL..." />
                           </div>
 
@@ -321,7 +342,8 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators({
     updateShopifyChatbot,
     getFbAppId,
-    updateChatbot
+    updateChatbot,
+    getShopifyChatbotTriggers
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(ConfigureShopifyChatbot)
