@@ -14,6 +14,7 @@ import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
 import YouTube from 'react-youtube'
 import AlertMessageModal from '../../components/alertMessages/alertMessageModal'
+import AlertContainer from 'react-alert'
 
 class Page extends React.Component {
   constructor(props) {
@@ -142,7 +143,7 @@ class Page extends React.Component {
       }
     }
     this.state.pagesData.splice(index, 1)
-    this.props.removePage(page)
+    this.props.removePage(page, this.msg)
   }
 
   showDialog(page) {
@@ -184,9 +185,17 @@ class Page extends React.Component {
     })
   }
   render() {
+    var alertOptions = {
+      offset: 14,
+      position: 'bottom right',
+      theme: 'dark',
+      time: 5000,
+      transition: 'scale'
+    }
     console.log('showingSearchResult', this.state.showingSearchResult)
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+        <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <a href='#/' style={{ display: 'none' }} ref='videoManagePages' data-toggle='modal' data-backdrop='static' data-keyboard='false' data-target="#videoManagePages">videoManagePages</a>
         <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="videoManagePages" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog modal-lg" role="document">

@@ -33,10 +33,10 @@ class HeaderTopbar extends React.Component {
         <div className='m-stack__item m-topbar__nav-wrapper'>
           <ul className='m-topbar__nav m-nav m-nav--inline'>
             {
-              this.props.user && this.props.user.isSuperUser && (auth.getActingAsUser() !== undefined || this.props.userView) &&
+              this.props.user && this.props.user.isSuperUser && this.props.user.actingAsUser &&
               <ACTINGASUSER
-                getActingAsUserName={auth.getActingAsUserName}
-                removeActingAsUser={auth.removeActingAsUser}
+                actingAsUserName={this.props.user.actingAsUser.name}
+                setUsersView={this.props.setUsersView}
               />
             }
             {

@@ -11,10 +11,15 @@ import {
   updatePicture,
   updateShowIntegrations,
   disconnectFacebook,
+  saveEnvironment,
   logout
 } from '../../redux/actions/basicinfo.actions'
+import {
+  setUsersView
+} from '../../redux/actions/backdoor.actions'
 import { fetchNotifications, markRead } from '../../redux/actions/notifications.actions'
 import auth from '../../utility/auth.service'
+import cookie from 'react-cookie'
 
 // Components
 import HEADERMENU from './headerMenu'
@@ -55,6 +60,9 @@ class Header extends React.Component {
   componentDidMount () {
     if (this.props.user) {
       this.setPlatform(this.props.user)
+    }
+    if (cookie.load('environment')) {
+      this.props.saveEnvironment(cookie.load('environment'))
     }
   }
 
@@ -216,7 +224,6 @@ class Header extends React.Component {
     if (interval > 1) {
       return interval + ' minutes ago'
     }
-
     return Math.floor(seconds) + ' seconds ago'
   }
 
@@ -269,7 +276,7 @@ class Header extends React.Component {
       showHeaderTopbar
     } = this.props
     return (
-      <header className='m-grid__item m-header ' data-minimize-offset='200' data-minimize-mobile-offset='200' >
+      <header id='headerDiv' className='m-grid__item m-header ' data-minimize-offset='200' data-minimize-mobile-offset='200' >
         <div className='m-container m-container--fluid m-container--full-height'>
           <div className='m-stack m-stack--ver m-stack--desktop'>
             <div className={`m-stack__item m-brand ${skin === 'dark' ? 'm-brand--skin-dark' : ''}`}>
@@ -335,6 +342,7 @@ class Header extends React.Component {
                 otherPages={this.props.otherPages}
                 updatePicture={this.props.updatePicture}
                 logout={this.props.logout}
+                setUsersView={this.props.setUsersView}
               />
             </div>
           </div>
@@ -402,7 +410,8 @@ function mapStateToProps(state) {
     userView: (state.backdoorInfo.userView),
     notifications: (state.notificationsInfo.notifications),
     subscribers: (state.subscribersInfo.subscribers),
-    otherPages: (state.pagesInfo.otherPages)
+    otherPages: (state.pagesInfo.otherPages),
+    currentEnvironment: (state.basicInfo.currentEnvironment)
   }
 }
 
@@ -415,7 +424,9 @@ function mapDispatchToProps(dispatch) {
     updatePicture,
     updateShowIntegrations,
     disconnectFacebook,
-    logout
+    logout,
+    saveEnvironment,
+    setUsersView
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Header)

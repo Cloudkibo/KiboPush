@@ -293,7 +293,8 @@ class FacebookIntegration extends React.Component {
             }
           </div>
         </div>
-        <a href='#/' style={{ display: 'none' }} ref='createModal' data-toggle='modal' data-target='#create_confirmation_modal'>DeleteModal</a>
+
+          <a href='#/' style={{ display: 'none' }} ref='createModal' data-toggle='modal' data-target='#create_confirmation_modal'>DeleteModal</a>
           <ConfirmationModal
           id = 'create_confirmation_modal'
           title = 'Are You Sure?'

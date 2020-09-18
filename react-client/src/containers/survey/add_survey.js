@@ -351,7 +351,15 @@ class AddSurvey extends React.Component {
           segmentationList: this.state.listSelected
         }
         console.log('Adding Survey', surveybody)
-        this.props.createsurvey(surveybody)
+        this.props.createsurvey(surveybody, (res) => {
+          if (res.status === 'success') {
+            this.props.history.push({
+              pathname: '/surveys'
+            })
+          } else {
+            this.msg.error(res.description || res.payload || 'Failed to save survey')
+          }
+        })
       } else {
         this.setState({
           alertMessage: 'Please fill all the fields.',
@@ -800,9 +808,6 @@ class AddSurvey extends React.Component {
                       disabled={!doesPageHaveSubscribers(this.props.pages, this.state.pageValue) ? true : null}
                       onClick={() => {
                         this.createSurvey()
-                        this.props.history.push({
-                          pathname: '/surveys'
-                        })
                       }} data-dismiss='modal'>
                       Save
                                               </button>

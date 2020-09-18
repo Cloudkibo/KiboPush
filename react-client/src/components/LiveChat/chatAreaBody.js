@@ -136,20 +136,33 @@ class ChatAreaBody extends React.Component {
         if (this.state.uploadedId !== '' && this.state.attachment) {
           payload = this.props.setDataPayload('attachment', this.state)
           data = this.props.setMessageData(session, payload)
-          this.props.sendAttachment(data, this.handleSendAttachment)
+          this.props.sendAttachment(data, (res) => {
+            if (res.status !== 'success') {
+              let errorMsg = res.description || res.payload
+              this.msg.error(errorMsg)
+            }
+          })
           data.format = 'convos'
           this.props.userChat.push(data)
         } else if (isUrl !== null && isUrl !== '') {
           payload = this.props.setDataPayload('text', this.state)
           data = this.props.setMessageData(session, payload)
-          this.props.sendChatMessage(data)
+          this.props.sendChatMessage(data, (res) => {
+            if (res.status !== 'success') {
+              let errorMsg = res.description || res.payload
+              this.msg.error(errorMsg)
+            })
           this.setState({ textAreaValue: '', urlmeta: {}, displayUrlMeta: false })
           data.format = 'convos'
           this.props.userChat.push(data)
         } else if (this.state.textAreaValue !== '') {
           payload = this.props.setDataPayload('text', this.state)
           data = this.props.setMessageData(session, payload)
-          this.props.sendChatMessage(data)
+          this.props.sendChatMessage(data, (res) => {
+            if (res.status !== 'success') {
+              let errorMsg = res.description || res.payload
+              this.msg.error(errorMsg)
+            })
           this.setState({ textAreaValue: '' })
           data.format = 'convos'
           this.props.userChat.push(data)
@@ -170,7 +183,11 @@ class ChatAreaBody extends React.Component {
     }
     var session = this.props.activeSession
     var data = this.props.setMessageData(session, payload)
-    this.props.sendChatMessage(data)
+    this.props.sendChatMessage(data, (res) => {
+      if (res.status !== 'success') {
+        let errorMsg = res.description || res.payload
+        this.msg.error(errorMsg)
+      })
     data.format = 'convos'
     this.props.userChat.push(data)
     this.setState({ textAreaValue: '' })
@@ -328,7 +345,11 @@ class ChatAreaBody extends React.Component {
     })
     var session = this.props.activeSession
     var data = this.props.setMessageData(session, payload)
-    this.props.sendChatMessage(data)
+    this.props.sendChatMessage(data, (res) => {
+      if (res.status !== 'success') {
+        let errorMsg = res.description || res.payload
+        this.msg.error(errorMsg)
+      })
     this.toggleStickerPicker()
     data.format = 'convos'
     this.props.userChat.push(data)
@@ -345,7 +366,11 @@ class ChatAreaBody extends React.Component {
     })
     var session = this.props.activeSession
     var data = this.props.setMessageData(session, payload)
-    this.props.sendChatMessage(data)
+    this.props.sendChatMessage(data, (res) => {
+      if (res.status !== 'success') {
+        let errorMsg = res.description || res.payload
+        this.msg.error(errorMsg)
+      })
     this.toggleGifPicker()
     data.format = 'convos'
     this.props.userChat.push(data)

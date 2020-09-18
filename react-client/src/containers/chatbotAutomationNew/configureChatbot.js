@@ -473,7 +473,7 @@ class ConfigureChatbot extends React.Component {
             />
             <HELPWIDGET
               documentation={{visibility: true, link: 'https://kibopush.com/chatbot-automation/'}}
-              videoTutorial={{visibility: true, videoId: 'eszeTV3-Uzs'}}
+              videoTutorial={{visibility: true, videoId: '6v1bnraz6CQ'}}
             />
             <MODAL
               zIndex={9999}

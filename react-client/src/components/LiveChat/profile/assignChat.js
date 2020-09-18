@@ -42,7 +42,8 @@ class AssignChat extends React.Component {
       if (res.status === 'success') {
         this.props.alertMsg.success('Agent unassigned succesfully')
       } else {
-        this.props.alertMsg.error('Agent was unable to be unassigned')
+        let msg = res.description || 'Agent was unable to be unassigned'
+        this.props.alertMsg.error(msg)
       }
     })
     if (this.props.activeSession.assigned_to.id !== this.props.user._id) {
@@ -68,7 +69,8 @@ class AssignChat extends React.Component {
       if (res.status === 'success') {
         this.props.alertMsg.success('Team unassigned succesfully')
       } else {
-        this.props.alertMsg.error('Team was unable to be unassigned')
+        let msg = res.description || 'Team was unable to be unassigned'
+        this.props.alertMsg.error(msg)
       }
     })
   }
@@ -84,7 +86,8 @@ class AssignChat extends React.Component {
       if (res.status === 'success') {
         this.props.alertMsg.success('Agent assigned succesfully')
       } else {
-        this.props.alertMsg.error('Agent was unable to be assigned')
+        let msg = res.description || 'Agent was unable to be unassigned'
+        this.props.alertMsg.error(msg)
       }
     })
     if (this.state.currentSelected.value !== this.props.user._id) {
@@ -110,7 +113,8 @@ class AssignChat extends React.Component {
       if (res.status === 'success') {
         this.props.alertMsg.success('Team assigned succesfully')
       } else {
-        this.props.alertMsg.error('Team was unable to be assigned')
+        let msg = res.description || 'Team was unable to be assigned'
+        this.props.alertMsg.error(msg)
       }
     })
   }
