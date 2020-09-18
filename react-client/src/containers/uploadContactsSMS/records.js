@@ -70,20 +70,20 @@ class Records extends React.Component {
           {
             this.props.dataCount > 0
             ? <div className='m_datatable m-datatable m-datatable--default m-datatable--loaded '>
-              <table className="m-datatable__table" style={{display: 'block', height: 'auto'}}>
+              <table className="m-datatable__table" style={{display: 'block', height: 'auto', overflowX: 'auto'}}>
                 <thead className="m-datatable__head">
                   <tr className="m-datatable__row" style={{height: '53px'}}>
-                    <th data-field="Name" style={{width: '150px'}} className="m-datatable__cell m-datatable__cell--center m-datatable__cell--sort">
-                      <span>Name</span>
+                    <th data-field="Name" className="m-datatable__cell m-datatable__cell--center m-datatable__cell--sort">
+                      <span style={{width: '150px'}}>Name</span>
                     </th>
-                    <th data-field="PhoneNumber" style={{width: '150px'}} className="m-datatable__cell m-datatable__cell--center m-datatable__cell--sort">
-                      <span>Phone Number</span>
+                    <th data-field="PhoneNumber" className="m-datatable__cell m-datatable__cell--center m-datatable__cell--sort">
+                      <span style={{width: '150px'}}>Phone Number</span>
                     </th>
-                    <th data-field="Status" style={{width: '100px'}} className="m-datatable__cell m-datatable__cell--center m-datatable__cell--sort">
-                      <span>Status</span>
+                    <th data-field="Status" className="m-datatable__cell m-datatable__cell--center m-datatable__cell--sort">
+                      <span style={{width: '100px'}}>Status</span>
                     </th>
-                    <th data-field="Actions" style={{width: '150px'}} className="m-datatable__cell m-datatable__cell--center m-datatable__cell--sort">
-                      <span>Actions</span>
+                    <th data-field="Actions" className="m-datatable__cell m-datatable__cell--center m-datatable__cell--sort">
+                      <span style={{width: '150px'}}>Actions</span>
                     </th>
                   </tr>
                 </thead>

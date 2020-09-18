@@ -94,7 +94,7 @@ export function saveDraft(id, data, msg, cb) {
               cb()
             }
           } else {
-            msg.error(res.payload)
+            msg.error(res.description || res.payload)
           }
       })
   }
@@ -130,7 +130,7 @@ export function updateSponsoredMessage(sponsoredMessage, key, value, edit) {
   }
 }
 
-export function createSponsoredMessage(data, cb) {
+export function createSponsoredMessage(data, cb, msg) {
   console.log('data for createSponsoredMessage', data)
     return (dispatch) => {
         callApi('sponsoredmessaging', 'post', data)
@@ -139,6 +139,8 @@ export function createSponsoredMessage(data, cb) {
           if(res.status === 'success'){
               dispatch(createdSponsoredData(res.payload))
               cb()
+            } else {
+              msg.error(res.description || 'Failed to create sponsored message')
             }
         })
         .catch(err => {
@@ -163,7 +165,7 @@ export function deleteSponsoredMessage(id, msg, searchValue, statusValue, pageVa
                 msg.success('Sponsored Message deleted successfully')
                 dispatch(fetchSponsoredMessages(data))
           }   else{
-                msg.error('Failed to delete sponsored message')
+                msg.error(res.description || 'Failed to delete sponsored message')
             }
         })
     }

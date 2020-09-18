@@ -12,6 +12,11 @@ export function formatAMPM(date) {
   return hours + ':' + minutes + ' ' + ampm
 }
 
+export function validateEmail (email) {
+  const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  return re.test(String(email).toLowerCase())
+}
+
 export function localeCodeToEnglish(loc) {
   if (typeof loc !== 'string') throw new TypeError('Input must be string');
   var parts = loc.split('_'),
@@ -769,4 +774,27 @@ export function validDateRange(startDate, endDate) {
     valid = true
   }
   return { valid, dateRangeWarning }
+}
+
+export function getHiddenHeaderRoutes () {
+  return [
+    '/addfbpages',
+    '/facebookIntegration',
+    '/integrations',
+    '/configureChatbot',
+    '/configureChatbotNew',
+    '/chatbotAnalytics',
+    '/resendVerificationEmail'
+  ]
+}
+
+export function getWhiteHeaderRoutes () {
+  return [
+    '/addfbpages',
+    '/facebookIntegration',
+    '/integrations',
+    '/configureChatbot',
+    '/configureChatbotNew',
+    '/chatbotAnalytics'
+  ]
 }

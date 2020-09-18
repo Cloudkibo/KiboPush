@@ -33,6 +33,17 @@ class DeleteWithPassword extends React.Component {
             <div style={{ color: 'black' }} className="modal-body">
               <p>{this.props.content}</p>
               <br />
+              <div className='form-group m-form__group row' style={{marginLeft: '0px'}}>
+              <label className= 'm-checkbox'>
+              <input
+                type="checkbox"
+                onChange={this.props.handleCheckbox}
+                checked={this.props.retainData}
+              />
+              <span />
+              </label>
+               <span className='control-label' style= {{marginLeft: '0px'}}>Grant KiboPush consent to retain Data for 60 days:</span>
+              </div>
               <div id='question' className='form-group m-form__group'>
                 <span className='control-label'>If you wish to proceed, please enter your password below:</span>
                 <input className='form-control' type='password' placeholder='Enter password here'

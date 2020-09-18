@@ -7,15 +7,30 @@ class AssignCustomFields extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-        mappingData: this.props.mapping ? this.props.mapping : ''
+        mappingData: this.props.mapping ? this.props.mapping : '',
+        buttonDisabled: false
     }
 
     this.save = this.save.bind(this)
     this.getMappingData = this.getMappingData.bind(this)
     this.updateMappingData = this.updateMappingData.bind(this)
     this.getCustomFieldType = this.getCustomFieldType.bind(this)
+    this.validationCustomField = this.validationCustomField.bind(this)
   }
 
+  validationCustomField() {
+    let mappingData = this.state.mappingData
+    let data = mappingData.filter(data => !data.customFieldId)
+    if(data.length > 0) {
+      this.setState({buttonDisabled: true})
+    } else {
+      this.setState({buttonDisabled: false})
+    }
+  }
+
+  componentDidMount () {
+    this.validationCustomField()
+  }
   getMappingData () {
     // debugger;
     // if (this.props.questions) {
@@ -43,8 +58,10 @@ class AssignCustomFields extends React.Component {
 
   validateCustomFieldType (question, customFieldId) {
     if (customFieldId) {
+      console.log('question.type', question.type)
       let customFieldType = this.getCustomFieldType(customFieldId)
-      return (question.type === 'number' && customFieldType === question.type) || (customFieldType === 'text' && question.type !== 'number')
+      return (question.type.toUpperCase() === customFieldType.toUpperCase())
+      // return (question.type === 'number' && customFieldType === question.type) || (customFieldType === 'text' && question.type !== 'number')
     }
   }
 
@@ -59,14 +76,20 @@ class AssignCustomFields extends React.Component {
     //debugger;
     console.log('this.state.mappingData', this.state.mappingData)
     let data = this.state.mappingData
-    if (e.target.value !== '') {
-      if (this.validateCustomFieldType(data[index], e.target.value)) {
-        data[index].customFieldId = e.target.value
-        this.setState({mappingData: data})
-      } else {
-        this.msg.error("Type of custom field doesn't match reply type of question")
+    if(data[index].type !== '') {
+      if (e.target.value !== '') {
+        if (this.validateCustomFieldType(data[index], e.target.value)) {
+          data[index].customFieldId = e.target.value
+          this.setState({mappingData: data}, ()=> {
+            this.validationCustomField()
+          })
+        } else {
+          this.msg.error("Type of custom field doesn't match reply type of question")
+        }
       }
-    }
+    } else {
+    this.msg.error("Please select First Question type")
+  }
     console.log('data in updateMappingData', data)
   }
 

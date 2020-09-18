@@ -10,7 +10,7 @@ class Header extends React.Component {
 
   render() {
     return (
-      <div style={{ padding: '1.3rem', borderBottom: '1px solid #ebedf2' }}>
+      <div style={{ padding: '1.3rem', borderBottom: '1px solid #ebedf2', flex: '0 0 auto' }}>
         {
           this.props.isMobile &&
           <button
@@ -55,7 +55,7 @@ class Header extends React.Component {
             </button>
           }
           {
-            !this.props.isMobile &&
+            !this.props.isMobile && this.props.showSearch &&
             <button
               className="btn btn-secondary m-btn m-btn--icon m-btn--icon-only"
               onClick={this.props.showSearch}
@@ -102,11 +102,12 @@ class Header extends React.Component {
 
 Header.propTypes = {
   'activeSession': PropTypes.object.isRequired,
-  'showSearch': PropTypes.func.isRequired,
+  'openSearch': PropTypes.func.isRequired,
   'changeStatus': PropTypes.func.isRequired,
   'handlePendingResponse': PropTypes.func.isRequired,
   'isMobile': PropTypes.bool.isRequired,
-  'backToSessions': PropTypes.func.isRequired
+  'backToSessions': PropTypes.func.isRequired,
+  'showSearch': PropTypes.bool.isRequired
 }
 
 export default Header
