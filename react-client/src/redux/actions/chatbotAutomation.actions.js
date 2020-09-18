@@ -49,6 +49,18 @@ export function createShopifyChatbot(data, callback) {
   }
 }
 
+export function updateShopifyChatbot(data, callback) {
+  return (dispatch) => {
+    callApi('chatbots/shopifyChatbot', 'put', data)
+      .then(res => {
+        console.log('response from updateShopifyChatbot', res)
+        if (callback) {
+          callback(res)
+        }
+      })
+  }
+}
+
 export function fetchChatbotDetails(id, callback) {
   return (dispatch) => {
     callApi(`chatbots/${id}/details`)

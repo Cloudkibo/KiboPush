@@ -2,9 +2,10 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { bindActionCreators } from 'redux'
-import { createShopifyChatbot } from '../../redux/actions/chatbotAutomation.actions'
+import { updateShopifyChatbot, updateChatbot } from '../../redux/actions/chatbotAutomation.actions'
 import AlertContainer from 'react-alert'
 import MODAL from '../../components/extras/modal'
+import CONFIRMATIONMODAL from '../../components/extras/confirmationModal'
 import { getFbAppId } from '../../redux/actions/basicinfo.actions'
 import { registerAction } from '../../utility/socketio'
 
@@ -14,6 +15,7 @@ class ConfigureShopifyChatbot extends React.Component {
   constructor(props, context) {
     super(props, context)
     this.state = {
+      existingChatbot: props.location.state.existingChatbot,
       store: props.location.state.store,
       page: props.location.state.page,
       chatbot: props.location.state.chatbot,
@@ -33,6 +35,7 @@ class ConfigureShopifyChatbot extends React.Component {
     this.onBack = this.onBack.bind(this)
     this.showTestModal = this.showTestModal.bind(this)
     this.getTestModalContent = this.getTestModalContent.bind(this)
+    this.disableManualChatbot = this.disableManualChatbot.bind(this)
 
     props.getFbAppId()
   }
@@ -91,33 +94,39 @@ class ConfigureShopifyChatbot extends React.Component {
     })
   }
 
-  setPublished(e) {
-    console.log('setPublished', e.target.checked)
-    this.setState({
-      published: e.target.checked
-    }, () => {
-      this.props.createShopifyChatbot({
-        pageId: this.state.page._id,
-        published: this.state.published
-      }, (res) => {
-        if (res.status === 'success') {
-          this.setState({ chatbot: res.payload })
-          if (this.state.published) {
-            this.msg.success('Shopify Chatbot Enabled')
+  setPublished(published) {
+    console.log('setPublished', published)
+    if (published && this.state.existingChatbot && this.state.existingChatbot.published) {
+      this.disableManualChatbotTrigger.click()
+    } else {
+      this.setState({
+        published
+      }, () => {
+        this.props.updateShopifyChatbot({
+          chatbotId: this.state.chatbot._id,
+          published: this.state.published
+        }, (res) => {
+          if (res.status === 'success') {
+            let chatbot = this.state.chatbot
+            chatbot.published = true
+            this.setState({ chatbot })
+            if (this.state.published) {
+              this.msg.success('Shopify Chatbot Enabled')
+            } else {
+              this.msg.success('Shopify Chatbot Disabled')
+            }
           } else {
-            this.msg.success('Shopify Chatbot Disabled')
+            this.msg.error(res.description)
           }
-        } else {
-          this.msg.error(res.description)
-        }
+        })
       })
-    })
+    }
   }
 
   saveChatbot(e) {
     e.preventDefault()
-    this.props.createShopifyChatbot({
-      pageId: this.state.page._id,
+    this.props.updateShopifyChatbot({
+      chatbotId: this.state.chatbot._id,
       botLinks: {
         paymentMethod: this.state.paymentMethod,
         returnPolicy: this.state.returnPolicy,
@@ -125,7 +134,13 @@ class ConfigureShopifyChatbot extends React.Component {
       }
     }, (res) => {
       if (res.status === 'success') {
-        this.setState({ chatbot: res.payload })
+        let chatbot = this.state.chatbot
+        chatbot.botLinks = {
+          paymentMethod: this.state.paymentMethod,
+          returnPolicy: this.state.returnPolicy,
+          faqs: this.state.faqs
+        }
+        this.setState({ chatbot })
         this.msg.success(res.description)
       } else {
         this.msg.error(res.description)
@@ -136,6 +151,23 @@ class ConfigureShopifyChatbot extends React.Component {
   onBack() {
     this.props.history.push({
       pathname: '/chatbotAutomationNew'
+    })
+  }
+
+  disableManualChatbot() {
+    this.props.updateChatbot({
+      chatbotId: this.state.existingChatbot._id,
+      published: false
+    }, (res) => {
+      if (res.status === 'success') {
+        let existingChatbot = this.state.existingChatbot
+        existingChatbot.published = false
+        this.setState({ existingChatbot }, () => {
+          this.setPublished(true)
+        })
+      } else {
+        this.msg.error(res.description)
+      }
     })
   }
 
@@ -156,7 +188,13 @@ class ConfigureShopifyChatbot extends React.Component {
           title='Test Chatbot'
           content={this.getTestModalContent()}
         />
-
+        <button style={{ display: 'none' }} ref={el => this.disableManualChatbotTrigger = el} data-toggle='modal' data-target='#disableManualChatbot' />
+        <CONFIRMATIONMODAL
+          id="disableManualChatbot"
+          title='Disable Manual Chatbot'
+          description='You have a manual chatbot already enabled for this page. By enabling this Shopify chatbot, that manual chatbot will be disabled. Do you wish to continue?'
+          onConfirm={this.disableManualChatbot}
+        />
 
         <div className='m-subheader'>
           <h3 className='m-subheader__title'>Shopify Chatbot for {this.state.page.pageName}</h3>
@@ -164,7 +202,7 @@ class ConfigureShopifyChatbot extends React.Component {
 
           <span style={{ float: 'right' }} className={"m-switch m-switch--lg m-switch--icon " + (this.state.published ? "m-switch--success" : "m-switch--danger")}>
             <label>
-              <input disabled={!this.state.chatbot ? true : null} checked={this.state.published} onChange={this.setPublished} type="checkbox" />
+              <input disabled={!this.state.chatbot ? true : null} checked={this.state.published} onChange={(e) => this.setPublished(e.target.checked)} type="checkbox" />
               <span />
             </label>
           </span>
@@ -281,8 +319,9 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators({
-    createShopifyChatbot,
-    getFbAppId
+    updateShopifyChatbot,
+    getFbAppId,
+    updateChatbot
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(ConfigureShopifyChatbot)
