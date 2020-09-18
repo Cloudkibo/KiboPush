@@ -245,11 +245,28 @@ export function disconnectFacebook (callback) {
   }
 }
 
-export function updatePlatform (data) {
+export function updatePlatform (data, fetchNotifications) {
   return (dispatch) => {
     callApi('users/updatePlatform', 'post', data).then(res => {
       if (res.status === 'success') {
         dispatch(getuserdetails())
+        if (fetchNotifications) {
+          fetchNotifications()
+        }
+      } else {
+        console.log('Failed to update platform', res)
+      }
+    })
+  }
+}
+
+export function logout(cb) {
+  return (dispatch) => {
+    console.log('called logout')
+    callApi('users/logout').then(res => {
+      if (res.status === 'success') {
+        console.log('send logout successfully', res)
+        cb()
       } else {
         console.log('Failed to update platform', res)
       }

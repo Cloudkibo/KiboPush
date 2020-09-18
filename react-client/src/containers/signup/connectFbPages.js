@@ -94,7 +94,7 @@ class AddPage extends React.Component {
       transition: 'scale'
     }
     return (
-      <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+      <div className='m-grid__item m-grid__item--fluid'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <a href='#/' style={{ display: 'none' }} ref='permissions' data-toggle="modal" data-target="#permissions">Permissions</a>
         <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="permissions" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">

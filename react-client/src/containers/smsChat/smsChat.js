@@ -68,6 +68,7 @@ class SmsChat extends React.Component {
       showSearch: false,
       customFieldOptions: [],
       showingCustomFieldPopover: false,
+      showChat: !this.props.isMobile
     }
 
     this.fetchSessions = this.fetchSessions.bind(this)
@@ -93,6 +94,7 @@ class SmsChat extends React.Component {
     this.showFetchingChat = this.showFetchingChat.bind(this)
     this.clearSearchResults = this.clearSearchResults.bind(this)
     this.setMessageData = this.setMessageData.bind(this)
+    this.backToSessions = this.backToSessions.bind(this)
 
     props.loadTwilioNumbers()
     this.fetchSessions(true, 'none', true)
@@ -332,7 +334,8 @@ class SmsChat extends React.Component {
         subscriberTags: null,
         searchChatMsgs: null,
         loadingChat: true,
-        showSearch: false
+        showSearch: false,
+        showChat: true
       }, () => {
         this.loadActiveSession({...session})
       })
@@ -380,6 +383,14 @@ class SmsChat extends React.Component {
   getAgents (members) {
     let agents = members.map(m => m.userId)
     return agents
+  }
+
+  backToSessions () {
+    this.setState({
+      showChat: false,
+      showMessageTemplateMobile: false,
+      activeSession: {}
+    })
   }
 
   UNSAFE_componentWillReceiveProps (nextProps) {
@@ -480,34 +491,40 @@ class SmsChat extends React.Component {
                   </div>
                 </div>
               }
-            <HELPWIDGET
-              documentation={{visibility: true, link: 'https://kibopush.com/twilio/'}}
-              videoTutorial={{visibility: false}}
-            />
-              <div className='row'>
-                <SESSIONS
-                  pages={this.props.pages}
-                  loading={this.state.sessionsLoading}
-                  tabValue={this.state.tabValue}
-                  sessions={this.state.sessions}
-                  sessionsCount={this.state.sessionsCount}
-                  filterSort={this.state.filterSort}
-                  filterPage={this.state.filterPage}
-                  filterSearch={this.state.filterSearch}
-                  filterPending={this.state.filterPending}
-                  filterUnread={this.state.filterUnread}
-                  activeSession={this.state.activeSession}
-                  changeActiveSession={this.changeActiveSession}
-                  profilePicError={this.profilePicError}
-                  changeStatus={this.changeStatus}
-                  changeTab={this.changeTab}
-                  updateState={this.updateState}
-                  fetchSessions={this.fetchSessions}
-                  getChatPreview={this.getChatPreview}
-                  showPageInfo={false}
+              {
+                !this.props.isMobile &&
+                <HELPWIDGET
+                  documentation={{visibility: true, link: 'https://kibopush.com/twilio/'}}
+                  videoTutorial={{visibility: false}}
                 />
+              }
+              <div style={{marginTop: this.props.isMobile ? '20px' : '0px'}} className='row'>
                 {
-                  this.state.activeSession.constructor === Object && Object.keys(this.state.activeSession).length > 0 &&
+                  ((this.props.isMobile && !this.state.showChat) || !this.props.isMobile) &&
+                  <SESSIONS
+                    pages={this.props.pages}
+                    loading={this.state.sessionsLoading}
+                    tabValue={this.state.tabValue}
+                    sessions={this.state.sessions}
+                    sessionsCount={this.state.sessionsCount}
+                    filterSort={this.state.filterSort}
+                    filterPage={this.state.filterPage}
+                    filterSearch={this.state.filterSearch}
+                    filterPending={this.state.filterPending}
+                    filterUnread={this.state.filterUnread}
+                    activeSession={this.state.activeSession}
+                    changeActiveSession={this.changeActiveSession}
+                    profilePicError={this.profilePicError}
+                    changeStatus={this.changeStatus}
+                    changeTab={this.changeTab}
+                    updateState={this.updateState}
+                    fetchSessions={this.fetchSessions}
+                    getChatPreview={this.getChatPreview}
+                    showPageInfo={false}
+                  />
+                }
+                {
+                  this.state.showChat && this.state.activeSession.constructor === Object && Object.keys(this.state.activeSession).length > 0 &&
                   <CHAT
                     userChat={this.state.userChat}
                     chatCount={this.props.chatCount}
@@ -538,10 +555,12 @@ class SmsChat extends React.Component {
                     history={this.props.history}
                     zoomIntegrations={this.props.zoomIntegrations}
                     createZoomMeeting={this.props.createZoomMeeting}
+                    isMobile={this.props.isMobile}
+                    backToSessions={this.backToSessions}
                   />
                 }
                 {
-                   this.state.activeSession.constructor === Object && Object.keys(this.state.activeSession).length > 0 && !this.state.showSearch &&
+                   !this.props.isMobile && this.state.activeSession.constructor === Object && Object.keys(this.state.activeSession).length > 0 && !this.state.showSearch &&
                    <PROFILE
                       updateState={this.updateState}
                       teams={this.props.teams ? this.props.teams : []}
@@ -564,7 +583,7 @@ class SmsChat extends React.Component {
                     />
                 }
                 {
-                  Object.keys(this.state.activeSession).length > 0 && this.state.activeSession.constructor === Object && this.state.showSearch &&
+                  !this.props.isMobile && Object.keys(this.state.activeSession).length > 0 && this.state.activeSession.constructor === Object && this.state.showSearch &&
                   <SEARCHAREA
                     clearSearchResults={this.clearSearchResults}
                     activeSession={this.state.activeSession}
@@ -577,7 +596,7 @@ class SmsChat extends React.Component {
                   />
                 }
                 {
-                  this.state.activeSession.constructor === Object && Object.keys(this.state.activeSession).length === 0 &&
+                  !this.props.isMobile && this.state.activeSession.constructor === Object && Object.keys(this.state.activeSession).length === 0 &&
                   <div style={{border: '1px solid #F2F3F8',
                     marginBottom: '0px',
                     display: 'flex',
@@ -607,6 +626,7 @@ function mapStateToProps(state) {
     chatCount: (state.smsChatInfo.chatCount),
     pages: (state.pagesInfo.pages),
     user: (state.basicInfo.user),
+    isMobile: (state.basicInfo.isMobile),
     customers: (state.liveChat.customers),
     members: (state.membersInfo.members),
     teams: (state.teamsInfo.teams),

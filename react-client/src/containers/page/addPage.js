@@ -197,12 +197,15 @@ class AddPage extends React.Component {
                     </div>
                   </div>
                   <div className='m-portlet__head-tools'>
+                    {
+                      !this.props.isMobile &&
                       <span>
                         <Link className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' style={{marginRight: '10px'}} onClick={() => {
                           this.setState({loading: true})
                           this.props.refreshPages(this.stopLoading, this.msg)
                         }}>Refresh Pages</Link>
                       </span>
+                    }
                       <span>
                         {this.props.location.state && this.props.location.state.module === 'page'
                           ? <Link to='/pages' className='btn btn-success m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
@@ -215,6 +218,18 @@ class AddPage extends React.Component {
                       </span>
                   </div>
                 </div>
+                {
+                  this.props.isMobile &&
+                  <div className="col-xl-4 order-1 order-xl-2 m--align-right m--margin-top-20">
+                    <span>
+                      <Link className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' style={{marginRight: '10px'}} onClick={() => {
+                        this.setState({loading: true})
+                        this.props.refreshPages(this.stopLoading, this.msg)
+                      }}>Refresh Pages</Link>
+                    </span>
+                    <div class="m-separator m-separator--dashed d-xl-none" />
+                  </div>
+                }
                 <div className='m-portlet__body'>
                   <div className='m-widget4'>
                     {
@@ -263,6 +278,7 @@ class AddPage extends React.Component {
 function mapStateToProps(state) {
   return {
     user: (state.basicInfo.user),
+    isMobile: (state.basicInfo.isMobile),
     otherPages: (state.pagesInfo.otherPages),
     page_connected: (state.pagesInfo.page_connected),
     message: (state.pagesInfo.message)

@@ -46,19 +46,17 @@ class ResendEmail extends React.Component {
         <header className='m-grid__item    m-header ' data-minimize-offset='200' data-minimize-mobile-offset='200' >
           <div className='m-container m-container--fluid m-container--full-height'>
             <div className='m-stack m-stack--ver m-stack--desktop'>
-              <div className='m-stack__item m-stack__item--fluid m-header-head' id='m_header_nav'>
-                <button className='m-aside-header-menu-mobile-close  m-aside-header-menu-mobile-close--skin-dark ' id='m_aside_header_menu_mobile_close_btn'>
-                  <i className='la la-close' />
-                </button>
-                <div id='m_header_topbar' className='m-topbar  m-stack m-stack--ver m-stack--general'>
-                  <div className='m-stack__item m-topbar__nav-wrapper'>
-                    <ul className='m-topbar__nav m-nav m-nav--inline'>
-                      <li className='m-nav__item m-topbar__user-profile m-topbar__user-profile--img  m-dropdown m-dropdown--medium m-dropdown--arrow m-dropdown--header-bg-fill m-dropdown--align-right m-dropdown--mobile-full-width m-dropdown--skin-light' data-dropdown-toggle='click'>
-                        <a href='#/' onClick={() => { auth.logout() }} className='btn btn-focus m-btn m-btn--pill m-btn--custom m-btn--air' style={{marginTop: '13px'}}>
-                          Logout
-                        </a>
-                      </li>
-                    </ul>
+              <div className='m-stack__item m-brand'>
+                <div className='m-stack m-stack--ver m-stack--general'>
+                  <div className='m-stack__item m-stack__item--middle m-brand__logo'>
+                    <h4 className='m-brand__logo-wrapper'>
+                      KIBOPUSH
+                    </h4>
+                  </div>
+                  <div className='m-stack__item m-stack__item--middle m-brand__tools'>
+                    <a href='#/' onClick={() => { auth.logout() }} className='btn btn-focus m-btn m-btn--pill m-btn--custom m-btn--air'>
+                      Logout
+                    </a>
                   </div>
                 </div>
               </div>
@@ -112,7 +110,8 @@ function mapStateToProps (state) {
   return {
     errorMessage: (state.signupInfo.errorMessage),
     successMessage: (state.signupInfo.successMessage),
-    user: (state.basicInfo.user)
+    user: (state.basicInfo.user),
+    isMobile: (state.basicInfo.isMobile)
   }
 }
 

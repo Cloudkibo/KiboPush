@@ -9,6 +9,7 @@ import { loadMyPagesList } from './../redux/actions/pages.actions'
 import { fetchAllSequence } from './../redux/actions/sequence.action'
 import { loadDashboardData, sentVsSeen } from './../redux/actions/dashboard.actions'
 // import { allBroadcasts } from './../redux/actions/broadcast.actions'
+import auth from './auth.service'
 import { loadPollsListNew } from './../redux/actions/poll.actions'
 import { loadSurveysListNew } from './../redux/actions/surveys.actions'
 import {updateCustomFieldValue, addCustomField, removeCustomField, updateSingleCustomField} from './../redux/actions/customFields.actions'
@@ -86,6 +87,9 @@ socket.on('message', (data) => {
   }
   if (['new_chat_whatsapp', 'agent_replied_whatsapp', 'session_pending_response_whatsapp', 'unsubscribe_whatsapp', 'session_status_whatsapp', 'new_session_created_whatsapp', 'message_delivered_whatsApp', 'message_seen_whatsApp'].includes(data.action)) {
     if (data.action === 'new_chat_whatsapp') data.showNotification = true
+    if (data.payload) {
+      store.dispatch(setMessageAlert(data.payload))
+    }
     store.dispatch(handleSocketEventWhatsapp(data))
   }
   if (['new_notification'].includes(data.action)) {
@@ -179,6 +183,9 @@ socket.on('message', (data) => {
     store.dispatch(updateSponsoredMessagesListItemStatus(data.payload))
   } else if (data.action === 'zoom_uninstall') {
     store.dispatch(removeZoomIntegration(data.payload))
+  }
+  else if (data.action === 'logout') {
+    auth.logout()
   }
   if (callbacks[data.action]) {
     callbacks[data.action](data.payload)

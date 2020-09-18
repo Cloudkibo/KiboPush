@@ -111,7 +111,7 @@ class ShopifyIntegration extends React.Component {
           <div className='tab-content'>
             <div className='m-content'>
               <div style={{ textAlign: 'center' }} className='alert m-alert m-alert--default' role='alert'>
-                Need help in understanding Shopify Integration? Here is the <a href='https://kibopush.com/whatsapp-shopify-chatbot/' target='_blank' rel='noopener noreferrer'>documentation</a>.
+                Need help in understanding Shopify Integration? Here is the <a href={this.props.user.platform === 'whatsApp' ? 'https://kibopush.com/whatsapp-shopify-chatbot/' : 'https://kibopush.com/messenger-shopify-chatbot/'} target='_blank' rel='noopener noreferrer'>documentation</a>.
                 {/* Or check out this  <a href='#/' onClick={this.openVideoTutorial}>video tutorial</a> to understand this feature. */}
               </div>
               <div className='row'>
