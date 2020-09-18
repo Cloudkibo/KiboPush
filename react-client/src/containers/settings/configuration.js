@@ -49,6 +49,7 @@ class Configuration extends React.Component {
     this.setType = this.setType.bind(this)
     this.changeWhatsAppProvider = this.changeWhatsAppProvider.bind(this)
     this.updateWhatsAppData = this.updateWhatsAppData.bind(this)
+    this.logout = this.logout.bind(this)
     this.handleCheckbox = this.handleCheckbox.bind(this)
     this.logout = this.logout.bind(this)
     this.updateData =this.updateData.bind(this)
@@ -64,6 +65,13 @@ class Configuration extends React.Component {
     })
     this.props.updateShowIntegrations({ showIntegrations: true })
     // auth.logout()
+  }
+
+  logout() {
+    this.props.history.push({
+      pathname: '/facebookIntegration'
+    })
+    this.props.updateShowIntegrations({ showIntegrations: true })
   }
 
   handleCheckbox (e) {

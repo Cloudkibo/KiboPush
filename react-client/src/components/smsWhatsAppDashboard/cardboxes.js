@@ -52,7 +52,7 @@ class CardBoxesContainer extends React.Component {
             </Link>
           }
 
-          { url.includes('kiboengage.cloudkibo.com') && 
+          { url.includes('kiboengage.cloudkibo.com') &&
             <Link to={(this.props.platform === 'sms' ? '/smsBroadcasts' : '/whatsAppBroadcasts')} >
               <CardBox
                 style='accent'
