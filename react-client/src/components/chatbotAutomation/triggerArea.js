@@ -60,8 +60,13 @@ class TriggerArea extends React.Component {
     }
   }
 
-  handleKeyDown(event) {
-    const { inputValue, value } = this.state
+  Trim(x) {
+    return x.replace(/^\s+|\s+$/gm,'');
+  }
+
+  handleKeyDown (event) {
+    let { inputValue, value } = this.state
+    inputValue = this.Trim(inputValue)
     if (!inputValue) return
     switch (event.key) {
       case 'Enter':

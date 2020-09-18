@@ -489,6 +489,7 @@ export function fetchAutopostingPlatformWise () {
   }
 }
 
+
 // Fetch Autoposting Platform Stats Datewise
 export function fetchAutopostingPlatformWiseDateWise (startDate) {
   return (dispatch) => {
@@ -533,6 +534,18 @@ export function fetchPlatformStatsMonthly () {
       .then(res => {
         console.log('response from fetchPlatformStatsMonthly', res)
         dispatch(handleAction(ActionTypes.UPDATE_MONTHLY_PLATFORM_STATS, res.payload))
+      })
+  }
+}
+
+export function fetchPlatformStatsWeekly () {
+  let date = new Date()
+  date.setDate(date.getDate() - 10)
+  return (dispatch) => {
+    callApi(`operational/platformwise/ranged`, 'post', {startDate: date.toISOString()})
+      .then(res => {
+        console.log('response from fetchPlatformStatsWeekly', res)
+        dispatch(handleAction(ActionTypes.UPDATE_WEEKLY_PLATFORM_STATS, res.payload))
       })
   }
 }
