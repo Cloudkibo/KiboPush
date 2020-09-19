@@ -19,7 +19,8 @@ class SelectPlatform extends React.Component {
         <div className='m-menu__submenu m-menu__submenu--classic m-menu__submenu--left'>
           <span className='m-menu__arrow m-menu__arrow--adjust' />
           <ul className='m-menu__subnav'>
-            <li className='m-menu__item ' aria-haspopup='true' onClick={() => { this.props.changePlatform('messenger') }}>
+            { this.props.enableMessenger
+            ? <li className='m-menu__item ' aria-haspopup='true' onClick={() => { this.props.changePlatform('messenger') }}>
               <button type='button' className='btn btn-link m-menu__link '>
                 <i className='m-menu__link-icon fa fa-facebook-square' />
                 <span style={{width: 'auto'}} className='m-menu__link-text'>
@@ -27,7 +28,17 @@ class SelectPlatform extends React.Component {
                 </span>
               </button>
             </li>
-            <li className='m-menu__item ' aria-haspopup='true' onClick={() => { this.props.changePlatform('sms') }}>
+            : <li className='m-menu__item ' aria-haspopup='true'>
+              <button disabled={true} type='button' className='btn m-menu__link' style={{cursor: 'auto'}}>
+                <i className='m-menu__link-icon fa fa-facebook-square' />
+                <span style={{width: 'auto'}} className='m-menu__link-text'>
+                  Messenger
+                </span>
+              </button>
+            </li>
+            }
+            { this.props.enableSms
+            ? <li className='m-menu__item ' aria-haspopup='true' onClick={() => { this.props.changePlatform('sms') }}>
               <button type='button' className='btn btn-link m-menu__link '>
                 <i className='m-menu__link-icon flaticon flaticon-chat-1' />
                 <span style={{width: 'auto'}} className='m-menu__link-text'>
@@ -35,7 +46,17 @@ class SelectPlatform extends React.Component {
                 </span>
               </button>
             </li>
-            <li className='m-menu__item ' aria-haspopup='true' onClick={() => { this.props.changePlatform('whatsApp') }}>
+            : <li className='m-menu__item ' aria-haspopup='true'>
+              <button disabled={true} type='button' className='btn m-menu__link' style={{cursor: 'auto'}}>
+                <i className='m-menu__link-icon fa fa-facebook-square' />
+                <span style={{width: 'auto'}} className='m-menu__link-text'>
+                  SMS
+                </span>
+              </button>
+            </li>
+            }
+            { this.props.enableWhatsApp
+            ? <li className='m-menu__item ' aria-haspopup='true' onClick={() => { this.props.changePlatform('whatsApp') }}>
               <button type='button' className='btn btn-link m-menu__link '>
                 <i className='m-menu__link-icon socicon socicon-whatsapp' />
                 <span style={{width: 'auto'}} className='m-menu__link-text'>
@@ -43,6 +64,15 @@ class SelectPlatform extends React.Component {
                 </span>
               </button>
             </li>
+            :  <li className='m-menu__item ' aria-haspopup='true'>
+            <button disabled={true} type='button' className='btn m-menu__link' style={{cursor: 'auto'}}>
+              <i className='m-menu__link-icon fa fa-facebook-square' />
+              <span style={{width: 'auto'}} className='m-menu__link-text'>
+                WhatsApp
+              </span>
+            </button>
+            </li>
+          }
           </ul>
         </div>
       </li>

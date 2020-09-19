@@ -30,6 +30,9 @@ class HeaderMenu extends React.Component {
             <SELECTPLATFROM
               selectedPlatform={this.props.selectedPlatform}
               changePlatform={this.props.changePlatform}
+              enableMessenger={this.props.user && this.props.user.actingAsUser && this.props.user.actingAsUser.platforms && this.props.user.actingAsUser.platforms.filter((platform) => platform === 'messenger').length < 1? false : true}
+              enableWhatsApp={this.props.user && this.props.user.actingAsUser && this.props.user.actingAsUser.platforms && this.props.user.actingAsUser.platforms.filter((platform) => platform === 'whatsApp').length < 1 ? false : true}
+              enableSms={this.props.user && this.props.user.actingAsUser && this.props.user.actingAsUser.platforms && this.props.user.actingAsUser.platforms.filter((platform) => platform === 'sms').length < 1? false : true}
             />
           }
           {

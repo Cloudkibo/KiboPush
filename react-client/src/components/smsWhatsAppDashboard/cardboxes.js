@@ -41,7 +41,7 @@ class CardBoxesContainer extends React.Component {
             }
           </UncontrolledTooltip>
           <div className='col-sm-6 col-md-6 col-lg-6'>
-            { url.includes('kibochat.cloudkibo.com') && 
+            { url.includes('kibochat.cloudkibo.com') ||  url.includes('localhost') &&
             <Link to={(this.props.platform === 'sms' ? '/smsChat' : '/whatsAppChat')} >
               <CardBox
                 style='accent'
