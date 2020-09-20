@@ -369,7 +369,7 @@ class CustomFields extends React.Component {
                         </div>
                       </div>
                     </div> */}
-                    {this.props.customFields && this.props.customFields.length > 0
+                    {this.props.customFields && this.props.customFields.filter((cf) => !cf.default).length > 0
                       ? <div className='m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
                         <table className='m-datatable__table' style={{ display: 'block', height: 'auto', overflowX: 'auto' }}>
                           <thead className='m-datatable__head'>
