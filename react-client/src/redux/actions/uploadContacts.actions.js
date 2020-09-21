@@ -124,7 +124,7 @@ export function editSubscriberWhatsApp (id, data,msg) {
           // loadSubscribers()
           //dispatch(loadWhatsAppContactsList({last_id: 'none', number_of_records: 10, first_page: 'first'}))
         } else {
-          msg.error('Subscriber updated successfully')
+          msg.error(res.description || 'Unable to update subscriber')
         }
       })
   }
