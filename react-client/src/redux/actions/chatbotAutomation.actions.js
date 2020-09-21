@@ -3,14 +3,14 @@ import callApi from '../../utility/api.caller.service'
 import { getAccountsUrl } from '../../utility/utils'
 import auth from '../../utility/auth.service'
 
-function showChatbots (data) {
+function showChatbots(data) {
   return {
     type: ActionTypes.SHOW_CHATBOTS,
     data
   }
 }
 
-export function fetchChatbots (callback) {
+export function fetchChatbots(callback) {
   return (dispatch) => {
     callApi('chatbots')
       .then(res => {
@@ -25,17 +25,43 @@ export function fetchChatbots (callback) {
   }
 }
 
-export function createChatbot (data, callback) {
+export function createChatbot(data, callback) {
   return (dispatch) => {
     callApi('chatbots', 'post', data)
       .then(res => {
         console.log('response from createChatbot', res)
-        callback(res)
+        if (callback) {
+          callback(res)
+        }
       })
   }
 }
 
-export function fetchChatbotDetails (id, callback) {
+export function createShopifyChatbot(data, callback) {
+  return (dispatch) => {
+    callApi('chatbots/shopifyChatbot', 'post', data)
+      .then(res => {
+        console.log('response from createShopifyChatbot', res)
+        if (callback) {
+          callback(res)
+        }
+      })
+  }
+}
+
+export function updateShopifyChatbot(data, callback) {
+  return (dispatch) => {
+    callApi('chatbots/shopifyChatbot', 'put', data)
+      .then(res => {
+        console.log('response from updateShopifyChatbot', res)
+        if (callback) {
+          callback(res)
+        }
+      })
+  }
+}
+
+export function fetchChatbotDetails(id, callback) {
   return (dispatch) => {
     callApi(`chatbots/${id}/details`)
       .then(res => {
@@ -45,7 +71,7 @@ export function fetchChatbotDetails (id, callback) {
   }
 }
 
-export function uploadAttachment (filedata, handleFunction) {
+export function uploadAttachment(filedata, handleFunction) {
   return (dispatch) => {
     // eslint-disable-next-line no-undef
     fetch(`${getAccountsUrl()}/uploadFile`, {
@@ -61,7 +87,7 @@ export function uploadAttachment (filedata, handleFunction) {
   }
 }
 
-export function handleAttachment (data, callback) {
+export function handleAttachment(data, callback) {
   return (dispatch) => {
     callApi(`messageBlock/attachment`, 'post', data)
       .then(res => {
@@ -71,7 +97,7 @@ export function handleAttachment (data, callback) {
   }
 }
 
-export function handleMessageBlock (data, callback) {
+export function handleMessageBlock(data, callback) {
   return (dispatch) => {
     callApi('messageBlock', 'post', data)
       .then(res => {
@@ -81,7 +107,7 @@ export function handleMessageBlock (data, callback) {
   }
 }
 
-export function updateChatbot (data, callback) {
+export function updateChatbot(data, callback) {
   return (dispatch) => {
     callApi('chatbots', 'put', data)
       .then(res => {
@@ -91,9 +117,21 @@ export function updateChatbot (data, callback) {
   }
 }
 
-export function deleteMessageBlock (ids, callback) {
+export function getShopifyChatbotTriggers(chatbotId, callback) {
   return (dispatch) => {
-    callApi('messageBlock', 'delete', {ids})
+    callApi(`chatbots/shopifyChatbotTriggers/${chatbotId}`)
+      .then(res => {
+        console.log('response from getChatbotTriggers', res)
+        if (callback) {
+          callback(res)
+        }
+      })
+  }
+}
+
+export function deleteMessageBlock(ids, callback) {
+  return (dispatch) => {
+    callApi('messageBlock', 'delete', { ids })
       .then(res => {
         console.log('response from deleteMessageBlock', res)
         callback(res)
@@ -101,7 +139,7 @@ export function deleteMessageBlock (ids, callback) {
   }
 }
 
-export function fetchChatbot (id, callback) {
+export function fetchChatbot(id, callback) {
   return (dispatch) => {
     callApi(`chatbots/${id}/fetch`)
       .then(res => {
@@ -111,7 +149,7 @@ export function fetchChatbot (id, callback) {
   }
 }
 
-export function fetchBackup (id, callback) {
+export function fetchBackup(id, callback) {
   return (dispatch) => {
     callApi(`chatbots/${id}/fetchBackup`)
       .then(res => {
@@ -121,7 +159,7 @@ export function fetchBackup (id, callback) {
   }
 }
 
-export function createBackup (data, callback) {
+export function createBackup(data, callback) {
   return (dispatch) => {
     callApi(`chatbots/createBackup`, 'post', data)
       .then(res => {
@@ -131,7 +169,7 @@ export function createBackup (data, callback) {
   }
 }
 
-export function restoreBackup (data, callback) {
+export function restoreBackup(data, callback) {
   return (dispatch) => {
     callApi(`chatbots/restoreBackup`, 'post', data)
       .then(res => {
@@ -141,7 +179,7 @@ export function restoreBackup (data, callback) {
   }
 }
 
-export function fetchAnalytics (id, days, callback) {
+export function fetchAnalytics(id, days, callback) {
   console.log('data for fetchAnalytics', id, days)
   return (dispatch) => {
     callApi(`chatbots/${id}/stats/${days}`, 'get')
@@ -152,7 +190,7 @@ export function fetchAnalytics (id, days, callback) {
   }
 }
 
-export function downloadAnalytics (data, callback) {
+export function downloadAnalytics(data, callback) {
   return (dispatch) => {
     callApi(`chatbots/downloadAnalytics`, 'post', data)
       .then(res => {
