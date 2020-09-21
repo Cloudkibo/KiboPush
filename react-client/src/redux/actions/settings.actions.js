@@ -447,7 +447,7 @@ export function saveDeleteOption(data, msg, handleSave) {
         if (res.status === 'success') {
           msg.success('Delete request has been sent')
         } else {
-          msg.error(res.description)
+          msg.error(res.description || res.payload)
         }
         handleSave(res)
       })
@@ -459,7 +459,7 @@ export function authenticatePassword(data, msg, handleAuthentication) {
       .then(res => {
         console.log('response from msg', res)
         if (res.status !== 'success') {
-          msg.error('Incorrect Password')
+          msg.error(res.description || res.payload || 'Incorrect Password')
         }
         handleAuthentication(res)
       })
@@ -473,7 +473,7 @@ export function cancelDeletion(msg, handleCancel) {
         if (res.status === 'success') {
           msg.success('Request to cancel deletion process has been sent to admin.')
         } else {
-          msg.error(res.description || 'Failed to cancel')
+          msg.error(res.description || res.payload || 'Failed to cancel')
         }
         handleCancel(res)
       })

@@ -318,9 +318,13 @@ class ConfigureChatbot extends React.Component {
   }
 
   showTestModal() {
-    this.setState({ showTestContent: true }, () => {
-      this.refs._open_test_chatbot_modal.click()
-    })
+    if (!this.props.user.actingAsUser) {
+      this.setState({ showTestContent: true }, () => {
+        this.refs._open_test_chatbot_modal.click()
+      })
+    } else {
+      this.msg.error('You are not allowed to perform this action')
+    }
   }
 
   disableShopifyChatbot() {
@@ -474,6 +478,7 @@ class ConfigureChatbot extends React.Component {
                   handleMessageBlock={this.props.handleMessageBlock}
                 />
                 <MESSAGEAREA
+                  user={this.props.user}
                   block={this.state.currentBlock}
                   chatbot={this.state.chatbot}
                   alertMsg={this.msg}
@@ -559,7 +564,8 @@ class ConfigureChatbot extends React.Component {
 
 function mapStateToProps(state) {
   return {
-    fbAppId: state.basicInfo.fbAppId
+    fbAppId: state.basicInfo.fbAppId,
+    user: (state.basicInfo.user)
   }
 }
 

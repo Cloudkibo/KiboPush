@@ -269,10 +269,10 @@ class Bot extends React.Component {
   }
   changeStatusCheckBox(botId, enable) {
     if (enable === 'true') {
-      this.props.updateStatus({ botId: botId, isActive: 'false' })
+      this.props.updateStatus({ botId: botId, isActive: 'false' }, this.msg)
       this.setState({ isActive: 'false' })
     } else {
-      this.props.updateStatus({ botId: botId, isActive: 'true' })
+      this.props.updateStatus({ botId: botId, isActive: 'true' }, this.msg)
       this.setState({ isActive: 'true' })
     }
   }

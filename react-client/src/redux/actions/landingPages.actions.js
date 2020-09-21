@@ -40,17 +40,13 @@ export function deleteLandingPage (id, msg) {
     })
   }
 }
-export function createLandingPage (data, msg) {
+export function createLandingPage (data, cb) {
   console.log('date for createLandingPage', data)
   return (dispatch) => {
     callApi('landingPage', 'post', data)
     .then(res => {
       console.log('response from createLandingPage', res)
-      if (res.status === 'success') {
-        msg.success('Landing Page saved successfully')
-      } else {
-        msg.error(res.description || 'failed to save landing page')
-      }
+      if (cb) cb(res)
     })
   }
 }

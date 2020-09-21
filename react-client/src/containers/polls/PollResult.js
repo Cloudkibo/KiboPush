@@ -13,6 +13,7 @@ import {
 } from '../../redux/actions/poll.actions'
 import json2csv from 'json2csv'
 import { bindActionCreators } from 'redux'
+import AlertContainer from 'react-alert'
 
 class PollResult extends React.Component {
   constructor (props, context) {
@@ -34,37 +35,41 @@ class PollResult extends React.Component {
     })
   }
   getFile () {
-    let usersPayload = []
-    for (let i = 0; i < this.props.responsesfull.length; i++) {
-      var jsonStructure = {}
-      for (let j = 0; j < this.props.pages.length; j++) {
-        if (this.props.responsesfull[i].subscriberId.pageId === this.props.pages[j]._id) {
-          jsonStructure.PageName = this.props.pages[j].pageName
+    if (!this.props.user.actingAsUser) {
+      let usersPayload = []
+      for (let i = 0; i < this.props.responsesfull.length; i++) {
+        var jsonStructure = {}
+        for (let j = 0; j < this.props.pages.length; j++) {
+          if (this.props.responsesfull[i].subscriberId.pageId === this.props.pages[j]._id) {
+            jsonStructure.PageName = this.props.pages[j].pageName
+          }
         }
+        jsonStructure['Statement'] = this.props.location.state.statement
+        jsonStructure['SubscriberName'] = this.props.responsesfull[i].subscriberId.firstName + ' ' + this.props.responsesfull[i].subscriberId.lastName
+        jsonStructure['Response'] = this.props.responsesfull[i].response
+        jsonStructure['DateTime'] = this.props.responsesfull[i].datetime
+        jsonStructure['PollId'] = this.props.responsesfull[i].pollId
+        jsonStructure['PageId'] = this.props.responsesfull[i].subscriberId.pageId._id
+        jsonStructure['PageName'] = this.props.responsesfull[i].subscriberId.pageId.pageName
+        jsonStructure['SubscriberId'] = this.props.responsesfull[i].subscriberId._id
+        usersPayload.push(jsonStructure)
       }
-      jsonStructure['Statement'] = this.props.location.state.statement
-      jsonStructure['SubscriberName'] = this.props.responsesfull[i].subscriberId.firstName + ' ' + this.props.responsesfull[i].subscriberId.lastName
-      jsonStructure['Response'] = this.props.responsesfull[i].response
-      jsonStructure['DateTime'] = this.props.responsesfull[i].datetime
-      jsonStructure['PollId'] = this.props.responsesfull[i].pollId
-      jsonStructure['PageId'] = this.props.responsesfull[i].subscriberId.pageId._id
-      jsonStructure['PageName'] = this.props.responsesfull[i].subscriberId.pageId.pageName
-      jsonStructure['SubscriberId'] = this.props.responsesfull[i].subscriberId._id
-      usersPayload.push(jsonStructure)
-    }
-    //  var keys = []
-    // keys.push('Subscriber Name')
-    // keys.push(this.props.responsesfull[0].pollId.statement)
-    var info = usersPayload
-    var keys = []
-    var val = info[0]
+      //  var keys = []
+      // keys.push('Subscriber Name')
+      // keys.push(this.props.responsesfull[0].pollId.statement)
+      var info = usersPayload
+      var keys = []
+      var val = info[0]
 
-    for (var j in val) {
-      var subKey = j
-      keys.push(subKey)
+      for (var j in val) {
+        var subKey = j
+        keys.push(subKey)
+      }
+      var data = json2csv({data: usersPayload, fields: keys})
+      fileDownload(data, this.props.location.state.statement + '-report.csv')
+    } else {
+      this.msg.error('You are not allowed to perform this action')
     }
-    var data = json2csv({data: usersPayload, fields: keys})
-    fileDownload(data, this.props.location.state.statement + '-report.csv')
   }
 
   componentDidMount () {
@@ -128,9 +133,16 @@ class PollResult extends React.Component {
   }
 
   render () {
-    console.log('PollResult props', this.props)
+    var alertOptions = {
+      offset: 14,
+      position: 'top right',
+      theme: 'dark',
+      time: 5000,
+      transition: 'scale'
+    }
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+        <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="upgrade" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
             <div className="modal-content" style={{ width: '687px', top: '100' }}>
