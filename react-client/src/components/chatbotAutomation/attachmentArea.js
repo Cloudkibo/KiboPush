@@ -266,7 +266,7 @@ class AttachmentArea extends React.Component {
           attachment: nextProps.attachment.fileData || {},
           attachmentType: nextProps.attachment.type,
           buttons: nextProps.attachment.buttons,
-          isUploaded: nextProps.attachment.fileData && !nextProps.attachment.fileData.url ? true : false
+          isUploaded: nextProps.attachment.fileData && nextProps.attachment.type && !nextProps.attachment.fileData.url ? true : false
         })
       } else {
         this.setState({
