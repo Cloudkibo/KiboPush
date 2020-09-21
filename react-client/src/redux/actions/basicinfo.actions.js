@@ -169,8 +169,7 @@ export function updatePlan (data, msg) {
         dispatch(fetchPlan('success'))
         dispatch(getuserdetails())
       } else {
-        msg.error(res.description)
-        dispatch(fetchPlan(res.description))
+        msg.error(res.description || 'Failed to update plan')
       }
     })
   }
