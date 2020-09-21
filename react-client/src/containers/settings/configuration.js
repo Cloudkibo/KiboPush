@@ -362,6 +362,11 @@ class Configuration extends React.Component {
                 <button style={{ float: 'right' }}
                   className='btn btn-primary btn-sm'
                   onClick={() => {
+                    this.props.disconnectFacebook((res) => {
+                      if (res.status !== 'success') {
+                        this.msg.error(res.description || 'Failed to disconnect Facebook')
+                      }
+                    })
                     // this.logout()
                     this.props.disconnectFacebook()
                   }} data-dismiss='modal'>Yes

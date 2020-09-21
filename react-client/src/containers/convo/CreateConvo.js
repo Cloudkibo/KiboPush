@@ -486,80 +486,84 @@ class CreateConvo extends React.Component {
   }
 
   testConvo () {
-    if (this.state.locationPages.length > 1 || this.state.locationPages.length === 0) {
-      this.msg.error('Only one page should be selected to test the broadcast')
-    } else {
-      let pageSelected = this.state.locationPages[0]
-      if (this.props.adminPageSubscription && this.props.adminPageSubscription.length > 0) {
-        var check = this.props.adminPageSubscription.filter((obj) => { return obj.pageId === pageSelected })
-        if (check.length <= 0) {
+    if (!this.props.user.actingAsUser) {
+      if (this.state.locationPages.length > 1 || this.state.locationPages.length === 0) {
+        this.msg.error('Only one page should be selected to test the broadcast')
+      } else {
+        let pageSelected = this.state.locationPages[0]
+        if (this.props.adminPageSubscription && this.props.adminPageSubscription.length > 0) {
+          var check = this.props.adminPageSubscription.filter((obj) => { return obj.pageId === pageSelected })
+          if (check.length <= 0) {
+            if(this.props.fbAppId && this.props.fbAppId !== '') {
+              this.refs.messengerModal.click()
+            }
+            return
+          }
+        } else {
           if(this.props.fbAppId && this.props.fbAppId !== '') {
             this.refs.messengerModal.click()
           }
           return
         }
-      } else {
-        if(this.props.fbAppId && this.props.fbAppId !== '') {
-          this.refs.messengerModal.click()
+        // for (let i = 0; i < this.props.pages.length; i++) {
+        //   if (this.props.pages[i].pageId === this.state.pageValue) {
+        //     if (!this.props.pages[i].adminSubscriberId) {
+              // this.setState({showMessengerModal: true})
+              // return
+        //     }
+        //   }
+        // }
+        //
+        var isListValue = false
+        if (this.state.listSelected.length > 0) {
+          isListValue = true
         }
-        return
-      }
-      // for (let i = 0; i < this.props.pages.length; i++) {
-      //   if (this.props.pages[i].pageId === this.state.pageValue) {
-      //     if (!this.props.pages[i].adminSubscriberId) {
-            // this.setState({showMessengerModal: true})
-            // return
-      //     }
-      //   }
-      // }
-      //
-      var isListValue = false
-      if (this.state.listSelected.length > 0) {
-        isListValue = true
-      }
-      var isSegmentedValue = false
-      if (this.state.pageValue.length > 0 || this.state.genderValue.length > 0 || this.state.localeValue.length > 0 || this.state.tagValue.length > 0) {
-        isSegmentedValue = true
-      }
-      let tagIDs = []
-      for (let i = 0; i < this.props.tags.length; i++) {
-        for (let j = 0; j < this.state.tagValue.length; j++) {
-          if (this.props.tags[i].tag === this.state.tagValue[j]) {
-            tagIDs.push(this.props.tags[i]._id)
-          }
+        var isSegmentedValue = false
+        if (this.state.pageValue.length > 0 || this.state.genderValue.length > 0 || this.state.localeValue.length > 0 || this.state.tagValue.length > 0) {
+          isSegmentedValue = true
         }
-      }
-      this.setState({newFiles: []})
-      console.log('payload before', this.state.linkedMessages[0].messageContent)
-      this.deleteButtonIds(this.state.linkedMessages)
-      this.deleteQuickReplyIds(this.state.linkedMessages)
-      var data = {
-        platform: 'facebook',
-        self: true,
-        payload: this.state.linkedMessages[0].messageContent,
-        title: this.state.linkedMessages[0].title,
-        isSegmented: isSegmentedValue,
-        segmentationPageIds: this.state.locationPages,
-        segmentationLocale: this.state.localeValue,
-        segmentationGender: this.state.genderValue,
-        segmentationTags: tagIDs,
-        segmentationTimeZone: '',
-        segmentationList: this.state.listSelected,
-        isList: isListValue,
-        fbMessageTag: 'NON_PROMOTIONAL_SUBSCRIPTION',
-        messageType: this.state.messageType,
-        linkedMessages: this.state.linkedMessages.slice(1, this.state.linkedMessages.length)
-      }
-      for (let i = 0; i < data.payload.length; i++) {
-        if (data.payload[i].componentType === 'list') {
-          for (let j = 0; j < data.payload[i].listItems.length; j++) {
-            if (data.payload[i].listItems[j].id) {
-              delete data.payload[i].listItems[j].id
+        let tagIDs = []
+        for (let i = 0; i < this.props.tags.length; i++) {
+          for (let j = 0; j < this.state.tagValue.length; j++) {
+            if (this.props.tags[i].tag === this.state.tagValue[j]) {
+              tagIDs.push(this.props.tags[i]._id)
             }
           }
         }
+        this.setState({newFiles: []})
+        console.log('payload before', this.state.linkedMessages[0].messageContent)
+        this.deleteButtonIds(this.state.linkedMessages)
+        this.deleteQuickReplyIds(this.state.linkedMessages)
+        var data = {
+          platform: 'facebook',
+          self: true,
+          payload: this.state.linkedMessages[0].messageContent,
+          title: this.state.linkedMessages[0].title,
+          isSegmented: isSegmentedValue,
+          segmentationPageIds: this.state.locationPages,
+          segmentationLocale: this.state.localeValue,
+          segmentationGender: this.state.genderValue,
+          segmentationTags: tagIDs,
+          segmentationTimeZone: '',
+          segmentationList: this.state.listSelected,
+          isList: isListValue,
+          fbMessageTag: 'NON_PROMOTIONAL_SUBSCRIPTION',
+          messageType: this.state.messageType,
+          linkedMessages: this.state.linkedMessages.slice(1, this.state.linkedMessages.length)
+        }
+        for (let i = 0; i < data.payload.length; i++) {
+          if (data.payload[i].componentType === 'list') {
+            for (let j = 0; j < data.payload[i].listItems.length; j++) {
+              if (data.payload[i].listItems[j].id) {
+                delete data.payload[i].listItems[j].id
+              }
+            }
+          }
+        }
+        this.props.sendBroadcast(data, this.msg)
       }
-      this.props.sendBroadcast(data, this.msg)
+    } else {
+      this.msg.error('You are not allowed to perform this action')
     }
   }
 

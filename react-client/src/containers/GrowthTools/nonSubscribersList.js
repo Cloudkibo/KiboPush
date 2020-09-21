@@ -8,6 +8,7 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import ReactPaginate from 'react-paginate'
 import fileDownload from 'js-file-download'
+import AlertContainer from 'react-alert'
 var json2csv = require('json2csv')
 
 class NonSubscribersList extends React.Component {
@@ -61,21 +62,25 @@ class NonSubscribersList extends React.Component {
   }
 
   exportRecordsNonSubscribers () {
-    var data = this.prepareExportData()
-    var info = data
-    var keys = []
-    var val = info[0]
+    if (!this.props.user.actingAsUser) {
+      var data = this.prepareExportData()
+      var info = data
+      var keys = []
+      var val = info[0]
 
-    for (var j in val) {
-      var subKey = j
-      keys.push(subKey)
-    }
-    json2csv({ data: info, fields: keys }, function (err, csv) {
-      if (err) {
-      } else {
-        fileDownload(csv, 'NonSubscribersList.csv')
+      for (var j in val) {
+        var subKey = j
+        keys.push(subKey)
       }
-    })
+      json2csv({ data: info, fields: keys }, function (err, csv) {
+        if (err) {
+        } else {
+          fileDownload(csv, 'NonSubscribersList.csv')
+        }
+      })
+    } else {
+      this.msg.error('You are not allowed to perform this action')
+    }
   }
   displayData (n, nonSubscribers) {
     let offset = n * 4
@@ -110,8 +115,16 @@ class NonSubscribersList extends React.Component {
   }
 
   render () {
+    var alertOptions = {
+      offset: 14,
+      position: 'top right',
+      theme: 'dark',
+      time: 5000,
+      transition: 'scale'
+    }
     return (
       <div className='m-portlet m-portlet-mobile '>
+        <AlertContainer ref={a => this.msg = a} {...alertOptions} />
         <div className='m-portlet__head'>
           <div className='m-portlet__head-caption'>
             <div className='m-portlet__head-title'>
@@ -234,7 +247,8 @@ function mapStateToProps (state) {
   return {
     pages: (state.pagesInfo.pages),
     nonSubscribersNumbers: (state.growthToolsInfo.nonSubscribersData),
-    currentList: (state.listsInfo.currentList)
+    currentList: (state.listsInfo.currentList),
+    user: (state.basicInfo.user)
   }
 }
 function mapDispatchToProps (dispatch) {

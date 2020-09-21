@@ -181,8 +181,8 @@ export function updatePlan (data, msg) {
         msg.success('Plan updated successfully')
         dispatch(getuserdetails())
       } else {
-        const error = res.description || 'Failed to update plan'
-        msg.error(error)
+        msg.error(res.description || 'Failed to update plan')
+        dispatch(fetchPlan(res.description))
       }
     })
   }
@@ -252,7 +252,7 @@ export function disconnectFacebook (callback) {
         console.log('Failed to update show integrations!')
       }
       if (callback) {
-        callback()
+        callback(res)
       }
     })
   }

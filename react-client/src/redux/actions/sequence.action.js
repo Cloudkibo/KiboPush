@@ -104,16 +104,12 @@ export function setStatus (data, sequenceId, msg) {
   }
 }
 
-export function editMessage (data, msg) {
+export function editMessage (data, cb) {
   console.log('data', data)
   return (dispatch) => {
     callApi('sequenceMessaging/editMessage', 'post', data)
       .then(res => {
-        if (res.status === 'success') {
-          msg.success('Message saved successfully')
-        } else {
-          msg.success(res.description || 'Failed to update Message')
-        }
+        if (cb) cb(res)
       })
   }
 }

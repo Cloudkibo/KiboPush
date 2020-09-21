@@ -77,7 +77,7 @@ export function sendPhoneNumbers (data, msg) {
     callApi('growthTools/sendNumbers', 'post', data)
       .then(res => {
         if (res.status !== 'success') {
-          msg.error(res.description || 'Failed')
+          msg.error(res.description || res.payload || 'Failed')
         }
         console.log('Response', res)
         dispatch(sendresp(res))

@@ -142,12 +142,14 @@ export function editBot (data, msg, cb) {
   }
 }
 
-export function updateStatus (data) {
+export function updateStatus (data, msg) {
   return (dispatch) => {
     callApi('bots/edit', 'post', data)
       .then(res => {
         if (res.status === 'success') {
           dispatch(loadBotsList())
+        } else {
+          msg.error(res.description || 'Failed to update status')
         }
       })
   }

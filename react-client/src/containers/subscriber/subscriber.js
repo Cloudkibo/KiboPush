@@ -1023,22 +1023,26 @@ class Subscriber extends React.Component {
     }
   }
   exportRecords() {
-    this.props.loadAllSubscribersListNew({
-      last_id: 'none',
-      number_of_records: this.state.totalLength,
-      first_page: 'first',
-      filter: true,
-      filter_criteria: {
-        search_value: this.state.searchValue,
-        gender_value: this.state.filterByGender === 'all' ? '' : this.state.filterByGender,
-        page_value: this.state.filterByPage === 'all' ? '' : this.state.filterByPage,
-        locale_value: this.state.filterByLocale === 'all' ? '' : this.state.filterByLocale,
-        tag_value: this.state.filterByTag === 'all' ? '' : this.state.filterByTag,
-        status_value: this.state.status_value === 'all' ? '' : this.state.status_value,
-        source_value: this.state.filterSource === 'all' ? '' : this.state.filterBySource
-      }
-    }, this.prepareExportData)
-    this.msg.info('DOWNLOADING DATA.... YOU WILL BE NOTIFIED WHEN IT IS DOWNLOAD.')
+    if (!this.props.user.actingAsUser) {
+      this.props.loadAllSubscribersListNew({
+        last_id: 'none',
+        number_of_records: this.state.totalLength,
+        first_page: 'first',
+        filter: true,
+        filter_criteria: {
+          search_value: this.state.searchValue,
+          gender_value: this.state.filterByGender === 'all' ? '' : this.state.filterByGender,
+          page_value: this.state.filterByPage === 'all' ? '' : this.state.filterByPage,
+          locale_value: this.state.filterByLocale === 'all' ? '' : this.state.filterByLocale,
+          tag_value: this.state.filterByTag === 'all' ? '' : this.state.filterByTag,
+          status_value: this.state.status_value === 'all' ? '' : this.state.status_value,
+          source_value: this.state.filterSource === 'all' ? '' : this.state.filterBySource
+        }
+      }, this.prepareExportData)
+      this.msg.info('DOWNLOADING DATA.... YOU WILL BE NOTIFIED WHEN IT IS DOWNLOAD.')
+    } else {
+      this.msg.error('You are not allowed to perform this action')
+    }
   }
   handlePageClick(data) {
     if (data.selected === 0) {

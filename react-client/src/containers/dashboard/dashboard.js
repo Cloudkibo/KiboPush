@@ -198,22 +198,26 @@ class Dashboard extends React.Component {
     return data
   }
   exportDashboardInformation() {
-    var data = this.prepareExportData()
-    var info = data
-    var keys = []
-    var val = info[0]
+    if (!this.props.user.actingAsUser) {
+      var data = this.prepareExportData()
+      var info = data
+      var keys = []
+      var val = info[0]
 
-    for (var j in val) {
-      var subKey = j
-      keys.push(subKey)
-    }
-    json2csv({ data: info, fields: keys }, function (err, csv) {
-      if (err) {
-      } else {
-        console.log('call file download function')
-        fileDownload(csv, 'Dashboard.csv')
+      for (var j in val) {
+        var subKey = j
+        keys.push(subKey)
       }
-    })
+      json2csv({ data: info, fields: keys }, function (err, csv) {
+        if (err) {
+        } else {
+          console.log('call file download function')
+          fileDownload(csv, 'Dashboard.csv')
+        }
+      })
+    } else {
+      this.msg.error('You are not allowed to perform this action')
+    }
   }
   onDaysChange(e) {
     var defaultVal = 10
