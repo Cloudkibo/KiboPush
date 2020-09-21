@@ -125,6 +125,28 @@ class App extends Component {
     }
   }
 
+  setPathAndHeaderProps (path) {
+    if (auth.loggedIn() && getHiddenHeaderRoutes().indexOf(path) === -1) {
+      this.setState({headerProps: {}, path})
+    } else if (getWhiteHeaderRoutes().indexOf(path) > -1) {
+      this.setState({
+        headerProps: {
+          skin: this.props.isMobile ? 'dark' : 'white',
+          showToggleSidebar: false,
+          showHeaderMenu: false,
+          showHeaderTopbar: true,
+          showSelectPlatform: false,
+          showPlanPermissions: false,
+          showNotifcations: false,
+          showQuickActions: false,
+          showAppChooser: true,
+          showDocumentation: true
+        },
+        path
+      })
+    }
+  }
+
   componentDidMount () {
     if (this.props.history.location.pathname.toLowerCase() === '/demossa') {
       this.handleDemoSSAPage()
@@ -141,9 +163,6 @@ class App extends Component {
         /* eslint-disable */
         if ($('#sidebarDiv')) {
           $('#sidebarDiv').removeClass('hideSideBar')
-        }
-        if ($('#headerDiv')) {
-          $('#headerDiv').removeClass('hideHeader')
         }
         /* eslint-enable */
       }
