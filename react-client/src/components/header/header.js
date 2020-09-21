@@ -11,6 +11,7 @@ import {
   updatePicture,
   updateShowIntegrations,
   disconnectFacebook,
+  saveEnvironment,
   logout
 } from '../../redux/actions/basicinfo.actions'
 import {
@@ -51,6 +52,7 @@ class Header extends React.Component {
     this.timeSince = this.timeSince.bind(this)
     this.goToSettings = this.goToSettings.bind(this)
     this.logout = this.logout.bind(this)
+    this.isPlatformConnected = this.isPlatformConnected.bind(this)
 
     props.fetchNotifications()
   }
@@ -61,23 +63,33 @@ class Header extends React.Component {
     }
   }
 
+  isPlatformConnected (value) {
+    switch (value) {
+      case 'messenger':
+        if (!this.props.user.facebookInfo || !this.props.user.connectFacebook) return false
+        else return true
+      case 'whatsApp':
+        if (!this.props.automated_options.whatsApp || this.props.automated_options.whatsApp.connected === false) return false
+        else return true
+      case 'sms':
+        if (!this.props.automated_options.twilio) return false
+        else return true
+      default:
+        return false
+    }
+  }
+
   changePlatform (value) {
     document.getElementById('m_aside_header_menu_mobile_close_btn').click()
     const userRole = this.props.user.role
-    if (
-      (value === 'messenger' && (!this.props.user.facebookInfo || !this.props.user.connectFacebook)) ||
-      (this.props.automated_options &&
-        ((value === 'sms' && !this.props.automated_options.twilio) || (value === 'whatsApp' && !this.props.automated_options.whatsApp))
-      )
-    ) {
-      if (userRole === 'buyer') {
-        this.props.history.push({
-          pathname: '/integrations',
-          state: value
-        })
-      } else {
-        this.props.alertMsg.error(`${value} platform is not configured for your account. Please contact your account buyer.`)
-      }
+    const isPlatformConnected = this.isPlatformConnected(value)
+    if (userRole === 'buyer' && !isPlatformConnected) {
+      this.props.history.push({
+        pathname: '/integrations',
+        state: value
+      })
+    } else if (!isPlatformConnected) {
+      this.props.alertMsg.error(`${value} platform is not configured for your account. Please contact your account buyer.`)
     } else {
       this.redirectToDashboard(value)
       this.props.updatePlatform({ platform: value }, this.props.fetchNotifications)
@@ -125,7 +137,7 @@ class Header extends React.Component {
     }
     this.setState({ planInfo: planInfo })
   }
-
+ 
   redirectToDashboard (value) {
     if (value === 'sms') {
       this.props.history.push({
@@ -282,7 +294,7 @@ class Header extends React.Component {
       showHeaderTopbar
     } = this.props
     return (
-      <header className='m-grid__item m-header ' data-minimize-offset='200' data-minimize-mobile-offset='200' >
+      <header id='headerDiv' className='m-grid__item m-header ' data-minimize-offset='200' data-minimize-mobile-offset='200' >
         <div className='m-container m-container--fluid m-container--full-height'>
           <div className='m-stack m-stack--ver m-stack--desktop'>
             <div className={`m-stack__item m-brand ${skin === 'dark' ? 'm-brand--skin-dark' : ''}`}>
@@ -417,7 +429,8 @@ function mapStateToProps(state) {
     userView: (state.backdoorInfo.userView),
     notifications: (state.notificationsInfo.notifications),
     subscribers: (state.subscribersInfo.subscribers),
-    otherPages: (state.pagesInfo.otherPages)
+    otherPages: (state.pagesInfo.otherPages),
+    currentEnvironment: (state.basicInfo.currentEnvironment)
   }
 }
 
@@ -431,6 +444,7 @@ function mapDispatchToProps(dispatch) {
     updateShowIntegrations,
     disconnectFacebook,
     logout,
+    saveEnvironment,
     setUsersView
   }, dispatch)
 }

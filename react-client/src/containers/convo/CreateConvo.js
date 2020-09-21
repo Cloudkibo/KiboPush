@@ -763,7 +763,10 @@ class CreateConvo extends React.Component {
                   <div className="ranges">
                     <ul>
                       <li onClick={() => this.switchBuilder('basic')} data-range-key="basic">Basic Builder</li>
-                      <li onClick={() => this.switchBuilder('flow')} data-range-key="flow">Flow Builder</li>
+                      {
+                        this.props.user.plan['flow_builder'] &&
+                        <li onClick={() => this.switchBuilder('flow')} data-range-key="flow">Flow Builder</li>
+                      }
                     </ul>
                   </div>
                 </div>
@@ -774,6 +777,7 @@ class CreateConvo extends React.Component {
         <BUILDER
           titleEditable
           module='broadcast'
+          user={this.props.user}
           initialFiles={this.state.initialFiles}
           newFiles={this.state.newFiles}
           rerenderFlowBuilder={this.rerenderFlowBuilder}

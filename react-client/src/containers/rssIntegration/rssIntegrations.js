@@ -362,7 +362,7 @@ class RssIntegrations extends React.Component {
                   <h5 className="modal-title" id="exampleModalLabel">
                     Rss Feeds Integrations Video Tutorial
                   </h5>
-                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" 
+                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal"
                   aria-label="Close"
                   onClick={() => {
                     this.setState({
@@ -524,17 +524,20 @@ class RssIntegrations extends React.Component {
                     </h3>
                   </div>
                 </div>
-                <div className='m-portlet__head-tools'>
-                  <Link to='/editFeed'
-                    className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
-                    <span>
-                      <i className='la la-plus' />
+                {
+                  this.props.user.permissions['add_rss_feeds'] &&
+                  <div className='m-portlet__head-tools'>
+                    <Link to='/editFeed'
+                      className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
                       <span>
-                        Add Feed
+                        <i className='la la-plus' />
+                        <span>
+                          Add Feed
+                        </span>
                       </span>
-                    </span>
-                  </Link>
-                </div>
+                    </Link>
+                  </div>
+                }
               </div>
               <div className='m-portlet__body'>
                 <div className='col-12'>
@@ -650,7 +653,8 @@ function mapStateToProps (state) {
     pages: (state.pagesInfo.pages),
     rssFeeds: (state.feedsInfo.rssFeeds),
     count: (state.feedsInfo.count),
-    defaultFeeds: (state.feedsInfo.defaultFeeds)
+    defaultFeeds: (state.feedsInfo.defaultFeeds),
+    user: (state.basicInfo.user)
   }
 }
 
