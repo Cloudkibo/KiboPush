@@ -182,7 +182,7 @@ export function updatePlan (data, msg) {
         dispatch(getuserdetails())
       } else {
         msg.error(res.description || 'Failed to update plan')
-        dispatch(fetchPlan(res.description))
+        // dispatch(fetchPlan(res.description))
       }
     })
   }
