@@ -21,7 +21,7 @@ class AccountSettings extends React.Component {
       ismatch: false,
       pwdlength: true,
       changePassword: false,
-      tfaSwitch: false
+      tfaSwitch: this.props.user.tfaEnabled
     }
     this.save = this.save.bind(this)
     this.equal = this.equal.bind(this)
@@ -273,7 +273,7 @@ class AccountSettings extends React.Component {
 }
 function mapStateToProps (state) {
   return {
-    user: (state.basicInfo.user),
+    user: (state.basicInfo.user)
   }
 }
 
