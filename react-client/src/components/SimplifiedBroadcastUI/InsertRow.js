@@ -82,7 +82,7 @@ class InsertRow extends React.Component {
     let data = this.state.mappingData
     if (e.target.value !== '') {
       data[index].googleSheetColumn = e.target.value
-      this.setState({mappingData: data})
+      this.setState({mappingData: data, buttonDisabled: false})
     }
     console.log('data in updateMappingData', data)
   }
