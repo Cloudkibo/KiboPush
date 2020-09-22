@@ -352,6 +352,7 @@ class Header extends React.Component {
                 showDocumentation={this.props.showDocumentation}
                 user={this.props.user}
                 userView={this.props.userView}
+                superUser={this.props.superUser}
                 notifications={this.props.notifications}
                 seenNotifications={this.state.seenNotifications}
                 unseenNotifications={this.state.unseenNotifications}
@@ -425,6 +426,7 @@ Header.propTypes = {
 function mapStateToProps(state) {
   return {
     user: (state.basicInfo.user),
+    superUser: (state.basicInfo.superUser),
     automated_options: (state.basicInfo.automated_options),
     userView: (state.backdoorInfo.userView),
     notifications: (state.notificationsInfo.notifications),

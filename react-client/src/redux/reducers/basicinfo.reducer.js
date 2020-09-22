@@ -45,7 +45,8 @@ export function basicInfo (state = initialState, action) {
 
     case ActionTypes.LOAD_USER_DETAILS:
       return Object.assign({}, state, {
-        user: action.data,
+        user: action.data.user,
+        superUser: action.data.superUser,
         updatedUser: '',
         error: ''
       })
