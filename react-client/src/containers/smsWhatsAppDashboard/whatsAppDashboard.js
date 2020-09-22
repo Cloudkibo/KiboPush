@@ -57,12 +57,6 @@ class Dashboard extends React.Component {
   UNSAFE_componentWillReceiveProps(nextprops) {
     if (nextprops.user) {
       joinRoom(nextprops.user.companyId)
-      if (nextprops.user.platform === 'whatsApp' && nextprops.automated_options && (!nextprops.automated_options.whatsApp || nextprops.automated_options.whatsApp.connected === false) && nextprops.user.role === 'buyer') {
-        this.props.history.push({
-          pathname: '/integrations',
-          state: 'whatsApp'
-        })
-      }
     }
     if (nextprops.cardBoxesData && nextprops.subscriberSummary && (nextprops.sentSeenData || nextprops.metrics)) {
       this.setState({ loading: false })
