@@ -62,7 +62,7 @@ class Header extends React.Component {
   isPlatformConnected (value) {
     switch (value) {
       case 'messenger':
-        if (!this.props.automated_options.facebookInfo) return false
+        if (!this.props.automated_options.facebook) return false
         else return true
       case 'whatsApp':
         if (!this.props.automated_options.whatsApp || this.props.automated_options.whatsApp.connected === false) return false
