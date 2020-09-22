@@ -236,6 +236,7 @@ class Footer extends React.Component {
               }, 1000)
             })
           } else {
+            this.props.alertMsg.error(res.description || 'Failed to create Zoom Meeting')
             console.log('error creating zoom meeting', res.description)
             this.setState({ zoomMeetingCreationError: true, zoomMeetingLoading: false })
           }
@@ -289,7 +290,12 @@ class Footer extends React.Component {
         fileurl: sticker.image.hdpi
       }
       const data = this.props.setMessageData(this.props.activeSession, payload)
-      this.props.sendChatMessage(data)
+      this.props.sendChatMessage(data, (res) => {
+        if (res.status !== 'success') {
+          let errorMsg = res.description || res.payload
+          this.props.alertMsg.error(errorMsg)
+        }
+      })
       data.format = 'convos'
       this.updateChatData(data, payload)
     } else {
@@ -306,7 +312,12 @@ class Footer extends React.Component {
         fileurl: gif.images.downsized.url
       }
       const data = this.props.setMessageData(this.props.activeSession, payload)
-      this.props.sendChatMessage(data)
+      this.props.sendChatMessage(data, (res) => {
+        if (res.status !== 'success') {
+          let errorMsg = res.description || res.payload
+          this.props.alertMsg.error(errorMsg)
+        }
+      })
       data.format = 'convos'
       this.updateChatData(data, payload)
     } else {
@@ -623,12 +634,14 @@ class Footer extends React.Component {
         this.updateChatData(data, payload)
       })
     } else {
-      this.setState({ loading: false })
-      this.props.alertMsg.error('Failed to send message')
+      this.setState({loading: false})
+      let msg = res.description || 'Failed to send message'
+      this.props.alertMsg.error(msg)
     }
   }
 
   onAttachmentUpload(res) {
+    console.log('on attachment upload')
     if (res.status === 'success') {
       let attachment = this.state.attachment
       attachment.id = res.payload.id
@@ -776,7 +789,12 @@ class Footer extends React.Component {
         console.log('updating chat data', data)
         payload = this.setDataPayload('text')
         data = this.props.setMessageData(this.props.activeSession, payload, this.state.urlmeta)
-        this.props.sendChatMessage(data)
+        this.props.sendChatMessage(data, (res) => {
+          if (res.status !== 'success') {
+            let errorMsg = res.description || res.payload
+            this.props.alertMsg.error(errorMsg)
+          }
+        })
         this.setState({ text: '', urlmeta: {}, currentUrl: '' })
         this.props.updateChatAreaHeight('57vh')
         data.format = 'convos'
@@ -792,7 +810,12 @@ class Footer extends React.Component {
     if (data.isAllowed) {
       let payload = this.setDataPayload('thumbsUp')
       let data = this.props.setMessageData(this.props.activeSession, payload)
-      this.props.sendChatMessage(data)
+      this.props.sendChatMessage(data, (res) => {
+        if (res.status !== 'success') {
+          let errorMsg = res.description || res.payload
+          this.props.alertMsg.error(errorMsg)
+        }
+      })
       data.format = 'convos'
       this.updateChatData(data, payload)
     } else {

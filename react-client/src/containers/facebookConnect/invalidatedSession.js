@@ -77,11 +77,15 @@ class InvalidatedSession extends React.Component {
                     </div>
                     : <div className='m-login__signin'>
                       <div className='m-login__head'>
-                        <h3 className='m-login__title'>Re-Connect your Facebook account</h3>
+                        <h3 className='m-login__title'>{this.props.location.state.session_inavalidated ? 'Re-Connect your Facebook account' : 'Connect Platform on KiboPush'}</h3>
                       </div>
                       <br />
                       <div>
-                        <span>Your Facebook session has been {this.props.location.state.session_inavalidated ? 'inavalidated' :'disconnected' }. Please ask your buyer to connect his/her Facebook Account again.</span>
+                        {
+                          this.props.location.state.session_inavalidated ? 
+                          <span>Your Facebook session has been invalidated. Please ask your buyer to connect his/her Facebook Account again.</span>
+                          : <span> Currenlty there is no Platform connected on KiboPush. Please ask your buyer to connect Facebook/Whatsapp/Sms Platform on KiboPush.</span>
+                        }
                         <br /><br /><br />
                         <label>Buyer Information:</label>
                         <br /><br />

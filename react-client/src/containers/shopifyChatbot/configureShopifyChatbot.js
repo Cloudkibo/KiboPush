@@ -51,9 +51,13 @@ class ConfigureShopifyChatbot extends React.Component {
   }
 
   showTestModal() {
-    this.setState({ showTestContent: true }, () => {
-      this.refs._open_test_chatbot_modal.click()
-    })
+    if (!this.props.user.actingAsUser) {
+      this.setState({ showTestContent: true }, () => {
+        this.refs._open_test_chatbot_modal.click()
+      })
+    } else {
+      this.msg.error('You are not allowed to perform this action')
+    }
   }
 
   getTestModalContent() {

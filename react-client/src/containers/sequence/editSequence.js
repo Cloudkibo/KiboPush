@@ -402,7 +402,7 @@ class CreateSequence extends React.Component {
   }
 
   changeStatus (e, id) {
-    this.props.setStatus({ messageId: id, isActive: e.target.checked }, this.state.sequenceId)
+    this.props.setStatus({ messageId: id, isActive: e.target.checked }, this.state.sequenceId, this.msg)
   }
 
   onDaysChange (e) {
@@ -428,7 +428,7 @@ class CreateSequence extends React.Component {
   handleDone () {
     this.setState({openPopover: !this.state.openPopover})
     if (this.state.time === 'immediately') {
-      this.props.setSchedule({condition: 'immediately', days: '0', date: 'immediately', messageId: this.state.selectedMessageId, sequenceId: this.state.sequenceId})
+      this.props.setSchedule({condition: 'immediately', days: '0', date: 'immediately', messageId: this.state.selectedMessageId, sequenceId: this.state.sequenceId}, this.msg)
       this.closeDialogSchedule()
       this.props.fetchAllMessages(this.state.sequenceId)
     } else {
@@ -441,7 +441,7 @@ class CreateSequence extends React.Component {
         d1.setDate(d1.getDate() + Number(this.state.selectedDays))
       }
       let utcDate = new Date(d1)   // We can keep the date for queue schedule purposes == don't remvoe it
-      this.props.setSchedule({condition: this.state.condition, days: this.state.selectedDays, date: utcDate, messageId: this.state.selectedMessageId, sequenceId: this.state.sequenceId})
+      this.props.setSchedule({condition: this.state.condition, days: this.state.selectedDays, date: utcDate, messageId: this.state.selectedMessageId, sequenceId: this.state.sequenceId}, this.msg)
       this.closeDialogSchedule()
       this.props.fetchAllMessages(this.state.sequenceId)
     }
@@ -626,9 +626,9 @@ class CreateSequence extends React.Component {
     /* eslint-disable */
     $(temp).on('switchChange.bootstrapSwitch', function (event, state) {
       if (state === true) {
-        self.props.setStatus({_id: event.target.attributes.id.nodeValue, isActive: true}, self.state.sequenceId)
+        self.props.setStatus({_id: event.target.attributes.id.nodeValue, isActive: true}, self.state.sequenceId, this.msg)
       } else {
-        self.props.setStatus({_id: event.target.attributes.id.nodeValue, isActive: false}, self.state.sequenceId)
+        self.props.setStatus({_id: event.target.attributes.id.nodeValue, isActive: false}, self.state.sequenceId, this.msg)
       }
     })
   }

@@ -16,12 +16,12 @@ import { UncontrolledTooltip } from 'reactstrap'
  */
 /* eslint-disable */
 class CardBoxesContainer extends React.Component {
-  render () {
+  render() {
     const url = window.location.hostname
     return (
       <div className='col-xl-12'>
         <div className='row m-row--full-height'>
-          <UncontrolledTooltip style={{minWidth: '100px', opacity: '1.0'}} target='subscribers'>
+          <UncontrolledTooltip style={{ minWidth: '100px', opacity: '1.0' }} target='subscribers'>
             <span>Number of subscribers</span>
           </UncontrolledTooltip>
           <div className='col-sm-6 col-md-6 col-lg-6'>
@@ -34,33 +34,34 @@ class CardBoxesContainer extends React.Component {
               />
             </Link>
           </div>
-          <UncontrolledTooltip style={{minWidth: '100px', opacity: '1.0'}} target='properties'>
+          <UncontrolledTooltip style={{ minWidth: '100px', opacity: '1.0' }} target='properties'>
             {url.includes('kibochat.cloudkibo.com')
               ? <span>Number of new messages</span>
               : <span>Nunmber of broadcasts</span>
             }
           </UncontrolledTooltip>
           <div className='col-sm-6 col-md-6 col-lg-6'>
-            { url.includes('kibochat.cloudkibo.com') &&
-            <Link to={(this.props.platform === 'sms' ? '/smsChat' : '/whatsAppChat')} >
-              <CardBox
-                style='accent'
-                value={ this.props.cardBoxesData.chats ?  this.props.cardBoxesData.chats : 0}
-                label={'New Messages'}
-                id='properties'
-              />
-            </Link>
-          }
-          { url.includes('kiboengage.cloudkibo.com') &&
-            <Link to={(this.props.platform === 'sms' ? '/smsBroadcasts' : '/whatsAppBroadcasts')} >
-              <CardBox
-                style='accent'
-                value={this.props.cardBoxesData.broadcasts ? this.props.cardBoxesData.broadcasts : 0}
-                label={'Broadcasts'}
-                id='properties'
-              />
-            </Link>
-          }
+            {(url.includes('kibochat.cloudkibo.com') || url.includes('localhost')) &&
+              <Link to={(this.props.platform === 'sms' ? '/smsChat' : '/whatsAppChat')} >
+                <CardBox
+                  style='accent'
+                  value={this.props.cardBoxesData.chats ? this.props.cardBoxesData.chats : 0}
+                  label={'New Messages'}
+                  id='properties'
+                />
+              </Link>
+            }
+
+            {(url.includes('kiboengage.cloudkibo.com') || url.includes('localhost')) &&
+              <Link to={(this.props.platform === 'sms' ? '/smsBroadcasts' : '/whatsAppBroadcasts')} >
+                <CardBox
+                  style='accent'
+                  value={this.props.cardBoxesData.broadcasts ? this.props.cardBoxesData.broadcasts : 0}
+                  label={'Broadcasts'}
+                  id='properties'
+                />
+              </Link>
+            }
           </div>
         </div>
       </div>

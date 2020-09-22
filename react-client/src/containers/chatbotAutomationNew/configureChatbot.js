@@ -318,9 +318,13 @@ class ConfigureChatbot extends React.Component {
   }
 
   showTestModal() {
-    this.setState({ showTestContent: true }, () => {
-      this.refs._open_test_chatbot_modal.click()
-    })
+    if (!this.props.user.actingAsUser) {
+      this.setState({ showTestContent: true }, () => {
+        this.refs._open_test_chatbot_modal.click()
+      })
+    } else {
+      this.msg.error('You are not allowed to perform this action')
+    }
   }
 
   disableShopifyChatbot() {
@@ -474,6 +478,7 @@ class ConfigureChatbot extends React.Component {
                   handleMessageBlock={this.props.handleMessageBlock}
                 />
                 <MESSAGEAREA
+                  user={this.props.user}
                   block={this.state.currentBlock}
                   chatbot={this.state.chatbot}
                   alertMsg={this.msg}
@@ -519,6 +524,28 @@ class ConfigureChatbot extends React.Component {
                 content={this.getTestModalContent()}
                 onClose={this.toggleTestModalContent}
               />
+              <PROGRESS progress={`${this.state.progress}%`} />
+              <BACKBUTTON
+                onBack={this.onBack}
+                position='bottom-left'
+              />
+              <HELPWIDGET
+                documentation={{ visibility: true, link: 'https://kibopush.com/chatbot-automation/' }}
+                videoTutorial={{ visibility: true, videoId: '6v1bnraz6CQ' }}
+              />
+              <MODAL
+                zIndex={9999}
+                id='_cb_whitelist_domains'
+                title='Manage Whitelist Domains'
+                content={this.getWhitelistModalContent()}
+              />
+              <button ref='_open_test_chatbot_modal' style={{ display: 'none' }} data-toggle='modal' data-target='#_test_chatbot' />
+              <MODAL
+                id='_test_chatbot'
+                title='Test Chatbot'
+                content={this.getTestModalContent()}
+                onClose={this.toggleTestModalContent}
+              />
             </div>
         }
         {
@@ -537,7 +564,8 @@ class ConfigureChatbot extends React.Component {
 
 function mapStateToProps(state) {
   return {
-    fbAppId: state.basicInfo.fbAppId
+    fbAppId: state.basicInfo.fbAppId,
+    user: (state.basicInfo.user)
   }
 }
 

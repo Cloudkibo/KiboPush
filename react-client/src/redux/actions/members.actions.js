@@ -74,10 +74,15 @@ export function enableMember (data,  msg) {
   }
 }
 
-export function updateMember (data) {
+export function updateMember (data, msg) {
   console.log('data', data)
   return (dispatch) => {
     callApi('company/updateRole', 'post', data)
-    .then(res => dispatch(loadMembersList()))
+    .then(res => {
+      if (res.status !== 'success') {
+        msg.error(res.description || 'Failed to update member')
+      }
+      dispatch(loadMembersList())
+    })
   }
 }

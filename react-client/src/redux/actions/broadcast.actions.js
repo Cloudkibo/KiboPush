@@ -79,9 +79,10 @@ export function sendBroadcastSuccess () {
   }
 }
 
-export function sendBroadcastFailure () {
+export function sendBroadcastFailure (data) {
   return {
-    type: ActionTypes.SEND_BROADCAST_FAILURE
+    type: ActionTypes.SEND_BROADCAST_FAILURE,
+    data
   }
 }
 
@@ -162,7 +163,7 @@ export function sendbroadcast (broadcast) {
       if (res.status === 'success') {
         dispatch(sendBroadcastSuccess())
       } else {
-        dispatch(sendBroadcastFailure())
+        dispatch(sendBroadcastFailure(res.description || 'Broadcast Sending Failed.'))
       }
     })
   }
@@ -269,7 +270,7 @@ export function sendBroadcast (broadcastData, msg, handleSendBroadcast) {
           if (res.status === 'success') {
             dispatch(sendBroadcastSuccess())
           } else {
-            dispatch(sendBroadcastFailure())
+            dispatch(sendBroadcastFailure(res.description || 'Failed to send broadcast'))
           }
         }
         if (handleSendBroadcast) {
