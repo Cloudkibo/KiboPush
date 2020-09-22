@@ -18,7 +18,7 @@ class ActingAsUser extends React.Component {
   }
 
   removeActingAsUser() {
-    this.props.setUsersView({type: 'unset'}, this.handleActingUser)
+    this.props.setUsersView({type: 'unset', domain_email: this.props.actingAsUserEmail}, this.handleActingUser)
   }
 
   handleActingUser () {
