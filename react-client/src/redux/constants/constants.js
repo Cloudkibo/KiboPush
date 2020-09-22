@@ -79,6 +79,12 @@ export const SEND_BROADCAST_SUCCESS = 'SEND_BROADCAST_SUCCESS'
 export const SEND_BROADCAST_FAILURE = 'SEND_BROADCAST_FAILURE'
 export const CLEAR_ALERT = 'CLEAR_ALERT'
 
+// constants for chatbot
+export const SHOW_CHATBOTS = 'SHOW_CHATBOTS'
+
+// constants for chatbot automation
+export const SHOW_CHATBOT_AUTOMATION = 'SHOW_CHATBOT_AUTOMATION'
+
 // constants for customer list
 export const LOAD_CUSTOMER_LISTS = 'LOAD_CUSTOMER_LISTS'
 export const LOAD_CUSTOMER_LISTS_NEW = 'LOAD_CUSTOMER_LISTS_NEW'
@@ -504,9 +510,6 @@ export const SOCKET_EVENT_SMS = 'SOCKET_EVENT_SMS'
 export const CLEAR_SOCKET_DATA_SMS = 'CLEAR_SOCKET_DATA_SMS'
 export const SOCKET_EVENT_WHATSAPP = 'SOCKET_EVENT_WHATSAPP'
 export const CLEAR_SOCKET_DATA_WHATSAPP = 'CLEAR_SOCKET_DATA_WHATSAPP'
-
-// constants for chatbot automation
-export const SHOW_CHATBOTS = 'SHOW_CHATBOTS'
 
 // constants for Scanned Responses
 export const GET_CANNED_RESPONSES = 'GET_CANNED_RESPONSES'
