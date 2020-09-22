@@ -164,6 +164,7 @@ import ErrorMessage from './containers/integerationScreen/ErrorMessage'
 import SmsDashboard from './containers/smsWhatsAppDashboard/smsDashboard'
 import WhatsAppDashboard from './containers/smsWhatsAppDashboard/whatsAppDashboard'
 import messengerDashboard from './containers/dashboard/dashboard'
+import Chatbots from './containers/chatbot/chatbot'
 import ChatbotAutomation from './containers/chatbotAutomation/chatbotAutomation'
 import ChatbotAutomationNew from './containers/chatbotAutomationNew/chatbotAutomation'
 import ChatbotSettings from './containers/chatbotAutomation/chatbotSettings'
@@ -184,8 +185,9 @@ const SubmitSurvey = asyncComponent(() => import("./containers/survey/SubmitSurv
 const ViewSurveyDetail = asyncComponent(() => import("./containers/survey/ViewSurveyDetail"))
 const AddSurvey = asyncComponent(() => import("./containers/survey/add_survey"))
 const SurveyResult = asyncComponent(() => import("./containers/survey/SurveyResult"))
-const ConfigureChatbot = asyncComponent(() => import('./containers/chatbotAutomation/configureChatbot'))
-const ConfigureChatbotNew = asyncComponent(() => import('./containers/chatbotAutomationNew/configureChatbot'))
+const ConfigureChatbot = asyncComponent(() => import('./containers/chatbot/configureChatbot'))
+const ConfigureChatbotAutomation = asyncComponent(() => import('./containers/chatbotAutomation/configureChatbot'))
+const ConfigureChatbotAutomationNew = asyncComponent(() => import('./containers/chatbotAutomationNew/configureChatbot'))
 const ConfigureShopifyChatbot = asyncComponent(() => import('./containers/shopifyChatbot/configureShopifyChatbot'))
 const ChatbotAnalytics = asyncComponent(() => import('./containers/chatbotAutomation/analytics'))
 const WhatsAppChatbotAnalytics = asyncComponent(() => import('./containers/whatsAppChatbot/analytics'))
@@ -400,10 +402,12 @@ const Routes = () => (
     <Route path='/backdoorPageSubscribersWithTags' component={BackdoorSubscribersWithTags} onEnter={requireAuth} />
     <Route path='/backdoorPageAdmins' component={BackdoorPageAdmins} onEnter={requireAuth} />
     <Route path='/customFields' component={CustomFields} onEnter={requireAuth} />
+    <Route path='/chatbots/configure' component={ConfigureChatbot} onEnter={requireAuth} />
+    <Route path='/chatbots' component={Chatbots} onEnter={requireAuth} />
     <Route path='/chatbotAutomation' component={ChatbotAutomation} onEnter={requireAuth} />
     <Route path='/chatbotAutomationNew' component={ChatbotAutomationNew} onEnter={requireAuth} />
-    <Route path='/configureChatbot' component={ConfigureChatbot} onEnter={requireAuth} />
-    <Route path='/configureChatbotNew' component={ConfigureChatbotNew} onEnter={requireAuth} />
+    <Route path='/configureChatbot' component={ConfigureChatbotAutomation} onEnter={requireAuth} />
+    <Route path='/configureChatbotNew' component={ConfigureChatbotAutomationNew} onEnter={requireAuth} />
     <Route path='/configureShopifyChatbot' component={ConfigureShopifyChatbot} onEnter={requireAuth} />
     <Route path='/chatbotSettings' component={ChatbotSettings} onEnter={requireAuth} />
     <Route path='/chatbotAnalytics' component={ChatbotAnalytics} onEnter={requireAuth} />

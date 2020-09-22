@@ -69,7 +69,7 @@ class ProfileHeader extends React.Component {
       this.props.alertMsg.success('Unsubscribed successfully')
       // this.props.updateState({activeSession: {}})
     } else {
-      this.props.alertMsg.error('Unable to unsubscribe subscriber')
+      this.props.alertMsg.error(res.description || 'Unable to unsubscribe subscriber')
     }
   }
 
@@ -104,8 +104,8 @@ class ProfileHeader extends React.Component {
                       readOnly={!this.state.editName}
                       disabled={this.state.savingName}
                     />
-                    <span style={{ display: 'inherit', marginLeft: '5px' }} className="m-card-profile__name">
-                      <button disabled={this.state.savingName} style={{ border: 'none' }} onClick={this.onSaveName} className="m-portlet__nav-link btn m-btn m-btn--hover-success m-btn--icon m-btn--icon-only m-btn--pill" title="Save">
+                    <span style={{display: 'inherit', marginLeft: '5px'}} className="m-card-profile__name">
+                      <button disabled={this.state.savingName} style={{border: 'none'}} onClick={this.onSaveName} className="m-portlet__nav-link btn m-btn m-btn--hover-success m-btn--icon m-btn--icon-only m-btn--pill" title="Save">
                         {
                           this.state.savingName
                             ? <div className="m-loader" style={{ width: "30px" }} />
@@ -121,20 +121,18 @@ class ProfileHeader extends React.Component {
                     </span>
                   </div>
                 </div>
+              <div style={{display: !this.state.editName ? 'flex' : 'none'}}>
+                <span style={{maxWidth: '150px', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden'}} className="m-card-profile__name">
+                  {this.state.name}
+                </span>
+                <button style={{border: 'none', marginLeft: '5px'}} onClick={this.onEditName} className="m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill" title="Edit">
+                  <i style={{color: 'black'}} className="fa fa-edit" />
+                </button>
+              </div>
 
-
-                <div style={{ display: !this.state.editName ? 'flex' : 'none' }}>
-                  <span style={{ maxWidth: '150px', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }} className="m-card-profile__name">
-                    {this.state.name}
-                  </span>
-                  <button style={{ border: 'none', marginLeft: '5px' }} onClick={this.onEditName} className="m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill" title="Edit">
-                    <i style={{ color: 'black' }} className="fa fa-edit" />
-                  </button>
-                </div>
-
-                <br />
-              </span> :
-              <span className='m-card-profile__name'>{this.props.activeSession.name}</span>
+              <br />
+            </span> :
+            <span className='m-card-profile__name'>{this.props.activeSession.name}</span>
           }
           {
             this.props.showUnsubscribe && this.props.user && (this.props.user.role === 'admin' || this.props.user.role === 'buyer') &&

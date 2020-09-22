@@ -25,63 +25,85 @@ export function showAgentsList (data) {
   }
 }
 
-export function createTeam (data) {
+export function createTeam (data, cb) {
   console.log('data forcreateTeam ', data)
   return (dispatch) => {
     callApi('teams/create', 'post', data)
       .then(res => {
-        console.log('response from createTeam', res)
-        dispatch(loadTeamsList())
+        if (res.status === 'success') {
+          dispatch(loadTeamsList())
+        }
+        if (cb) cb(res)
       })
   }
 }
 
-export function update (data) {
+export function update (data, msg) {
   console.log('update team data', data)
   return (dispatch) => {
     callApi('teams/update', 'post', data)
       .then(res => {
-        dispatch(loadTeamsList())
+        if (res.status === 'success') {
+          dispatch(loadTeamsList())
+        } else {
+          msg.error(res.description || 'Failed to edit team')
+        }
       })
   }
 }
 
-export function addAgent (data) {
+export function addAgent (data, msg) {
   return (dispatch) => {
     callApi('teams/addAgent', 'post', data)
       .then(res => {
-        dispatch(loadTeamsList())
+        if (res.status === 'success') {
+          dispatch(loadTeamsList())
+        } else {
+          msg.error(res.description || 'Failed to add agent')
+        }
       })
   }
 }
 
-export function addPage (data) {
+export function addPage (data, msg) {
   return (dispatch) => {
     callApi('teams/addPage', 'post', data)
       .then(res => {
         console.log('addpage', res)
-        dispatch(loadTeamsList())
+        if (res.status === 'success') {
+          dispatch(loadTeamsList())
+        } else {
+          msg.error(res.description || 'Failed to add page')
+        }
       })
   }
 }
 
-export function removePage (data) {
+export function removePage (data, msg) {
   return (dispatch) => {
     callApi('teams/removePage', 'post', data)
       .then(res => {
         console.log('res', res)
-        dispatch(loadTeamsList())
+        if (res.status === 'success') {
+          dispatch(loadTeamsList())
+        } else {
+          msg.error(res.description || 'Failed to remove page')
+        }
       })
   }
 }
 
-export function removeAgent (data) {
+export function removeAgent (data, msg) {
   console.log('data', data)
   return (dispatch) => {
     callApi('teams/removeAgent', 'post', data)
       .then(res => {
         console.log('res', res)
-        dispatch(loadTeamsList())
+        if (res.status === 'success') {
+          dispatch(loadTeamsList())
+        } else {
+          msg.error(res.description || 'Failed to remove agent')
+        }
       })
   }
 }
@@ -105,6 +127,8 @@ export function deleteTeam (id, msg) {
         if (res.status === 'success') {
           msg.success('Team deleted successfully')
           dispatch(loadTeamsList())
+        } else {
+          msg.error(res.description || 'Unable to delete team')
         }
       })
   }

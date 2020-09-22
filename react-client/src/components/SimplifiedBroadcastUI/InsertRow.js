@@ -32,14 +32,16 @@ class InsertRow extends React.Component {
   }
 
   getMappingData () {
-    if (this.props.questions) {
-      return this.state.mappingData.map(data => {
-        return {'leftColumn': data.question, 'rightColumn': data.googleSheetColumn}
-      })
-    } else {
-      return this.state.mappingData.map(data => {
-        return {'leftColumn': data.customFieldColumn ? data.customFieldColumn : data.kiboPushColumn, 'rightColumn': data.googleSheetColumn}
-      })
+    if (this.state.mappingData) {
+      if (this.props.questions) {
+        return this.state.mappingData.map(data => {
+          return {'leftColumn': data.question, 'rightColumn': data.googleSheetColumn}
+        })
+      } else {
+        return this.state.mappingData.map(data => {
+          return {'leftColumn': data.customFieldColumn ? data.customFieldColumn : data.kiboPushColumn, 'rightColumn': data.googleSheetColumn}
+        })
+      }
     }
   }
 
@@ -112,11 +114,11 @@ class InsertRow extends React.Component {
 
   onSpreadSheetChange (event) {
     this.setState({
-      spreadSheetValue: event.target.value, 
-      loadingWorkSheet: true, 
+      spreadSheetValue: event.target.value,
+      loadingWorkSheet: true,
       loadingColumns: false,
-      workSheetValue: '', 
-      mappingData: this.props.questions ? this.state.mappingData : '', 
+      workSheetValue: '',
+      mappingData: this.props.questions ? this.state.mappingData : '',
       mappingDataValues: '',
       buttonDisabled: true
     })
@@ -127,10 +129,10 @@ class InsertRow extends React.Component {
   onWorkSheetChange (event) {
     let worksheetName = this.props.worksheets.filter(worksheet => worksheet.sheetId.toString() === event.target.value)
     this.setState({
-      workSheetValue: event.target.value, 
-      workSheetName: worksheetName[0].title, 
+      workSheetValue: event.target.value,
+      workSheetName: worksheetName[0].title,
       loadingColumns: true,
-      mappingData: this.props.questions ? this.state.mappingData : '',  
+      mappingData: this.props.questions ? this.state.mappingData : '',
       mappingDataValues: '',
       buttonDisabled: true
     })
@@ -198,7 +200,7 @@ class InsertRow extends React.Component {
             <select value={this.state.mappingData[i].googleSheetColumn} className='form-control m-bootstrap-select m_selectpicker' style={{height: '40px', opacity: '1'}} onChange={(e) => this.updateMappingDataUserInput(e, i)}>
               <option key='' value='' disabled>Select a Google Sheet Column...</option>
               {
-                googleSheetColumns.map((column, index) => 
+                googleSheetColumns.map((column, index) =>
                   <option key={index} value={column}>{column}</option>
                 )
               }
@@ -296,7 +298,7 @@ class InsertRow extends React.Component {
                 </span>
           </button>
         </div>
-        {this.props.reconnectWarning && this.props.reconnectWarning !== '' 
+        {this.props.reconnectWarning && this.props.reconnectWarning !== ''
         ? <div>
         <div style={{margin: '20px',height: 'auto'}} className="alert alert-danger alert-dismissible fade show   m-alert m-alert--air" role="alert">
         { this.props.reconnectWarning }
@@ -321,7 +323,8 @@ class InsertRow extends React.Component {
             </select>
           }
           <br />
-          {this.state.loadingWorkSheet
+          {this.state.spreadSheetValue &&
+            (this.state.loadingWorkSheet
           ? <div className='align-center'><center><RingLoader color='#FF5E3A' /></center></div>
           : (this.props.worksheets && this.props.worksheets.length > 0 &&
             <div><label style={{fontWeight: 'normal'}}>Worksheet:</label>
@@ -334,26 +337,27 @@ class InsertRow extends React.Component {
               }
             </select>
             </div>
-          )
+          ))
           }
           <br />
-          { 
-            this.props.columns  && 
+          {
+            this.props.columns  &&
             this.props.columns.googleSheetColumns &&
-            (this.props.columns.googleSheetColumns.length < 1 || (this.props.columns.googleSheetColumns.length > 0 
+            (this.props.columns.googleSheetColumns.length < 1 || (this.props.columns.googleSheetColumns.length > 0
               && this.props.columns.googleSheetColumns.filter(col => col !== null).length < 1)) &&
             <div>Selected worksheet has no columns</div>
           }
-          {this.state.loadingColumns
+          {this.state.workSheetValue && 
+            (this.state.loadingColumns
           ? <div className='align-center'><center><RingLoader color='#FF5E3A' /></center></div>
           : (this.props.columns && this.props.columns.googleSheetColumns.length > 0 && this.props.columns.googleSheetColumns.filter(col => col !== null).length > 1 &&
-            <Mapping 
+            <Mapping
               leftColumns = {
-                this.props.questions ? 
+                this.props.questions ?
                 {
                   groups: false,
                   data: this.props.questions.map(question => { return {value: question, title: question} })
-                } 
+                }
                 :
                 {
                   groups: true,
@@ -361,7 +365,7 @@ class InsertRow extends React.Component {
                     'System fields': this.props.columns.kiboPushColumns.map(column => { return {value: column.fieldName, title: column.title} }),
                     'Custom fields': this.props.columns.customFieldColumns.map(column => { return {value: column.customFieldId, title: column.title} })
                   }
-                } 
+                }
               }
               rightColumns = {{
                 groups: false,
@@ -376,7 +380,7 @@ class InsertRow extends React.Component {
               updateLeftColumn = {this.props.questions ? null : this.updateMappingData}
             />
             //this.showMappingData(this.props.columns.googleSheetColumns, this.props.columns.kiboPushColumns, this.props.columns.customFieldColumns)
-          )
+          ))
           }
       </div>
         <div className="m-portlet__foot m-portlet__foot--fit">
@@ -384,7 +388,7 @@ class InsertRow extends React.Component {
         </div>
        </div>
         }
-        
+
     </div>
     )
   }

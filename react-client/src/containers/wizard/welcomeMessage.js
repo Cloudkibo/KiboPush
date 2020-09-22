@@ -53,8 +53,13 @@ class EditTemplate extends React.Component {
       this.setState({pageValue: nextprops.pages[0]._id, welcomeMessage: nextprops.pages[0].isWelcomeMessageEnabled, broadcast: nextprops.pages[0].welcomeMessage })
     }
   }
-  setWelcomeMessage(enable) {
-    this.setState({welcomeMessage:enable})
+  setWelcomeMessage(res, enable) {
+    if (res.status === 'success') {
+      this.setState({welcomeMessage:enable})
+    } else {
+      let msg = res.description || res.payload
+      this.msg.error(msg)
+    }
   }
   handleEnableWelMessage (pageId, enable) {
     if (enable === true) {

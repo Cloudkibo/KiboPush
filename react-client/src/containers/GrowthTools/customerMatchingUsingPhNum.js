@@ -330,11 +330,14 @@ class CustomerMatching extends React.Component {
       }
     } else if (this.inputPhoneNumbers.value !== '') {
       if (this.validate('numbers')) {
-        this.props.sendPhoneNumbers({ numbers: this.state.phoneNumbers, text: this.state.textAreaValue, pageId: this.state.selectPage.pageId, _id: this.state.selectPage._id })
+        this.props.sendPhoneNumbers({ numbers: this.state.phoneNumbers, text: this.state.textAreaValue, pageId: this.state.selectPage.pageId, _id: this.state.selectPage._id }, this.msg)
       }
     }
   }
   handleResponse(res) {
+    if (res.status !== 'success') {
+      this.msg.error(res.description || 'Failed to invite users')
+    }
     this.setState({
       loading: false
     })
@@ -492,7 +495,7 @@ class CustomerMatching extends React.Component {
                 <h5 className="modal-title" id="exampleModalLabel">
                   Invite Using Phone Number Video Tutorial
 									</h5>
-                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" 
+                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal"
                 aria-label="Close"
                 onClick={() => {
                   this.setState({
@@ -841,16 +844,6 @@ class CustomerMatching extends React.Component {
                                 className='align-center'>
                                 <center><RingLoader color='#716aca' /></center>
                               </div>
-                        }
-                        {
-                          this.state.alertMessage !== '' &&
-                          <div className='alert alert-success' role='alert'>
-                            {this.state.alertMessage} <br />
-                            {
-                              this.state.file && this.state.file !== '' &&
-                              <a href='#/' className='alert-link' onClick={this.clickAlert}>Click here to select another file</a>
-                            }
-                          </div>
                         }
                       </div>
                     </div>

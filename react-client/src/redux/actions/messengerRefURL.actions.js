@@ -41,7 +41,7 @@ export function deleteURL (id, msg) {
         msg.success('Messenger Ref URL has been deleted')
         dispatch(fetchURLs())
       } else {
-        msg.error('Failed to delete Messenger Ref URL')
+        msg.error(res.description || 'Failed to delete Messenger Ref URL')
       }
     })
   }
@@ -79,7 +79,7 @@ export function createURL (data, msg) {
       } else if (res.status !== 'success' && res.payload) {
         msg.error(res.payload)
       } else {
-        msg.error('Failed to save Messenger Ref URL')
+        msg.error(res.description || 'Failed to save Messenger Ref URL')
       }
     })
   }
@@ -96,7 +96,7 @@ export function editURL (data, msg) {
       } else if (res.status !== 'success' && res.payload) {
         msg.error(res.payload)
       } else {
-        msg.error('Failed to save Messenger Ref URL')
+        msg.error(res.description || 'Failed to save Messenger Ref URL')
       }
     })
   }
