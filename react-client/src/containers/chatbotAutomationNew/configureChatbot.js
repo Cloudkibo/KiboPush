@@ -21,6 +21,7 @@ import SIDEBAR from '../../components/chatbotAutomationNew/sidebar'
 import MESSAGEAREA from '../../components/chatbotAutomationNew/messageArea'
 import BACKBUTTON from '../../components/extras/backButton'
 import HELPWIDGET from '../../components/extras/helpWidget'
+import CONFIRMATIONMODAL from '../../components/extras/confirmationModal'
 import MODAL from '../../components/extras/modal'
 import WHITELISTDOMAINS from '../../components/chatbotAutomation/whitelistDomains'
 import TREESTRUCTURE from '../../components/chatbotAutomationNew/treeStructure'
@@ -29,16 +30,17 @@ import $ from 'jquery'
 const MessengerPlugin = require('react-messenger-plugin').default
 
 class ConfigureChatbot extends React.Component {
-  constructor (props, context) {
+  constructor(props, context) {
     super(props, context)
     this.state = {
       loading: true,
       powerLoading: false,
       showTestContent: false,
+      existingChatbot: props.location.state.existingChatbot,
       chatbot: props.location.state.chatbot,
       blocks: [],
       sidebarItems: [],
-      currentBlock: {title: ''},
+      currentBlock: { title: '' },
       currentLevel: 1,
       progress: 0,
       showWhitelistDomains: false,
@@ -70,18 +72,19 @@ class ConfigureChatbot extends React.Component {
     this.toggleTestModalContent = this.toggleTestModalContent.bind(this)
     this.showTreeStructure = this.showTreeStructure.bind(this)
     this.closeTreeStructure = this.closeTreeStructure.bind(this)
+    this.disableShopifyChatbot = this.disableShopifyChatbot.bind(this)
 
     props.getFbAppId()
   }
 
-  onAnalytics () {
+  onAnalytics() {
     this.props.history.push({
       pathname: '/chatbotAnalytics',
-      state: {chatbot: this.state.chatbot, page: this.props.location.state.page, backUrl: '/configureChatbotNew'}
+      state: { chatbot: this.state.chatbot, page: this.props.location.state.page, backUrl: '/configureChatbotNew' }
     })
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.fetchChatbotDetails()
     document.getElementsByTagName('body')[0].className = 'm-page--fluid m--skin- m-content--skin-light2 m-header--fixed m-header--fixed-mobile m-footer--push'
     document.title = 'KiboChat | Configure ChatBot'
@@ -107,39 +110,39 @@ class ConfigureChatbot extends React.Component {
     })
   }
 
-  toggleTestModalContent () {
-    this.setState({showTestContent: !this.state.showTestContent})
+  toggleTestModalContent() {
+    this.setState({ showTestContent: !this.state.showTestContent })
   }
 
-  updateState (state) {
+  updateState(state) {
     this.setState(state)
   }
 
-  fetchChatbot () {
+  fetchChatbot() {
     this.props.fetchChatbot(this.state.chatbot._id, this.handleChatbot)
   }
 
-  handleChatbot (res) {
+  handleChatbot(res) {
     if (res.status === 'success') {
-      this.setState({chatbot: res.payload})
+      this.setState({ chatbot: res.payload })
     }
   }
 
-  fetchChatbotDetails () {
+  fetchChatbotDetails() {
     this.props.fetchChatbotDetails(this.props.location.state.chatbot._id, this.handleChatbotDetails)
   }
 
-  handleChatbotDetails (res) {
+  handleChatbotDetails(res) {
     if (res.status === 'success') {
       const blocks = this.getAllBlocks(res.payload)
       this.preparePayload(blocks)
     } else {
       this.msg.error('An unexpected error occured. Please try again later')
-      this.setState({loading: false})
+      this.setState({ loading: false })
     }
   }
 
-  preparePayload (data) {
+  preparePayload(data) {
     let blocks = data
     let allTriggers = []
     let sidebarItems = []
@@ -185,7 +188,7 @@ class ConfigureChatbot extends React.Component {
     })
   }
 
-  isItParent (data) {
+  isItParent(data) {
     if (data.payload.length === 0) {
       return false
     } else {
@@ -203,7 +206,7 @@ class ConfigureChatbot extends React.Component {
     }
   }
 
-  getParentId (data, current) {
+  getParentId(data, current) {
     for (let i = 0; i < data.length; i++) {
       if (data[i].payload.length > 0) {
         let replies = data[i].payload[data[i].payload.length - 1].quickReplies
@@ -221,7 +224,7 @@ class ConfigureChatbot extends React.Component {
     }
   }
 
-  getAllBlocks (data) {
+  getAllBlocks(data) {
     let blocks = data
     for (let i = 0; i < data.length; i++) {
       if (data[i].payload.length > 0) {
@@ -250,11 +253,11 @@ class ConfigureChatbot extends React.Component {
     })
   }
 
-  toggleWhitelistModal () {
-    this.setState({showWhitelistDomains: true})
+  toggleWhitelistModal() {
+    this.setState({ showWhitelistDomains: true })
   }
 
-  getWhitelistModalContent () {
+  getWhitelistModalContent() {
     if (this.state.showWhitelistDomains) {
       return (
         <WHITELISTDOMAINS
@@ -270,8 +273,8 @@ class ConfigureChatbot extends React.Component {
     }
   }
 
-  onDisable () {
-    this.setState({powerLoading: true})
+  onDisable() {
+    this.setState({ powerLoading: true })
     const data = {
       chatbotId: this.state.chatbot._id,
       published: false
@@ -279,44 +282,69 @@ class ConfigureChatbot extends React.Component {
     this.props.updateChatbot(data, (res) => this.afterDisable(res))
   }
 
-  afterDisable (res) {
+  afterDisable(res) {
     if (res.status === 'success') {
       this.msg.success('Chatbot disabled successfully')
       let chatbot = this.state.chatbot
       chatbot.published = false
-      this.setState({chatbot, powerLoading: false})
+      this.setState({ chatbot, powerLoading: false })
     } else {
       this.msg.error(res.description)
     }
   }
 
-  onPublish () {
-    this.setState({powerLoading: true})
-    const data = {
-      chatbotId: this.state.chatbot._id,
-      published: true
+  onPublish() {
+    if (this.state.existingChatbot && this.state.existingChatbot.published) {
+      this.disableShopifyChatbotTrigger.click()
+    } else {
+      this.setState({ powerLoading: true })
+      const data = {
+        chatbotId: this.state.chatbot._id,
+        published: true
+      }
+      this.props.updateChatbot(data, (res) => this.afterPublish(res))
     }
-    this.props.updateChatbot(data, (res) => this.afterPublish(res))
   }
 
-  afterPublish (res) {
+  afterPublish(res) {
     if (res.status === 'success') {
       this.msg.success('Chatbot published successfully')
       let chatbot = this.state.chatbot
       chatbot.published = true
-      this.setState({chatbot, powerLoading: false})
+      this.setState({ chatbot, powerLoading: false })
     } else {
       this.msg.error(res.description)
     }
   }
 
-  showTestModal () {
-    this.setState({showTestContent: true}, () => {
-      this.refs._open_test_chatbot_modal.click()
+  showTestModal() {
+    if (!this.props.user.actingAsUser) {
+      this.setState({ showTestContent: true }, () => {
+        this.refs._open_test_chatbot_modal.click()
+      })
+    } else {
+      this.msg.error('You are not allowed to perform this action')
+    }
+  }
+
+  disableShopifyChatbot() {
+    this.props.updateChatbot({
+      chatbotId: this.state.existingChatbot._id,
+      published: false
+    }, (res) => {
+      if (res.status === 'success') {
+        let existingChatbot = this.state.existingChatbot
+        existingChatbot.published = false
+        this.setState({ existingChatbot }, () => {
+          this.onPublish()
+        })
+      } else {
+        this.msg.error(res.description)
+      }
     })
   }
 
-  getTestModalContent () {
+  getTestModalContent() {
     if (this.state.showTestContent) {
       return (
         <MessengerPlugin
@@ -331,19 +359,19 @@ class ConfigureChatbot extends React.Component {
     }
   }
 
-  showTreeStructure () {
-    this.setState({showTreeStructure: true})
+  showTreeStructure() {
+    this.setState({ showTreeStructure: true })
   }
 
-  closeTreeStructure () {
-    this.setState({showTreeStructure: false})
+  closeTreeStructure() {
+    this.setState({ showTreeStructure: false })
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     document.getElementsByTagName('body')[0].className = 'm-page--fluid m--skin- m-content--skin-light2 m-aside-left--fixed m-header--fixed m-header--fixed-mobile m-aside-left--enabled m-aside-left--skin-dark m-aside-left--offcanvas m-footer--push m-aside--offcanvas-default'
   }
 
-  componentDidUpdate () {
+  componentDidUpdate() {
     if (this.state.unsavedChanges) {
       window.onbeforeunload = () => true
     } else {
@@ -351,7 +379,7 @@ class ConfigureChatbot extends React.Component {
     }
   }
 
-  render () {
+  render() {
     var alertOptions = {
       offset: 75,
       position: 'top right',
@@ -362,6 +390,13 @@ class ConfigureChatbot extends React.Component {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={(a) => { this.msg = a }} {...alertOptions} />
+        <button style={{ display: 'none' }} ref={el => this.disableShopifyChatbotTrigger = el} data-toggle='modal' data-target='#disableShopifyChatbot' />
+        <CONFIRMATIONMODAL
+          id='disableShopifyChatbot'
+          title='Disable Shopify Chatbot'
+          description='You have a Shopify chatbot already enabled for this page. By enabling this manual chatbot, that Shopify chatbot will be disabled. Do you wish to continue?'
+          onConfirm={this.disableShopifyChatbot}
+        />
         <div className='m-subheader '>
           <div className='d-flex align-items-center'>
             <div className='mr-auto'>
@@ -370,7 +405,7 @@ class ConfigureChatbot extends React.Component {
             <div className='pull-right'>
               <button
                 id='_chatbot_message_area_header_publish'
-                style={{marginLeft: '10px', borderColor: this.state.chatbot.published ? '#34bfa3' : '#f4516c'}}
+                style={{ marginLeft: '10px', borderColor: this.state.chatbot.published ? '#34bfa3' : '#f4516c' }}
                 className={`pull-right btn btn-${this.state.chatbot.published ? 'success' : 'danger'} m-btn m-btn--icon m-btn--icon-only m-btn--custom m-btn--pill m-btn--air`}
                 onClick={this.state.chatbot.published ? this.onDisable : this.onPublish}
                 data-tip={this.state.chatbot.published ? 'Disable Chatbot' : 'Publish Chatbot'}
@@ -379,13 +414,13 @@ class ConfigureChatbot extends React.Component {
               >
                 {
                   this.state.powerLoading
-                  ? <i className="m-loader" />
-                  : <i className="la la-power-off" />
+                    ? <i className="m-loader" />
+                    : <i className="la la-power-off" />
                 }
               </button>
               <button
                 id='_chatbot_message_area_header_test'
-                style={{marginLeft: '10px', borderColor: '#716aca'}}
+                style={{ marginLeft: '10px', borderColor: '#716aca' }}
                 className="pull-right btn btn-brand m-btn m-btn--icon m-btn--icon-only m-btn--custom m-btn--pill m-btn--air"
                 onClick={this.showTestModal}
                 data-tip='Test Chatbot'
@@ -396,7 +431,7 @@ class ConfigureChatbot extends React.Component {
               </button>
               <button
                 id='_chatbot_message_area_header_analytics'
-                style={{marginLeft: '10px', borderColor: '#36a3f7'}}
+                style={{ marginLeft: '10px', borderColor: '#36a3f7' }}
                 className="pull-right btn btn-info m-btn m-btn--icon m-btn--icon-only m-btn--custom m-btn--pill m-btn--air"
                 onClick={this.onAnalytics}
                 data-tip='Chatbot Analytics'
@@ -406,7 +441,7 @@ class ConfigureChatbot extends React.Component {
               </button>
               <button
                 id='_chatbot_message_area_header_analytics'
-                style={{marginLeft: '10px', borderColor: '#ffb822'}}
+                style={{ marginLeft: '10px', borderColor: '#ffb822' }}
                 className="pull-right btn btn-warning m-btn m-btn--icon m-btn--icon-only m-btn--custom m-btn--pill m-btn--air"
                 onClick={this.showTreeStructure}
                 data-tip='View Tree Structure'
@@ -425,70 +460,71 @@ class ConfigureChatbot extends React.Component {
 
         {
           this.state.loading
-          ? <div id='_chatbot_please_wait' style={{position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%,-50%)'}}>
-            <div className="m-loader m-loader--brand" style={{width: "30px", display: "inline-block"}} />
-            <span className='m--font-brand'>Please wait...</span>
-          </div>
-          : <div id='_chatbot_main_container'>
-            <div id='_chatbot_configure_area' style={{margin: '15px'}} className='row'>
-              <SIDEBAR
-                data={this.state.sidebarItems}
-                currentBlock={this.state.currentBlock}
-                blocks={this.state.blocks}
-                updateParentState={this.updateState}
-                chatbot={this.state.chatbot}
-                alertMsg={this.msg}
-                unsavedChanges={this.state.unsavedChanges}
-                attachmentUploading={this.state.attachmentUploading}
-                handleMessageBlock={this.props.handleMessageBlock}
+            ? <div id='_chatbot_please_wait' style={{ position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%,-50%)' }}>
+              <div className="m-loader m-loader--brand" style={{ width: "30px", display: "inline-block" }} />
+              <span className='m--font-brand'>Please wait...</span>
+            </div>
+            : <div id='_chatbot_main_container'>
+              <div id='_chatbot_configure_area' style={{ margin: '15px' }} className='row'>
+                <SIDEBAR
+                  data={this.state.sidebarItems}
+                  currentBlock={this.state.currentBlock}
+                  blocks={this.state.blocks}
+                  updateParentState={this.updateState}
+                  chatbot={this.state.chatbot}
+                  alertMsg={this.msg}
+                  unsavedChanges={this.state.unsavedChanges}
+                  attachmentUploading={this.state.attachmentUploading}
+                  handleMessageBlock={this.props.handleMessageBlock}
+                />
+                <MESSAGEAREA
+                  user={this.props.user}
+                  block={this.state.currentBlock}
+                  chatbot={this.state.chatbot}
+                  alertMsg={this.msg}
+                  uploadAttachment={this.props.uploadAttachment}
+                  handleAttachment={this.props.handleAttachment}
+                  currentLevel={this.state.currentLevel}
+                  maxLevel={this.state.chatbot.maxLevels}
+                  blocks={this.state.blocks}
+                  handleMessageBlock={this.props.handleMessageBlock}
+                  fbAppId={this.props.fbAppId}
+                  changeActiveStatus={this.props.updateChatbot}
+                  deleteMessageBlock={this.props.deleteMessageBlock}
+                  registerSocketAction={registerAction}
+                  progress={this.state.progress}
+                  updateParentState={this.updateState}
+                  sidebarItems={this.state.sidebarItems}
+                  checkWhitelistedDomains={this.props.checkWhitelistedDomains}
+                  toggleWhitelistModal={this.toggleWhitelistModal}
+                  onAnalytics={this.onAnalytics}
+                  allTriggers={this.state.allTriggers}
+                  attachmentUploading={this.state.attachmentUploading}
+                />
+              </div>
+              <PROGRESS progress={`${this.state.progress}%`} />
+              <BACKBUTTON
+                onBack={this.onBack}
+                position='bottom-left'
               />
-              <MESSAGEAREA
-                block={this.state.currentBlock}
-                chatbot={this.state.chatbot}
-                alertMsg={this.msg}
-                uploadAttachment={this.props.uploadAttachment}
-                handleAttachment={this.props.handleAttachment}
-                currentLevel={this.state.currentLevel}
-                maxLevel={this.state.chatbot.maxLevels}
-                blocks={this.state.blocks}
-                handleMessageBlock={this.props.handleMessageBlock}
-                fbAppId={this.props.fbAppId}
-                changeActiveStatus={this.props.updateChatbot}
-                deleteMessageBlock={this.props.deleteMessageBlock}
-                registerSocketAction={registerAction}
-                progress={this.state.progress}
-                updateParentState={this.updateState}
-                sidebarItems={this.state.sidebarItems}
-                checkWhitelistedDomains={this.props.checkWhitelistedDomains}
-                toggleWhitelistModal={this.toggleWhitelistModal}
-                onAnalytics={this.onAnalytics}
-                allTriggers={this.state.allTriggers}
-                attachmentUploading={this.state.attachmentUploading}
+              <HELPWIDGET
+                documentation={{ visibility: true, link: 'https://kibopush.com/chatbot-automation/' }}
+                videoTutorial={{ visibility: true, videoId: 'eszeTV3-Uzs' }}
+              />
+              <MODAL
+                zIndex={9999}
+                id='_cb_whitelist_domains'
+                title='Manage Whitelist Domains'
+                content={this.getWhitelistModalContent()}
+              />
+              <button ref='_open_test_chatbot_modal' style={{ display: 'none' }} data-toggle='modal' data-target='#_test_chatbot' />
+              <MODAL
+                id='_test_chatbot'
+                title='Test Chatbot'
+                content={this.getTestModalContent()}
+                onClose={this.toggleTestModalContent}
               />
             </div>
-            <PROGRESS progress={`${this.state.progress}%`} />
-            <BACKBUTTON
-              onBack={this.onBack}
-              position='bottom-left'
-            />
-            <HELPWIDGET
-              documentation={{visibility: true, link: 'https://kibopush.com/chatbot-automation/'}}
-              videoTutorial={{visibility: true, videoId: 'eszeTV3-Uzs'}}
-            />
-            <MODAL
-              zIndex={9999}
-              id='_cb_whitelist_domains'
-              title='Manage Whitelist Domains'
-              content={this.getWhitelistModalContent()}
-            />
-            <button ref='_open_test_chatbot_modal' style={{display: 'none'}} data-toggle='modal' data-target='#_test_chatbot' />
-            <MODAL
-              id='_test_chatbot'
-              title='Test Chatbot'
-              content={this.getTestModalContent()}
-              onClose={this.toggleTestModalContent}
-            />
-          </div>
         }
         {
           this.state.showTreeStructure &&
@@ -504,13 +540,14 @@ class ConfigureChatbot extends React.Component {
   }
 }
 
-function mapStateToProps (state) {
+function mapStateToProps(state) {
   return {
-    fbAppId: state.basicInfo.fbAppId
+    fbAppId: state.basicInfo.fbAppId,
+    user: (state.basicInfo.user)
   }
 }
 
-function mapDispatchToProps (dispatch) {
+function mapDispatchToProps(dispatch) {
   return bindActionCreators({
     fetchChatbotDetails,
     uploadAttachment,

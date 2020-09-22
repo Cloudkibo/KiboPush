@@ -140,7 +140,7 @@ class UploadContacts extends React.Component {
       this.setState({ actionType: 'send' })
       this.props.deleteAllContacts()
     } else {
-      this.msg.error(res.description)
+      // this.msg.error(res.description)
     }
     this.state.templateFunction(res)
   }
@@ -458,7 +458,7 @@ class UploadContacts extends React.Component {
                       </h3>
                     </div>
                   </div>
-                  <div className='m-portlet__head-tools'>
+                  <div style={this.props.isMobile ? {width: '100%'} : {}} className='m-portlet__head-tools'>
                     <button onClick={() => { this.refs.resetModal.click() }} className='btn btn-secondary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
                       Reset
                     </button>
@@ -468,46 +468,58 @@ class UploadContacts extends React.Component {
                   </div>
                 </div>
                 <div className='m-portlet__body'>
-                  <div className='row'>
-                    <div className='col-md-3'>
-                      <div className="form-group m-form__group">
-                        <input value={this.state.name} onChange={this.onNameChange} type="text" className="form-control m-input" placeholder="Enter name..." />
-                        {
-                          this.state.nameError &&
-                          <span class="m-form__help m--font-danger">
-                            Name can not be greater than 30 characters
-                          </span>
-                        }
+                  <div className='m-form m-form--label-align-right'>
+                    <div className='row align-items-center'>
+                      <div className='col-xl-8 order-2 order-xl-1'>
+                        <div className='form-group m-form__group row align-items-center'>
+                          <div className='col-md-4'>
+                            <div className="form-group m-form__group">
+                              <input value={this.state.name} onChange={this.onNameChange} type="text" className="form-control m-input" placeholder="Enter name..." />
+                              {
+                                this.state.nameError &&
+                                <span class="m-form__help m--font-danger">
+                                  Name can not be greater than 30 characters
+                                </span>
+                              }
+                            </div>
+                            <div className='d-md-none m--margin-bottom-10' />
+                          </div>
+                          <div className='col-md-4'>
+                            <div className="form-group m-form__group">
+                              <input value={this.state.number} onChange={this.onNumberChange} type="text" className="form-control m-input" placeholder="Enter number..." />
+                              {
+                                this.state.numberError &&
+                                <span class="m-form__help m--font-danger">
+                                  Enter a valid number of format E.164
+                                </span>
+                              }
+                            </div>
+                            <div className='d-md-none m--margin-bottom-10' />
+                          </div>
+                          <div className='col-md-4'>
+                            <div className="form-group m-form__group">
+                              <button onClick={this.onAdd} className={`btn btn-primary ${this.state.manualLoading && 'm-loader m-loader--light m-loader--left'}`} disabled={this.disableAddButton()}>
+                                Add Manually
+                              </button>
+                            </div>
+                            <div className='d-md-none m--margin-bottom-10' />
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                    <div className='col-md-3'>
-                      <div className="form-group m-form__group">
-                        <input value={this.state.number} onChange={this.onNumberChange} type="text" className="form-control m-input" placeholder="Enter number..." />
-                        {
-                          this.state.numberError &&
-                          <span class="m-form__help m--font-danger">
-                            Enter a valid number of format E.164
-                          </span>
-                        }
+                      <div className='col-xl-4 order-1 order-xl-2 m--align-right'>
+                        <button onClick={() => { this.refs._select_csv_file.click() }} className='btn btn-success m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
+                          <span><i className='la la-cloud-upload' /> &nbsp; Upload CSV File</span>
+                        </button>
+                        <input
+                          onChange={this.onFileChange}
+                          onClick={(e) => { e.target.value = '' }}
+                          type='file'
+                          ref='_select_csv_file'
+                          style={{ display: 'none' }}
+                          accept='text/csv'
+                        />
+                        <div class="m-separator m-separator--dashed d-xl-none" />
                       </div>
-                    </div>
-                    <div className='col-md-2'>
-                      <button onClick={this.onAdd} className={`btn btn-primary ${this.state.manualLoading && 'm-loader m-loader--light m-loader--left'}`} disabled={this.disableAddButton()}>
-                        Add Manually
-                      </button>
-                    </div>
-                    <div className='col-md-4'>
-                      <button onClick={() => { this.refs._select_csv_file.click() }} className='btn btn-success m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill pull-right'>
-                        <span><i className='la la-cloud-upload' /> &nbsp; Upload CSV File</span>
-                      </button>
-                      <input
-                        onChange={this.onFileChange}
-                        onClick={(e) => { e.target.value = '' }}
-                        type='file'
-                        ref='_select_csv_file'
-                        style={{ display: 'none' }}
-                        accept='text/csv'
-                      />
                     </div>
                   </div>
                   {
@@ -542,7 +554,8 @@ function mapStateToProps(state) {
     validContactsCount: (state.contactsInfo.validContactsCount),
     invalidContactsCount: (state.contactsInfo.invalidContactsCount),
     automated_options: (state.basicInfo.automated_options),
-    whatsAppMessageTemplates: (state.settingsInfo.whatsAppMessageTemplates)
+    whatsAppMessageTemplates: (state.settingsInfo.whatsAppMessageTemplates),
+    isMobile: (state.basicInfo.isMobile)
   }
 }
 

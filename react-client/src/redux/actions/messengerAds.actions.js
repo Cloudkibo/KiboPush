@@ -157,7 +157,7 @@ export function editJsonAd (data, msg, handleEdit) {
           handleEdit()
           msg.success('Message saved successfully')
         } else {
-          msg.error('Unable to save message')
+          msg.error(res.description || 'Unable to save message')
         }
       })
   }

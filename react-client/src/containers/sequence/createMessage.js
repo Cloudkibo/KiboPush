@@ -71,12 +71,17 @@ class CreateMessage extends React.Component {
       this.props.createMessage(payload, this.props.history, this.msg, this.props.location.state.name)
       this.setState({newFiles: []})
     } else if (this.props.location.state.action === 'edit') {
-      this.props.editMessage({_id: this.props.location.state.messageId, title: this.state.convoTitle, payload: this.state.broadcast}, this.msg)
-      this.setState({newFiles: []}, () => {
-        this.props.history.push({
-          pathname: `/viewMessage`,
-          state: {title: this.state.convoTitle, payload: this.state.broadcast, id: this.props.location.state.id, messageId: this.props.location.state.messageId}
-        })
+      this.props.editMessage({_id: this.props.location.state.messageId, title: this.state.convoTitle, payload: this.state.broadcast}, (res) => {
+        if (res.status === 'success') {
+          this.setState({newFiles: []}, () => {
+            this.props.history.push({
+              pathname: `/viewMessage`,
+              state: {title: this.state.convoTitle, payload: this.state.broadcast, id: this.props.location.state.id, messageId: this.props.location.state.messageId}
+            })
+          })
+        } else {
+          this.msg.error(res.description || 'Failed to update Message')
+        }
       })
     }
   }

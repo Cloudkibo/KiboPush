@@ -205,8 +205,8 @@ class MessageTemplate extends React.Component {
 
   render () {
     return (
-      <div className='m-portlet m-portlet--mobile'>
-        <div style={{padding: '0px 10px'}} className='m-portlet__head'>
+      <div style={{height: '80vh', overflow: 'hidden', display: 'flex', flexDirection: 'column'}} className='m-portlet m-portlet--mobile'>
+        <div style={{padding: '0px 10px', flex: '0 0 auto'}} className='m-portlet__head'>
           <div className='m-portlet__head-caption'>
             <div className='m-portlet__head-title'>
               <span onClick={this.props.backToSessions} className='m-portlet__head-text'>
@@ -221,11 +221,11 @@ class MessageTemplate extends React.Component {
             </div>
           </div>
         </div>
-        <div className='m-portlet__body'>
+        <div style={{flex: '1 1 auto', overflowY: 'scroll'}} className='m-portlet__body'>
           {
             this.props.templates.length > 0 ?
             <div className='row'>
-              <div className='col-12' style={{ overflowY: 'scroll' }}>
+              <div className='col-12'>
                 {
                   this.props.sendingToNewNumber
                   ? <div>
@@ -289,7 +289,7 @@ class MessageTemplate extends React.Component {
             </div>
           }
         </div>
-        <div style={{padding: '10px 10px'}} className="m-portlet__foot">
+        <div style={{padding: '10px 10px', flex: '0 0 auto'}} className="m-portlet__foot">
           <div className="m--align-right">
             <div style={{ display: 'inline-block', padding: '5px' }}>
               <button disabled={this.state.sendingTemplate} className='btn btn-secondary' onClick={this.resetTemplate}>
@@ -324,8 +324,8 @@ MessageTemplate.defaultPropTypes = {
 }
 
 MessageTemplate.propTypes = {
-  'sendTemplate': PropTypes.func.isRequired,
-  'closeTemplates': PropTypes.func.isRequired,
+  'sendTemplate': PropTypes.func,
+  'closeTemplates': PropTypes.func,
   'backToSessions': PropTypes.func.isRequired
 }
 export default MessageTemplate

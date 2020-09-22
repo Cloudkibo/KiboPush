@@ -219,9 +219,13 @@ class MessageArea extends React.Component {
   }
 
   showTestModal () {
-    this.setState({showTestContent: true}, () => {
-      this.refs._open_test_chatbot_modal.click()
-    })
+    if (!this.props.user.actingAsUser) {
+      this.setState({showTestContent: true}, () => {
+        this.refs._open_test_chatbot_modal.click()
+      })
+    } else {
+      this.props.alertMsg.error('You are not allowed to perform this action')
+    }
   }
 
   getTestModalContent () {
@@ -273,7 +277,7 @@ class MessageArea extends React.Component {
       }
       this.props.updateParentState({blocks, sidebarItems, currentBlock: blocks[0]})
     } else {
-      this.props.alertMsg.error('Failed to delete message block')
+      this.props.alertMsg.error(res.description || 'Failed to delete message block')
     }
   }
 

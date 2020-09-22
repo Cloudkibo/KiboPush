@@ -269,10 +269,10 @@ class Bot extends React.Component {
   }
   changeStatusCheckBox(botId, enable) {
     if (enable === 'true') {
-      this.props.updateStatus({ botId: botId, isActive: 'false' })
+      this.props.updateStatus({ botId: botId, isActive: 'false' }, this.msg)
       this.setState({ isActive: 'false' })
     } else {
-      this.props.updateStatus({ botId: botId, isActive: 'true' })
+      this.props.updateStatus({ botId: botId, isActive: 'true' }, this.msg)
       this.setState({ isActive: 'true' })
     }
   }
@@ -369,7 +369,7 @@ class Bot extends React.Component {
                 <h5 className="modal-title" id="exampleModalLabel">
                   Dashboard Video Tutorial
 									</h5>
-                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" 
+                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal"
                 aria-label="Close"
                 onClick={() => {
                   this.setState({

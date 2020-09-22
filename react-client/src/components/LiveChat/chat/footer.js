@@ -641,6 +641,7 @@ class Footer extends React.Component {
   }
 
   onAttachmentUpload(res) {
+    console.log('on attachment upload')
     if (res.status === 'success') {
       let attachment = this.state.attachment
       attachment.id = res.payload.id
@@ -887,7 +888,8 @@ class Footer extends React.Component {
           width: '100%',
           padding: '15px',
           borderTop: '1px solid #ebedf2',
-          background: 'white'
+          background: 'white',
+          flex: '0 0 auto'
         }}
       >
         <MODAL

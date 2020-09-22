@@ -17,7 +17,7 @@ import {
   setUsersView
 } from '../../redux/actions/backdoor.actions'
 import { fetchNotifications, markRead } from '../../redux/actions/notifications.actions'
-import auth from '../../utility/auth.service'
+import AlertContainer from 'react-alert'
 
 // Components
 import HEADERMENU from './headerMenu'
@@ -145,6 +145,24 @@ class Header extends React.Component {
     }
   }
 
+  profilePicError(e) {
+    console.log('profile picture error for user')
+    // e.target.src = 'https://emblemsbf.com/img/27447.jpg'
+    this.props.updatePicture({ user: this.props.user })
+  }
+  logout(res) {
+    if (res.status === 'success') {
+      this.props.updateShowIntegrations({ showIntegrations: true })
+      // auth.logout()
+    } else {
+      this.msg.error(res.description || 'Failed to disconnect Facebook')
+    }
+  }
+  showDropDown() {
+    console.log('showDropDown')
+    this.setState({ showDropDown: true })
+    // this.changeMode = this.changeMode.bind(this)
+  }
   gotoView (id, _id, type) {
     this.props.markRead({ notificationId: _id })
     if (type === 'webhookFailed') {
@@ -216,10 +234,10 @@ class Header extends React.Component {
     })
   }
 
-  logout() {
-    this.props.updateShowIntegrations({ showIntegrations: true })
-    auth.logout()
-  }
+  // logout() {
+  //   this.props.updateShowIntegrations({ showIntegrations: true })
+  //   auth.logout()
+  // }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.user) {
@@ -250,7 +268,13 @@ class Header extends React.Component {
 
 
   render() {
-    console.log('headerMenu render', this.props)
+    var alertOptions = {
+      offset: 75,
+      position: 'bottom right',
+      theme: 'dark',
+      time: 5000,
+      transition: 'scale'
+    }
     const {
       skin,
       showToggleSidebar,
@@ -268,6 +292,7 @@ class Header extends React.Component {
                     KIBOPUSH
                   </h4>
                 </div>
+                <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
                 <div className='m-stack__item m-stack__item--middle m-brand__tools'>
                   {
                     showToggleSidebar &&

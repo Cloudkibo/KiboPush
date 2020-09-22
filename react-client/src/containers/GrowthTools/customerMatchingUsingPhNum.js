@@ -845,16 +845,6 @@ class CustomerMatching extends React.Component {
                                 <center><RingLoader color='#716aca' /></center>
                               </div>
                         }
-                        {
-                          this.state.alertMessage !== '' &&
-                          <div className='alert alert-success' role='alert'>
-                            {this.state.alertMessage} <br />
-                            {
-                              this.state.file && this.state.file !== '' &&
-                              <a href='#/' className='alert-link' onClick={this.clickAlert}>Click here to select another file</a>
-                            }
-                          </div>
-                        }
                       </div>
                     </div>
                   </div>
