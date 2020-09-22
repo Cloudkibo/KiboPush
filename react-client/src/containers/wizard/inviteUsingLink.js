@@ -331,7 +331,7 @@ class InviteSubscribers extends React.Component {
                           <center>
                             <button className='btn btn-primary' onClick={(e) => {
                               e.preventDefault()
-                              if (this.props.user.actingAsUser) {
+                              if (this.props.superUser) {
                                 this.msg.error('You are not allowed to perform this action')
                               } else {
                                 window.open(this.getlink(), '_blank')
@@ -429,7 +429,8 @@ function mapStateToProps (state) {
     pages: (state.pagesInfo.pages),
     successMessage: (state.broadcastsInfo.successMessage),
     errorMessage: (state.broadcastsInfo.errorMessage),
-    user: (state.basicInfo.user)
+    user: (state.basicInfo.user),
+    superUser: (state.basicInfo.superUser)
   }
 }
 

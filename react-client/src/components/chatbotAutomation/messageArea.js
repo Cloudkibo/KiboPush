@@ -219,13 +219,9 @@ class MessageArea extends React.Component {
   }
 
   showTestModal () {
-    if (!this.props.user.actingAsUser) {
-      this.setState({showTestContent: true}, () => {
-        this.refs._open_test_chatbot_modal.click()
-      })
-    } else {
-      this.props.alertMsg.error('You are not allowed to perform this action')
-    }
+    this.setState({showTestContent: true}, () => {
+      this.refs._open_test_chatbot_modal.click()
+    })
   }
 
   getTestModalContent () {

@@ -214,7 +214,7 @@ class InviteSubscribers extends React.Component {
                         <button style={{ marginLeft: '30px'}} className='btn btn-primary'
                           onClick={(e) => {
                             e.preventDefault()
-                            if (this.props.user.actingAsUser) {
+                            if (this.props.superUser) {
                               this.msg.error('You are not allowed to perform this action')
                             } else {
                               window.open(this.getlink(), '_blank')
@@ -293,7 +293,8 @@ class InviteSubscribers extends React.Component {
 function mapStateToProps(state) {
   return {
     pages: (state.pagesInfo.pages),
-    user: (state.basicInfo.user)
+    user: (state.basicInfo.user),
+    superUser: (state.basicInfo.superUser)
   }
 }
 

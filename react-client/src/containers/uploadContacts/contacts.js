@@ -101,7 +101,7 @@ class Contact extends React.Component {
   }
   exportRecords () {
     console.log('exportRecords')
-    if (!this.props.user.actingAsUser) {
+    if (!this.props.superUser) {
       this.props.loadWhatsAppContactsList({
         last_id: 'none',
         number_of_records: this.state.totalLength,
@@ -640,7 +640,8 @@ function mapStateToProps (state) {
     user: (state.basicInfo.user),
     automated_options: (state.basicInfo.automated_options),
     contactLists: (state.contactsInfo.contactLists),
-    isMobile: (state.basicInfo.isMobile)
+    isMobile: (state.basicInfo.isMobile),
+    superUser: (state.basicInfo.superUser)
   }
 }
 

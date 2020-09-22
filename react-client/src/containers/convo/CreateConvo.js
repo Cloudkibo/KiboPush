@@ -486,7 +486,7 @@ class CreateConvo extends React.Component {
   }
 
   testConvo () {
-    if (!this.props.user.actingAsUser) {
+    if (!this.props.superUser) {
       if (this.state.locationPages.length > 1 || this.state.locationPages.length === 0) {
         this.msg.error('Only one page should be selected to test the broadcast')
       } else {
@@ -814,7 +814,8 @@ function mapStateToProps (state) {
     fbAppId: state.basicInfo.fbAppId,
     adminPageSubscription: state.basicInfo.adminPageSubscription,
     subscribersCount: (state.subscribersInfo.subscribersCount),
-    tags: (state.tagsInfo.tags)
+    tags: (state.tagsInfo.tags),
+    superUser: (state.basicInfo.superUser)
   }
 }
 

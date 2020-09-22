@@ -1023,7 +1023,7 @@ class Subscriber extends React.Component {
     }
   }
   exportRecords() {
-    if (!this.props.user.actingAsUser) {
+    if (!this.props.superUser) {
       this.props.loadAllSubscribersListNew({
         last_id: 'none',
         number_of_records: this.state.totalLength,
@@ -2361,7 +2361,8 @@ function mapStateToProps(state) {
     sequences: (state.sequenceInfo.sequences),
     subscriberSequences: (state.sequenceInfo.subscriberSequences),
     user: (state.basicInfo.user),
-    isMobile: (state.basicInfo.isMobile)
+    isMobile: (state.basicInfo.isMobile),
+    superUser: (state.basicInfo.superUser)
   }
 }
 

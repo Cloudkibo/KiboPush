@@ -205,7 +205,7 @@ class Integrations extends React.Component {
                                 Disconnect
                               </button>
                               : <button onClick={() => {
-                                if (this.props.user.actingAsUser) {
+                                if (this.props.superUser) {
                                   this.msg.error('You are not allowed to perform this action')
                                 } else {
                                   let url = integration.name === 'Hubspot'? '/api/hubspotIntegrations/auth':'/api/sheetsIntegrations/auth'
@@ -240,7 +240,8 @@ class Integrations extends React.Component {
 function mapStateToProps (state) {
   return {
     integrations: (state.settingsInfo.integrations),
-    user: (state.basicInfo.user)
+    user: (state.basicInfo.user),
+    superUser: (state.basicInfo.superUser)
   }
 }
 function mapDispatchToProps (dispatch) {
