@@ -12,6 +12,7 @@ import { Link } from 'react-router-dom'
 import ReactPaginate from 'react-paginate'
 import fileDownload from 'js-file-download'
 import NonSubscribersList from './nonSubscribersList'
+import AlertContainer from 'react-alert'
 var json2csv = require('json2csv')
 
 class CustomerListDetails extends React.Component {
@@ -88,21 +89,25 @@ class CustomerListDetails extends React.Component {
     return data
   }
   exportRecordsSubcribers() {
-    var data = this.prepareExportData()
-    var info = data
-    var keys = []
-    var val = info[0]
+    if (!this.props.superUser) {
+      var data = this.prepareExportData()
+      var info = data
+      var keys = []
+      var val = info[0]
 
-    for (var j in val) {
-      var subKey = j
-      keys.push(subKey)
-    }
-    json2csv({ data: info, fields: keys }, function (err, csv) {
-      if (err) {
-      } else {
-        fileDownload(csv, 'SubcribersList.csv')
+      for (var j in val) {
+        var subKey = j
+        keys.push(subKey)
       }
-    })
+      json2csv({ data: info, fields: keys }, function (err, csv) {
+        if (err) {
+        } else {
+          fileDownload(csv, 'SubcribersList.csv')
+        }
+      })
+    } else {
+      this.msg.error('You are not allowed to perform this action')
+    }
   }
   handlePageClick(data) {
     this.displayData(data.selected, this.state.subscribersDataAll)
@@ -121,8 +126,16 @@ class CustomerListDetails extends React.Component {
   }
 
   render() {
+    var alertOptions = {
+      offset: 14,
+      position: 'top right',
+      theme: 'dark',
+      time: 5000,
+      transition: 'scale'
+    }
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+        <AlertContainer ref={a => this.msg = a} {...alertOptions} />
         <div className='m-subheader '>
           <div className='d-flex align-items-center'>
             <div className='mr-auto'>
@@ -312,7 +325,9 @@ function mapStateToProps(state) {
   return {
     pages: (state.pagesInfo.pages),
     listDetail: (state.listsInfo.listDetails),
-    currentList: (state.listsInfo.currentList)
+    currentList: (state.listsInfo.currentList),
+    user: (state.basicInfo.user),
+    superUser: (state.basicInfo.superUser)
   }
 }
 function mapDispatchToProps(dispatch) {

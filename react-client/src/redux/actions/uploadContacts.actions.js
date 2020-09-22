@@ -47,6 +47,8 @@ export function uploadNumbers (data, msg, clearFields) {
           console.log('Response', res)
           msg.success('Contacts saved successfully')
           dispatch(clearFields())
+        } else {
+          msg.error(res.description)
         }
       }
     )
@@ -62,8 +64,9 @@ export function syncContacts (data, msg) {
           msg.success('Contacts synced successfully')
           dispatch(loadContactsList({last_id: 'none', number_of_records: 10, first_page: 'first'}))
         } else {
-          msg.error('Unable to fetch contacts from Twilio')
-        } 
+          let errorMsg = res.description || 'Unable to fetch contacts from Twilio'
+          msg.error(errorMsg)
+        }
       })
   }
 }
@@ -102,10 +105,12 @@ export function editSubscriberSms (id, data, msg) {
         if (res.status === 'success') {
           msg.success('Subscriber updated successfully')
           dispatch(updateContact(id, data))
+        } else {
+          msg.error(res.description)
         }
       })
   }
-} 
+}
 
 export function editSubscriberWhatsApp (id, data,msg) {
   console.log('data for editSubscriber', data)
@@ -118,6 +123,8 @@ export function editSubscriberWhatsApp (id, data,msg) {
           dispatch(updateContact(id, data))
           // loadSubscribers()
           //dispatch(loadWhatsAppContactsList({last_id: 'none', number_of_records: 10, first_page: 'first'}))
+        } else {
+          msg.error(res.description || 'Unable to update subscriber')
         }
       })
   }

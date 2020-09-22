@@ -16,9 +16,9 @@ export function setBrowserName (data) {
   }
 }
 
-export function fetchPlan (data) {
+export function saveEnvironment (data) {
   return {
-    type: ActionTypes.FETCH_PLAN,
+    type: ActionTypes.CURRENT_ENVIRONMENT,
     data
   }
 }
@@ -26,10 +26,16 @@ export function fetchPlan (data) {
 export function showuserdetails (data) {
   // NOTE: don't remove following auth method call
   console.log('user details', data)
-  auth.putUserId(data._id)
+  auth.putUserId(data.user._id)
   return {
     type: ActionTypes.LOAD_USER_DETAILS,
-    data
+    data: data
+  }
+}
+
+export function updateTrialPeriod () {
+  return {
+    type: ActionTypes.UPDATE_TRIAL_PERIOD
   }
 }
 
@@ -122,6 +128,13 @@ export function getAutomatedOptions () {
   }
 }
 
+export function switchToBasicPlan () {
+  return (dispatch) => {
+    callApi('company/switchToBasicPlan')
+      .then(res => dispatch(updateTrialPeriod()))
+  }
+}
+
 export function getFbAppId () {
   return (dispatch) => {
     callApi('users/fbAppId').then(res => dispatch(storeFbAppId(res.payload)))
@@ -166,23 +179,26 @@ export function updatePlan (data, msg) {
       console.log('response from updatePlan', res)
       if (res.status === 'success') {
         msg.success('Plan updated successfully')
-        dispatch(fetchPlan('success'))
         dispatch(getuserdetails())
       } else {
-        dispatch(fetchPlan(res.description))
+        msg.error(res.description || 'Failed to update plan')
+        // dispatch(fetchPlan(res.description))
       }
     })
   }
 }
 
-export function updateCard (data, msg) {
+export function updateCard (data, msg, callback) {
   console.log('data for updateMode', data)
   return (dispatch) => {
     callApi('company/setCard', 'post', data).then(res => {
       console.log('response from updatePlan', res)
       if (res.status === 'success') {
         msg.success('Card added successfully')
+        callback()
         dispatch(getuserdetails())
+      } else {
+        msg.error(res.description)
       }
     })
   }
@@ -236,7 +252,7 @@ export function disconnectFacebook (callback) {
         console.log('Failed to update show integrations!')
       }
       if (callback) {
-        callback()
+        callback(res)
       }
     })
   }
@@ -261,7 +277,7 @@ export function logout(cb) {
   return (dispatch) => {
     console.log('called logout')
     callApi('users/logout').then(res => {
-      if (res.status === 'success') {
+        if (res.status === 'success') {
         console.log('send logout successfully', res)
         cb()
       } else {

@@ -51,9 +51,13 @@ class ConfigureShopifyChatbot extends React.Component {
   }
 
   showTestModal() {
-    this.setState({ showTestContent: true }, () => {
-      this.refs._open_test_chatbot_modal.click()
-    })
+    if (!this.props.superUser) {
+      this.setState({ showTestContent: true }, () => {
+        this.refs._open_test_chatbot_modal.click()
+      })
+    } else {
+      this.msg.error('You are not allowed to perform this action')
+    }
   }
 
   getTestModalContent() {
@@ -334,7 +338,8 @@ function mapStateToProps(state) {
   return {
     user: (state.basicInfo.user),
     store: (state.shopifyInfo.store),
-    fbAppId: state.basicInfo.fbAppId
+    fbAppId: state.basicInfo.fbAppId,
+    superUser: (state.basicInfo.superUser)
   }
 }
 

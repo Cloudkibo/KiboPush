@@ -44,35 +44,39 @@ class CreateFeed extends React.Component {
   }
 
   previewRssFeed () {
-    let pageSelected = this.state.selectedPage
-    if (this.props.adminPageSubscription && this.props.adminPageSubscription.length > 0) {
-      var check = this.props.adminPageSubscription.filter((obj) => { return obj.pageId === pageSelected })
-      if (check.length <= 0) {
+    if (!this.props.superUser) {
+      let pageSelected = this.state.selectedPage
+      if (this.props.adminPageSubscription && this.props.adminPageSubscription.length > 0) {
+        var check = this.props.adminPageSubscription.filter((obj) => { return obj.pageId === pageSelected })
+        if (check.length <= 0) {
+          if(this.props.fbAppId && this.props.fbAppId !== '') {
+            this.refs.messengerModal.click()
+          }
+          return
+        }
+      } else {
         if(this.props.fbAppId && this.props.fbAppId !== '') {
           this.refs.messengerModal.click()
         }
         return
       }
-    } else {
-      if(this.props.fbAppId && this.props.fbAppId !== '') {
-        this.refs.messengerModal.click()
+      var rssPayload = {
+        feedUrl: this.state.feedUrl,
+  	    title: this.state.feedTitle,
+  	    storiesCount: parseInt(this.state.storiesCount),
+  	    pageIds: [this.state.selectedPage],
+        integrationType: 'rss'
       }
-      return
+      if (this.props.currentFeed && this.props.currentFeed._id) {
+        rssPayload.feedId = this.props.currentFeed._id
+      }
+      this.setState({
+        loading: true
+      })
+      this.props.previewNewsFeed(rssPayload, this.msg, () => {this.setState({loading: false})})
+    } else {
+      this.msg.error('You are not allowed to perform this action')
     }
-    var rssPayload = {
-      feedUrl: this.state.feedUrl,
-	    title: this.state.feedTitle,
-	    storiesCount: parseInt(this.state.storiesCount),
-	    pageIds: [this.state.selectedPage],
-      integrationType: 'rss'
-    }
-    if (this.props.currentFeed && this.props.currentFeed._id) {
-      rssPayload.feedId = this.props.currentFeed._id
-    }
-    this.setState({
-      loading: true
-    })
-    this.props.previewNewsFeed(rssPayload, this.msg, () => {this.setState({loading: false})})
   }
 
   pageHasDefaultFeed (pageId) {
@@ -449,7 +453,8 @@ function mapStateToProps (state) {
     user: (state.basicInfo.user),
     fbAppId: (state.basicInfo.fbAppId),
     newsPages: (state.feedsInfo.newsPages),
-    defaultFeeds: (state.feedsInfo.defaultFeeds)
+    defaultFeeds: (state.feedsInfo.defaultFeeds),
+    superUser: (state.basicInfo.superUser)
   }
 }
 
