@@ -69,9 +69,7 @@ class AddPage extends React.Component {
   }
 
   UNSAFE_componentWillReceiveProps (nextprops) {
-    if (nextprops.message && nextprops.message !== '') {
-      this.setState({showAlert: true, alertmsg: 'The page you are trying to connect is not published on Facebook. Please go to Facebook Page settings to publish your page and then try connecting this page.'})
-    } else if (nextprops.page_connected && nextprops.page_connected !== '') {
+    if (nextprops.page_connected && nextprops.page_connected !== '') {
       this.setState({showAlert: true, alertmsg: nextprops.page_connected})
     } else {
       this.setState({showAlert: false, alertmsg: ''})
@@ -201,7 +199,7 @@ class AddPage extends React.Component {
                             }
                             {
                               (!page.connected) &&
-                              <a href='#/' onClick={() => this.props.enablePage(page, this.showErrorDialog)} className='m-widget4__icon'>
+                              <a href='#/' onClick={() => this.props.enablePage(page, this.showErrorDialog, this.msg)} className='m-widget4__icon'>
                                 <button type='button' className='btn m-btn--pill btn-primary btn-sm m-btn m-btn--custom'>Connect</button>
                               </a>
                             }

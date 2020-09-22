@@ -6,7 +6,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { getNGP, enableNGP, disableNGP, saveNGP } from '../../redux/actions/settings.actions'
-import ResetPassword from './resetPassword'
+import AccountSettings from './accountSettings'
 import GreetingMessage from './greetingMessage'
 import WelcomeMessage from './welcomeMessage'
 import ShowPermissions from './showPermissions'
@@ -46,7 +46,7 @@ class Settings extends React.Component {
       count1_ngp: 0,
       firstTime: true,
       firstTimeNGP: true,
-      resetPassword: false,
+      accountSettings: false,
       showAPIbyPlan: true,
       saveState: null,
       saveStateNGP: null,
@@ -61,7 +61,7 @@ class Settings extends React.Component {
     this.changeType = this.changeType.bind(this)
     this.initializeSwitchNGP = this.initializeSwitchNGP.bind(this)
     this.setReset = this.setReset.bind(this)
-    this.setResetPass = this.setResetPass.bind(this)
+    this.setAccountSettings = this.setAccountSettings.bind(this)
     this.setConfiguration = this.setConfiguration.bind(this)
     this.setIntegrations = this.setIntegrations.bind(this)
     this.setZoomIntegration = this.setZoomIntegration.bind(this)
@@ -94,6 +94,11 @@ class Settings extends React.Component {
     if (url === 'skibochat.cloudkibo.com' || url === 'kibochat.cloudkibo.com') {
       console.log('kibochat')
       this.setState({isKiboChat: true})
+    }
+    if (this.props.location && this.props.location.state && this.props.location.state === 'payment_methods') {
+      this.setState({
+        openTab: 'paymentMethods'
+      })
     }
     if (this.props.location && this.props.location.state && this.props.location.state.module === 'addPages') {
       this.setState({
@@ -152,15 +157,15 @@ class Settings extends React.Component {
     this.setState({show: false})
     var planInfo
     if (plan === 'plan_A') {
-      planInfo = 'Individual, Premium Account'
+      planInfo = 'Basic, Free Plan'
     } else if (plan === 'plan_B') {
-      planInfo = 'Individual, Free Account'
+      planInfo = 'Standard, Paid Plan'
       this.setState({showAPIbyPlan: false})
     } else if (plan === 'plan_C') {
-      planInfo = 'Team, Premium Account'
+      planInfo = 'Premium, Paid Plan'
     } else if (plan === 'plan_D') {
       this.setState({showAPIbyPlan: false})
-      planInfo = 'Team, Free Account)'
+      planInfo = 'Enterprise, Paid Plan)'
     } else {
       planInfo = ''
     }
@@ -187,9 +192,9 @@ class Settings extends React.Component {
     })
   }
 
-  setResetPass () {
+  setAccountSettings () {
     this.setState({
-      openTab: 'resetPassword'
+      openTab: 'accountSettings'
     })
   }
 
@@ -210,7 +215,7 @@ class Settings extends React.Component {
       openTab: 'cannedResponses'
     })
   }
-  
+
   setZoomIntegration () {
     this.setState({
       openTab: 'zoomIntegration'
@@ -540,17 +545,20 @@ class Settings extends React.Component {
                       <span className='m-nav__section-text'>Section</span>
                     </li>
                     <li className='m-nav__item'>
-                      <a href='#/' className='m-nav__link' onClick={this.setResetPass} style={{cursor: 'pointer'}} >
+                      <a href='#/' className='m-nav__link' onClick={this.setAccountSettings} style={{cursor: 'pointer'}} >
                         <i className='m-nav__link-icon flaticon-lock-1' />
-                        <span className='m-nav__link-text'>Change Password</span>
+                        <span className='m-nav__link-text'>Account Settings</span>
                       </a>
                     </li>
-                    <li className='m-nav__item'>
-                      <a href='#/' className='m-nav__link' onClick={this.setConfiguration} style={{cursor: 'pointer'}} >
-                        <i className='m-nav__link-icon 	flaticon-interface-6' />
-                        <span className='m-nav__link-text'>Configuration</span>
-                      </a>
-                    </li>
+                    {
+                      this.props.user.permissions['connect_facebook_account'] &&
+                      <li className='m-nav__item'>
+                        <a href='#/' className='m-nav__link' onClick={this.setConfiguration} style={{cursor: 'pointer'}} >
+                          <i className='m-nav__link-icon 	flaticon-interface-6' />
+                          <span className='m-nav__link-text'>Configuration</span>
+                        </a>
+                      </li>
+                    }
                     { (url.includes('localhost') || (url.includes('kibochat.cloudkibo.com') && this.props.user.isSuperUser)) && (this.props.user.role === 'admin' || this.props.user.role === 'buyer') &&
                     <li className='m-nav__item'>
                       <a href='#/' className='m-nav__link' onClick={this.setZoomIntegration} style={{cursor: 'pointer'}} >
@@ -567,7 +575,9 @@ class Settings extends React.Component {
                       </a>
                     </li>
                     }
-                    { (url.includes('localhost') || url.includes('kiboengage.cloudkibo.com')) && (this.props.user.role === 'admin' || this.props.user.role === 'buyer') &&
+                    { url.includes('kiboengage.cloudkibo.com') && (this.props.user.role === 'admin' || this.props.user.role === 'buyer') &&
+                    (this.props.user.plan['hubspot_integration'] || this.props.user.plan['dialogflow_integration'] || this.props.user.plan['google_sheets_integration']) &&
+                    this.props.user.permissions['manage_integrations'] &&
                     <li className='m-nav__item'>
                       <a href='#/' className='m-nav__link' onClick={this.setIntegrations} style={{cursor: 'pointer'}} >
                         <i className='m-nav__link-icon flaticon-network' />
@@ -615,25 +625,15 @@ class Settings extends React.Component {
                       </a>
                     </li>
                     }
-                    { this.props.user && this.props.user.role === 'buyer' && this.state.isKiboChat &&
+                    { this.props.user && this.props.user.role === 'buyer' && this.state.isKiboChat && this.props.user.plan['livechat_response_methods'] &&
                     <li className='m-nav__item'>
-                      {/* this.props.user.currentPlan.unique_ID === 'plan_A' || this.props.user.currentPlan.unique_ID === 'plan_C' */}
                       <a href='#/' className='m-nav__link' onClick={this.setResponseMethods} style={{cursor: 'pointer'}}>
                         <i className='m-nav__link-icon flaticon-list-2' />
                         <span className='m-nav__link-text'> Live Chat Response Methods</span>
                       </a>
-                      {/* }: <a className='m-nav__link' onClick={this.showDialog} style={{cursor: 'pointer'}}>
-                        <i className='m-nav__link-icon flaticon-list-2' />
-                        <span className='m-nav__link-text'>Live Chat Response Methods&nbsp;&nbsp;&nbsp;
-                          <span style={{border: '1px solid #34bfa3', padding: '0px 5px', borderRadius: '10px', fontSize: '12px'}}>
-                            <span style={{color: '#34bfa3'}}>PRO</span>
-                          </span>
-                        </span>
-                      </a>
-                    */}
                     </li>
                     }
-                    { this.props.user && !this.props.user.facebookInfo && this.props.user.role === 'buyer' &&
+                    { this.props.user && !this.props.user.facebookInfo && this.props.user.permissions['connect_facebook_account'] &&
                     <li className='m-nav__item'>
                       <a href='#/' className='m-nav__link' onClick={this.setConnectFb} style={{cursor: 'pointer'}}>
                         <i className='m-nav__link-icon fa fa-facebook' />
@@ -657,7 +657,7 @@ class Settings extends React.Component {
                       </a>
                     </li>
                     }
-                    { this.props.user && this.props.user.isSuperUser &&
+                    { this.props.user && this.props.user.isSuperUser && this.props.user.permissions['manage_billing'] &&
                     <li className='m-nav__item'>
                       <a href='#/' className='m-nav__link' onClick={this.setBilling} style={{cursor: 'pointer'}}>
                         <i className='m-nav__link-icon fa fa-money' />
@@ -665,23 +665,16 @@ class Settings extends React.Component {
                       </a>
                     </li>
                   }
-                    <li className='m-nav__item'>
-                      {/* this.props.user.currentPlan.unique_ID === 'plan_A' || this.props.user.currentPlan.unique_ID === 'plan_C' */}
-                      <a href='#/' className='m-nav__link' onClick={this.setWebhook} style={{cursor: 'pointer'}}>
-                        <i className='m-nav__link-icon la la-link' />
-                        <span className='m-nav__link-text'>Webhooks</span>
-                      </a>
-                      {/* <a className='m-nav__link' onClick={this.showDialog} style={{cursor: 'pointer'}}>
-                         <i className='m-nav__link-icon la la-link' />
-                         <span className='m-nav__link-text'>Webhooks&nbsp;&nbsp;&nbsp;
-                           <span style={{border: '1px solid #34bfa3', padding: '0px 5px', borderRadius: '10px', fontSize: '12px'}}>
-                             <span style={{color: '#34bfa3'}}>PRO</span>
-                           </span>
-                         </span>
-                       </a>
-                     */}
-                    </li>
-                    { this.props.user && this.props.user.role === 'buyer' &&
+                    {
+                      this.props.user && this.props.user.plan['webhook'] && this.props.user.permissions['manage_webhooks'] &&
+                      <li className='m-nav__item'>
+                        <a href='#/' className='m-nav__link' onClick={this.setWebhook} style={{cursor: 'pointer'}}>
+                          <i className='m-nav__link-icon la la-link' />
+                          <span className='m-nav__link-text'>Webhooks</span>
+                        </a>
+                      </li>
+                    }
+                    { this.props.user && this.props.user.role === 'buyer' && this.props.user.plan['delete_account_information'] && this.props.user.permissions['delete_account_information'] &&
                     <li className='m-nav__item'>
                       <a href='#/' className='m-nav__link' onClick={this.setDeleteUserData} style={{cursor: 'pointer'}}>
                         <i className='m-nav__link-icon flaticon-delete' />
@@ -695,12 +688,15 @@ class Settings extends React.Component {
                         <span className='m-nav__link-text'>Whitelist Domains</span>
                       </a>
                     </li>
-                    <li className='m-nav__item'>
-                      <a href='#/' className='m-nav__link' onClick={this.setAdvancedSettings} style={{cursor: 'pointer'}}>
-                        <i className='m-nav__link-icon fa flaticon-settings' />
-                        <span className='m-nav__link-text'>Advanced Settings</span>
-                      </a>
-                    </li>
+                    {
+                      this.props.user && this.props.user.plan['advanced_settings'] && this.props.user.permissions['manage_advanced_settings'] &&
+                      <li className='m-nav__item'>
+                        <a href='#/' className='m-nav__link' onClick={this.setAdvancedSettings} style={{cursor: 'pointer'}}>
+                          <i className='m-nav__link-icon fa flaticon-settings' />
+                          <span className='m-nav__link-text'>Advanced Settings</span>
+                        </a>
+                      </li>
+                    }
                   </ul>
                 </div>
               </div>
@@ -771,8 +767,8 @@ class Settings extends React.Component {
               </div>
             </div>
             }
-            { this.state.openTab === 'resetPassword' &&
-              <ResetPassword history= {this.props.history}/>
+            { this.state.openTab === 'accountSettings' &&
+              <AccountSettings history= {this.props.history}/>
             }
             { this.state.openTab === 'permissions' &&
               <ShowPermissions history= {this.props.history}/>
@@ -813,6 +809,9 @@ class Settings extends React.Component {
             { this.state.openTab === 'integrations' &&
               <Integrations history= {this.props.history}/>
             }
+            { this.state.openTab === 'cannedResponses' &&
+              <CannedResponses history= {this.props.history}/>
+            }
             { this.state.openTab === 'notifications' &&
               <Notifications history= {this.props.history}/>
             }
@@ -822,9 +821,6 @@ class Settings extends React.Component {
             { this.state.openTab === 'advancedSettings' &&
               <AdvancedSetting />
             }
-            { this.state.openTab === 'cannedResponses' &&
-              <CannedResponses history= {this.props.history}/>
-            } 
             {
               this.state.openTab === 'zoomIntegration' &&
               <ZoomIntegration />

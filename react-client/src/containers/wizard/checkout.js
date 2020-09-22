@@ -28,14 +28,25 @@ class CheckoutForm extends React.Component {
     super(props, context)
     this.state = {
       responseReturned: false,
-      error: false
+      error: false,
+      cardError: false,
+      cardErrorMessage: ''
     }
     this.handleSubmit = this.handleSubmit.bind(this)
+    this.onCardChange = this.onCardChange.bind(this)
   }
+
   componentDidMount () {
     var addScript = document.createElement('script')
     addScript.setAttribute('src', 'https://js.stripe.com/v3/')
     document.body.appendChild(addScript)
+  }
+
+  onCardChange () {
+    this.setState({
+      cardError: false,
+      cardErrorMessage: ''
+    })
   }
 
   handleSubmit (ev) {
@@ -47,11 +58,27 @@ class CheckoutForm extends React.Component {
         .createToken({})
         .then((payload) => {
           console.log('[token]', payload)
-          if (payload.token && !this.state.responseReturned) {
-            this.setState({error: true})
+          if (payload.error) {
+            this.setState({
+              cardError: true,
+              cardErrorMessage: payload.error.message
+            })
             return
+          } else if (payload.token && !this.state.responseReturned) {
+            this.setState({
+              error: true,
+              cardError: false,
+              cardErrorMessage: ''
+            })
+            return
+          } else {
+            this.setState({
+              error: false,
+              cardError: false,
+              cardErrorMessage: ''
+            })
+            this.props.setCard(payload.token.id, false)
           }
-          this.props.setCard(payload.token.id, false)
         })
     } else {
       console.log('Stripe.js hasnt loaded yet.')
@@ -69,7 +96,12 @@ class CheckoutForm extends React.Component {
         </label>
         <CardElement
           {...createOptions(this.props.fontSize)}
+          onChange={this.onCardChange}
         />
+        {
+          this.state.cardError &&
+          <div id='email-error' style={{color: 'red', fontWeight: 'inherit'}}><bold>{this.state.cardErrorMessage}</bold></div>
+        }
         <br /><br />
         <ReCAPTCHA ref='recaptcha' sitekey={this.props.captchaKey} onChange={this.onChange.bind(this)} />
         {this.state.error &&
