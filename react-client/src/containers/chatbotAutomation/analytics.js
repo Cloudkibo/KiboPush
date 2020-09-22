@@ -63,7 +63,7 @@ class Analytics extends React.Component {
   }
 
   exportRecords() {
-    if (!this.props.user.actingAsUser) {
+    if (!this.props.superUser) {
       this.props.downloadAnalytics({pageName: this.props.location.state.page.pageName, chatBotId: this.state.chatbot._id}, this.prepareExportData)
       this.msg.info('DOWNLOADING DATA.... YOU WILL BE NOTIFIED WHEN IT IS DOWNLOADED.')
     } else {
@@ -175,7 +175,8 @@ class Analytics extends React.Component {
 
 function mapStateToProps (state) {
   return {
-    user: (state.basicInfo.user)
+    user: (state.basicInfo.user),
+    superUser: (state.basicInfo.superUser)
   }
 }
 

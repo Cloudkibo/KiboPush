@@ -77,7 +77,7 @@ class UpdateStories extends React.Component {
   }
 
   preview () {
-    if (!this.props.user.actingAsUser) {
+    if (!this.props.superUser) {
       let pageSelected = this.props.currentFeed.pageIds[0]
       if (this.props.adminPageSubscription && this.props.adminPageSubscription.length > 0) {
         var check = this.props.adminPageSubscription.filter((obj) => { return obj.pageId === pageSelected })
@@ -306,7 +306,8 @@ function mapStateToProps (state) {
     newsPages: (state.feedsInfo.newsPages),
     adminPageSubscription: (state.basicInfo.adminPageSubscription),
     user: (state.basicInfo.user),
-    fbAppId: (state.basicInfo.fbAppId)
+    fbAppId: (state.basicInfo.fbAppId),
+    superUser: (state.basicInfo.superUser)
   }
 }
 

@@ -51,7 +51,7 @@ class ConfigureShopifyChatbot extends React.Component {
   }
 
   showTestModal() {
-    if (!this.props.user.actingAsUser) {
+    if (!this.props.superUser) {
       this.setState({ showTestContent: true }, () => {
         this.refs._open_test_chatbot_modal.click()
       })
@@ -338,7 +338,8 @@ function mapStateToProps(state) {
   return {
     user: (state.basicInfo.user),
     store: (state.shopifyInfo.store),
-    fbAppId: state.basicInfo.fbAppId
+    fbAppId: state.basicInfo.fbAppId,
+    superUser: (state.basicInfo.superUser)
   }
 }
 

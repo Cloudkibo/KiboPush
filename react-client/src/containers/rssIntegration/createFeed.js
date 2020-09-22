@@ -44,7 +44,7 @@ class CreateFeed extends React.Component {
   }
 
   previewRssFeed () {
-    if (!this.props.user.actingAsUser) {
+    if (!this.props.superUser) {
       let pageSelected = this.state.selectedPage
       if (this.props.adminPageSubscription && this.props.adminPageSubscription.length > 0) {
         var check = this.props.adminPageSubscription.filter((obj) => { return obj.pageId === pageSelected })
@@ -453,7 +453,8 @@ function mapStateToProps (state) {
     user: (state.basicInfo.user),
     fbAppId: (state.basicInfo.fbAppId),
     newsPages: (state.feedsInfo.newsPages),
-    defaultFeeds: (state.feedsInfo.defaultFeeds)
+    defaultFeeds: (state.feedsInfo.defaultFeeds),
+    superUser: (state.basicInfo.superUser)
   }
 }
 

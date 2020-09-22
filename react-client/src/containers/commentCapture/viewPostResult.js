@@ -83,7 +83,7 @@ class PostResult extends React.Component {
   }
 
   exportAnalytics () {
-    if (!this.props.user.actingAsUser) {
+    if (!this.props.superUser) {
       var data = this.prepareExportSummary()
       var info = data
       var keys = []
@@ -155,7 +155,7 @@ class PostResult extends React.Component {
   }
 
   exportComments () {
-    if (!this.props.user.actingAsUser) {
+    if (!this.props.superUser) {
       this.props.fetchExportCommentsData({postId: this.props.currentPost._id},this.msg,(comments) => {
       var data = this.prepareExportComments(comments)
       var info = data
@@ -391,7 +391,8 @@ function mapStateToProps(state) {
     allPostsAnalytics: (state.postsInfo.allPostsAnalytics),
 	  pages: (state.pagesInfo.pages),
 	  globalPosts: (state.postsInfo.globalPosts),
-    user: (state.basicInfo.user)
+    user: (state.basicInfo.user),
+    superUser: (state.basicInfo.superUser)
     }
   }
 function mapDispatchToProps(dispatch) {

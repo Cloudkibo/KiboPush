@@ -78,7 +78,7 @@ class ZoomIntegration extends React.Component {
           title='Disconnect Zoom Integration'
           description={`Are you sure you want to disconnect this Zoom integration?\n\nPlease make sure you are logged in on the Zoom platform from "${this.state.deleteZoomIngeration.firstName} ${this.state.deleteZoomIngeration.lastName}" account before clicking on "Yes".\n\n`}
           onConfirm={() => {
-            if (this.props.user.actingAsUser) {
+            if (this.props.superUser) {
               this.msg.error('You are not allowed to perform this action')
             } else {
               this.refs.disconnectZoom.click()
@@ -189,7 +189,7 @@ class ZoomIntegration extends React.Component {
                               Disconnect
                             </button>
                             : <button onClick={() => {
-                              if (this.props.user.actingAsUser) {
+                              if (this.props.superUser) {
                                 this.msg.error('You are not allowed to perform this action')
                               } else {
                                 this.props.integrateZoom(this.redirectToAuthorizeZoom)
@@ -213,7 +213,7 @@ class ZoomIntegration extends React.Component {
                       <div style={{ display: 'flex', justifyContent: 'center', marginTop: '50px' }}>
                         <button
                           onClick={() => {
-                            if (this.props.user.actingAsUser) {
+                            if (this.props.superUser) {
                               this.msg.error('You are not allowed to perform this action')
                               } else {
                               this.props.integrateZoom(this.redirectToAuthorizeZoom)
@@ -240,7 +240,8 @@ class ZoomIntegration extends React.Component {
 function mapStateToProps(state) {
   return {
     user: (state.basicInfo.user),
-    zoomIntegrations: (state.settingsInfo.zoomIntegrations)
+    zoomIntegrations: (state.settingsInfo.zoomIntegrations),
+    superUser: (state.basicInfo.superUser)
   }
 }
 function mapDispatchToProps(dispatch) {

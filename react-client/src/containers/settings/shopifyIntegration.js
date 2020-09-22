@@ -48,7 +48,7 @@ class ShopifyIntegration extends React.Component {
           title='Disconnect Shopify Integration'
           description={`Are you sure you want to disconnect this Shopify integration? By Clicking on "Yes", you will be redirected to the Shopify page from where you can uninstall our app.`}
           onConfirm={() => {
-            if (this.props.user.actingAsUser) {
+            if (this.props.superUser) {
               this.msg.error('You are not allowed to perform this action')
             } else {
               this.refs.disconnectShopify.click()
@@ -171,7 +171,7 @@ class ShopifyIntegration extends React.Component {
                       <div style={{ display: 'flex', justifyContent: 'center', marginTop: '50px' }}>
                         <button
                           onClick={() => {
-                            if (this.props.user.actingAsUser) {
+                            if (this.props.superUser) {
                               this.msg.error('You are not allowed to perform this action')
                             } else {
                               window.location.replace('https://partners.shopify.com/1033294/apps/2954997/test')
@@ -198,7 +198,8 @@ class ShopifyIntegration extends React.Component {
 function mapStateToProps(state) {
   return {
     user: (state.basicInfo.user),
-    store: (state.shopifyInfo.store)
+    store: (state.shopifyInfo.store),
+    superUser: (state.basicInfo.superUser)
   }
 }
 function mapDispatchToProps(dispatch) {

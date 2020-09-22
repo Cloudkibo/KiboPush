@@ -318,7 +318,7 @@ class ConfigureChatbot extends React.Component {
   }
 
   showTestModal() {
-    if (!this.props.user.actingAsUser) {
+    if (!this.props.superUser) {
       this.setState({ showTestContent: true }, () => {
         this.refs._open_test_chatbot_modal.click()
       })
@@ -565,7 +565,8 @@ class ConfigureChatbot extends React.Component {
 function mapStateToProps(state) {
   return {
     fbAppId: state.basicInfo.fbAppId,
-    user: (state.basicInfo.user)
+    user: (state.basicInfo.user),
+    superUser: (state.basicInfo.superUser)
   }
 }
 

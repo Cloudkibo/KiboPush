@@ -35,7 +35,7 @@ class PollResult extends React.Component {
     })
   }
   getFile () {
-    if (!this.props.user.actingAsUser) {
+    if (!this.props.superUser) {
       let usersPayload = []
       for (let i = 0; i < this.props.responsesfull.length; i++) {
         var jsonStructure = {}
@@ -292,7 +292,8 @@ function mapStateToProps (state) {
     responses: (state.pollsInfo.responses),
     responsesfull: (state.pollsInfo.responsesfull),
     pages: (state.pagesInfo.pages),
-    user: (state.basicInfo.user)
+    user: (state.basicInfo.user),
+    superUser: (state.basicInfo.superUser)
   }
 }
 

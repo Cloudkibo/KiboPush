@@ -91,7 +91,7 @@ class SurveyResult extends React.Component {
     return temp
   }
   getFile () {
-    if (!this.props.user.actingAsUser) {
+    if (!this.props.superUser) {
       let usersPayload = []
       for (let i = 0; i < this.props.responses.length; i++) {
         var jsonStructure = {}
@@ -311,7 +311,7 @@ function mapStateToProps (state) {
   const {responses, survey, questions} = state.surveysInfo
   const {pages} = state.pagesInfo
   return {
-    responses, survey, questions, pages, user: (state.basicInfo.user)
+    responses, survey, questions, pages, user: (state.basicInfo.user), superUser: (state.basicInfo.superUser)
   }
 }
 
