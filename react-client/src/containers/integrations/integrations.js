@@ -262,13 +262,13 @@ class FacebookIntegration extends React.Component {
                 <br />
               </div>
               <div className='m-widget4__ext'>
-                {this.props.automated_options && this.props.automated_options.whatsApp
-                  ? <button className='m-btn m-btn--pill m-btn--hover-secondary btn btn-secondary' disabled>
-                    Connected
-                  </button>
-                  : <button className='m-btn m-btn--pill m-btn--hover-success btn btn-success' style={{ borderColor: '#34bfa3', color: '#34bfa3' }} data-toggle="modal" data-target="#whatsapp" onClick={this.showDialogWhatsApp}>
-                    Connect
-                  </button>
+              {this.props.automated_options && (!this.props.automated_options.whatsApp || this.props.automated_options.whatsApp.connected === false)
+                ? <button className='m-btn m-btn--pill m-btn--hover-success btn btn-success' style={{ borderColor: '#34bfa3', color: '#34bfa3' }} data-toggle="modal" data-target="#whatsapp" onClick={this.showDialogWhatsApp}>
+                  Connect
+                </button>
+                : <button className='m-btn m-btn--pill m-btn--hover-secondary btn btn-secondary' disabled>
+                  Connected
+                </button>
                 }
               </div>
             </div>
