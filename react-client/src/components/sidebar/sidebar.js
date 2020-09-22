@@ -174,6 +174,13 @@ class Sidebar extends Component {
           route: '/bots'
         })
       }
+      if (platform !== 'messenger' && (isKiboChat || isLocalhost) && user.isSuperUser && user.plan['chatbot_automation'] && user.permissions['configure_chatbot_automation']) {
+        submenu.push({
+          priority: 'b',
+          name: 'Chatbots',
+          route: '/chatbots'
+        })
+      }
       if (platform === 'messenger' && (isKiboChat || isLocalhost) && user.plan['chatbot_automation'] && user.permissions['configure_chatbot_automation']) {
         submenu.push({
           priority: 'b',

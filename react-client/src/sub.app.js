@@ -236,6 +236,7 @@ class App extends Component {
       '/connectFb',
       '/sessionInvalidated',
       '/addfbpages',
+      '/chatbots/configure',
       '/configureChatbot',
       '/configureChatbotNew',
       '/chatbotAnalytics',
