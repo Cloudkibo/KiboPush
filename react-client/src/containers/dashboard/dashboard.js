@@ -198,7 +198,7 @@ class Dashboard extends React.Component {
     return data
   }
   exportDashboardInformation() {
-    if (!this.props.user.actingAsUser) {
+    if (!this.props.superUser) {
       var data = this.prepareExportData()
       var info = data
       var keys = []
@@ -711,6 +711,7 @@ function mapStateToProps(state) {
     graphData: (state.dashboardInfo.graphData),
     topPages: (state.dashboardInfo.topPages),
     automated_options: (state.basicInfo.automated_options),
+    superUser: (state.basicInfo.superUser)
   }
 }
 

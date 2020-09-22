@@ -212,7 +212,7 @@ class AttachmentArea extends React.Component {
       }
       this.props.updateParentState({attachment, attachmentUploading: false})
     } else {
-      this.props.alertMsg.error('Failed to upload attachment. Please try again later')
+      this.props.alertMsg.error(res.description || 'Failed to upload attachment. Please try again later')
       this.setState({waitingForAttachment: false})
       this.props.updateParentState({attachmentUploading: false})
     }

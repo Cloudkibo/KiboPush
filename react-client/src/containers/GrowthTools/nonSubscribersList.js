@@ -62,7 +62,7 @@ class NonSubscribersList extends React.Component {
   }
 
   exportRecordsNonSubscribers () {
-    if (!this.props.user.actingAsUser) {
+    if (!this.props.superUser) {
       var data = this.prepareExportData()
       var info = data
       var keys = []
@@ -248,7 +248,8 @@ function mapStateToProps (state) {
     pages: (state.pagesInfo.pages),
     nonSubscribersNumbers: (state.growthToolsInfo.nonSubscribersData),
     currentList: (state.listsInfo.currentList),
-    user: (state.basicInfo.user)
+    user: (state.basicInfo.user),
+    superUser: (state.basicInfo.superUser)
   }
 }
 function mapDispatchToProps (dispatch) {
