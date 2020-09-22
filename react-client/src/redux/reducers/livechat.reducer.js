@@ -7,10 +7,12 @@ const initialState = {
 }
 
 export function liveChat(state = initialState, action) {
+  let openSessions = null
+  let closeSessions = null
   switch (action.type) {
     case ActionTypes.UPDATE_SESSION_PROFILE_PICTURE:
-      let openSessions = state.openSessions
-      let closeSessions = state.closeSessions
+      openSessions = state.openSessions
+      closeSessions = state.closeSessions
       let openIndex = openSessions.findIndex(s => s._id === action.subscriber._id)
       if (openIndex > -1) {
         openSessions[openIndex].profilePic = action.profilePic
