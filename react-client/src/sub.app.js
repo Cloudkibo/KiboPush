@@ -121,6 +121,9 @@ class App extends Component {
         if ($('#sidebarDiv')) {
           $('#sidebarDiv').removeClass('hideSideBar')
         }
+        if ($('#headerDiv')) {
+          $('#headerDiv').removeClass('hideHeader')
+        }
         /* eslint-enable */
       }
     })
