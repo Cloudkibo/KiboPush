@@ -20,10 +20,11 @@ class AudioModal extends React.Component {
   }
 
   UNSAFE_componentWillReceiveProps (nextProps) {
-    this.setState({
-      disabled: false,
-      file: nextProps.file ? nextProps.file : null
-    })
+    console.log('in audio', nextProps)
+    // this.setState({
+    //   disabled: false,
+    //   file: nextProps.file ? nextProps.file : null
+    // })
   }
 
   handleDone () {
@@ -38,7 +39,7 @@ class AudioModal extends React.Component {
           canBeDeleted = false
           break
         }
-      } 
+      }
       if (canBeDeleted) {
         if (this.state.file.id !== this.state.initialFile) {
           deleteFile(this.state.initialFile)
@@ -87,16 +88,16 @@ class AudioModal extends React.Component {
               <div className='row'>
                 <div className='col-6'>
                   <h4>Audio:</h4>
-                  <Audio 
-                    required 
+                  <Audio
+                    required
                     setTempFiles={this.props.setTempFiles}
-                    file={this.state.file} 
-                    initialFile={this.state.initialFile} 
-                    initialFiles={this.props.initialFiles} 
+                    file={this.state.file}
+                    initialFile={this.state.initialFile}
+                    initialFiles={this.props.initialFiles}
                     updateFile={this.updateFile}
                     pages={this.props.pages}
                     showValidationModal= {this.props.showValidationModal}
-                    onFilesError={this.props.onFilesError} 
+                    onFilesError={this.props.onFilesError}
                   />
                 </div>
                 <div className='col-1'>
@@ -119,7 +120,7 @@ class AudioModal extends React.Component {
                    >
                       Cancel
                 </button>
-                    <button disabled={!this.state.file}  onClick={() => this.handleDone()} className='btn btn-primary'
+                    <button disabled={!this.state.file || this.state.disabled}  onClick={() => this.handleDone()} className='btn btn-primary'
                     >
                       {this.props.edit ? 'Edit' : 'Next'}
                     </button>
