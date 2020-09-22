@@ -120,9 +120,8 @@ export function liveChat(state = initialState, action) {
       closeSess = closeSess.sort(function (a, b) {
         return new Date(b.last_activity_time) - new Date(a.last_activity_time)
       })
-      let open = openSess.map(sess => sess._id)
-      let indexOpen = open.indexOf(action.session._id)
-      if (indexOpen !== -1) {
+      let indexOpen = openSess.findIndex((sess) => sess._id === action.session._id)
+      if (indexOpen > -1 && openSess[indexOpen]) {
         openSess[indexOpen].lastPayload = action.session.lastPayload
         openSess[indexOpen].lastDateTime = action.session.lastDateTime
         openSess[indexOpen].last_activity_time = action.session.last_activity_time
@@ -132,9 +131,8 @@ export function liveChat(state = initialState, action) {
           openSess[indexOpen].lastRepliedBy = null
         }
       }
-      let close = closeSess.map(sess => sess._id)
-      let indexClose = close.indexOf(action.session._id)
-      if (indexClose !== -1) {
+      let indexClose = closeSess.findIndex((sess) => sess._id === action.session._id)
+      if (indexClose > -1 && closeSess[indexClose]) {
         closeSess[indexClose].lastPayload = action.session.lastPayload
         closeSess[indexClose].lastDateTime = action.session.lastDateTime
         closeSess[indexClose].last_activity_time = action.session.last_activity_time
