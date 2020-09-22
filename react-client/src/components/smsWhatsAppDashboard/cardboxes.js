@@ -41,7 +41,7 @@ class CardBoxesContainer extends React.Component {
             }
           </UncontrolledTooltip>
           <div className='col-sm-6 col-md-6 col-lg-6'>
-            { url.includes('kibochat.cloudkibo.com') && 
+            { url.includes('kibochat.cloudkibo.com') &&
             <Link to={(this.props.platform === 'sms' ? '/smsChat' : '/whatsAppChat')} >
               <CardBox
                 style='accent'
@@ -51,8 +51,7 @@ class CardBoxesContainer extends React.Component {
               />
             </Link>
           }
-
-          { url.includes('kiboengage.cloudkibo.com') && 
+          { url.includes('kiboengage.cloudkibo.com') &&
             <Link to={(this.props.platform === 'sms' ? '/smsBroadcasts' : '/whatsAppBroadcasts')} >
               <CardBox
                 style='accent'

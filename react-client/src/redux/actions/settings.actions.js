@@ -778,3 +778,42 @@ export function deleteCannedResponse(data, msg) {
       })
   }
 }
+
+export function enable2FA(data) {
+  return (dispatch) => {
+    callApi('auth/tfa/setup', 'post', data, 'accounts')
+      .then(res => {
+        if (res.status === 'success') {
+          console.log('response from enable2fa', res)
+          dispatch(getuserdetails())
+        }
+      })
+  }
+}
+
+export function disable2FA(data) {
+  return (dispatch) => {
+    callApi('auth/tfa/setup', 'delete', data, 'accounts')
+      .then(res => {
+        if (res.status === 'success') {
+          console.log('response from disabel2fa', res)
+          dispatch(getuserdetails())
+        }
+      })
+  }
+}
+
+export function verify2FAToken(data, msg) {
+  return (dispatch) => {
+    callApi('auth/tfa/verify', 'post', data, 'accounts')
+      .then(res => {
+        console.log('response from verify2fa', res)
+        if (res.status === 'success') {
+          dispatch(getuserdetails())
+          msg.success('2FA setup completed successfully.')
+        } else {
+          msg.error(res.payload.message)
+        }
+      })
+  }
+}

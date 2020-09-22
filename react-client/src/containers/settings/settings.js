@@ -6,7 +6,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { getNGP, enableNGP, disableNGP, saveNGP } from '../../redux/actions/settings.actions'
-import ResetPassword from './resetPassword'
+import AccountSettings from './accountSettings'
 import GreetingMessage from './greetingMessage'
 import WelcomeMessage from './welcomeMessage'
 import ShowPermissions from './showPermissions'
@@ -46,7 +46,7 @@ class Settings extends React.Component {
       count1_ngp: 0,
       firstTime: true,
       firstTimeNGP: true,
-      resetPassword: false,
+      accountSettings: false,
       showAPIbyPlan: true,
       saveState: null,
       saveStateNGP: null,
@@ -61,7 +61,7 @@ class Settings extends React.Component {
     this.changeType = this.changeType.bind(this)
     this.initializeSwitchNGP = this.initializeSwitchNGP.bind(this)
     this.setReset = this.setReset.bind(this)
-    this.setResetPass = this.setResetPass.bind(this)
+    this.setAccountSettings = this.setAccountSettings.bind(this)
     this.setConfiguration = this.setConfiguration.bind(this)
     this.setIntegrations = this.setIntegrations.bind(this)
     this.setZoomIntegration = this.setZoomIntegration.bind(this)
@@ -187,9 +187,9 @@ class Settings extends React.Component {
     })
   }
 
-  setResetPass () {
+  setAccountSettings () {
     this.setState({
-      openTab: 'resetPassword'
+      openTab: 'accountSettings'
     })
   }
 
@@ -540,9 +540,9 @@ class Settings extends React.Component {
                       <span className='m-nav__section-text'>Section</span>
                     </li>
                     <li className='m-nav__item'>
-                      <a href='#/' className='m-nav__link' onClick={this.setResetPass} style={{cursor: 'pointer'}} >
+                      <a href='#/' className='m-nav__link' onClick={this.setAccountSettings} style={{cursor: 'pointer'}} >
                         <i className='m-nav__link-icon flaticon-lock-1' />
-                        <span className='m-nav__link-text'>Change Password</span>
+                        <span className='m-nav__link-text'>Account Settings</span>
                       </a>
                     </li>
                     <li className='m-nav__item'>
@@ -771,8 +771,8 @@ class Settings extends React.Component {
               </div>
             </div>
             }
-            { this.state.openTab === 'resetPassword' &&
-              <ResetPassword history= {this.props.history}/>
+            { this.state.openTab === 'accountSettings' &&
+              <AccountSettings history= {this.props.history}/>
             }
             { this.state.openTab === 'permissions' &&
               <ShowPermissions history= {this.props.history}/>
