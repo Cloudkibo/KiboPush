@@ -6,7 +6,7 @@ const initialState = {
   allChatMessages: {}
 }
 
-export function liveChat (state = initialState, action) {
+export function liveChat(state = initialState, action) {
   switch (action.type) {
     case ActionTypes.UPDATE_SESSION_PROFILE_PICTURE:
       let openSessions = state.openSessions
@@ -148,11 +148,11 @@ export function liveChat (state = initialState, action) {
         openSessions: openSess,
         closeSessions: closeSess,
         openCount: action.appendDeleteInfo ? (action.appendDeleteInfo.appendTo === 'open')
-                    ? (state.openCount + 1) : action.appendDeleteInfo.deleteFrom === 'open'
-                    ? (state.openCount - 1) : state.openCount : state.openCount,
+          ? (state.openCount + 1) : action.appendDeleteInfo.deleteFrom === 'open'
+            ? (state.openCount - 1) : state.openCount : state.openCount,
         closeCount: action.appendDeleteInfo ? action.appendDeleteInfo.appendTo === 'close'
-                    ? (state.closeCount + 1) : action.appendDeleteInfo.deleteFrom === 'close'
-                    ? (state.closeCount - 1) : state.closeCount : state.closeCount,
+          ? (state.closeCount + 1) : action.appendDeleteInfo.deleteFrom === 'close'
+            ? (state.closeCount - 1) : state.closeCount : state.closeCount,
         updateSessionTimeStamp: new Date().toString()
       })
 
@@ -298,6 +298,34 @@ export function liveChat (state = initialState, action) {
       return Object.assign({}, state, {
         userChat: undefined,
         chatCount: 0
+      })
+    case ActionTypes.UNSUBSCRIBE_SUBSCRIBER:
+      debugger
+      openSessions = state.openSessions
+      closeSessions = state.closeSessions
+      let openCount = state.openCount
+      let closeCount = state.closeCount
+
+      for (let i = openSessions.length - 1; i >= 0; i--) {
+        if (openSessions[i]._id === action.data.subscriberId) {
+          openSessions.splice(i, 1)
+          openCount -= 1
+          break
+        }
+      }
+      for (let i = closeSessions.length - 1; i >= 0; i--) {
+        if (closeSessions[i]._id === action.data.subscriberId) {
+          closeSessions.splice(i, 1)
+          closeCount -= 1
+          break
+        }
+      }
+      return Object.assign({}, state, {
+        openSessions,
+        closeSessions,
+        openCount,
+        closeCount,
+        activeSession: ''
       })
     default:
       return state
