@@ -137,7 +137,7 @@ class Header extends React.Component {
     }
     this.setState({ planInfo: planInfo })
   }
- 
+
   redirectToDashboard (value) {
     if (value === 'sms') {
       this.props.history.push({
