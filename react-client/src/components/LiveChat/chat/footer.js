@@ -657,7 +657,7 @@ class Footer extends React.Component {
         attachment: {},
         componentType: ''
       })
-      this.props.alertMsg.error('Failed to upload attachment')
+      this.props.alertMsg.error(res.description || 'Failed to upload attachment')
     }
   }
 
