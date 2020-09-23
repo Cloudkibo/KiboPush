@@ -2,14 +2,14 @@ import * as ActionTypes from '../constants/constants'
 import callApi from '../../utility/api.caller.service'
 import auth from '../../utility/auth.service'
 
-export function setIsMobile (data) {
+export function setIsMobile(data) {
   return {
     type: ActionTypes.SET_IS_MOBILE,
     data
   }
 }
 
-export function setBrowserName (data) {
+export function setBrowserName(data) {
   return {
     type: ActionTypes.LOAD_BROWSER_NAME,
     data
@@ -23,7 +23,7 @@ export function saveEnvironment (data) {
   }
 }
 
-export function showuserdetails (data) {
+export function showuserdetails(data) {
   // NOTE: don't remove following auth method call
   console.log('user details', data)
   auth.putUserId(data.user._id)
@@ -39,7 +39,7 @@ export function updateTrialPeriod () {
   }
 }
 
-export function showAutomatedOptions (data) {
+export function showAutomatedOptions(data) {
   console.log(data)
   return {
     type: ActionTypes.GET_AUTOMATED_OPTIONS,
@@ -47,7 +47,7 @@ export function showAutomatedOptions (data) {
   }
 }
 
-export function updateKeys (data) {
+export function updateKeys(data) {
   return {
     type: ActionTypes.LOAD_KEYS,
     captchaKey: data.captchaKey,
@@ -55,7 +55,7 @@ export function updateKeys (data) {
   }
 }
 
-export function showUpdatedUserDetails (data, user) {
+export function showUpdatedUserDetails(data, user) {
   user.uiMode = data
   return {
     type: ActionTypes.LOAD_UPDATED_USER_DETAILS,
@@ -63,7 +63,7 @@ export function showUpdatedUserDetails (data, user) {
   }
 }
 
-export function storeFbAppId (data) {
+export function storeFbAppId(data) {
   // NOTE: don't remove following auth method call
   return {
     type: ActionTypes.STORE_FB_APP_ID,
@@ -71,7 +71,7 @@ export function storeFbAppId (data) {
   }
 }
 
-export function storeAdminSubscriptions (data) {
+export function storeAdminSubscriptions(data) {
   // NOTE: don't remove following auth method call
   return {
     type: ActionTypes.STORE_ADMIN_SUB_ID,
@@ -79,35 +79,41 @@ export function storeAdminSubscriptions (data) {
   }
 }
 
-export function setBrowserVersion (data) {
+export function setBrowserVersion(data) {
   return {
     type: ActionTypes.LOAD_BROWSER_VERSION,
     data
   }
 }
 
-export function setSocketStatus (data) {
+export function setSocketStatus(data) {
   return {
     type: ActionTypes.SET_SOCKET_STATUS,
     data
   }
 }
 
-export function getuserdetails (joinRoom) {
+export function getuserdetails(joinRoom) {
   return (dispatch) => {
     callApi('users').then(res => {
       console.log('response from getuserdetails', res)
       if (res.status === 'Unauthorized') {
         auth.logout()
       } else {
-        if (joinRoom) joinRoom(res.payload.companyId)
+        if (joinRoom) {
+          if (res.payload.user && res.payload.user.companyId) {
+            joinRoom(res.payload.user.companyId)
+          } else {
+            joinRoom(res.payload.companyId)
+          }
+        }
         dispatch(showuserdetails(res.payload))
       }
     })
   }
 }
 
-export function updatePicture (data, callback) {
+export function updatePicture(data, callback) {
   return (dispatch) => {
     callApi('updatePicture', 'post', data, 'accounts')
       .then(res => {
@@ -122,7 +128,7 @@ export function updatePicture (data, callback) {
   }
 }
 
-export function getAutomatedOptions () {
+export function getAutomatedOptions() {
   return (dispatch) => {
     callApi('company/getAutomatedOptions').then(res => dispatch(showAutomatedOptions(res.payload)))
   }
@@ -141,7 +147,7 @@ export function getFbAppId () {
   }
 }
 
-export function getAdminSubscriptions () {
+export function getAdminSubscriptions() {
   return (dispatch) => {
     callApi('adminsubscriptions').then(res => {
       console.log('response from adminsubscriptions', res)
@@ -150,9 +156,9 @@ export function getAdminSubscriptions () {
   }
 }
 
-export function fetchAdminSubscriptions (body, callback) {
+export function fetchAdminSubscriptions(body, callback) {
   return (dispatch) => {
-    callApi('adminsubscriptions/fetch','post',body).then(res => {
+    callApi('adminsubscriptions/fetch', 'post', body).then(res => {
       console.log('response from adminsubscriptions', res)
       callback(res.payload)
       dispatch(storeAdminSubscriptions(res.payload))
@@ -160,7 +166,7 @@ export function fetchAdminSubscriptions (body, callback) {
   }
 }
 
-export function updateMode (data, user) {
+export function updateMode(data, user) {
   console.log('data for updateMode', data)
   return (dispatch) => {
     callApi('users/changeUIMode', 'post', data).then(res => {
@@ -172,7 +178,7 @@ export function updateMode (data, user) {
   }
 }
 
-export function updatePlan (data, msg) {
+export function updatePlan(data, msg) {
   console.log('data for updateMode', data)
   return (dispatch) => {
     callApi('company/updatePlan', 'post', data).then(res => {
@@ -204,13 +210,13 @@ export function updateCard (data, msg, callback) {
   }
 }
 
-export function getKeys () {
+export function getKeys() {
   return (dispatch) => {
     callApi('company/getKeys').then(res => dispatch(updateKeys(res)))
   }
 }
 
-export function validateUserAccessToken (cb) {
+export function validateUserAccessToken(cb) {
   return (dispatch) => {
     callApi('users/validateUserAccessToken').then(res => {
       cb(res)
@@ -218,14 +224,14 @@ export function validateUserAccessToken (cb) {
   }
 }
 
-export function isFacebookConnected (cb) {
+export function isFacebookConnected(cb) {
   return (dispatch) => {
     callApi('users/validateFacebookConnected').then(res => {
       cb(res)
     })
   }
 }
-export function updateShowIntegrations (data, browserHistory) {
+export function updateShowIntegrations(data, browserHistory) {
   return (dispatch) => {
     callApi('users/updateShowIntegrations', 'post', data).then(res => {
       if (res.status === 'success') {
@@ -236,14 +242,14 @@ export function updateShowIntegrations (data, browserHistory) {
       if (browserHistory) {
         browserHistory.push({
           pathname: '/dashboard',
-          state: {loadScript: true}
+          state: { loadScript: true }
         })
       }
     })
   }
 }
 
-export function disconnectFacebook (callback) {
+export function disconnectFacebook(callback) {
   return (dispatch) => {
     callApi('users/disconnectFacebook').then(res => {
       if (res.status === 'success') {
@@ -258,7 +264,7 @@ export function disconnectFacebook (callback) {
   }
 }
 
-export function updatePlatform (data, fetchNotifications) {
+export function updatePlatform(data, fetchNotifications) {
   return (dispatch) => {
     callApi('users/updatePlatform', 'post', data).then(res => {
       if (res.status === 'success') {
