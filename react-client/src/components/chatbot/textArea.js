@@ -53,17 +53,6 @@ class TextArea extends React.Component {
           />
         )
         break
-      case 'user':
-        popoverOptions.content = (
-          <div>
-            <span style={{cursor: 'pointer'}} onClick={() => this.appendUserName('first')}>First Name</span>
-            <div className='m--space-10' />
-            <span style={{cursor: 'pointer'}} onClick={() => this.appendUserName('last')}>Last Name</span>
-            <div className='m--space-10' />
-            <span style={{cursor: 'pointer'}} onClick={() => this.appendUserName('full')}>Full Name</span>
-          </div>
-        )
-        break
       default:
     }
     this.setState({
@@ -84,12 +73,6 @@ class TextArea extends React.Component {
       target: `_${type}_picker_chatbot`
     }
     this.getPicker(type, popoverOptions)
-  }
-
-  appendUserName (nameType) {
-    let text = `${this.state.text}{{user_${nameType}_name}}`
-    this.setState({text})
-    this.props.updateParentState({text})
   }
 
   UNSAFE_componentWillReceiveProps (nextProps) {
@@ -117,12 +100,6 @@ class TextArea extends React.Component {
               disabled={this.props.disabled}
             />
             <span style={{position: 'absolute', bottom: 0, right: '10px'}}>
-              <i
-                style={{fontSize: '20px', margin: '5px', cursor: 'pointer'}}
-                className='fa fa-user'
-                id='_user_picker_chatbot'
-                onClick={() => {!this.props.disabled && this.openPicker('user')}}
-              />
               <i
                 style={{fontSize: '20px', margin: '5px', cursor: 'pointer'}}
                 className='fa fa-smile-o'

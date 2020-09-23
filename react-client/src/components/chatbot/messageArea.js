@@ -147,12 +147,10 @@ class MessageArea extends React.Component {
         uniqueId: `${this.props.block.uniqueId}`,
         title: this.props.block.title,
         chatbotId: this.props.chatbot.chatbotId,
-        updateStartingBlockId: (this.props.block._id === 'welcome-id'),
         payload: this.preparePayload(this.state)
       }
       console.log('data to save for message block', data)
-      // this.props.handleMessageBlock(data, (res) => this.afterNext(res, dataToShow, callback))
-      this.afterNext({status: 'success'}, data, callback)
+      this.props.handleMessageBlock(data, (res) => this.afterNext(res, data, callback))
     }
   }
 
@@ -290,13 +288,12 @@ class MessageArea extends React.Component {
         const parentId = this.props.sidebarItems.find((item) => item.id === this.props.block.uniqueId).parentId
         uniqueId = this.props.blocks.find((item) => item.uniqueId === parentId).uniqueId
       } else {
-        uniqueId = this.props.blocks.find((item) => item._id === this.props.chatbot.startingBlockId).uniqueId
+        uniqueId = this.props.blocks.find((item) => item.uniqueId === this.props.chatbot.startingBlockId).uniqueId
       }
       let options = this.state.options
       options.push({
-        content_type: 'text',
         title,
-        payload: JSON.stringify([{action: '_chatbot', blockUniqueId: uniqueId}])
+        blockId: uniqueId
       })
 
       const currentBlock = this.props.block
@@ -324,7 +321,7 @@ class MessageArea extends React.Component {
   }
 
   canDeleteBlock () {
-    if (this.props.block._id === 'welcome-id' && this.props.block.payload.length === 0) {
+    if (this.props.chatbot.startingBlockId === this.props.block.uniqueId && this.props.block.payload.length === 0) {
       return false
     } else {
       return true

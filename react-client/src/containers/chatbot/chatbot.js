@@ -37,12 +37,11 @@ class Chatbots extends React.Component {
       this.msg.error('A chatbot already exists with this title. Please enter a different title.')
     } else {
       this.setState({loading: true})
-      this.props.createChatbot({ title: this.state.title }, this.handleOnCreate)
+      this.props.createChatbot({ title: this.state.title, startingBlockId: `${new Date().getTime()}` }, this.handleOnCreate)
     }
   }
 
   modifyChatbot(chatbot) {
-    chatbot.startingBlockId = chatbot.startingBlockId || `${new Date().getTime()}`
     this.props.history.push({
       pathname: '/chatbots/configure',
       state: { chatbot }
@@ -53,7 +52,6 @@ class Chatbots extends React.Component {
     this.setState({loading: false})
     if (res.status === 'success') {
       const chatbot = res.payload
-      chatbot.startingBlockId = `${new Date().getTime()}`
       this.props.history.push({
         pathname: '/chatbots/configure',
         state: { chatbot }
@@ -64,7 +62,9 @@ class Chatbots extends React.Component {
   }
 
   onTitleChange (e) {
-    this.setState({title: e.target.value})
+    if (e.target.value.length <= 30) {
+      this.setState({title: e.target.value})
+    }
   }
 
   render() {
