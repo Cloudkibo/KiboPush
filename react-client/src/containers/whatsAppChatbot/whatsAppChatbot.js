@@ -91,6 +91,10 @@ class WhatsAppChatbot extends React.Component {
     })
     this.props.updateChatbot({
       published: e.target.checked
+    }, (res) => {
+      if (res.status !== 'success') {
+        this.msg.error(res.description)
+      }
     })
   }
 

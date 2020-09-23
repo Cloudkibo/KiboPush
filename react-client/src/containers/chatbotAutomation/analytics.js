@@ -38,18 +38,11 @@ class Analytics extends React.Component {
     let self = this
     if (res.status === 'success') {
       var blocksData = res.payload
-      const result = blocksData.reduce((p, c) => 
+      const result = blocksData.reduce((p, c) =>
         (Object.keys(p).length > Object.keys(c).length) ? p : c
       )
       var info = blocksData
-      var keys = []
-      // console.log('resultArray', result)
-       var val = Object.keys(result)
-      // console.log('result', val)
-      // for (var j in val) {
-      //   var subKey = j
-      //   keys.push(subKey)
-      // }
+      var val = Object.keys(result)
       json2csv({ data: info, fields: val }, function (err, csv) {
         if (err) {
         } else {
@@ -63,8 +56,12 @@ class Analytics extends React.Component {
   }
 
   exportRecords() {
-    this.props.downloadAnalytics({pageName: this.props.location.state.page.pageName, chatBotId: this.state.chatbot._id}, this.prepareExportData)
-    this.msg.info('DOWNLOADING DATA.... YOU WILL BE NOTIFIED WHEN IT IS DOWNLOADED.')
+    if (!this.props.superUser) {
+      this.props.downloadAnalytics({pageName: this.props.location.state.page.pageName, chatBotId: this.state.chatbot._id}, this.prepareExportData)
+      this.msg.info('DOWNLOADING DATA.... YOU WILL BE NOTIFIED WHEN IT IS DOWNLOADED.')
+    } else {
+      this.msg.error('You are not allowed to perform this action')
+    }
   }
 
   componentDidMount () {
@@ -171,6 +168,8 @@ class Analytics extends React.Component {
 
 function mapStateToProps (state) {
   return {
+    user: (state.basicInfo.user),
+    superUser: (state.basicInfo.superUser)
   }
 }
 

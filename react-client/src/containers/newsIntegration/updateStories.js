@@ -77,40 +77,44 @@ class UpdateStories extends React.Component {
   }
 
   preview () {
-    let pageSelected = this.props.currentFeed.pageIds[0]
-    if (this.props.adminPageSubscription && this.props.adminPageSubscription.length > 0) {
-      var check = this.props.adminPageSubscription.filter((obj) => { return obj.pageId === pageSelected })
-      if (check.length <= 0) {
+    if (!this.props.superUser) {
+      let pageSelected = this.props.currentFeed.pageIds[0]
+      if (this.props.adminPageSubscription && this.props.adminPageSubscription.length > 0) {
+        var check = this.props.adminPageSubscription.filter((obj) => { return obj.pageId === pageSelected })
+        if (check.length <= 0) {
+          if(this.props.fbAppId && this.props.fbAppId !== '') {
+            this.refs.messengerModal.click()
+          }
+          return
+        }
+      } else {
         if(this.props.fbAppId && this.props.fbAppId !== '') {
           this.refs.messengerModal.click()
         }
         return
       }
-    } else {
-      if(this.props.fbAppId && this.props.fbAppId !== '') {
-        this.refs.messengerModal.click()
+      var stories = []
+      for (var i = 0; i < this.state.stories.length; i++) {
+        stories.push(this.state.stories[i].url)
       }
-      return
+      var payload = {
+        title: this.props.currentFeed.title,
+        defaultFeed: this.props.currentFeed.defaultFeed,
+        isActive: this.props.currentFeed.isActive,
+        pageIds: this.props.currentFeed.pageIds,
+        integrationType: 'manual',
+        stories: stories
+      }
+      if (this.props.currentFeed && this.props.currentFeed._id) {
+        payload.feedId = this.props.currentFeed._id
+      }
+      this.setState({
+        loading: true
+      })
+      this.props.previewNewsFeed(payload, this.msg, () => {this.setState({loading: false})})
+    } else {
+      this.msg.error('You are not allowed to perform this action')
     }
-    var stories = []
-    for (var i = 0; i < this.state.stories.length; i++) {
-      stories.push(this.state.stories[i].url)
-    }
-    var payload = {
-      title: this.props.currentFeed.title,
-      defaultFeed: this.props.currentFeed.defaultFeed,
-      isActive: this.props.currentFeed.isActive,
-      pageIds: this.props.currentFeed.pageIds,
-      integrationType: 'manual',
-      stories: stories
-    }
-    if (this.props.currentFeed && this.props.currentFeed._id) {
-      payload.feedId = this.props.currentFeed._id
-    }
-    this.setState({
-      loading: true
-    })
-    this.props.previewNewsFeed(payload, this.msg, () => {this.setState({loading: false})})
   }
   handleSave () {
     var stories = []
@@ -302,7 +306,8 @@ function mapStateToProps (state) {
     newsPages: (state.feedsInfo.newsPages),
     adminPageSubscription: (state.basicInfo.adminPageSubscription),
     user: (state.basicInfo.user),
-    fbAppId: (state.basicInfo.fbAppId)
+    fbAppId: (state.basicInfo.fbAppId),
+    superUser: (state.basicInfo.superUser)
   }
 }
 

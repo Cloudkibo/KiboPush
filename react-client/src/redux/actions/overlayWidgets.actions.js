@@ -34,7 +34,7 @@ export function updateWidget (widget, tab, updatedKey, updatedValue) {
       updatedWidget[tab][updatedKey] = updatedValue
     } else if (updatedKey) {
       updatedWidget[updatedKey] = updatedValue
-    }  
+    }
     dispatch(showUpdatedWidget(updatedWidget))
   }
 }
@@ -59,8 +59,8 @@ export function deleteOverlayWidget (id, msg) {
       if (res.status === 'success') {
         msg.success('Overlay widget has been deleted')
         var data = {
-          last_id: 'none', 
-          number_of_records: 10, 
+          last_id: 'none',
+          number_of_records: 10,
           first_page: 'first',
           page_value: '',
           status_value: '',
@@ -69,7 +69,7 @@ export function deleteOverlayWidget (id, msg) {
         }
         dispatch(fetchOverlayWidgets(data))
       } else {
-        msg.error('Failed to delete Pverlay Widget')
+        msg.error(res.description || 'Failed to delete overlay Widget')
       }
     })
   }
@@ -84,7 +84,7 @@ export function createOverlayWidget (data, msg, handleCreate) {
           handleCreate(res.payload)
         }
       } else {
-        msg.error('Failed to save overlay Widget')
+        msg.error(res.description || 'Failed to save overlay Widget')
       }
     })
   }
@@ -96,7 +96,7 @@ export function updateOverlayWidget (data, msg) {
       if (res.status === 'success') {
         msg.success('Overlay widget has been saved')
       } else {
-        msg.error('Failed to save overlay Widget')
+        msg.error(res.description || 'Failed to save overlay Widget')
       }
     })
   }
@@ -137,11 +137,10 @@ export function setWidgetProperties (wgt, defaultPageId) {
       pageId:  wgt && wgt.pageId ? wgt.pageId: defaultPageId,
       status: wgt && wgt.isActive ? wgt.isActive: true,
       type:  wgt && wgt.widgetType ? wgt.widgetType: 'bar',
-      error: false, 
+      error: false,
       title: wgt && wgt.title ? wgt.title : '',
       id: wgt && wgt._id ? wgt._id :  ''
     }
     dispatch(showUpdatedWidget(widget))
   }
 }
-

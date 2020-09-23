@@ -87,7 +87,7 @@ export function fetchMessengerAd (jsonAdId, updatePreview) {
                 }
               }
             }
-          } 
+          }
         }
         let payload = {
           // pageId: data.jsonAd.pageId,
@@ -109,7 +109,7 @@ export function deleteMessengerAd (id, msg) {
         msg.success('JSON ad has been deleted')
         dispatch(fetchMessengerAds())
       } else {
-        msg.error('Failed to delete JSON Ad')
+        msg.error(res.description || 'Failed to delete JSON Ad')
       }
     })
   }
@@ -133,7 +133,7 @@ export function saveJsonAd (data, msg, handleSave) {
           msg.success('JSON Ad saved successfully')
           handleSave()
         } else {
-          msg.error('Unable to save JSON Ad')
+          msg.error(res.description || 'Unable to save JSON Ad')
         }
       })
   }
@@ -157,7 +157,7 @@ export function editJsonAd (data, msg, handleEdit) {
           handleEdit()
           msg.success('Message saved successfully')
         } else {
-          msg.error('Unable to save message')
+          msg.error(res.description || 'Unable to save message')
         }
       })
   }

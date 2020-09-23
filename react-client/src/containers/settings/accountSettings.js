@@ -240,7 +240,7 @@ class AccountSettings extends React.Component {
                   <center>
                     <div className='m-form__group form-group row'>
                       <span className='col-12 col-form-label'>
-                        <img src={this.props.user.tfa.dataURL} />
+                        <img alt='qr-code' src={this.props.user.tfa.dataURL} />
                       </span>
                     </div>
                     <p>

@@ -10,6 +10,7 @@ class ActingAsUser extends React.Component {
 
     this.showViewingAsDropDown = this.showViewingAsDropDown.bind(this)
     this.removeActingAsUser = this.removeActingAsUser.bind(this)
+    this.handleActingUser = this.handleActingUser.bind(this)
   }
 
   showViewingAsDropDown() {
@@ -17,7 +18,10 @@ class ActingAsUser extends React.Component {
   }
 
   removeActingAsUser() {
-    this.props.removeActingAsUser()
+    this.props.setUsersView({type: 'unset', domain_email: this.props.actingAsUserEmail}, this.handleActingUser)
+  }
+
+  handleActingUser () {
     window.location.reload()
   }
 
@@ -42,7 +46,7 @@ class ActingAsUser extends React.Component {
                             <ul className='m-nav'>
                               <li style={{ textAlign: 'center' }} className='m-nav__item'>
                                 <span>
-                                  Currently viewing as: <strong>{this.props.getActingAsUserName()} </strong>
+                                  Currently viewing as: <strong>{this.props.actingAsUserName} </strong>
                                 </span>
                               </li>
                               <li style={{ textAlign: 'center' }} className='m-nav__item'>

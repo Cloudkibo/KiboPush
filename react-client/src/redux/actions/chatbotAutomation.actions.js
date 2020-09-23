@@ -5,7 +5,7 @@ import auth from '../../utility/auth.service'
 
 function showChatbots(data) {
   return {
-    type: ActionTypes.SHOW_CHATBOTS,
+    type: ActionTypes.SHOW_CHATBOT_AUTOMATION,
     data
   }
 }

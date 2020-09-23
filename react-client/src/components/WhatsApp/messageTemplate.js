@@ -126,9 +126,14 @@ class MessageTemplate extends React.Component {
       this.props.createNewContact({
         number: '+' + this.state.number.replace(/\D/g, '')
       }, (res) => {
+        if (res.status === 'success') {
         this.props.changeActiveSession(res.payload, null, () => {
           this._sendTemplate()
         })
+      } else {
+        let errorMsg = res.description || res.payload
+          this.props.alertMsg.error(errorMsg)
+        }
       })
     } else {
       this._sendTemplate()
@@ -158,7 +163,8 @@ class MessageTemplate extends React.Component {
         this.props.alertMsg.success('Template Successfully Sent')
       } else {
         this.setState({sendingTemplate: false})
-        this.props.alertMsg.error(res.payload)
+        let errorMsg = res.description || res.payload
+        this.props.alertMsg.error(errorMsg)
       }
     })
   }
@@ -224,16 +230,16 @@ class MessageTemplate extends React.Component {
           <div className='row'>
             <div className='col-6' style={{ maxHeight: '70vh', overflowY: 'scroll' }}>
             {
-              this.props.sendingToNewNumber ? 
+              this.props.sendingToNewNumber ?
                 <div>
                   <label className='control-label'>WhatsApp Number:</label>
                   <div style={{display: 'flex'}} id='_whatsapp_number' className='form-group m-form__group'>
-                    <input type='tel' 
+                    <input type='tel'
                       style={{width: '95%'}}
                       placeholder='Enter a valid WhatsApp phone number...'
-                      disabled={this.state.sendingTemplate} 
-                      className={this.state.isPhoneNumberValid ? 'form-control' : 'form-control border-danger'} 
-                      value={this.state.number} 
+                      disabled={this.state.sendingTemplate}
+                      className={this.state.isPhoneNumberValid ? 'form-control' : 'form-control border-danger'}
+                      value={this.state.number}
                       onChange={(e) => this.updateNumber(e)} />
                       { !this.state.isPhoneNumberValid &&
                       <div style={{marginLeft: '5px', marginTop: '3px'}}>
@@ -245,10 +251,10 @@ class MessageTemplate extends React.Component {
                       }
                   </div>
                 </div>
-              : this.props.showDescription && 
+              : this.props.showDescription &&
               <p>To send a message outside the 24 hours session window, use one of the following pre-approved templates</p>
             }
-          
+
             <div>
             <label>Select Template:</label>
               <div className='radio-buttons' style={{marginLeft: '37px'}}>
@@ -256,7 +262,7 @@ class MessageTemplate extends React.Component {
                   this.props.templates.map((template, index) => {
                     return (
                       <div className='radio'>
-                        <input 
+                        <input
                           disabled={this.state.sendingTemplate}
                           id={template.name+this.props.id}
                           type='radio'
@@ -295,24 +301,24 @@ class MessageTemplate extends React.Component {
                 {
                   this.props.templates[this.state.selectedIndex].buttons.map((button, index) => (
                     (
-                      <div className='bubble recipient' 
-                        style={{ 
-                          maxWidth: '100%', 
-                          textAlign: 'center', 
-                          margin: 'auto', 
-                          marginTop: '5px', 
-                          fontSize: '15px', 
-                          backgroundColor: 'white', 
-                          border: '1px solid rgba(0,0,0,.1)', 
-                          borderRadius: '10px', 
-                          wordBreak: 'break-all', 
+                      <div className='bubble recipient'
+                        style={{
+                          maxWidth: '100%',
+                          textAlign: 'center',
+                          margin: 'auto',
+                          marginTop: '5px',
+                          fontSize: '15px',
+                          backgroundColor: 'white',
+                          border: '1px solid rgba(0,0,0,.1)',
+                          borderRadius: '10px',
+                          wordBreak: 'break-all',
                           color: '#0782FF' }}>{button.title}</div>
                     )
                   ))
                 }
               </div>
             </div>
-          </div> 
+          </div>
 
           <div className='col-6' style={{ marginTop: '-5vh' }}>
             <div className='pull-right'>
@@ -332,7 +338,7 @@ class MessageTemplate extends React.Component {
                   this.props.sendChatMessage &&
                   <button disabled={(this.props.sendingToNewNumber && !this.state.isPhoneNumberValid) || !this.state.isTemplateValid || this.state.sendingTemplate} className='btn btn-primary' onClick={this.sendTemplate}>
                     {
-                      this.state.sendingTemplate ? 
+                      this.state.sendingTemplate ?
                       <div>
                         <div className="m-loader" style={{height: '10px', width: "30px", display: "inline-block"}}></div>
                         <span>Sending...</span>

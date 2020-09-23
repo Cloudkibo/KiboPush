@@ -9,6 +9,7 @@ import { connect } from 'react-redux'
 import AlertMessage from '../../components/alertMessages/alertMessage'
 import AlertMessageModal from '../../components/alertMessages/alertMessageModal'
 import YouTube from 'react-youtube'
+import AlertContainer from 'react-alert'
 
 class WelcomeMessage extends React.Component {
   constructor (props, context) {
@@ -38,9 +39,19 @@ class WelcomeMessage extends React.Component {
   }
   handleEnableWelMessage (pageId, enable) {
     if (enable === true) {
-      this.props.isWelcomeMessageEnabled({_id: pageId, isWelcomeMessageEnabled: true})
+      this.props.isWelcomeMessageEnabled({_id: pageId, isWelcomeMessageEnabled: true}, (res) => {
+        if (res.status !== 'success') {
+          let msg = res.description
+          this.msg.error(msg)
+        }
+      })
     } else {
-      this.props.isWelcomeMessageEnabled({_id: pageId, isWelcomeMessageEnabled: false})
+      this.props.isWelcomeMessageEnabled({_id: pageId, isWelcomeMessageEnabled: false}, (res) => {
+        if (res.status !== 'success') {
+          let msg = res.description
+          this.msg.error(msg)
+        }
+      })
     }
   }
   componentDidMount () {
@@ -94,9 +105,16 @@ class WelcomeMessage extends React.Component {
   }
 
   render () {
-    console.log('this.props.pages',this.props.pages)
+    var alertOptions = {
+      offset: 14,
+      position: 'bottom right',
+      theme: 'dark',
+      time: 5000,
+      transition: 'scale'
+    }
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+        <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div className='m-subheader '>
           <div className='d-flex align-items-center'>
             <div className='mr-auto'>
@@ -112,7 +130,7 @@ class WelcomeMessage extends React.Component {
                   <h5 className="modal-title" id="exampleModalLabel">
                     Welcome Messages Video Tutorial
 									</h5>
-                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" 
+                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal"
                   aria-label="Close"
                   onClick={() => {
                     this.setState({

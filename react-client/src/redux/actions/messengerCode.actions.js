@@ -38,7 +38,7 @@ export function deleteCode (id, msg) {
         msg.success('Messenger Ref URL has been deleted')
         dispatch(fetchCodes())
       } else {
-        msg.error('Failed to delete Messenger Ref URL')
+        msg.error(res.description || 'Failed to delete Messenger Ref URL')
       }
     })
   }
@@ -56,7 +56,7 @@ export function createCode (data, msg) {
        } else if (res.status !== 'success' && res.payload) {
          msg.error(res.payload)
        } else {
-         msg.error('Failed to save Messenger Code')
+         msg.error(res.description || 'Failed to save Messenger Code')
        }
      })
    }
@@ -100,7 +100,7 @@ export function editCode (data, msg) {
       } else if (res.status !== 'success' && res.payload) {
         msg.error(res.payload)
       } else {
-        msg.error('Failed to save Messenger Code')
+        msg.error(res.description || 'Failed to save Messenger Code')
       }
     })
   }
