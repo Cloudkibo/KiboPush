@@ -147,7 +147,8 @@ class MessageArea extends React.Component {
         uniqueId: `${this.props.block.uniqueId}`,
         title: this.props.block.title,
         chatbotId: this.props.chatbot.chatbotId,
-        payload: this.preparePayload(this.state)
+        payload: this.preparePayload(this.state),
+        options: this.state.options
       }
       console.log('data to save for message block', data)
       this.props.handleMessageBlock(data, (res) => this.afterNext(res, data, callback))
