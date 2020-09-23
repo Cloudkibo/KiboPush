@@ -165,7 +165,7 @@ class Sidebar extends React.Component {
               <div className='row'>
                 <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}} className='col-md-2'>
                   {
-                    this.props.currentBlock._id === this.props.chatbot.startingBlockId
+                    this.props.currentBlock.uniqueId === this.props.chatbot.startingBlockId
                     ? <i
                       style={{fontSize: '2rem', cursor: 'not-allowed'}}
                       data-tip='Back to parent'
