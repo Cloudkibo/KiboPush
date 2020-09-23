@@ -245,11 +245,6 @@ class Header extends React.Component {
     })
   }
 
-  // logout() {
-  //   this.props.updateShowIntegrations({ showIntegrations: true })
-  //   auth.logout()
-  // }
-
   UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.user) {
       this.setPlatform(nextProps.user)
