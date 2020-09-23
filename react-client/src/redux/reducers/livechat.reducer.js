@@ -137,9 +137,9 @@ export function liveChat(state = initialState, action) {
         closeSess[indexClose].lastDateTime = action.session.lastDateTime
         closeSess[indexClose].last_activity_time = action.session.last_activity_time
         if (action.session.lastRepliedBy) {
-          openSess[indexClose].lastRepliedBy = action.session.lastRepliedBy
+          closeSess[indexClose].lastRepliedBy = action.session.lastRepliedBy
         } else if (closeSess[indexClose].lastRepliedBy) {
-          openSess[indexClose].lastRepliedBy = null
+          closeSess[indexClose].lastRepliedBy = null
         }
       }
       return Object.assign({}, state, {
