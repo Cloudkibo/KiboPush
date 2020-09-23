@@ -216,11 +216,14 @@ export function markRead (sessionid) {
   }
 }
 
-export function sendChatMessage (data) {
+export function sendChatMessage (data, callback) {
   console.log('data for sendChatMessage', data)
   return (dispatch) => {
     callApi('smsChat', 'post', data)
       .then(res => {
+        if (callback) {
+          callback(res)
+        }
         console.log('response from sendChatMessage', res)
         // dispatch(fetchChat(data.contactId))
       })
@@ -239,8 +242,7 @@ export function changeStatus (data, handleActiveSession) {
   console.log('changeStatus called')
   return (dispatch) => {
     callApi('smsSessions/changeStatus', 'post', data).then(res => {
-      handleActiveSession()
+      handleActiveSession(changeStatus)
     })
   }
 }
-

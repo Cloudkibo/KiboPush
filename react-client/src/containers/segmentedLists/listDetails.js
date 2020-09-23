@@ -12,6 +12,7 @@ import { Link } from 'react-router-dom'
 import ReactPaginate from 'react-paginate'
 import fileDownload from 'js-file-download'
 import {localeCodeToEnglish} from '../../utility/utils'
+import AlertContainer from 'react-alert'
 var json2csv = require('json2csv')
 
 class ListDetails extends React.Component {
@@ -46,21 +47,25 @@ class ListDetails extends React.Component {
   }
 
   exportRecords () {
-    var data = this.prepareExportData()
-    var info = data
-    var keys = []
-    var val = info[0]
+    if (!this.props.superUser) {
+      var data = this.prepareExportData()
+      var info = data
+      var keys = []
+      var val = info[0]
 
-    for (var j in val) {
-      var subKey = j
-      keys.push(subKey)
-    }
-    json2csv({ data: info, fields: keys }, function (err, csv) {
-      if (err) {
-      } else {
-        fileDownload(csv, 'SegmentedList.csv')
+      for (var j in val) {
+        var subKey = j
+        keys.push(subKey)
       }
-    })
+      json2csv({ data: info, fields: keys }, function (err, csv) {
+        if (err) {
+        } else {
+          fileDownload(csv, 'SegmentedList.csv')
+        }
+      })
+    } else {
+      this.msg.error('You are not allowed to perform this action')
+    }
   }
 
   UNSAFE_componentWillReceiveProps (nextProps) {
@@ -124,8 +129,16 @@ class ListDetails extends React.Component {
   }
 
   render () {
+    var alertOptions = {
+      offset: 14,
+      position: 'top right',
+      theme: 'dark',
+      time: 5000,
+      transition: 'scale'
+    }
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+        <AlertContainer ref={a => this.msg = a} {...alertOptions} />
         <div className='m-content'>
           <div className='row'>
             <div className='col-xl-12 col-md-12 col-sm-12'>
@@ -309,7 +322,9 @@ function mapStateToProps (state) {
   return {
     pages: (state.pagesInfo.pages),
     listDetail: (state.listsInfo.listDetails),
-    currentList: (state.listsInfo.currentList)
+    currentList: (state.listsInfo.currentList),
+    user: (state.basicInfo.user),
+    superUser: (state.basicInfo.superUser)
   }
 }
 function mapDispatchToProps (dispatch) {

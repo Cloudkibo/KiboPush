@@ -76,29 +76,33 @@ class PostResult extends React.Component {
       }
     }
     if (this.props.currentPost.post_id && this.props.currentPost.post_id !== '') {
-      analytics['Post Link'] = `https://facebook.com/${this.props.currentPost.post_id}`  
+      analytics['Post Link'] = `https://facebook.com/${this.props.currentPost.post_id}`
     }
     data.push(analytics)
     return data
   }
 
   exportAnalytics () {
-    var data = this.prepareExportSummary()
-    var info = data
-    var keys = []
-    var val = info[0]
+    if (!this.props.superUser) {
+      var data = this.prepareExportSummary()
+      var info = data
+      var keys = []
+      var val = info[0]
 
-    for (var j in val) {
-      var subKey = j
-      keys.push(subKey)
-    }
-    json2csv({ data: info, fields: keys }, function (err, csv) {
-      if (err) {
-      } else {
-        console.log('call file download function')
-        fileDownload(csv, 'CommentCaptureAnalytics.csv')
+      for (var j in val) {
+        var subKey = j
+        keys.push(subKey)
       }
-    })
+      json2csv({ data: info, fields: keys }, function (err, csv) {
+        if (err) {
+        } else {
+          console.log('call file download function')
+          fileDownload(csv, 'CommentCaptureAnalytics.csv')
+        }
+      })
+    } else {
+      this.msg.error('You are not allowed to perform this action')
+    }
   }
 
   prepareExportComments (comments) {
@@ -110,7 +114,7 @@ class PostResult extends React.Component {
         commentObj['Sender Name'] = comments[i].senderName
         commentObj['Replies Count'] = comments[i].childCommentCount
         commentObj['Facebook Link'] = comments[i].postFbLink
-  
+
         for(var j=0; j < comments[i].commentPayload.length; j++) {
           if (comments[i].commentPayload[j].componentType === 'text') {
             contentComment.push(comments[i].commentPayload[j].text)
@@ -130,7 +134,7 @@ class PostResult extends React.Component {
               replyObj['Sender Name'] = comments[r].senderName
               replyObj['Replies Count'] = comments[r].childCommentCount
               replyObj['Facebook Link'] = comments[r].postFbLink
-        
+
               for(var k=0; k < comments[r].commentPayload.length; k++) {
                 if (comments[r].commentPayload[k].componentType === 'text') {
                   contentReply.push(comments[r].commentPayload[k].text)
@@ -151,31 +155,35 @@ class PostResult extends React.Component {
   }
 
   exportComments () {
-    this.props.fetchExportCommentsData({postId: this.props.currentPost._id},this.msg,(comments) => {
-    var data = this.prepareExportComments(comments)
-    var info = data
-    var keys = []
-    var val = info[0]
+    if (!this.props.superUser) {
+      this.props.fetchExportCommentsData({postId: this.props.currentPost._id},this.msg,(comments) => {
+      var data = this.prepareExportComments(comments)
+      var info = data
+      var keys = []
+      var val = info[0]
 
-    for (var j in val) {
-      var subKey = j
-      keys.push(subKey)
-    }
-    json2csv({ data: data, fields: keys}, function (err, csv) {
-      if (err) {
-      } else {
-        console.log('call file download function')
-        fileDownload(csv, 'CommentCaptureComments.csv')
+      for (var j in val) {
+        var subKey = j
+        keys.push(subKey)
       }
-    })
-    })
+      json2csv({ data: data, fields: keys}, function (err, csv) {
+        if (err) {
+        } else {
+          console.log('call file download function')
+          fileDownload(csv, 'CommentCaptureComments.csv')
+        }
+      })
+      })
+    } else {
+      this.msg.error('You are not allowed to perform this action')
+    }
   }
 
   handleClick() {
     // toggles the menu opened state
     this.setState({ isMenuOpened: !this.state.isMenuOpened });
   }
-  
+
   componentDidMount() {
     console.log('ComponentDidMount called in ', this.props.currentPost)
     let conversions = this.props.currentPost.conversionCount
@@ -243,7 +251,7 @@ class PostResult extends React.Component {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         { this.state.showOffCanvas &&
-          <FilterComments 
+          <FilterComments
             toggleOffCanvas={this.toggleOffCanvas}
           />
         }
@@ -269,10 +277,10 @@ class PostResult extends React.Component {
               <div className='row'>
                 <div className='col-md-6 col-lg-7 col-sm-4'>
                   { this.state.captureType !== 'Any Post' &&
-                  <PostBox 
-                    post={this.props.postContent ? this.props.postContent: {}} 
-                    page={this.state.page} />               
-                  }	  
+                  <PostBox
+                    post={this.props.postContent ? this.props.postContent: {}}
+                    page={this.state.page} />
+                  }
                   <div className='m-widget1' style={{paddingTop: '1.2rem'}}>
                     {this.state.captureType === 'Any Post' && <div className='m-widget1__item'>
                       <div className='row m-row--no-padding align-items-center'>
@@ -337,12 +345,12 @@ class PostResult extends React.Component {
                 </div>
               </div>
             </div>
-            {this.state.captureType !== 'Any Post' 
-            ? <Comments 
-                comments={this.props.comments ? this.props.comments: []} 
+            {this.state.captureType !== 'Any Post'
+            ? <Comments
+                comments={this.props.comments ? this.props.comments: []}
                 toggleOffCanvas={this.toggleOffCanvas} />
-            : <GlobalPosts 
-                globalPosts={this.props.globalPosts ? this.props.globalPosts: []} 
+            : <GlobalPosts
+                globalPosts={this.props.globalPosts ? this.props.globalPosts: []}
                 toggleOffCanvas={this.toggleOffCanvas} />
             }
             <div className='row'>
@@ -382,7 +390,9 @@ function mapStateToProps(state) {
     currentPost: (state.postsInfo.currentPost),
     allPostsAnalytics: (state.postsInfo.allPostsAnalytics),
 	  pages: (state.pagesInfo.pages),
-	  globalPosts: (state.postsInfo.globalPosts)
+	  globalPosts: (state.postsInfo.globalPosts),
+    user: (state.basicInfo.user),
+    superUser: (state.basicInfo.superUser)
     }
   }
 function mapDispatchToProps(dispatch) {
