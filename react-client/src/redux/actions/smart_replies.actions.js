@@ -119,7 +119,7 @@ export function createBot (data, msg, cb) {
         if (res.status === 'success') {
           dispatch(showCreatedBot(res.payload))
         } else {
-          msg.error(res.payload)
+          msg.error(res.description || res.payload)
         }
         cb(res)
       })
@@ -135,19 +135,21 @@ export function editBot (data, msg, cb) {
           dispatch(loadBotsList())
           msg.success(res.payload)
         } else {
-          msg.error(res.payload)
+          msg.error(res.description || res.payload)
         }
         cb(res.status)
       })
   }
 }
 
-export function updateStatus (data) {
+export function updateStatus (data, msg) {
   return (dispatch) => {
     callApi('bots/edit', 'post', data)
       .then(res => {
         if (res.status === 'success') {
           dispatch(loadBotsList())
+        } else {
+          msg.error(res.description || 'Failed to update status')
         }
       })
   }
@@ -163,7 +165,7 @@ export function deleteBot (id, password, msg, cb) {
           msg.success('Bot deleted successfully')
         }
          else {
-          msg.error(res.payload)
+          msg.error(res.description || res.payload)
          }
          cb(res.status)
       })

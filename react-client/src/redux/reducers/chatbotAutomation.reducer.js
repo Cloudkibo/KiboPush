@@ -4,9 +4,9 @@ const initialState = {
   chatbots: null
 }
 
-export function chatbotsInfo (state = initialState, action) {
+export function chatbotAutomationInfo (state = initialState, action) {
   switch (action.type) {
-    case ActionTypes.SHOW_CHATBOTS:
+    case ActionTypes.SHOW_CHATBOT_AUTOMATION:
       return Object.assign({}, state, {
         chatbots: action.data
       })

@@ -210,7 +210,7 @@ class EditBot extends React.Component {
     }
     console.log('this.state.payload', this.state.payload)
     this.props.editBot({botId: this.state.id, payload: this.state.payload}, this.msg)
-    this.props.updateStatus({botId: this.state.id, isActive: this.state.isActive})
+    this.props.updateStatus({botId: this.state.id, isActive: this.state.isActive}, this.msg)
     this.msg.success('Bot updated successfully')
   }
 

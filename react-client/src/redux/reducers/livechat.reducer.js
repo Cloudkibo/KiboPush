@@ -7,10 +7,12 @@ const initialState = {
 }
 
 export function liveChat(state = initialState, action) {
+  let openSessions = null
+  let closeSessions = null
   switch (action.type) {
     case ActionTypes.UPDATE_SESSION_PROFILE_PICTURE:
-      let openSessions = state.openSessions
-      let closeSessions = state.closeSessions
+      openSessions = state.openSessions
+      closeSessions = state.closeSessions
       let openIndex = openSessions.findIndex(s => s._id === action.subscriber._id)
       if (openIndex > -1) {
         openSessions[openIndex].profilePic = action.profilePic
@@ -296,6 +298,34 @@ export function liveChat(state = initialState, action) {
       return Object.assign({}, state, {
         userChat: undefined,
         chatCount: 0
+      })
+    case ActionTypes.UNSUBSCRIBE_SUBSCRIBER:
+      debugger
+      openSessions = state.openSessions
+      closeSessions = state.closeSessions
+      let openCount = state.openCount
+      let closeCount = state.closeCount
+
+      for (let i = openSessions.length - 1; i >= 0; i--) {
+        if (openSessions[i]._id === action.data.subscriberId) {
+          openSessions.splice(i, 1)
+          openCount -= 1
+          break
+        }
+      }
+      for (let i = closeSessions.length - 1; i >= 0; i--) {
+        if (closeSessions[i]._id === action.data.subscriberId) {
+          closeSessions.splice(i, 1)
+          closeCount -= 1
+          break
+        }
+      }
+      return Object.assign({}, state, {
+        openSessions,
+        closeSessions,
+        openCount,
+        closeCount,
+        activeSession: ''
       })
     default:
       return state

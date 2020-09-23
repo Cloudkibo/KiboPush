@@ -273,7 +273,7 @@ class MessageArea extends React.Component {
       }
       this.props.updateParentState({blocks, sidebarItems, currentBlock: blocks[0]})
     } else {
-      this.props.alertMsg.error('Failed to delete message block')
+      this.props.alertMsg.error(res.description || 'Failed to delete message block')
     }
   }
 
