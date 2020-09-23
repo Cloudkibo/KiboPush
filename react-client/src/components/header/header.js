@@ -14,7 +14,6 @@ import {
   logout
 } from '../../redux/actions/basicinfo.actions'
 import { fetchNotifications, markRead } from '../../redux/actions/notifications.actions'
-import auth from '../../utility/auth.service'
 
 // Components
 import HEADERMENU from './headerMenu'
@@ -160,7 +159,6 @@ class Header extends React.Component {
   }
   logout() {
     this.props.updateShowIntegrations({ showIntegrations: true })
-    // auth.logout()
   }
   showDropDown() {
     console.log('showDropDown')
@@ -236,11 +234,6 @@ class Header extends React.Component {
       pathname: '/settings',
       state: {tab: 'notificationSettings'}
     })
-  }
-
-  logout() {
-    this.props.updateShowIntegrations({ showIntegrations: true })
-    auth.logout()
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {

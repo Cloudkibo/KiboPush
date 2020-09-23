@@ -1,6 +1,6 @@
 import { getAccountsUrl } from '../../utility/utils'
 import auth from '../../utility/auth.service'
-// import callApi from '../../utility/api.caller.service'
+import callApi from '../../utility/api.caller.service'
 
 export function uploadAttachment(filedata, handleFunction) {
   return (dispatch) => {
@@ -20,6 +20,10 @@ export function uploadAttachment(filedata, handleFunction) {
 
 export function handleAttachment(data, callback) {
   return (dispatch) => {
-
+    callApi(`attachment/handleUrl`, 'post', data)
+      .then(res => {
+        console.log('response from handleAttachment', res)
+        callback(res)
+      })
   }
 }

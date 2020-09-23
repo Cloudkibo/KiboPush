@@ -91,7 +91,7 @@ class ChatbotAutomation extends React.Component {
       const page = this.props.pages.find((item) => item._id === this.state[type].selectedPage)
       if (type === 'manualChatbot') {
         const shopifyChatbots = this.props.chatbots && this.props.chatbots.filter(chatbot => chatbot.type === 'automated' && chatbot.vertical === 'commerce')
-        const existingChatbot = shopifyChatbots.find(c => c.pageId._id == chatbot.pageId._id)
+        const existingChatbot = shopifyChatbots.find(c => c.pageId._id === chatbot.pageId._id)
         chatbot.pageFbId = pageFbId
         chatbot.startingBlockId = chatbot.startingBlockId || 'welcome-id'
         this.props.history.push({
@@ -100,7 +100,7 @@ class ChatbotAutomation extends React.Component {
         })
       } else if (type === 'shopifyChatbot') {
         const manualChatbots = this.props.chatbots && this.props.chatbots.filter(chatbot => chatbot.type === 'manual')
-        const existingChatbot = manualChatbots.find(c => c.pageId._id == chatbot.pageId._id)
+        const existingChatbot = manualChatbots.find(c => c.pageId._id === chatbot.pageId._id)
         this.props.history.push({
           pathname: '/configureShopifyChatbot',
           state: { chatbot, page, store: this.props.store, existingChatbot }
