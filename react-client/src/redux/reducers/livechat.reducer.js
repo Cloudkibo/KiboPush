@@ -300,7 +300,6 @@ export function liveChat(state = initialState, action) {
         chatCount: 0
       })
     case ActionTypes.UNSUBSCRIBE_SUBSCRIBER:
-      debugger
       openSessions = state.openSessions
       closeSessions = state.closeSessions
       let openCount = state.openCount
