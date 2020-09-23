@@ -150,21 +150,16 @@ class MessageArea extends React.Component {
         updateStartingBlockId: (this.props.block._id === 'welcome-id'),
         payload: this.preparePayload(this.state)
       }
-      const dataToShow = data
-      dataToShow.stats = this.props.block.stats
       console.log('data to save for message block', data)
       // this.props.handleMessageBlock(data, (res) => this.afterNext(res, dataToShow, callback))
-      this.afterNext({status: 'success'}, dataToShow, callback)
+      this.afterNext({status: 'success'}, data, callback)
     }
   }
 
   afterNext (res, data, callback) {
     if (res.status === 'success') {
       this.props.alertMsg.success('Saved successfully!')
-      let blocks = [...this.props.blocks, data]
-      const completed = blocks.filter((item) => item.payload.length > 0).length
-      const progress = Math.floor((completed / blocks.length) * 100)
-      this.props.updateParentState({blocks, progress, unsavedChanges: false})
+      this.props.updateParentState({unsavedChanges: false})
     } else {
       this.props.alertMsg.error(res.description)
     }
@@ -352,7 +347,6 @@ class MessageArea extends React.Component {
   }
 
   render () {
-    console.log('this.props.block', this.props.block)
     return (
       <div style={{border: '1px solid #ccc', backgroundColor: 'white', padding: '0px'}} className='col-md-9'>
         <div style={{margin: '0px', height: '70vh', overflow: 'hidden', display: 'flex', flexDirection: 'column'}} className='m-portlet m-portlet-mobile'>
