@@ -248,7 +248,7 @@ class AddPage extends React.Component {
                           <div className='m-widget4__ext'>
                             {(page.connected) &&
 
-                              <div onClick={() => this.props.removePageInAddPage(page)} className='m-widget4__icon'>
+                              <div onClick={() => this.props.removePageInAddPage(page, this.msg)} className='m-widget4__icon'>
                                 <button type='button' className='btn m-btn--pill btn-danger btn-sm m-btn m-btn--custom'>Disconnect</button>
                               </div>
                             }

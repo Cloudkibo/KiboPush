@@ -9,6 +9,7 @@ import { connect } from 'react-redux'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
 import { bindActionCreators } from 'redux'
 import YouTube from 'react-youtube'
+import AlertContainer from 'react-alert'
 
 class InviteSubscribers extends React.Component {
   constructor(props, context) {
@@ -100,8 +101,16 @@ class InviteSubscribers extends React.Component {
   }
 
   render() {
+    var alertOptions = {
+      offset: 14,
+      position: 'top right',
+      theme: 'dark',
+      time: 5000,
+      transition: 'scale'
+    }
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+      <AlertContainer ref={a => this.msg = a} {...alertOptions} />
       <a href='#/' style={{ display: 'none' }} ref='videoInviteSubscriber' data-toggle='modal' data-backdrop='static' data-keyboard='false' data-target="#videoInviteSubscriber">InviteSubscribers</a>
         <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="videoInviteSubscriber" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog modal-lg" role="document">
@@ -110,7 +119,7 @@ class InviteSubscribers extends React.Component {
                 <h5 className="modal-title" id="exampleModalLabel">
                   Invite Subscribers Video Tutorial
 									</h5>
-                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" 
+                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal"
                 aria-label="Close"
                 onClick={() => {
                   this.setState({
@@ -202,10 +211,18 @@ class InviteSubscribers extends React.Component {
                           </div>
                         </div>
                         <div className='m--space-30' />
-                        <a style={{ marginLeft: '30px' }} rel='noopener noreferrer' className='btn btn-primary' target='_blank' href={this.getlink()}>
+                        <button style={{ marginLeft: '30px'}} className='btn btn-primary'
+                          onClick={(e) => {
+                            e.preventDefault()
+                            if (this.props.superUser) {
+                              this.msg.error('You are not allowed to perform this action')
+                            } else {
+                              window.open(this.getlink(), '_blank')
+                            }
+                          }}>
                           <i className='fa fa-facebook' style={{ marginRight: '10px' }} />
                           <span>Share Page</span>
-                        </a>
+                        </button>
                       </div>
                     </form>
                   </div>
@@ -275,7 +292,9 @@ class InviteSubscribers extends React.Component {
 
 function mapStateToProps(state) {
   return {
-    pages: (state.pagesInfo.pages)
+    pages: (state.pagesInfo.pages),
+    user: (state.basicInfo.user),
+    superUser: (state.basicInfo.superUser)
   }
 }
 

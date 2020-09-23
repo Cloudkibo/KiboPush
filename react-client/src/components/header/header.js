@@ -13,8 +13,11 @@ import {
   disconnectFacebook,
   logout
 } from '../../redux/actions/basicinfo.actions'
+import {
+  setUsersView
+} from '../../redux/actions/backdoor.actions'
 import { fetchNotifications, markRead } from '../../redux/actions/notifications.actions'
-import auth from '../../utility/auth.service'
+import AlertContainer from 'react-alert'
 
 // Components
 import HEADERMENU from './headerMenu'
@@ -271,7 +274,13 @@ class Header extends React.Component {
 
 
   render() {
-    console.log('headerMenu render', this.props)
+    var alertOptions = {
+      offset: 75,
+      position: 'bottom right',
+      theme: 'dark',
+      time: 5000,
+      transition: 'scale'
+    }
     const {
       skin,
       showToggleSidebar,
@@ -289,6 +298,7 @@ class Header extends React.Component {
                     KIBOPUSH
                   </h4>
                 </div>
+                <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
                 <div className='m-stack__item m-stack__item--middle m-brand__tools'>
                   {
                     showToggleSidebar &&
@@ -336,6 +346,7 @@ class Header extends React.Component {
                 showDocumentation={this.props.showDocumentation}
                 user={this.props.user}
                 userView={this.props.userView}
+                superUser={this.props.superUser}
                 notifications={this.props.notifications}
                 seenNotifications={this.state.seenNotifications}
                 unseenNotifications={this.state.unseenNotifications}
@@ -345,6 +356,7 @@ class Header extends React.Component {
                 otherPages={this.props.otherPages}
                 updatePicture={this.props.updatePicture}
                 logout={this.props.logout}
+                setUsersView={this.props.setUsersView}
               />
             </div>
           </div>
@@ -408,6 +420,7 @@ Header.propTypes = {
 function mapStateToProps(state) {
   return {
     user: (state.basicInfo.user),
+    superUser: (state.basicInfo.superUser),
     automated_options: (state.basicInfo.automated_options),
     userView: (state.backdoorInfo.userView),
     notifications: (state.notificationsInfo.notifications),
@@ -425,7 +438,8 @@ function mapDispatchToProps(dispatch) {
     updatePicture,
     updateShowIntegrations,
     disconnectFacebook,
-    logout
+    logout,
+    setUsersView
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Header)
