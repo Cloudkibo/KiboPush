@@ -167,12 +167,16 @@ class MessageArea extends React.Component {
 
   afterNext (res, data, callback) {
     if (res.status === 'success') {
+      let chatbot = this.props.chatbot
       this.props.alertMsg.success('Saved successfully!')
       let blocks = this.props.blocks
       const index = blocks.findIndex((item) => item.uniqueId.toString() === data.uniqueId.toString())
       if (index !== -1) {
         const deletedItem = blocks.splice(index, 1)
         if (res.payload.upserted && res.payload.upserted.length > 0) {
+       if(chatbot.startingBlockId === 'welcome-id') {
+          chatbot.startingBlockId = res.payload.upserted[0]._id
+       }
           data._id = res.payload.upserted[0]._id
         } else {
           data._id = deletedItem[0]._id
@@ -181,7 +185,7 @@ class MessageArea extends React.Component {
       blocks = [...blocks, data]
       const completed = blocks.filter((item) => item.payload.length > 0).length
       const progress = Math.floor((completed / blocks.length) * 100)
-      this.props.updateParentState({blocks, progress, unsavedChanges: false})
+      this.props.updateParentState({blocks, chatbot, progress, unsavedChanges: false})
     } else {
       this.props.alertMsg.error(res.description)
     }
@@ -294,6 +298,11 @@ class MessageArea extends React.Component {
     } else if (['Back', 'Home'].includes(title)) {
       this.props.alertMsg.error(`Child name ${title} is not allowed. Please enter a different name.`)
     } else {
+      // let chatbot = this.props.chatbot
+      // if(chatbot.startingBlockId === 'welcome-id') {
+      //   chatbot.startingBlockId
+      // }
+      console.log('this.props.blocks before', this.props.blocks)
       const currentBlock = this.props.block
       const options = this.state.quickReplies
       const id = new Date().getTime()
@@ -316,6 +325,7 @@ class MessageArea extends React.Component {
       } else {
         currentBlock.payload.push({quickReplies: options})
       }
+      console.log('this.props.blocks after', blocks)
       this.props.updateParentState({
         blocks,
         currentBlock,
@@ -338,6 +348,7 @@ class MessageArea extends React.Component {
       } else {
         uniqueId = this.props.blocks.find((item) => item._id === this.props.chatbot.startingBlockId).uniqueId
       }
+      console.log('uniqueId', uniqueId)
       let quickReplies = this.state.quickReplies
       quickReplies.push({
         content_type: 'text',
@@ -346,6 +357,7 @@ class MessageArea extends React.Component {
       })
 
       const currentBlock = this.props.block
+      
       if (currentBlock.payload.length > 0) {
         currentBlock.payload[currentBlock.payload.length - 1].quickReplies = quickReplies
       } else {

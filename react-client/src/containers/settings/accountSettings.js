@@ -3,14 +3,14 @@
  */
 
 import React from 'react'
-import { changePass } from '../../redux/actions/settings.actions'
+import { changePass, enable2FA, disable2FA, verify2FAToken } from '../../redux/actions/settings.actions'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import AlertContainer from 'react-alert'
 import Progress from 'react-progressbar'
 var taiPasswordStrength = require('tai-password-strength')
 var strengthTester = new taiPasswordStrength.PasswordStrength()
-class ResetPassword extends React.Component {
+class AccountSettings extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
@@ -20,12 +20,37 @@ class ResetPassword extends React.Component {
       pwd_color: 'red',
       ismatch: false,
       pwdlength: true,
-      changePassword: false
+      changePassword: false,
+      tfaSwitch: this.props.user.tfaEnabled
     }
     this.save = this.save.bind(this)
     this.equal = this.equal.bind(this)
     this.handlePwdChange = this.handlePwdChange.bind(this)
     this.onCurrentPassChange = this.onCurrentPassChange.bind(this)
+    this.onToggle2FASwitch = this.onToggle2FASwitch.bind(this)
+    this.verifyOtp = this.verifyOtp.bind(this)
+    this.cancel2FA = this.cancel2FA.bind(this)
+  }
+  onToggle2FASwitch (e) {
+    const data = {
+      tfaEnabled: e.target.checked
+    }
+    let user = this.props.user
+    user.tfaEnabled = e.target.checked
+    this.setState({tfaSwitch: e.target.checked})
+    if (e.target.checked) {
+      this.props.enable2FA(data)
+    } else {
+      this.props.disable2FA(data)
+    }
+  }
+  verifyOtp(event) {
+    event.preventDefault()
+    this.props.verify2FAToken({token: this.refs.otp.value}, this.msg)
+  }
+  cancel2FA(event) {
+    event.preventDefault()
+    this.props.disable2FA()
   }
   equal () {
     if (this.refs.new.value === this.refs.retype.value) {
@@ -108,6 +133,11 @@ class ResetPassword extends React.Component {
     document.title = 'KiboPush | api_settings'
   }
   UNSAFE_componentWillReceiveProps (nextProps) {
+    if (nextProps.user) {
+      this.setState({
+        tfaSwitch: nextProps.user.tfaEnabled
+      })
+    }
   }
   render () {
     var alertOptions = {
@@ -127,7 +157,7 @@ class ResetPassword extends React.Component {
                 <li className='nav-item m-tabs__item'>
                   <span className='nav-link m-tabs__link active'>
                     <i className='flaticon-share m--hide' />
-                    Change Password
+                    Account Settings
                   </span>
                 </li>
               </ul>
@@ -142,9 +172,13 @@ class ResetPassword extends React.Component {
                       The example form below demonstrates common HTML form elements that receive updated styles from Bootstrap with additional classNamees.
                     </div>
                   </div>
-                  <br /><br />
                   <div className='form-group m-form__group row'>
-                    <label className='col-4 col-form-label' style={{textAlign: 'left'}}>Current Password</label>
+                    <h4>Reset Password</h4>
+                  </div>
+                  <div className='form-group m-form__group row'>
+                    <label className='col-4 col-form-label' style={{textAlign: 'left'}}>
+                      Current Password
+                    </label>
                     <div className='col-7 input-group'>
                       <input className='form-control m-input' required type='password' ref='current' onChange={this.onCurrentPassChange} />
                     </div>
@@ -180,11 +214,54 @@ class ResetPassword extends React.Component {
                     { this.state.password && this.state.changePassword &&
                       <div className='col-7 input-group' style={{color: 'red'}}>New password cannot be same as current password</div>
                     }
-                    {console.log('this.refs', this.refs.current)}
                     <div className='col-11 input-group pull-right'>
                       <button className='btn btn-primary pull-right' disabled={!this.refs.current || !this.refs.new || !this.refs.retype || this.refs.current.value === '' || this.refs.new.value === '' || this.refs.retype.value === '' || this.state.changePassword || !this.state.ismatch || !this.state.pwdlength} onClick={this.save}>Save</button>
                     </div>
                   </div>
+                  <div className='form-group m-form__group row'>
+                    <h4>Account Security</h4>
+                  </div>
+                  <div className='m-form__group form-group row'>
+                    <span className='col-9 col-form-label'>
+                      2-Factor Authentication (You need to have authenticator app like Google Authenticator for this)
+                    </span>
+                    <div className='col-3'>
+                      <span className='m-switch m-switch--outline m-switch--icon m-switch--success'>
+                        <label>
+                          <input type='checkbox' data-switch='true'
+                            checked={this.state.tfaSwitch}
+                            onChange={(e) => {this.onToggle2FASwitch(e)}} />
+                          <span></span>
+                        </label>
+                      </span>
+                    </div>
+                  </div>
+                  {this.props.user && this.props.user.tfa && this.props.user.tfa.secret === '' &&
+                  <center>
+                    <div className='m-form__group form-group row'>
+                      <span className='col-12 col-form-label'>
+                        <img src={this.props.user.tfa.dataURL} />
+                      </span>
+                    </div>
+                    <p>
+                      Scan this QR code in your 2 Factor Authenticator app and put the code in following box.
+                    </p>
+                    <div className='m-form__group form-group row'>
+                      <span className='col-12 col-form-label'>
+                        <input className='form-control m-input' required type='text' ref='otp' />
+                      </span>
+                    </div>
+                    <div className='m-form__group form-group row'>
+                      <span className='col-6 col-form-label'></span>
+                      <span className='col-3 col-form-label'>
+                        <button className='btn btn-secondary' onClick={this.cancel2FA}>Cancel 2FA Setup</button>
+                      </span>
+                      <span className='col-3 col-form-label'>
+                        <button className='btn btn-primary' onClick={this.verifyOtp}>Verify OTP</button>
+                      </span>
+                    </div>
+                  </center>
+                  }
                 </div>
               </form>
             </div>
@@ -196,14 +273,16 @@ class ResetPassword extends React.Component {
 }
 function mapStateToProps (state) {
   return {
-    // changeSuccess: (state.settingsInfo.changeSuccess),
-    // changeFailure: (state.settingsInfo.changeFailure)
+    user: (state.basicInfo.user)
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-    changePass: changePass
+    changePass: changePass,
+    enable2FA: enable2FA,
+    disable2FA: disable2FA,
+    verify2FAToken: verify2FAToken
   }, dispatch)
 }
-export default connect(mapStateToProps, mapDispatchToProps)(ResetPassword)
+export default connect(mapStateToProps, mapDispatchToProps)(AccountSettings)
