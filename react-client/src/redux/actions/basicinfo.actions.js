@@ -94,7 +94,13 @@ export function getuserdetails (joinRoom) {
       if (res.status === 'Unauthorized') {
         auth.logout()
       } else {
-        if (joinRoom) joinRoom(res.payload.user.companyId)
+        if (joinRoom) {
+          if (res.payload.user && res.payload.user.companyId) {
+            joinRoom(res.payload.user.companyId)
+          } else {
+            joinRoom(res.payload.companyId)
+          }
+        }
         dispatch(showuserdetails(res.payload))
       }
     })
