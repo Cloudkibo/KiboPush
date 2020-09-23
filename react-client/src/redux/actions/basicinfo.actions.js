@@ -236,7 +236,7 @@ export function disconnectFacebook (callback) {
         console.log('Failed to update show integrations!')
       }
       if (callback) {
-        callback()
+        callback(res)
       }
     })
   }

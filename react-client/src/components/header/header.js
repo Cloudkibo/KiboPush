@@ -158,9 +158,13 @@ class Header extends React.Component {
     // e.target.src = 'https://emblemsbf.com/img/27447.jpg'
     this.props.updatePicture({ user: this.props.user })
   }
-  logout() {
-    this.props.updateShowIntegrations({ showIntegrations: true })
-    // auth.logout()
+  logout(res) {
+    if (res.status === 'success') {
+      this.props.updateShowIntegrations({ showIntegrations: true })
+      // auth.logout()
+    } else {
+      this.msg.error(res.description || 'Failed to disconnect Facebook')
+    }
   }
   showDropDown() {
     console.log('showDropDown')
@@ -236,11 +240,6 @@ class Header extends React.Component {
       pathname: '/settings',
       state: {tab: 'notificationSettings'}
     })
-  }
-
-  logout() {
-    this.props.updateShowIntegrations({ showIntegrations: true })
-    auth.logout()
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
