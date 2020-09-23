@@ -6,7 +6,7 @@ import {
   handleMessageBlock,
   updateChatbot,
   deleteMessageBlock,
-} from '../../redux/actions/chatbotAutomation.actions'
+} from '../../redux/actions/chatbot.actions'
 import { uploadAttachment, handleAttachment } from '../../redux/actions/attachment.actions'
 import { Prompt } from 'react-router'
 import AlertContainer from 'react-alert'
