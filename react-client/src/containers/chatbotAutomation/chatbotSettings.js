@@ -150,9 +150,7 @@ class ChatbotSettings extends React.Component {
     if (res.status === 'success') {
       this.msg.success('Settings saved successfully!')
     } else {
-      res.description && res.description !== ''
-      ? this.msg.error(res.description)
-      : this.msg.error('Failed to save settings!')
+      this.msg.error(res.description || 'Failed to save settings!')
     }
   }
 

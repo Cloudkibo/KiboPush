@@ -73,8 +73,9 @@ class ActingAsUser extends React.Component {
 }
 
 ActingAsUser.propTypes = {
-  'getActingAsUserName': PropTypes.func.isRequired,
-  'removeActingAsUser': PropTypes.func.isRequired
+  'setUsersView': PropTypes.func.isRequired,
+  'actingAsUserEmail': PropTypes.string.isRequired,
+  'actingAsUserName': PropTypes.string.isRequired
 }
 
 export default ActingAsUser
