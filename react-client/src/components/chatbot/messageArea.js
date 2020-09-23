@@ -158,7 +158,7 @@ class MessageArea extends React.Component {
     if (res.status === 'success') {
       this.props.alertMsg.success('Saved successfully!')
       const completed = this.props.blocks.filter((item) => item.payload.length > 0).length
-      const progress = Math.floor((completed / blocks.length) * 100)
+      const progress = Math.floor((completed / this.props.blocks.length) * 100)
       this.props.updateParentState({progress, unsavedChanges: false})
     } else {
       this.props.alertMsg.error(res.description)
