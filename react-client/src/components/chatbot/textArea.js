@@ -20,7 +20,6 @@ class TextArea extends React.Component {
     this.getPicker = this.getPicker.bind(this)
     this.setEmoji = this.setEmoji.bind(this)
     this.openPicker = this.openPicker.bind(this)
-    this.appendUserName = this.appendUserName.bind(this)
   }
 
 
