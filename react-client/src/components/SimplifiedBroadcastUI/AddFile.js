@@ -138,7 +138,7 @@ class File extends React.Component {
           {
             this.state.loading
             ? <div className='align-center'><center><RingLoader color='#FF5E3A' /></center></div>
-            : 
+            :
               <Files
                 className='files-dropzone'
                 onChange={this.onFilesChange}
@@ -149,7 +149,7 @@ class File extends React.Component {
                 clickable>
               <div className='align-center' style={{padding: '5px'}}>
                 <img src='https://cdn.cloudkibo.com/public/icons/file.png' alt='Text' style={{pointerEvents: 'none', zIndex: -1, maxHeight: 40}} />
-                <h4 style={{pointerEvents: 'none', zIndex: -1, marginLeft: '10px', display: 'inline'}}>{this.state.file !== '' ? this.state.file.name : 'File'}</h4>
+                <h4 style={{pointerEvents: 'none', zIndex: -1, marginLeft: '10px', display: 'inline', wordBreak: 'break-all'}}>{this.state.file !== '' ? this.state.file.name : 'File'}</h4>
               </div>
             </Files>
           }

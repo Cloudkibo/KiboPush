@@ -407,10 +407,12 @@ export function searchChat(data) {
   }
 }
 
-export function sendChatMessage(data, fetchOpenSessions) {
+
+export function sendChatMessage (data, cb) {
   return (dispatch) => {
     callApi('livechat/', 'post', data).then(res => {
       console.log('response from sendChatMessage', res)
+      if (cb) cb(res)
       // dispatch(fetchSessions())
       //fetchOpenSessions({first_page: true, last_id: 'none', number_of_records: 10, filter: false, filter_criteria: {sort_value: -1, page_value: '', search_value: ''}})
     })
@@ -461,7 +463,7 @@ export function changeStatus(data, handleActiveSession) {
   console.log('changeStatus called')
   return (dispatch) => {
     callApi('sessions/changeStatus', 'post', data).then(res => {
-      handleActiveSession()
+      handleActiveSession(res)
     })
   }
 }

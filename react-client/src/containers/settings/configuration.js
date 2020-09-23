@@ -117,7 +117,7 @@ class Configuration extends React.Component {
       this.refs.disconnectWhatsApp.click()
       this.msg.success(res.payload)
     } else {
-      this.msg.error(res.payload)
+      this.msg.error(res.description || res.payload)
     }
   }
 
@@ -158,7 +158,7 @@ class Configuration extends React.Component {
   }
 
   disconnect() {
-    this.props.disconnect({ type: this.state.type })
+    this.props.disconnect({ type: this.state.type }, this.msg)
   }
 
   updateSID(e) {
@@ -350,7 +350,11 @@ class Configuration extends React.Component {
                 <button style={{ float: 'right' }}
                   className='btn btn-primary btn-sm'
                   onClick={() => {
-                    this.props.disconnectFacebook()
+                    this.props.disconnectFacebook((res) => {
+                      if (res.status !== 'success') {
+                        this.msg.error(res.description || 'Failed to disconnect Facebook')
+                      }
+                    })
                     // this.logout()
                   }} data-dismiss='modal'>Yes
                   </button>

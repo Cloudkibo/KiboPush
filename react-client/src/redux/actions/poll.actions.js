@@ -144,11 +144,12 @@ export function sendPollDirectly (poll, msg) {
     )
   }
 }
-export function addPoll (token, data) {
+export function addPoll (token, data, cb) {
   return (dispatch) => {
     callApi('polls/create', 'post', data)
       .then(res => {
         console.log('create poll response', res)
+        if (cb) cb(res)
         if (res.status === 'success') {
           dispatch(createPoll(res.payload))
         } else {

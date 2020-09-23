@@ -9,6 +9,7 @@ import { loadsurveyresponses } from '../../redux/actions/surveys.actions'
 import Response from './Response'
 import json2csv from 'json2csv'
 import fileDownload from 'js-file-download'
+import AlertContainer from 'react-alert'
 
 var responseData = []
 class SurveyResult extends React.Component {
@@ -90,44 +91,53 @@ class SurveyResult extends React.Component {
     return temp
   }
   getFile () {
-    console.log('this.props.responses', this.props.responses)
-    console.log('this.props.responses', this.props.questions)
-    let usersPayload = []
-    for (let i = 0; i < this.props.responses.length; i++) {
-      var jsonStructure = {}
-      if (this.exists(this.props.responses[i].subscriberId._id) === false) {
-        var temp = this.sortData(this.props.responses[i].subscriberId._id)
-        // for (let l = 0; l < this.props.pages.length; l++) {
-        //   if (this.props.responses[i].subscriberId.pageId === this.props.pages[l]._id) {
-        //     jsonStructure.PageName = this.props.pages[l].pageName
-        //   }
-        // }
-        jsonStructure.PageName = this.props.responses[i].subscriberId.pageId.pageName
-        jsonStructure['SubscriberName'] = this.props.responses[i].subscriberId.firstName + ' ' + this.props.responses[i].subscriberId.lastName
-        for (var k = 0; k < temp.q1.length; k++) {
-          jsonStructure['Q' + (k + 1)] = temp.statement[k]
-          jsonStructure['Response' + (k + 1)] = temp.q1[k]
+    if (!this.props.superUser) {
+      let usersPayload = []
+      for (let i = 0; i < this.props.responses.length; i++) {
+        var jsonStructure = {}
+        if (this.exists(this.props.responses[i].subscriberId._id) === false) {
+          var temp = this.sortData(this.props.responses[i].subscriberId._id)
+          // for (let l = 0; l < this.props.pages.length; l++) {
+          //   if (this.props.responses[i].subscriberId.pageId === this.props.pages[l]._id) {
+          //     jsonStructure.PageName = this.props.pages[l].pageName
+          //   }
+          // }
+          jsonStructure.PageName = this.props.responses[i].subscriberId.pageId.pageName
+          jsonStructure['SubscriberName'] = this.props.responses[i].subscriberId.firstName + ' ' + this.props.responses[i].subscriberId.lastName
+          for (var k = 0; k < temp.q1.length; k++) {
+            jsonStructure['Q' + (k + 1)] = temp.statement[k]
+            jsonStructure['Response' + (k + 1)] = temp.q1[k]
+          }
+          jsonStructure['DateTime'] = this.props.responses[i].datetime
+          jsonStructure['SurveyId'] = this.props.responses[i].surveyId
+          jsonStructure['PageId'] = this.props.responses[i].subscriberId.pageId._id
+          jsonStructure['SubscriberId'] = this.props.responses[i].subscriberId._id
+          usersPayload.push(jsonStructure)
         }
-        jsonStructure['DateTime'] = this.props.responses[i].datetime
-        jsonStructure['SurveyId'] = this.props.responses[i].surveyId
-        jsonStructure['PageId'] = this.props.responses[i].subscriberId.pageId._id
-        jsonStructure['SubscriberId'] = this.props.responses[i].subscriberId._id
-        usersPayload.push(jsonStructure)
       }
-    }
-    var info = usersPayload
-    var keys = []
-    var val = info[0]
+      var info = usersPayload
+      var keys = []
+      var val = info[0]
 
-    for (var j in val) {
-      var subKey = j
-      keys.push(subKey)
+      for (var j in val) {
+        var subKey = j
+        keys.push(subKey)
+      }
+      var data = json2csv({data: usersPayload, fields: keys})
+      fileDownload(data, this.props.survey.title + '-report.csv')
+    } else {
+      this.msg.error('You are not allowed to perform this action')
     }
-    var data = json2csv({data: usersPayload, fields: keys})
-    fileDownload(data, this.props.survey.title + '-report.csv')
   }
+
   render () {
-    console.log('SurveyResult props', this.props)
+    var alertOptions = {
+      offset: 14,
+      position: 'top right',
+      theme: 'dark',
+      time: 5000,
+      transition: 'scale'
+    }
     return (
       /*<div className='m-grid__item m-grid__item--fluid m-wrapper'>
         {this.props.survey &&
@@ -142,6 +152,7 @@ class SurveyResult extends React.Component {
         }
         */
        <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+         <AlertContainer ref={a => this.msg = a} {...alertOptions} />
          <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="upgrade" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
               <div className="modal-content">
@@ -300,7 +311,7 @@ function mapStateToProps (state) {
   const {responses, survey, questions} = state.surveysInfo
   const {pages} = state.pagesInfo
   return {
-    responses, survey, questions, pages, user: (state.basicInfo.user)
+    responses, survey, questions, pages, user: (state.basicInfo.user), superUser: (state.basicInfo.superUser)
   }
 }
 

@@ -140,10 +140,11 @@ export function submitsurvey (survey) {
       .then(res => dispatch(submitresponse(res.payload)))
   }
 }
-export function createsurvey (survey) {
+export function createsurvey (survey, cb) {
   return (dispatch) => {
     callApi('surveys/create', 'post', survey)
       .then(res => {
+        if (cb) cb(res)
         if (res.status === 'success') {
           dispatch(addSurvey(res.payload))
         } else {

@@ -110,7 +110,7 @@ class SponsoredMessaging extends React.Component {
     if (res.status === 'success') {
       this.msg.success('Ad has been sent to Ads Manager')
     } else {
-      this.msg.error(res.payload)
+      this.msg.error(res.description || res.payload)
     }
   }
 
@@ -280,7 +280,7 @@ class SponsoredMessaging extends React.Component {
       adName: 'New Ad',
       pageId: this.state.pageSelected
     }
-    this.props.createSponsoredMessage(data, this.gotoCreate)
+    this.props.createSponsoredMessage(data, this.gotoCreate, this.msg)
   }
 
   gotoCreate () {
