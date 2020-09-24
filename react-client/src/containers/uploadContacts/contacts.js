@@ -100,12 +100,17 @@ class Contact extends React.Component {
     }
   }
   exportRecords () {
-    this.props.loadWhatsAppContactsList({
-      last_id: 'none',
-      number_of_records: this.state.totalLength,
-      first_page: 'first',
-    }, this.prepareExportData)
-    this.msg.info('DOWNLOADING DATA.... YOU WILL BE NOTIFIED WHEN IT IS DOWNLOAD.')
+    console.log('exportRecords')
+    if (!this.props.superUser) {
+      this.props.loadWhatsAppContactsList({
+        last_id: 'none',
+        number_of_records: this.state.totalLength,
+        first_page: 'first',
+      }, this.prepareExportData)
+      this.msg.info('DOWNLOADING DATA.... YOU WILL BE NOTIFIED WHEN IT IS DOWNLOAD.')
+    } else {
+      this.msg.error('You are not allowed to perform this action')
+    }
   }
 
   loadContacts () {
@@ -635,7 +640,8 @@ function mapStateToProps (state) {
     user: (state.basicInfo.user),
     automated_options: (state.basicInfo.automated_options),
     contactLists: (state.contactsInfo.contactLists),
-    isMobile: (state.basicInfo.isMobile)
+    isMobile: (state.basicInfo.isMobile),
+    superUser: (state.basicInfo.superUser)
   }
 }
 

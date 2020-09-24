@@ -26,10 +26,10 @@ export function fetchPlan(data) {
 export function showuserdetails(data) {
   // NOTE: don't remove following auth method call
   console.log('user details', data)
-  auth.putUserId(data._id)
+  auth.putUserId(data.user._id)
   return {
     type: ActionTypes.LOAD_USER_DETAILS,
-    data
+    data: data
   }
 }
 
@@ -175,7 +175,7 @@ export function updatePlan(data, msg) {
         dispatch(fetchPlan('success'))
         dispatch(getuserdetails())
       } else {
-        dispatch(fetchPlan(res.description))
+        msg.error(res.description || 'Failed to update plan')
       }
     })
   }
@@ -189,6 +189,8 @@ export function updateCard(data, msg) {
       if (res.status === 'success') {
         msg.success('Card added successfully')
         dispatch(getuserdetails())
+      } else {
+        msg.error(res.description)
       }
     })
   }
@@ -242,7 +244,7 @@ export function disconnectFacebook(callback) {
         console.log('Failed to update show integrations!')
       }
       if (callback) {
-        callback()
+        callback(res)
       }
     })
   }

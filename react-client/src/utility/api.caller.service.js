@@ -18,12 +18,6 @@ export default function callApi (endpoint, method = 'get', body, type = 'kibopus
     headers = _.merge(headers, {
       Authorization: `Bearer ${auth.getToken()}`
     })
-    if (auth.getActingAsUser() !== undefined && auth.getActingAsUser() !== '') {
-      console.log('inside actingAsUser')
-      headers = _.merge(headers, {
-        actingAsUser: auth.getActingAsUser()
-      })
-    }
   }
   let fetchUrl = ''
   console.log('headers sent from client', headers)

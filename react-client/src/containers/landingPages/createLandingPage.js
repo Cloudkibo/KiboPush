@@ -98,10 +98,16 @@ class CreateLandingPage extends React.Component {
         submittedState: this.props.landingPage.submittedState,
         pageId: this.props.location.state ? this.props.location.state._id : this.state.pageId,
         optInMessage: this.props.landingPage.optInMessage,
-        isActive: this.state.isActive}, this.msg)
-      this.props.history.push({
-        pathname: `/landingPages`
-      })
+        isActive: this.state.isActive}, (res => {
+          if (res.status === 'success') {
+            this.props.history.push({
+              pathname: `/landingPages`
+            })
+          } else {
+            this.msg.error(res.description || 'failed to save landing page')
+          }
+        })
+      )
     })
   }
   setStatus (value) {
@@ -158,22 +164,22 @@ class CreateLandingPage extends React.Component {
                     <div className='col-md-6 col-lg-6 col-sm-6'>
                       {
                           this.state.isEdit ?
-                          <Tabs 
+                          <Tabs
                             initialFiles={this.state.initialFiles}
                             newFiles={this.state.newFiles}
-                            history={this.props.history} 
-                            location={this.props.location} 
+                            history={this.props.history}
+                            location={this.props.location}
                             module={'edit'}
                             onEditMessage={this.onEditMessage}
                             landing_page_id={this.state.landingPageId}
                             isActive={this.state.isActive}
                              />
-                          : <Tabs 
+                          : <Tabs
                             initialFiles={this.state.initialFiles}
                             newFiles={this.state.newFiles}
                             onEditMessage={this.onEditMessage}
-                            history={this.props.history} 
-                            location={this.props.location} 
+                            history={this.props.history}
+                            location={this.props.location}
                             />
                       }
 

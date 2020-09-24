@@ -37,7 +37,7 @@ export function broadcastsInfo (state = {}, action) {
 
     case ActionTypes.SEND_BROADCAST_FAILURE:
       return Object.assign({}, state, {
-        errorMessage: 'Broadcast Sending Failed.'
+        errorMessage: action.data
       })
 
     case ActionTypes.CLEAR_ALERT:

@@ -170,7 +170,8 @@ class LiveChat extends React.Component {
       activeSession.pendingResponse = value
       this.setState({ sessions, activeSession })
     } else {
-      const message = value ? 'Failed to remove pending flag' : 'Failed to mark session as pending'
+      let message = res.description ? res.description :  value ? 'Failed to remove pending flag' : 'Failed to mark session as pending'
+      console.log('message', message)
       this.alertMsg.error(message)
     }
   }
@@ -294,44 +295,49 @@ class LiveChat extends React.Component {
     }
   }
 
-  handleStatusChange(session, status) {
-    console.log('in handleStatusChange', session)
-    const message = (status === 'resolved') ? 'Session has been marked as resolved successfully' : 'Session has been reopened successfully'
-    this.setState({
-      userChat: [],
-      activeSession: (session._id === this.state.activeSession._id) ? {} : this.state.activeSession,
-      showChat: !this.props.isMobile
-    })
-    this.alertMsg.success(message)
-    let notificationMessage = (status === 'resolved')
-      ? `Session of subscriber ${session.firstName + ' ' + session.lastName} has been marked as resolved by ${this.props.user.name}`
-      : `Session of subscriber ${session.firstName + ' ' + session.lastName} has been reopened by ${this.props.user.name}`
-    if (!session.assigned_to || !session.is_assigned) {
-      let notificationsData = {
-        message: notificationMessage,
-        category: { type: 'session_status', id: session._id },
-        agentIds: this.props.members.length > 0 ? this.props.members.filter(a => a.userId._id !== this.props.user._id).map(b => b.userId._id) : [],
-        companyId: session.companyId
-      }
-      this.props.sendNotifications(notificationsData)
-    } else if (session.assigned_to && session.assigned_to.type === 'team') {
-      this.props.fetchTeamAgents(session.assigned_to.id, (teamAgents) => {
-        let agentIds = []
-        for (let i = 0; i < teamAgents.length; i++) {
-          if (teamAgents[i].agentId._id !== this.props.user._id) {
-            agentIds.push(teamAgents[i].agentId._id)
-          }
-        }
-        if (agentIds.length > 0) {
+  handleStatusChange (session, status, res) {
+    if (res.status === 'success') {
+      console.log('in handleStatusChange', session)
+      const message = (status === 'resolved') ? 'Session has been marked as resolved successfully' : 'Session has been reopened successfully'
+      this.setState({
+        userChat: [],
+        activeSession: (session._id === this.state.activeSession._id) ? {} : this.state.activeSession,
+        showChat: !this.props.isMobile
+      })
+      this.alertMsg.success(message)
+      let notificationMessage = (status === 'resolved')
+        ? `Session of subscriber ${session.firstName + ' ' + session.lastName} has been marked as resolved by ${this.props.user.name}`
+        : `Session of subscriber ${session.firstName + ' ' + session.lastName} has been reopened by ${this.props.user.name}`
+      if (!session.assigned_to || !session.is_assigned) {
           let notificationsData = {
             message: notificationMessage,
             category: { type: 'session_status', id: session._id },
-            agentIds: agentIds,
+            agentIds: this.props.members.length > 0 ? this.props.members.filter(a => a.userId._id !== this.props.user._id).map(b => b.userId._id): [],
             companyId: session.companyId
           }
           this.props.sendNotifications(notificationsData)
-        }
-      })
+      } else if (session.assigned_to && session.assigned_to.type === 'team') {
+        this.props.fetchTeamAgents(session.assigned_to.id, (teamAgents) => {
+          let agentIds = []
+          for (let i = 0; i < teamAgents.length; i++) {
+            if (teamAgents[i].agentId._id !== this.props.user._id) {
+              agentIds.push(teamAgents[i].agentId._id)
+            }
+          }
+          if (agentIds.length > 0) {
+            let notificationsData = {
+              message: notificationMessage,
+              category: { type: 'session_status', id: session._id },
+              agentIds: agentIds,
+              companyId: session.companyId
+            }
+            this.props.sendNotifications(notificationsData)
+          }
+        })
+      }
+    } else {
+      let errorMsg = res.description || res.payload
+      this.alertMsg.error(errorMsg)
     }
   }
 
@@ -363,7 +369,7 @@ class LiveChat extends React.Component {
     let errorMsg = (status === 'resolved') ? 'mark this session as resolved' : 'reopen this session'
     const data = this.performAction(errorMsg, session)
     if (data.isAllowed) {
-      this.props.changeStatus({ _id: session._id, status: status }, () => this.handleStatusChange(session, status))
+      this.props.changeStatus({_id: session._id, status: status}, (res) => this.handleStatusChange(session, status, res))
     } else {
       this.alertMsg.error(data.errorMsg)
     }
@@ -388,9 +394,10 @@ class LiveChat extends React.Component {
       this.alertMsg.success('Value set successfully')
     } else {
       if (res.status === 'failed') {
-        this.msg.error(`Unable to set Custom field value. ${res.description}`)
+        this.alertMsg.error(`Unable to set Custom field value. ${res.description}`)
       } else {
-        this.msg.error('Unable to set Custom Field value')
+        let errorMsg = res.description || 'Unable to set Custom Field value'
+        this.alertMsg.error(errorMsg)
       }
     }
   }
