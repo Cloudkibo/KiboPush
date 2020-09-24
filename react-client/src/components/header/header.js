@@ -191,17 +191,17 @@ class Header extends React.Component {
       if (this.props.user.platform === 'messenger') {
         this.props.history.push({
           pathname: `/liveChat`,
-          state: { id: id }
+          state: { id: id, module: 'notifications'}
         })
       } else if (this.props.user.platform === 'whatsApp') {
         this.props.history.push({
           pathname: `/whatsAppChat`,
-          state: { id: id }
+          state: { id: id, module: 'notifications' }
         })
       } else if (this.props.user.platform === 'sms') {
         this.props.history.push({
           pathname: `/smsChat`,
-          state: { id: id }
+          state: { id: id, module: 'notifications' }
         })
       }
     }
