@@ -11,6 +11,7 @@ import {
   updatePicture,
   updateShowIntegrations,
   disconnectFacebook,
+  saveEnvironment,
   logout
 } from '../../redux/actions/basicinfo.actions'
 import {
@@ -161,10 +162,10 @@ class Header extends React.Component {
     // e.target.src = 'https://emblemsbf.com/img/27447.jpg'
     this.props.updatePicture({ user: this.props.user })
   }
+
   logout(res) {
     if (res.status === 'success') {
       this.props.updateShowIntegrations({ showIntegrations: true })
-      // auth.logout()
     } else {
       this.msg.error(res.description || 'Failed to disconnect Facebook')
     }
@@ -425,7 +426,8 @@ function mapStateToProps(state) {
     userView: (state.backdoorInfo.userView),
     notifications: (state.notificationsInfo.notifications),
     subscribers: (state.subscribersInfo.subscribers),
-    otherPages: (state.pagesInfo.otherPages)
+    otherPages: (state.pagesInfo.otherPages),
+    currentEnvironment: (state.basicInfo.currentEnvironment)
   }
 }
 
@@ -439,6 +441,7 @@ function mapDispatchToProps(dispatch) {
     updateShowIntegrations,
     disconnectFacebook,
     logout,
+    saveEnvironment,
     setUsersView
   }, dispatch)
 }
