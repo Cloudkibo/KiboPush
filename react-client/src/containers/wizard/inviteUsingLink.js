@@ -329,10 +329,17 @@ class InviteSubscribers extends React.Component {
                           </div>
                           <br /><br /><br /><br />
                           <center>
-                            <a className='btn btn-primary' target='_blank' rel='noopener noreferrer' href={this.getlink()}>
+                            <button className='btn btn-primary' onClick={(e) => {
+                              e.preventDefault()
+                              if (this.props.superUser) {
+                                this.msg.error('You are not allowed to perform this action')
+                              } else {
+                                window.open(this.getlink(), '_blank')
+                              }
+                            }}>
                               <i className='fa fa-facebook' style={{marginRight: '10px'}} />
                               <span>Share Page</span>
-                            </a>
+                            </button>
                           </center>
                         </div>
                       }
@@ -422,7 +429,8 @@ function mapStateToProps (state) {
     pages: (state.pagesInfo.pages),
     successMessage: (state.broadcastsInfo.successMessage),
     errorMessage: (state.broadcastsInfo.errorMessage),
-    user: (state.basicInfo.user)
+    user: (state.basicInfo.user),
+    superUser: (state.basicInfo.superUser)
   }
 }
 

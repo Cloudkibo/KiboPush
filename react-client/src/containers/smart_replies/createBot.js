@@ -219,7 +219,7 @@ class CreateBot extends React.Component {
       }
     }
     this.props.editBot({botId: this.state.id, payload: this.state.payload}, this.msg)
-    this.props.updateStatus({botId: this.state.id, isActive: this.state.isActive})
+    this.props.updateStatus({botId: this.state.id, isActive: this.state.isActive}, this.msg)
     this.props.history.push({
       pathname: `/bots`
     })

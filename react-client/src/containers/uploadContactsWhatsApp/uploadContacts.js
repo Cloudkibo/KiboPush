@@ -139,6 +139,8 @@ class UploadContacts extends React.Component {
     if (res.status === 'success') {
       this.setState({ actionType: 'send' })
       this.props.deleteAllContacts()
+    } else {
+      // this.msg.error(res.description)
     }
     this.state.templateFunction(res)
   }

@@ -68,10 +68,15 @@ export function createautoposting (data, callback) {
   }
 }
 
-export function deleteautoposting (id) {
+export function deleteautoposting (id, msg) {
   return (dispatch) => {
     callApi(`autoposting/${id}`, 'delete')
-      .then(res => dispatch(loadAutopostingList()))
+      .then(res => {
+        if (res.status !== 'success') {
+          msg.error(res.description || 'Failed to delete autoposting')
+        }
+        dispatch(loadAutopostingList())
+      })
   }
 }
 

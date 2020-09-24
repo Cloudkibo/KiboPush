@@ -55,12 +55,12 @@ class Integrations extends React.Component {
   }
 
   disconnect (id) {
-    this.props.updateIntegration(id, {enabled: false})
+    this.props.updateIntegration(id, {enabled: false}, this.msg)
   }
 
   connect (id) {
     if (id) {
-      this.props.updateIntegration(id, {enabled: true})
+      this.props.updateIntegration(id, {enabled: true}, this.msg)
     } else {
       this.props.history.push({
         pathname: '/api/sheetsIntegrations/auth'
@@ -204,9 +204,17 @@ class Integrations extends React.Component {
                               ? <button className='m-btn m-btn--pill m-btn--hover-danger btn btn-danger' data-target="#deleteIntegeration" data-toggle="modal" style={{borderColor: '#f4516c', color: '#f4516c', marginRight: '10px'}} onClick={() => this.saveIntegerationId(integration._id)}>
                                 Disconnect
                               </button>
-                              : <a href= {integration.name === 'Hubspot'? '/api/hubspotIntegrations/auth':'/api/sheetsIntegrations/auth'} className='m-btn m-btn--pill m-btn--hover-success btn btn-success' style={{borderColor: '#34bfa3', color: '#34bfa3', marginRight: '10px'}}>
+                              : <button onClick={() => {
+                                if (this.props.superUser) {
+                                  this.msg.error('You are not allowed to perform this action')
+                                } else {
+                                  let url = integration.name === 'Hubspot'? '/api/hubspotIntegrations/auth':'/api/sheetsIntegrations/auth'
+                                  window.location.replace(url)
+                                }
+                              }}
+                              className='m-btn m-btn--pill m-btn--hover-success btn btn-success' style={{borderColor: '#34bfa3', color: '#34bfa3', marginRight: '10px'}}>
                               Connect
-                            </a>
+                            </button>
                             }
                           </span>
                         <span className='m-widget4__ext'>
@@ -232,7 +240,8 @@ class Integrations extends React.Component {
 function mapStateToProps (state) {
   return {
     integrations: (state.settingsInfo.integrations),
-    user: (state.basicInfo.user)
+    user: (state.basicInfo.user),
+    superUser: (state.basicInfo.superUser)
   }
 }
 function mapDispatchToProps (dispatch) {

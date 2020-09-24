@@ -56,8 +56,12 @@ class Analytics extends React.Component {
   }
 
   exportRecords() {
-    this.props.downloadAnalytics({pageName: this.props.location.state.page.pageName, chatBotId: this.state.chatbot._id}, this.prepareExportData)
-    this.msg.info('DOWNLOADING DATA.... YOU WILL BE NOTIFIED WHEN IT IS DOWNLOADED.')
+    if (!this.props.superUser) {
+      this.props.downloadAnalytics({pageName: this.props.location.state.page.pageName, chatBotId: this.state.chatbot._id}, this.prepareExportData)
+      this.msg.info('DOWNLOADING DATA.... YOU WILL BE NOTIFIED WHEN IT IS DOWNLOADED.')
+    } else {
+      this.msg.error('You are not allowed to perform this action')
+    }
   }
 
   componentDidMount () {
@@ -164,6 +168,8 @@ class Analytics extends React.Component {
 
 function mapStateToProps (state) {
   return {
+    user: (state.basicInfo.user),
+    superUser: (state.basicInfo.superUser)
   }
 }
 

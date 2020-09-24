@@ -35,7 +35,7 @@ export function createIntent(data, msg, cb) {
                     dispatch(loadBotIntents(data.botId))
                     msg.success(res.payload)
                 } else {
-                    msg.error(res.payload)
+                    msg.error(res.description || res.payload)
                 }
                 cb(res)
             })
@@ -51,7 +51,7 @@ export function updateIntent(data, msg) {
                     dispatch(loadBotIntents(data.botId))
                     msg.success(res.payload)
                 } else {
-                    msg.error(res.payload)
+                    msg.error(res.description || res.payload)
                 }
             })
     }
@@ -66,7 +66,7 @@ export function deleteIntnet (intnentData, botId, msg) {
             msg.success(res.payload)
           }
            else {
-            msg.error(res.payload)
+            msg.error(res.description || res.payload)
            }
         })
     }
@@ -83,7 +83,7 @@ export function deleteIntnet (intnentData, botId, msg) {
             msg.success('Bot trained successfully')
           }
            else {
-            msg.error(res.payload)
+            msg.error(res.description || res.payload)
            }
         })
     }

@@ -124,7 +124,15 @@ class EditPoll extends React.Component {
         fbMessageTag: 'NON_PROMOTIONAL_SUBSCRIPTION'
       }
       console.log('Adding Poll', data)
-      this.props.addPoll('', data)
+      this.props.addPoll('', data, (res) => {
+        if (res.status === 'success') {
+          this.props.history.push({
+            pathname: '/poll'
+          })
+        } else {
+          this.msg.error(res.description || 'Failed to save poll')
+        }
+      })
     }
   }
 
@@ -309,9 +317,6 @@ class EditPoll extends React.Component {
                   <div style={{ display: 'inline-block', padding: '5px' }}>
                     <button className='btn btn-primary' onClick={() => {
                       this.createPoll()
-                      this.props.history.push({
-                        pathname: '/poll'
-                      })
                     }}
                     data-dismiss='modal'>
                       Save

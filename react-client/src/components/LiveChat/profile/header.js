@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import {localeCodeToEnglish} from '../../../utility/utils'
+import { localeCodeToEnglish } from '../../../utility/utils'
 
 // Components
 import CONFIRMATIONMODAL from '../../extras/confirmationModal'
@@ -21,35 +21,35 @@ class ProfileHeader extends React.Component {
     this.onNameChange = this.onNameChange.bind(this)
   }
 
-  UNSAFE_componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.activeSession) {
-      this.setState({name: nextProps.activeSession.name, savingName: false, editName: false})
+      this.setState({ name: nextProps.activeSession.name, savingName: false, editName: false })
     }
   }
 
-  onNameChange (e) {
-    this.setState({name: e.target.value})
+  onNameChange(e) {
+    this.setState({ name: e.target.value })
   }
 
-  onEditName () {
-    this.setState({editName: true}, () => {
+  onEditName() {
+    this.setState({ editName: true }, () => {
       document.getElementById('_edit_name').focus()
     })
   }
 
-  onCancelEditName () {
-    this.setState({editName: false, name: this.props.activeSession.name})
+  onCancelEditName() {
+    this.setState({ editName: false, name: this.props.activeSession.name })
   }
 
-  onSaveName () {
+  onSaveName() {
     if (this.state.name === '') {
       this.props.alertMsg.error('Subscriber name cannot be empty')
     } else {
-      this.setState({savingName: true})
+      this.setState({ savingName: true })
       if (this.props.user.platform === 'whatsApp') {
-        this.props.editSubscriberWhatsApp(this.props.activeSession._id, {name: this.state.name}, this.props.alertMsg)
+        this.props.editSubscriberWhatsApp(this.props.activeSession._id, { name: this.state.name }, this.props.alertMsg)
       } else if (this.props.user.platform === 'sms') {
-        this.props.editSubscriberSms(this.props.activeSession._id, {name: this.state.name}, this.props.alertMsg)
+        this.props.editSubscriberSms(this.props.activeSession._id, { name: this.state.name }, this.props.alertMsg)
       }
     }
   }
@@ -58,18 +58,18 @@ class ProfileHeader extends React.Component {
     this.props.unSubscribe({ subscriber_id: this.props.activeSession._id, page_id: this.props.activeSession.pageId._id }, this.handleUnsubscribe)
   }
 
-  handleUnsubscribe (res) {
+  handleUnsubscribe(res) {
     if (res.status === 'success') {
       this.props.sendNotifications({
         message: `Subscriber ${this.props.activeSession.firstName + ' ' + this.props.activeSession.lastName} has been blocked by ${this.props.user.name}`,
         category: { type: 'unsubscribe', id: this.props.activeSession._id },
-        agentIds: this.props.agents.length > 0 ? this.props.agents.filter(a => a._id !== this.props.user._id).map(b => b._id): [],
+        agentIds: this.props.agents.length > 0 ? this.props.agents.filter(a => a._id !== this.props.user._id).map(b => b._id) : [],
         companyId: this.props.activeSession.companyId
       })
       this.props.alertMsg.success('Unsubscribed successfully')
-      this.props.updateState({activeSession: {}})
+      // this.props.updateState({activeSession: {}})
     } else {
-      this.props.alertMsg.error('Unable to unsubscribe subscriber')
+      this.props.alertMsg.error(res.description || 'Unable to unsubscribe subscriber')
     }
   }
 
@@ -77,16 +77,16 @@ class ProfileHeader extends React.Component {
     return (
       <div>
         <div className='m-card-profile__pic'>
-          <div className='m-card-profile__pic-wrapper' style={{margin: '10px auto'}}>
+          <div className='m-card-profile__pic-wrapper' style={{ margin: '10px auto' }}>
             <img onError={(e) => this.props.profilePicError(e, this.props.activeSession)} style={{ width: '80px', height: '80px' }} src={this.props.activeSession.profilePic} alt='' />
           </div>
         </div>
         <div className='m-card-profile__details'>
           {
             this.props.user.platform === 'whatsApp' ?
-            <span style={{display: 'flex', justifyContent: 'center'}}>
+              <span style={{ display: 'flex', justifyContent: 'center' }}>
                 <div>
-                  <div style={{display: this.state.editName ? 'flex' : 'none'}}>
+                  <div style={{ display: this.state.editName ? 'flex' : 'none' }}>
                     <input
                       id='_edit_name'
                       style={{
@@ -103,26 +103,24 @@ class ProfileHeader extends React.Component {
                       onChange={this.onNameChange}
                       readOnly={!this.state.editName}
                       disabled={this.state.savingName}
-                    /> 
+                    />
                     <span style={{display: 'inherit', marginLeft: '5px'}} className="m-card-profile__name">
                       <button disabled={this.state.savingName} style={{border: 'none'}} onClick={this.onSaveName} className="m-portlet__nav-link btn m-btn m-btn--hover-success m-btn--icon m-btn--icon-only m-btn--pill" title="Save">
                         {
                           this.state.savingName
-                          ? <div className="m-loader" style={{width: "30px"}} />
-                          : <i className="la la-check" />
+                            ? <div className="m-loader" style={{ width: "30px" }} />
+                            : <i className="la la-check" />
                         }
                       </button>
                       {
                         !this.state.savingName &&
-                        <button style={{border: 'none'}} onClick={this.onCancelEditName} className="m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill" title="Cancel">
+                        <button style={{ border: 'none' }} onClick={this.onCancelEditName} className="m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill" title="Cancel">
                           <i className="la la-close" />
                         </button>
                       }
                     </span>
                   </div>
                 </div>
-              
-            
               <div style={{display: !this.state.editName ? 'flex' : 'none'}}>
                 <span style={{maxWidth: '150px', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden'}} className="m-card-profile__name">
                   {this.state.name}
@@ -131,7 +129,7 @@ class ProfileHeader extends React.Component {
                   <i style={{color: 'black'}} className="fa fa-edit" />
                 </button>
               </div>
-              
+
               <br />
             </span> :
             <span className='m-card-profile__name'>{this.props.activeSession.name}</span>
@@ -144,28 +142,28 @@ class ProfileHeader extends React.Component {
           }
           <br />
           {
-              (this.props.activeSession.number) && (this.props.activeSession.name !== this.props.activeSession.number) &&
-              <div>
-                <span style={{pointerEvents: 'none'}} className='m-card-profile__email m-link'>
-                  {this.props.activeSession.number}
-                </span>
-              </div>
+            (this.props.activeSession.number) && (this.props.activeSession.name !== this.props.activeSession.number) &&
+            <div>
+              <span style={{ pointerEvents: 'none' }} className='m-card-profile__email m-link'>
+                {this.props.activeSession.number}
+              </span>
+            </div>
           }
           {
             (this.props.activeSession.gender) &&
-              <div>
-                <span style={{pointerEvents: 'none'}} className='m-card-profile__email m-link'>
-                  {this.props.activeSession.gender}
-                </span>
-              </div>
+            <div>
+              <span style={{ pointerEvents: 'none' }} className='m-card-profile__email m-link'>
+                {this.props.activeSession.gender}
+              </span>
+            </div>
           }
           {
-              (this.props.activeSession.locale) &&
-              <div>
-                <span style={{pointerEvents: 'none'}} className='m-card-profile__email m-link'>
-                  {localeCodeToEnglish(this.props.activeSession.locale)}
-                </span>
-              </div>
+            (this.props.activeSession.locale) &&
+            <div>
+              <span style={{ pointerEvents: 'none' }} className='m-card-profile__email m-link'>
+                {localeCodeToEnglish(this.props.activeSession.locale)}
+              </span>
+            </div>
           }
           <br />
           {
@@ -177,7 +175,7 @@ class ProfileHeader extends React.Component {
                 }}
                 className='btn m-btn--pill btn-primary'
               >
-              <i className='fa fa-external-link' /> View Customer Details
+                <i className='fa fa-external-link' /> View Customer Details
               </a>
             </div>
           }
