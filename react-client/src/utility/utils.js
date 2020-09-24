@@ -781,6 +781,7 @@ export function getHiddenHeaderRoutes () {
     '/addfbpages',
     '/facebookIntegration',
     '/integrations',
+    '/chatbots/configure',
     '/configureChatbot',
     '/configureChatbotNew',
     '/chatbotAnalytics',
@@ -793,8 +794,63 @@ export function getWhiteHeaderRoutes () {
     '/addfbpages',
     '/facebookIntegration',
     '/integrations',
+    '/chatbots/configure',
     '/configureChatbot',
     '/configureChatbotNew',
     '/chatbotAnalytics'
   ]
+}
+
+export function generateRandomColor () {
+  // this function will return rgb color
+  const grc = 0.618033988749895 // golden ratio conjugate
+  let h = Math.random()
+  h += grc
+  h %= 1
+  const lightColor = HSVTORGB(h, 0.3, 0.95)
+  const darkColor = HSVTORGB(h, 0.95, 0.5)
+  return { lightColor, darkColor }
+}
+
+function HSVTORGB (h, s, v) {
+  let h_i = Math.floor(h * 6)
+  let f = (h * 6) - h_i
+  let p = v * (1 - s)
+  let q = v * (1 - (f * s))
+  let t = v * (1 - (1 - f) * s)
+  let r, g, b
+  switch (h_i) {
+    case 0:
+      r = v
+      g = t
+      b = p
+      break
+    case 1:
+      r = q
+      g = v
+      b = p
+      break
+    case 2:
+      r = p
+      g = v
+      b = t
+      break
+    case 3:
+      r = p
+      g = q
+      b = v
+      break
+    case 4:
+      r = t
+      g = p
+      b = v
+      break
+    case 5:
+      r = v
+      g = p
+      b = q
+      break
+    default:
+  }
+  return `rgb(${Math.floor(r * 256)}, ${Math.floor(g * 256)}, ${Math.floor(b * 256)})`
 }
