@@ -413,7 +413,6 @@ class SmsChat extends React.Component {
       state.sessions = sessions
       state.sessionsCount = this.state.tabValue === 'open' ? nextProps.openCount : nextProps.closeCount
     }
-
     if (this.state.redirected && this.props.location.state && this.props.location.state.id) {
       if (nextProps.openSessions && nextProps.closeSessions) {
         state.redirected = false
@@ -434,7 +433,6 @@ class SmsChat extends React.Component {
         }
       }
     }
-
     if (nextProps.customFields && nextProps.customFieldValues ) {
       let fieldOptions = []
       for (let a = 0; a < nextProps.customFields.length; a++) {

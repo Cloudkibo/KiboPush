@@ -503,7 +503,7 @@ class LiveChat extends React.Component {
       activeSession: {}
     })
   }
-
+  
   UNSAFE_componentWillReceiveProps(nextProps) {
     console.log('UNSAFE_componentWillMount called in live chat', nextProps)
     let state = {}
@@ -511,6 +511,7 @@ class LiveChat extends React.Component {
     if (nextProps.cannedResponses !== this.props.cannedResponses) {
       this.setState({ cannedResponses: nextProps.cannedResponses })
     }
+
     if (nextProps.openSessions || nextProps.closeSessions) {
       state.loading = false
       state.sessionsLoading = false
