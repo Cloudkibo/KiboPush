@@ -375,10 +375,10 @@ class Settings extends React.Component {
       self.setState({ngpButtonState: state})
       if (state === true) {
         self.setState({ngpDisable: false, ngpButtonState: true})
-        self.props.enableNGP({company_id: self.props.user.companyId})
+        self.props.enableNGP({company_id: self.props.user.companyId}, this.msg)
       } else {
         self.setState({ngpDisable: true, ngpButtonState: false})
-        self.props.disableNGP({company_id: self.props.user.companyId})
+        self.props.disableNGP({company_id: self.props.user.companyId}, this.msg)
       }
     })
   }

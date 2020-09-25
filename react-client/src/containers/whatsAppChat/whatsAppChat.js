@@ -452,7 +452,7 @@ class WhatsAppChat extends React.Component {
         }
       }
     }
-    
+
     if (nextProps.customFields && nextProps.customFieldValues) {
       let fieldOptions = []
       for (let a = 0; a < nextProps.customFields.length; a++) {

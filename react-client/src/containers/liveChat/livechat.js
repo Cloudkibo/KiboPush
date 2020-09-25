@@ -657,6 +657,8 @@ class LiveChat extends React.Component {
                     fetchSessions={this.fetchSessions}
                     getChatPreview={this.getChatPreview}
                     markSessionsRead={this.markSessionsRead}
+                    superUser={this.props.superUser}
+                    alertMsg={this.alertMsg}
                     selected={this.state.selected}
                     showingBulkActions={this.state.showingBulkActions}
                     showBulkActions={true}
@@ -795,7 +797,8 @@ function mapStateToProps(state) {
     searchChatMsgs: (state.liveChat.searchChat),
     socketData: (state.socketInfo.socketData),
     zoomIntegrations: (state.settingsInfo.zoomIntegrations),
-    cannedResponses: state.settingsInfo.cannedResponses
+    cannedResponses: state.settingsInfo.cannedResponses,
+    superUser: (state.basicInfo.superUser)
 
   }
 }
