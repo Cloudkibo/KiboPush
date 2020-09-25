@@ -16,6 +16,13 @@ export function setBrowserName(data) {
   }
 }
 
+export function saveEnvironment (data) {
+  return {
+    type: ActionTypes.CURRENT_ENVIRONMENT,
+    data
+  }
+}
+
 export function fetchPlan(data) {
   return {
     type: ActionTypes.FETCH_PLAN,

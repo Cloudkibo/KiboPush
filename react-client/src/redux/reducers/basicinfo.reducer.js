@@ -29,6 +29,11 @@ export function basicInfo (state = initialState, action) {
         isMobile: action.data
       })
 
+    case ActionTypes.CURRENT_ENVIRONMENT:
+      return Object.assign({}, state, {
+        currentEnvironment: action.data
+      })
+      
     case ActionTypes.GET_AUTOMATED_OPTIONS:
       return Object.assign({}, state, {
         automated_options: action.data

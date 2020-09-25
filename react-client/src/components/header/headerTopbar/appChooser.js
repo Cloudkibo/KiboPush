@@ -42,7 +42,7 @@ class AppChooser extends React.Component {
       }
     }
 
-    const environment = cookie.load('environment')
+    const environment = this.props.currentEnvironment
     return productUrls[product][environment]
   }
 
