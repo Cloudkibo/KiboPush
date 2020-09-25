@@ -54,7 +54,7 @@ import { usageInfo } from './usage.reducer'
 import { whatsAppBroadcastsInfo } from './whatsAppBroadcasts.reducer'
 import { whatsAppChatInfo } from './whatsAppChat.reducer'
 import { whatsAppChatbot } from './whatsAppChatbot.reducer'
-import { shopifyInfo } from './shopify.reducer'
+import { commerceInfo } from './commerce.reducer'
 
 const appReducer = combineReducers({
   abandonedInfo,
@@ -111,7 +111,7 @@ const appReducer = combineReducers({
   whatsAppBroadcastsInfo,
   whatsAppChatInfo,
   whatsAppChatbot,
-  shopifyInfo
+  commerceInfo
 })
 
 export default appReducer

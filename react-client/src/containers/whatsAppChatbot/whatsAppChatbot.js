@@ -7,7 +7,7 @@ import AlertContainer from 'react-alert'
 import MODAL from '../../components/extras/modal'
 import { validateCommaSeparatedPhoneNumbers } from "../../utility/utils"
 import { UncontrolledTooltip } from 'reactstrap'
-import { fetchStore } from '../../redux/actions/shopify.actions'
+import { fetchBigCommerceStore, fetchShopifyStore } from '../../redux/actions/commerce.actions'
 
 class WhatsAppChatbot extends React.Component {
   constructor(props, context) {
@@ -35,8 +35,8 @@ class WhatsAppChatbot extends React.Component {
     this.goToShopifySettings = this.goToShopifySettings.bind(this)
     this.getConnectShopifyContent = this.getConnectShopifyContent.bind(this)
 
-    props.fetchChatbot()
-    props.fetchStore()
+    props.fetchBigCommerceStore()
+    props.fetchShopifyStore()
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
@@ -371,9 +371,18 @@ class WhatsAppChatbot extends React.Component {
                             <input required type="text" disabled value={this.props.store ? this.props.store.name : ''} className="form-control m-input" id="_shopify_store" />
                           </div>
 
-                          <div className="col-lg-4">
-                            <img alt="shopify-logo" style={{ width: '100px', marginTop: '15px', opacity: this.props.store ? '1' : '0.5' }} src='https://i.pcmag.com/imagery/reviews/02lLbDwVdtIQN2uDFnHeN41-11..v_1569480019.jpg' />
-                          </div>
+                          {
+                            this.state.store && this.state.store.storeType === 'shopify' &&
+                            <div className="col-lg-4">
+                              <img alt="shopify-logo" style={{ width: '100px', marginTop: '15px' }} src='https://i.pcmag.com/imagery/reviews/02lLbDwVdtIQN2uDFnHeN41-11..v_1569480019.jpg' />
+                            </div>
+                          }
+                          {
+                            this.state.store && this.state.store.storeType === 'bigcommerce' &&
+                            <div className="col-lg-4">
+                              <img alt="bigcommerce-logo" style={{ width: '100px', marginTop: '25px' }} src='https://s3.amazonaws.com/www1.bigcommerce.com/assets/mediakit/downloads/BigCommerce-logo-dark.png' />
+                            </div>
+                          }
 
                           {/* <div className="form-group m-form__group col-lg-8">
                             <h6>
@@ -468,7 +477,7 @@ function mapStateToProps(state) {
   return {
     user: (state.basicInfo.user),
     chatbot: (state.whatsAppChatbot.chatbot),
-    store: (state.shopifyInfo.store)
+    store: (state.commerceInfo.store)
   }
 }
 
@@ -477,7 +486,8 @@ function mapDispatchToProps(dispatch) {
     updateChatbot,
     createChatbot,
     fetchChatbot,
-    fetchStore
+    fetchShopifyStore,
+    fetchBigCommerceStore
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(WhatsAppChatbot)

@@ -37,11 +37,11 @@ export function createChatbot(data, callback) {
   }
 }
 
-export function createShopifyChatbot(data, callback) {
+export function createCommerceChatbot(data, callback) {
   return (dispatch) => {
-    callApi('chatbots/shopifyChatbot', 'post', data)
+    callApi('chatbots/commerceChatbot', 'post', data)
       .then(res => {
-        console.log('response from createShopifyChatbot', res)
+        console.log('response from createCommerceChatbot', res)
         if (callback) {
           callback(res)
         }
@@ -49,11 +49,11 @@ export function createShopifyChatbot(data, callback) {
   }
 }
 
-export function updateShopifyChatbot(data, callback) {
+export function updateCommerceChatbot(data, callback) {
   return (dispatch) => {
-    callApi('chatbots/shopifyChatbot', 'put', data)
+    callApi('chatbots/commerceChatbot', 'put', data)
       .then(res => {
-        console.log('response from updateShopifyChatbot', res)
+        console.log('response from updateCommerceChatbot', res)
         if (callback) {
           callback(res)
         }
@@ -117,9 +117,9 @@ export function updateChatbot(data, callback) {
   }
 }
 
-export function getShopifyChatbotTriggers(chatbotId, callback) {
+export function getCommerceChatbotTriggers(chatbotId, callback) {
   return (dispatch) => {
-    callApi(`chatbots/shopifyChatbotTriggers/${chatbotId}`)
+    callApi(`chatbots/commerceChatbotTriggers/${chatbotId}`)
       .then(res => {
         console.log('response from getChatbotTriggers', res)
         if (callback) {
