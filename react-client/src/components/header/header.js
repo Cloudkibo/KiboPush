@@ -11,8 +11,8 @@ import {
   updatePicture,
   updateShowIntegrations,
   disconnectFacebook,
-  logout,
-  saveEnvironment
+  saveEnvironment,
+  logout
 } from '../../redux/actions/basicinfo.actions'
 import {
   setUsersView
@@ -165,7 +165,7 @@ class Header extends React.Component {
     // e.target.src = 'https://emblemsbf.com/img/27447.jpg'
     this.props.updatePicture({ user: this.props.user })
   }
- 
+
   logout(res) {
     if (res.status === 'success') {
       this.props.updateShowIntegrations({ showIntegrations: true })
@@ -194,17 +194,17 @@ class Header extends React.Component {
       if (this.props.user.platform === 'messenger') {
         this.props.history.push({
           pathname: `/liveChat`,
-          state: { id: id }
+          state: { id: id, module: 'notifications'}
         })
       } else if (this.props.user.platform === 'whatsApp') {
         this.props.history.push({
           pathname: `/whatsAppChat`,
-          state: { id: id }
+          state: { id: id, module: 'notifications' }
         })
       } else if (this.props.user.platform === 'sms') {
         this.props.history.push({
           pathname: `/smsChat`,
-          state: { id: id }
+          state: { id: id, module: 'notifications' }
         })
       }
     }
