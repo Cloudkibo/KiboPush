@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import AlertContainer from 'react-alert'
 import YouTube from 'react-youtube'
 import CONFIRMATIONMODAL from '../../components/extras/confirmationModal'
-import { fetchStore } from '../../redux/actions/shopify.actions'
+import { fetchBigCommerceStore, fetchShopifyStore } from '../../redux/actions/commerce.actions'
 
 class ShopifyIntegration extends React.Component {
   constructor(props, context) {
@@ -19,7 +19,8 @@ class ShopifyIntegration extends React.Component {
         color: '#4A8CFF'
       }
     }
-    props.fetchStore()
+    props.fetchBigCommerceStore()
+    props.fetchShopifyStore()
     this.openVideoTutorial = this.openVideoTutorial.bind(this)
   }
 
@@ -198,13 +199,14 @@ class ShopifyIntegration extends React.Component {
 function mapStateToProps(state) {
   return {
     user: (state.basicInfo.user),
-    store: (state.shopifyInfo.store),
+    store: (state.commerceInfo.store),
     superUser: (state.basicInfo.superUser)
   }
 }
 function mapDispatchToProps(dispatch) {
   return bindActionCreators({
-    fetchStore
+    fetchBigCommerceStore,
+    fetchShopifyStore
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(ShopifyIntegration)

@@ -4,10 +4,10 @@ const initialState = {
   store: null
 }
 
-export function shopifyInfo(state = initialState, action) {
-  console.log('shopify reducer', action)
+export function commerceInfo(state = initialState, action) {
+  console.log('commerce reducer', action)
   switch (action.type) {
-    case ActionTypes.FETCH_SHOPIFY_STORE:
+    case ActionTypes.FETCH_STORE:
       return Object.assign({}, state, {
         store: action.data
       })
