@@ -56,11 +56,11 @@ class ChatbotAutomation extends React.Component {
   }
 
   handleOnCreate (res, pageFbId) {
-    const chatbot = res.payload
-    const page = this.props.pages.find((item) => item._id === this.state.selectedPage)
-    chatbot.pageFbId = pageFbId
-    chatbot.startingBlockId = chatbot.startingBlockId || 'welcome-id'
     if (res.status === 'success') {
+      const chatbot = res.payload
+      const page = this.props.pages.find((item) => item._id === this.state.selectedPage)
+      chatbot.pageFbId = pageFbId
+      chatbot.startingBlockId = chatbot.startingBlockId || 'welcome-id'
       this.props.history.push({
         pathname: '/configureChatbot',
         state: {chatbot, page}
