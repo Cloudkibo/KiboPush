@@ -70,7 +70,7 @@ class UserProfile extends React.Component {
                     <span className='m-nav__section-text'>My Pages</span>
                   </li>
                   {
-                    this.props.showSetupUsingWizard && this.props.user && this.props.user.role !== 'agent' && this.props.user.platform === 'messenger' &&
+                    this.props.showSetupUsingWizard &&
                     <li className='m-nav__item'>
                       <Link to='/inviteUsingLinkWizard' className='m-nav__link'>
                         <i className='m-nav__link-icon flaticon-list-2' />
@@ -92,7 +92,7 @@ class UserProfile extends React.Component {
                     }
                   </li>
                   {
-                    this.props.showDisconnectFacebook && this.props.user && this.props.user.role === 'buyer' && this.props.user.platform === 'messenger' &&
+                    this.props.showDisconnectFacebook &&
                     <li className='m-nav__item'>
                       <span data-toggle="modal" data-target="#disconnectFacebook" className='m-nav__link'>
                         <i className='m-nav__link-icon la la-unlink' />
