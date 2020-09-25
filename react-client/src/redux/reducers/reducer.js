@@ -9,7 +9,8 @@ import { botIntentsInfo } from './smat_replies_intnets.reducer'
 import { botsInfo } from './smart_replies.reducer'
 import { broadcastsInfo } from './broadcast.reducer'
 import { businessGatewayInfo } from './businessGateway.reducer'
-import { chatbotsInfo } from './chatbotAutomation.reducer'
+import { chatbotsInfo } from './chatbot.reducer'
+import { chatbotAutomationInfo } from './chatbotAutomation.reducer'
 import { contactsInfo } from './contacts.reducer'
 import { convosInfo } from './convos.reducer.js'
 import { customFieldInfo } from './customFields.reducer'
@@ -66,6 +67,7 @@ const appReducer = combineReducers({
   broadcastsInfo,
   businessGatewayInfo,
   chatbotsInfo,
+  chatbotAutomationInfo,
   contactsInfo,
   convosInfo,
   customFieldInfo,

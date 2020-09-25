@@ -381,6 +381,7 @@ class Sidebar extends Component {
                 this.props.user.platform === 'messenger' &&
                 <>
                   {this.showSmartRespliesItem()}
+                  {this.showChatbots()}
                   {this.showChatbotAutomation()}
                   {this.showChatbotAutomationNew()}
                   {this.showAutoPostingItem()}
@@ -699,6 +700,25 @@ class Sidebar extends Component {
             </i>
             <span className='m-menu__link-text'>
               Shopify Chatbot
+            </span>
+          </Link>
+        </li>
+      )
+    } else {
+      return (null)
+    }
+  }
+
+  showChatbots() {
+    if (this.props.user && this.props.user.isSuperUser && (this.state.isKiboChat || this.state.isLocalhost)) {
+      return (
+        <li className='m-menu__item' aria-haspopup='true' >
+          <Link to='/chatbots' className='m-menu__link'>
+            <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
+              <span />
+            </i>
+            <span className='m-menu__link-text'>
+              Chatbots
             </span>
           </Link>
         </li>
