@@ -122,6 +122,7 @@ class LiveChat extends React.Component {
     this.setMessageData = this.setMessageData.bind(this)
     this.markSessionsRead = this.markSessionsRead.bind(this)
     this.backToSessions = this.backToSessions.bind(this)
+    this.updateNewMessage = this.updateNewMessage.bind(this)
     this.props.loadcannedResponses()
     this.fetchSessions(true, 'none', true)
     props.getSMPStatus(this.handleSMPStatus)
@@ -132,6 +133,11 @@ class LiveChat extends React.Component {
     if (props.socketData) {
       props.clearSocketData()
     }
+    this.newMessage = false
+  }
+
+  updateNewMessage (value) {
+    this.newMessage = value
   }
 
   clearSearchResults() {
@@ -280,14 +286,14 @@ class LiveChat extends React.Component {
   updateState(state, callback) {
     if (state.reducer) {
       const allChatMessages = this.props.allChatMessages
-      allChatMessages[this.state.activeSession._id] = state.userChat
+      // allChatMessages[this.state.activeSession._id] = state.userChat
       const data = {
-        userChat: state.userChat,
+        userChat: {...this.props.userChat},
         allChatMessages,
         openSessions: this.state.tabValue === 'open' ? state.sessions : this.props.openSessions,
         closeSessions: this.state.tabValue === 'close' ? state.sessions : this.props.closeSessions
       }
-      // this.props.updateLiveChatInfo(data)
+      this.props.updateLiveChatInfo(data)
     } else {
       this.setState(state, () => {
         if (callback) callback()
@@ -504,7 +510,9 @@ class LiveChat extends React.Component {
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
-    console.log('UNSAFE_componentWillMount called in live chat', nextProps)
+    console.log('UNSAFE_componentWillMount called in live chat', nextProps.userChat)
+    console.log('UNSAFE_componentWillMount called in live chat props', this.props.userChat)
+
     let state = {}
 
     if (nextProps.cannedResponses !== this.props.cannedResponses) {
@@ -551,6 +559,11 @@ class LiveChat extends React.Component {
       } else if (nextProps.userChat.length === 0) {
         state.loadingChat = false
       }
+    }
+
+
+    if(nextProps.userChat !== this.props.userChat) {
+      this.updateNewMessage(true)
     }
 
     this.setState({
@@ -682,6 +695,9 @@ class LiveChat extends React.Component {
                     showSubscriberNameOnMessage={true}
                     isMobile={this.props.isMobile}
                     backToSessions={this.backToSessions}
+                    newMessage = {this.newMessage}
+                    updateNewMessage = {this.updateNewMessage}
+
                   />
                 }
                 {

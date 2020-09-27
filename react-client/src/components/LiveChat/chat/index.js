@@ -33,19 +33,25 @@ class Chat extends React.Component {
     this.togglePopover = this.togglePopover.bind(this)
     this.getPicker = this.getPicker.bind(this)
     this.overrideUserInput = this.overrideUserInput.bind(this)
-    this.updateNewMessage = this.updateNewMessage.bind(this)
+    // this.updateNewMessage = this.updateNewMessage.bind(this)
     this.updateChatAreaHeight = this.updateChatAreaHeight.bind(this)
 
     this.newMessage = false
   }
 
+  // UNSAFE_componentWillReceiveProps(nextProps) {
+  //   if(nextProps.userChat) {
+  //     this.updateNewMessage(true)
+  //   }
+  // }
+
   updateChatAreaHeight (value) {
     this.setState({chatAreaHieght: value})
   }
 
-  updateNewMessage (value) {
-    this.newMessage = value
-  }
+  // updateNewMessage (value) {
+  //   this.newMessage = value
+  // }
 
   togglePopover () {
     this.setState({showPopover: !this.state.showPopover})
@@ -139,7 +145,7 @@ class Chat extends React.Component {
                 updateState={this.props.updateState}
                 userChat={this.props.userChat}
                 sessions={this.props.sessions}
-                updateNewMessage={this.updateNewMessage}
+                updateNewMessage={this.props.updateNewMessage}
                 updateChatAreaHeight={this.updateChatAreaHeight}
                 alertMsg={this.props.alertMsg}
                 id='messageTemplate'
@@ -170,14 +176,14 @@ class Chat extends React.Component {
           fetchUserChats={this.props.fetchUserChats}
           markRead={this.props.markRead}
           updateState={this.props.updateState}
-          newMessage={this.newMessage}
-          updateNewMessage={this.updateNewMessage}
+          newMessage={this.props.newMessage}
+          updateNewMessage={this.props.updateNewMessage}
           showSubscriberNameOnMessage={this.props.showSubscriberNameOnMessage}
           isMobile={this.props.isMobile}
         />
 
         {
-          !this.props.activeSession.lastMessagedAt || (!moment(this.props.activeSession.lastMessagedAt).isAfter(moment().subtract(24, 'hours')) && !this.props.isSMPApproved)
+          !this.props.activeSession.lastMessagedAt && (!moment(this.props.activeSession.lastMessagedAt).isAfter(moment().subtract(24, 'hours')) && !this.props.isSMPApproved)
           ? <div
             className='m-messenger'
             style={{
@@ -237,7 +243,7 @@ class Chat extends React.Component {
             uploadRecording={this.props.uploadRecording}
             getPicker={this.getPicker}
             togglePopover={this.togglePopover}
-            updateNewMessage={this.updateNewMessage}
+            updateNewMessage={this.props.updateNewMessage}
             deletefile={this.props.deletefile}
             fetchUrlMeta={this.props.fetchUrlMeta}
             updateChatAreaHeight={this.updateChatAreaHeight}

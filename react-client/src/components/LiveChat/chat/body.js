@@ -134,7 +134,10 @@ class Body extends React.Component {
         this.markRead()
       }
     }
+    console.log('prevProps.userChat.length', prevProps.userChat.length)
+    console.log('this.props.userChat.length', this.props.userChat.length)
     if (prevProps.userChat.length !== this.props.userChat.length) {
+      console.log('called this.props.newMessage', this.props.newMessage)
       if (this.props.activeSession._id !== prevProps.activeSession._id) {
         // this.scrollToBottom(this.props.userChat)
       } else if (this.props.newMessage) {
@@ -143,6 +146,12 @@ class Body extends React.Component {
       } else {
         setTimeout(() => {this.updateScrollTop()}, 100)
       }
+    }
+    console.log('this.props.userChat', this.props.userChat)
+    console.log('this.props.newMessage in body', this.props.newMessage)
+    if(this.props.newMessage) {
+      this.scrollToBottom(this.props.userChat)
+      this.props.updateNewMessage(false)
     }
     if (
       !this.props.loadingChat &&
