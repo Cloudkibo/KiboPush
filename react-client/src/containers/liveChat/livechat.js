@@ -287,7 +287,7 @@ class LiveChat extends React.Component {
         openSessions: this.state.tabValue === 'open' ? state.sessions : this.props.openSessions,
         closeSessions: this.state.tabValue === 'close' ? state.sessions : this.props.closeSessions
       }
-      this.props.updateLiveChatInfo(data)
+      // this.props.updateLiveChatInfo(data)
     } else {
       this.setState(state, () => {
         if (callback) callback()
