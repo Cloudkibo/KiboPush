@@ -104,6 +104,7 @@ class WhatsAppChat extends React.Component {
     this.setMessageData = this.setMessageData.bind(this)
     this.sendingToNewNumber = this.sendingToNewNumber.bind(this)
     this.backToSessions = this.backToSessions.bind(this)
+    this.updateNewMessage = this.updateNewMessage.bind(this)
     this.showMessageTemplateMobile = this.showMessageTemplateMobile.bind(this)
     this.props.loadcannedResponses()
     this.fetchSessions(true, 'none', true)
@@ -116,7 +117,15 @@ class WhatsAppChat extends React.Component {
       props.clearSocketDataWhatsapp()
     }
     props.getWhatsAppMessageTemplates()
+    this.newMessage = false
   }
+
+  updateNewMessage (value) {
+    this.newMessage = value
+  }
+
+
+  
 
   sendingToNewNumber(sendingToNewNumber) {
     this.setState({ sendingToNewNumber })
@@ -458,6 +467,10 @@ class WhatsAppChat extends React.Component {
       }
     }
 
+    if(nextProps.userChat !== this.props.userChat) {
+      this.updateNewMessage(true)
+    }
+
     this.setState({
       ...state,
       tags: nextProps.tags,
@@ -584,6 +597,8 @@ class WhatsAppChat extends React.Component {
                     whatsAppMessageTemplates={this.props.whatsAppMessageTemplates}
                     isMobile={this.props.isMobile}
                     backToSessions={this.backToSessions}
+                    newMessage = {this.newMessage}
+                    updateNewMessage = {this.updateNewMessage}
                   />
                 }
                 {

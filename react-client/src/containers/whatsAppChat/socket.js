@@ -96,7 +96,6 @@ export function handleSocketEventWhatsapp (data, state, props, updateLiveChatInf
   }
 
   const handleAgentReply = (payload, state, props, updateLiveChatInfo, clearSocketData, user) => {
-    if (user._id !== payload.user_id) {
       let data = {}
       let sessions = state.sessions
       let session = sessions.find((s) => s._id === payload.subscriber_id)
@@ -133,10 +132,7 @@ export function handleSocketEventWhatsapp (data, state, props, updateLiveChatInf
       }
       updateLiveChatInfo(data)
       clearSocketData()
-    } else {
-      clearSocketData()
     }
-  }
 
   const handleUnsubscribe = (payload, state, props, updateLiveChatInfo, clearSocketData, user) => {
     let data = {}

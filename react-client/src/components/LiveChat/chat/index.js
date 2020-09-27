@@ -36,7 +36,7 @@ class Chat extends React.Component {
     // this.updateNewMessage = this.updateNewMessage.bind(this)
     this.updateChatAreaHeight = this.updateChatAreaHeight.bind(this)
 
-    this.newMessage = false
+    // this.newMessage = false
   }
 
   // UNSAFE_componentWillReceiveProps(nextProps) {
