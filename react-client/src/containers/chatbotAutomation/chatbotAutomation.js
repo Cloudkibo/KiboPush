@@ -221,7 +221,7 @@ class ChatbotAutomation extends React.Component {
 
 function mapStateToProps (state) {
   return {
-    chatbots: (state.chatbotsInfo.chatbots),
+    chatbots: (state.chatbotAutomationInfo.chatbots),
     pages: (state.pagesInfo.pages)
   }
 }

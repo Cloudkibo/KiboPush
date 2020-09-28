@@ -161,10 +161,10 @@ class Header extends React.Component {
     // e.target.src = 'https://emblemsbf.com/img/27447.jpg'
     this.props.updatePicture({ user: this.props.user })
   }
+ 
   logout(res) {
     if (res.status === 'success') {
       this.props.updateShowIntegrations({ showIntegrations: true })
-      // auth.logout()
     } else {
       this.msg.error(res.description || 'Failed to disconnect Facebook')
     }

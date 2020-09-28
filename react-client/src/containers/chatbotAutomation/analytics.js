@@ -42,14 +42,7 @@ class Analytics extends React.Component {
         (Object.keys(p).length > Object.keys(c).length) ? p : c
       )
       var info = blocksData
-      var keys = []
-      // console.log('resultArray', result)
-       var val = Object.keys(result)
-      // console.log('result', val)
-      // for (var j in val) {
-      //   var subKey = j
-      //   keys.push(subKey)
-      // }
+      var val = Object.keys(result)
       json2csv({ data: info, fields: val }, function (err, csv) {
         if (err) {
         } else {
