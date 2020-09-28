@@ -2,6 +2,10 @@ import * as ActionTypes from '../constants/constants'
 
 const initialState = {
   store: null
+  // store: {
+  //   storeType: 'bigcommerce',
+  //   name: 'kibo test store'
+  // }
 }
 
 export function commerceInfo(state = initialState, action) {
