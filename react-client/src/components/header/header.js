@@ -61,6 +61,9 @@ class Header extends React.Component {
     if (this.props.user) {
       this.setPlatform(this.props.user)
     }
+    if (cookie.load('environment')) {
+      this.props.saveEnvironment(cookie.load('environment'))
+    }
   }
 
   isPlatformConnected (value) {
@@ -358,6 +361,7 @@ class Header extends React.Component {
                 updatePicture={this.props.updatePicture}
                 logout={this.props.logout}
                 setUsersView={this.props.setUsersView}
+                currentEnvironment= {this.props.currentEnvironment}
               />
             </div>
           </div>
