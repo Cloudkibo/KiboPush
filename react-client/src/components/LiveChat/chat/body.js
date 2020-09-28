@@ -120,6 +120,8 @@ class Body extends React.Component {
   }
 
   componentDidUpdate (prevProps) {
+    console.log('this.componentDidUpdate called', prevProps.userChat.length)
+    console.log('this.props.userchat called', this.props.userChat.length)
     setTimeout(() => {
       if (this.refs.chatScroll && this.previousScrollHeight) {
         if (this.refs.chatScroll.scrollHeight > this.previousScrollHeight) {
@@ -144,6 +146,11 @@ class Body extends React.Component {
         setTimeout(() => {this.updateScrollTop()}, 100)
       }
     }
+
+    // if (this.props.newMessage) {
+    //   this.scrollToBottom(this.props.userChat)
+    //   this.props.updateNewMessage(false)
+    // }
     if (
       !this.props.loadingChat &&
       this.props.userChat &&
