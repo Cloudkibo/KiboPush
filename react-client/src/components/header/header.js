@@ -450,8 +450,8 @@ function mapDispatchToProps(dispatch) {
     disconnectFacebook,
     logout,
     setUsersView,
-    saveNotificationSessionId
-    saveEnvironment,
+    saveNotificationSessionId,
+    saveEnvironment
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Header)
