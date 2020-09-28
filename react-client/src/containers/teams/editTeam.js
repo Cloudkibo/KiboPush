@@ -242,16 +242,16 @@ class EditTeam extends React.Component {
       let pageIds = []
       let pageNames = []
       if (this.state.removedPages.length > 0) {
-      this.props.removePage({ pageId: this.state.removedPages, teamId: this.state.teamId }, this.msg)
+      this.props.removePage({ pageId: this.state.removedPages, teamId: this.state.teamId })
       }
       if (this.state.removedAgents.length > 0) {
-      this.props.removeAgent({ agentId: this.state.removedAgents, teamId: this.state.teamId }, this.msg)
+      this.props.removeAgent({ agentId: this.state.removedAgents, teamId: this.state.teamId })
       }
       for (var i = 0; i < this.state.agentIds.length; i++) {
-        this.props.addAgent({ teamId: this.state.teamId, agentId: this.state.agentIds[i]._id }, this.msg)
+        this.props.addAgent({ teamId: this.state.teamId, agentId: this.state.agentIds[i]._id })
       }
       for (var j = 0; j < this.state.pageIds.length; j++) {
-        this.props.addPage({ teamId:  this.state.teamId, pageId: this.state.pageIds[j]._id }, this.msg)
+        this.props.addPage({ teamId:  this.state.teamId, pageId: this.state.pageIds[j]._id })
         pageIds.push(this.state.pageIds[j]._id)
         pageNames.push(this.state.pageIds[j].pageName)
       }
@@ -262,7 +262,6 @@ class EditTeam extends React.Component {
       }
       this.props.update(updatePayload, this.msg)
       this.setState({inCancel: false})
-      this.msg.success('Changes saved successfully')
     }
   }
   updateDescription (e) {
