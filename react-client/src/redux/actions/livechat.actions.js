@@ -26,6 +26,13 @@ export function unsubscribeSubscriber(subscriberId) {
   }
 }
 
+export function saveNotificationSessionId(data) {
+  return {
+    type: ActionTypes.REDIRECT_TO_SESSION,
+    data: data
+  }
+}
+
 export function clearUserChat() {
   console.log('clearUserChat called')
   return {

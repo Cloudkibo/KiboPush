@@ -24,6 +24,7 @@ import {
   sendChatMessage,
   loadTwilioNumbers
 } from '../../redux/actions/smsChat.actions'
+import { saveNotificationSessionId } from '../../redux/actions/livechat.actions'
 import { updatePicture } from '../../redux/actions/subscribers.actions'
 import { loadTeamsList } from '../../redux/actions/teams.actions'
 import { loadMembersList } from '../../redux/actions/members.actions'
@@ -50,7 +51,6 @@ class SmsChat extends React.Component {
     super(props, context)
     this.state = {
       loading: true,
-      redirected: this.props.location.state && this.props.location.state.module === 'notifications',
       fetchingChat: false,
       loadingChat: true,
       sessionsLoading: false,
@@ -413,14 +413,14 @@ class SmsChat extends React.Component {
       state.sessions = sessions
       state.sessionsCount = this.state.tabValue === 'open' ? nextProps.openCount : nextProps.closeCount
     }
-
-    if (this.state.redirected && this.props.location.state && this.props.location.state.id) {
+    
+    if (nextProps.redirectToSession && nextProps.redirectToSession.sessionId) {
       if (nextProps.openSessions && nextProps.closeSessions) {
-        state.redirected = false
+        nextProps.saveNotificationSessionId({sessionId: null})
         let openSessions = nextProps.openSessions
         let closeSessions =nextProps.closeSessions
-        let openIndex = openSessions.findIndex((session) => session._id === this.props.location.state.id)
-        let closeIndex = closeSessions.findIndex((session) => session._id === this.props.location.state.id)
+        let openIndex = openSessions.findIndex((session) => session._id === nextProps.redirectToSession.sessionId)
+        let closeIndex = closeSessions.findIndex((session) => session._id === nextProps.redirectToSession.sessionId)
         if (openIndex !== -1) {
           state.activeSession = openSessions[openIndex]
           this.changeActiveSession(openSessions[openIndex])
@@ -659,7 +659,8 @@ function mapStateToProps(state) {
     searchChatMsgs: (state.smsChatInfo.searchChat),
     socketData: (state.socketInfo.socketDataSms),
     twilioNumbers: (state.smsBroadcastsInfo.twilioNumbers),
-    zoomIntegrations: (state.settingsInfo.zoomIntegrations)
+    zoomIntegrations: (state.settingsInfo.zoomIntegrations),
+    redirectToSession: state.liveChat.redirectToSession
   }
 }
 
@@ -686,7 +687,8 @@ function mapDispatchToProps(dispatch) {
     urlMetaData,
     loadTwilioNumbers,
     getZoomIntegrations,
-    createZoomMeeting
+    createZoomMeeting,
+    saveNotificationSessionId
   }, dispatch)
 }
 
