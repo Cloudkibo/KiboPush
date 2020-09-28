@@ -87,14 +87,18 @@ class Sessions extends React.Component {
   }
 
   markSessionsRead() {
-    this.props.markSessionsRead(this.props.selected)
-    this.props.updateState({
-      selected: [],
-      showingBulkActions: false,
-      allSelected: false
-    })
-    for (let i = 0; i < this.props.sessions.length; i++) {
-      this.props.sessions[i].selected = false
+    if (!this.props.superUser) {
+      this.props.markSessionsRead(this.props.selected)
+      this.props.updateState({
+        selected: [],
+        showingBulkActions: false,
+        allSelected: false
+      })
+      for (let i = 0; i < this.props.sessions.length; i++) {
+        this.props.sessions[i].selected = false
+      }
+    } else {
+      this.props.alertMsg.error('You are not allowed to perform this action')
     }
   }
 

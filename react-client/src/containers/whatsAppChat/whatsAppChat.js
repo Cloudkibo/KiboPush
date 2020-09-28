@@ -29,6 +29,7 @@ import {
   deletefile,
   createNewContact
 } from '../../redux/actions/whatsAppChat.actions'
+import { saveNotificationSessionId } from '../../redux/actions/livechat.actions'
 import { updatePicture } from '../../redux/actions/subscribers.actions'
 import { loadTeamsList } from '../../redux/actions/teams.actions'
 import { loadMembersList } from '../../redux/actions/members.actions'
@@ -431,6 +432,27 @@ class WhatsAppChat extends React.Component {
       state.sessionsCount = this.state.tabValue === 'open' ? nextProps.openCount : nextProps.closeCount
     }
 
+    if (nextProps.redirectToSession && nextProps.redirectToSession.sessionId) {
+      if (nextProps.openSessions && nextProps.closeSessions) {
+        nextProps.saveNotificationSessionId({sessionId: null})
+        let openSessions = nextProps.openSessions
+        let closeSessions =nextProps.closeSessions
+        let openIndex = openSessions.findIndex((session) => session._id === nextProps.redirectToSession.sessionId)
+        let closeIndex = closeSessions.findIndex((session) => session._id === nextProps.redirectToSession.sessionId)
+        if (openIndex !== -1) {
+          state.activeSession = openSessions[openIndex]
+          this.changeActiveSession(openSessions[openIndex])
+          this.changeTab('open')
+        } else if (closeIndex !== -1) {
+          state.activeSession = closeSessions[closeIndex]
+          this.changeActiveSession(closeSessions[closeIndex])
+          this.changeTab('close')
+        } else {
+          state.activeSession = {}
+        }
+      }
+    }
+
     if (nextProps.customFields && nextProps.customFieldValues) {
       let fieldOptions = []
       for (let a = 0; a < nextProps.customFields.length; a++) {
@@ -718,7 +740,8 @@ function mapStateToProps(state) {
     automated_options: (state.basicInfo.automated_options),
     zoomIntegrations: (state.settingsInfo.zoomIntegrations),
     cannedResponses: (state.settingsInfo.cannedResponses),
-    whatsAppMessageTemplates: (state.settingsInfo.whatsAppMessageTemplates)
+    whatsAppMessageTemplates: (state.settingsInfo.whatsAppMessageTemplates),
+    redirectToSession: state.liveChat.redirectToSession
   }
 }
 
@@ -751,7 +774,8 @@ function mapDispatchToProps(dispatch) {
     createNewContact,
     editSubscriberWhatsApp,
     loadcannedResponses,
-    getWhatsAppMessageTemplates
+    getWhatsAppMessageTemplates,
+    saveNotificationSessionId
   }, dispatch)
 }
 

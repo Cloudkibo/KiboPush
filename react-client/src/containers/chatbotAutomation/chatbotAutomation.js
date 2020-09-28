@@ -56,11 +56,11 @@ class ChatbotAutomation extends React.Component {
   }
 
   handleOnCreate (res, pageFbId) {
-    const chatbot = res.payload
-    const page = this.props.pages.find((item) => item._id === this.state.selectedPage)
-    chatbot.pageFbId = pageFbId
-    chatbot.startingBlockId = chatbot.startingBlockId || 'welcome-id'
     if (res.status === 'success') {
+      const chatbot = res.payload
+      const page = this.props.pages.find((item) => item._id === this.state.selectedPage)
+      chatbot.pageFbId = pageFbId
+      chatbot.startingBlockId = chatbot.startingBlockId || 'welcome-id'
       this.props.history.push({
         pathname: '/configureChatbot',
         state: {chatbot, page}
@@ -144,17 +144,20 @@ class ChatbotAutomation extends React.Component {
                           }
                         </div>
                       }
-                      <label className="m-radio m-radio--bold m-radio--state-brand">
-                        <input
-                          type="radio"
-                          onClick={this.onRadioClick}
-                          onChange={() => {}}
-                          value='create'
-                          checked={this.state.selectedRadio === 'create'}
-                        />
-                          Create New Chatbot
-                        <span />
-                      </label>
+                      {
+                        this.props.user.permissions['create_chatbot_automation'] &&
+                        <label className="m-radio m-radio--bold m-radio--state-brand">
+                          <input
+                            type="radio"
+                            onClick={this.onRadioClick}
+                            onChange={() => {}}
+                            value='create'
+                            checked={this.state.selectedRadio === 'create'}
+                          />
+                            Create New Chatbot
+                          <span />
+                        </label>
+                      }
                       {
                         this.state.selectedRadio === 'create' &&
                         <div style={{marginLeft: '50px'}} className='row'>
@@ -222,7 +225,8 @@ class ChatbotAutomation extends React.Component {
 function mapStateToProps (state) {
   return {
     chatbots: (state.chatbotAutomationInfo.chatbots),
-    pages: (state.pagesInfo.pages)
+    pages: (state.pagesInfo.pages),
+    user: (state.basicInfo.user)
   }
 }
 
