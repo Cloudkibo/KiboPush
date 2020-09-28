@@ -424,8 +424,7 @@ function mapStateToProps(state) {
     chatbots: (state.chatbotAutomationInfo.chatbots),
     pages: (state.pagesInfo.pages),
     user: (state.basicInfo.user),
-    commerceStore: (state.commerceInfo.commerceStore),
-    bigCommerceStore: (state.commerceInfo.bigCommerceStore),
+    store: (state.commerceInfo.store)
   }
 }
 
