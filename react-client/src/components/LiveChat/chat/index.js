@@ -50,14 +50,6 @@ class Chat extends React.Component {
   togglePopover () {
     this.setState({showPopover: !this.state.showPopover})
   }
-
-  UNSAFE_componentWillReceiveProps(nextProps) {
-    if(nextProps.userChat) {
-      console.log('true in indexjs file')
-      this.updateNewMessage(true)
-    }
-  }
-
   overrideUserInput () {
     let activeSession = this.props.activeSession
     activeSession.waitingForUserInput.componentIndex = -1
