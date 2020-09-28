@@ -100,7 +100,11 @@ const handleIncomingMessage = (payload, state, props, updateLiveChatInfo, clearS
 }
 
 const handleAgentReply = (payload, state, props, updateLiveChatInfo, clearSocketData, user) => {
-  if (user._id !== payload.user_id) {
+  let ChatMessages = props.allChatMessages
+  let chatUser = ChatMessages[payload.subscriber_id]
+  // console.log('chatUser ', chatUser[chatUser.length -1]._id)
+  // console.log('payload.message._id ', payload.message._id)
+  if (chatUser && chatUser.length > 0 && chatUser[chatUser.length -1].id !== payload.message._id) {
     let data = {}
     let sessions = state.sessions
     let session = sessions.find((s) => s._id === payload.subscriber_id)
@@ -148,7 +152,7 @@ const handleAgentReply = (payload, state, props, updateLiveChatInfo, clearSocket
   } else {
     clearSocketData()
   }
-}
+ }
 
 const handleUnsubscribe = (payload, state, props, updateLiveChatInfo, clearSocketData, user) => {
   let data = {}
