@@ -53,8 +53,8 @@ export const LOAD_USER_SUMMARY = 'LOAD_USER_SUMMARY'
 // constants for basicinfo
 export const LOAD_BROWSER_NAME = 'LOAD_BROWSER_NAME'
 export const LOAD_USER_DETAILS = 'LOAD_USER_DETAILS'
+export const CURRENT_ENVIRONMENT = 'CURRENT_ENVIRONMENT'
 export const LOAD_KEYS = 'LOAD_KEYS'
-export const FETCH_PLAN = 'FETCH_PLAN'
 export const LOAD_UPDATED_USER_DETAILS = 'LOAD_UPDATED_USER_DETAILS'
 export const STORE_FB_APP_ID = 'STORE_FB_APP_ID'
 export const LOAD_BROWSER_VERSION = 'LOAD_BROWSER_VERSION'
@@ -68,6 +68,7 @@ export const POLL_TOUR_COMPLETED = 'POLL_TOUR_COMPLETED'
 export const PERMISSION_ERROR = 'PERMISSION_ERROR'
 export const GET_AUTOMATED_OPTIONS = 'GET_AUTOMATED_OPTIONS'
 export const SET_IS_MOBILE = 'SET_IS_MOBILE'
+export const UPDATE_TRIAL_PERIOD = 'UPDATE_TRIAL_PERIOD'
 
 // constants for broadcasts
 export const FETCH_BROADCASTS_LIST = 'FETCH_BROADCASTS_LIST'
@@ -78,6 +79,12 @@ export const GET_BROADCAST = 'GET_BROADCAST'
 export const SEND_BROADCAST_SUCCESS = 'SEND_BROADCAST_SUCCESS'
 export const SEND_BROADCAST_FAILURE = 'SEND_BROADCAST_FAILURE'
 export const CLEAR_ALERT = 'CLEAR_ALERT'
+
+// constants for chatbot
+export const SHOW_CHATBOTS = 'SHOW_CHATBOTS'
+
+// constants for chatbot automation
+export const SHOW_CHATBOT_AUTOMATION = 'SHOW_CHATBOT_AUTOMATION'
 
 // constants for customer list
 export const LOAD_CUSTOMER_LISTS = 'LOAD_CUSTOMER_LISTS'
@@ -506,9 +513,6 @@ export const SOCKET_EVENT_SMS = 'SOCKET_EVENT_SMS'
 export const CLEAR_SOCKET_DATA_SMS = 'CLEAR_SOCKET_DATA_SMS'
 export const SOCKET_EVENT_WHATSAPP = 'SOCKET_EVENT_WHATSAPP'
 export const CLEAR_SOCKET_DATA_WHATSAPP = 'CLEAR_SOCKET_DATA_WHATSAPP'
-
-// constants for chatbot automation
-export const SHOW_CHATBOTS = 'SHOW_CHATBOTS'
 
 // constants for Scanned Responses
 export const GET_CANNED_RESPONSES = 'GET_CANNED_RESPONSES'
