@@ -348,7 +348,6 @@ class MessageArea extends React.Component {
   }
 
   UNSAFE_componentWillReceiveProps (nextProps) {
-    console.log('UNSAFE_componentWillReceiveProps', nextProps)
     if (nextProps.block) {
       this.setStateData(nextProps.block)
     }
