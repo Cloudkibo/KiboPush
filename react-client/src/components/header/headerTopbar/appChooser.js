@@ -1,5 +1,4 @@
 import React from 'react'
-import cookie from 'react-cookie'
 
 class AppChooser extends React.Component {
   constructor(props, context) {

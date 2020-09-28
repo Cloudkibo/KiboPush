@@ -19,6 +19,7 @@ import {
 } from '../../redux/actions/backdoor.actions'
 import { fetchNotifications, markRead } from '../../redux/actions/notifications.actions'
 import AlertContainer from 'react-alert'
+import cookie from 'react-cookie'
 
 // Components
 import HEADERMENU from './headerMenu'
