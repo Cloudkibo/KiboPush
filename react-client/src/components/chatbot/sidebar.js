@@ -43,23 +43,23 @@ class Sidebar extends React.Component {
   }
 
   onBlockChange (value, others) {
-    const currentBlock = this.props.blocks.find((item) => item.uniqueId.toString() === value.value.toString())
+    const currentBlock = this.props.blocks.find((item) => item.uniqueId === value.value)
     this.setState({selectedItem: value}, () => {
       this.props.updateParentState({currentBlock})
     })
   }
 
   setItems (data, currentBlock, blocks) {
-    const items = data.filter((d) => d.parentId && d.parentId.toString() === currentBlock.uniqueId.toString())
+    const items = data.filter((d) => d.parentId && d.parentId === currentBlock.uniqueId)
     const emptyBlocks = blocks.filter((item) => item.payload.length === 0)
     this.setState({items, emptyBlocks: emptyBlocks.length})
   }
 
   backToParent () {
     if (!this.props.attachmentUploading) {
-      const parentId = this.props.data.find((item) => item.id.toString() === this.state.selectedItem.value.toString()).parentId
+      const parentId = this.props.data.find((item) => item.id === this.state.selectedItem.value).parentId
       if (parentId) {
-        const currentBlock = this.props.blocks.find((item) => item.uniqueId.toString() === parentId.toString())
+        const currentBlock = this.props.blocks.find((item) => item.uniqueId === parentId)
         if (this.props.unsavedChanges) {
           if (this.props.currentBlock.payload && this.props.currentBlock.payload.length === 0) {
             this.props.alertMsg.error('Text or attachment is required')
@@ -68,8 +68,9 @@ class Sidebar extends React.Component {
               triggers: this.props.currentBlock.triggers,
               uniqueId: `${this.props.currentBlock.uniqueId}`,
               title: this.props.currentBlock.title,
-              chatbotId: this.props.chatbot._id,
-              payload: this.props.currentBlock.payload
+              chatbotId: this.props.chatbot.chatbotId,
+              payload: this.props.currentBlock.payload,
+              options: this.props.currentBlock.options
             }
             console.log('data to save for message block', data)
             this.props.handleMessageBlock(data, (res) => this.afterSave(res, data, currentBlock))
@@ -85,7 +86,7 @@ class Sidebar extends React.Component {
 
   onNodeSelect (event, value) {
     if (!this.props.attachmentUploading) {
-      const currentBlock = this.props.blocks.find((item) => item.uniqueId.toString() === value)
+      const currentBlock = this.props.blocks.find((item) => item.uniqueId === value)
       if (this.props.unsavedChanges) {
         if (this.props.currentBlock.payload && this.props.currentBlock.payload.length === 0) {
           this.props.alertMsg.error('Text or attachment is required')
@@ -94,8 +95,9 @@ class Sidebar extends React.Component {
             triggers: this.props.currentBlock.triggers,
             uniqueId: `${this.props.currentBlock.uniqueId}`,
             title: this.props.currentBlock.title,
-            chatbotId: this.props.chatbot._id,
-            payload: this.props.currentBlock.payload
+            chatbotId: this.props.chatbot.chatbotId,
+            payload: this.props.currentBlock.payload,
+            options: this.props.currentBlock.options
           }
           console.log('data to save for message block', data)
           this.props.handleMessageBlock(data, (res) => this.afterSave(res, data, currentBlock))
@@ -109,7 +111,7 @@ class Sidebar extends React.Component {
   afterSave (res, data, currentBlock) {
     if (res.status === 'success') {
       let blocks = this.props.blocks
-      const index = blocks.findIndex((item) => item.uniqueId.toString() === data.uniqueId.toString())
+      const index = blocks.findIndex((item) => item.uniqueId === data.uniqueId)
       if (index !== -1) {
         blocks.splice(index, 1)
       }
@@ -132,8 +134,9 @@ class Sidebar extends React.Component {
           triggers: this.props.currentBlock.triggers,
           uniqueId: `${this.props.currentBlock.uniqueId}`,
           title: this.props.currentBlock.title,
-          chatbotId: this.props.chatbot._id,
-          payload: this.props.currentBlock.payload
+          chatbotId: this.props.chatbot.chatbotId,
+          payload: this.props.currentBlock.payload,
+          options: this.props.currentBlock.options
         }
         console.log('data to save for message block', data)
         this.props.handleMessageBlock(data, (res) => this.afterSave(res, data, block))
@@ -205,7 +208,7 @@ class Sidebar extends React.Component {
                     nodeId={`${item.id}`}
                     label={item.title}
                     selected={item.id === this.props.currentBlock.uniqueId}
-                    completed={this.props.blocks.find((b) => b.uniqueId.toString() === item.id.toString()).payload.length > 0}
+                    completed={this.props.blocks.find((b) => b.uniqueId === item.id).payload.length > 0}
                   />
                 ))
               }
