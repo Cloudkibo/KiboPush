@@ -194,7 +194,7 @@ class submitForm extends React.Component {
       }
         console.log('hubspotFormValue', this.state.hubspotFormValue)
         return ( 
-          <div className="modal-content" style={{ width: '687px', top: '100', height: this.state.show_scroll ? '700px' :'312px', overflow:'hidden'}}>
+          <div className="modal-content" style={{ width: '687px', top: '100', height: (this.props.hubSpotForms && this.props.hubSpotForms.length > 0) ? this.state.show_scroll ? '700px' :'312px' : '170px'}}>
           <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
           <div style={{ display: 'block' }} className="modal-header">
             <h5 className="modal-title" id="exampleModalLabel">
@@ -206,12 +206,13 @@ class submitForm extends React.Component {
                   </span>
             </button>
           </div>
-            <div style={{ textAlign: 'left', overflow:'hidden' , overflowY:'scroll' }} className="modal-body">
+            <div style={{ textAlign: 'left'}} className="modal-body">
+            {this.props.hubSpotForms && this.props.hubSpotForms.length > 0 ? 
+                <div>
                 <h6>HubSpot: Submit data to a form</h6>
                 <span style={{color: '#575962'}}>Send Custom Field data to HubSpot form. Form submissions can be made to any registered HubSpot form.</span>
              <br /> <br />
              <label style={{fontWeight: 'normal'}}>HubSpot Form:</label>
-          {this.props.hubSpotForms && this.props.hubSpotForms.length > 0 &&
             <select className='form-control m-input m-input--square' value={this.state.hubspotFormValue} onChange={this.onhubspotFormChange}>
               <option key='' value='' disabled>Select a HubSpot Form...</option>
               {
@@ -220,6 +221,7 @@ class submitForm extends React.Component {
                 ))
               }
             </select>
+            </div> : <h6>Currently there is no Hubspot form exist. Please create at least one Hubspot form to use this Action.</h6>
           }
           <br />
           {this.state.loadingColumns 
@@ -259,9 +261,11 @@ class submitForm extends React.Component {
           }
 
           </div>
+          {this.props.hubSpotForms && this.props.hubSpotForms.length > 0 &&
         <div className="m-portlet__foot m-portlet__foot--fit">
           <button className="btn btn-primary" disabled={this.state.buttonDisabled} style={{float: 'right', margin: '10px'}} onClick={this.save}>Save</button>
         </div>
+          }
         </div>
     )
     }
