@@ -312,6 +312,7 @@ class WhatsAppChat extends React.Component {
 
   setMessageData(session, payload, urlMeta) {
     const data = {
+      id : new Date().getTime(),
       senderNumber: this.props.automated_options.whatsApp.number,
       recipientNumber: this.state.activeSession.number,
       contactId: session._id,
