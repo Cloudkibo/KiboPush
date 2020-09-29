@@ -359,7 +359,7 @@ class Sidebar extends Component {
   }
 
   showAutomationItems() {
-    if (!this.props.isMobile && !this.state.isKiboLite && this.props.user && (this.props.user.platform === 'messenger' || this.props.user.platform === 'whatsApp')) {
+    if (!this.props.isMobile && !this.state.isKiboLite && this.props.user) {
       return (
         <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
           <span className='m-menu__link m-menu__toggle'>
@@ -394,6 +394,13 @@ class Sidebar extends Component {
                 this.props.user.platform === 'whatsApp' &&
                 <>
                   {this.showWhatsAppChatbot()}
+                  {this.showChatbots()}
+                </>
+              }
+              {
+                this.props.user.platform === 'sms' &&
+                <>
+                  {this.showChatbots()}
                 </>
               }
             </ul>
