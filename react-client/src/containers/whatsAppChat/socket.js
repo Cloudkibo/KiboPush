@@ -96,15 +96,15 @@ export function handleSocketEventWhatsapp (data, state, props, updateLiveChatInf
   }
 
   const handleAgentReply = (payload, state, props, updateLiveChatInfo, clearSocketData, user) => {
-    let ChatMessages = props.allChatMessages
-    let chatUser = ChatMessages[payload.subscriber_id]
-    if (chatUser && chatUser.length > 0 && chatUser[chatUser.length -1].id !== payload.message._id) {
-      let data = {}
-      let sessions = state.sessions
-      let session = sessions.find((s) => s._id === payload.subscriber_id)
-      const index = sessions.findIndex((s) => s._id === payload.subscriber_id)
-      if (state.activeSession._id === payload.subscriber_id) {
-        let userChat = state.userChat
+    let data = {}
+    let sessions = state.sessions
+    let session = sessions.find((s) => s._id === payload.subscriber_id)
+    const index = sessions.findIndex((s) => s._id === payload.subscriber_id)
+    if (state.activeSession._id === payload.subscriber_id) {
+      let userChat = state.userChat
+      console.log('userChat', userChat)
+      console.log('props.userChat', props.userChat)
+      if (userChat && userChat.length > 0 && userChat[userChat.length -1]._id !== payload.message._id) {
         payload.message.format = 'convos'
         userChat.push(payload.message)
         session = sessions.splice(index, 1)[0]
@@ -120,7 +120,9 @@ export function handleSocketEventWhatsapp (data, state, props, updateLiveChatInf
           closeSessions: state.tabValue === 'close' ? sessions : props.closeSessions,
           closeCount: state.tabValue === 'close' ? props.closeCount - 1 : props.closeCount
         }
-      } else if (index >= 0) {
+        updateLiveChatInfo(data)
+        clearSocketData()
+      } } else if (index >= 0) {
         session = sessions.splice(index, 1)[0]
         session.lastPayload = payload.message.payload
         session.last_activity_time = new Date()
@@ -132,9 +134,9 @@ export function handleSocketEventWhatsapp (data, state, props, updateLiveChatInf
           closeSessions: state.tabValue === 'close' ? sessions : props.closeSessions,
           closeCount: state.tabValue === 'close' ? props.closeCount - 1 : props.closeCount
         }
-      }
-      updateLiveChatInfo(data)
-      clearSocketData()
+        updateLiveChatInfo(data)
+        clearSocketData()
+
     } else {
       clearSocketData()
     }
