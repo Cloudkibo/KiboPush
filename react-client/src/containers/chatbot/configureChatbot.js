@@ -124,7 +124,7 @@ class ConfigureChatbot extends React.Component {
     this.setState({
       blocks,
       sidebarItems,
-      currentBlock: blocks[0],
+      currentBlock: blocks.find((item) => item.uniqueId === this.state.chatbot.startingBlockId),
       loading: false,
       progress,
       allTriggers
@@ -136,6 +136,7 @@ class ConfigureChatbot extends React.Component {
       return false
     } else {
       let options = data.options
+      options = options.filter((item) => ['home', 'back'].indexOf(item.title.toLowerCase()) === -1)
       if (options && options.length > 0) {
         return true
       } else {
@@ -148,6 +149,7 @@ class ConfigureChatbot extends React.Component {
     for (let i = 0; i < data.length; i++) {
       if (data[i].payload.length > 0) {
         let options = data[i].options
+        options = options.filter((item) => ['home', 'back'].indexOf(item.title.toLowerCase()) === -1)
         if (options && options.length > 0) {
           let blockIds = options.map((item) => item.blockId)
           if (blockIds.includes(current.uniqueId)) {
@@ -168,7 +170,8 @@ class ConfigureChatbot extends React.Component {
             blocks.push({
               title: data[i].options[j].title,
               payload: [],
-              uniqueId: data[i].options[j].blockId
+              uniqueId: data[i].options[j].blockId,
+              options: []
             })
           }
         }

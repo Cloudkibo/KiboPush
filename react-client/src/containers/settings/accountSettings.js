@@ -39,9 +39,9 @@ class AccountSettings extends React.Component {
     user.tfaEnabled = e.target.checked
     this.setState({tfaSwitch: e.target.checked})
     if (e.target.checked) {
-      this.props.enable2FA(data)
+      this.props.enable2FA(data, this.msg)
     } else {
-      this.props.disable2FA(data)
+      this.props.disable2FA(data, this.msg)
     }
   }
   verifyOtp(event) {

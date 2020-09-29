@@ -69,6 +69,7 @@ class LiveChat extends React.Component {
     super(props, context)
     this.state = {
       loading: true,
+      redirected: this.props.location.state && this.props.location.state.module === 'notifications',
       fetchingChat: false,
       loadingChat: true,
       sessionsLoading: false,
@@ -526,6 +527,27 @@ class LiveChat extends React.Component {
       state.sessionsCount = this.state.tabValue === 'open' ? nextProps.openCount : nextProps.closeCount
     }
 
+    if (this.state.redirected && this.props.location.state && this.props.location.state.id) {
+      if (nextProps.openSessions && nextProps.closeSessions) {
+        state.redirected = false
+        let openSessions = nextProps.openSessions
+        let closeSessions =nextProps.closeSessions
+        let openIndex = openSessions.findIndex((session) => session._id === this.props.location.state.id)
+        let closeIndex = closeSessions.findIndex((session) => session._id === this.props.location.state.id)
+        if (openIndex !== -1) {
+          state.activeSession = openSessions[openIndex]
+          this.changeActiveSession(openSessions[openIndex])
+          this.changeTab('open')
+        } else if (closeIndex !== -1) {
+          state.activeSession = closeSessions[closeIndex]
+          this.changeActiveSession(closeSessions[closeIndex])
+          this.changeTab('close')
+        } else {
+          state.activeSession = {}
+        }
+      }
+    }
+
     if (nextProps.customFields && nextProps.customFieldValues) {
       let fieldOptions = []
       for (let a = 0; a < nextProps.customFields.length; a++) {
@@ -634,6 +656,8 @@ class LiveChat extends React.Component {
                     fetchSessions={this.fetchSessions}
                     getChatPreview={this.getChatPreview}
                     markSessionsRead={this.markSessionsRead}
+                    superUser={this.props.superUser}
+                    alertMsg={this.alertMsg}
                     selected={this.state.selected}
                     showingBulkActions={this.state.showingBulkActions}
                     showBulkActions={true}
@@ -772,7 +796,8 @@ function mapStateToProps(state) {
     searchChatMsgs: (state.liveChat.searchChat),
     socketData: (state.socketInfo.socketData),
     zoomIntegrations: (state.settingsInfo.zoomIntegrations),
-    cannedResponses: state.settingsInfo.cannedResponses
+    cannedResponses: state.settingsInfo.cannedResponses,
+    superUser: (state.basicInfo.superUser)
 
   }
 }
