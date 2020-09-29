@@ -122,8 +122,8 @@ class Sessions extends React.Component {
 
   render() {
     return (
-      <div style={{ padding: '0px', border: '1px solid #F2F3F8' }} className='col-xl-4'>
-        <div style={{ overflow: 'hidden', marginBottom: '0px' }} className='m-portlet' >
+      <div style={{ padding: '0px', height: '87vh', border: '1px solid #F2F3F8' }} className='col-xl-4'>
+        <div style={{ overflow: 'hidden', height: '87vh', marginBottom: '0px' }} className='m-portlet' >
           <HEADER
             pages={this.props.pages ? this.props.pages : []}
             removeFilters={this.removeFilters}

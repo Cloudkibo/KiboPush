@@ -633,7 +633,7 @@ class LiveChat extends React.Component {
                   videoTutorial={{ visibility: true, videoId: 'bLotpQLvsfE' }}
                 />
               }
-              <div style={{ marginTop: this.props.isMobile ? '20px' : '0px' }} className='row'>
+              <div className='row'>
                 {
                   ((this.props.isMobile && !this.state.showChat) || !this.props.isMobile) &&
                   <SESSIONS

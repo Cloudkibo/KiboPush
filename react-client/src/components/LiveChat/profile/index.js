@@ -10,7 +10,7 @@ class Profile extends React.Component {
 
   render() {
     return (
-        <div id='profileArea' style={{padding: '0px', border: '1px solid #F2F3F8', marginBottom: '0px'}} className='col-xl-3 m-portlet'>
+        <div id='profileArea' style={{padding: '0px', height: '87vh', border: '1px solid #F2F3F8', marginBottom: '0px'}} className='col-xl-3 m-portlet'>
             <div className='m-card-profile'>
                 <div className='m-portlet__head'>
                     <Header
