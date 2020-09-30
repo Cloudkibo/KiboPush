@@ -191,7 +191,7 @@ const ConfigureChatbotAutomationNew = asyncComponent(() => import('./containers/
 const ConfigureCommerceChatbot = asyncComponent(() => import('./containers/commerceChatbot/configureCommerceChatbot'))
 const ChatbotAnalytics = asyncComponent(() => import('./containers/chatbotAutomation/analytics'))
 const WhatsAppChatbotAnalytics = asyncComponent(() => import('./containers/whatsAppChatbot/analytics'))
-const ShopifyChatbotAnalytics = asyncComponent(() => import('./containers/commerceChatbot/analytics'))
+const CommerceChatbotAnalytics = asyncComponent(() => import('./containers/commerceChatbot/analytics'))
 
 function requireAuth(nextState, replace) {
   if (!auth.loggedIn()) {
@@ -418,7 +418,7 @@ const Routes = () => (
     <Route path='/ErrorMessage' component={ErrorMessage} onEnter={requireAuth} />
     <Route path='/whatsAppChatbot' component={WhatsAppChatbot} onEnter={requireAuth} />
     <Route path='/whatsAppChatbotAnalytics' component={WhatsAppChatbotAnalytics} onEnter={requireAuth} />
-    <Route path='/shopifyChatbotAnalytics' component={ShopifyChatbotAnalytics} onEnter={requireAuth} />
+    <Route path='/commerceChatbotAnalytics' component={CommerceChatbotAnalytics} onEnter={requireAuth} />
     <Route path='*' render={() => <Redirect to='/' />} />
   </Switch>
 

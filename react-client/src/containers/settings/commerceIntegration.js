@@ -33,9 +33,9 @@ class CommerceIntegration extends React.Component {
   }
 
   getStoreType() {
-    if (this.props.store.storeType === 'shopify') {
+    if (this.props.store && this.props.store.storeType === 'shopify') {
       return "Shopify"
-    } else if (this.props.store.storeType === 'bigcommerce') {
+    } else if (this.props.store && this.props.store.storeType === 'bigcommerce') {
       return "BigCommerce"
     } else {
       return "E-Commerce"
@@ -55,11 +55,11 @@ class CommerceIntegration extends React.Component {
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <button ref='toggleDisconnect' data-toggle='modal' data-target='#_confirm_disconnect' style={{ display: 'none' }} />
         {
-          this.props.store.storeType === 'shopify' &&
+          this.props.store && this.props.store.storeType === 'shopify' &&
           <a target='_blank' rel='noopener noreferrer' href="https://partners.shopify.com/1033294/apps/2954997/test" ref='disconnect' style={{ display: 'none' }}> </a>
         }
         {
-          this.props.store.storeType === 'bigcommerce' &&
+          this.props.store && this.props.store.storeType === 'bigcommerce' &&
           <a target='_blank' rel='noopener noreferrer' href="https://store-970gsssotw.mybigcommerce.com/manage/marketplace/apps/25642" ref='disconnect' style={{ display: 'none' }}> </a>
         }
         <CONFIRMATIONMODAL

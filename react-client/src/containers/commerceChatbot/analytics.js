@@ -78,7 +78,7 @@ class Analytics extends React.Component {
 
     onBack() {
         this.props.history.push({
-            pathname: '/configureShopifyChatbot',
+            pathname: '/configureCommerceChatbot',
             state: { chatbot: this.state.chatbot, page: this.state.page, store: this.state.store }
         })
     }
@@ -124,7 +124,7 @@ class Analytics extends React.Component {
                                 </button> */}
                                 <div className='d-flex align-items-center'>
                                     <div className='mr-auto'>
-                                        <h3 className='m-subheader__title'>Shopify Chatbot Analytics for {this.state.page.pageName}</h3>
+                                        <h3 className='m-subheader__title'>Commerce Chatbot Analytics for {this.state.page.pageName}</h3>
                                     </div>
                                 </div>
                             </div>
