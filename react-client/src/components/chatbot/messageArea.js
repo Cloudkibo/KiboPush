@@ -275,7 +275,7 @@ class MessageArea extends React.Component {
       const blocks = [...this.props.blocks, newBlock]
       const completed = blocks.filter((item) => item.payload.length > 0).length
       const progress = Math.floor((completed / blocks.length) * 100)
-      const option = { title, blockId: id }
+      const option = { title, blockId: id, code: ('0' + options.length).slice(-2) }
       options.push(option)
       currentBlock.options = options
       this.props.updateParentState({
@@ -303,7 +303,8 @@ class MessageArea extends React.Component {
       let options = this.state.options
       options.push({
         title,
-        blockId: uniqueId
+        blockId: uniqueId,
+        code: ('0' + options.length).slice(-2)
       })
 
       const currentBlock = this.props.block
