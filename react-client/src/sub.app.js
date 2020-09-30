@@ -48,7 +48,7 @@ class App extends Component {
         this.props.history.push({
           pathname: '/resendVerificationEmail'
         })
-      } else if (nextProps.user.platform === '' && nextProps.user.role === 'buyer') {
+      } else if ((!nextProps.user.platform  || nextProps.user.platform === '') && nextProps.user.role === 'buyer') {
         this.props.history.push({
           pathname: '/integrations'
         })
