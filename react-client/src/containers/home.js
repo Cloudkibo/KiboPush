@@ -36,10 +36,12 @@ class Home extends Component {
       return (
         <WhatsAppDashboard location={this.props.location} history={this.props.history} />
       )
-    } else {
+    } else if (this.props.user && this.props.user.platform === 'messenger') {
       return (
         <Dashboard location={this.props.location} history={this.props.history} />
       )
+    } else {
+      return null
     }
   }
 }
