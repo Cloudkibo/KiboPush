@@ -181,7 +181,6 @@ class Chat extends React.Component {
           ? <div
             className='m-messenger'
             style={{
-              position: this.props.isMobile ? '' : 'absolute',
               bottom: 0,
               borderTop: '1px solid #ebedf2',
               width: '100%',
@@ -202,7 +201,6 @@ class Chat extends React.Component {
           ? <div
             className='m-messenger'
             style={{
-              position: this.props.isMobile ? '' : 'absolute',
               bottom: 0,
               borderTop: '1px solid #ebedf2',
               width: '100%',
