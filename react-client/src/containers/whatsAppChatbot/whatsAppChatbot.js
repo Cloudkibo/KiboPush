@@ -7,7 +7,7 @@ import AlertContainer from 'react-alert'
 import MODAL from '../../components/extras/modal'
 import { validateCommaSeparatedPhoneNumbers } from "../../utility/utils"
 import { UncontrolledTooltip } from 'reactstrap'
-import { fetchStore } from '../../redux/actions/shopify.actions'
+import { fetchBigCommerceStore, fetchShopifyStore } from '../../redux/actions/commerce.actions'
 
 class WhatsAppChatbot extends React.Component {
   constructor(props, context) {
@@ -32,11 +32,11 @@ class WhatsAppChatbot extends React.Component {
     this.handleTestSubscribers = this.handleTestSubscribers.bind(this)
     this.saveTestSubscribers = this.saveTestSubscribers.bind(this)
     this.clearTestSubscribers = this.clearTestSubscribers.bind(this)
-    this.goToShopifySettings = this.goToShopifySettings.bind(this)
-    this.getConnectShopifyContent = this.getConnectShopifyContent.bind(this)
+    this.goToCommerceSettings = this.goToCommerceSettings.bind(this)
+    this.getConnectEcommerceContent = this.getConnectEcommerceContent.bind(this)
 
-    props.fetchChatbot()
-    props.fetchStore()
+    props.fetchBigCommerceStore()
+    props.fetchShopifyStore()
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
@@ -100,9 +100,9 @@ class WhatsAppChatbot extends React.Component {
 
   setTestSubscribers() {
     if (!this.props.store) {
-      let shopifyConnectModal = document.getElementById('_shopify_integration_trigger')
-      if (shopifyConnectModal) {
-        shopifyConnectModal.click()
+      let commerceConnectModal = document.getElementById('_commerce_integration_trigger')
+      if (commerceConnectModal) {
+        commerceConnectModal.click()
       }
     } else {
       let testSubscribersModal = document.getElementById('_test_subscribers_trigger')
@@ -115,9 +115,9 @@ class WhatsAppChatbot extends React.Component {
   saveChatbot(e) {
     e.preventDefault()
     if (!this.props.store) {
-      let shopifyConnectModal = document.getElementById('_shopify_integration_trigger')
-      if (shopifyConnectModal) {
-        shopifyConnectModal.click()
+      let commerceConnectModal = document.getElementById('_commerce_integration_trigger')
+      if (commerceConnectModal) {
+        commerceConnectModal.click()
       }
     } else {
       if (!this.props.chatbot) {
@@ -247,24 +247,24 @@ class WhatsAppChatbot extends React.Component {
     )
   }
 
-  goToShopifySettings() {
-    document.getElementById('_close_shopify_integration').click()
+  goToCommerceSettings() {
+    document.getElementById('_close_commerce_integration').click()
     this.props.history.push({
       pathname: '/settings',
-      state: { tab: 'shopifyIntegration' }
+      state: { tab: 'commerceIntegration' }
     })
   }
 
-  getConnectShopifyContent() {
+  getConnectEcommerceContent() {
     return (
       <div>
         <div>
           <span>
-            You have not integrated Shopify with KiboPush. Please integrate Shopify to continue.
+            You have not integrated an e-commerce provider with KiboPush. Please integrate an e-commerce provider to continue.
         </span>
         </div>
         <div style={{ marginTop: '25px', textAlign: 'center' }}>
-          <div onClick={this.goToShopifySettings} className='btn btn-primary'>
+          <div onClick={this.goToCommerceSettings} className='btn btn-primary'>
             Integrate
         </div>
         </div>
@@ -300,19 +300,19 @@ class WhatsAppChatbot extends React.Component {
           Test Subscribers Modal
         </button>
         <MODAL
-          id='_shopify_integration'
-          title='Shopify Integration'
-          content={this.getConnectShopifyContent()}
+          id='_commerce_integration'
+          title='Commerce Integration'
+          content={this.getConnectEcommerceContent()}
         />
         <button
-          id="_shopify_integration_trigger"
-          data-target='#_shopify_integration'
+          id="_commerce_integration_trigger"
+          data-target='#_commerce_integration'
           data-backdrop="static"
           data-keyboard="false"
           data-toggle='modal'
           type='button'
           style={{ display: 'none' }}>
-          Shopify Integration Modal
+          Commerce Integration Modal
         </button>
 
 
@@ -368,12 +368,21 @@ class WhatsAppChatbot extends React.Component {
 
                           <div className="form-group m-form__group col-lg-8">
                             <h6>Store:</h6>
-                            <input required type="text" disabled value={this.props.store ? this.props.store.name : ''} className="form-control m-input" id="_shopify_store" />
+                            <input required type="text" disabled value={this.props.store ? this.props.store.name : ''} className="form-control m-input" id="_commerce_store" />
                           </div>
 
-                          <div className="col-lg-4">
-                            <img alt="shopify-logo" style={{ width: '100px', marginTop: '15px', opacity: this.props.store ? '1' : '0.5' }} src='https://i.pcmag.com/imagery/reviews/02lLbDwVdtIQN2uDFnHeN41-11..v_1569480019.jpg' />
-                          </div>
+                          {
+                            this.state.store && this.state.store.storeType === 'shopify' &&
+                            <div className="col-lg-4">
+                              <img alt="shopify-logo" style={{ width: '100px', marginTop: '15px' }} src='https://i.pcmag.com/imagery/reviews/02lLbDwVdtIQN2uDFnHeN41-11..v_1569480019.jpg' />
+                            </div>
+                          }
+                          {
+                            this.state.store && this.state.store.storeType === 'bigcommerce' &&
+                            <div className="col-lg-4">
+                              <img alt="bigcommerce-logo" style={{ width: '100px', marginTop: '25px' }} src='https://s3.amazonaws.com/www1.bigcommerce.com/assets/mediakit/downloads/BigCommerce-logo-dark.png' />
+                            </div>
+                          }
 
                           {/* <div className="form-group m-form__group col-lg-8">
                             <h6>
@@ -468,7 +477,7 @@ function mapStateToProps(state) {
   return {
     user: (state.basicInfo.user),
     chatbot: (state.whatsAppChatbot.chatbot),
-    store: (state.shopifyInfo.store)
+    store: (state.commerceInfo.store)
   }
 }
 
@@ -477,7 +486,8 @@ function mapDispatchToProps(dispatch) {
     updateChatbot,
     createChatbot,
     fetchChatbot,
-    fetchStore
+    fetchShopifyStore,
+    fetchBigCommerceStore
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(WhatsAppChatbot)

@@ -99,6 +99,7 @@ class Sidebar extends Component {
           route: platform === 'messenger' ? '/broadcasts' : platform === 'sms' ? '/smsBroadcasts' : '/whatsAppBroadcasts'
         })
       }
+
       if (platform === 'messenger' && user.plan['surveys'] && user.permissions['view_surveys']) {
         submenu.push({
           priority: 'b',
@@ -226,7 +227,7 @@ class Sidebar extends Component {
       if (platform === 'whatsApp' && (isKiboChat || isLocalhost) && platform === 'whatsApp') {
         submenu.push({
           priority: 'g',
-          name: 'Shopify Chatbot',
+          name: 'Commerce Chatbot',
           route: '/whatsAppChatbot'
         })
       }
