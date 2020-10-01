@@ -381,7 +381,6 @@ class Sidebar extends Component {
                 this.props.user.platform === 'messenger' &&
                 <>
                   {this.showSmartRespliesItem()}
-                  {this.showChatbots()}
                   {this.showChatbotAutomation()}
                   {this.showChatbotAutomationNew()}
                   {this.showAutoPostingItem()}
@@ -736,7 +735,7 @@ class Sidebar extends Component {
   }
 
   showChatbotAutomation() {
-    if (this.props.user && (this.state.isKiboChat || this.state.isLocalhost)) {
+    if (this.props.user && this.props.user.isSuperUser && (this.state.isKiboChat || this.state.isLocalhost)) {
       return (
         <li className='m-menu__item' aria-haspopup='true' >
           <Link to='/chatbotAutomation' className='m-menu__link'>
@@ -744,7 +743,7 @@ class Sidebar extends Component {
               <span />
             </i>
             <span className='m-menu__link-text'>
-              Chatbot Automation
+              Chatbot Automation (OLD)
             </span>
           </Link>
         </li>
@@ -755,7 +754,7 @@ class Sidebar extends Component {
   }
 
   showChatbotAutomationNew() {
-    if (this.props.user && this.props.user.isSuperUser && (this.state.isKiboChat || this.state.isLocalhost)) {
+    if (this.props.user && (this.state.isKiboChat || this.state.isLocalhost)) {
       return (
         <li className='m-menu__item' aria-haspopup='true' >
           <Link to='/chatbotAutomationNew' className='m-menu__link'>
@@ -763,7 +762,7 @@ class Sidebar extends Component {
               <span />
             </i>
             <span className='m-menu__link-text'>
-              Chatbot Automation (NEW)
+              Chatbot Automation
             </span>
           </Link>
         </li>
