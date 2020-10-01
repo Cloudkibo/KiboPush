@@ -50,7 +50,7 @@ class Footer extends React.Component {
   }
 
   setBackHomeButton (currentBlock) {
-    if (currentBlock.payload.length > 0) {
+    if (currentBlock.options.length > 0) {
       const options = currentBlock.options
       const back = options.find((item) => item.title === 'Back')
       const home = options.find((item) => item.title === 'Home')

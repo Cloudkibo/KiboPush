@@ -11,13 +11,18 @@ import {
   updatePicture,
   updateShowIntegrations,
   disconnectFacebook,
+  saveEnvironment,
   logout
 } from '../../redux/actions/basicinfo.actions'
 import {
   setUsersView
 } from '../../redux/actions/backdoor.actions'
+import {
+  saveNotificationSessionId
+} from '../../redux/actions/livechat.actions'
 import { fetchNotifications, markRead } from '../../redux/actions/notifications.actions'
 import AlertContainer from 'react-alert'
+import cookie from 'react-cookie'
 
 // Components
 import HEADERMENU from './headerMenu'
@@ -59,6 +64,9 @@ class Header extends React.Component {
   componentDidMount () {
     if (this.props.user) {
       this.setPlatform(this.props.user)
+    }
+    if (cookie.load('environment')) {
+      this.props.saveEnvironment(cookie.load('environment'))
     }
   }
 
@@ -161,7 +169,7 @@ class Header extends React.Component {
     // e.target.src = 'https://emblemsbf.com/img/27447.jpg'
     this.props.updatePicture({ user: this.props.user })
   }
- 
+
   logout(res) {
     if (res.status === 'success') {
       this.props.updateShowIntegrations({ showIntegrations: true })
@@ -190,18 +198,18 @@ class Header extends React.Component {
       if (this.props.user.platform === 'messenger') {
         this.props.history.push({
           pathname: `/liveChat`,
-          state: { id: id }
         })
+        this.props.saveNotificationSessionId({sessionId: id})
       } else if (this.props.user.platform === 'whatsApp') {
         this.props.history.push({
           pathname: `/whatsAppChat`,
-          state: { id: id }
         })
+        this.props.saveNotificationSessionId({sessionId: id})
       } else if (this.props.user.platform === 'sms') {
         this.props.history.push({
-          pathname: `/smsChat`,
-          state: { id: id }
+          pathname: `/smsChat`
         })
+        this.props.saveNotificationSessionId({sessionId: id})
       }
     }
   }
@@ -357,6 +365,7 @@ class Header extends React.Component {
                 updatePicture={this.props.updatePicture}
                 logout={this.props.logout}
                 setUsersView={this.props.setUsersView}
+                currentEnvironment= {this.props.currentEnvironment}
               />
             </div>
           </div>
@@ -425,7 +434,8 @@ function mapStateToProps(state) {
     userView: (state.backdoorInfo.userView),
     notifications: (state.notificationsInfo.notifications),
     subscribers: (state.subscribersInfo.subscribers),
-    otherPages: (state.pagesInfo.otherPages)
+    otherPages: (state.pagesInfo.otherPages),
+    currentEnvironment: (state.basicInfo.currentEnvironment)
   }
 }
 
@@ -439,7 +449,9 @@ function mapDispatchToProps(dispatch) {
     updateShowIntegrations,
     disconnectFacebook,
     logout,
-    setUsersView
+    setUsersView,
+    saveNotificationSessionId,
+    saveEnvironment
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Header)

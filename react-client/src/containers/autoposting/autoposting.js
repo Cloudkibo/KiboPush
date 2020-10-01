@@ -289,19 +289,22 @@ class Autoposting extends React.Component {
                       </h3>
                     </div>
                   </div>
-                  <div className='m-portlet__head-tools'>
-                    <Link data-toggle="modal" data-target="#addFeed">
-                      <button
-                        className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
-                        <span>
-                          <i className='la la-plus' />
+                  {
+                    this.props.user.permissions['add_autoposting_feeds'] &&
+                    <div className='m-portlet__head-tools'>
+                      <Link data-toggle="modal" data-target="#addFeed">
+                        <button
+                          className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
                           <span>
-                            Add Feed
+                            <i className='la la-plus' />
+                            <span>
+                              Add Feed
+                            </span>
                           </span>
-                        </span>
-                      </button>
-                    </Link>
-                  </div>
+                        </button>
+                      </Link>
+                    </div>
+                  }
                 </div>
                 <div className='m-portlet__body'>
                   <div className='col-12'>
@@ -321,7 +324,21 @@ class Autoposting extends React.Component {
                     this.props.autopostingData && this.props.autopostingData.length > 0
                       ? this.props.autopostingData.map((item, i) => (
                         <div className='m-widget5'>
-                          <ListItem key={item._id} updateDeleteID={this.updateDeleteID} openSettings={this.gotoSettings} gotoMessages={this.gotoMessages} type={item.subscriptionType} title={item.accountTitle} username={item.userId} item={item} marginState={false} openGuidelines={this.viewGuide} />
+                          <ListItem
+                            key={item._id}
+                            updateDeleteID={this.updateDeleteID}
+                            openSettings={this.gotoSettings}
+                            gotoMessages={this.gotoMessages}
+                            type={item.subscriptionType}
+                            title={item.accountTitle}
+                            username={item.userId}
+                            item={item}
+                            marginState={false}
+                            openGuidelines={this.viewGuide}
+                            showHistory={(this.props.user.plan['autoposting_history'] && this.props.user.permissions['view_autoposting_feed_history'])}
+                            showSettings={this.props.user.permissions['update_autoposting_feeds']}
+                            showDelete={this.props.user.permissions['delete_autoposting_feeds']}
+                          />
                         </div>
                       ))
                       : <p>Currently, you do not have any feeds. Click on Add Feed button to add new feeds. </p>
@@ -339,6 +356,7 @@ function mapStateToProps(state) {
   return {
     autopostingData: (state.autopostingInfo.autopostingData),
     pages: (state.pagesInfo.pages),
+    user: (state.basicInfo.user)
   }
 }
 

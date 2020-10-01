@@ -78,7 +78,7 @@ class MessageArea extends React.Component {
         text: '',
         attachment: {},
         triggers: block.triggers || [],
-        options: []
+        options: block.options || []
       })
     }
   }
@@ -168,14 +168,18 @@ class MessageArea extends React.Component {
   }
 
   onDelete () {
-    let blockUniqueIds = this.props.sidebarItems.filter((item) => item.parentId && item.parentId === this.props.block.uniqueId).map((item) => item.id)
-    blockUniqueIds = [...blockUniqueIds, this.props.block.uniqueId]
-    const blockIds = this.props.blocks.filter((item) => item._id && blockUniqueIds.includes(item.uniqueId)).map((item) => item._id)
-    console.log('blockIds', blockIds)
-    if (blockIds.includes('welcome-id') || blockIds.length === 0) {
-      this.afterDelete({status: 'success'}, blockUniqueIds)
-    } else {
-      this.props.deleteMessageBlock(blockIds, (res) => this.afterDelete(res, blockUniqueIds))
+    let blockUniqueIds = [this.props.block.uniqueId]
+    let childBlocks = this.props.sidebarItems.filter((item) => blockUniqueIds.indexOf(item.id) === -1)
+    /* eslint-disable */
+    do {
+      let ids = childBlocks.filter((item) => blockUniqueIds.includes(item.parentId)).map((item) => item.id)
+      blockUniqueIds = [...blockUniqueIds, ...ids]
+      childBlocks = this.props.sidebarItems.filter((item) => blockUniqueIds.indexOf(item.id) === -1)
+    } while (childBlocks.filter((item) => blockUniqueIds.includes(item.parentId)).length > 0)
+    /* eslint-enable */
+    console.log('blockIds', blockUniqueIds)
+    if (blockUniqueIds.length > 0){
+      this.props.deleteMessageBlock(blockUniqueIds, (res) => this.afterDelete(res, blockUniqueIds))
     }
   }
 
@@ -186,36 +190,39 @@ class MessageArea extends React.Component {
       let sidebarItems = this.props.sidebarItems.filter((item) => !blockUniqueIds.includes(item.id))
       let currentBlock = {}
       if (blocks.length === 0) {
-        const id = new Date().getTime()
         blocks = [{
-          _id: 'welcome-id',
           title: 'Welcome',
           payload: [],
-          uniqueId: id,
-          triggers: []
+          uniqueId: this.props.chatbot.startingBlockId,
+          triggers: [],
+          options: []
         }]
         sidebarItems = [{
           title: 'Welcome',
-          id,
+          id: this.props.chatbot.startingBlockId,
           isParent: false
         }]
         currentBlock = blocks[0]
-        this.props.updateParentState({blocks, sidebarItems, currentBlock})
+        const completed = blocks.filter((item) => item.payload.length > 0).length
+        const progress = Math.floor((completed / blocks.length) * 100)
+        this.props.updateParentState({blocks, sidebarItems, currentBlock, progress})
       } else {
         const parentId = this.props.sidebarItems.find((item) =>  item.id === this.props.block.uniqueId).parentId
-        const parent = this.props.blocks.find((item) => item.uniqueId === parentId)
-        const options = parent.options
-        const qrIndex = options.findIndex((item) => item.title === this.props.block.title)
-        options.splice(qrIndex, 1)
-        parent.options = options
-        const bIndex = this.props.blocks.findIndex((item) => item._id === parent._id)
-        blocks[bIndex] = parent
-        currentBlock = parent
-        this.props.handleMessageBlock({...parent, chatbotId: this.props.chatbot._id}, (res) => {
-          const completed = blocks.filter((item) => item.payload.length > 0).length
-          const progress = Math.floor((completed / blocks.length) * 100)
-          this.props.updateParentState({blocks, sidebarItems, currentBlock, progress, unsavedChanges: false})
-        })
+        if (parentId) {
+          const parent = this.props.blocks.find((item) => item.uniqueId === parentId)
+          const options = parent.options
+          const qrIndex = options.findIndex((item) => item.title === this.props.block.title)
+          options.splice(qrIndex, 1)
+          parent.options = options
+          const bIndex = this.props.blocks.findIndex((item) => item.uniqueId === parent.uniqueId)
+          blocks[bIndex] = parent
+          currentBlock = parent
+          this.props.handleMessageBlock({...parent}, (res) => {
+            const completed = blocks.filter((item) => item.payload.length > 0).length
+            const progress = Math.floor((completed / blocks.length) * 100)
+            this.props.updateParentState({blocks, sidebarItems, currentBlock, progress, unsavedChanges: false})
+          })
+        }
       }
     } else {
       this.props.alertMsg.error('Failed to delete message block')
@@ -268,7 +275,7 @@ class MessageArea extends React.Component {
       const blocks = [...this.props.blocks, newBlock]
       const completed = blocks.filter((item) => item.payload.length > 0).length
       const progress = Math.floor((completed / blocks.length) * 100)
-      const option = { title, blockId: id }
+      const option = { title, blockId: id, code: ('0' + options.length).slice(-2) }
       options.push(option)
       currentBlock.options = options
       this.props.updateParentState({
@@ -296,7 +303,8 @@ class MessageArea extends React.Component {
       let options = this.state.options
       options.push({
         title,
-        blockId: uniqueId
+        blockId: uniqueId,
+        code: ('0' + options.length).slice(-2)
       })
 
       const currentBlock = this.props.block
@@ -341,6 +349,7 @@ class MessageArea extends React.Component {
   }
 
   UNSAFE_componentWillReceiveProps (nextProps) {
+    console.log('UNSAFE_componentWillReceiveProps', nextProps)
     if (nextProps.block) {
       this.setStateData(nextProps.block)
     }

@@ -44,6 +44,7 @@ export function update (data, msg) {
     callApi('teams/update', 'post', data)
       .then(res => {
         if (res.status === 'success') {
+          msg.success('Changes save successfully')
           dispatch(loadTeamsList())
         } else {
           msg.error(res.description || 'Failed to edit team')
@@ -59,7 +60,9 @@ export function addAgent (data, msg) {
         if (res.status === 'success') {
           dispatch(loadTeamsList())
         } else {
-          msg.error(res.description || 'Failed to add agent')
+          if (msg) {
+            msg.error(res.description || 'Failed to add agent')
+          }
         }
       })
   }
@@ -73,7 +76,9 @@ export function addPage (data, msg) {
         if (res.status === 'success') {
           dispatch(loadTeamsList())
         } else {
-          msg.error(res.description || 'Failed to add page')
+          if (msg) {
+            msg.error(res.description || 'Failed to add page')
+          }
         }
       })
   }
@@ -87,7 +92,9 @@ export function removePage (data, msg) {
         if (res.status === 'success') {
           dispatch(loadTeamsList())
         } else {
-          msg.error(res.description || 'Failed to remove page')
+          if (msg) {
+            msg.error(res.description || 'Failed to remove page')
+          }
         }
       })
   }
@@ -102,7 +109,9 @@ export function removeAgent (data, msg) {
         if (res.status === 'success') {
           dispatch(loadTeamsList())
         } else {
-          msg.error(res.description || 'Failed to remove agent')
+          if (msg) {
+            msg.error(res.description || 'Failed to remove agent')
+          }
         }
       })
   }
