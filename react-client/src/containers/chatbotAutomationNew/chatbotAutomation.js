@@ -64,7 +64,7 @@ class ChatbotAutomation extends React.Component {
       let chatbotState = { ...this.state[type] }
       chatbotState.loading = true;
       this.setState({ [type]: chatbotState })
-      this.props.createCommerceChatbot({ pageId: this.state[type].selectedPage }, (res) => this.handleOnCreate(res, pageFbId, type))
+      this.props.createCommerceChatbot({ pageId: this.state[type].selectedPage, storeType: this.props.store.storeType }, (res) => this.handleOnCreate(res, pageFbId, type))
     }
   }
 
