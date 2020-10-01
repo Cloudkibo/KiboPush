@@ -9,6 +9,7 @@ import { connect } from 'react-redux'
 import CardBoxesContainer from '../../components/smsWhatsAppDashboard/cardboxes'
 import SubscriberSummary from '../../components/smsWhatsAppDashboard/subscriberSummary'
 import SentSeen from '../../components/smsWhatsAppDashboard/sentSeen'
+import { getAutomatedOptions } from '../../redux/actions/basicinfo.actions'
 import { loadCardBoxesDataSms, loadSubscriberSummarySms, loadSentSeenSms } from '../../redux/actions/smsDashboard.actions'
 import { joinRoom } from '../../utility/socketio'
 import { bindActionCreators } from 'redux'
@@ -31,6 +32,7 @@ class Dashboard extends React.Component {
     this.props.loadCardBoxesDataSms()
     this.props.loadSentSeenSms({days: 30})
     this.props.loadSubscriberSummarySms({days: 'all'})
+    this.props.getAutomatedOptions()
   }
   UNSAFE_componentWillReceiveProps (nextprops) {
     if (nextprops.user) {
@@ -181,7 +183,8 @@ function mapDispatchToProps (dispatch) {
     {
       loadCardBoxesDataSms,
       loadSubscriberSummarySms,
-      loadSentSeenSms
+      loadSentSeenSms,
+      getAutomatedOptions
     },
     dispatch)
 }
