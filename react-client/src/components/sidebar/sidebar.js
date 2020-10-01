@@ -181,17 +181,17 @@ class Sidebar extends Component {
           route: '/chatbots'
         })
       }
+      if (platform === 'messenger' && (isKiboChat || isLocalhost) && user.isSuperUser && user.plan['chatbot_automation'] && user.permissions['configure_chatbot_automation']) {
+        submenu.push({
+          priority: 'b',
+          name: 'Chatbot Automation (OLD)',
+          route: '/chatbotAutomation'
+        })
+      }
       if (platform === 'messenger' && (isKiboChat || isLocalhost) && user.plan['chatbot_automation'] && user.permissions['configure_chatbot_automation']) {
         submenu.push({
           priority: 'b',
           name: 'Chatbot Automation',
-          route: '/chatbotAutomation'
-        })
-      }
-      if (platform === 'messenger' && (isKiboChat || isLocalhost) && user.isSuperUser && user.plan['chatbot_automation'] && user.permissions['configure_chatbot_automation']) {
-        submenu.push({
-          priority: 'b',
-          name: 'Chatbot Automation (NEW)',
           route: '/chatbotAutomationNew'
         })
       }
