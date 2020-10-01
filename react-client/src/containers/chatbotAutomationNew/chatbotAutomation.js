@@ -280,137 +280,139 @@ class ChatbotAutomation extends React.Component {
             </div>
           </div>
 
-
-          <div className='row'>
-            <div className='col-xl-12'>
-              <div className='m-portlet m-portlet-mobile'>
-                <div className='m-portlet__head'>
-                  <div className='m-portlet__head-caption'>
-                    <div className='m-portlet__head-title'>
-                      <h3 className='m-portlet__head-text'>
-                        Shopify Chatbot
-                      </h3>
+          {
+            this.props.user.isSuperUser &&
+            <div className='row'>
+              <div className='col-xl-12'>
+                <div className='m-portlet m-portlet-mobile'>
+                  <div className='m-portlet__head'>
+                    <div className='m-portlet__head-caption'>
+                      <div className='m-portlet__head-title'>
+                        <h3 className='m-portlet__head-text'>
+                          Shopify Chatbot
+                        </h3>
+                      </div>
                     </div>
                   </div>
-                </div>
-                <div className='m-portlet__body'>
-                  {
-                    !this.props.store &&
-                    <div>
-                      <h6 style={{ textAlign: 'center' }}>
-                        You have not integrated Shopify with KiboPush. Please integrate Shopify to create a Shopify Chatbot.
-                      </h6>
-                      <div style={{ marginTop: '25px', textAlign: 'center' }}>
-                        <div onClick={this.goToShopifySettings} className='btn btn-primary'>
-                          Integrate
+                  <div className='m-portlet__body'>
+                    {
+                      !this.props.store &&
+                      <div>
+                        <h6 style={{ textAlign: 'center' }}>
+                          You have not integrated Shopify with KiboPush. Please integrate Shopify to create a Shopify Chatbot.
+                        </h6>
+                        <div style={{ marginTop: '25px', textAlign: 'center' }}>
+                          <div onClick={this.goToShopifySettings} className='btn btn-primary'>
+                            Integrate
+                        </div>
+                        </div>
                       </div>
-                      </div>
-                    </div>
-                  }
-                  {
-                    this.props.store &&
-                    <div className="m-form__group form-group">
-                      <div className="m-radio-list">
-                        <label className="m-radio m-radio--bold m-radio--state-brand">
-                          <input
-                            type="radio"
-                            onClick={(e) => this.onRadioClick(e, 'shopifyChatbot')}
-                            onChange={() => { }}
-                            value='modify'
-                            checked={this.state.shopifyChatbot.selectedRadio === 'modify'}
-                          />
-                          Modify Existing Chatbot
-                        <span />
-                        </label>
-                        {
-                          this.state.shopifyChatbot.selectedRadio === 'modify' &&
-                          <div style={{ marginLeft: '50px' }} className='row'>
-                            {
-                              shopifyChatbots && shopifyChatbots.length > 0
-                                ? shopifyChatbots.map((chatbot) => (
-                                  <CHATBOT
-                                    key={chatbot._id}
-                                    profilePic={chatbot.pageId.pagePic}
-                                    name={chatbot.pageId.pageName}
-                                    onItemClick={() => this.modifyChatbot(chatbot, 'shopifyChatbot', manualChatbots.find((c) => c.pageId._id === chatbot.pageId._id))}
-                                  />
-                                ))
-                                : (!shopifyChatbots) ?
-                                  <p>Loading chatbots...</p>
-                                  : <p>No data to display</p>
-                            }
-                          </div>
-                        }
-                        <label className="m-radio m-radio--bold m-radio--state-brand">
-                          <input
-                            type="radio"
-                            onClick={(e) => this.onRadioClick(e, 'shopifyChatbot')}
-                            onChange={() => { }}
-                            value='create'
-                            checked={this.state.shopifyChatbot.selectedRadio === 'create'}
-                          />
-                          Create New Chatbot
-                        <span />
-                        </label>
-                        {
-                          this.state.shopifyChatbot.selectedRadio === 'create' &&
-                          <div style={{ marginLeft: '50px' }} className='row'>
-                            {
-                              this.props.pages && this.props.pages.length > 0
-                                ? shopifyChatbotPages.length > 0
-                                  ? <div style={{ width: '100%' }} className='row'>
-                                    <div className='col-md-6'>
-                                      <div className="form-group m-form__group">
-                                        <select
-                                          className="form-control m-input"
-                                          value={this.state.shopifyChatbot.selectedPage}
-                                          onChange={(e) => this.onPageChange(e, 'shopifyChatbot')}
+                    }
+                    {
+                      this.props.store &&
+                      <div className="m-form__group form-group">
+                        <div className="m-radio-list">
+                          <label className="m-radio m-radio--bold m-radio--state-brand">
+                            <input
+                              type="radio"
+                              onClick={(e) => this.onRadioClick(e, 'shopifyChatbot')}
+                              onChange={() => { }}
+                              value='modify'
+                              checked={this.state.shopifyChatbot.selectedRadio === 'modify'}
+                            />
+                            Modify Existing Chatbot
+                          <span />
+                          </label>
+                          {
+                            this.state.shopifyChatbot.selectedRadio === 'modify' &&
+                            <div style={{ marginLeft: '50px' }} className='row'>
+                              {
+                                shopifyChatbots && shopifyChatbots.length > 0
+                                  ? shopifyChatbots.map((chatbot) => (
+                                    <CHATBOT
+                                      key={chatbot._id}
+                                      profilePic={chatbot.pageId.pagePic}
+                                      name={chatbot.pageId.pageName}
+                                      onItemClick={() => this.modifyChatbot(chatbot, 'shopifyChatbot', manualChatbots.find((c) => c.pageId._id === chatbot.pageId._id))}
+                                    />
+                                  ))
+                                  : (!shopifyChatbots) ?
+                                    <p>Loading chatbots...</p>
+                                    : <p>No data to display</p>
+                              }
+                            </div>
+                          }
+                          <label className="m-radio m-radio--bold m-radio--state-brand">
+                            <input
+                              type="radio"
+                              onClick={(e) => this.onRadioClick(e, 'shopifyChatbot')}
+                              onChange={() => { }}
+                              value='create'
+                              checked={this.state.shopifyChatbot.selectedRadio === 'create'}
+                            />
+                            Create New Chatbot
+                          <span />
+                          </label>
+                          {
+                            this.state.shopifyChatbot.selectedRadio === 'create' &&
+                            <div style={{ marginLeft: '50px' }} className='row'>
+                              {
+                                this.props.pages && this.props.pages.length > 0
+                                  ? shopifyChatbotPages.length > 0
+                                    ? <div style={{ width: '100%' }} className='row'>
+                                      <div className='col-md-6'>
+                                        <div className="form-group m-form__group">
+                                          <select
+                                            className="form-control m-input"
+                                            value={this.state.shopifyChatbot.selectedPage}
+                                            onChange={(e) => this.onPageChange(e, 'shopifyChatbot')}
+                                          >
+                                            <option value='' disabled>Select a page...</option>
+                                            {
+                                              shopifyChatbotPages.map((page) => (
+                                                <option key={page._id} value={page._id}>{page.pageName}</option>
+                                              ))
+                                            }
+                                          </select>
+                                        </div>
+                                      </div>
+                                      <div className='col-md-3'>
+                                        <button
+                                          type='button'
+                                          style={{ border: '1px solid' }}
+                                          className={`btn btn-primary ${this.state.shopifyChatbot.loading && 'm-loader m-loader--light m-loader--left'}`}
+                                          onClick={(e) => this.onCreate("shopifyChatbot")}
+                                          disabled={!this.state.shopifyChatbot.selectedPage}
                                         >
-                                          <option value='' disabled>Select a page...</option>
-                                          {
-                                            shopifyChatbotPages.map((page) => (
-                                              <option key={page._id} value={page._id}>{page.pageName}</option>
-                                            ))
-                                          }
-                                        </select>
+                                          Create
+                                    </button>
                                       </div>
                                     </div>
-                                    <div className='col-md-3'>
-                                      <button
-                                        type='button'
-                                        style={{ border: '1px solid' }}
-                                        className={`btn btn-primary ${this.state.shopifyChatbot.loading && 'm-loader m-loader--light m-loader--left'}`}
-                                        onClick={(e) => this.onCreate("shopifyChatbot")}
-                                        disabled={!this.state.shopifyChatbot.selectedPage}
-                                      >
-                                        Create
-                                  </button>
-                                    </div>
-                                  </div>
-                                  : <div>
-                                    You have created the chatbot for all your connected pages.
+                                    : <div>
+                                      You have created the chatbot for all your connected pages.
+                                </div>
+                                  : (!this.props.pages) ?
+                                    <div>
+                                      Loading Pages...
                               </div>
-                                : (!this.props.pages) ?
-                                  <div>
-                                    Loading Pages...
+                                    :
+                                    <div>
+                                      Please connect a Facebook page to continue
+                                <Link to='/addPages' style={{ border: '1px solid', marginLeft: '10px' }} className="btn btn-outline-success">
+                                        Connect
+                                </Link>
+                                    </div>
+                              }
                             </div>
-                                  :
-                                  <div>
-                                    Please connect a Facebook page to continue
-                              <Link to='/addPages' style={{ border: '1px solid', marginLeft: '10px' }} className="btn btn-outline-success">
-                                      Connect
-                              </Link>
-                                  </div>
-                            }
-                          </div>
-                        }
+                          }
+                        </div>
                       </div>
-                    </div>
-                  }
+                    }
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
+          }
         </div>
 
       </div>
