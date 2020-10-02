@@ -883,7 +883,6 @@ class Footer extends React.Component {
       <div
         className='m-messenger'
         style={{
-          position: this.props.isMobile ? '' : 'absolute',
           bottom: 0,
           width: '100%',
           padding: '15px',

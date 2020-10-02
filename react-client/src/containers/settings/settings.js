@@ -211,7 +211,7 @@ class Settings extends React.Component {
     })
   }
 
-  setZoomIntegration() {
+  setZoomIntegration () {
     this.setState({
       openTab: 'zoomIntegration'
     })
@@ -369,11 +369,11 @@ class Settings extends React.Component {
       console.log('state', state)
       self.setState({ ngpButtonState: state })
       if (state === true) {
-        self.setState({ ngpDisable: false, ngpButtonState: true })
-        self.props.enableNGP({ company_id: self.props.user.companyId })
+        self.setState({ngpDisable: false, ngpButtonState: true})
+        self.props.enableNGP({company_id: self.props.user.companyId}, self.msg)
       } else {
-        self.setState({ ngpDisable: true, ngpButtonState: false })
-        self.props.disableNGP({ company_id: self.props.user.companyId })
+        self.setState({ngpDisable: true, ngpButtonState: false})
+        self.props.disableNGP({company_id: self.props.user.companyId}, self.msg)
       }
     })
   }
@@ -822,8 +822,8 @@ class Settings extends React.Component {
             {this.state.openTab === 'advancedSettings' &&
               <AdvancedSetting />
             }
-            {this.state.openTab === 'cannedResponses' &&
-              <CannedResponses history={this.props.history} />
+            { this.state.openTab === 'cannedResponses' &&
+              <CannedResponses history= {this.props.history}/>
             }
             {
               this.state.openTab === 'zoomIntegration' &&

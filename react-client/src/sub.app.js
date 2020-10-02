@@ -40,6 +40,7 @@ class App extends Component {
 
   UNSAFE_componentWillReceiveProps(nextProps) {
     console.log('nextProps in sub', nextProps.user)
+    console.log('nextProps.automated_options in sub app.js', nextProps.automated_options)
     if (nextProps.message_alert) {
       nextProps.setMessageAlert(null)
     }
@@ -48,9 +49,14 @@ class App extends Component {
         this.props.history.push({
           pathname: '/resendVerificationEmail'
         })
-      } else if (nextProps.user.platform === '' && nextProps.user.role === 'buyer') {
+      } else if ((!nextProps.user.platform  || nextProps.user.platform === '') && nextProps.user.role === 'buyer') {
         this.props.history.push({
           pathname: '/integrations'
+        })
+      }  else if ((!nextProps.user.platform  || nextProps.user.platform === '') && nextProps.user.role !== 'buyer') {
+        this.props.history.push({
+          pathname: '/sessionInvalidated',
+          state: { session_inavalidated: false}
         })
       } else if (nextProps.user.platform === 'messenger' && (!nextProps.user.facebookInfo || !nextProps.user.connectFacebook) && nextProps.user.role === 'buyer') {
           this.props.history.push({
@@ -235,7 +241,8 @@ function mapStateToProps (state) {
     isMobile: (state.basicInfo.isMobile),
     message_alert: (state.notificationsInfo.message_alert),
     allChatMessages: (state.liveChat.allChatMessages),
-    socketData: (state.socketInfo.socketData)
+    socketData: (state.socketInfo.socketData),
+    automated_options: (state.basicInfo.automated_options)
   }
 }
 
