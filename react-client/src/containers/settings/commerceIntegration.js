@@ -5,22 +5,24 @@ import { connect } from 'react-redux'
 import AlertContainer from 'react-alert'
 import YouTube from 'react-youtube'
 import CONFIRMATIONMODAL from '../../components/extras/confirmationModal'
-import { fetchStore } from '../../redux/actions/shopify.actions'
+import { fetchBigCommerceStore, fetchShopifyStore } from '../../redux/actions/commerce.actions'
 
-class ShopifyIntegration extends React.Component {
+class CommerceIntegration extends React.Component {
   constructor(props, context) {
     super(props, context)
     this.state = {
       openVideo: false,
-      shopifyIntegration: {
-        name: 'Shopify Integration',
+      commerceIntegration: {
+        name: 'Commerce Integration',
         icon: 'fa fa-cart-plus',
-        description: 'Shopify Integration allows you to create Ecommerce Chatbots which can handle the entire customer purchase journey through messages.',
+        description: 'Commerce Integration allows you to create Ecommerce Chatbots which can handle the entire customer purchase journey through messages.',
         color: '#4A8CFF'
       }
     }
-    props.fetchStore()
+    props.fetchBigCommerceStore()
+    props.fetchShopifyStore()
     this.openVideoTutorial = this.openVideoTutorial.bind(this)
+    this.getStoreType = this.getStoreType.bind(this)
   }
 
   openVideoTutorial() {
@@ -28,6 +30,16 @@ class ShopifyIntegration extends React.Component {
       openVideo: true
     })
     this.refs.videoTutorial.click()
+  }
+
+  getStoreType() {
+    if (this.props.store && this.props.store.storeType === 'shopify') {
+      return "Shopify"
+    } else if (this.props.store && this.props.store.storeType === 'bigcommerce') {
+      return "BigCommerce"
+    } else {
+      return "E-Commerce"
+    }
   }
 
   render() {
@@ -41,17 +53,24 @@ class ShopifyIntegration extends React.Component {
     return (
       <div id='target' className='col-lg-8 col-md-8 col-sm-8 col-xs-12'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        <button ref='toggleDisconnectShopify' data-toggle='modal' data-target='#_confirm_shopify_disconnect' style={{ display: 'none' }} />
-        <a target='_blank' rel='noopener noreferrer' href="https://partners.shopify.com/1033294/apps/2954997/test" ref='disconnectShopify' style={{ display: 'none' }}> </a>
+        <button ref='toggleDisconnect' data-toggle='modal' data-target='#_confirm_disconnect' style={{ display: 'none' }} />
+        {
+          this.props.store && this.props.store.storeType === 'shopify' &&
+          <a target='_blank' rel='noopener noreferrer' href="https://partners.shopify.com/1033294/apps/2954997/test" ref='disconnect' style={{ display: 'none' }}> </a>
+        }
+        {
+          this.props.store && this.props.store.storeType === 'bigcommerce' &&
+          <a target='_blank' rel='noopener noreferrer' href="https://store-970gsssotw.mybigcommerce.com/manage/marketplace/apps/25642" ref='disconnect' style={{ display: 'none' }}> </a>
+        }
         <CONFIRMATIONMODAL
-          id='_confirm_shopify_disconnect'
-          title='Disconnect Shopify Integration'
-          description={`Are you sure you want to disconnect this Shopify integration? By Clicking on "Yes", you will be redirected to the Shopify page from where you can uninstall our app.`}
+          id='_confirm_disconnect'
+          title={`Disconnect ${this.getStoreType()} Integration`}
+          description={`Are you sure you want to disconnect this ${this.getStoreType()} integration? By Clicking on "Yes", you will be redirected to the ${this.getStoreType()} page from where you can uninstall our app.`}
           onConfirm={() => {
             if (this.props.superUser) {
               this.msg.error('You are not allowed to perform this action')
             } else {
-              this.refs.disconnectShopify.click()
+              this.refs.disconnect.click()
             }
           }}
         />
@@ -102,7 +121,7 @@ class ShopifyIntegration extends React.Component {
                 <li className='nav-item m-tabs__item'>
                   <span className='nav-link m-tabs__link active'>
                     <i className='flaticon-share m--hide' />
-                    Shopify Integration
+                    Commerce Integration
                   </span>
                 </li>
               </ul>
@@ -111,7 +130,7 @@ class ShopifyIntegration extends React.Component {
           <div className='tab-content'>
             <div className='m-content'>
               <div style={{ textAlign: 'center' }} className='alert m-alert m-alert--default' role='alert'>
-                Need help in understanding Shopify Integration? Here is the <a href={this.props.user.platform === 'whatsApp' ? 'https://kibopush.com/whatsapp-shopify-chatbot/' : 'https://kibopush.com/messenger-shopify-chatbot/'} target='_blank' rel='noopener noreferrer'>documentation</a>.
+                Need help in understanding Commerce Integration? Here is the <a href={this.props.user.platform === 'whatsApp' ? 'https://kibopush.com/whatsapp-commerce-chatbot/' : 'https://kibopush.com/messenger-commerce-chatbot/'} target='_blank' rel='noopener noreferrer'>documentation</a>.
                 {/* Or check out this  <a href='#/' onClick={this.openVideoTutorial}>video tutorial</a> to understand this feature. */}
               </div>
               <div className='row'>
@@ -124,12 +143,12 @@ class ShopifyIntegration extends React.Component {
 
                             <div className='m-widget4__item'>
                               <div className='m-widget4__img m-widget4__img--logo'>
-                                <span className='btn btn-success m-btn m-btn--icon m-btn--icon-only m-btn--custom m-btn--pill' style={{ width: '50px', height: '50px', cursor: 'initial', backgroundColor: 'white', borderColor: this.state.shopifyIntegration.color }}>
-                                  <i className={this.state.shopifyIntegration.icon} style={{ color: this.state.shopifyIntegration.color, fontSize: 'x-large' }}></i>
+                                <span className='btn btn-success m-btn m-btn--icon m-btn--icon-only m-btn--custom m-btn--pill' style={{ width: '50px', height: '50px', cursor: 'initial', backgroundColor: 'white', borderColor: this.state.commerceIntegration.color }}>
+                                  <i className={this.state.commerceIntegration.icon} style={{ color: this.state.commerceIntegration.color, fontSize: 'x-large' }}></i>
                                 </span>
                               </div>
                               <span style={{ paddingLeft: '25px' }} className='m-widget4__ext'>
-                                {this.state.shopifyIntegration.description}
+                                {this.state.commerceIntegration.description}
                               </span>
                             </div>
 
@@ -144,18 +163,26 @@ class ShopifyIntegration extends React.Component {
                         this.props.store &&
                         <div style={{ display: 'flex', justifyContent: 'center', marginTop: '25px' }} className='m-widget4'>
                           <div style={{ borderBottom: '1px dashed', paddingBottom: '25px' }} className='m-widget4__item'>
-                            {/* <div className='m-widget4__img m-widget4__img--logo'>
-                              <span className='btn m-btn m-btn--icon m-btn--icon-only m-btn--custom m-btn--pill' style={{ width: '50px', height: '50px', cursor: 'initial', backgroundColor: 'white' }}>
-                                <img alt='' style={{ width: '100%', height: '100%' }} src='https://i.pcmag.com/imagery/reviews/02lLbDwVdtIQN2uDFnHeN41-11..v_1569480019.jpg' />
+                            <div className='m-widget4__img'>
+                              <span className='btn m-btn m-btn--icon m-btn--icon-only m-btn--custom m-btn--pill' style={{ marginTop: '10px', width: '100px', cursor: 'initial', backgroundColor: 'white' }}>
+                                {
+                                  this.props.store.storeType === 'shopify' &&
+                                  <img alt='' style={{ width: '100%' }} src='https://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/Shopify_logo_2018.svg/1280px-Shopify_logo_2018.svg.png' />
+                                }
+                                {
+                                  this.props.store.storeType === 'bigcommerce' &&
+                                  <img alt='' style={{ width: '100%' }} src='https://s3.amazonaws.com/www1.bigcommerce.com/assets/mediakit/downloads/BigCommerce-logo-dark.png' />
+                                }
+
                               </span>
-                            </div> */}
-                            <div className='m-widget4__info' style={{ width: '140px' }}>
+                            </div>
+                            <div className='m-widget4__info' style={{ paddingLeft: '50px' }}>
                               <span className='m-widget4__title'>
                                 {this.props.store.name}
                               </span>
                             </div>
-                            <span className='m-widget4__ext' style={{ paddingLeft: '150px' }}>
-                              <button data-toggle='modal' data-target='#_confirm_shopify_disconnect' className='m-btn m-btn--pill m-btn--hover-danger btn btn-danger' style={{ borderColor: '#f4516c', color: '#f4516c', marginRight: '10px' }}>
+                            <span className='m-widget4__ext' style={{ paddingLeft: '50px' }}>
+                              <button data-toggle='modal' data-target='#_confirm_disconnect' className='m-btn m-btn--pill m-btn--hover-danger btn btn-danger' style={{ borderColor: '#f4516c', color: '#f4516c', marginRight: '10px' }}>
                                 Disconnect
                               </button>
                             </span>
@@ -168,21 +195,40 @@ class ShopifyIntegration extends React.Component {
 
                     {
                       !this.props.store &&
-                      <div style={{ display: 'flex', justifyContent: 'center', marginTop: '50px' }}>
-                        <button
-                          onClick={() => {
-                            if (this.props.superUser) {
-                              this.msg.error('You are not allowed to perform this action')
-                            } else {
-                              window.location.replace('https://partners.shopify.com/1033294/apps/2954997/test')
-                            }
-                          }}
-                          style={{ border: '1px dashed #36a3f7', cursor: 'pointer' }}
-                          type="button"
-                          className="btn m-btn--pill btn-outline-info m-btn m-btn--custom"
-                        >
-                          {'+ Connect'}
-                        </button>
+                      <div>
+                        <div style={{ display: 'flex', justifyContent: 'center', marginTop: '50px' }}>
+                          <button
+                            onClick={() => {
+                              if (this.props.superUser) {
+                                this.msg.error('You are not allowed to perform this action')
+                              } else {
+                                window.location.replace('https://partners.shopify.com/1033294/apps/2954997/test')
+                              }
+                            }}
+                            style={{ border: '1px dashed #36a3f7', cursor: 'pointer' }}
+                            type="button"
+                            className="btn m-btn--pill btn-outline-info m-btn m-btn--custom"
+                          >
+                            {'+ Connect Shopify'}
+                          </button>
+                        </div>
+
+                        <div style={{ display: 'flex', justifyContent: 'center', marginTop: '25px' }}>
+                          <button
+                            onClick={() => {
+                              if (this.props.superUser) {
+                                this.msg.error('You are not allowed to perform this action')
+                              } else {
+                                window.location.replace('https://store-970gsssotw.mybigcommerce.com/manage/marketplace/apps/25642')
+                              }
+                            }}
+                            style={{ border: '1px dashed #36a3f7', cursor: 'pointer' }}
+                            type="button"
+                            className="btn m-btn--pill btn-outline-info m-btn m-btn--custom"
+                          >
+                            {'+ Connect BigCommerce'}
+                          </button>
+                        </div>
                       </div>
                     }
                   </div>
@@ -198,13 +244,14 @@ class ShopifyIntegration extends React.Component {
 function mapStateToProps(state) {
   return {
     user: (state.basicInfo.user),
-    store: (state.shopifyInfo.store),
+    store: (state.commerceInfo.store),
     superUser: (state.basicInfo.superUser)
   }
 }
 function mapDispatchToProps(dispatch) {
   return bindActionCreators({
-    fetchStore
+    fetchBigCommerceStore,
+    fetchShopifyStore
   }, dispatch)
 }
-export default connect(mapStateToProps, mapDispatchToProps)(ShopifyIntegration)
+export default connect(mapStateToProps, mapDispatchToProps)(CommerceIntegration)
