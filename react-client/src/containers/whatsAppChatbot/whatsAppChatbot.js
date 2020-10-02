@@ -126,7 +126,8 @@ class WhatsAppChatbot extends React.Component {
             paymentMethod: this.state.paymentMethod,
             returnPolicy: this.state.returnPolicy,
             faqs: this.state.faqs
-          }
+          },
+          storeType: this.props.store.storeType
         }, (res) => {
           if (res.status === 'success') {
             this.msg.success(res.description)
