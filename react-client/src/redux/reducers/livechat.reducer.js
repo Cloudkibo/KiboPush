@@ -204,10 +204,16 @@ export function liveChat(state = initialState, action) {
         changedStatus: ''
       })
 
-    case ActionTypes.SOCKET_UPDATE_SEEN:
+    case ActionTypes.SOCKET_UPDATE_MESSAGE_STATUS:
       return Object.assign({}, state, {
-        socketSession: action.data.session_id
+        socketSessionInfo: action.data.session
       })
+
+    case ActionTypes.RESET_SOCKET:
+      return Object.assign({}, state, {
+        socketSessionInfo: null
+    })
+  
 
     case ActionTypes.UPDATE_USER_CHAT:
       let newChat = state.userChat
