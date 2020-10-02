@@ -219,7 +219,7 @@ class Sidebar extends Component {
     if (this.props.user) {
       if (this.props.user.permissions.dashboardPermission && this.props.user.plan.dashboard) {
         return (
-          <li onClick={() => {document.getElementById('m_aside_left_close_btn').click()}} className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
+          <li onClick={() => { document.getElementById('m_aside_left_close_btn').click() }} className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
             <Link to='/dashboard' state={{ isKiboLite: this.state.businessGateway }} className='m-menu__link m-menu__toggle'>
               <i className='m-menu__link-icon flaticon-squares-4' title='Dashboard' />
               <span className='m-menu__link-text'>Dashboard</span>
@@ -236,7 +236,7 @@ class Sidebar extends Component {
     if (this.props.user) {
       if (this.state.subscribers && this.props.user.permissions.subscriberPermission && this.props.user.plan.manage_subscribers) {
         return (
-          <li onClick={() => {document.getElementById('m_aside_left_close_btn').click()}} className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
+          <li onClick={() => { document.getElementById('m_aside_left_close_btn').click() }} className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
             <Link to={this.props.user.platform === 'messenger' ? '/subscribers' : '/smsSubscribers'} className='m-menu__link m-menu__toggle'>
               <i className='m-menu__link-icon flaticon-user-ok' title='Subscribers' />
               <span className='m-menu__link-text'>Subscribers</span>
@@ -345,7 +345,7 @@ class Sidebar extends Component {
         (this.props.automated_options.automated_options === 'MIX_CHAT' ||
           this.props.automated_options.automated_options === 'HUMAN_CHAT')) {
         return (
-          <li onClick={() => {document.getElementById('m_aside_left_close_btn').click()}} className='m-menu__item  m-menu__item--submenu' aria-haspopup='true'>
+          <li onClick={() => { document.getElementById('m_aside_left_close_btn').click() }} className='m-menu__item  m-menu__item--submenu' aria-haspopup='true'>
             <Link to={this.props.user.platform === 'sms' ? 'smsChat' : this.props.user.platform === 'messenger' ? '/liveChat' : 'whatsAppChat'} className='m-menu__link m-menu__toggle'>
               <i className='m-menu__link-icon flaticon-chat-1' title='Live Chat' />
               <span className='m-menu__link-text'>Live Chat (Beta)</span>
@@ -705,7 +705,7 @@ class Sidebar extends Component {
               <span />
             </i>
             <span className='m-menu__link-text'>
-              Shopify Chatbot
+              Commerce Chatbot
             </span>
           </Link>
         </li>
@@ -1138,7 +1138,7 @@ class Sidebar extends Component {
     if (this.props.user) {
       if (this.state.pages && this.props.user.permissions.pagesPermission && this.props.user.plan.manage_pages) {
         return (
-          <li onClick={() => {document.getElementById('m_aside_left_close_btn').click()}} className='m-menu__item' aria-haspopup='true' >
+          <li onClick={() => { document.getElementById('m_aside_left_close_btn').click() }} className='m-menu__item' aria-haspopup='true' >
             <Link to='/pages' className='m-menu__link'>
               <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
                 <span />
@@ -1313,7 +1313,7 @@ class Sidebar extends Component {
     // }
     if (this.props.user && this.props.user.platform === 'sms') {
       return (
-        <li onClick={() => {document.getElementById('m_aside_left_close_btn').click()}} className='m-menu__item' aria-haspopup='true' >
+        <li onClick={() => { document.getElementById('m_aside_left_close_btn').click() }} className='m-menu__item' aria-haspopup='true' >
           <Link to={'/uploadContacts'} className='m-menu__link'>
             <i className='m-menu__link-icon fa fa-id-card-o'>
               <span />
@@ -1332,7 +1332,7 @@ class Sidebar extends Component {
   inviteSubscribers() {
     if (this.props.user && this.props.user.platform === 'whatsApp') {
       return (
-        <li onClick={() => {document.getElementById('m_aside_left_close_btn').click()}} className='m-menu__item' aria-haspopup='true' >
+        <li onClick={() => { document.getElementById('m_aside_left_close_btn').click() }} className='m-menu__item' aria-haspopup='true' >
           <Link to='/uploadContactsWhatsApp' className='m-menu__link'>
             <i className='m-menu__link-icon flaticon-user-add'>
               <span />

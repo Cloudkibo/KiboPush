@@ -81,7 +81,7 @@ class OperationalDashboard extends React.Component {
     }
 
     props.alUserslLocales()
-    props.loadUsersList({last_id: 'none', number_of_records: 10, first_page: true, filter: false, filter_criteria: {search_value: '', gender_value: '', locale_value: ''}})
+    props.loadUsersList({last_id: 'none', number_of_records: 10, first_page: true, filter: true, filter_criteria: {platform_value: '', search_value: '', gender_value: '', locale_value: ''}})
     // props.loadBroadcastsGraphData(0)
     // props.loadPollsGraphData(0)
     // props.loadSurveysGraphData(0)
@@ -111,8 +111,14 @@ class OperationalDashboard extends React.Component {
     this.setUsersView = this.setUsersView.bind(this)
     this.onDaysChangePlatform = this.onDaysChangePlatform.bind(this)
     this.handleUsersView = this.handleUsersView.bind(this)
+    this.showConnectedPlatforms = this.showConnectedPlatforms.bind(this)
+    this.onPlatformFilter = this.onPlatformFilter.bind(this)
   }
-
+  onPlatformFilter (e) {
+    var value = e.target.value
+    this.setState({platform_value: value})
+    this.props.loadUsersList({last_id: 'none', number_of_records: 10, first_page: true, filter: true, filter_criteria: {platform_value: value,search_value: this.state.searchValue, gender_value: this.state.genderValue, locale_value: this.state.localeValue}})
+  }
   onDaysChangePlatform (e) {
     var value = e.target.value
     this.setState({days: value})
@@ -124,10 +130,22 @@ class OperationalDashboard extends React.Component {
       if(!Number.isNaN(validNumber)) {
          console.log('range', validNumber)
          this.props.fetchPageAnalytics({days: Number(value)})
-      } 
+    } 
     }
   }
-
+  showConnectedPlatforms (user) {
+    var connectedPlatforms = []
+    if (user.connectFacebook) {
+      connectedPlatforms.push('Messenger')
+    }
+    if (user.companyId.whatsApp && user.companyId.whatsApp.connected === true) {
+      connectedPlatforms.push('WhatsApp')
+    }
+    if (user.companyId.twilio) {
+      connectedPlatforms.push('SMS')
+    }
+    return connectedPlatforms
+  }
   setUsersView (user) {
     this.props.setUsersView({type: 'set', domain_email: user.domain_email, name: user.name}, this.handleUsersView)
   }
@@ -139,7 +157,7 @@ class OperationalDashboard extends React.Component {
   }
 
   loadMore () {
-    this.props.loadUsersList({last_id: this.state.usersData.length > 0 ? this.state.usersData[this.state.usersData.length - 1]._id : 'none', number_of_records: 10, first_page: false, filter: this.state.filter, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.genderValue, locale_value: this.state.localeValue}})
+    this.props.loadUsersList({last_id: this.state.usersData.length > 0 ? this.state.usersData[this.state.usersData.length - 1]._id : 'none', number_of_records: 10, first_page: false, filter: this.state.filter, filter_criteria: {platform_value: this.state.platform_value,search_value: this.state.searchValue, gender_value: this.state.genderValue, locale_value: this.state.localeValue}})
   }
   scrollToTop () {
     this.top.scrollIntoView({behavior: 'instant'})
@@ -392,9 +410,9 @@ class OperationalDashboard extends React.Component {
      this.setState({searchValue: value})
      if (value !== '') {
        this.setState({filter: true})
-       this.props.loadUsersList({last_id: this.props.users.length > 0 ? this.props.users[this.props.users.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter: true, filter_criteria: {search_value: value.toLowerCase(), gender_value: this.state.genderValue, locale_value: this.state.localeValue}})
+       this.props.loadUsersList({last_id: this.props.users.length > 0 ? this.props.users[this.props.users.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter: true, filter_criteria: {platform_value: this.state.platform_value, search_value: value.toLowerCase(), gender_value: this.state.genderValue, locale_value: this.state.localeValue}})
      } else {
-       this.props.loadUsersList({last_id: this.props.users.length > 0 ? this.props.users[this.props.users.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter: true, filter_criteria: {search_value: '', gender_value: this.state.genderValue, locale_value: this.state.localeValue}})
+       this.props.loadUsersList({last_id: this.props.users.length > 0 ? this.props.users[this.props.users.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter: true, filter_criteria: {platform_value: this.state.platform_value, search_value: '', gender_value: this.state.genderValue, locale_value: this.state.localeValue}})
      }
    }
 
@@ -411,9 +429,9 @@ class OperationalDashboard extends React.Component {
     this.setState({genderValue: e.target.value})
     if (e.target.value !== '' && e.target.value !== 'all') {
       this.setState({filter: true})
-      this.props.loadUsersList({last_id: this.props.users.length > 0 ? this.props.users[this.props.users.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter: true, filter_criteria: {search_value: this.state.searchValue, gender_value: e.target.value, locale_value: this.state.localeValue}})
+      this.props.loadUsersList({last_id: this.props.users.length > 0 ? this.props.users[this.props.users.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter: true, filter_criteria: {platform_value: this.state.platform_value, search_value: this.state.searchValue, gender_value: e.target.value, locale_value: this.state.localeValue}})
     } else {
-      this.props.loadUsersList({last_id: this.props.users.length > 0 ? this.props.users[this.props.users.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter: true, filter_criteria: {search_value: this.state.searchValue, gender_value: '', locale_value: this.state.localeValue}})
+      this.props.loadUsersList({last_id: this.props.users.length > 0 ? this.props.users[this.props.users.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter: true, filter_criteria: {platform_value: this.state.platform_value, search_value: this.state.searchValue, gender_value: '', locale_value: this.state.localeValue}})
     }
   }
 
@@ -421,9 +439,9 @@ class OperationalDashboard extends React.Component {
     this.setState({localeValue: e.target.value})
     if (e.target.value !== '' && e.target.value !== 'all') {
       this.setState({filter: true})
-      this.props.loadUsersList({last_id: this.props.users.length > 0 ? this.props.users[this.props.users.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter: true, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.genderValue, locale_value: e.target.value}})
+      this.props.loadUsersList({last_id: this.props.users.length > 0 ? this.props.users[this.props.users.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter: true, filter_criteria: {platform_value: this.state.platform_value, search_value: this.state.searchValue, gender_value: this.state.genderValue, locale_value: e.target.value}})
     } else {
-      this.props.loadUsersList({last_id: this.props.users.length > 0 ? this.props.users[this.props.users.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter: true, filter_criteria: {search_value: this.state.searchValue, gender_value: this.state.genderValue, locale_value: ''}})
+      this.props.loadUsersList({last_id: this.props.users.length > 0 ? this.props.users[this.props.users.length - 1]._id : 'none', number_of_records: 10, first_page: true, filter: true, filter_criteria: {platform_value: this.state.platform_value, search_value: this.state.searchValue, gender_value: this.state.genderValue, locale_value: ''}})
     }
   }
   sendEmail () {
@@ -483,6 +501,16 @@ class OperationalDashboard extends React.Component {
                   </div>
                   <div className='m-portlet__head-tools'>
                     <ul className='nav nav-pills nav-pills--brand m-nav-pills--align-right m-nav-pills--btn-pill m-nav-pills--btn-sm' role='tablist'>
+                      <li className='nav-item m-tabs__item' style={{marginTop: '15px', marginRight: '10px', height: '35px'}}>
+                        <span>Filter by Platform:</span>&nbsp;&nbsp;
+                        <select className='custom-select' id='m_form_status' tabIndex='-98' value={this.state.platform_value} onChange={this.onPlatformFilter.bind(this)}>
+                          <option value=''>All</option>
+                          <option value='messenger'>Messenger</option>
+                          <option value='whatsApp'>WhatsApp</option>
+                          <option value='sms'>SMS</option>
+                          <option value='none'>None</option>
+                        </select>
+                      </li>
                       <li className='nav-item m-tabs__item' style={{marginTop: '15px'}}>
                         <div className='m-input-icon m-input-icon--left'>
                           <input name='users_search' id='users_search' type='text' placeholder='Search Users...' className='form-control m-input m-input--solid' onChange={this.searchUser} />
@@ -574,17 +602,11 @@ class OperationalDashboard extends React.Component {
                                             <b>Created At:</b> {this.handleDate(user.createdAt)}
                                           </span>
                                           <div className='m-widget5__info'>
-                                            <span className='m-widget5__author'>
-                                              Gender:&nbsp;
-                                            </span>
-                                            <span className='m-widget5__info-author m--font-info'>
-                                              {user.facebookInfo ? user.facebookInfo.gender : ''}
-                                            </span>
                                             <span className='m-widget5__info-label'>
-                                            Locale:&nbsp;
+                                              Connected Platforms:&nbsp;
                                             </span>
                                             <span className='m-widget5__info-author m--font-info'>
-                                              {user.facebookInfo && user.facebookInfo.locale ? localeCodeToEnglish(user.facebookInfo.locale) : ''}
+                                              {this.showConnectedPlatforms(user).length > 0 ? this.showConnectedPlatforms(user).join(',') : 'None'}
                                             </span>
                                           </div>
                                         </div>
