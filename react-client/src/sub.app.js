@@ -19,7 +19,7 @@ import HEADER from './components/header/header'
 import { getHiddenHeaderRoutes, getWhiteHeaderRoutes } from './utility/utils'
 
 class App extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = {
       message_alert: null,
@@ -45,15 +45,15 @@ class App extends Component {
     }, this.redirectToConnectPage)
   }
 
-  redirectToConnectPage (count) {
-    if (count === 0) {
+  redirectToConnectPage(count) {
+    if (count === 0 && this.props.user.platform === 'messenger') {
       this.props.history.push({
         pathname: '/addfbpages'
       })
     }
   }
 
-  handleDemoSSAPage () {
+  handleDemoSSAPage() {
     const sidebar = document.getElementById('sidebarDiv')
     sidebar.parentNode.removeChild(sidebar)
     document.getElementsByTagName('body')[0].className = 'm-page--fluid m--skin- m-content--skin-light2 m-header--fixed m-header--fixed-mobile m-footer--push'
@@ -73,19 +73,19 @@ class App extends Component {
         this.props.history.push({
           pathname: '/resendVerificationEmail'
         })
-      } else if ((!nextProps.user.platform  || nextProps.user.platform === '') && nextProps.user.role === 'buyer') {
+      } else if ((!nextProps.user.platform || nextProps.user.platform === '') && nextProps.user.role === 'buyer') {
         this.props.history.push({
           pathname: '/integrations'
         })
-      }  else if ((!nextProps.user.platform  || nextProps.user.platform === '') && nextProps.user.role !== 'buyer') {
+      } else if ((!nextProps.user.platform || nextProps.user.platform === '') && nextProps.user.role !== 'buyer') {
         this.props.history.push({
           pathname: '/sessionInvalidated',
-          state: { session_inavalidated: false}
+          state: { session_inavalidated: false }
         })
       } else if (nextProps.user.platform === 'messenger' && (!nextProps.user.facebookInfo || !nextProps.user.connectFacebook) && nextProps.user.role === 'buyer') {
-          this.props.history.push({
-            pathname: '/integrations'
-          })
+        this.props.history.push({
+          pathname: '/integrations'
+        })
       } else if (nextProps.user.platform === 'sms' && nextProps.automated_options && !nextProps.automated_options.twilio && nextProps.user.role === 'buyer') {
         this.props.history.push({
           pathname: '/integrations',
@@ -109,9 +109,9 @@ class App extends Component {
     }
   }
 
-  setPathAndHeaderProps (path) {
+  setPathAndHeaderProps(path) {
     if (auth.loggedIn() && getHiddenHeaderRoutes().indexOf(path) === -1) {
-      this.setState({headerProps: {}, path})
+      this.setState({ headerProps: {}, path })
     } else if (getWhiteHeaderRoutes().indexOf(path) > -1) {
       this.setState({
         headerProps: {
@@ -131,9 +131,9 @@ class App extends Component {
     }
   }
 
-  setPathAndHeaderProps (path) {
+  setPathAndHeaderProps(path) {
     if (auth.loggedIn() && getHiddenHeaderRoutes().indexOf(path) === -1) {
-      this.setState({headerProps: {}, path})
+      this.setState({ headerProps: {}, path })
     } else if (getWhiteHeaderRoutes().indexOf(path) > -1) {
       this.setState({
         headerProps: {
@@ -153,13 +153,13 @@ class App extends Component {
     }
   }
 
-  componentDidMount () {
+  componentDidMount() {
     if (this.props.history.location.pathname.toLowerCase() === '/demossa') {
       this.handleDemoSSAPage()
     } else if (this.props.history.location.pathname.toLowerCase() !== '/integrations/zoom') {
       this.props.history.push({
         pathname: '/',
-        state: {obj: {_id: 1}}
+        state: { obj: { _id: 1 } }
       })
     }
 
@@ -183,7 +183,7 @@ class App extends Component {
     }
   }
 
-  checkTrialPeriod () {
+  checkTrialPeriod() {
     if (this.props.history.location.pathname.toLowerCase() !== '/settings') {
       if (this.props.user &&
         this.props.user.trialPeriod &&
@@ -195,7 +195,7 @@ class App extends Component {
     }
   }
 
-  getTrialModalContent () {
+  getTrialModalContent() {
     return (
       <div>
         <p>Your trial period has ended. If you wish to continue using the Premium plan, we suggest you to kindly purchase its subscription. Else, you can choose to switch to our Basic (free) plan.</p>
@@ -215,7 +215,7 @@ class App extends Component {
     )
   }
 
-  onPurchaseSubscription () {
+  onPurchaseSubscription() {
     this.refs._open_trial_modal.click()
     this.props.history.push({
       pathname: '/settings',
@@ -223,11 +223,11 @@ class App extends Component {
     })
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     this.unlisten()
   }
 
-  isWizardOrLogin (path) {
+  isWizardOrLogin(path) {
     if ([
       '/addPageWizard',
       '/inviteUsingLinkWizard',
@@ -253,7 +253,7 @@ class App extends Component {
     return false
   }
 
-  onNotificationClick () {
+  onNotificationClick() {
     window.focus()
     this.props.history.push({
       pathname: '/liveChat',
@@ -261,7 +261,7 @@ class App extends Component {
     })
   }
 
-  render () {
+  render() {
     console.log("Public URL ", process.env.PUBLIC_URL)
     console.log('auth.getToken', auth.getToken())
     console.log('browser history', this.props.history)
@@ -280,7 +280,7 @@ class App extends Component {
       <div>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <button
-          style={{display: 'none'}}
+          style={{ display: 'none' }}
           ref='_open_trial_modal'
           data-target='#_trial_period'
           data-backdrop="static"
@@ -318,7 +318,7 @@ class App extends Component {
               auth.loggedIn() &&
               <Sidebar history={this.props.history} location={this.props.location} />
             }
-            { this.props.children }
+            {this.props.children}
           </div>
         }
       </div>
@@ -330,7 +330,7 @@ App.propTypes = {
   children: PropTypes.object.isRequired
 }
 
-function mapStateToProps (state) {
+function mapStateToProps(state) {
   console.log('store state in app', state)
   return {
     user: (state.basicInfo.user),
@@ -342,15 +342,15 @@ function mapStateToProps (state) {
   }
 }
 
-function mapDispatchToProps (dispatch) {
+function mapDispatchToProps(dispatch) {
   return bindActionCreators({
-      getuserdetails,
-      switchToBasicPlan,
-      loadMyPagesListNew,
-      setMessageAlert,
-      updateLiveChatInfo,
-      clearSocketData
-    }, dispatch)
+    getuserdetails,
+    switchToBasicPlan,
+    loadMyPagesListNew,
+    setMessageAlert,
+    updateLiveChatInfo,
+    clearSocketData
+  }, dispatch)
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(App)
