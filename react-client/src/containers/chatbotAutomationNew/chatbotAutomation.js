@@ -280,7 +280,6 @@ class ChatbotAutomation extends React.Component {
               </div>
             </div>
           </div>
-
           <div className='row'>
             <div className='col-xl-12'>
               <div className='m-portlet m-portlet-mobile'>
@@ -401,12 +400,12 @@ class ChatbotAutomation extends React.Component {
                           </div>
                         }
                       </div>
-                    </div>
-                  }
+                    }
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
+          }
         </div>
 
       </div>

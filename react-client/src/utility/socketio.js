@@ -3,7 +3,7 @@
  */
 import io from 'socket.io-client'
 import { setSocketStatus } from './../redux/actions/basicinfo.actions'
-import { socketUpdate, socketUpdateSeen, fetchSingleSession, updateSessions } from './../redux/actions/livechat.actions'
+import { socketUpdate, socketUpdateMessageStatus, fetchSingleSession, updateSessions } from './../redux/actions/livechat.actions'
 import { loadAutopostingList } from './../redux/actions/autoposting.actions'
 import { loadMyPagesList } from './../redux/actions/pages.actions'
 import { fetchAllSequence } from './../redux/actions/sequence.action'
@@ -100,8 +100,8 @@ socket.on('message', (data) => {
   }
   if (data.action === 'whatsapp_message_seen') {
     store.dispatch(whatsAppActions.socketUpdateWhatsAppSeen(data.payload))
-  } else if (data.action === 'message_seen') {
-    store.dispatch(socketUpdateSeen(data.payload))
+  } else if (data.action === 'message_seen'|| data.action === 'message_delivered') {
+    store.dispatch(socketUpdateMessageStatus(data.payload))
   } else if (data.action === 'autoposting_updated' || data.action === 'autoposting_removed') {
     store.dispatch(loadAutopostingList())
   } else if (data.action === 'page_disconnect' || data.action === 'page_connect') {
