@@ -245,6 +245,11 @@ export function liveChat(state = initialState, action) {
         changedStatus: ''
       })
 
+    case ActionTypes.REDIRECT_TO_SESSION:
+      return Object.assign({}, state, {
+        redirectToSession: action.data
+      })
+      
     case ActionTypes.LOADING_URL_META:
       return Object.assign({}, state, {
         urlValue: action.urlValue,

@@ -31,7 +31,8 @@ import {
   getSMPStatus,
   updateSessionProfilePicture,
   setUserChat,
-  resetSocket
+  resetSocket,
+  saveNotificationSessionId
 } from '../../redux/actions/livechat.actions'
 import { updatePicture } from '../../redux/actions/subscribers.actions'
 import { loadTeamsList } from '../../redux/actions/teams.actions'
@@ -187,6 +188,7 @@ class LiveChat extends React.Component {
 
   setMessageData(session, payload) {
     const data = {
+      _id : new Date().getTime(),
       sender_id: session.pageId._id,
       recipient_id: session._id,
       sender_fb_id: session.pageId.pageId,
@@ -504,7 +506,7 @@ class LiveChat extends React.Component {
       activeSession: {}
     })
   }
-
+  
   UNSAFE_componentWillReceiveProps(nextProps) {
     console.log('UNSAFE_componentWillMount called in live chat', nextProps)
     let state = {}
@@ -512,6 +514,7 @@ class LiveChat extends React.Component {
     if (nextProps.cannedResponses !== this.props.cannedResponses) {
       this.setState({ cannedResponses: nextProps.cannedResponses })
     }
+
     if (nextProps.openSessions || nextProps.closeSessions) {
       state.loading = false
       state.sessionsLoading = false
@@ -528,13 +531,13 @@ class LiveChat extends React.Component {
       state.sessionsCount = this.state.tabValue === 'open' ? nextProps.openCount : nextProps.closeCount
     }
 
-    if (this.state.redirected && this.props.location.state && this.props.location.state.id) {
+    if (nextProps.redirectToSession && nextProps.redirectToSession.sessionId) {
       if (nextProps.openSessions && nextProps.closeSessions) {
-        state.redirected = false
+        nextProps.saveNotificationSessionId({sessionId: null})
         let openSessions = nextProps.openSessions
         let closeSessions =nextProps.closeSessions
-        let openIndex = openSessions.findIndex((session) => session._id === this.props.location.state.id)
-        let closeIndex = closeSessions.findIndex((session) => session._id === this.props.location.state.id)
+        let openIndex = openSessions.findIndex((session) => session._id === nextProps.redirectToSession.sessionId)
+        let closeIndex = closeSessions.findIndex((session) => session._id === nextProps.redirectToSession.sessionId)
         if (openIndex !== -1) {
           state.activeSession = openSessions[openIndex]
           this.changeActiveSession(openSessions[openIndex])
@@ -714,34 +717,34 @@ class LiveChat extends React.Component {
                   />
                 }
                 {
-                  !this.props.isMobile && this.state.activeSession.constructor === Object && Object.keys(this.state.activeSession).length > 0 && !this.state.showSearch &&
-                  <PROFILE
-                    updateState={this.updateState}
-                    teams={this.props.teams ? this.props.teams : []}
-                    tags={this.state.tags ? this.state.tags : []}
-                    agents={this.props.members ? this.getAgents(this.props.members) : []}
-                    subscriberTags={this.state.subscriberTags}
-                    activeSession={this.state.activeSession}
-                    user={this.props.user}
-                    profilePicError={this.profilePicError}
-                    alertMsg={this.alertMsg}
-                    unSubscribe={this.props.unSubscribe}
-                    customers={this.props.customers}
-                    getCustomers={this.props.getCustomers}
-                    fetchTeamAgents={this.fetchTeamAgents}
-                    assignToTeam={this.props.assignToTeam}
-                    appendSubscriber={this.props.appendSubscriber}
-                    sendNotifications={this.props.sendNotifications}
-                    assignToAgent={this.props.assignToAgent}
-                    assignTags={this.props.assignTags}
-                    unassignTags={this.props.unassignTags}
-                    createTag={this.props.createTag}
-                    customFieldOptions={this.state.customFieldOptions}
-                    setCustomFieldValue={this.saveCustomField}
-                    showTags={true}
-                    showCustomFields={true}
-                    showUnsubscribe={true}
-                  />
+                   !this.props.isMobile && this.state.activeSession.constructor === Object && Object.keys(this.state.activeSession).length > 0 && !this.state.showSearch &&
+                   <PROFILE
+                      updateState={this.updateState}
+                      teams={this.props.teams ? this.props.teams : []}
+                      tags={this.state.tags ? this.state.tags : []}
+                      agents={this.props.members ? this.getAgents(this.props.members) : []}
+                      subscriberTags={this.state.subscriberTags}
+                      activeSession={this.state.activeSession}
+                      user={this.props.user}
+                      profilePicError={this.profilePicError}
+                      alertMsg={this.alertMsg}
+                      unSubscribe={this.props.unSubscribe}
+                      customers={this.props.customers}
+                      getCustomers={this.props.getCustomers}
+                      fetchTeamAgents={this.fetchTeamAgents}
+                      assignToTeam={this.props.assignToTeam}
+                      appendSubscriber={this.props.appendSubscriber}
+                      sendNotifications={this.props.sendNotifications}
+                      assignToAgent={this.props.assignToAgent}
+                      assignTags={this.props.assignTags}
+                      unassignTags={this.props.unassignTags}
+                      createTag={this.props.createTag}
+                      customFieldOptions={this.state.customFieldOptions}
+                      setCustomFieldValue={this.saveCustomField}
+                      showTags={true}
+                      showCustomFields={true}
+                      showUnsubscribe={(this.props.user && this.props.user.plan['unsubscribe_subscribers'] && this.props.user.permissions['unsubsubscribe_subscribers'])}
+                    />
                 }
                 {
                   !this.props.isMobile && Object.keys(this.state.activeSession).length > 0 && this.state.activeSession.constructor === Object && this.state.showSearch &&
@@ -802,9 +805,9 @@ function mapStateToProps(state) {
     socketData: (state.socketInfo.socketData),
     zoomIntegrations: (state.settingsInfo.zoomIntegrations),
     cannedResponses: state.settingsInfo.cannedResponses,
-    superUser: (state.basicInfo.superUser),
-    socketSessionInfo: state.liveChat.socketSessionInfo
-
+    socketSessionInfo: state.liveChat.socketSessionInfo,
+    redirectToSession: state.liveChat.redirectToSession,
+    superUser: (state.basicInfo.superUser)
   }
 }
 
@@ -850,7 +853,8 @@ function mapDispatchToProps(dispatch) {
     createZoomMeeting,
     setUserChat,
     loadcannedResponses,
-    resetSocket
+    resetSocket,
+    saveNotificationSessionId
   }, dispatch)
 }
 

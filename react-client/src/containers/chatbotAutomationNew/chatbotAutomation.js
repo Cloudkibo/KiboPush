@@ -280,6 +280,7 @@ class ChatbotAutomation extends React.Component {
               </div>
             </div>
           </div>
+
           <div className='row'>
             <div className='col-xl-12'>
               <div className='m-portlet m-portlet-mobile'>
@@ -389,17 +390,16 @@ class ChatbotAutomation extends React.Component {
                                   : <div>
                                     You have created the chatbot for all your connected pages.
                               </div>
-                                    :
-                                    <div>
-                                      Please connect a Facebook page to continue
+                                :
+                                <div>
+                                  Please connect a Facebook page to continue
                                 <Link to='/addPages' style={{ border: '1px solid', marginLeft: '10px' }} className="btn btn-outline-success">
-                                        Connect
+                                    Connect
                                 </Link>
-                                    </div>
-                              }
-                            </div>
-                          }
-                        </div>
+                                </div>
+                            }
+                          </div>
+                        }
                       </div>
                     }
                   </div>
