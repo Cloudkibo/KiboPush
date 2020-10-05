@@ -16,6 +16,9 @@ import {
 import {
   setUsersView
 } from '../../redux/actions/backdoor.actions'
+import {
+  saveNotificationSessionId
+} from '../../redux/actions/livechat.actions'
 import { fetchNotifications, markRead } from '../../redux/actions/notifications.actions'
 import AlertContainer from 'react-alert'
 
@@ -190,18 +193,18 @@ class Header extends React.Component {
       if (this.props.user.platform === 'messenger') {
         this.props.history.push({
           pathname: `/liveChat`,
-          state: { id: id, module: 'notifications' }
         })
+        this.props.saveNotificationSessionId({sessionId: id})
       } else if (this.props.user.platform === 'whatsApp') {
         this.props.history.push({
           pathname: `/whatsAppChat`,
-          state: { id: id, module: 'notifications'}
         })
+        this.props.saveNotificationSessionId({sessionId: id})
       } else if (this.props.user.platform === 'sms') {
         this.props.history.push({
-          pathname: `/smsChat`,
-          state: { id: id, module: 'notifications' }
+          pathname: `/smsChat`
         })
+        this.props.saveNotificationSessionId({sessionId: id})
       }
     }
   }
@@ -439,7 +442,8 @@ function mapDispatchToProps(dispatch) {
     updateShowIntegrations,
     disconnectFacebook,
     logout,
-    setUsersView
+    setUsersView,
+    saveNotificationSessionId
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Header)

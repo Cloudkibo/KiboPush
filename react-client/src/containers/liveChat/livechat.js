@@ -30,7 +30,8 @@ import {
   clearSearchResult,
   getSMPStatus,
   updateSessionProfilePicture,
-  setUserChat
+  setUserChat,
+  saveNotificationSessionId
 } from '../../redux/actions/livechat.actions'
 import { updatePicture } from '../../redux/actions/subscribers.actions'
 import { loadTeamsList } from '../../redux/actions/teams.actions'
@@ -69,7 +70,6 @@ class LiveChat extends React.Component {
     super(props, context)
     this.state = {
       loading: true,
-      redirected: this.props.location.state && this.props.location.state.module === 'notifications',
       fetchingChat: false,
       loadingChat: true,
       sessionsLoading: false,
@@ -503,7 +503,7 @@ class LiveChat extends React.Component {
       activeSession: {}
     })
   }
-
+  
   UNSAFE_componentWillReceiveProps(nextProps) {
     console.log('UNSAFE_componentWillMount called in live chat', nextProps)
     let state = {}
@@ -511,6 +511,7 @@ class LiveChat extends React.Component {
     if (nextProps.cannedResponses !== this.props.cannedResponses) {
       this.setState({ cannedResponses: nextProps.cannedResponses })
     }
+
     if (nextProps.openSessions || nextProps.closeSessions) {
       state.loading = false
       state.sessionsLoading = false
@@ -527,13 +528,13 @@ class LiveChat extends React.Component {
       state.sessionsCount = this.state.tabValue === 'open' ? nextProps.openCount : nextProps.closeCount
     }
 
-    if (this.state.redirected && this.props.location.state && this.props.location.state.id) {
+    if (nextProps.redirectToSession && nextProps.redirectToSession.sessionId) {
       if (nextProps.openSessions && nextProps.closeSessions) {
-        state.redirected = false
+        nextProps.saveNotificationSessionId({sessionId: null})
         let openSessions = nextProps.openSessions
         let closeSessions =nextProps.closeSessions
-        let openIndex = openSessions.findIndex((session) => session._id === this.props.location.state.id)
-        let closeIndex = closeSessions.findIndex((session) => session._id === this.props.location.state.id)
+        let openIndex = openSessions.findIndex((session) => session._id === nextProps.redirectToSession.sessionId)
+        let closeIndex = closeSessions.findIndex((session) => session._id === nextProps.redirectToSession.sessionId)
         if (openIndex !== -1) {
           state.activeSession = openSessions[openIndex]
           this.changeActiveSession(openSessions[openIndex])
@@ -797,8 +798,8 @@ function mapStateToProps(state) {
     socketData: (state.socketInfo.socketData),
     zoomIntegrations: (state.settingsInfo.zoomIntegrations),
     cannedResponses: state.settingsInfo.cannedResponses,
-    superUser: (state.basicInfo.superUser)
-
+    superUser: (state.basicInfo.superUser),
+    redirectToSession: state.liveChat.redirectToSession
   }
 }
 
@@ -843,7 +844,8 @@ function mapDispatchToProps(dispatch) {
     getZoomIntegrations,
     createZoomMeeting,
     setUserChat,
-    loadcannedResponses
+    loadcannedResponses,
+    saveNotificationSessionId
   }, dispatch)
 }
 
