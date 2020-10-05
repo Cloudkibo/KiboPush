@@ -414,7 +414,6 @@ export function searchChat(data) {
   }
 }
 
-
 export function sendChatMessage (data, cb) {
   return (dispatch) => {
     callApi('livechat/', 'post', data).then(res => {
