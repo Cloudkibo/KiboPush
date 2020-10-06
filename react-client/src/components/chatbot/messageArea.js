@@ -400,6 +400,7 @@ class MessageArea extends React.Component {
               updateParentState={this.updateState}
               checkWhitelistedDomains={this.props.checkWhitelistedDomains}
               toggleWhitelistModal={this.props.toggleWhitelistModal}
+              validateAttachment={this.props.validateAttachment}
             />
             <div className='m--space-10' />
           </div>
@@ -430,7 +431,8 @@ MessageArea.propTypes = {
   'progress': PropTypes.number.isRequired,
   'updateParentState': PropTypes.func.isRequired,
   'allTriggers': PropTypes.array.isRequired,
-  'attachmentUploading': PropTypes.bool.isRequired
+  'attachmentUploading': PropTypes.bool.isRequired,
+  'validateAttachment': PropTypes.func.isRequired
 }
 
 export default MessageArea

@@ -162,11 +162,10 @@ class AttachmentArea extends React.Component {
   onFileChange (e) {
     if (e.target.files.length > 0) {
       const file = e.target.files[0]
-      if (file.size > 25000000) {
-        this.props.alertMsg.error('Attachment exceeds the limit of 25MB')
-      } else if (['application/zip', 'text/javascript', 'text/exe', 'application/x-ms-dos-executable'].includes(file.type)) {
-        this.props.alertMsg.error('Cannot add js, exe or zip files. Please select another file')
-      } else {
+      const result = this.props.validateAttachment(file)
+      if (result.status === 'failed') {
+        this.props.alertMsg.error(result.description)
+      } else if (result.status === 'success') {
         const type = this.getComponentType(file.type)
         this.setState({
           isUploaded: false,
@@ -283,7 +282,8 @@ AttachmentArea.propTypes = {
   'uploadAttachment': PropTypes.func.isRequired,
   'handleAttachment': PropTypes.func.isRequired,
   'attachment': PropTypes.object.isRequired,
-  'updateParentState': PropTypes.func.isRequired
+  'updateParentState': PropTypes.func.isRequired,
+  'validateAttachment': PropTypes.func.isRequired
 }
 
 export default AttachmentArea
