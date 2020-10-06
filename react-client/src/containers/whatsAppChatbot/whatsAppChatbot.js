@@ -35,6 +35,7 @@ class WhatsAppChatbot extends React.Component {
     this.goToCommerceSettings = this.goToCommerceSettings.bind(this)
     this.getConnectEcommerceContent = this.getConnectEcommerceContent.bind(this)
 
+    props.fetchChatbot()
     props.fetchBigCommerceStore()
     props.fetchShopifyStore()
   }
