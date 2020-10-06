@@ -123,6 +123,8 @@ class LiveChat extends React.Component {
     this.setMessageData = this.setMessageData.bind(this)
     this.markSessionsRead = this.markSessionsRead.bind(this)
     this.backToSessions = this.backToSessions.bind(this)
+    this.sendChatMessage = this.sendChatMessage.bind(this)
+    this.sendAttachment = this.sendAttachment.bind(this)
     this.props.loadcannedResponses()
     this.fetchSessions(true, 'none', true)
     props.getSMPStatus(this.handleSMPStatus)
@@ -134,7 +136,12 @@ class LiveChat extends React.Component {
       props.clearSocketData()
     }
   }
-
+  sendChatMessage (data, cb) {
+    this.props.sendChatMessage(data, cb, this.alertMsg)
+  }
+  sendAttachment (data, handleSendAttachment) {
+    this.props.sendAttachment(data, handleSendAttachment, this.alertMsg)
+  }
   clearSearchResults() {
     this.setState({ searchChatMsgs: null })
   }
@@ -681,9 +688,9 @@ class LiveChat extends React.Component {
                     performAction={this.performAction}
                     alertMsg={this.alertMsg}
                     user={this.props.user}
-                    sendChatMessage={this.props.sendChatMessage}
+                    sendChatMessage={this.sendChatMessage}
                     uploadAttachment={this.props.uploadAttachment}
-                    sendAttachment={this.props.sendAttachment}
+                    sendAttachment={this.sendAttachment}
                     uploadRecording={this.props.uploadRecording}
                     loadingChat={this.state.loadingChat}
                     fetchUserChats={this.props.fetchUserChats}

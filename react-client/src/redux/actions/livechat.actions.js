@@ -392,11 +392,25 @@ export function deletefile(data, handleRemove) {
   }
 }
 
-export function sendAttachment(data, handleSendAttachment) {
+export function sendAttachment(data, handleSendAttachment, msg) {
   return (dispatch) => {
     callApi('livechat/', 'post', data).then(res => {
       console.log('sendAttachment response', res)
-      handleSendAttachment(res)
+      if (res.status === 'success') {
+        handleSendAttachment(res)
+      } else {
+          if (msg) {
+            if (res.description) {
+              if (res.description.message) {
+                msg.error(`Unable to send message ${JSON.stringify(res.description.message)}`)
+              } else {
+               msg.error(`Unable to send message ${JSON.stringify(res.description)}`)
+              }
+            } else {
+             msg.error('Unable to send message')
+            }
+          }
+        }
     })
   }
 }
@@ -415,15 +429,29 @@ export function searchChat(data) {
 }
 
 
-export function sendChatMessage (data, cb) {
+export function sendChatMessage (data, cb, msg) {
   return (dispatch) => {
     callApi('livechat/', 'post', data).then(res => {
       console.log('response from sendChatMessage', res)
-      if (cb) cb(res)
+      if (res.status === 'success') {
+        if (cb) cb(res)
+      } else {
+          if (msg) {
+            if (res.description) {
+              if (res.description.message) {
+                msg.error(`Unable to send message ${JSON.stringify(res.description.message)}`)
+              } else {
+                msg.error(`Unable to send message ${JSON.stringify(res.description)}`)
+              }
+            } else {
+             msg.error('Unable to send message')
+            }
+          }
+        }
+      })
       // dispatch(fetchSessions())
       //fetchOpenSessions({first_page: true, last_id: 'none', number_of_records: 10, filter: false, filter_criteria: {sort_value: -1, page_value: '', search_value: ''}})
-    })
-  }
+    }
 }
 
 export function getSMPStatus(callback) {
