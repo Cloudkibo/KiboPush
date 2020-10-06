@@ -167,9 +167,9 @@ export function socketUpdate(data) {
   }
 }
 
-export function socketUpdateSeen(data) {
+export function socketUpdateMessageStatus(data) {
   return {
-    type: ActionTypes.SOCKET_UPDATE_SEEN,
+    type: ActionTypes.SOCKET_UPDATE_MESSAGE_STATUS,
     data
   }
 }
@@ -427,7 +427,6 @@ export function searchChat(data) {
     })
   }
 }
-
 
 export function sendChatMessage (data, cb, msg) {
   return (dispatch) => {
