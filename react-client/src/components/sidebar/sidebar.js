@@ -380,8 +380,16 @@ class Sidebar extends Component {
       route: '/settings',
       icon: 'flaticon-cogwheel'
     })
+    if (platform === 'messenger') {
+      menuItems.push({
+        priority: 'n',
+        name: 'Add Ons',
+        route: '/addOns',
+        icon: 'flaticon-app'
+      })
+    }
     menuItems.push({
-      priority: 'n',
+      priority: 'o',
       name: 'User Guide',
       link: 'http://kibopush.com/user-guide/',
       icon: 'flaticon-info'
