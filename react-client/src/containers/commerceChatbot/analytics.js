@@ -13,6 +13,7 @@ class Analytics extends React.Component {
         super(props, context)
         this.state = {
             store: this.props.location.state.store,
+            triggers: this.props.location.state.triggers,
             chatbot: this.props.location.state.chatbot,
             page: this.props.location.state.page,
             loading: false,
@@ -79,7 +80,7 @@ class Analytics extends React.Component {
     onBack() {
         this.props.history.push({
             pathname: '/configureCommerceChatbot',
-            state: { chatbot: this.state.chatbot, page: this.state.page, store: this.state.store }
+            state: { chatbot: this.state.chatbot, page: this.state.page, store: this.state.store, triggers: this.state.triggers }
         })
     }
 

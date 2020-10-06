@@ -828,15 +828,6 @@ class Footer extends React.Component {
       let payload = this.setDataPayload('attachment')
       let data = this.props.setMessageData(this.props.activeSession, payload)
       this.setState({ loading: true })
-      // data.format = 'convos'
-      // this.updateChatData(data, payload)
-      // this.setState({
-      //   attachment: {},
-      //   componentType: '',
-      //   uploadingFile: false,
-      //   uploaded: false,
-      //   loading: false,
-      // })
       this.props.sendAttachment(data, (res) => this.handleMessageResponse(res, data, payload))
     } else {
       this.props.alertMsg.error(data.errorMsg)

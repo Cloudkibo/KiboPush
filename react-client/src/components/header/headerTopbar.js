@@ -60,7 +60,9 @@ class HeaderTopbar extends React.Component {
             }
             {
               showAppChooser &&
-              <APPCHOOSER />
+              <APPCHOOSER 
+                currentEnvironment={this.props.currentEnvironment}
+              />
             }
             <USERPROFILE
               updatePicture={this.props.updatePicture}

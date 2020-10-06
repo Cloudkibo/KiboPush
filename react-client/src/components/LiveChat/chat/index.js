@@ -50,7 +50,6 @@ class Chat extends React.Component {
   togglePopover () {
     this.setState({showPopover: !this.state.showPopover})
   }
-
   overrideUserInput () {
     let activeSession = this.props.activeSession
     activeSession.waitingForUserInput.componentIndex = -1
@@ -151,11 +150,12 @@ class Chat extends React.Component {
 
         <HEADER
           activeSession={this.props.activeSession}
-          showSearch={this.props.showSearch}
+          openSearch={this.props.showSearch}
           changeStatus={this.props.changeStatus}
           handlePendingResponse={this.props.handlePendingResponse}
           isMobile={this.props.isMobile}
           backToSessions={this.props.backToSessions}
+          showSearch={this.props.user.plan.search_chat}
         />
 
         <BODY
