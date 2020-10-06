@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { bindActionCreators } from 'redux'
-import { updateShopifyChatbot, updateChatbot, getShopifyChatbotTriggers } from '../../redux/actions/chatbotAutomation.actions'
+import { updateCommerceChatbot, updateChatbot, getCommerceChatbotTriggers } from '../../redux/actions/chatbotAutomation.actions'
 import AlertContainer from 'react-alert'
 import MODAL from '../../components/extras/modal'
 import CONFIRMATIONMODAL from '../../components/extras/confirmationModal'
@@ -12,11 +12,11 @@ import TRIGGERAREA from '../../components/chatbotAutomation/triggerArea'
 
 const MessengerPlugin = require('react-messenger-plugin').default
 
-class ConfigureShopifyChatbot extends React.Component {
+class ConfigureCommerceChatbot extends React.Component {
   constructor(props, context) {
     super(props, context)
     this.state = {
-      triggers: [],
+      triggers: props.location.state.triggers ? props.location.state.triggers : [],
       existingChatbot: props.location.state.existingChatbot,
       store: props.location.state.store,
       page: props.location.state.page,
@@ -41,7 +41,7 @@ class ConfigureShopifyChatbot extends React.Component {
     this.updateState = this.updateState.bind(this)
 
     props.getFbAppId()
-    props.getShopifyChatbotTriggers(this.state.chatbot._id, (res) => {
+    props.getCommerceChatbotTriggers(this.state.chatbot._id, (res) => {
       this.setState({ triggers: res.payload })
     })
   }
@@ -66,13 +66,13 @@ class ConfigureShopifyChatbot extends React.Component {
         appId={this.props.fbAppId}
         pageId={this.state.page.pageId}
         size='large'
-        passthroughParams='_shopify_chatbot'
+        passthroughParams='_commerce_chatbot'
       />
     )
   }
 
   componentDidMount() {
-    document.title = `KiboChat | Shopify Chatbot for ${this.state.page.pageName}`
+    document.title = `KiboChat | Commerce Chatbot for ${this.state.page.pageName}`
 
     let comp = this
     registerAction({
@@ -116,7 +116,7 @@ class ConfigureShopifyChatbot extends React.Component {
       this.setState({
         published
       }, () => {
-        this.props.updateShopifyChatbot({
+        this.props.updateCommerceChatbot({
           chatbotId: this.state.chatbot._id,
           published: this.state.published
         }, (res) => {
@@ -125,9 +125,9 @@ class ConfigureShopifyChatbot extends React.Component {
             chatbot.published = true
             this.setState({ chatbot })
             if (this.state.published) {
-              this.msg.success('Shopify Chatbot Enabled')
+              this.msg.success('Commerce Chatbot Enabled')
             } else {
-              this.msg.success('Shopify Chatbot Disabled')
+              this.msg.success('Commerce Chatbot Disabled')
             }
           } else {
             this.msg.error(res.description)
@@ -142,7 +142,7 @@ class ConfigureShopifyChatbot extends React.Component {
     if (this.state.triggers.length === 0) {
       this.msg.error('At least one trigger is required')
     } else {
-      this.props.updateShopifyChatbot({
+      this.props.updateCommerceChatbot({
         chatbotId: this.state.chatbot._id,
         botLinks: {
           paymentMethod: this.state.paymentMethod,
@@ -211,12 +211,12 @@ class ConfigureShopifyChatbot extends React.Component {
         <CONFIRMATIONMODAL
           id="disableManualChatbot"
           title='Disable Manual Chatbot'
-          description='You have a manual chatbot already enabled for this page. By enabling this Shopify chatbot, that manual chatbot will be disabled. Do you wish to continue?'
+          description='You have a manual chatbot already enabled for this page. By enabling this Commerce chatbot, that manual chatbot will be disabled. Do you wish to continue?'
           onConfirm={this.disableManualChatbot}
         />
 
         <div className='m-subheader'>
-          <h3 className='m-subheader__title'>Shopify Chatbot for {this.state.page.pageName}</h3>
+          <h3 className='m-subheader__title'>Commerce Chatbot for {this.state.page.pageName}</h3>
 
 
           <span style={{ float: 'right' }} className={"m-switch m-switch--lg m-switch--icon " + (this.state.published ? "m-switch--success" : "m-switch--danger")}>
@@ -227,7 +227,7 @@ class ConfigureShopifyChatbot extends React.Component {
           </span>
           {
             this.state.chatbot &&
-            <Link to={{ pathname: '/shopifyChatbotAnalytics', state: { chatbot: this.state.chatbot, page: this.state.page, store: this.state.store } }} >
+            <Link to={{ pathname: '/commerceChatbotAnalytics', state: { chatbot: this.state.chatbot, page: this.state.page, store: this.state.store, triggers: this.state.triggers } }} >
               <button
                 id='_chatbot_message_area_header_analytics'
                 style={{ marginRight: '20px', marginTop: '5px' }}
@@ -256,12 +256,21 @@ class ConfigureShopifyChatbot extends React.Component {
 
                           <div className="form-group m-form__group col-lg-8">
                             <span className='m--font-boldest'>Store:</span>
-                            <input required type="text" disabled value={this.state.store ? this.state.store.name : ''} className="form-control m-input" id="_shopify_store" />
+                            <input required type="text" disabled value={this.state.store ? this.state.store.name : ''} className="form-control m-input" id="_commerce_store" />
                           </div>
 
-                          <div className="col-lg-4">
-                            <img alt="shopify-logo" style={{ width: '100px', marginTop: '15px', opacity: this.state.store ? '1' : '0.5' }} src='https://i.pcmag.com/imagery/reviews/02lLbDwVdtIQN2uDFnHeN41-11..v_1569480019.jpg' />
-                          </div>
+                          {
+                            this.state.store && this.state.store.storeType === 'shopify' &&
+                            <div className="col-lg-4">
+                              <img alt="shopify-logo" style={{ width: '100px', marginTop: '15px' }} src='https://i.pcmag.com/imagery/reviews/02lLbDwVdtIQN2uDFnHeN41-11..v_1569480019.jpg' />
+                            </div>
+                          }
+                          {
+                            this.state.store && this.state.store.storeType === 'bigcommerce' &&
+                            <div className="col-lg-4">
+                              <img alt="bigcommerce-logo" style={{ width: '100px', marginTop: '25px' }} src='https://s3.amazonaws.com/www1.bigcommerce.com/assets/mediakit/downloads/BigCommerce-logo-dark.png' />
+                            </div>
+                          }
 
                           <div className="form-group m-form__group col-lg-8">
                             <TRIGGERAREA
@@ -337,7 +346,7 @@ class ConfigureShopifyChatbot extends React.Component {
 function mapStateToProps(state) {
   return {
     user: (state.basicInfo.user),
-    store: (state.shopifyInfo.store),
+    store: (state.commerceInfo.store),
     fbAppId: state.basicInfo.fbAppId,
     superUser: (state.basicInfo.superUser)
   }
@@ -345,10 +354,10 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators({
-    updateShopifyChatbot,
+    updateCommerceChatbot,
     getFbAppId,
     updateChatbot,
-    getShopifyChatbotTriggers
+    getCommerceChatbotTriggers
   }, dispatch)
 }
-export default connect(mapStateToProps, mapDispatchToProps)(ConfigureShopifyChatbot)
+export default connect(mapStateToProps, mapDispatchToProps)(ConfigureCommerceChatbot)

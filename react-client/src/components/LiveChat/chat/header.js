@@ -58,7 +58,7 @@ class Header extends React.Component {
             !this.props.isMobile && this.props.showSearch &&
             <button
               className="btn btn-secondary m-btn m-btn--icon m-btn--icon-only"
-              onClick={this.props.showSearch}
+              onClick={this.props.openSearch}
               data-tip='Search'
               style={{border: 'none'}}
             >

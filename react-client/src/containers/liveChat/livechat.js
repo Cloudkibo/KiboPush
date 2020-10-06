@@ -31,7 +31,8 @@ import {
   getSMPStatus,
   updateSessionProfilePicture,
   setUserChat,
-  saveNotificationSessionId
+  saveNotificationSessionId,
+  resetSocket
 } from '../../redux/actions/livechat.actions'
 import { updatePicture } from '../../redux/actions/subscribers.actions'
 import { loadTeamsList } from '../../redux/actions/teams.actions'
@@ -598,6 +599,10 @@ class LiveChat extends React.Component {
         nextProps.clearSocketData
       )
     }
+    if (nextProps.socketSessionInfo && nextProps.socketSessionInfo !== '') { 
+      nextProps.fetchUserChats(nextProps.socketSessionInfo._id, { page: 'first', number: 25 }, nextProps.socketSessionInfo.messagesCount)
+      nextProps.resetSocket()
+    }
   }
 
   render() {
@@ -800,8 +805,9 @@ function mapStateToProps(state) {
     socketData: (state.socketInfo.socketData),
     zoomIntegrations: (state.settingsInfo.zoomIntegrations),
     cannedResponses: state.settingsInfo.cannedResponses,
+    superUser: (state.basicInfo.superUser),
     redirectToSession: state.liveChat.redirectToSession,
-    superUser: (state.basicInfo.superUser)
+    socketSessionInfo: state.liveChat.socketSessionInfo
   }
 }
 
@@ -847,7 +853,8 @@ function mapDispatchToProps(dispatch) {
     createZoomMeeting,
     setUserChat,
     loadcannedResponses,
-    saveNotificationSessionId
+    saveNotificationSessionId,
+    resetSocket
   }, dispatch)
 }
 
