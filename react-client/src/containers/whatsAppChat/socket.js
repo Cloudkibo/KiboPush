@@ -122,7 +122,9 @@ export function handleSocketEventWhatsapp (data, state, props, updateLiveChatInf
         }
         updateLiveChatInfo(data)
         clearSocketData()
-      } } else if (index >= 0) {
+      } 
+      clearSocketData()
+    } else if (index >= 0) {
         session = sessions.splice(index, 1)[0]
         session.lastPayload = payload.message.payload
         session.last_activity_time = new Date()
