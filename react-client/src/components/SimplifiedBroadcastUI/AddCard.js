@@ -207,6 +207,8 @@ class AddCard extends React.Component {
             cardId={this.props.id}
             edit={this.props.edit}
             required={this.props.onlyCard}
+            canCreateNewLevel={this.props.canCreateNewLevel}
+            alertMsg={this.props.alertMsg}
             replyWithMessage={this.props.replyWithMessage}
             buttons={this.state.buttons}
             finalButtons={this.props.card.component.buttons}

@@ -17,7 +17,7 @@ import BACKBUTTON from '../../components/extras/backButton'
 // import HELPWIDGET from '../../components/extras/helpWidget'
 import TREESTRUCTURE from '../../components/chatbot/treeStructure'
 import $ from 'jquery'
-
+import { validateAttachment } from '../../global/chatbot'
 
 class ConfigureChatbot extends React.Component {
   constructor(props, context) {
@@ -50,6 +50,7 @@ class ConfigureChatbot extends React.Component {
     this.afterDisable = this.afterDisable.bind(this)
     this.showTreeStructure = this.showTreeStructure.bind(this)
     this.closeTreeStructure = this.closeTreeStructure.bind(this)
+    this.validateAttachment = this.validateAttachment.bind(this)
   }
 
   componentDidMount() {
@@ -223,6 +224,7 @@ class ConfigureChatbot extends React.Component {
       this.setState({ chatbot, powerLoading: false })
     } else {
       this.msg.error(res.description || 'Failed to publish chatbot')
+      this.setState({ powerLoading: false })
     }
   }
 
@@ -232,6 +234,10 @@ class ConfigureChatbot extends React.Component {
 
   closeTreeStructure() {
     this.setState({ showTreeStructure: false })
+  }
+
+  validateAttachment (file) {
+    return validateAttachment(file, this.props.automated_options, this.props.user.platform)
   }
 
   componentWillUnmount() {
@@ -332,6 +338,7 @@ class ConfigureChatbot extends React.Component {
                   sidebarItems={this.state.sidebarItems}
                   allTriggers={this.state.allTriggers}
                   attachmentUploading={this.state.attachmentUploading}
+                  validateAttachment={this.validateAttachment}
                 />
               }
             </div>
@@ -365,7 +372,10 @@ class ConfigureChatbot extends React.Component {
 }
 
 function mapStateToProps(state) {
-  return {}
+  return {
+    automated_options: (state.basicInfo.automated_options),
+    user: (state.basicInfo.user)
+  }
 }
 
 function mapDispatchToProps(dispatch) {

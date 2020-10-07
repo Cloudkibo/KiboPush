@@ -79,39 +79,32 @@ export function liveChat(state = initialState, action) {
     case ActionTypes.UPDATE_CHAT_SESSIONS:
       let openSess = state.openSessions
       let closeSess = state.closeSessions
+      let session = null
       if (action.appendDeleteInfo) {
         if (action.appendDeleteInfo.deleteFrom === 'open') {
-          for (let i = 0; i < openSess.length; i++) {
-            if (action.session._id === openSess[i]._id) {
-              openSess.splice(i, 1)
-            }
+          let openSessionIndex = openSess.findIndex(s => s._id === action.data.sessionId)
+          if (openSessionIndex > -1) {
+            session = openSess[openSessionIndex]
+            session.status = 'resolved'
+            openSess.splice(openSessionIndex, 1)
           }
         } else if (action.appendDeleteInfo.deleteFrom === 'close') {
-          for (let i = 0; i < closeSess.length; i++) {
-            if (action.session._id === closeSess[i]._id) {
-              closeSess.splice(i, 1)
-            }
+          let closeSessionIndex = closeSess.findIndex(s => s._id === action.data.sessionId)
+          if (closeSessionIndex > -1) {
+            session = closeSess[closeSessionIndex]
+            session.status = 'new'
+            closeSess.splice(closeSessionIndex, 1)
           }
         }
         if (action.appendDeleteInfo.appendTo === 'open') {
-          let openCount = 0
-          for (let j = 0; j < openSess.length; j++) {
-            if (action.session._id === openSess[j]._id) {
-              openCount = 1
-            }
-          }
-          if (openCount === 0) {
-            openSess.push(action.session)
+          let openSessionIndex = openSess.findIndex(s => s._id === action.data.sessionId)
+          if (openSessionIndex === -1 && session) {
+            openSess.push(session)
           }
         } else if (action.appendDeleteInfo.appendTo === 'close') {
-          let closeCount = 0
-          for (let j = 0; j < closeSess.length; j++) {
-            if (action.session._id === closeSess[j]._id) {
-              closeCount = 1
-            }
-          }
-          if (closeCount === 0) {
-            closeSess.push(action.session)
+          let closeSessionIndex = closeSess.findIndex(s => s._id === action.data.sessionId)
+          if (closeSessionIndex === -1 && session) {
+            closeSess.push(session)
           }
         }
       }
@@ -122,28 +115,7 @@ export function liveChat(state = initialState, action) {
       closeSess = closeSess.sort(function (a, b) {
         return new Date(b.last_activity_time) - new Date(a.last_activity_time)
       })
-      let indexOpen = openSess.findIndex(sess => sess._id === action.session._id)
-      if (indexOpen !== -1 && openSess[indexOpen]) {
-        openSess[indexOpen].lastPayload = action.session.lastPayload
-        openSess[indexOpen].lastDateTime = action.session.lastDateTime
-        openSess[indexOpen].last_activity_time = action.session.last_activity_time
-        if (action.session.lastRepliedBy) {
-          openSess[indexOpen].lastRepliedBy = action.session.lastRepliedBy
-        } else if (openSess[indexOpen].lastRepliedBy) {
-          openSess[indexOpen].lastRepliedBy = null
-        }
-      }
-      let indexClose = closeSess.findIndex(sess => sess._id === action.session._id)
-      if (indexClose !== -1 && closeSess[indexClose]) {
-        closeSess[indexClose].lastPayload = action.session.lastPayload
-        closeSess[indexClose].lastDateTime = action.session.lastDateTime
-        closeSess[indexClose].last_activity_time = action.session.last_activity_time
-        if (action.session.lastRepliedBy) {
-          closeSess[indexClose].lastRepliedBy = action.session.lastRepliedBy
-        } else if (closeSess[indexClose].lastRepliedBy) {
-          closeSess[indexClose].lastRepliedBy = null
-        }
-      }
+
       return Object.assign({}, state, {
         openSessions: openSess,
         closeSessions: closeSess,
@@ -249,7 +221,7 @@ export function liveChat(state = initialState, action) {
       return Object.assign({}, state, {
         redirectToSession: action.data
       })
-      
+
     case ActionTypes.LOADING_URL_META:
       return Object.assign({}, state, {
         urlValue: action.urlValue,
