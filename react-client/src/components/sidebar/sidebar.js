@@ -9,7 +9,6 @@ import { connect } from 'react-redux'
 import { getAutomatedOptions } from '../../redux/actions/basicinfo.actions'
 import { bindActionCreators } from 'redux'
 import { getCurrentProduct } from '../../utility/utils'
-import { fetchSingleSession, fetchUserChats, resetSocket } from '../../redux/actions/livechat.actions'
 
 class Sidebar extends Component {
   constructor(props, context) {
@@ -1420,9 +1419,6 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return bindActionCreators({
     getAutomatedOptions: getAutomatedOptions,
-    fetchUserChats: fetchUserChats,
-    resetSocket: resetSocket,
-    fetchSingleSession: fetchSingleSession
   }, dispatch)
 }
 
