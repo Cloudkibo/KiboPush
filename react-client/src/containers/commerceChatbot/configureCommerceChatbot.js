@@ -16,7 +16,7 @@ class ConfigureCommerceChatbot extends React.Component {
   constructor(props, context) {
     super(props, context)
     this.state = {
-      triggers: [],
+      triggers: props.location.state.triggers ? props.location.state.triggers : [],
       existingChatbot: props.location.state.existingChatbot,
       store: props.location.state.store,
       page: props.location.state.page,
@@ -227,7 +227,7 @@ class ConfigureCommerceChatbot extends React.Component {
           </span>
           {
             this.state.chatbot &&
-            <Link to={{ pathname: '/commerceChatbotAnalytics', state: { chatbot: this.state.chatbot, page: this.state.page, store: this.state.store } }} >
+            <Link to={{ pathname: '/commerceChatbotAnalytics', state: { chatbot: this.state.chatbot, page: this.state.page, store: this.state.store, triggers: this.state.triggers } }} >
               <button
                 id='_chatbot_message_area_header_analytics'
                 style={{ marginRight: '20px', marginTop: '5px' }}
