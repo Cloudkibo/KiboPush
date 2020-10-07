@@ -70,6 +70,10 @@ const handleIncomingMessage = (payload, state, props, updateLiveChatInfo, clearS
       closeCount: state.tabValue === 'close' ? props.closeCount - 1 : props.closeCount
     }
   } else if (index === -1 && state.tabValue === 'open') {
+    let allChatMessages = props.allChatMessages
+    if (allChatMessages[payload.subscriber._id]) {
+      allChatMessages[payload.subscriber._id] = [...allChatMessages[payload.subscriber._id], payload.message]
+    }
     let closeSessions = props.closeSessions
     let closeCount = props.closeCount
     if (closeSessions) {
@@ -89,6 +93,7 @@ const handleIncomingMessage = (payload, state, props, updateLiveChatInfo, clearS
     session.status = 'new'
     sessions = [session, ...sessions]
     data = {
+      allChatMessages,
       openSessions: sessions,
       openCount: props.openCount ? props.openCount + 1 : 1,
       closeSessions,
