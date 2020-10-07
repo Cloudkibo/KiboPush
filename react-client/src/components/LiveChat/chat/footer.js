@@ -292,7 +292,11 @@ class Footer extends React.Component {
       this.props.sendChatMessage(data, (res) => {
         if (res.status !== 'success') {
           let errorMsg = res.description || res.payload
-          this.props.alertMsg.error(errorMsg)
+          if (errorMsg.message) {
+            this.props.alertMsg.error(JSON.stringify(errorMsg.message))
+          } else {
+            this.props.alertMsg.error(JSON.stringify(errorMsg))
+          }
         }
       })
       data.format = 'convos'
@@ -314,7 +318,11 @@ class Footer extends React.Component {
       this.props.sendChatMessage(data, (res) => {
         if (res.status !== 'success') {
           let errorMsg = res.description || res.payload
-          this.props.alertMsg.error(errorMsg)
+          if (errorMsg.message) {
+            this.props.alertMsg.error(JSON.stringify(errorMsg.message))
+          } else {
+            this.props.alertMsg.error(JSON.stringify(errorMsg))
+          }
         }
       })
       data.format = 'convos'
@@ -791,7 +799,11 @@ class Footer extends React.Component {
         this.props.sendChatMessage(data, (res) => {
           if (res.status !== 'success') {
             let errorMsg = res.description || res.payload
-            this.props.alertMsg.error(errorMsg)
+            if (errorMsg.message) {
+              this.props.alertMsg.error(JSON.stringify(errorMsg.message))
+            } else {
+              this.props.alertMsg.error(JSON.stringify(errorMsg))
+            }
           }
         })
         this.setState({ text: '', urlmeta: {}, currentUrl: '' })
@@ -814,7 +826,11 @@ class Footer extends React.Component {
       this.props.sendChatMessage(data, (res) => {
         if (res.status !== 'success') {
           let errorMsg = res.description || res.payload
-          this.props.alertMsg.error(errorMsg)
+          if (errorMsg.message) {
+            this.props.alertMsg.error(JSON.stringify(errorMsg.message))
+          } else {
+            this.props.alertMsg.error(JSON.stringify(errorMsg))
+          }
         }
       })
     } else {

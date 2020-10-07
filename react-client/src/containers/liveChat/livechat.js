@@ -137,7 +137,6 @@ class LiveChat extends React.Component {
       props.clearSocketData()
     }
   }
-
   clearSearchResults() {
     this.setState({ searchChatMsgs: null })
   }
