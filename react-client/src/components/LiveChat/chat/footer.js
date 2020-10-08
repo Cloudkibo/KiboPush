@@ -643,8 +643,12 @@ class Footer extends React.Component {
       })
     } else {
       this.setState({loading: false})
-      let msg = res.description || 'Failed to send message'
-      this.props.alertMsg.error(msg)
+      let msg = res.description || res.payload ||'Failed to send message'
+      if (msg.message) {
+        this.props.alertMsg.error(JSON.stringify(msg.message))
+      } else {
+        this.props.alertMsg.error(JSON.stringify(msg))
+      }
     }
   }
 
