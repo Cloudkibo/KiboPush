@@ -66,7 +66,7 @@ class Analytics extends React.Component {
 
     componentDidMount() {
         this.props.fetchAnalytics(this.state.chatbot._id, parseInt(this.state.days), this.handleAnalytics)
-        document.title = 'KiboChat | WhatsApp Chatbot Analytics'
+        document.title = 'KiboChat | Commerce Chatbot Analytics'
     }
 
     handleAnalytics(res) {

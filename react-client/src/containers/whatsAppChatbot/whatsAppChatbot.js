@@ -47,18 +47,18 @@ class WhatsAppChatbot extends React.Component {
         returnPolicy: nextProps.chatbot.botLinks.returnPolicy,
         faqs: nextProps.chatbot.botLinks.faqs,
         published: nextProps.chatbot.published,
-        testSubscribers: nextProps.chatbot.testSubscribers.join(',')
+        testSubscribers: nextProps.chatbot.testSubscribers ? nextProps.chatbot.testSubscribers.join(',') : []
       })
     } else if (nextProps.chatbot) {
       this.setState({
         published: nextProps.chatbot.published,
-        testSubscribers: nextProps.chatbot.testSubscribers.join(',')
+        testSubscribers: nextProps.chatbot.testSubscribers ? nextProps.chatbot.testSubscribers.join(',') : []
       })
     }
   }
 
   componentDidMount() {
-    document.title = 'KiboChat | WhatsApp Chatbot'
+    document.title = 'KiboChat | WhatsApp Commerce Chatbot'
   }
 
   setPaymentMethod(e) {
@@ -93,7 +93,9 @@ class WhatsAppChatbot extends React.Component {
     this.props.updateChatbot({
       published: e.target.checked
     }, (res) => {
-      if (res.status !== 'success') {
+      if (res.status === 'success') {
+        this.msg.success('chatbot published successfully')
+      } else {
         this.msg.error(res.description)
       }
     })
@@ -319,7 +321,7 @@ class WhatsAppChatbot extends React.Component {
 
 
         <div className='m-subheader'>
-          <h3 className='m-subheader__title'>WhatsApp Chatbot</h3>
+          <h3 className='m-subheader__title'>WhatsApp Commerce Chatbot</h3>
 
 
           <span style={{ float: 'right' }} className={"m-switch m-switch--lg m-switch--icon " + (this.state.published ? "m-switch--success" : "m-switch--danger")}>
