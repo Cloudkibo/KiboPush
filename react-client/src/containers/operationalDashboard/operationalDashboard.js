@@ -45,7 +45,6 @@ import { saveUserInformation } from '../../redux/dispatchers/backdoor.dispatcher
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import AlertContainer from 'react-alert'
-import {localeCodeToEnglish} from '../../utility/utils'
 
 class OperationalDashboard extends React.Component {
   constructor (props, context) {
