@@ -160,8 +160,6 @@ class App extends Component {
     })
   }
 
-  UNSAFE_componentWillReceiveProps (nextProps) {}
-
   render () {
     if (this.refs._open_trial_modal) {
       this.checkTrialPeriod()
