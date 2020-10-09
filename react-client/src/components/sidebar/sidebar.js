@@ -380,7 +380,7 @@ class Sidebar extends Component {
       route: '/settings',
       icon: 'flaticon-cogwheel'
     })
-    if (platform === 'messenger') {
+    if (platform === 'messenger' && user.currentPlan.unique_ID === 'plan_B') {
       menuItems.push({
         priority: 'n',
         name: 'Add Ons',

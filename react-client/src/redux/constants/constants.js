@@ -1,5 +1,6 @@
 // constants for add ons
 export const SHOW_ADD_ONS = 'SHOW_ADD_ONS'
+export const SHOW_COMPANY_ADD_ONS = 'SHOW_COMPANY_ADD_ONS'
 
 // constants for autoposting
 export const FETCH_AUTOPOSTING_LIST = 'FETCH_AUTOPOSTING_LIST'

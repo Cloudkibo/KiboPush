@@ -13,6 +13,7 @@ const initialState = {
 }
 
 export function basicInfo (state = initialState, action) {
+  let user
   switch (action.type) {
     case ActionTypes.LOAD_BROWSER_NAME:
       return Object.assign({}, state, {
@@ -30,7 +31,7 @@ export function basicInfo (state = initialState, action) {
       })
 
     case ActionTypes.UPDATE_TRIAL_PERIOD:
-      let user = state.user
+      user = state.user
       user.trial.status = false
       return Object.assign({}, state, {
         user
@@ -72,6 +73,23 @@ export function basicInfo (state = initialState, action) {
       return Object.assign({}, state, {
         captchaKey: action.captchaKey,
         stripeKey: action.stripeKey
+      })
+
+    case ActionTypes.SHOW_COMPANY_ADD_ONS:
+      user = JSON.parse(JSON.stringify(state.user))
+      let purchasedAddOns = []
+      /* eslint-disable */
+      action.data.map((item) => {
+        purchasedAddOns = [...purchasedAddOns, ...item.permissions]
+      })
+      Object.keys(user.plan).map((item) => {
+        if (purchasedAddOns.includes(item)) {
+          user.plan[item] = true
+        }
+      })
+      /* eslint-enable */
+      return Object.assign({}, state, {
+        user
       })
 
     default:

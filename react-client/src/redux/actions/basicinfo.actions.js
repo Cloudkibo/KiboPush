@@ -1,6 +1,7 @@
 import * as ActionTypes from '../constants/constants'
 import callApi from '../../utility/api.caller.service'
 import auth from '../../utility/auth.service'
+import { fetchCompanyAddOns } from './addOns.actions'
 
 export function setBrowserName (data) {
   return {
@@ -88,6 +89,7 @@ export function getuserdetails (joinRoom) {
       } else {
         if (joinRoom) joinRoom(res.payload.companyId)
         dispatch(showuserdetails(res.payload))
+        dispatch(fetchCompanyAddOns())
       }
     })
   }

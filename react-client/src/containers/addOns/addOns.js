@@ -2,13 +2,18 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import AlertContainer from 'react-alert'
-import { fetchAddOns } from '../../redux/actions/addOns.actions'
+import { fetchAddOns, purchaseAddOn } from '../../redux/actions/addOns.actions'
 import ADDON from '../../components/addOns/addOn'
 
 class AddOns extends React.Component {
   constructor(props) {
     super(props)
+
     this.state = {}
+
+    this.onPurchase = this.onPurchase.bind(this)
+    this.afterPurchase = this.afterPurchase.bind(this)
+
     props.fetchAddOns()
   }
 
@@ -24,6 +29,34 @@ class AddOns extends React.Component {
     document.title = `${title} | Add Ons`;
   }
 
+  onPurchase (addOn, cb) {
+    const automated_options = this.props.automated_options
+    if (
+      !automated_options.stripe ||
+      (automated_options.stripe && (!automated_options.stripe.customerId || !automated_options.stripe.subscriptionId))
+    ) {
+      this.msg.error('Fata Error! Billing is not set for this account. Please contact support.')
+    } else if (!automated_options.stripe.last4) {
+      this.msg.error('Payment method is not set for this account. Please set the payment method from settings')
+    } else {
+      const purchasedAddOns = [...this.props.companyAddOns, {
+        companyId: addOn.companyId,
+        addOnId: addOn._id,
+        permissions: addOn.permissions,
+        datetime: new Date()
+      }]
+      this.props.purchaseAddOn(addOn._id, purchasedAddOns, (res) => this.afterPurchase(res, cb))
+    }
+  }
+
+  afterPurchase (res, cb) {
+    cb()
+    if (res.status === 'success') {
+      this.msg.success(res.description)
+    } else {
+      this.msg.error(res.description)
+    }
+  }
 
   render() {
     var alertOptions = {
@@ -55,12 +88,14 @@ class AddOns extends React.Component {
                     ? this.props.addOns.map((addOn) => (
                       <ADDON
                         key={addOn._id}
+                        addOn={addOn}
                         iconClass={addOn.others.iconClass}
                         price={addOn.price}
                         currency={addOn.currency}
                         title={addOn.feature}
                         description={addOn.description}
-                        onPurchase={() => {}}
+                        onPurchase={this.onPurchase}
+                        purchasedAddOns={this.props.companyAddOns}
                       />
                     ))
                     : <p>No Add Ons Found. Please contact KiboPush support team at support@cloudkibo.com</p>
@@ -77,13 +112,16 @@ class AddOns extends React.Component {
 
 function mapStateToProps(state) {
   return {
-    addOns: (state.addOnsInfo.addOns)
+    addOns: (state.addOnsInfo.addOns),
+    companyAddOns: (state.addOnsInfo.companyAddOns),
+    automated_options: (state.basicInfo.automated_options)
   }
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators({
-    fetchAddOns
+    fetchAddOns,
+    purchaseAddOn
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(AddOns)

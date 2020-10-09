@@ -877,8 +877,7 @@ function mapStateToProps (state) {
     notifications: (state.notificationsInfo.notifications),
     updatedUser: (state.basicInfo.updatedUser),
     automated_options: (state.basicInfo.automated_options),
-    userView: (state.backdoorInfo.userView),
-
+    userView: (state.backdoorInfo.userView)
   }
 }
 
