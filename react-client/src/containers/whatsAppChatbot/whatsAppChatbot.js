@@ -94,7 +94,11 @@ class WhatsAppChatbot extends React.Component {
       published: e.target.checked
     }, (res) => {
       if (res.status === 'success') {
-        this.msg.success('chatbot published successfully')
+        if (this.state.published) {
+          this.msg.success('chatbot published successfully')
+        } else {
+          this.msg.success('chatbot disabled successfully')
+        }
       } else {
         this.msg.error(res.description)
       }
