@@ -1,5 +1,4 @@
 import React from 'react'
-import cookie from 'react-cookie'
 
 class AppChooser extends React.Component {
   constructor(props, context) {
@@ -42,7 +41,7 @@ class AppChooser extends React.Component {
       }
     }
 
-    const environment = cookie.load('environment')
+    const environment = this.props.currentEnvironment
     return productUrls[product][environment]
   }
 
