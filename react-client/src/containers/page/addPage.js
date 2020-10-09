@@ -41,7 +41,7 @@ class AddPage extends React.Component {
   }
   stopLoading() {
     this.setState({
-      loading:false
+      loading: false
     })
   }
   showErrorDialog() {
@@ -95,7 +95,7 @@ class AddPage extends React.Component {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         { this.state.loading &&
-        <div style={{ width: '100vw', height: '100vh', background: 'rgba(33, 37, 41, 0.6)', position: 'fixed', zIndex: '99999', top: '0px' }}>
+          <div style={{ width: '100vw', height: '100vh', background: 'rgba(33, 37, 41, 0.6)', position: 'fixed', zIndex: '99999', top: '0px' }}>
             <div style={{ position: 'fixed', top: '50%', left: '50%', width: '30em', height: '18em', marginLeft: '-10em' }}
               className='align-center'>
               <center><RingLoader color='#716aca' /></center>
@@ -200,30 +200,30 @@ class AddPage extends React.Component {
                     {
                       !this.props.isMobile &&
                       <span>
-                        <Link className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' style={{marginRight: '10px'}} onClick={() => {
-                          this.setState({loading: true})
+                        <Link className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' style={{ marginRight: '10px' }} onClick={() => {
+                          this.setState({ loading: true })
                           this.props.refreshPages(this.stopLoading, this.msg)
                         }}>Refresh Pages</Link>
                       </span>
                     }
-                      <span>
-                        {this.props.location.state && this.props.location.state.module === 'page'
-                          ? <Link to='/pages' className='btn btn-success m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
-                            Done
+                    <span>
+                      {this.props.location.state && this.props.location.state.module === 'page'
+                        ? <Link to='/pages' className='btn btn-success m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
+                          Done
                             </Link>
-                          : <Link to='/dashboard' className='btn btn-success m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
-                            Done
+                        : <Link to='/dashboard' className='btn btn-success m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
+                          Done
                               </Link>
-                        }
-                      </span>
+                      }
+                    </span>
                   </div>
                 </div>
                 {
                   this.props.isMobile &&
                   <div className="col-xl-4 order-1 order-xl-2 m--align-right m--margin-top-20">
                     <span>
-                      <Link className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' style={{marginRight: '10px'}} onClick={() => {
-                        this.setState({loading: true})
+                      <Link className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' style={{ marginRight: '10px' }} onClick={() => {
+                        this.setState({ loading: true })
                         this.props.refreshPages(this.stopLoading, this.msg)
                       }}>Refresh Pages</Link>
                     </span>
@@ -254,7 +254,7 @@ class AddPage extends React.Component {
                             }
                             {(!page.connected) &&
 
-                              <div onClick={() => this.props.enablePage(page, this.showErrorDialog)} className='m-widget4__icon'>
+                              <div onClick={() => this.props.enablePage(page, this.showErrorDialog, this.msg)} className='m-widget4__icon'>
                                 <button type='button' className='btn m-btn--pill btn-primary btn-sm m-btn m-btn--custom'>Connect</button>
                               </div>
 
