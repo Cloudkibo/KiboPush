@@ -19,13 +19,10 @@ const initialState = {
 export function messengerRefURLInfo (state = initialState, action) {
   switch (action.type) {
     case ActionTypes.SHOW_MESSENGER_REF_URLS:
-      console.log('ActionTypes.SHOW_MESSENGER_REF_URLS', ActionTypes.SHOW_MESSENGER_REF_URLS)
       return Object.assign({}, state, {
         messengerRefURLs: action.data
       })
     case ActionTypes.UPDATE_MESSENGER_REF_URL:
-      console.log('ActionTypes.UPDATE_MESSENGER_REF_URL', ActionTypes.UPDATE_MESSENGER_REF_URL)
-      console.log('action.data', action.data)
       return Object.assign({}, state, {
         messengerRefURL: action.data
       })
@@ -43,7 +40,6 @@ export function messengerRefURLInfo (state = initialState, action) {
         }
       })
     default:
-      console.log('default', action)
       return state
   }
 }

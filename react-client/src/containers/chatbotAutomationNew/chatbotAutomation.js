@@ -149,9 +149,6 @@ class ChatbotAutomation extends React.Component {
     let manualChatbots = this.props.chatbots && this.props.chatbots.filter(chatbot => chatbot.type === 'manual')
     let commerceChatbots = this.props.chatbots && this.props.chatbots.filter(chatbot => chatbot.type === 'automated' && chatbot.vertical === 'commerce')
 
-    console.log('manualChatbots', manualChatbots)
-    console.log('commerceChatbots', commerceChatbots)
-
     let manualChatbotPages = this.getPages(manualChatbots)
     let commerceChatbotPages = this.getPages(commerceChatbots)
     return (

@@ -249,7 +249,6 @@ export function liveChat(state = initialState, action) {
       })
 
     case ActionTypes.SHOW_CUSTOMERS:
-      console.log('action.customers', action.customers)
       return Object.assign({}, state, {
         customers: action.data
       })
