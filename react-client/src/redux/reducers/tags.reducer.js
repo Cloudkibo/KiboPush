@@ -1,7 +1,6 @@
 import * as ActionTypes from '../constants/constants'
 
 export function tagsInfo (state = {}, action) {
-  console.log('tags reducer', action)
   switch (action.type) {      
     case ActionTypes.ADD_TAG: {
       let tags = state.tags

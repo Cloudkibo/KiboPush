@@ -72,7 +72,6 @@ export function backdoorInfo (state = initialState, action) {
       })
 
     case ActionTypes.LOAD_TOP_PAGES_LIST:
-      console.log('loadTopPages', action.data)
       return Object.assign({}, state, {
         toppages: action.data,
         response: ''

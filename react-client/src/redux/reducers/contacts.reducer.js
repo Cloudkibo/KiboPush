@@ -10,8 +10,6 @@ const initialState = {
 export function contactsInfo (state = initialState, action) {
   const contacts = JSON.parse(JSON.stringify(state.uploadedContacts))
   let index = -1
-  console.log('concatcs reducer state', state)
-  console.log('concatcs reducer action', action)
   switch (action.type) {
     case ActionTypes.FETCH_CONTACT_LISTS:
       return Object.assign({}, state, {

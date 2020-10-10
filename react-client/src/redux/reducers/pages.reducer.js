@@ -8,17 +8,14 @@ import * as ActionTypes from '../constants/constants'
 export function pagesInfo (state = [], action) {
   switch (action.type) {
     case ActionTypes.UPDATE_CURRENT_PAGE:
-      console.log('in update current page reducer')
       return Object.assign({}, state, {
         currentPage: action.data
       })
     case ActionTypes.LOAD_PAGES_LIST:
-      console.log('ActionTypes.LOAD_PAGES_LIST in Pages.reducer')
       return Object.assign({}, state, {
         pages: action.data
       })
       case ActionTypes.SAVE_WELCOME_MESSAGE:
-      console.log('ActionTypes.WelcomeMessage in Pages.reducer')
       let pages = state.pages
       let pageIndex = pages.findIndex(page => page._id === action.data._id)
       pages[pageIndex].welcomeMessage = action.data.welcomeMessage

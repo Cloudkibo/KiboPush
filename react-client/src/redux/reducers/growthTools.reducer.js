@@ -9,7 +9,6 @@ const initialState = {
 export function growthToolsInfo (state = initialState, action) {
   switch (action.type) {
     case ActionTypes.SAVE_PHONE_NUMBERS:
-      console.log('getFileUploadResponse', action.data)
       return Object.assign({}, state, {
         fileUploadResponse: action.data
       })

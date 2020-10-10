@@ -213,13 +213,14 @@ class MessageArea extends React.Component {
     let childBlocks = this.props.sidebarItems.filter((item) => blockUniqueIds.indexOf(item.id.toString()) === -1)
     /* eslint-disable */
     do {
-      let ids = childBlocks.filter((item) => blockUniqueIds.includes(item.parentId.toString())).map((item) => item.id.toString())
+      let ids = childBlocks
+        .filter((item) => blockUniqueIds.includes(item.parentId))
+        .map((item) => item.id)
       blockUniqueIds = [...blockUniqueIds, ...ids]
-      childBlocks = this.props.sidebarItems.filter((item) => blockUniqueIds.indexOf(item.id.toString()) === -1)
-    } while (childBlocks.filter((item) => blockUniqueIds.includes(item.parentId.toString())).length > 0)
+      childBlocks = this.props.sidebarItems.filter((item) => blockUniqueIds.indexOf(item.id) === -1)
+    } while (childBlocks.filter((item) => blockUniqueIds.includes(item.parentId)).length > 0)
     /* eslint-enable */
-    const blockIds = this.props.blocks.filter((item) => item._id && blockUniqueIds.includes(item.uniqueId.toString())).map((item) => item._id)
-    console.log('blockIds', {blockUniqueIds, blockIds})
+    const blockIds = this.props.blocks.filter((item) => item._id && blockUniqueIds.includes(item.uniqueId)).map((item) => item._id)
     if (blockIds.includes('welcome-id') || blockIds.length === 0) {
       this.afterDelete({status: 'success'}, blockUniqueIds)
     } else {
@@ -420,7 +421,6 @@ class MessageArea extends React.Component {
   }
 
   render () {
-    console.log('this.props.block', this.props.block)
     return (
       <div style={{border: '1px solid #ccc', backgroundColor: 'white', padding: '0px'}} className='col-md-9'>
         <div style={{margin: '0px'}} className='m-portlet m-portlet-mobile'>
