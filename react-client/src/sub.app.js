@@ -39,8 +39,6 @@ class App extends Component {
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
-    console.log('nextProps in sub', nextProps.user)
-    console.log('nextProps.automated_options in sub app.js', nextProps.automated_options)
     if (nextProps.message_alert) {
       nextProps.setMessageAlert(null)
     }
@@ -182,10 +180,6 @@ class App extends Component {
   }
 
   render () {
-    console.log("Public URL ", process.env.PUBLIC_URL)
-    console.log('auth.getToken', auth.getToken())
-    console.log('browser history', this.props.history)
-
     var alertOptions = {
       offset: 14,
       position: 'top right',
@@ -235,7 +229,6 @@ App.propTypes = {
 }
 
 function mapStateToProps (state) {
-  console.log('store state in app', state)
   return {
     user: (state.basicInfo.user),
     isMobile: (state.basicInfo.isMobile),

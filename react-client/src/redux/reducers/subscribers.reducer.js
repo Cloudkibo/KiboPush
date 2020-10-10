@@ -1,7 +1,6 @@
 import * as ActionTypes from '../constants/constants'
 
 export function subscribersInfo (state = {}, action) {
-  console.log('subscribers reducer', action)
   let subscribers = state.subscribers
   switch (action.type) {
     case ActionTypes.UPDATE_SUBSCRIBER_PICTURE:
@@ -21,7 +20,6 @@ export function subscribersInfo (state = {}, action) {
         if (subscribers[subscriberIndex].customFields) {
           let customFieldIndex = subscribers[subscriberIndex].customFields.findIndex(cf => cf._id === action.data.customFieldId)
           subscribers[subscriberIndex].customFields[customFieldIndex].value = action.data.value
-          console.log('UPDATE_CUSTOM_FIELD_FOR_SUBSCRIBER', state)
           return Object.assign({}, state, {
             subscribers,
             timestamp: new Date().getTime()
