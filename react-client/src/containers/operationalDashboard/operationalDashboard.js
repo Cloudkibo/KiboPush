@@ -16,6 +16,7 @@ import AutopostingSummary from '../dashboard/autopostingSummary'
 import IntegrationsSummary from '../dashboard/integrationsSummary'
 import CompanyInfo from './companyInfo'
 import WhatsAppMetrics from '../smsWhatsAppDashboard/whatsAppMetrics'
+import { localeCodeToEnglish } from '../../utility/utils'
 
 //  import ListItem from './ListItem'
 import moment from 'moment'
@@ -601,6 +602,20 @@ class OperationalDashboard extends React.Component {
                                             <b>Created At:</b> {this.handleDate(user.createdAt)}
                                           </span>
                                           <div className='m-widget5__info'>
+                                            <span className='m-widget5__author'>
+                                              Gender:&nbsp;
+                                            </span>
+                                            <span className='m-widget5__info-author m--font-info'>
+                                              {user.facebookInfo ? user.facebookInfo.gender : ''}
+                                            </span>
+                                            <span className='m-widget5__author'>
+                                              Locale:&nbsp;
+                                            </span>
+                                            <span className='m-widget5__info-author m--font-info'>
+                                              {user.facebookInfo && user.facebookInfo.locale ? localeCodeToEnglish(user.facebookInfo.locale) : ''}
+                                            </span>
+                                          </div>
+                                          <div>
                                             <span className='m-widget5__info-label'>
                                               Connected Platforms:&nbsp;
                                             </span>

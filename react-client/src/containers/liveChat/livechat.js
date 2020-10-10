@@ -31,7 +31,8 @@ import {
   getSMPStatus,
   updateSessionProfilePicture,
   setUserChat,
-  saveNotificationSessionId
+  saveNotificationSessionId,
+  resetSocket
 } from '../../redux/actions/livechat.actions'
 import { updatePicture } from '../../redux/actions/subscribers.actions'
 import { loadTeamsList } from '../../redux/actions/teams.actions'
@@ -70,6 +71,7 @@ class LiveChat extends React.Component {
     super(props, context)
     this.state = {
       loading: true,
+      redirected: this.props.location.state && this.props.location.state.module === 'notifications',
       fetchingChat: false,
       loadingChat: true,
       sessionsLoading: false,
@@ -123,6 +125,7 @@ class LiveChat extends React.Component {
     this.setMessageData = this.setMessageData.bind(this)
     this.markSessionsRead = this.markSessionsRead.bind(this)
     this.backToSessions = this.backToSessions.bind(this)
+    this.updateMessageStatus = this.updateMessageStatus.bind(this)
     this.props.loadcannedResponses()
     this.fetchSessions(true, 'none', true)
     props.getSMPStatus(this.handleSMPStatus)
@@ -196,6 +199,8 @@ class LiveChat extends React.Component {
       url_meta: this.state.urlmeta,
       datetime: new Date().toString(),
       status: 'unseen',
+      seen: false,
+      delivered: false,
       replied_by: {
         type: 'agent',
         id: this.props.user._id,
@@ -504,6 +509,19 @@ class LiveChat extends React.Component {
     })
   }
 
+  updateMessageStatus (chatMessages, event) {
+    if(event === 'seen') {
+      var unseenChats = chatMessages.filter(chat => !chat.seen)
+      for (var i = 0; i < unseenChats.length; i++) {
+        unseenChats[i].seen = true
+        unseenChats[i].status = 'seen'
+      }
+    } else if (event === 'delivered') {
+      var undeliveredChats = chatMessages.filter(chat => !chat.delivered)
+      undeliveredChats.map((undeliveredChat, i) => undeliveredChat.delivered = true)
+    }
+  }
+
   UNSAFE_componentWillReceiveProps(nextProps) {
     console.log('UNSAFE_componentWillMount called in live chat', nextProps)
     let state = {}
@@ -595,6 +613,17 @@ class LiveChat extends React.Component {
         nextProps.user,
         nextProps.clearSocketData
       )
+    }
+    if (nextProps.socketMessageStatus && nextProps.socketMessageStatus.sessionInfo && this.state.activeSession) { 
+     if (nextProps.socketMessageStatus.sessionInfo._id === this.state.activeSession._id) {
+        this.updateMessageStatus(nextProps.userChat,nextProps.socketMessageStatus.event)
+      } else  {
+        var chatMessages = this.props.allChatMessages[nextProps.socketMessageStatus.sessionInfo._id]
+        if (chatMessages && chatMessages.length > 0) {
+          this.updateMessageStatus(chatMessages, nextProps.socketMessageStatus.event)
+        }
+      }
+      nextProps.resetSocket()
     }
   }
 
@@ -710,34 +739,34 @@ class LiveChat extends React.Component {
                   />
                 }
                 {
-                  !this.props.isMobile && this.state.activeSession.constructor === Object && Object.keys(this.state.activeSession).length > 0 && !this.state.showSearch &&
-                  <PROFILE
-                    updateState={this.updateState}
-                    teams={this.props.teams ? this.props.teams : []}
-                    tags={this.state.tags ? this.state.tags : []}
-                    agents={this.props.members ? this.getAgents(this.props.members) : []}
-                    subscriberTags={this.state.subscriberTags}
-                    activeSession={this.state.activeSession}
-                    user={this.props.user}
-                    profilePicError={this.profilePicError}
-                    alertMsg={this.alertMsg}
-                    unSubscribe={this.props.unSubscribe}
-                    customers={this.props.customers}
-                    getCustomers={this.props.getCustomers}
-                    fetchTeamAgents={this.fetchTeamAgents}
-                    assignToTeam={this.props.assignToTeam}
-                    appendSubscriber={this.props.appendSubscriber}
-                    sendNotifications={this.props.sendNotifications}
-                    assignToAgent={this.props.assignToAgent}
-                    assignTags={this.props.assignTags}
-                    unassignTags={this.props.unassignTags}
-                    createTag={this.props.createTag}
-                    customFieldOptions={this.state.customFieldOptions}
-                    setCustomFieldValue={this.saveCustomField}
-                    showTags={true}
-                    showCustomFields={true}
-                    showUnsubscribe={true}
-                  />
+                   !this.props.isMobile && this.state.activeSession.constructor === Object && Object.keys(this.state.activeSession).length > 0 && !this.state.showSearch &&
+                   <PROFILE
+                      updateState={this.updateState}
+                      teams={this.props.teams ? this.props.teams : []}
+                      tags={this.state.tags ? this.state.tags : []}
+                      agents={this.props.members ? this.getAgents(this.props.members) : []}
+                      subscriberTags={this.state.subscriberTags}
+                      activeSession={this.state.activeSession}
+                      user={this.props.user}
+                      profilePicError={this.profilePicError}
+                      alertMsg={this.alertMsg}
+                      unSubscribe={this.props.unSubscribe}
+                      customers={this.props.customers}
+                      getCustomers={this.props.getCustomers}
+                      fetchTeamAgents={this.fetchTeamAgents}
+                      assignToTeam={this.props.assignToTeam}
+                      appendSubscriber={this.props.appendSubscriber}
+                      sendNotifications={this.props.sendNotifications}
+                      assignToAgent={this.props.assignToAgent}
+                      assignTags={this.props.assignTags}
+                      unassignTags={this.props.unassignTags}
+                      createTag={this.props.createTag}
+                      customFieldOptions={this.state.customFieldOptions}
+                      setCustomFieldValue={this.saveCustomField}
+                      showTags={true}
+                      showCustomFields={true}
+                      showUnsubscribe={(this.props.user && this.props.user.plan['unsubscribe_subscribers'] && this.props.user.permissions['unsubsubscribe_subscribers'])}
+                    />
                 }
                 {
                   !this.props.isMobile && Object.keys(this.state.activeSession).length > 0 && this.state.activeSession.constructor === Object && this.state.showSearch &&
@@ -799,7 +828,8 @@ function mapStateToProps(state) {
     zoomIntegrations: (state.settingsInfo.zoomIntegrations),
     cannedResponses: state.settingsInfo.cannedResponses,
     superUser: (state.basicInfo.superUser),
-    redirectToSession: state.liveChat.redirectToSession
+    redirectToSession: state.liveChat.redirectToSession,
+    socketMessageStatus: state.liveChat.socketMessageStatus
   }
 }
 
@@ -845,7 +875,8 @@ function mapDispatchToProps(dispatch) {
     createZoomMeeting,
     setUserChat,
     loadcannedResponses,
-    saveNotificationSessionId
+    saveNotificationSessionId,
+    resetSocket
   }, dispatch)
 }
 
