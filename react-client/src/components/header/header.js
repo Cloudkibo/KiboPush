@@ -451,8 +451,7 @@ function mapDispatchToProps(dispatch) {
     logout,
     saveEnvironment,
     setUsersView,
-    saveNotificationSessionId,
-    saveEnvironment
+    saveNotificationSessionId
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Header)
