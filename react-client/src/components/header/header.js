@@ -11,7 +11,8 @@ import {
   updatePicture,
   updateShowIntegrations,
   disconnectFacebook,
-  logout
+  logout,
+  saveEnvironment
 } from '../../redux/actions/basicinfo.actions'
 import {
   setUsersView
@@ -448,6 +449,7 @@ function mapDispatchToProps(dispatch) {
     updateShowIntegrations,
     disconnectFacebook,
     logout,
+    saveEnvironment,
     setUsersView,
     saveNotificationSessionId
   }, dispatch)
