@@ -16,6 +16,7 @@ import AutopostingSummary from '../dashboard/autopostingSummary'
 import IntegrationsSummary from '../dashboard/integrationsSummary'
 import CompanyInfo from './companyInfo'
 import WhatsAppMetrics from '../smsWhatsAppDashboard/whatsAppMetrics'
+import { localeCodeToEnglish } from '../../utility/utils'
 
 //  import ListItem from './ListItem'
 import moment from 'moment'
