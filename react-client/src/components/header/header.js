@@ -11,8 +11,8 @@ import {
   updatePicture,
   updateShowIntegrations,
   disconnectFacebook,
-  saveEnvironment,
-  logout
+  logout,
+  saveEnvironment
 } from '../../redux/actions/basicinfo.actions'
 import {
   setUsersView
@@ -27,6 +27,7 @@ import cookie from 'react-cookie'
 // Components
 import HEADERMENU from './headerMenu'
 import HEADERTOPBAR from './headerTopbar'
+import cookie from 'react-cookie'
 
 // styles
 const darkSkinStyle = {
@@ -449,6 +450,7 @@ function mapDispatchToProps(dispatch) {
     updateShowIntegrations,
     disconnectFacebook,
     logout,
+    saveEnvironment,
     setUsersView,
     saveNotificationSessionId,
     saveEnvironment
