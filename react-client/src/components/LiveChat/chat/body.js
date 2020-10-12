@@ -70,13 +70,11 @@ class Body extends React.Component {
   }
 
   loadMoreMessage() {
-    if (this.props.userChat.length > 0 && this.props.userChat[0]) {
-      this.props.fetchUserChats(
-        this.props.activeSession._id,
-        { page: 'next', number: 25, last_id: this.props.userChat[0]._id },
-        this.props.activeSession.messagesCount
-      )
-    }
+    this.props.fetchUserChats(
+      this.props.activeSession._id,
+      { page: 'next', number: 25, last_id: this.props.userChat[0]._id },
+      this.props.activeSession.messagesCount
+    )
   }
 
   updateScrollTop() {
@@ -86,7 +84,7 @@ class Body extends React.Component {
   }
 
   shoudLoadMore() {
-    return (this.props.chatCount > this.props.userChat.length)
+    return (this.props.userChat.length > 0 && this.props.chatCount > this.props.userChat.length)
   }
 
   markRead() {
