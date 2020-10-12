@@ -92,7 +92,7 @@ class UserSummary extends React.Component {
               <div className='col-md-3'>
                 <IconStack
                   icon='fa fa-envelope'
-                  title={this.props.userSummary.facebookMessageReceivedCount}
+                  title={this.props.userSummary.facebookMessageReceived}
                   subtitle='Messages Recieved From Facebook'
                   iconStyle='success'
                   id='facebookMessagesCount'
