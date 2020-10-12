@@ -118,10 +118,16 @@ class App extends Component {
           pathname: '/livechat'
         })
       } else {
-        this.props.history.push({
-          pathname: '/',
-          state: {obj: {_id: 1}}
-        })
+        if (getCurrentProduct() === 'KiboChat') {
+          this.props.history.push({
+            pathname: '/livechat'
+          })
+        } else {
+          this.props.history.push({
+            pathname: '/',
+            state: {obj: {_id: 1}}
+          })
+        }
       }
     }
 
