@@ -51,6 +51,7 @@ class SmsChat extends React.Component {
     super(props, context)
     this.state = {
       loading: true,
+      redirected: this.props.location.state && this.props.location.state.module === 'notifications',
       fetchingChat: false,
       loadingChat: true,
       sessionsLoading: false,
@@ -413,6 +414,7 @@ class SmsChat extends React.Component {
       state.sessions = sessions
       state.sessionsCount = this.state.tabValue === 'open' ? nextProps.openCount : nextProps.closeCount
     }
+    
     if (nextProps.redirectToSession && nextProps.redirectToSession.sessionId) {
       if (nextProps.openSessions && nextProps.closeSessions) {
         nextProps.saveNotificationSessionId({sessionId: null})

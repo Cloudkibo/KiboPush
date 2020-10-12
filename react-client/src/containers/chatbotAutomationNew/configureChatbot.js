@@ -26,6 +26,7 @@ import MODAL from '../../components/extras/modal'
 import WHITELISTDOMAINS from '../../components/chatbotAutomation/whitelistDomains'
 import TREESTRUCTURE from '../../components/chatbotAutomationNew/treeStructure'
 import $ from 'jquery'
+import ReactTooltip from 'react-tooltip'
 
 const MessengerPlugin = require('react-messenger-plugin').default
 
@@ -403,13 +404,19 @@ class ConfigureChatbot extends React.Component {
               <h3 className='m-subheader__title'>Configure Chatbot - {this.props.location.state.page.pageName}</h3>
             </div>
             <div className='pull-right'>
+              <ReactTooltip
+                id='publish-chatbot'
+                place='bottom'
+                type='dark'
+                effect='solid'
+              />
               <button
                 id='_chatbot_message_area_header_publish'
                 style={{ marginLeft: '10px', borderColor: this.state.chatbot.published ? '#34bfa3' : '#f4516c' }}
                 className={`pull-right btn btn-${this.state.chatbot.published ? 'success' : 'danger'} m-btn m-btn--icon m-btn--icon-only m-btn--custom m-btn--pill m-btn--air`}
                 onClick={this.state.chatbot.published ? this.onDisable : this.onPublish}
                 data-tip={this.state.chatbot.published ? 'Disable Chatbot' : 'Publish Chatbot'}
-                data-place='bottom'
+                data-for='publish-chatbot'
                 disabled={this.state.progress !== 100}
               >
                 {
@@ -418,34 +425,52 @@ class ConfigureChatbot extends React.Component {
                     : <i className="la la-power-off" />
                 }
               </button>
+              <ReactTooltip
+                id='test-chatbot'
+                place='bottom'
+                type='dark'
+                effect='solid'
+              />
               <button
                 id='_chatbot_message_area_header_test'
                 style={{ marginLeft: '10px', borderColor: '#716aca' }}
                 className="pull-right btn btn-brand m-btn m-btn--icon m-btn--icon-only m-btn--custom m-btn--pill m-btn--air"
                 onClick={this.showTestModal}
                 data-tip='Test Chatbot'
-                data-place='bottom'
+                data-for='test-chatbot'
                 disabled={this.state.progress !== 100}
               >
                 <i className="fa flaticon-paper-plane"></i>
               </button>
+              <ReactTooltip
+                id='chatbot-analytics'
+                place='bottom'
+                type='dark'
+                effect='solid'
+              />
               <button
                 id='_chatbot_message_area_header_analytics'
                 style={{ marginLeft: '10px', borderColor: '#36a3f7' }}
                 className="pull-right btn btn-info m-btn m-btn--icon m-btn--icon-only m-btn--custom m-btn--pill m-btn--air"
                 onClick={this.onAnalytics}
                 data-tip='Chatbot Analytics'
-                data-place='bottom'
+                data-for='chatbot-analytics'
               >
                 <i className="fa flaticon-analytics"></i>
               </button>
+              <ReactTooltip
+                id='tree-tructure'
+                place='bottom'
+                type='dark'
+                effect='solid'
+              />
               <button
                 id='_chatbot_message_area_header_analytics'
                 style={{ marginLeft: '10px', borderColor: '#ffb822' }}
                 className="pull-right btn btn-warning m-btn m-btn--icon m-btn--icon-only m-btn--custom m-btn--pill m-btn--air"
                 onClick={this.showTreeStructure}
                 data-tip='View Tree Structure'
-                data-place='bottom'
+                data-for='tree-tructure'
               >
                 <i className="fa flaticon-network"></i>
               </button>
@@ -510,6 +535,28 @@ class ConfigureChatbot extends React.Component {
               <HELPWIDGET
                 documentation={{ visibility: true, link: 'https://kibopush.com/chatbot-automation/' }}
                 videoTutorial={{ visibility: true, videoId: 'eszeTV3-Uzs' }}
+              />
+              <MODAL
+                zIndex={9999}
+                id='_cb_whitelist_domains'
+                title='Manage Whitelist Domains'
+                content={this.getWhitelistModalContent()}
+              />
+              <button ref='_open_test_chatbot_modal' style={{ display: 'none' }} data-toggle='modal' data-target='#_test_chatbot' />
+              <MODAL
+                id='_test_chatbot'
+                title='Test Chatbot'
+                content={this.getTestModalContent()}
+                onClose={this.toggleTestModalContent}
+              />
+              <PROGRESS progress={`${this.state.progress}%`} />
+              <BACKBUTTON
+                onBack={this.onBack}
+                position='bottom-left'
+              />
+              <HELPWIDGET
+                documentation={{ visibility: true, link: 'https://kibopush.com/chatbot-automation/' }}
+                videoTutorial={{ visibility: true, videoId: '6v1bnraz6CQ' }}
               />
               <MODAL
                 zIndex={9999}

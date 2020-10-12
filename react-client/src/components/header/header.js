@@ -22,11 +22,11 @@ import {
 } from '../../redux/actions/livechat.actions'
 import { fetchNotifications, markRead } from '../../redux/actions/notifications.actions'
 import AlertContainer from 'react-alert'
+import cookie from 'react-cookie'
 
 // Components
 import HEADERMENU from './headerMenu'
 import HEADERTOPBAR from './headerTopbar'
-import cookie from 'react-cookie'
 
 // styles
 const darkSkinStyle = {
@@ -169,7 +169,7 @@ class Header extends React.Component {
     // e.target.src = 'https://emblemsbf.com/img/27447.jpg'
     this.props.updatePicture({ user: this.props.user })
   }
- 
+
   logout(res) {
     if (res.status === 'success') {
       this.props.updateShowIntegrations({ showIntegrations: true })
@@ -451,7 +451,8 @@ function mapDispatchToProps(dispatch) {
     logout,
     saveEnvironment,
     setUsersView,
-    saveNotificationSessionId
+    saveNotificationSessionId,
+    saveEnvironment
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Header)
