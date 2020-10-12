@@ -141,6 +141,9 @@ class MessageArea extends React.Component {
     if (!this.state.text && Object.keys(this.state.attachment).length === 0) {
       this.props.alertMsg.error('Text or attachment is required')
       callback()
+    } else if (this.state.options.length > 0 && !this.state.text) {
+      this.props.alertMsg.error('Text cannot be empty')
+      callback()
     } else {
       const data = {
         triggers: this.state.triggers,
@@ -254,7 +257,20 @@ class MessageArea extends React.Component {
     const sidebarIndex = sidebarItems.findIndex((item) => item.id === block.uniqueId)
     blocks[blockIndex].title = title
     sidebarItems[sidebarIndex].title = title
+    const parentId = sidebarItems[sidebarIndex].parentId
+    const parentIndex = blocks.findIndex((item) => item.uniqueId === parentId)
+    const optionsIndex = blocks[parentIndex].options.findIndex((item) => item.blockId === block.uniqueId)
+    blocks[parentIndex].options[optionsIndex].title = title
     this.props.updateParentState({currentBlock: block, blocks, sidebarItems, unsavedChanges: true})
+    const data = {
+      triggers: blocks[parentIndex].triggers,
+      uniqueId: blocks[parentIndex].uniqueId,
+      title: blocks[parentIndex].title,
+      chatbotId: this.props.chatbot.chatbotId,
+      payload: blocks[parentIndex].payload,
+      options: blocks[parentIndex].options
+    }
+    this.props.handleMessageBlock(data, (res) => {})
   }
 
   onAddChild (title) {

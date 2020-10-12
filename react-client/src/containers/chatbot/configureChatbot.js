@@ -18,6 +18,7 @@ import BACKBUTTON from '../../components/extras/backButton'
 import TREESTRUCTURE from '../../components/chatbot/treeStructure'
 import $ from 'jquery'
 import { validateAttachment } from '../../global/chatbot'
+import ReactTooltip from 'react-tooltip'
 
 class ConfigureChatbot extends React.Component {
   constructor(props, context) {
@@ -269,13 +270,19 @@ class ConfigureChatbot extends React.Component {
               <h3 className='m-subheader__title'>Configure Chatbot - {this.state.chatbot.title}</h3>
             </div>
             <div className='pull-right'>
+              <ReactTooltip
+                id='publish-chatbot'
+                place='bottom'
+                type='dark'
+                effect='solid'
+              />
               <button
                 id='_chatbot_message_area_header_publish'
                 style={{ marginLeft: '10px', borderColor: this.state.chatbot.published ? '#34bfa3' : '#f4516c' }}
                 className={`pull-right btn btn-${this.state.chatbot.published ? 'success' : 'danger'} m-btn m-btn--icon m-btn--icon-only m-btn--custom m-btn--pill m-btn--air`}
                 onClick={this.state.chatbot.published ? this.onDisable : this.onPublish}
                 data-tip={this.state.chatbot.published ? 'Disable Chatbot' : 'Publish Chatbot'}
-                data-place='bottom'
+                data-for='publish-chatbot'
                 disabled={this.state.progress !== 100}
               >
                 {
@@ -284,13 +291,19 @@ class ConfigureChatbot extends React.Component {
                     : <i className="la la-power-off" />
                 }
               </button>
+              <ReactTooltip
+                id='tree-structure'
+                place='bottom'
+                type='dark'
+                effect='solid'
+              />
               <button
                 id='_chatbot_message_area_header_tree'
                 style={{ marginLeft: '10px', borderColor: '#ffb822' }}
                 className="pull-right btn btn-warning m-btn m-btn--icon m-btn--icon-only m-btn--custom m-btn--pill m-btn--air"
                 onClick={this.showTreeStructure}
                 data-tip='View Tree Structure'
-                data-place='bottom'
+                data-for='tree-structure'
               >
                 <i className="fa flaticon-network"></i>
               </button>
