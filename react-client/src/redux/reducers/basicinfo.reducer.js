@@ -51,6 +51,11 @@ export function basicInfo (state = initialState, action) {
         error: ''
       })
 
+    case ActionTypes.CURRENT_ENVIRONMENT:
+      return Object.assign({}, state, {
+        currentEnvironment: action.data
+      })
+
     case ActionTypes.SET_SOCKET_STATUS:
       return Object.assign({}, state, {
         socketStatus: action.data

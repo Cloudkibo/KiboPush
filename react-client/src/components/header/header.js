@@ -25,6 +25,7 @@ import AlertContainer from 'react-alert'
 // Components
 import HEADERMENU from './headerMenu'
 import HEADERTOPBAR from './headerTopbar'
+import cookie from 'react-cookie'
 
 // styles
 const darkSkinStyle = {
@@ -62,6 +63,9 @@ class Header extends React.Component {
   componentDidMount () {
     if (this.props.user) {
       this.setPlatform(this.props.user)
+    }
+    if (cookie.load('environment')) {
+      this.props.saveEnvironment(cookie.load('environment'))
     }
   }
 
@@ -360,6 +364,7 @@ class Header extends React.Component {
                 updatePicture={this.props.updatePicture}
                 logout={this.props.logout}
                 setUsersView={this.props.setUsersView}
+                currentEnvironment= {this.props.currentEnvironment}
               />
             </div>
           </div>
@@ -428,7 +433,8 @@ function mapStateToProps(state) {
     userView: (state.backdoorInfo.userView),
     notifications: (state.notificationsInfo.notifications),
     subscribers: (state.subscribersInfo.subscribers),
-    otherPages: (state.pagesInfo.otherPages)
+    otherPages: (state.pagesInfo.otherPages),
+    currentEnvironment: (state.basicInfo.currentEnvironment)
   }
 }
 
