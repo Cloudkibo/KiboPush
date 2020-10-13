@@ -221,7 +221,7 @@ export function updateAllChat(payload, originalData, sessionId) {
 
 export function resetSocket() {
   return {
-    type: ActionTypes.RESET_SOCKET
+    type: ActionTypes.RESET_SOCKET_MESSAGE_STATUS
   }
 }
 
