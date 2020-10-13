@@ -151,11 +151,10 @@ export function showCloseChatSessions(sessions, firstPage) {
     count: sessions.count
   }
 }
-export function updateChatSessions(session, appendDeleteInfo) {
-  session.name = `${session.firstName} ${session.lastName}`
+export function updateChatSessions(sessionId, appendDeleteInfo) {
   return {
     type: ActionTypes.UPDATE_CHAT_SESSIONS,
-    session,
+    data: { sessionId },
     appendDeleteInfo
   }
 }
@@ -325,13 +324,9 @@ export function fetchCloseSessions(data) {
   }
 }
 
-export function fetchSingleSession(sessionid, appendDeleteInfo) {
+export function moveSession(sessionid, appendDeleteInfo) {
   return (dispatch) => {
-    callApi(`sessions/${sessionid}`)
-      .then(res => {
-        console.log('response from fetchSingleSession', res)
-        dispatch(updateChatSessions(res.payload, appendDeleteInfo))
-      })
+    dispatch(updateChatSessions(sessionid, appendDeleteInfo))
   }
 }
 
@@ -415,11 +410,11 @@ export function searchChat(data) {
 }
 
 
-export function sendChatMessage (data, cb) {
+export function sendChatMessage(data, cb) {
   return (dispatch) => {
     callApi('livechat/', 'post', data).then(res => {
       console.log('response from sendChatMessage', res)
-      if (cb) cb(res)
+      if (cb) cb(res)     
       // dispatch(fetchSessions())
       //fetchOpenSessions({first_page: true, last_id: 'none', number_of_records: 10, filter: false, filter_criteria: {sort_value: -1, page_value: '', search_value: ''}})
     })

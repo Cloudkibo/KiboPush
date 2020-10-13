@@ -99,7 +99,6 @@ export function templatesInfo (state = {}, action) {
         broadcastDetails: action.data
       })
     case ActionTypes.SAVE_BROADCAST_INFORMATION:
-      console.log('getCurrentBroadcast', action.data)
       return Object.assign({}, state, {
         currentBroadcast: action.data
       })

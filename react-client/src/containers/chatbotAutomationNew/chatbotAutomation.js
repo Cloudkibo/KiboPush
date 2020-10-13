@@ -149,9 +149,6 @@ class ChatbotAutomation extends React.Component {
     let manualChatbots = this.props.chatbots && this.props.chatbots.filter(chatbot => chatbot.type === 'manual')
     let commerceChatbots = this.props.chatbots && this.props.chatbots.filter(chatbot => chatbot.type === 'automated' && chatbot.vertical === 'commerce')
 
-    console.log('manualChatbots', manualChatbots)
-    console.log('commerceChatbots', commerceChatbots)
-
     let manualChatbotPages = this.getPages(manualChatbots)
     let commerceChatbotPages = this.getPages(commerceChatbots)
     return (
@@ -389,24 +386,23 @@ class ChatbotAutomation extends React.Component {
                                   : <div>
                                     You have created the chatbot for all your connected pages.
                               </div>
-                                    :
-                                    <div>
-                                      Please connect a Facebook page to continue
+                                :
+                                <div>
+                                  Please connect a Facebook page to continue
                                 <Link to='/addPages' style={{ border: '1px solid', marginLeft: '10px' }} className="btn btn-outline-success">
-                                        Connect
+                                    Connect
                                 </Link>
-                                    </div>
-                              }
-                            </div>
-                          }
-                        </div>
+                                </div>
+                            }
+                          </div>
+                        }
                       </div>
-                    }
-                  </div>
+                    </div>
+                  }
                 </div>
               </div>
             </div>
-          }
+          </div>
         </div>
 
       </div>

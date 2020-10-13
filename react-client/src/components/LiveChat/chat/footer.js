@@ -264,7 +264,6 @@ class Footer extends React.Component {
   }
 
   updateChatData(data, payload) {
-    data._id = new Date().getTime()
     let sessions = this.props.sessions
     let session = this.props.activeSession
     let index = sessions.findIndex((s) => s._id === session._id)
@@ -293,7 +292,11 @@ class Footer extends React.Component {
       this.props.sendChatMessage(data, (res) => {
         if (res.status !== 'success') {
           let errorMsg = res.description || res.payload
-          this.props.alertMsg.error(errorMsg)
+          if (errorMsg.message) {
+            this.props.alertMsg.error(JSON.stringify(errorMsg.message))
+          } else {
+            this.props.alertMsg.error(JSON.stringify(errorMsg))
+          }
         }
       })
       data.format = 'convos'
@@ -315,7 +318,11 @@ class Footer extends React.Component {
       this.props.sendChatMessage(data, (res) => {
         if (res.status !== 'success') {
           let errorMsg = res.description || res.payload
-          this.props.alertMsg.error(errorMsg)
+          if (errorMsg.message) {
+            this.props.alertMsg.error(JSON.stringify(errorMsg.message))
+          } else {
+            this.props.alertMsg.error(JSON.stringify(errorMsg))
+          }
         }
       })
       data.format = 'convos'
@@ -622,21 +629,25 @@ class Footer extends React.Component {
 
   handleMessageResponse(res, data, payload) {
     if (res.status === 'success') {
-      data.format = 'convos'
-      this.setState({
-        attachment: {},
-        componentType: '',
-        uploadingFile: false,
-        uploaded: false,
-        loading: false,
-        caption: ''
-      }, () => {
-        this.updateChatData(data, payload)
-      })
+        data.format = 'convos'
+        this.setState({
+          attachment: {},
+          componentType: '',
+          uploadingFile: false,
+          uploaded: false,
+          loading: false,
+          caption: ''
+        }, () => {
+          // this.updateChatData(data, payload)
+        })
     } else {
       this.setState({loading: false})
-      let msg = res.description || 'Failed to send message'
-      this.props.alertMsg.error(msg)
+      let msg = res.description || res.payload ||'Failed to send message'
+      if (msg.message) {
+        this.props.alertMsg.error(JSON.stringify(msg.message))
+      } else {
+        this.props.alertMsg.error(JSON.stringify(msg))
+      }
     }
   }
 
@@ -792,7 +803,11 @@ class Footer extends React.Component {
         this.props.sendChatMessage(data, (res) => {
           if (res.status !== 'success') {
             let errorMsg = res.description || res.payload
-            this.props.alertMsg.error(errorMsg)
+            if (errorMsg.message) {
+              this.props.alertMsg.error(JSON.stringify(errorMsg.message))
+            } else {
+              this.props.alertMsg.error(JSON.stringify(errorMsg))
+            }
           }
         })
         this.setState({ text: '', urlmeta: {}, currentUrl: '' })
@@ -810,14 +825,18 @@ class Footer extends React.Component {
     if (data.isAllowed) {
       let payload = this.setDataPayload('thumbsUp')
       let data = this.props.setMessageData(this.props.activeSession, payload)
+      data.format = 'convos'
+      this.updateChatData(data, payload)
       this.props.sendChatMessage(data, (res) => {
         if (res.status !== 'success') {
           let errorMsg = res.description || res.payload
-          this.props.alertMsg.error(errorMsg)
+          if (errorMsg.message) {
+            this.props.alertMsg.error(JSON.stringify(errorMsg.message))
+          } else {
+            this.props.alertMsg.error(JSON.stringify(errorMsg))
+          }
         }
       })
-      data.format = 'convos'
-      this.updateChatData(data, payload)
     } else {
       this.props.alertMsg.error(data.errorMsg)
     }
@@ -826,9 +845,9 @@ class Footer extends React.Component {
   sendAttachment() {
     const data = this.props.performAction('send messages', this.props.activeSession)
     if (data.isAllowed) {
-      this.setState({ loading: true })
       let payload = this.setDataPayload('attachment')
       let data = this.props.setMessageData(this.props.activeSession, payload)
+      this.setState({ loading: true })
       this.props.sendAttachment(data, (res) => this.handleMessageResponse(res, data, payload))
     } else {
       this.props.alertMsg.error(data.errorMsg)

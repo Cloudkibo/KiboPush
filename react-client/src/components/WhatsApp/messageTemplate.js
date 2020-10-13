@@ -164,7 +164,11 @@ class MessageTemplate extends React.Component {
       } else {
         this.setState({sendingTemplate: false})
         let errorMsg = res.description || res.payload
-        this.props.alertMsg.error(errorMsg)
+        if (errorMsg.message) {
+          this.props.alertMsg.error(JSON.stringify(errorMsg.message))
+        } else {
+          this.props.alertMsg.error(JSON.stringify(errorMsg))
+        }
       }
     })
   }

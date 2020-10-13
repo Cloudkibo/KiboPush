@@ -1,8 +1,6 @@
 import * as ActionTypes from '../constants/constants'
 
 export function customFieldInfo (state = {}, action) {
-  console.log('customField reducer', action)
-  console.log('customField state', state)
   switch (action.type) {
     case ActionTypes.ADD_CUSTOM_FIELD: {
      let customFields = state.customFields

@@ -9,7 +9,6 @@ import { connect } from 'react-redux'
 import { getAutomatedOptions } from '../../redux/actions/basicinfo.actions'
 import { bindActionCreators } from 'redux'
 import { getCurrentProduct } from '../../utility/utils'
-import { fetchSingleSession, fetchUserChats, resetSocket } from '../../redux/actions/livechat.actions'
 
 class Sidebar extends Component {
   constructor(props, context) {
@@ -156,7 +155,6 @@ class Sidebar extends Component {
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
-    console.log('nextProps in sidebar', nextProps)
 
     /* if (nextProps.user) {
        this.setState({broadcasts: nextProps.user.uiMode.broadcasts,
@@ -1349,7 +1347,6 @@ class Sidebar extends Component {
   }
 
   render() {
-    console.log('this.state', this.state)
 
     if (this.props.user && this.props.user.permissionsRevoked) {
       this.props.history.push({ pathname: '/connectFb', state: { permissionsRevoked: true } })
@@ -1404,7 +1401,6 @@ class Sidebar extends Component {
   }
 }
 function mapStateToProps(state) {
-  console.log('state in sidebar', state)
   return {
     sessions: (state.liveChat.sessions),
     user: (state.basicInfo.user),
@@ -1420,9 +1416,6 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return bindActionCreators({
     getAutomatedOptions: getAutomatedOptions,
-    fetchUserChats: fetchUserChats,
-    resetSocket: resetSocket,
-    fetchSingleSession: fetchSingleSession
   }, dispatch)
 }
 

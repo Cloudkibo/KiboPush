@@ -9,7 +9,6 @@ const initialState = {
 }
 
 export function commerceInfo(state = initialState, action) {
-  console.log('commerce reducer', action)
   switch (action.type) {
     case ActionTypes.FETCH_STORE:
       return Object.assign({}, state, {
