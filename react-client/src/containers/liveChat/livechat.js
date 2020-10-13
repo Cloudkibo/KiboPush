@@ -31,7 +31,8 @@ import {
   getSMPStatus,
   updateSessionProfilePicture,
   setUserChat,
-  saveNotificationSessionId
+  saveNotificationSessionId,
+  resetSocket
 } from '../../redux/actions/livechat.actions'
 import { updatePicture } from '../../redux/actions/subscribers.actions'
 import { loadTeamsList } from '../../redux/actions/teams.actions'
@@ -123,6 +124,7 @@ class LiveChat extends React.Component {
     this.setMessageData = this.setMessageData.bind(this)
     this.markSessionsRead = this.markSessionsRead.bind(this)
     this.backToSessions = this.backToSessions.bind(this)
+    this.updateMessageStatus = this.updateMessageStatus.bind(this)
     this.props.loadcannedResponses()
     this.fetchSessions(true, 'none', true)
     props.getSMPStatus(this.handleSMPStatus)
@@ -196,6 +198,8 @@ class LiveChat extends React.Component {
       url_meta: this.state.urlmeta,
       datetime: new Date().toString(),
       status: 'unseen',
+      seen: false,
+      delivered: false,
       replied_by: {
         type: 'agent',
         id: this.props.user._id,
@@ -504,6 +508,19 @@ class LiveChat extends React.Component {
     })
   }
 
+  updateMessageStatus (chatMessages, event) {
+    if(event === 'seen') {
+      var unseenChats = chatMessages.filter(chat => !chat.seen)
+      for (var i = 0; i < unseenChats.length; i++) {
+        unseenChats[i].seen = true
+        unseenChats[i].status = 'seen'
+      }
+    } else if (event === 'delivered') {
+      var undeliveredChats = chatMessages.filter(chat => !chat.delivered)
+      undeliveredChats.map((undeliveredChat, i) => undeliveredChat.delivered = true)
+    }
+  }
+
   UNSAFE_componentWillReceiveProps(nextProps) {
     console.log('UNSAFE_componentWillMount called in live chat', nextProps)
     let state = {}
@@ -595,6 +612,17 @@ class LiveChat extends React.Component {
         nextProps.user,
         nextProps.clearSocketData
       )
+    }
+    if (nextProps.socketMessageStatus && nextProps.socketMessageStatus.sessionInfo && this.state.activeSession) { 
+     if (nextProps.socketMessageStatus.sessionInfo._id === this.state.activeSession._id) {
+        this.updateMessageStatus(nextProps.userChat,nextProps.socketMessageStatus.event)
+      } else  {
+        var chatMessages = this.props.allChatMessages[nextProps.socketMessageStatus.sessionInfo._id]
+        if (chatMessages && chatMessages.length > 0) {
+          this.updateMessageStatus(chatMessages, nextProps.socketMessageStatus.event)
+        }
+      }
+      nextProps.resetSocket()
     }
   }
 
@@ -799,7 +827,9 @@ function mapStateToProps(state) {
     zoomIntegrations: (state.settingsInfo.zoomIntegrations),
     cannedResponses: state.settingsInfo.cannedResponses,
     superUser: (state.basicInfo.superUser),
-    redirectToSession: state.liveChat.redirectToSession
+    redirectToSession: state.liveChat.redirectToSession,
+    socketMessageStatus: state.liveChat.socketMessageStatus
+
   }
 }
 
@@ -845,7 +875,8 @@ function mapDispatchToProps(dispatch) {
     createZoomMeeting,
     setUserChat,
     loadcannedResponses,
-    saveNotificationSessionId
+    saveNotificationSessionId,
+    resetSocket
   }, dispatch)
 }
 
