@@ -68,7 +68,6 @@ class AddPage extends React.Component {
     this.setState({ showWarning: false })
   }
 
-
   UNSAFE_componentWillReceiveProps(nextprops) {
     if (nextprops.page_connected && nextprops.page_connected !== '') {
       this.setState({ showAlert: true, alertmsg: nextprops.page_connected })

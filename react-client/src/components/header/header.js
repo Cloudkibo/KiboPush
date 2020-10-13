@@ -27,6 +27,7 @@ import cookie from 'react-cookie'
 // Components
 import HEADERMENU from './headerMenu'
 import HEADERTOPBAR from './headerTopbar'
+import cookie from 'react-cookie'
 
 // styles
 const darkSkinStyle = {
