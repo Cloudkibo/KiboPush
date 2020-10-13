@@ -47,7 +47,7 @@ const getAttachmentLimits = function (provider, platform) {
       size: 16000000,
       mimeTypes: {
         supported: [
-          'video/mp4', 'audio/mpeg', 'audio/amr'
+          'video/mp4', 'audio/mp3', 'audio/mpeg', 'audio/amr'
         ]
       }
     })
