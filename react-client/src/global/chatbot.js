@@ -34,6 +34,31 @@ const getAttachmentLimits = function (provider, platform) {
         ]
       }
     })
+  } else if (platform === 'whatsApp' && provider === 'flockSend') {
+    limits.push({
+      size: 5000000,
+      mimeTypes: {
+        supported: [
+          'image/jpeg', 'image/png'
+        ]
+      }
+    })
+    limits.push({
+      size: 16000000,
+      mimeTypes: {
+        supported: [
+          'video/mp4', 'audio/mpeg', 'audio/amr'
+        ]
+      }
+    })
+    limits.push({
+      size: 15000000,
+      mimeTypes: {
+        supported: [
+          'application/pdf'
+        ]
+      }
+    })
   } else {
     limits.push({
       size: 25000000,
