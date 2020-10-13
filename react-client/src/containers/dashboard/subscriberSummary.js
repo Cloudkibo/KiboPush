@@ -377,7 +377,7 @@ class SubscriberSummary extends React.Component {
               </div>
               <div className='col-md-8 col-lg-8 col-sm-8'>
                 {this.state.data.length > 0
-                ? <ResponsiveContainer>
+                ? <ResponsiveContainer debounce={300}>
                   <AreaChart data={this.state.data} margin={{top: 10, right: 30, left: 0, bottom: 0}}>
                     <CartesianGrid strokeDasharray='3 3' />
                     <XAxis dataKey='date' />

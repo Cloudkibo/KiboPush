@@ -38,6 +38,7 @@ import { updatePicture } from '../../redux/actions/subscribers.actions'
 import { loadTeamsList } from '../../redux/actions/teams.actions'
 import { loadMembersList } from '../../redux/actions/members.actions'
 import { urlMetaData } from '../../redux/actions/convos.actions'
+import { loadMyPagesList } from '../../redux/actions/pages.actions'
 import {
   getSubscriberTags,
   unassignTags,
@@ -129,6 +130,7 @@ class LiveChat extends React.Component {
     this.fetchSessions(true, 'none', true)
     props.getSMPStatus(this.handleSMPStatus)
     props.loadMembersList()
+    props.loadMyPagesList()
     props.loadTags()
     props.loadCustomFields()
     props.getZoomIntegrations()
