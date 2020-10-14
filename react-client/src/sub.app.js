@@ -158,7 +158,7 @@ class App extends Component {
     } else if (this.props.history.location.pathname.toLowerCase() !== '/integrations/zoom') {
       if (getCurrentProduct() === 'KiboChat') {
         this.props.history.push({
-          pathname: '/livechat'
+          pathname: '/liveChat'
         })
       } else {
         this.props.history.push({
