@@ -6,6 +6,7 @@ import Sidebar from './components/sidebar/sidebar'
 import auth from './utility/auth.service'
 import $ from 'jquery'
 import { getuserdetails } from './redux/actions/basicinfo.actions'
+import { loadMyPagesListNew } from './redux/actions/pages.actions'
 import { setMessageAlert } from './redux/actions/notifications.actions'
 import { updateLiveChatInfo } from './redux/actions/livechat.actions'
 import { clearSocketData } from './redux/actions/socket.actions'
@@ -16,6 +17,7 @@ import AlertContainer from 'react-alert'
 import HEADER from './components/header/header'
 import { getCurrentProduct } from './utility/utils'
 import { getHiddenHeaderRoutes, getWhiteHeaderRoutes } from './utility/utils'
+import { validateUserAccessToken, isFacebookConnected } from './redux/actions/basicinfo.actions'
 
 class App extends Component {
   constructor (props) {
@@ -29,8 +31,56 @@ class App extends Component {
     this.handleDemoSSAPage = this.handleDemoSSAPage.bind(this)
     this.onNotificationClick = this.onNotificationClick.bind(this)
     this.setPathAndHeaderProps = this.setPathAndHeaderProps.bind(this)
+    this.redirectToConnectPage = this.redirectToConnectPage.bind(this)
+    this.checkUserAccessToken = this.checkUserAccessToken.bind(this)
+    this.checkFacebookConnected = this.checkFacebookConnected.bind(this)
 
     props.getuserdetails(joinRoom)
+  }
+  UNSAFE_componentWillMount () {
+    this.props.loadMyPagesListNew({
+      last_id: 'none',
+      number_of_records: 10,
+      first_page: 'first',
+      filter: false,
+      filter_criteria: { search_value: '' }
+    }, this.redirectToConnectPage)
+    this.props.validateUserAccessToken(this.checkUserAccessToken)
+    this.props.isFacebookConnected(this.checkFacebookConnected)
+  }
+
+  checkFacebookConnected(response) {
+    if (this.props.user && this.props.user.role !== 'buyer' && !response.payload.buyerInfo.connectFacebook) {
+      this.props.history.push({
+        pathname: '/sessionInvalidated',
+        state: { session_inavalidated: false, role: response.payload.role, buyerInfo: response.payload.buyerInfo }
+      })
+    }
+  }
+
+  checkUserAccessToken(response) {
+    console.log('checkUserAccessToken response', response)
+    if (response.status === 'failed' && response.payload.error &&
+      response.payload.error.code === 190 && this.props.user && this.props.user.platform === 'messenger') {
+      if (this.props.user.role === 'buyer') {
+        this.props.history.push({
+          pathname: '/sessionInvalidated',
+          state: { session_inavalidated: true, role: 'buyer' }
+        })
+      } else {
+        this.props.history.push({
+          pathname: '/sessionInvalidated',
+          state: { session_inavalidated: true, role: this.props.user.role, buyerInfo: response.payload.buyerInfo }
+        })
+      }
+    }
+  }
+  redirectToConnectPage(count) {
+    if ((!count || count !== 0) && this.props.user.platform === 'messenger') {
+      this.props.history.push({
+        pathname: '/addfbpages'
+      })
+    }
   }
 
   handleDemoSSAPage () {
@@ -251,7 +301,10 @@ function mapDispatchToProps (dispatch) {
       getuserdetails,
       setMessageAlert,
       updateLiveChatInfo,
-      clearSocketData
+      clearSocketData,
+      loadMyPagesListNew,
+      validateUserAccessToken,
+      isFacebookConnected
     }, dispatch)
 }
 
