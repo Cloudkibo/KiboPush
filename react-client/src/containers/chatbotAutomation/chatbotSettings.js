@@ -17,7 +17,7 @@ class ChatbotSettings extends React.Component {
       chatbot: props.location.state,
       blocks: [],
       text: '',
-      options: '',
+      options: [],
       fallbackReplyEnabled: false,
       isYoutubePlayable: true
     }
@@ -51,14 +51,18 @@ class ChatbotSettings extends React.Component {
         isYoutubePlayable: this.state.chatbot.isYoutubePlayable
       })
     } else {
-      this.setState({
-        text: 'Sorry, I do not understand this. Please select from the following:',
-        options: [{
-          title: 'Home',
-          content_type: 'text',
-          payload: JSON.stringify([{action: '_chatbot', blockUniqueId: welcomeBlock.uniqueId}])
-        }]
-      })
+      if (welcomeBlock && welcomeBlock.uniqueId) {
+        this.setState({
+          text: 'Sorry, I do not understand this. Please select from the following:',
+          options: [{
+            title: 'Home',
+            content_type: 'text',
+            payload: JSON.stringify([{action: '_chatbot', blockUniqueId: welcomeBlock.uniqueId}])
+          }]
+        })
+      } else {
+        this.setState({text: 'Sorry, I do not understand this. Please select from the following:'})
+      }
     }
   }
 
@@ -141,7 +145,6 @@ class ChatbotSettings extends React.Component {
         fallbackReplyEnabled: this.state.fallbackReplyEnabled,
         isYoutubePlayable: this.state.isYoutubePlayable
       }
-      console.log('fallbackReply to save for message block', data)
       this.props.updateChatbot(data, this.afterSave)
     }
   }

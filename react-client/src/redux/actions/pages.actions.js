@@ -66,7 +66,7 @@ export function loadMyPagesList() {
   }
 }
 
-export function loadMyPagesListNew(data, cb) {
+export function loadMyPagesListNew (data, cb) {
   // var userid = ''// this will be the _id of user object
   return (dispatch) => {
     callApi(`pages/allConnectedPages`, 'post', data).then(res => {
@@ -75,11 +75,14 @@ export function loadMyPagesListNew(data, cb) {
         cb()
       }
       dispatch(updatePagesListNew(res.payload))
+      if (cb && res.payload) {
+        cb(res.payload.count)
+      }
     })
   }
 }
 
-export function enablePage(page, showErrorDialog, alertMsg) {
+export function enablePage (page, showErrorDialog, alertMsg) {
   return (dispatch) => {
     callApi(`pages/enable/`, 'post', page)
       .then(res => {
@@ -87,6 +90,9 @@ export function enablePage(page, showErrorDialog, alertMsg) {
         if (res.type === 'invalid_permissions' && showErrorDialog) {
           showErrorDialog()
         } else if (res.status === 'failed') {
+          if (alertMsg) {
+            alertMsg.error(res.description)
+          }
           dispatch(pageNotPublished(res.description))
         } else if (res.payload && res.payload.msg) {
           console.log('else if condition')
@@ -106,6 +112,7 @@ export function enablePage(page, showErrorDialog, alertMsg) {
       })
   }
 }
+
 export function addPages(handleLoader) {
   return (dispatch) => {
     callApi(`pages/addpages/`).then(res => {
