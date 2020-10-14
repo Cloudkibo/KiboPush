@@ -14,6 +14,7 @@ import { handleSocketEvent } from './handleSocketEvent'
 import Notification from 'react-web-notification'
 import AlertContainer from 'react-alert'
 import HEADER from './components/header/header'
+import { getCurrentProduct } from './utility/utils'
 import { getHiddenHeaderRoutes, getWhiteHeaderRoutes } from './utility/utils'
 
 class App extends Component {
@@ -112,10 +113,16 @@ class App extends Component {
     if (this.props.history.location.pathname.toLowerCase() === '/demossa') {
       this.handleDemoSSAPage()
     } else if (this.props.history.location.pathname.toLowerCase() !== '/integrations/zoom') {
-      this.props.history.push({
-        pathname: '/',
-        state: {obj: {_id: 1}}
-      })
+      if (getCurrentProduct() === 'KiboChat') {
+        this.props.history.push({
+          pathname: '/liveChat'
+        })
+      } else {
+        this.props.history.push({
+          pathname: '/',
+          state: {obj: {_id: 1}}
+        })
+      }
     }
 
     this.unlisten = this.props.history.listen(location => {

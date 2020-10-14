@@ -194,13 +194,7 @@ export function liveChat(state = initialState, action) {
         userChat: newChat,
         socketData: state.socketData
       })
-
-    case ActionTypes.RESET_SOCKET:
-      return Object.assign({}, state, {
-        socketSession: '',
-        changedStatus: ''
-      })
-
+      
     case ActionTypes.SET_ACTIVE_SESSION:
       return Object.assign({}, state, {
         activeSession: action.activeSession
