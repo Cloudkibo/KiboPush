@@ -221,7 +221,7 @@ class submitForm extends React.Component {
                 ))
               }
             </select>
-            </div> : <h6>Currently there is no Hubspot form exist. Please create at least one Hubspot form to use this Action.</h6>
+            </div> : <h6>Currently there is form exist in connected HubSpot account. Please create at least one Hubspot form to use this Action.</h6>
           }
           <br />
           {this.state.loadingColumns 
