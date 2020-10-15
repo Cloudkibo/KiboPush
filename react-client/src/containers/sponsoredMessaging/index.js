@@ -483,26 +483,29 @@ class SponsoredMessaging extends React.Component {
                       </h3>
                     </div>
                   </div>
-                  <div className='m-portlet__head-tools'>
-                    {this.props.pages && this.props.pages.length > 0 && !this.props.reconnectFbRequired
-                      ? <a href='#/' data-toggle="modal" data-target="#create" onClick={this.showCreateDialog} className='addLink btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
-                        <span>
-                          <i className='la la-plus' />
+                  {
+                    this.props.user.permissions['create_sponsored_broadcast'] &&
+                    <div className='m-portlet__head-tools'>
+                      {this.props.pages && this.props.pages.length > 0 && !this.props.reconnectFbRequired
+                        ? <a href='#/' data-toggle="modal" data-target="#create" onClick={this.showCreateDialog} className='addLink btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
                           <span>
-                            Create New
+                            <i className='la la-plus' />
+                            <span>
+                              Create New
+                        </span>
+                          </span>
+                        </a>
+                        : <a href='#/' disabled className='addLink btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
+                          <span>
+                            <i className='la la-plus' />
+                            <span>
+                              Create New
                       </span>
-                        </span>
-                      </a>
-                      : <a href='#/' disabled className='addLink btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
-                        <span>
-                          <i className='la la-plus' />
-                          <span>
-                            Create New
-                    </span>
-                        </span>
-                      </a>
-                    }
-                  </div>
+                          </span>
+                        </a>
+                      }
+                    </div>
+                  }
                 </div>
                 <div className='m-portlet__body'>
                   {
@@ -627,11 +630,13 @@ class SponsoredMessaging extends React.Component {
                                     </button>
                                   }
                                   {(sponsoredMessage.status === 'draft' || sponsoredMessage.status === 'scheduled' || sponsoredMessage.status === 'failed' || sponsoredMessage.status.toLowerCase() === 'with_issues') &&
+                                    this.props.user.permissions['update_sponsored_broadcast'] &&
                                     <button className='btn btn-primary btn-sm' style={{margin: 2}} onClick={() => this.onEdit(sponsoredMessage)}>
                                       Edit
                                     </button>
                                   }
                                   {(sponsoredMessage.status === 'draft' || sponsoredMessage.status === 'scheduled' || sponsoredMessage.status === 'failed') &&
+                                    this.props.user.permissions['delete_sponsored_broadcast'] &&
                                     <button className='btn btn-primary btn-sm' style={{margin: 2}} data-toggle="modal" data-target="#delete" onClick={() => this.showDialogDelete(sponsoredMessage._id)}>
                                       Delete
                                   </button>
@@ -688,7 +693,8 @@ function mapStateToProps (state) {
     refreshMessage: (state.sponsoredMessagingInfo.refreshMessage),
     pages: (state.pagesInfo.pages),
     reconnectFbRequired: (state.sponsoredMessagingInfo.reconnectFbRequired),
-    count: (state.sponsoredMessagingInfo.count)
+    count: (state.sponsoredMessagingInfo.count),
+    user: (state.basicInfo.user)
   }
 }
 
