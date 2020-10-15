@@ -9,6 +9,7 @@ import { bindActionCreators } from 'redux'
 import { Link } from 'react-router-dom'
 import { skip } from '../../redux/actions/signup.actions'
 import $ from 'jquery'
+import { getCurrentProduct } from '../../utility/utils'
 
 class InvalidatedSession extends React.Component {
   constructor (props, context) {
@@ -26,11 +27,11 @@ class InvalidatedSession extends React.Component {
     console.log('nextProps in connect', nextProps)
     if (nextProps.user && nextProps.user.role !== 'buyer' && nextProps.user.platform) {
       this.props.history.push({
-        pathname: '/dashboard'
+        pathname: `${getCurrentProduct() === 'KiboChat' ? '/liveChat' : '/dashboard'}`
       })
     } else if (nextProps.successSkip && nextProps.user && nextProps.user.skippedFacebookConnect) {
       this.props.history.push({
-        pathname: '/dashboard'
+        pathname: `${getCurrentProduct() === 'KiboChat' ? '/liveChat' : '/dashboard'}`
       })
     }
   }

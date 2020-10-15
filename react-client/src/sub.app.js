@@ -18,6 +18,7 @@ import AlertContainer from 'react-alert'
 import HEADER from './components/header/header'
 import { getCurrentProduct } from './utility/utils'
 import { getHiddenHeaderRoutes, getWhiteHeaderRoutes } from './utility/utils'
+import { validateUserAccessToken, isFacebookConnected } from './redux/actions/basicinfo.actions'
 
 class App extends Component {
   constructor(props) {
@@ -31,10 +32,12 @@ class App extends Component {
     this.handleDemoSSAPage = this.handleDemoSSAPage.bind(this)
     this.onNotificationClick = this.onNotificationClick.bind(this)
     this.setPathAndHeaderProps = this.setPathAndHeaderProps.bind(this)
+    this.redirectToConnectPage = this.redirectToConnectPage.bind(this)
+    this.checkUserAccessToken = this.checkUserAccessToken.bind(this)
+    this.checkFacebookConnected = this.checkFacebookConnected.bind(this)
     this.checkTrialPeriod = this.checkTrialPeriod.bind(this)
     this.getTrialModalContent = this.getTrialModalContent.bind(this)
     this.onPurchaseSubscription = this.onPurchaseSubscription.bind(this)
-    this.redirectToConnectPage = this.redirectToConnectPage.bind(this)
 
     props.getuserdetails(joinRoom)
     props.loadMyPagesListNew({
@@ -44,10 +47,39 @@ class App extends Component {
       filter: false,
       filter_criteria: { search_value: '' }
     }, this.redirectToConnectPage)
+    props.validateUserAccessToken(this.checkUserAccessToken)
+    props.isFacebookConnected(this.checkFacebookConnected)
+  }
+  
+  checkFacebookConnected(response) {
+    if (this.props.user && this.props.user.role !== 'buyer' && !response.payload.buyerInfo.connectFacebook) {
+      this.props.history.push({
+        pathname: '/sessionInvalidated',
+        state: { session_inavalidated: false, role: response.payload.role, buyerInfo: response.payload.buyerInfo }
+      })
+    }
   }
 
-  redirectToConnectPage(count) {
-    if (count === 0 && this.props.user.platform === 'messenger') {
+  checkUserAccessToken(response) {
+    console.log('checkUserAccessToken response', response)
+    if (response.status === 'failed' && response.payload.error &&
+      response.payload.error.code === 190 && this.props.user && this.props.user.platform === 'messenger') {
+      if (this.props.user.role === 'buyer') {
+        this.props.history.push({
+          pathname: '/sessionInvalidated',
+          state: { session_inavalidated: true, role: 'buyer' }
+        })
+      } else {
+        this.props.history.push({
+          pathname: '/sessionInvalidated',
+          state: { session_inavalidated: true, role: this.props.user.role, buyerInfo: response.payload.buyerInfo }
+        })
+      }
+    }
+  }
+  
+  redirectToConnectPage(payload) {
+    if (payload.count !== 'undefined' && payload.count < 1 && this.props.user.platform === 'messenger') {
       this.props.history.push({
         pathname: '/addfbpages'
       })
@@ -167,7 +199,7 @@ class App extends Component {
         })
       }
     }
-
+   
     this.unlisten = this.props.history.listen(location => {
       this.setPathAndHeaderProps(location.pathname)
       if (!this.isWizardOrLogin(location.pathname)) {
@@ -349,7 +381,9 @@ function mapDispatchToProps(dispatch) {
     loadMyPagesListNew,
     setMessageAlert,
     updateLiveChatInfo,
-    clearSocketData
+    clearSocketData,
+    validateUserAccessToken,
+    isFacebookConnected
   }, dispatch)
 }
 
