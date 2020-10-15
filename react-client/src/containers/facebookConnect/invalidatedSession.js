@@ -27,11 +27,11 @@ class InvalidatedSession extends React.Component {
     console.log('nextProps in connect', nextProps)
     if (nextProps.user && nextProps.user.role !== 'buyer' && nextProps.user.platform) {
       this.props.history.push({
-        pathname: `${getCurrentProduct() === 'KiboChat' ? '/liveChat' : 'dashboard'}`
+        pathname: `${getCurrentProduct() === 'KiboChat' ? '/liveChat' : '/dashboard'}`
       })
     } else if (nextProps.successSkip && nextProps.user && nextProps.user.skippedFacebookConnect) {
       this.props.history.push({
-        pathname: `${getCurrentProduct() === 'KiboChat' ? '/liveChat' : 'dashboard'}`
+        pathname: `${getCurrentProduct() === 'KiboChat' ? '/liveChat' : '/dashboard'}`
       })
     }
   }
