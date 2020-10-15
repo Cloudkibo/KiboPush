@@ -57,7 +57,7 @@ class Webhook extends React.Component {
   UNSAFE_componentWillReceiveProps (nextProps) {
     console.log('nextProps in webhooks', nextProps)
     if (nextProps.pages) {
-      this.setState({pageSelected: nextProps.pages[0].pageId})
+      this.setState({pageSelected: nextProps.pages[0]._id})
     }
     if (nextProps.response) {
       if (nextProps.response === 'success') {
@@ -100,7 +100,7 @@ class Webhook extends React.Component {
       }
     }
     for (var j = 0; j < this.props.pages.length; j++) {
-      if (this.props.pages[j].pageId === webhook.pageId) {
+      if (this.props.pages[j]._id === webhook.pageId) {
         this.setState({pageEdit: this.props.pages[j]})
       }
     }
@@ -324,7 +324,7 @@ class Webhook extends React.Component {
                   <h5 className="modal-title" id="exampleModalLabel">
                     Webhook Video Tutorial
 									</h5>
-                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" 
+                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal"
                   aria-label="Close"
                   onClick={() => {
                     this.setState({
@@ -404,7 +404,7 @@ class Webhook extends React.Component {
                                 <select className='custom-select' id='m_form_type' style={{width: '250px'}} tabIndex='-98' value={this.state.pageSelected} onChange={this.changePage}>
                                   {
                                     this.props.pages && this.props.pages.length > 0 && this.props.pages.map((page, i) => (
-                                      <option key={i} value={page.pageId}>{page.pageName}</option>
+                                      <option key={i} value={page._id}>{page.pageName}</option>
                                     ))
                                   }
                                 </select>
