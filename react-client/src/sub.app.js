@@ -34,17 +34,21 @@ class App extends Component {
     this.redirectToConnectPage = this.redirectToConnectPage.bind(this)
     this.checkUserAccessToken = this.checkUserAccessToken.bind(this)
     this.checkFacebookConnected = this.checkFacebookConnected.bind(this)
+    this.callbackUserDetails = this.callbackUserDetails.bind(this)
 
-    props.getuserdetails(joinRoom)
-    props.loadMyPagesListNew({
+    props.getuserdetails(joinRoom, this.callbackUserDetails)
+  }
+
+  callbackUserDetails () {
+    this.props.loadMyPagesListNew({
       last_id: 'none',
       number_of_records: 10,
       first_page: 'first',
       filter: false,
       filter_criteria: { search_value: '' }
     }, this.redirectToConnectPage)
-    props.validateUserAccessToken(this.checkUserAccessToken)
-    props.isFacebookConnected(this.checkFacebookConnected)
+    this.props.validateUserAccessToken(this.checkUserAccessToken)
+    this.props.isFacebookConnected(this.checkFacebookConnected)
   }
   checkFacebookConnected(response) {
     if (this.props.user && this.props.user.role !== 'buyer' && !response.payload.buyerInfo.connectFacebook) {
