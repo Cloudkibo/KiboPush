@@ -69,9 +69,7 @@ class AddPage extends React.Component {
   }
 
   UNSAFE_componentWillReceiveProps(nextprops) {
-    if (nextprops.message && nextprops.message !== '') {
-      this.setState({ showAlert: true, alertmsg: 'The page you are trying to connect is not published on Facebook. Please go to Facebook Page settings to publish your page and then try connecting this page.' })
-    } else if (nextprops.page_connected && nextprops.page_connected !== '') {
+    if (nextprops.page_connected && nextprops.page_connected !== '') {
       this.setState({ showAlert: true, alertmsg: nextprops.page_connected })
     } else {
       this.setState({ showAlert: false, alertmsg: '' })
@@ -178,38 +176,38 @@ class AddPage extends React.Component {
                       </ul>
                     </div>
                   </div>
-                  <div className='m-portlet__body'>
-                    <div className='m-widget4'>
-                      {
-                        (this.props.otherPages) &&
-                        this.props.otherPages.map((page, i) => (
-                          <div className='m-widget4__item' key={i + '-addPageItem'}>
-                            <div className='m-widget4__img m-widget4__img--icon'>
-                              <img src={page.pagePic} className='m--img-rounded m--marginless m--img-centered' alt='' />
-                            </div>
-                            <div className='m-widget4__info'>
-                              <span className='m-widget4__text'>
-                                {page.pageName}
-                              </span>
-                            </div>
-                            <div className='m-widget4__ext'>
-                              {
-                                (page.connected) &&
-                                <a href='#/' onClick={() => this.props.removePageInAddPage(page, this.msg)} className='m-widget4__icon'>
-                                  <button type='button' className='btn m-btn--pill btn-danger btn-sm m-btn m-btn--custom'>Disconnect</button>
-                                </a>
-                              }
-                              {
-                                (!page.connected) &&
-                                <a href='#/' onClick={() => this.props.enablePage(page, this.showErrorDialog, this.msg)} className='m-widget4__icon'>
-                                  <button type='button' className='btn m-btn--pill btn-primary btn-sm m-btn m-btn--custom'>Connect</button>
-                                </a>
-                              }
-                            </div>
+                </div>
+                <div className='m-portlet__body'>
+                  <div className='m-widget4'>
+                    {
+                      (this.props.otherPages) &&
+                      this.props.otherPages.map((page, i) => (
+                        <div className='m-widget4__item' key={i + '-addPageItem'}>
+                          <div className='m-widget4__img m-widget4__img--icon'>
+                            <img src={page.pagePic} className='m--img-rounded m--marginless m--img-centered' alt='' />
                           </div>
+                          <div className='m-widget4__info'>
+                            <span className='m-widget4__text'>
+                              {page.pageName}
+                            </span>
+                          </div>
+                          <div className='m-widget4__ext'>
+                            {
+                              (page.connected) &&
+                              <a href='#/' onClick={() => this.props.removePageInAddPage(page, this.msg)} className='m-widget4__icon'>
+                                <button type='button' className='btn m-btn--pill btn-danger btn-sm m-btn m-btn--custom'>Disconnect</button>
+                              </a>
+                            }
+                            {
+                              (!page.connected) &&
+                              <a href='#/' onClick={() => this.props.enablePage(page, this.showErrorDialog, this.msg)} className='m-widget4__icon'>
+                                <button type='button' className='btn m-btn--pill btn-primary btn-sm m-btn m-btn--custom'>Connect</button>
+                              </a>
+                            }
+                          </div>
+                        </div>
                         ))
                       }
-                    </div>
                   </div>
                 </div>
               </div>
