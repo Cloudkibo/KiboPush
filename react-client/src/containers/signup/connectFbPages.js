@@ -166,7 +166,7 @@ class AddPage extends React.Component {
                       <ul className='nav nav-pills nav-pills--brand m-nav-pills--align-right m-nav-pills--btn-pill m-nav-pills--btn-sm' role='tablist'>
                         <li className='nav-item m-tabs__item'>
                           {this.props.pages && this.props.pages.length > 0
-                            ? <Link to={{ pathname: `${getCurrentProduct() === 'KiboChat' ? '/liveChat' : 'dashboard'}`, state: { loadScript: true } }} className='btn m-btn--pill btn-success'>
+                            ? <Link to={{ pathname: `${getCurrentProduct() === 'KiboChat' ? '/liveChat' : '/dashboard'}`, state: { loadScript: true } }} className='btn m-btn--pill btn-success'>
                               Done
                         </Link>
                             : <Link className='btn m-btn--pill btn-success' disabled>
