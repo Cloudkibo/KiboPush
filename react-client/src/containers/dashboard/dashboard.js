@@ -99,7 +99,6 @@ class Dashboard extends React.Component {
     }
     this.props.loadGraphData(0)
     this.props.loadTopPages()
-    this.props.loadMyPagesList()
     this.props.loadSubscriberSummary({ pageId: 'all', days: 'all' })
     this.props.loadSentSeen({ pageId: 'all', days: '30' })
   }

@@ -37,18 +37,6 @@ class App extends Component {
 
     props.getuserdetails(joinRoom)
   }
-  UNSAFE_componentWillMount () {
-    this.props.loadMyPagesListNew({
-      last_id: 'none',
-      number_of_records: 10,
-      first_page: 'first',
-      filter: false,
-      filter_criteria: { search_value: '' }
-    }, this.redirectToConnectPage)
-    this.props.validateUserAccessToken(this.checkUserAccessToken)
-    this.props.isFacebookConnected(this.checkFacebookConnected)
-  }
-
   checkFacebookConnected(response) {
     if (this.props.user && this.props.user.role !== 'buyer' && !response.payload.buyerInfo.connectFacebook) {
       this.props.history.push({
@@ -75,8 +63,8 @@ class App extends Component {
       }
     }
   }
-  redirectToConnectPage(count) {
-    if ((!count || count !== 0) && this.props.user.platform === 'messenger') {
+  redirectToConnectPage(payload) {
+    if (payload.count !== 'undefined' && payload.count < 1 && this.props.user.platform === 'messenger') {
       this.props.history.push({
         pathname: '/addfbpages'
       })
@@ -163,7 +151,7 @@ class App extends Component {
     if (this.props.history.location.pathname.toLowerCase() === '/demossa') {
       this.handleDemoSSAPage()
     } else if (this.props.history.location.pathname.toLowerCase() !== '/integrations/zoom') {
-      if (getCurrentProduct() === 'KiboChat') {
+      if (getCurrentProduct() === 'localhost') {
         this.props.history.push({
           pathname: '/liveChat'
         })
@@ -174,7 +162,15 @@ class App extends Component {
         })
       }
     }
-
+    this.props.loadMyPagesListNew({
+      last_id: 'none',
+      number_of_records: 10,
+      first_page: 'first',
+      filter: false,
+      filter_criteria: { search_value: '' }
+    }, this.redirectToConnectPage)
+    this.props.validateUserAccessToken(this.checkUserAccessToken)
+    this.props.isFacebookConnected(this.checkFacebookConnected)
     this.unlisten = this.props.history.listen(location => {
       this.setPathAndHeaderProps(location.pathname)
       if (!this.isWizardOrLogin(location.pathname)) {
