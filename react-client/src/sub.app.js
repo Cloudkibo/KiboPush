@@ -50,6 +50,7 @@ class App extends Component {
     props.validateUserAccessToken(this.checkUserAccessToken)
     props.isFacebookConnected(this.checkFacebookConnected)
   }
+  
   checkFacebookConnected(response) {
     if (this.props.user && this.props.user.role !== 'buyer' && !response.payload.buyerInfo.connectFacebook) {
       this.props.history.push({
@@ -76,6 +77,7 @@ class App extends Component {
       }
     }
   }
+  
   redirectToConnectPage(payload) {
     if (payload.count !== 'undefined' && payload.count < 1 && this.props.user.platform === 'messenger') {
       this.props.history.push({
