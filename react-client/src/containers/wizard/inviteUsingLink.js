@@ -44,7 +44,7 @@ class InviteSubscribers extends React.Component {
   }
 
   skipWizard () {
-    this.props.history.push({pathname: `${getCurrentProduct() === 'KiboChat' ? '/liveChat' : 'dashboard'}`})
+    this.props.history.push({pathname: `${getCurrentProduct() === 'KiboChat' ? '/liveChat' : '/dashboard'}`})
   }
 
   showDialog () {
