@@ -35,20 +35,24 @@ class App extends Component {
     this.redirectToConnectPage = this.redirectToConnectPage.bind(this)
     this.checkUserAccessToken = this.checkUserAccessToken.bind(this)
     this.checkFacebookConnected = this.checkFacebookConnected.bind(this)
+    this.callbackUserDetails = this.callbackUserDetails.bind(this)
     this.checkTrialPeriod = this.checkTrialPeriod.bind(this)
     this.getTrialModalContent = this.getTrialModalContent.bind(this)
     this.onPurchaseSubscription = this.onPurchaseSubscription.bind(this)
+    
+    props.getuserdetails(joinRoom, this.callbackUserDetails)
+  }
 
-    props.getuserdetails(joinRoom)
-    props.loadMyPagesListNew({
+  callbackUserDetails () {
+    this.props.loadMyPagesListNew({
       last_id: 'none',
       number_of_records: 10,
       first_page: 'first',
       filter: false,
       filter_criteria: { search_value: '' }
     }, this.redirectToConnectPage)
-    props.validateUserAccessToken(this.checkUserAccessToken)
-    props.isFacebookConnected(this.checkFacebookConnected)
+    this.props.validateUserAccessToken(this.checkUserAccessToken)
+    this.props.isFacebookConnected(this.checkFacebookConnected)
   }
   
   checkFacebookConnected(response) {

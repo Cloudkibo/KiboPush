@@ -93,7 +93,7 @@ export function setSocketStatus(data) {
   }
 }
 
-export function getuserdetails(joinRoom) {
+export function getuserdetails(joinRoom, cb) {
   return (dispatch) => {
     callApi('users').then(res => {
       console.log('response from getuserdetails', res)
@@ -106,6 +106,9 @@ export function getuserdetails(joinRoom) {
           } else {
             joinRoom(res.payload.companyId)
           }
+        }
+        if (res.status === 'success') {
+          cb()
         }
         dispatch(showuserdetails(res.payload))
       }
