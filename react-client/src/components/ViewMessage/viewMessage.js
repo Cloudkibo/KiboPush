@@ -196,11 +196,11 @@ class ViewMessage extends React.Component {
                                            }
                                           { b.mediaType === 'video' &&
                                             <ReactPlayer
-                                              url={b.fileurl.url}
+                                              url={b.facebookUrl ? b.facebookUrl : fileurl.url}
                                               controls
                                               width='100%'
                                               height='140px'
-                                              onPlay={this.onTestURLVideo(b.fileurl.url)}
+                                              onPlay={this.onTestURLVideo(b.facebookUrl ? b.facebookUrl : fileurl.url)}
                                             />
                                           }
                                         </div>
