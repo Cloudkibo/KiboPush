@@ -274,6 +274,7 @@ const Routes = () => (
     <Route path='/shareOptions' component={ShareOptions} onEnter={requireAuth} />
     <Route path='/customerMatchingUsingPhNum' component={CustomerMatching} onEnter={requireAuth} />
     <Route path='/nonSubscribersList' component={NonSubscribersList} onEnter={requireAuth} />
+    <Route path='/liveChat/:id' component={LiveChat} onEnter={requireAuth} />
     <Route path='/liveChat' component={LiveChat} onEnter={requireAuth} />
     <Route path='/menu' component={MainMenu} onEnter={requireAuth} />
     <Route path='/createMessage' component={CreateMessage} onEnter={requireAuth} />

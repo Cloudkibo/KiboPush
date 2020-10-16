@@ -324,6 +324,16 @@ export function fetchCloseSessions(data) {
   }
 }
 
+export function fetchSingleSession(psid, callback) {
+  return (dispatch) => {
+    callApi(`sessions/single`, 'post', {psid})
+      .then(res => {
+        console.log('response from fetchSingleSession', res)
+        callback(res)
+      })
+  }
+}
+
 export function moveSession(sessionid, appendDeleteInfo) {
   return (dispatch) => {
     dispatch(updateChatSessions(sessionid, appendDeleteInfo))
@@ -414,7 +424,7 @@ export function sendChatMessage(data, cb) {
   return (dispatch) => {
     callApi('livechat/', 'post', data).then(res => {
       console.log('response from sendChatMessage', res)
-      if (cb) cb(res)     
+      if (cb) cb(res)
       // dispatch(fetchSessions())
       //fetchOpenSessions({first_page: true, last_id: 'none', number_of_records: 10, filter: false, filter_criteria: {sort_value: -1, page_value: '', search_value: ''}})
     })
