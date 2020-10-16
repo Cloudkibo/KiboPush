@@ -32,7 +32,8 @@ import {
   updateSessionProfilePicture,
   setUserChat,
   saveNotificationSessionId,
-  resetSocket
+  resetSocket,
+  fetchSingleSession
 } from '../../redux/actions/livechat.actions'
 import { updatePicture } from '../../redux/actions/subscribers.actions'
 import { loadTeamsList } from '../../redux/actions/teams.actions'
@@ -126,6 +127,9 @@ class LiveChat extends React.Component {
     this.markSessionsRead = this.markSessionsRead.bind(this)
     this.backToSessions = this.backToSessions.bind(this)
     this.updateMessageStatus = this.updateMessageStatus.bind(this)
+    this.setActiveSession = this.setActiveSession.bind(this)
+    this.checkParams = this.checkParams.bind(this)
+
     this.props.loadcannedResponses()
     this.fetchSessions(true, 'none', true)
     props.getSMPStatus(this.handleSMPStatus)
@@ -137,6 +141,51 @@ class LiveChat extends React.Component {
       props.clearSocketData()
     }
   }
+
+  componentDidMount () {
+    const hostname = window.location.hostname
+    let title = ''
+    if (hostname.includes('kiboengage.cloudkibo.com')) {
+      title = 'KiboEngage'
+    } else if (hostname.includes('kibochat.cloudkibo.com')) {
+      title = 'KiboChat'
+    }
+
+    document.title = `${title} | Live Chat`
+  }
+
+  checkParams (props, sessions) {
+    if (
+      this.props.match && this.props.match.params &&
+      this.props.match.params.id && this.state.activeSession.constructor === Object &&
+      Object.keys(this.state.activeSession).length === 0
+    ) {
+      const params = this.props.match.params.id.split('-')
+      if (params.length === 3) {
+        const psid = params[2]
+        const session = sessions.find((item) => item.senderId === psid)
+        if (session) {
+          this.changeActiveSession(session, null, false)
+        } else {
+          this.props.fetchSingleSession(psid, this.setActiveSession)
+        }
+      } else {
+        this.props.history.push({
+          pathname: '/liveChat'
+        })
+      }
+    }
+  }
+
+  setActiveSession (res) {
+    if (res.status === 'success') {
+      const session = res.payload
+      this.changeActiveSession(session, null, false)
+    } else {
+      window.history.replaceState(null, null, '/liveChat')
+    }
+  }
+
   clearSearchResults() {
     this.setState({ searchChatMsgs: null })
   }
@@ -408,9 +457,13 @@ class LiveChat extends React.Component {
     }
   }
 
-  changeActiveSession(session, e) {
+  changeActiveSession(session, e, updateRoute = true) {
     if (e && e.target.type === 'checkbox') {
       return
+    }
+    if (updateRoute) {
+      const path = `/liveChat/${session.firstName}-${session.lastName}-${session.senderId}`
+      window.history.replaceState(null, null, path)
     }
     if (session._id !== this.state.activeSession._id) {
       this.setState({
@@ -544,6 +597,7 @@ class LiveChat extends React.Component {
       }
       state.sessions = sessions
       state.sessionsCount = this.state.tabValue === 'open' ? nextProps.openCount : nextProps.closeCount
+      this.checkParams(nextProps, sessions)
     }
 
     if (nextProps.redirectToSession && nextProps.redirectToSession.sessionId) {
@@ -614,7 +668,7 @@ class LiveChat extends React.Component {
         nextProps.clearSocketData
       )
     }
-    if (nextProps.socketMessageStatus && nextProps.socketMessageStatus.sessionInfo && this.state.activeSession) { 
+    if (nextProps.socketMessageStatus && nextProps.socketMessageStatus.sessionInfo && this.state.activeSession) {
      if (nextProps.socketMessageStatus.sessionInfo._id === this.state.activeSession._id) {
         this.updateMessageStatus(nextProps.userChat,nextProps.socketMessageStatus.event)
       } else  {
@@ -876,7 +930,8 @@ function mapDispatchToProps(dispatch) {
     setUserChat,
     loadcannedResponses,
     saveNotificationSessionId,
-    resetSocket
+    resetSocket,
+    fetchSingleSession
   }, dispatch)
 }
 
