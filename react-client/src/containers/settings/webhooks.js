@@ -62,6 +62,7 @@ class Webhook extends React.Component {
     this.saveEdited = this.saveEdited.bind(this)
     this.openVideoTutorial = this.openVideoTutorial.bind(this)
   }
+
   openVideoTutorial () {
     this.setState({
       openVideo: true
@@ -564,14 +565,18 @@ class Webhook extends React.Component {
                                     ? <div className='m-widget4' >
                                       {this.props.webhooks.map((webhook, i) => (
                                         <div className='m-widget4__item' key={i}>
+                                          <div className='m-widget4__img m-widget4__img--pic'>
+                                            <img
+                                            style={{width: 'inherit', height: 'inherit'}} src={this.props.pages.filter(page => webhook.pageId === page._id)[0].pagePic} alt='' />
+                                        </div>
                                           <div className='m-widget4__info'>
                                             <span className='m-widget4__title'>
-                                              <i className='la la-link' />&nbsp;&nbsp;&nbsp;
-                                              <span>
-                                                {webhook.webhook_url}
-                                              </span>
+                                              {this.props.pages.filter(page => webhook.pageId === page._id)[0].pageName}
                                             </span>
                                             <br />
+                                              <span className='m-widget4__sub'>
+                    														{webhook.webhook_url}
+                    													</span>
                                           </div>
                                           <div className='m-widget4__ext'>
                                             <button ref='editModal' className='m-btn m-btn--pill m-btn--hover-brand btn btn-secondary' style={{borderColor: '#5867dd', color: '#5867dd', marginRight: '10px'}} data-toggle="modal" data-target="#editEndpoint" onClick={() => this.showDialogEdit(webhook)}>
