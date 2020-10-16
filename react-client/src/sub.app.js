@@ -15,7 +15,6 @@ import { handleSocketEvent } from './handleSocketEvent'
 import Notification from 'react-web-notification'
 import AlertContainer from 'react-alert'
 import HEADER from './components/header/header'
-import { getCurrentProduct } from './utility/utils'
 import { getHiddenHeaderRoutes, getWhiteHeaderRoutes } from './utility/utils'
 import { validateUserAccessToken, isFacebookConnected } from './redux/actions/basicinfo.actions'
 
@@ -164,16 +163,10 @@ class App extends Component {
     if (this.props.history.location.pathname.toLowerCase() === '/demossa') {
       this.handleDemoSSAPage()
     } else if (this.props.history.location.pathname.toLowerCase() !== '/integrations/zoom') {
-      if (getCurrentProduct() === 'localhost') {
-        this.props.history.push({
-          pathname: '/liveChat'
-        })
-      } else {
-        this.props.history.push({
-          pathname: '/',
-          state: {obj: {_id: 1}}
-        })
-      }
+      this.props.history.push({
+        pathname: '/',
+        state: {obj: {_id: 1}}
+      })
     }
    
     this.unlisten = this.props.history.listen(location => {
