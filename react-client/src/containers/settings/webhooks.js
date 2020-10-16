@@ -290,7 +290,7 @@ class Webhook extends React.Component {
     } else if (this.state.token === '') {
       this.setState({errorToken: true})
     } else {
-      this.refs.createModal.click()
+      this.refs.editModal.click()
       for (var i = 0; i < this.state.subscriptionsEdit.length; i++) {
         if (this.state.subscriptionsEdit[i].name === 'New Poll') {
           optIn['POLL_CREATED'] = this.state.subscriptionsEdit[i].selected
@@ -435,7 +435,7 @@ class Webhook extends React.Component {
                                 <div id='question' className='form-group m-form__group'>
                                   <label className='control-label'>Verify Token:</label>
                                   <input className='form-control'
-                                    value={this.state.token} placeholder='Token that KiboPush will send back to you for callback URL verification' onChange={(e) => this.updateToken(e)} />
+                                    value={this.state.token} placeholder='KiboPush will send back to you for callback URL verification' onChange={(e) => this.updateToken(e)} />
                                   {this.state.errorToken &&
                                     <div id='email-error' style={{color: 'red'}}><bold>Please enter token</bold></div>
                                     }
@@ -510,7 +510,7 @@ class Webhook extends React.Component {
                                   <div id='question' className='form-group m-form__group'>
                                     <label className='control-label'>Verify Token:</label>
                                     <input className='form-control'
-                                      placeholder='Token that KiboPush will send back to you for callback URL verification'
+                                      placeholder='KiboPush will send back to you for callback URL verification'
                                       value={this.state.token} onChange={(e) => this.updateToken(e)} />
                                     {this.state.errorToken &&
                                       <div id='email-error' style={{ color: 'red'}}><bold>Please enter token</bold></div>
