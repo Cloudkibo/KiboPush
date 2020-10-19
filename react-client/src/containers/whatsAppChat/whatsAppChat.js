@@ -56,6 +56,7 @@ class WhatsAppChat extends React.Component {
     super(props, context)
     this.state = {
       loading: true,
+      redirected: this.props.location.state && this.props.location.state.module === 'notifications',
       fetchingChat: false,
       loadingChat: true,
       sessionsLoading: false,
@@ -108,10 +109,7 @@ class WhatsAppChat extends React.Component {
     this.showMessageTemplateMobile = this.showMessageTemplateMobile.bind(this)
     this.props.loadcannedResponses()
     this.fetchSessions(true, 'none', true)
-    if (props.user.currentPlan.unique_ID === 'plan_C' || props.user.currentPlan.unique_ID === 'plan_D') {
-      props.loadMembersList()
-      props.loadTeamsList({ platform: 'whatsapp' })
-    }
+    props.loadMembersList()
     props.getZoomIntegrations()
     if (props.socketData) {
       props.clearSocketDataWhatsapp()
@@ -365,6 +363,9 @@ class WhatsAppChat extends React.Component {
     if (session.is_assigned && session.assigned_to.type === 'team') {
       this.props.fetchTeamAgents(session.assigned_to.id, this.handleTeamAgents)
     }
+    if (this.props.user.currentPlan.unique_ID === 'plan_C' || this.props.user.currentPlan.unique_ID === 'plan_D') {
+      this.props.loadTeamsList({ platform: 'whatsapp' })
+    }
     this.setState({ activeSession: session })
   }
 
@@ -453,7 +454,6 @@ class WhatsAppChat extends React.Component {
         }
       }
     }
-    
     if (nextProps.customFields && nextProps.customFieldValues) {
       let fieldOptions = []
       for (let a = 0; a < nextProps.customFields.length; a++) {
