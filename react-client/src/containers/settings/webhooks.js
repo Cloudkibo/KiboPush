@@ -19,11 +19,11 @@ class Webhook extends React.Component {
       subscriptions: [
         {'name': 'New Subscriber', selected: false},
         {'name': 'New Chat Message', selected: false},
-        {'name': 'Checkbox Opt-in', selected: false},
+        {'name': 'Chatbot Option Selected', selected: false},
+        {'name': 'Session Assignment', selected: false},
+        {'name': 'Checkbox Optin', selected: false},
         {'name': 'New Poll', selected: false},
-        {'name': 'Poll Response', selected: false},
         {'name': 'New Survey', selected: false},
-        {'name': 'Survey Response', selected: false},
       ],
       url: '',
       token: '',
@@ -31,11 +31,11 @@ class Webhook extends React.Component {
       subscriptionsEdit: [
         {'name': 'New Subscriber', selected: false},
         {'name': 'New Chat Message', selected: false},
-        {'name': 'Checkbox Opt-in', selected: false},
+        {'name': 'Chatbot Option Selected', selected: false},
+        {'name': 'Session Assignment', selected: false},
+        {'name': 'Checkbox Optin', selected: false},
         {'name': 'New Poll', selected: false},
-        {'name': 'Poll Response', selected: false},
         {'name': 'New Survey', selected: false},
-        {'name': 'Survey Response', selected: false},
       ],
       errorUrl: '',
       errorToken: false,
@@ -99,19 +99,19 @@ class Webhook extends React.Component {
     let subscriptionsEdit = this.state.subscriptionsEdit
     for (var i = 0; i < subscriptionsEdit.length; i++) {
       if (subscriptionsEdit[i].name === 'New Poll') {
-        subscriptionsEdit[i].selected = webhook.optIn.POLL_CREATED
-      } else if (subscriptionsEdit[i].name === 'Poll Response') {
-        subscriptionsEdit[i].selected = webhook.optIn.POLL_RESPONSE
+        subscriptionsEdit[i].selected = webhook.optIn.NEW_POLL
       } else if (subscriptionsEdit[i].name === 'New Survey') {
-        subscriptionsEdit[i].selected = webhook.optIn.SURVEY_CREATED
-      } else if (subscriptionsEdit[i].name === 'Survey Response') {
-        subscriptionsEdit[i].selected = webhook.optIn.SURVEY_RESPONSE
+        subscriptionsEdit[i].selected = webhook.optIn.NEW_SURVEY
       } else if (subscriptionsEdit[i].name === 'New Subscriber') {
         subscriptionsEdit[i].selected = webhook.optIn.NEW_SUBSCRIBER
       } else if (subscriptionsEdit[i].name === 'New Chat Message') {
         subscriptionsEdit[i].selected = webhook.optIn.NEW_CHAT_MESSAGE
-      } else if (subscriptionsEdit[i].name === 'Checkbox Opt-in') {
-        subscriptionsEdit[i].selected = webhook.optIn.CHECKBOX_OPT_IN
+      } else if (subscriptionsEdit[i].name === 'Checkbox Optin') {
+        subscriptionsEdit[i].selected = webhook.optIn.CHECKBOX_OPTIN
+      } else if (subscriptionsEdit[i].name === 'Chatbot Option Selected') {
+        subscriptionsEdit[i].selected = webhook.optIn.CHATBOT_OPTION_SELECTED
+      } else if (subscriptionsEdit[i].name === 'Session Assignment') {
+        subscriptionsEdit[i].selected = webhook.optIn.SESSION_ASSIGNED
       }
     }
     for (var j = 0; j < this.props.pages.length; j++) {
@@ -119,7 +119,7 @@ class Webhook extends React.Component {
         this.setState({pageEdit: this.props.pages[j]})
       }
     }
-    this.setState({id: webhook._id, urlEdit: webhook.webhook_url, pageSelectedEdit: webhook.pageId, subscriptionsEdit: subscriptionsEdit})
+    this.setState({pageEdit: webhook.pageId, id: webhook._id, urlEdit: webhook.webhook_url, pageSelectedEdit: webhook.pageId._id, subscriptionsEdit: subscriptionsEdit})
   }
 
   closeDialogEdit () {
@@ -232,22 +232,24 @@ class Webhook extends React.Component {
     } else {
       for (var i = 0; i < this.state.subscriptions.length; i++) {
         if (this.state.subscriptions[i].name === 'New Poll') {
-          optIn['POLL_CREATED'] = this.state.subscriptions[i].selected
-        } else if (this.state.subscriptions[i].name === 'Poll Response') {
-          optIn['POLL_RESPONSE'] = this.state.subscriptions[i].selected
+          optIn['NEW_POLL'] = this.state.subscriptions[i].selected
         } else if (this.state.subscriptions[i].name === 'New Survey') {
-          optIn['SURVEY_CREATED'] = this.state.subscriptions[i].selected
-        } else if (this.state.subscriptions[i].name === 'Survey Response') {
-          optIn['SURVEY_RESPONSE'] = this.state.subscriptions[i].selected
+          optIn['NEW_SURVEY'] = this.state.subscriptions[i].selected
         } else if (this.state.subscriptions[i].name === 'New Subscriber') {
           optIn['NEW_SUBSCRIBER'] = this.state.subscriptions[i].selected
         } else if (this.state.subscriptions[i].name === 'New Chat Message') {
           optIn['NEW_CHAT_MESSAGE'] = this.state.subscriptions[i].selected
-        } else if (this.state.subscriptions[i].name === 'Checkbox Opt-in') {
-          optIn['CHECKBOX_OPT_IN'] = this.state.subscriptions[i].selected
+        } else if (this.state.subscriptions[i].name === 'Checkbox Optin') {
+          optIn['CHECKBOX_OPTIN'] = this.state.subscriptions[i].selected
+        } else if (this.state.subscriptions[i].name === 'Chatbot Option Selected') {
+          optIn['CHATBOT_OPTION_SELECTED'] = this.state.subscriptions[i].selected
+        } else if (this.state.subscriptions[i].name === 'Session Assignment') {
+          optIn['SESSION_ASSIGNED'] = this.state.subscriptions[i].selected
+          optIn['SESSION_UNASSIGNED'] = this.state.subscriptions[i].selected
         }
       }
       this.refs.createModal.click()
+      this.cancel()
       this.props.createEndpoint({pageId: this.state.pageSelected, webhook_url: this.state.url, token: this.state.token, optIn: optIn}, this.msg)
     }
   }
@@ -256,7 +258,7 @@ class Webhook extends React.Component {
     for (var i = 0; i < this.state.subscriptions.length; i++) {
       subscriptions[i].selected = false
     }
-    this.setState({url: '', token: '', errorToken: false, errorUrl: '', subscriptions: subscriptions, isShowingModal: false})
+    this.setState({url: '', token: '', errorToken: false, errorUrl: '', subscriptions: subscriptions, isShowingModal: false, selectAllChecked: false})
   }
   edit (webhook) {
     // let subscriptionsEdit = this.state.subscriptionsEdit
@@ -294,19 +296,20 @@ class Webhook extends React.Component {
       this.refs.editModal.click()
       for (var i = 0; i < this.state.subscriptionsEdit.length; i++) {
         if (this.state.subscriptionsEdit[i].name === 'New Poll') {
-          optIn['POLL_CREATED'] = this.state.subscriptionsEdit[i].selected
-        } else if (this.state.subscriptionsEdit[i].name === 'Poll Response') {
-          optIn['POLL_RESPONSE'] = this.state.subscriptionsEdit[i].selected
+          optIn['NEW_POLL'] = this.state.subscriptionsEdit[i].selected
         } else if (this.state.subscriptions[i].name === 'New Survey') {
-          optIn['SURVEY_CREATED'] = this.state.subscriptionsEdit[i].selected
-        } else if (this.state.subscriptionsEdit[i].name === 'Survey Response') {
-          optIn['SURVEY_RESPONSE'] = this.state.subscriptionsEdit[i].selected
+          optIn['NEW_SURVEY'] = this.state.subscriptionsEdit[i].selected
         } else if (this.state.subscriptionsEdit[i].name === 'New Subscriber') {
           optIn['NEW_SUBSCRIBER'] = this.state.subscriptionsEdit[i].selected
         } else if (this.state.subscriptionsEdit[i].name === 'New Chat Message') {
           optIn['NEW_CHAT_MESSAGE'] = this.state.subscriptionsEdit[i].selected
-        } else if (this.state.subscriptionsEdit[i].name === 'Checkbox Opt-in') {
-          optIn['CHECKBOX_OPT_IN'] = this.state.subscriptionsEdit[i].selected
+        } else if (this.state.subscriptionsEdit[i].name === 'Checkbox Optin') {
+          optIn['CHECKBOX_OPTIN'] = this.state.subscriptionsEdit[i].selected
+        } else if (this.state.subscriptionsEdit[i].name === 'Chatbot Option Selected') {
+          optIn['CHATBOT_OPTION_SELECTED'] = this.state.subscriptionsEdit[i].selected
+        } else if (this.state.subscriptionsEdit[i].name === 'Session Assignment') {
+          optIn['SESSION_ASSIGNED'] = this.state.subscriptionsEdit[i].selected
+          optIn['SESSION_UNASSIGNED'] = this.state.subscriptionsEdit[i].selected
         }
       }
       this.props.editEndpoint({_id: this.state.id, webhook_url: this.state.urlEdit, token: this.state.token, optIn: optIn}, this.msg)
@@ -425,6 +428,7 @@ class Webhook extends React.Component {
                                     ))
                                   }
                                 </select>
+                                <br /><br />
                                 <div id='question' className='form-group m-form__group'>
                                   <label className='control-label'>Callback URL:</label>
                                   <input className='form-control'
@@ -443,7 +447,7 @@ class Webhook extends React.Component {
                               </div>
                               </div>
                               <div className='form-group m-form__group'>
-                                <label className='control-label'>Filter Events:</label>&nbsp;&nbsp;&nbsp;
+                                <label className='control-label'>Filter Events:</label>&nbsp;&nbsp;
                                 <span style={{width: '30px', overflow: 'inherit'}}>
                                   <input type='checkbox' name='Select All' value='All' checked={this.state.selectAllChecked} onChange={this.handleSubscriptionClick} />&nbsp;&nbsp;Select All</span>&nbsp;&nbsp;
                                 <br />
@@ -500,6 +504,7 @@ class Webhook extends React.Component {
                                     <img alt='pic' style={{ height: '30px' }} src={(this.state.pageEdit.pagePic) ? this.state.pageEdit.pagePic : 'https://cdn.cloudkibo.com/public/icons/users.jpg'} />&nbsp;&nbsp;
                                   <span>{this.state.pageEdit.pageName}</span>
                                   </span>
+                                  <br /><br />
                                   <div id='question' className='form-group m-form__group'>
                                     <label className='control-label'>Callback URL:</label>
                                     <input className='form-control'
@@ -519,7 +524,7 @@ class Webhook extends React.Component {
                                   </div>
                                 </div>
                                 <div className='form-group m-form__group'>
-                                  <label className='control-label'>Filter Events:</label>&nbsp;&nbsp;&nbsp;
+                                  <label className='control-label'>Filter Events:</label>&nbsp;&nbsp;
                                 <span style={{ width: '30px', overflow: 'inherit' }}>
                                     <input type='checkbox' name='Select All' value='All' checked={this.state.selectAllCheckedEdit} onChange={this.handleSubscriptionClickEdit} />&nbsp;&nbsp;Select All</span>
                                   <br />
@@ -567,11 +572,11 @@ class Webhook extends React.Component {
                                         <div className='m-widget4__item' key={i}>
                                           <div className='m-widget4__img m-widget4__img--pic'>
                                             <img
-                                            style={{width: 'inherit', height: 'inherit'}} src={this.props.pages.filter(page => webhook.pageId === page._id)[0].pagePic} alt='' />
+                                            style={{width: 'inherit', height: 'inherit'}} src={webhook.pageId.pagePic} alt='' />
                                         </div>
                                           <div className='m-widget4__info'>
                                             <span className='m-widget4__title'>
-                                              {this.props.pages.filter(page => webhook.pageId === page._id)[0].pageName}
+                                              {webhook.pageId.pageName}
                                             </span>
                                             <br />
                                               <span className='m-widget4__sub'>
