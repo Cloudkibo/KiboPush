@@ -107,8 +107,8 @@ export function getuserdetails(joinRoom, cb) {
             joinRoom(res.payload.companyId)
           }
         }
-        if (res.status === 'success') {
-          cb()
+        if (res.status === 'success' && cb) {
+          cb(res.payload)
         }
         dispatch(showuserdetails(res.payload))
       }
@@ -266,13 +266,13 @@ export function disconnectFacebook(callback) {
   }
 }
 
-export function updatePlatform(data, fetchNotifications) {
+export function updatePlatform(data, handleChangePlatform) {
   return (dispatch) => {
     callApi('users/updatePlatform', 'post', data).then(res => {
       if (res.status === 'success') {
         dispatch(getuserdetails())
-        if (fetchNotifications) {
-          fetchNotifications()
+        if (handleChangePlatform) {
+          handleChangePlatform(data.platform)
         }
       } else {
         console.log('Failed to update platform', res)

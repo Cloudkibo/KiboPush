@@ -14,7 +14,7 @@ import {
 } from '../../redux/actions/broadcast.actions'
 import AlertContainer from 'react-alert'
 import swal from 'sweetalert2'
-import {getCurrentProduct} from '../../utility/utils'
+import {getCurrentProduct, getLandingPage} from '../../utility/utils'
 
 class Finish extends React.Component {
   constructor (props, context) {
@@ -47,7 +47,7 @@ class Finish extends React.Component {
       footer: '<div className="col-lg-6 m--align-left" style="margin-right: 94px"><a href="https://web.facebook.com/groups/kibopush/" target="_blank" style="color: #337ab7; font-weight: bold">Join Our Community</a></div><div className="col-lg-6 m--align-right"><a href="https://web.facebook.com/messages/t/kibopush" target="_blank" style="color: #337ab7; font-weight: bold">Become Our Subscriber</a></div>'
     }).then((value) => {
       this.props.history.push({
-        pathname: `${getCurrentProduct() === 'KiboChat' ? '/liveChat' : '/dashboard'}`
+        pathname: getLandingPage(this.props.user.platform)
       })
     })
   }

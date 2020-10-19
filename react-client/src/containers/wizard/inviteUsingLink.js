@@ -16,7 +16,7 @@ import {
 import AlertContainer from 'react-alert'
 import AlertMessage from '../../components/alertMessages/alertMessage'
 import { updateChecks } from '../../redux/actions/wizard.actions'
-import {getCurrentProduct} from '../../utility/utils'
+import { getCurrentProduct, getLandingPage} from '../../utility/utils'
 
 class InviteSubscribers extends React.Component {
   constructor (props, context) {
@@ -44,7 +44,7 @@ class InviteSubscribers extends React.Component {
   }
 
   skipWizard () {
-    this.props.history.push({pathname: `${getCurrentProduct() === 'KiboChat' ? '/liveChat' : '/dashboard'}`})
+    this.props.history.push({pathname: getLandingPage(this.props.user.platform)})
   }
 
   showDialog () {
