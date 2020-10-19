@@ -36,7 +36,7 @@ class App extends Component {
     this.redirectToConnectPage = this.redirectToConnectPage.bind(this)
     this.checkUserAccessToken = this.checkUserAccessToken.bind(this)
     this.checkFacebookConnected = this.checkFacebookConnected.bind(this)
-    this.uUserDetails = this.callbackUserDetails.bind(this)
+    this.callbackUserDetails = this.callbackUserDetails.bind(this)
     this.checkTrialPeriod = this.checkTrialPeriod.bind(this)
     this.getTrialModalContent = this.getTrialModalContent.bind(this)
     this.onPurchaseSubscription = this.onPurchaseSubscription.bind(this)
