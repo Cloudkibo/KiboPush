@@ -112,10 +112,20 @@ class App extends Component {
     if (this.props.history.location.pathname.toLowerCase() === '/demossa') {
       this.handleDemoSSAPage()
     } else if (this.props.history.location.pathname.toLowerCase() !== '/integrations/zoom') {
-      this.props.history.push({
-        pathname: '/',
-        state: {obj: {_id: 1}}
-      })
+      if (
+        !this.props.history.location.pathname.startsWith('/liveChat') &&
+        getCurrentProduct() === 'KiboChat'
+      ) {
+        this.props.history.push({
+          pathname: '/liveChat',
+          state: {obj: {_id: 1}}
+        })
+      } else if (getCurrentProduct() === 'KiboEngage') {
+        this.props.history.push({
+          pathname: '/',
+          state: {obj: {_id: 1}}
+        })
+      }
     }
 
     this.unlisten = this.props.history.listen(location => {
