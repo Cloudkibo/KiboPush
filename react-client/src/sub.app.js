@@ -17,6 +17,7 @@ import MODAL from './components/extras/modal'
 import AlertContainer from 'react-alert'
 import { getCurrentProduct } from './utility/utils' 
 import HEADER from './components/header/header'
+import { getLandingPage } from './utility/utils'
 import { getHiddenHeaderRoutes, getWhiteHeaderRoutes } from './utility/utils'
 import { validateUserAccessToken, isFacebookConnected } from './redux/actions/basicinfo.actions'
 
@@ -35,7 +36,7 @@ class App extends Component {
     this.redirectToConnectPage = this.redirectToConnectPage.bind(this)
     this.checkUserAccessToken = this.checkUserAccessToken.bind(this)
     this.checkFacebookConnected = this.checkFacebookConnected.bind(this)
-    this.callbackUserDetails = this.callbackUserDetails.bind(this)
+    this.uUserDetails = this.callbackUserDetails.bind(this)
     this.checkTrialPeriod = this.checkTrialPeriod.bind(this)
     this.getTrialModalContent = this.getTrialModalContent.bind(this)
     this.onPurchaseSubscription = this.onPurchaseSubscription.bind(this)
@@ -43,7 +44,7 @@ class App extends Component {
     props.getuserdetails(joinRoom, this.callbackUserDetails)
   }
 
-  callbackUserDetails () {
+  callbackUserDetails (payload) {
     this.props.loadMyPagesListNew({
       last_id: 'none',
       number_of_records: 10,
@@ -53,6 +54,25 @@ class App extends Component {
     }, this.redirectToConnectPage)
     this.props.validateUserAccessToken(this.checkUserAccessToken)
     this.props.isFacebookConnected(this.checkFacebookConnected)
+    
+    if (this.props.history.location.pathname.toLowerCase() === '/demossa') {
+      this.handleDemoSSAPage()
+    } else if (this.props.history.location.pathname.toLowerCase() !== '/integrations/zoom') {
+      if (
+        !this.props.history.location.pathname.startsWith('/liveChat') &&
+        getCurrentProduct() === 'KiboChat'
+      ) {
+        this.props.history.push({
+          pathname: getLandingPage(payload.user.platform),
+          state: {obj: {_id: 1}}
+        })
+      } else if (getCurrentProduct() === 'KiboEngage') {
+        this.props.history.push({
+          pathname: '/',
+          state: {obj: {_id: 1}}
+        })
+      }
+    }
   }
   
   checkFacebookConnected(response) {
@@ -189,25 +209,7 @@ class App extends Component {
   }
 
   componentDidMount() {
-    if (this.props.history.location.pathname.toLowerCase() === '/demossa') {
-      this.handleDemoSSAPage()
-    } else if (this.props.history.location.pathname.toLowerCase() !== '/integrations/zoom') {
-      if (
-        !this.props.history.location.pathname.startsWith('/liveChat') &&
-        getCurrentProduct() === 'KiboChat'
-      ) {
-        this.props.history.push({
-          pathname: '/liveChat',
-          state: {obj: {_id: 1}}
-        })
-      } else if (getCurrentProduct() === 'KiboEngage') {
-        this.props.history.push({
-          pathname: '/',
-          state: {obj: {_id: 1}}
-        })
-      }
-    }
-   
+    
     this.unlisten = this.props.history.listen(location => {
       this.setPathAndHeaderProps(location.pathname)
       if (!this.isWizardOrLogin(location.pathname)) {
