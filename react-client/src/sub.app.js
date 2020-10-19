@@ -14,7 +14,6 @@ import { handleSocketEvent } from './handleSocketEvent'
 import Notification from 'react-web-notification'
 import AlertContainer from 'react-alert'
 import HEADER from './components/header/header'
-import { getCurrentProduct } from './utility/utils'
 import { getHiddenHeaderRoutes, getWhiteHeaderRoutes } from './utility/utils'
 
 class App extends Component {
