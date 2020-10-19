@@ -108,10 +108,7 @@ class WhatsAppChat extends React.Component {
     this.showMessageTemplateMobile = this.showMessageTemplateMobile.bind(this)
     this.props.loadcannedResponses()
     this.fetchSessions(true, 'none', true)
-    if (props.user.currentPlan.unique_ID === 'plan_C' || props.user.currentPlan.unique_ID === 'plan_D') {
-      props.loadMembersList()
-      props.loadTeamsList({ platform: 'whatsapp' })
-    }
+    props.loadMembersList()
     props.getZoomIntegrations()
     if (props.socketData) {
       props.clearSocketDataWhatsapp()
@@ -364,6 +361,9 @@ class WhatsAppChat extends React.Component {
     this.props.fetchUserChats(session._id, { page: 'first', number: 25 })
     if (session.is_assigned && session.assigned_to.type === 'team') {
       this.props.fetchTeamAgents(session.assigned_to.id, this.handleTeamAgents)
+    }
+    if (this.props.user.currentPlan.unique_ID === 'plan_C' || this.props.user.currentPlan.unique_ID === 'plan_D') {
+      this.props.loadTeamsList({ platform: 'whatsapp' })
     }
     this.setState({ activeSession: session })
   }

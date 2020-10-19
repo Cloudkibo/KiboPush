@@ -98,6 +98,28 @@ export function isWebURL(value) {
   return regexp.test(value)
 }
 
+export function getLandingPage (platform) {
+  var pathName = '/'
+  if (getCurrentProduct() === 'KiboChat') {
+    if (platform === 'sms') {
+      pathName = 'smsChat'
+    } else if (platform === 'whatsApp') {
+      pathName = 'whatsAppChat'
+    } else if (platform === 'messenger') {
+      pathName = 'liveChat'
+    }
+  } else {
+    if (platform === 'sms') {
+      pathName = 'SmsDashboard'
+    } else if (platform === 'whatsApp') {
+      pathName = 'WhatsAppDashboard'
+    } else if (platform === 'messenger') {
+      pathName = 'messengerDashboard'
+    }
+  }
+  return pathName
+}
+
 export function getHostName(url) {
   var match = url.match(/:\/\/(www[0-9]?\.)?(.[^/:]+)/i)
   if (match != null && match.length > 2 && typeof match[2] === 'string' && match[2].length > 0) {

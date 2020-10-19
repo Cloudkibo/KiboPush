@@ -15,6 +15,7 @@ import { handleSocketEvent } from './handleSocketEvent'
 import Notification from 'react-web-notification'
 import AlertContainer from 'react-alert'
 import HEADER from './components/header/header'
+import { getLandingPage } from './utility/utils'
 import { getHiddenHeaderRoutes, getWhiteHeaderRoutes } from './utility/utils'
 import { validateUserAccessToken, isFacebookConnected } from './redux/actions/basicinfo.actions'
 
@@ -38,7 +39,7 @@ class App extends Component {
     props.getuserdetails(joinRoom, this.callbackUserDetails)
   }
 
-  callbackUserDetails () {
+  callbackUserDetails (payload) {
     this.props.loadMyPagesListNew({
       last_id: 'none',
       number_of_records: 10,
@@ -48,7 +49,17 @@ class App extends Component {
     }, this.redirectToConnectPage)
     this.props.validateUserAccessToken(this.checkUserAccessToken)
     this.props.isFacebookConnected(this.checkFacebookConnected)
+
+    if (this.props.history.location.pathname.toLowerCase() === '/demossa') {
+      this.handleDemoSSAPage()
+    } else if (this.props.history.location.pathname.toLowerCase() !== '/integrations/zoom') {
+      this.props.history.push({
+        pathname: getLandingPage(payload.user.platform),
+        state: {obj: {_id: 1}}
+      })
+    }
   }
+  
   checkFacebookConnected(response) {
     if (this.props.user && this.props.user.role !== 'buyer' && !response.payload.buyerInfo.connectFacebook) {
       this.props.history.push({
@@ -160,14 +171,6 @@ class App extends Component {
   }
 
   componentDidMount () {
-    if (this.props.history.location.pathname.toLowerCase() === '/demossa') {
-      this.handleDemoSSAPage()
-    } else if (this.props.history.location.pathname.toLowerCase() !== '/integrations/zoom') {
-      this.props.history.push({
-        pathname: '/',
-        state: {obj: {_id: 1}}
-      })
-    }
    
     this.unlisten = this.props.history.listen(location => {
       this.setPathAndHeaderProps(location.pathname)
