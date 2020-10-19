@@ -16,7 +16,6 @@ import Notification from 'react-web-notification'
 import MODAL from './components/extras/modal'
 import AlertContainer from 'react-alert'
 import HEADER from './components/header/header'
-import { getCurrentProduct } from './utility/utils'
 import { getHiddenHeaderRoutes, getWhiteHeaderRoutes } from './utility/utils'
 import { validateUserAccessToken, isFacebookConnected } from './redux/actions/basicinfo.actions'
 
