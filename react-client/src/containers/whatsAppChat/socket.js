@@ -104,7 +104,7 @@ export function handleSocketEventWhatsapp (data, state, props, updateLiveChatInf
       let userChat = state.userChat
       console.log('userChat', userChat)
       console.log('props.userChat', props.userChat)
-      if (userChat && userChat.length > 0 && userChat[userChat.length -1]._id !== payload.message._id) {
+      if (userChat && ((userChat.length > 0 && userChat[userChat.length -1]._id !== payload.message._id) || (userChat.length===0))) {
         payload.message.format = 'convos'
         userChat.push(payload.message)
         session = sessions.splice(index, 1)[0]

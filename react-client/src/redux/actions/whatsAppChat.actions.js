@@ -75,32 +75,51 @@ export function updateChat (chat, newChat) {
   }
 }
 
-export function showOpenSessions (data) {
-  let openSessions = data.openSessions.map((s) => {
+export function showOpenSessions (sessions, data) {
+  console.log('data', data)
+  let openSessions = sessions.openSessions.map((s) => {
     let name = s.name.split(' ')
     s.firstName = name[0]
     s.lastName = name[1]
     s.profilePic = 'https://www.mastermindpromotion.com/wp-content/uploads/2015/02/facebook-default-no-profile-pic-300x300.jpg'
     return s
   })
-  return {
-    type: ActionTypes.FETCH_WHATSAPP_OPEN_SESSIONS,
-    openSessions,
-    openCount: data.count
+
+  if (data.first_page) {
+    return {
+      type: ActionTypes.SHOW_OPEN_WHATSAPP_SESSIONS_OVERWRITE,
+      openSessions,
+      openCount: sessions.count
+    }
+  } else {
+    return {
+      type: ActionTypes.FETCH_WHATSAPP_OPEN_SESSIONS,
+      openSessions,
+      openCount: sessions.count
+    }
   }
 }
-export function showCloseChatSessions (data) {
-  let closeSessions = data.closedSessions.map((s) => {
+export function showCloseChatSessions (sessions,data) {
+  let closeSessions = sessions.closedSessions.map((s) => {
     let name = s.name.split(' ')
     s.firstName = name[0]
     s.lastName = name[1]
     s.profilePic = 'https://www.mastermindpromotion.com/wp-content/uploads/2015/02/facebook-default-no-profile-pic-300x300.jpg'
     return s
   })
-  return {
-    type: ActionTypes.FETCH_WHATSAPP_CLOSE_SESSIONS,
-    closeSessions,
-    closeCount: data.count
+
+  if (data.first_page) {
+    return {
+      type: ActionTypes.SHOW_CLOSE_WHATSAPP_SESSIONS_OVERWRITE,
+      closeSessions,
+      closeCount: sessions.count
+    }
+  } else {
+    return {
+      type: ActionTypes.FETCH_WHATSAPP_CLOSE_SESSIONS,
+      closeSessions,
+      closeCount: sessions.count
+    }
   }
 }
 
@@ -110,7 +129,7 @@ export function fetchOpenSessions (data) {
     callApi('whatsAppSessions/getOpenSessions', 'post', data)
       .then(res => {
         console.log('response from fetchSessions', res)
-        dispatch(showOpenSessions(res.payload))
+        dispatch(showOpenSessions(res.payload, data))
       })
   }
 }
@@ -120,7 +139,7 @@ export function fetchCloseSessions (data) {
     callApi('whatsAppSessions/getClosedSessions', 'post', data)
       .then(res => {
         console.log('response from fetchSessions', res)
-        dispatch(showCloseChatSessions(res.payload, data.first_page))
+        dispatch(showCloseChatSessions(res.payload, data))
       })
   }
 }
