@@ -12,9 +12,9 @@ import { clearSocketData } from './redux/actions/socket.actions'
 import { joinRoom } from './utility/socketio'
 import { handleSocketEvent } from './handleSocketEvent'
 import Notification from 'react-web-notification'
+import { getCurrentProduct } from './utility/utils'
 import AlertContainer from 'react-alert'
 import HEADER from './components/header/header'
-import { getCurrentProduct } from './utility/utils'
 import { getHiddenHeaderRoutes, getWhiteHeaderRoutes } from './utility/utils'
 
 class App extends Component {
@@ -113,11 +113,15 @@ class App extends Component {
     if (this.props.history.location.pathname.toLowerCase() === '/demossa') {
       this.handleDemoSSAPage()
     } else if (this.props.history.location.pathname.toLowerCase() !== '/integrations/zoom') {
-      if (getCurrentProduct() === 'KiboChat') {
+      if (
+        !this.props.history.location.pathname.startsWith('/liveChat') &&
+        getCurrentProduct() === 'KiboChat'
+      ) {
         this.props.history.push({
-          pathname: '/liveChat'
+          pathname: '/liveChat',
+          state: {obj: {_id: 1}}
         })
-      } else {
+      } else if (getCurrentProduct() === 'KiboEngage') {
         this.props.history.push({
           pathname: '/',
           state: {obj: {_id: 1}}
