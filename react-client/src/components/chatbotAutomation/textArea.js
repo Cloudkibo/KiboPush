@@ -104,7 +104,7 @@ class TextArea extends React.Component {
     return (
       <div id='_chatbot_message_area_text' className='row'>
         <div className='col-md-12'>
-          <div style={{position: 'relative'}} className="form-group m-form__group">
+          <div style={{position: 'relative', marginRight: '20px'}} className="form-group m-form__group">
             <span className='m--font-boldest'>{`${this.props.label}:`}</span>
             <textarea
               style={{resize: 'none'}}
