@@ -18,24 +18,20 @@ class Webhook extends React.Component {
       selectAllCheckedEdit: null,
       subscriptions: [
         {'name': 'New Subscriber', selected: false},
-        {'name': 'New Chat Message', selected: false},
+        {'name': 'Chat Message', selected: false},
         {'name': 'Chatbot Option Selected', selected: false},
         {'name': 'Session Assignment', selected: false},
         {'name': 'Checkbox Optin', selected: false},
-        {'name': 'New Poll', selected: false},
-        {'name': 'New Survey', selected: false},
       ],
       url: '',
       token: '',
       urlEdit: '',
       subscriptionsEdit: [
         {'name': 'New Subscriber', selected: false},
-        {'name': 'New Chat Message', selected: false},
+        {'name': 'Chat Message', selected: false},
         {'name': 'Chatbot Option Selected', selected: false},
         {'name': 'Session Assignment', selected: false},
-        {'name': 'Checkbox Optin', selected: false},
-        {'name': 'New Poll', selected: false},
-        {'name': 'New Survey', selected: false},
+        {'name': 'Checkbox Optin', selected: false}
       ],
       errorUrl: '',
       errorToken: false,
@@ -98,14 +94,10 @@ class Webhook extends React.Component {
   showDialogEdit (webhook) {
     let subscriptionsEdit = this.state.subscriptionsEdit
     for (var i = 0; i < subscriptionsEdit.length; i++) {
-      if (subscriptionsEdit[i].name === 'New Poll') {
-        subscriptionsEdit[i].selected = webhook.optIn.NEW_POLL
-      } else if (subscriptionsEdit[i].name === 'New Survey') {
-        subscriptionsEdit[i].selected = webhook.optIn.NEW_SURVEY
-      } else if (subscriptionsEdit[i].name === 'New Subscriber') {
+      if (subscriptionsEdit[i].name === 'New Subscriber') {
         subscriptionsEdit[i].selected = webhook.optIn.NEW_SUBSCRIBER
-      } else if (subscriptionsEdit[i].name === 'New Chat Message') {
-        subscriptionsEdit[i].selected = webhook.optIn.NEW_CHAT_MESSAGE
+      } else if (subscriptionsEdit[i].name === 'Chat Message') {
+        subscriptionsEdit[i].selected = webhook.optIn.CHAT_MESSAGE
       } else if (subscriptionsEdit[i].name === 'Checkbox Optin') {
         subscriptionsEdit[i].selected = webhook.optIn.CHECKBOX_OPTIN
       } else if (subscriptionsEdit[i].name === 'Chatbot Option Selected') {
@@ -231,14 +223,10 @@ class Webhook extends React.Component {
       this.setState({errorToken: true})
     } else {
       for (var i = 0; i < this.state.subscriptions.length; i++) {
-        if (this.state.subscriptions[i].name === 'New Poll') {
-          optIn['NEW_POLL'] = this.state.subscriptions[i].selected
-        } else if (this.state.subscriptions[i].name === 'New Survey') {
-          optIn['NEW_SURVEY'] = this.state.subscriptions[i].selected
-        } else if (this.state.subscriptions[i].name === 'New Subscriber') {
+        if (this.state.subscriptions[i].name === 'New Subscriber') {
           optIn['NEW_SUBSCRIBER'] = this.state.subscriptions[i].selected
-        } else if (this.state.subscriptions[i].name === 'New Chat Message') {
-          optIn['NEW_CHAT_MESSAGE'] = this.state.subscriptions[i].selected
+        } else if (this.state.subscriptions[i].name === 'Chat Message') {
+          optIn['CHAT_MESSAGE'] = this.state.subscriptions[i].selected
         } else if (this.state.subscriptions[i].name === 'Checkbox Optin') {
           optIn['CHECKBOX_OPTIN'] = this.state.subscriptions[i].selected
         } else if (this.state.subscriptions[i].name === 'Chatbot Option Selected') {
@@ -295,14 +283,10 @@ class Webhook extends React.Component {
     } else {
       this.refs.editModal.click()
       for (var i = 0; i < this.state.subscriptionsEdit.length; i++) {
-        if (this.state.subscriptionsEdit[i].name === 'New Poll') {
-          optIn['NEW_POLL'] = this.state.subscriptionsEdit[i].selected
-        } else if (this.state.subscriptions[i].name === 'New Survey') {
-          optIn['NEW_SURVEY'] = this.state.subscriptionsEdit[i].selected
-        } else if (this.state.subscriptionsEdit[i].name === 'New Subscriber') {
+        if (this.state.subscriptionsEdit[i].name === 'New Subscriber') {
           optIn['NEW_SUBSCRIBER'] = this.state.subscriptionsEdit[i].selected
-        } else if (this.state.subscriptionsEdit[i].name === 'New Chat Message') {
-          optIn['NEW_CHAT_MESSAGE'] = this.state.subscriptionsEdit[i].selected
+        } else if (this.state.subscriptionsEdit[i].name === 'Chat Message') {
+          optIn['CHAT_MESSAGE'] = this.state.subscriptionsEdit[i].selected
         } else if (this.state.subscriptionsEdit[i].name === 'Checkbox Optin') {
           optIn['CHECKBOX_OPTIN'] = this.state.subscriptionsEdit[i].selected
         } else if (this.state.subscriptionsEdit[i].name === 'Chatbot Option Selected') {
