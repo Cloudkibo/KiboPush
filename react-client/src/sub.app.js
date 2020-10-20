@@ -16,7 +16,6 @@ import Notification from 'react-web-notification'
 import { getCurrentProduct } from './utility/utils'
 import MODAL from './components/extras/modal'
 import AlertContainer from 'react-alert'
-import { getCurrentProduct } from './utility/utils' 
 import HEADER from './components/header/header'
 import { getLandingPage } from './utility/utils'
 import { getHiddenHeaderRoutes, getWhiteHeaderRoutes } from './utility/utils'
@@ -41,7 +40,7 @@ class App extends Component {
     this.checkTrialPeriod = this.checkTrialPeriod.bind(this)
     this.getTrialModalContent = this.getTrialModalContent.bind(this)
     this.onPurchaseSubscription = this.onPurchaseSubscription.bind(this)
-    
+
     props.getuserdetails(joinRoom, this.callbackUserDetails)
   }
 
@@ -55,7 +54,7 @@ class App extends Component {
     }, this.redirectToConnectPage)
     this.props.validateUserAccessToken(this.checkUserAccessToken)
     this.props.isFacebookConnected(this.checkFacebookConnected)
-    
+
     if (this.props.history.location.pathname.toLowerCase() === '/demossa') {
       this.handleDemoSSAPage()
     } else if (this.props.history.location.pathname.toLowerCase() !== '/integrations/zoom') {
@@ -75,7 +74,7 @@ class App extends Component {
       }
     }
   }
-  
+
   checkFacebookConnected(response) {
     if (this.props.user && this.props.user.role !== 'buyer' && !response.payload.buyerInfo.connectFacebook) {
       this.props.history.push({
@@ -102,7 +101,7 @@ class App extends Component {
       }
     }
   }
-  
+
   redirectToConnectPage(payload) {
     if (payload.count !== 'undefined' && payload.count < 1 && this.props.user.platform === 'messenger') {
       this.props.history.push({
@@ -210,7 +209,7 @@ class App extends Component {
   }
 
   componentDidMount() {
-    
+
     this.unlisten = this.props.history.listen(location => {
       this.setPathAndHeaderProps(location.pathname)
       if (!this.isWizardOrLogin(location.pathname)) {
