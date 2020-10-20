@@ -404,7 +404,7 @@ export function createEndpoint(data, msg) {
           dispatch(loadWebhook())
         } else {
           //  dispatch(showWebhookResponse(res.description))
-          msg.error(res.description)
+          msg.error(res.description || res.payload)
         }
       })
   }
@@ -419,7 +419,7 @@ export function editEndpoint(data, msg) {
           dispatch(loadWebhook())
         } else {
           //  dispatch(showWebhookResponse(res.description))
-          msg.error(res.description)
+          msg.error(res.description || res.payload)
         }
       })
   }
@@ -438,7 +438,7 @@ export function enabled(data, msg) {
           }
           dispatch(loadWebhook())
         } else {
-           msg.error(res.description)
+           msg.error(res.description || res.payload)
         }
       })
   }

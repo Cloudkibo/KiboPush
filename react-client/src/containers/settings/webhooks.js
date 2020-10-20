@@ -16,13 +16,23 @@ class Webhook extends React.Component {
       pageSelected: '',
       selectAllChecked: null,
       selectAllCheckedEdit: null,
-      subscriptions: [{name: 'New Poll', selected: false}, {'name': 'Poll Response', selected: false}, {'name': 'New Survey', selected: false}, {'name': 'Survey Response', selected: false}, {'name': 'New Subscriber', selected: false},
-      {'name': 'Live Chat Actions', selected: false}, {'name': 'Checkbox Opt-in', selected: false}],
+      subscriptions: [
+        {'name': 'New Subscriber', selected: false},
+        {'name': 'Chat Message', selected: false},
+        {'name': 'Chatbot Option Selected', selected: false},
+        {'name': 'Session Assignment', selected: false},
+        {'name': 'Checkbox Optin', selected: false},
+      ],
       url: '',
       token: '',
       urlEdit: '',
-      subscriptionsEdit: [{name: 'New Poll', selected: false}, {'name': 'Poll Response', selected: false}, {'name': 'New Survey', selected: false}, {'name': 'Survey Response', selected: false}, {'name': 'New Subscriber', selected: false},
-      {'name': 'Live Chat Actions', selected: false}, {'name': 'Checkbox Opt-in', selected: false}],
+      subscriptionsEdit: [
+        {'name': 'New Subscriber', selected: false},
+        {'name': 'Chat Message', selected: false},
+        {'name': 'Chatbot Option Selected', selected: false},
+        {'name': 'Session Assignment', selected: false},
+        {'name': 'Checkbox Optin', selected: false}
+      ],
       errorUrl: '',
       errorToken: false,
       pageEdit: '',
@@ -48,6 +58,7 @@ class Webhook extends React.Component {
     this.saveEdited = this.saveEdited.bind(this)
     this.openVideoTutorial = this.openVideoTutorial.bind(this)
   }
+
   openVideoTutorial () {
     this.setState({
       openVideo: true
@@ -57,7 +68,7 @@ class Webhook extends React.Component {
   UNSAFE_componentWillReceiveProps (nextProps) {
     console.log('nextProps in webhooks', nextProps)
     if (nextProps.pages) {
-      this.setState({pageSelected: nextProps.pages[0].pageId})
+      this.setState({pageSelected: nextProps.pages[0]._id})
     }
     if (nextProps.response) {
       if (nextProps.response === 'success') {
@@ -83,28 +94,24 @@ class Webhook extends React.Component {
   showDialogEdit (webhook) {
     let subscriptionsEdit = this.state.subscriptionsEdit
     for (var i = 0; i < subscriptionsEdit.length; i++) {
-      if (subscriptionsEdit[i].name === 'New Poll') {
-        subscriptionsEdit[i].selected = webhook.optIn.POLL_CREATED
-      } else if (subscriptionsEdit[i].name === 'Poll Response') {
-        subscriptionsEdit[i].selected = webhook.optIn.POLL_RESPONSE
-      } else if (subscriptionsEdit[i].name === 'New Survey') {
-        subscriptionsEdit[i].selected = webhook.optIn.SURVEY_CREATED
-      } else if (subscriptionsEdit[i].name === 'Survey Response') {
-        subscriptionsEdit[i].selected = webhook.optIn.SURVEY_RESPONSE
-      } else if (subscriptionsEdit[i].name === 'New Subscriber') {
+      if (subscriptionsEdit[i].name === 'New Subscriber') {
         subscriptionsEdit[i].selected = webhook.optIn.NEW_SUBSCRIBER
-      } else if (subscriptionsEdit[i].name === 'Live Chat Actions') {
-        subscriptionsEdit[i].selected = webhook.optIn.LIVE_CHAT_ACTIONS
-      } else if (subscriptionsEdit[i].name === 'Checkbox Opt-in') {
-        subscriptionsEdit[i].selected = webhook.optIn.NEW_OPTIN
+      } else if (subscriptionsEdit[i].name === 'Chat Message') {
+        subscriptionsEdit[i].selected = webhook.optIn.CHAT_MESSAGE
+      } else if (subscriptionsEdit[i].name === 'Checkbox Optin') {
+        subscriptionsEdit[i].selected = webhook.optIn.CHECKBOX_OPTIN
+      } else if (subscriptionsEdit[i].name === 'Chatbot Option Selected') {
+        subscriptionsEdit[i].selected = webhook.optIn.CHATBOT_OPTION_SELECTED
+      } else if (subscriptionsEdit[i].name === 'Session Assignment') {
+        subscriptionsEdit[i].selected = webhook.optIn.SESSION_ASSIGNED
       }
     }
     for (var j = 0; j < this.props.pages.length; j++) {
-      if (this.props.pages[j].pageId === webhook.pageId) {
+      if (this.props.pages[j]._id === webhook.pageId) {
         this.setState({pageEdit: this.props.pages[j]})
       }
     }
-    this.setState({id: webhook._id, urlEdit: webhook.webhook_url, pageSelectedEdit: webhook.pageId, subscriptionsEdit: subscriptionsEdit})
+    this.setState({pageEdit: webhook.pageId, id: webhook._id, urlEdit: webhook.webhook_url, pageSelectedEdit: webhook.pageId._id, subscriptionsEdit: subscriptionsEdit})
   }
 
   closeDialogEdit () {
@@ -216,22 +223,21 @@ class Webhook extends React.Component {
       this.setState({errorToken: true})
     } else {
       for (var i = 0; i < this.state.subscriptions.length; i++) {
-        if (this.state.subscriptions[i].name === 'New Poll') {
-          optIn['POLL_CREATED'] = this.state.subscriptions[i].selected
-        } else if (this.state.subscriptions[i].name === 'Poll Response') {
-          optIn['POLL_RESPONSE'] = this.state.subscriptions[i].selected
-        } else if (this.state.subscriptions[i].name === 'New Survey') {
-          optIn['SURVEY_CREATED'] = this.state.subscriptions[i].selected
-        } else if (this.state.subscriptions[i].name === 'Survey Response') {
-          optIn['SURVEY_RESPONSE'] = this.state.subscriptions[i].selected
-        } else if (this.state.subscriptions[i].name === 'New Subscriber') {
+        if (this.state.subscriptions[i].name === 'New Subscriber') {
           optIn['NEW_SUBSCRIBER'] = this.state.subscriptions[i].selected
-        } else if (this.state.subscriptions[i].name === 'Live Chat Actions') {
-          optIn['LIVE_CHAT_ACTIONS'] = this.state.subscriptions[i].selected
-        } else if (this.state.subscriptions[i].name === 'Checkbox Opt-in') {
-          optIn['NEW_OPTIN'] = this.state.subscriptions[i].selected
+        } else if (this.state.subscriptions[i].name === 'Chat Message') {
+          optIn['CHAT_MESSAGE'] = this.state.subscriptions[i].selected
+        } else if (this.state.subscriptions[i].name === 'Checkbox Optin') {
+          optIn['CHECKBOX_OPTIN'] = this.state.subscriptions[i].selected
+        } else if (this.state.subscriptions[i].name === 'Chatbot Option Selected') {
+          optIn['CHATBOT_OPTION_SELECTED'] = this.state.subscriptions[i].selected
+        } else if (this.state.subscriptions[i].name === 'Session Assignment') {
+          optIn['SESSION_ASSIGNED'] = this.state.subscriptions[i].selected
+          optIn['SESSION_UNASSIGNED'] = this.state.subscriptions[i].selected
         }
       }
+      this.refs.createModal.click()
+      this.cancel()
       this.props.createEndpoint({pageId: this.state.pageSelected, webhook_url: this.state.url, token: this.state.token, optIn: optIn}, this.msg)
     }
   }
@@ -240,7 +246,7 @@ class Webhook extends React.Component {
     for (var i = 0; i < this.state.subscriptions.length; i++) {
       subscriptions[i].selected = false
     }
-    this.setState({url: '', token: '', errorToken: false, errorUrl: '', subscriptions: subscriptions, isShowingModal: false})
+    this.setState({url: '', token: '', errorToken: false, errorUrl: '', subscriptions: subscriptions, isShowingModal: false, selectAllChecked: false})
   }
   edit (webhook) {
     // let subscriptionsEdit = this.state.subscriptionsEdit
@@ -275,21 +281,19 @@ class Webhook extends React.Component {
     } else if (this.state.token === '') {
       this.setState({errorToken: true})
     } else {
+      this.refs.editModal.click()
       for (var i = 0; i < this.state.subscriptionsEdit.length; i++) {
-        if (this.state.subscriptionsEdit[i].name === 'New Poll') {
-          optIn['POLL_CREATED'] = this.state.subscriptionsEdit[i].selected
-        } else if (this.state.subscriptionsEdit[i].name === 'Poll Response') {
-          optIn['POLL_RESPONSE'] = this.state.subscriptionsEdit[i].selected
-        } else if (this.state.subscriptions[i].name === 'New Survey') {
-          optIn['SURVEY_CREATED'] = this.state.subscriptionsEdit[i].selected
-        } else if (this.state.subscriptionsEdit[i].name === 'Survey Response') {
-          optIn['SURVEY_RESPONSE'] = this.state.subscriptionsEdit[i].selected
-        } else if (this.state.subscriptionsEdit[i].name === 'New Subscriber') {
+        if (this.state.subscriptionsEdit[i].name === 'New Subscriber') {
           optIn['NEW_SUBSCRIBER'] = this.state.subscriptionsEdit[i].selected
-        } else if (this.state.subscriptionsEdit[i].name === 'Live Chat Actions') {
-          optIn['LIVE_CHAT_ACTIONS'] = this.state.subscriptionsEdit[i].selected
-        } else if (this.state.subscriptionsEdit[i].name === 'Checkbox Opt-in') {
-          optIn['NEW_OPTIN'] = this.state.subscriptionsEdit[i].selected
+        } else if (this.state.subscriptionsEdit[i].name === 'Chat Message') {
+          optIn['CHAT_MESSAGE'] = this.state.subscriptionsEdit[i].selected
+        } else if (this.state.subscriptionsEdit[i].name === 'Checkbox Optin') {
+          optIn['CHECKBOX_OPTIN'] = this.state.subscriptionsEdit[i].selected
+        } else if (this.state.subscriptionsEdit[i].name === 'Chatbot Option Selected') {
+          optIn['CHATBOT_OPTION_SELECTED'] = this.state.subscriptionsEdit[i].selected
+        } else if (this.state.subscriptionsEdit[i].name === 'Session Assignment') {
+          optIn['SESSION_ASSIGNED'] = this.state.subscriptionsEdit[i].selected
+          optIn['SESSION_UNASSIGNED'] = this.state.subscriptionsEdit[i].selected
         }
       }
       this.props.editEndpoint({_id: this.state.id, webhook_url: this.state.urlEdit, token: this.state.token, optIn: optIn}, this.msg)
@@ -324,7 +328,7 @@ class Webhook extends React.Component {
                   <h5 className="modal-title" id="exampleModalLabel">
                     Webhook Video Tutorial
 									</h5>
-                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" 
+                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal"
                   aria-label="Close"
                   onClick={() => {
                     this.setState({
@@ -362,7 +366,7 @@ class Webhook extends React.Component {
                   </span>
                 </li>
               </ul>
-              <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' data-toggle="modal" data-target="#endpoint" style={{marginTop: '15px'}}>
+              <button ref='createModal' className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' data-toggle="modal" data-target="#endpoint" style={{marginTop: '15px'}}>
                 <span>
                   <i className='la la-plus' />
                   <span>
@@ -404,29 +408,30 @@ class Webhook extends React.Component {
                                 <select className='custom-select' id='m_form_type' style={{width: '250px'}} tabIndex='-98' value={this.state.pageSelected} onChange={this.changePage}>
                                   {
                                     this.props.pages && this.props.pages.length > 0 && this.props.pages.map((page, i) => (
-                                      <option key={i} value={page.pageId}>{page.pageName}</option>
+                                      <option key={i} value={page._id}>{page.pageName}</option>
                                     ))
                                   }
                                 </select>
+                                <br /><br />
                                 <div id='question' className='form-group m-form__group'>
-                                  <label className='control-label'>Callback URL</label>
-                                  {this.state.errorUrl &&
-                                    <div id='email-error' style={{color: 'red', fontWeight: 'bold'}}><bold>{this.state.errorUrl}</bold></div>
-                                    }
+                                  <label className='control-label'>Callback URL:</label>
                                   <input className='form-control'
                                     value={this.state.url} onChange={(e) => this.updateURL(e)} />
+                                  {this.state.errorUrl &&
+                                    <div id='email-error' style={{color: 'red'}}><bold>{this.state.errorUrl}</bold></div>
+                                  }
                                 </div>
                                 <div id='question' className='form-group m-form__group'>
                                   <label className='control-label'>Verify Token:</label>
-                                  {this.state.errorToken &&
-                                    <div id='email-error' style={{color: 'red', fontWeight: 'bold'}}><bold>Please enter token</bold></div>
-                                    }
                                   <input className='form-control'
-                                    value={this.state.token} onChange={(e) => this.updateToken(e)} />
-                                </div>
+                                    value={this.state.token} placeholder='KiboPush will send back to you for callback URL verification' onChange={(e) => this.updateToken(e)} />
+                                  {this.state.errorToken &&
+                                    <div id='email-error' style={{color: 'red'}}><bold>Please enter token</bold></div>
+                                    }
+                              </div>
                               </div>
                               <div className='form-group m-form__group'>
-                                <label className='control-label'>Filter Events:</label>&nbsp;&nbsp;&nbsp;
+                                <label className='control-label'>Filter Events:</label>&nbsp;&nbsp;
                                 <span style={{width: '30px', overflow: 'inherit'}}>
                                   <input type='checkbox' name='Select All' value='All' checked={this.state.selectAllChecked} onChange={this.handleSubscriptionClick} />&nbsp;&nbsp;Select All</span>&nbsp;&nbsp;
                                 <br />
@@ -444,11 +449,10 @@ class Webhook extends React.Component {
                                 ))}
                               </div>
                             </div>
-                            <div className='m-portlet__foot m-portlet__foot--fit' style={{'overflow': 'auto'}}>
+                            <div style={{'overflow': 'auto', marginTop: '30px'}}>
                               <div className='m-form__actions' style={{'float': 'right'}}>
                                 <button className='btn btn-primary'
-                                  onClick={this.save}
-                                  data-dismiss='modal'> Save
+                                  onClick={this.save}> Save
                                 </button>
                                 <button
                                   className='btn btn-secondary'
@@ -484,25 +488,27 @@ class Webhook extends React.Component {
                                     <img alt='pic' style={{ height: '30px' }} src={(this.state.pageEdit.pagePic) ? this.state.pageEdit.pagePic : 'https://cdn.cloudkibo.com/public/icons/users.jpg'} />&nbsp;&nbsp;
                                   <span>{this.state.pageEdit.pageName}</span>
                                   </span>
+                                  <br /><br />
                                   <div id='question' className='form-group m-form__group'>
-                                    <label className='control-label'>Callback URL</label>
-                                    {this.state.errorUrl &&
-                                      <div id='email-error' style={{ color: 'red', fontWeight: 'bold' }}><bold>Please enter a callback URL</bold></div>
-                                    }
+                                    <label className='control-label'>Callback URL:</label>
                                     <input className='form-control'
                                       value={this.state.urlEdit} onChange={(e) => this.updateURLEdit(e)} />
+                                      {this.state.errorUrl &&
+                                        <div id='email-error' style={{ color: 'red'}}><bold>Please enter a callback URL</bold></div>
+                                      }
                                   </div>
                                   <div id='question' className='form-group m-form__group'>
                                     <label className='control-label'>Verify Token:</label>
-                                    {this.state.errorToken &&
-                                      <div id='email-error' style={{ color: 'red', fontWeight: 'bold' }}><bold>Please enter token</bold></div>
-                                    }
                                     <input className='form-control'
+                                      placeholder='KiboPush will send back to you for callback URL verification'
                                       value={this.state.token} onChange={(e) => this.updateToken(e)} />
+                                    {this.state.errorToken &&
+                                      <div id='email-error' style={{ color: 'red'}}><bold>Please enter token</bold></div>
+                                    }
                                   </div>
                                 </div>
                                 <div className='form-group m-form__group'>
-                                  <label className='control-label'>Filter Events:</label>&nbsp;&nbsp;&nbsp;
+                                  <label className='control-label'>Filter Events:</label>&nbsp;&nbsp;
                                 <span style={{ width: '30px', overflow: 'inherit' }}>
                                     <input type='checkbox' name='Select All' value='All' checked={this.state.selectAllCheckedEdit} onChange={this.handleSubscriptionClickEdit} />&nbsp;&nbsp;Select All</span>
                                   <br />
@@ -520,11 +526,10 @@ class Webhook extends React.Component {
                                   ))}
                                 </div>
                               </div>
-                              <div className='m-portlet__foot m-portlet__foot--fit' style={{ 'overflow': 'auto' }}>
+                              <div style={{ 'overflow': 'auto', marginTop: '30px' }}>
                                 <div className='m-form__actions' style={{ 'float': 'right' }}>
                                   <button className='btn btn-primary'
-                                    onClick={this.saveEdited}
-                                    data-dismiss='modal'> Save
+                                    onClick={this.saveEdited}> Save
                                 </button>
                                   <button onClick={this.closeDialogEdit}
                                     className='btn btn-secondary' style={{ 'margin-left': '10px' }}
@@ -549,17 +554,21 @@ class Webhook extends React.Component {
                                     ? <div className='m-widget4' >
                                       {this.props.webhooks.map((webhook, i) => (
                                         <div className='m-widget4__item' key={i}>
+                                          <div className='m-widget4__img m-widget4__img--pic'>
+                                            <img
+                                            style={{width: 'inherit', height: 'inherit'}} src={webhook.pageId.pagePic} alt='' />
+                                        </div>
                                           <div className='m-widget4__info'>
                                             <span className='m-widget4__title'>
-                                              <i className='la la-link' />&nbsp;&nbsp;&nbsp;
-                                              <span>
-                                                {webhook.webhook_url}
-                                              </span>
+                                              {webhook.pageId.pageName}
                                             </span>
                                             <br />
+                                              <span className='m-widget4__sub'>
+                    														{webhook.webhook_url}
+                    													</span>
                                           </div>
                                           <div className='m-widget4__ext'>
-                                            <button className='m-btn m-btn--pill m-btn--hover-brand btn btn-secondary' style={{borderColor: '#5867dd', color: '#5867dd', marginRight: '10px'}} data-toggle="modal" data-target="#editEndpoint" onClick={() => this.showDialogEdit(webhook)}>
+                                            <button ref='editModal' className='m-btn m-btn--pill m-btn--hover-brand btn btn-secondary' style={{borderColor: '#5867dd', color: '#5867dd', marginRight: '10px'}} data-toggle="modal" data-target="#editEndpoint" onClick={() => this.showDialogEdit(webhook)}>
                                              Edit
                                            </button>
                                           </div>

@@ -300,6 +300,7 @@ class MessageArea extends React.Component {
   }
 
   onAddChild (title) {
+    console.log('add child', this.props)
     const childTitles = this.state.quickReplies.map((item) => item.title)
     if (childTitles.includes(title)) {
       this.props.alertMsg.error('You can not create two children with same name.')
@@ -325,7 +326,7 @@ class MessageArea extends React.Component {
       const option = {
         content_type: 'text',
         title,
-        payload: JSON.stringify([{action: '_chatbot', blockUniqueId: `${id}`, payloadAction: 'create'}])
+        payload: JSON.stringify([{action: '_chatbot', blockUniqueId: `${id}`, payloadAction: 'create', parentBlockTitle: this.props.block.title}])
       }
       options.push(option)
       if (currentBlock.payload.length > 0) {
@@ -361,7 +362,7 @@ class MessageArea extends React.Component {
       quickReplies.push({
         content_type: 'text',
         title,
-        payload: JSON.stringify([{action: '_chatbot', blockUniqueId: uniqueId}])
+        payload: JSON.stringify([{action: '_chatbot', blockUniqueId: uniqueId, parentBlockTitle: this.props.block.title}])
       })
 
       const currentBlock = this.props.block
