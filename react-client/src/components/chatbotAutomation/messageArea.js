@@ -310,7 +310,7 @@ class MessageArea extends React.Component {
         title
       }
       if (action === 'link') {
-        option.payload = JSON.stringify([{action: '_chatbot', blockUniqueId: uniqueId}])
+        option.payload = JSON.stringify([{action: '_chatbot', blockUniqueId: uniqueId, parentBlockTitle: this.props.block.title}])
         options.push(option)
       } else if (action === 'create') {
         const id = new Date().getTime()
@@ -322,7 +322,7 @@ class MessageArea extends React.Component {
         const blocks = [...this.props.blocks, newBlock]
         const completed = blocks.filter((item) => item.payload.length > 0).length
         const progress = Math.floor((completed / blocks.length) * 100)
-        option.payload = JSON.stringify([{action: '_chatbot', blockUniqueId: id, payloadAction: 'create'}])
+        option.payload = JSON.stringify([{action: '_chatbot', blockUniqueId: id, payloadAction: 'create', parentBlockTitle: this.props.block.title}])
         options.push(option)
         const currentBlock = this.props.block
         if (currentBlock.payload.length > 0) {
