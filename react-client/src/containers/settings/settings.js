@@ -666,11 +666,12 @@ class Settings extends React.Component {
                       </li>
                     }
                     <li className='m-nav__item'>
-                      {/* this.props.user.currentPlan.unique_ID === 'plan_A' || this.props.user.currentPlan.unique_ID === 'plan_C' */}
-                      <a href='#/' className='m-nav__link' onClick={this.setWebhook} style={{ cursor: 'pointer' }}>
-                        <i className='m-nav__link-icon la la-link' />
-                        <span className='m-nav__link-text'>Webhooks</span>
-                      </a>
+                      {this.props.user && this.props.user.platform === 'messenger' &&
+                        <a href='#/' className='m-nav__link' onClick={this.setWebhook} style={{ cursor: 'pointer' }}>
+                          <i className='m-nav__link-icon la la-link' />
+                          <span className='m-nav__link-text'>Webhooks</span>
+                        </a>
+                      }
                       {/* <a className='m-nav__link' onClick={this.showDialog} style={{cursor: 'pointer'}}>
                          <i className='m-nav__link-icon la la-link' />
                          <span className='m-nav__link-text'>Webhooks&nbsp;&nbsp;&nbsp;

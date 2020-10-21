@@ -7,6 +7,7 @@ import { connect } from 'react-redux'
 import AlertContainer from 'react-alert'
 import { isWebURL } from './../../utility/utils'
 import YouTube from 'react-youtube'
+import HELPWIDGET from '../../components/extras/helpWidget'
 
 class Webhook extends React.Component {
   constructor (props, context) {
@@ -37,7 +38,8 @@ class Webhook extends React.Component {
       errorToken: false,
       pageEdit: '',
       id: '',
-      openVideo: false
+      openVideo: false,
+      loading: false
     }
     props.loadWebhook()
     props.loadMyPagesList()
@@ -85,13 +87,14 @@ class Webhook extends React.Component {
   }
 
   showDialog () {
-    this.setState({isShowingModal: true})
+    this.setState({isShowingModal: true, errorUrl: '', errorToken: ''})
   }
 
   closeDialog () {
     this.setState({isShowingModal: false})
   }
   showDialogEdit (webhook) {
+    console.log('webhook got', webhook)
     let subscriptionsEdit = this.state.subscriptionsEdit
     for (var i = 0; i < subscriptionsEdit.length; i++) {
       if (subscriptionsEdit[i].name === 'New Subscriber') {
@@ -106,12 +109,18 @@ class Webhook extends React.Component {
         subscriptionsEdit[i].selected = webhook.optIn.SESSION_ASSIGNED
       }
     }
-    for (var j = 0; j < this.props.pages.length; j++) {
-      if (this.props.pages[j]._id === webhook.pageId) {
-        this.setState({pageEdit: this.props.pages[j]})
-      }
-    }
-    this.setState({pageEdit: webhook.pageId, id: webhook._id, urlEdit: webhook.webhook_url, pageSelectedEdit: webhook.pageId._id, subscriptionsEdit: subscriptionsEdit})
+    let all = subscriptionsEdit.filter(s => !s.selected)
+    this.setState({
+      pageEdit: webhook.pageId,
+      id: webhook._id,
+      urlEdit: webhook.webhook_url,
+      pageSelectedEdit: webhook.pageId._id,
+      subscriptionsEdit: subscriptionsEdit,
+      token: '',
+      selectAllCheckedEdit: all.length > 0 ? false : true,
+      errorUrl: '',
+      errorToken: ''
+    })
   }
 
   closeDialogEdit () {
@@ -159,7 +168,8 @@ class Webhook extends React.Component {
             subscriptions[p].selected = true
           }
         }
-        this.setState({subscriptions: subscriptions})
+        let all = subscriptions.filter(s => !s.selected)
+        this.setState({subscriptions: subscriptions, selectAllChecked: all.length > 0 ? false : true})
       } else {
         for (var q = 0; q < this.state.subscriptions.length; q++) {
           if (subscriptions[q].name === e.target.value) {
@@ -167,12 +177,14 @@ class Webhook extends React.Component {
           }
         }
         // subscribers[e.target.value].selected = false
-        this.setState({subscriptions: subscriptions})
+        this.setState({subscriptions: subscriptions, selectAllChecked: false})
         // this.setState({subscribersDataAll: subscribersAll})
       }
     }
   }
   handleSubscriptionClickEdit (e) {
+    console.log('handleSubscriptionClickEdit', e.target.value)
+    console.log('this.state.subscriptionsEdit', this.state.subscriptionsEdit)
     var subscriptions = this.state.subscriptionsEdit
     if (e.target.value === 'All') {
       if (e.target.checked) {
@@ -200,15 +212,18 @@ class Webhook extends React.Component {
             subscriptions[p].selected = true
           }
         }
-        this.setState({subscriptionsEdit: subscriptions})
+        let all = subscriptions.filter(s => !s.selected)
+        this.setState({subscriptionsEdit: subscriptions, selectAllCheckedEdit: all.length > 0 ? false : true})
       } else {
         for (var q = 0; q < this.state.subscriptionsEdit.length; q++) {
           if (subscriptions[q].name === e.target.value) {
+            console.log('in if')
             subscriptions[q].selected = false
           }
         }
+        console.log('subscriptions', subscriptions)
         // subscribers[e.target.value].selected = false
-        this.setState({subscriptionsEdit: subscriptions})
+        this.setState({subscriptionsEdit: subscriptions, selectAllCheckedEdit: false})
         // this.setState({subscribersDataAll: subscribersAll})
       }
     }
@@ -222,6 +237,7 @@ class Webhook extends React.Component {
     } else if (this.state.token === '') {
       this.setState({errorToken: true})
     } else {
+      this.setState({loading: true})
       for (var i = 0; i < this.state.subscriptions.length; i++) {
         if (this.state.subscriptions[i].name === 'New Subscriber') {
           optIn['NEW_SUBSCRIBER'] = this.state.subscriptions[i].selected
@@ -236,9 +252,17 @@ class Webhook extends React.Component {
           optIn['SESSION_UNASSIGNED'] = this.state.subscriptions[i].selected
         }
       }
-      this.refs.createModal.click()
       this.cancel()
-      this.props.createEndpoint({pageId: this.state.pageSelected, webhook_url: this.state.url, token: this.state.token, optIn: optIn}, this.msg)
+      this.props.createEndpoint({pageId: this.state.pageSelected, webhook_url: this.state.url, token: this.state.token, optIn: optIn}, (res) => {
+        if (res.status === 'success') {
+          this.setState({loading: false})
+          this.refs.createModal.click()
+          this.msg.success('webhook saved successfully')
+        } else {
+          this.setState({loading: false})
+          this.msg.error(res.description || res.payload)
+        }
+      })
     }
   }
   cancel () {
@@ -281,7 +305,7 @@ class Webhook extends React.Component {
     } else if (this.state.token === '') {
       this.setState({errorToken: true})
     } else {
-      this.refs.editModal.click()
+      this.setState({loading: true})
       for (var i = 0; i < this.state.subscriptionsEdit.length; i++) {
         if (this.state.subscriptionsEdit[i].name === 'New Subscriber') {
           optIn['NEW_SUBSCRIBER'] = this.state.subscriptionsEdit[i].selected
@@ -296,7 +320,16 @@ class Webhook extends React.Component {
           optIn['SESSION_UNASSIGNED'] = this.state.subscriptionsEdit[i].selected
         }
       }
-      this.props.editEndpoint({_id: this.state.id, webhook_url: this.state.urlEdit, token: this.state.token, optIn: optIn}, this.msg)
+      this.props.editEndpoint({_id: this.state.id, webhook_url: this.state.urlEdit, token: this.state.token, optIn: optIn}, (res) => {
+        if (res.status === 'success') {
+          this.setState({loading: false})
+          this.refs.editModal.click()
+          this.msg.success('webhook saved successfully')
+        } else {
+          this.setState({loading: false})
+          this.msg.error(res.description || res.payload)
+        }
+      })
     }
   }
   enabled (data, id) {
@@ -310,6 +343,7 @@ class Webhook extends React.Component {
   }
 
   render () {
+    console.log('in render', this.state.subscriptionsEdit)
     var alertOptions = {
       offset: 75,
       position: 'bottom right',
@@ -319,6 +353,10 @@ class Webhook extends React.Component {
     }
     return (
       <div id='target' className='col-lg-8 col-md-8 col-sm-8 col-xs-12'>
+        <HELPWIDGET
+          documentation={{visibility: true, link: 'https://kibopush.com/webhook/'}}
+          videoTutorial={{visibility: true, videoId: 'LxlrENo0vW8'}}
+        />
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <a href='#/' style={{ display: 'none' }} ref='videoWebhook' data-toggle='modal' data-backdrop='static' data-keyboard='false' data-target="#videoWebhook">videoWebhook</a>
         <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="videoWebhook" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -366,7 +404,8 @@ class Webhook extends React.Component {
                   </span>
                 </li>
               </ul>
-              <button ref='createModal' className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' data-toggle="modal" data-target="#endpoint" style={{marginTop: '15px'}}>
+              <button onClick={this.showDialog}
+                ref='createModal' className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' data-toggle="modal" data-target="#endpoint" style={{marginTop: '15px'}}>
                 <span>
                   <i className='la la-plus' />
                   <span>
@@ -378,16 +417,7 @@ class Webhook extends React.Component {
           </div>
           <div className='tab-content'>
             <div className='m-content'>
-              <div className='row'>
                 <div className='col-xl-12 col-md-12 col-sm-12'>
-                  <div>
-                    <div className='m-portlet__body'>
-                      <div className='form-group m-form__group'>
-                        <div style={{textAlign: 'center'}} className='alert m-alert m-alert--default' role='alert'>
-                        Need help in understanding Webhooks? Here is the <a href='http://kibopush.com/webhook/' target='_blank' rel='noopener noreferrer'>documentation</a>.
-                        Or check out this <a href='#/' onClick={this.openVideoTutorial}>video tutorial</a> to understand this feature.
-                        </div>
-                      </div>
                       <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="endpoint" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                         <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
                           <div className="modal-content">
@@ -418,7 +448,7 @@ class Webhook extends React.Component {
                                   <input className='form-control'
                                     value={this.state.url} onChange={(e) => this.updateURL(e)} />
                                   {this.state.errorUrl &&
-                                    <div id='email-error' style={{color: 'red'}}><bold>{this.state.errorUrl}</bold></div>
+                                    <div id='email-error' style={{color: 'red'}}>{this.state.errorUrl}</div>
                                   }
                                 </div>
                                 <div id='question' className='form-group m-form__group'>
@@ -426,7 +456,7 @@ class Webhook extends React.Component {
                                   <input className='form-control'
                                     value={this.state.token} placeholder='KiboPush will send back to you for callback URL verification' onChange={(e) => this.updateToken(e)} />
                                   {this.state.errorToken &&
-                                    <div id='email-error' style={{color: 'red'}}><bold>Please enter token</bold></div>
+                                    <div id='email-error' style={{color: 'red'}}>Please enter token</div>
                                     }
                               </div>
                               </div>
@@ -451,7 +481,7 @@ class Webhook extends React.Component {
                             </div>
                             <div style={{'overflow': 'auto', marginTop: '30px'}}>
                               <div className='m-form__actions' style={{'float': 'right'}}>
-                                <button className='btn btn-primary'
+                                <button className={`btn btn-primary ${this.state.loading && 'm-loader m-loader--light m-loader--left'}`}
                                   onClick={this.save}> Save
                                 </button>
                                 <button
@@ -494,7 +524,7 @@ class Webhook extends React.Component {
                                     <input className='form-control'
                                       value={this.state.urlEdit} onChange={(e) => this.updateURLEdit(e)} />
                                       {this.state.errorUrl &&
-                                        <div id='email-error' style={{ color: 'red'}}><bold>Please enter a callback URL</bold></div>
+                                        <div id='email-error' style={{ color: 'red'}}>Please enter a callback URL</div>
                                       }
                                   </div>
                                   <div id='question' className='form-group m-form__group'>
@@ -503,7 +533,7 @@ class Webhook extends React.Component {
                                       placeholder='KiboPush will send back to you for callback URL verification'
                                       value={this.state.token} onChange={(e) => this.updateToken(e)} />
                                     {this.state.errorToken &&
-                                      <div id='email-error' style={{ color: 'red'}}><bold>Please enter token</bold></div>
+                                      <div id='email-error' style={{ color: 'red'}}>Please enter token</div>
                                     }
                                   </div>
                                 </div>
@@ -528,7 +558,7 @@ class Webhook extends React.Component {
                               </div>
                               <div style={{ 'overflow': 'auto', marginTop: '30px' }}>
                                 <div className='m-form__actions' style={{ 'float': 'right' }}>
-                                  <button className='btn btn-primary'
+                                  <button className={`btn btn-primary ${this.state.loading && 'm-loader m-loader--light m-loader--left'}`}
                                     onClick={this.saveEdited}> Save
                                 </button>
                                   <button onClick={this.closeDialogEdit}
@@ -599,11 +629,8 @@ class Webhook extends React.Component {
                     </div>
                   </div>
                 </div>
-              </div>
             </div>
           </div>
-        </div>
-      </div>
     )
   }
 }
