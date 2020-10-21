@@ -656,7 +656,7 @@ class Settings extends React.Component {
                         </a>
                       </li>
                     }
-                    {this.props.user && this.props.user.isSuperUser &&
+                    {this.props.user && this.props.user.isSuperUser && this.props.user.permissions['manage_billing'] &&
                       <li className='m-nav__item'>
                         <a href='#/' className='m-nav__link' onClick={this.setBilling} style={{ cursor: 'pointer' }}>
                           <i className='m-nav__link-icon fa fa-money' />
@@ -664,16 +664,7 @@ class Settings extends React.Component {
                         </a>
                       </li>
                     }
-                    { this.props.user && this.props.user.isSuperUser && this.props.user.permissions['manage_billing'] &&
-                    <li className='m-nav__item'>
-                      <a href='#/' className='m-nav__link' onClick={this.setBilling} style={{cursor: 'pointer'}}>
-                        <i className='m-nav__link-icon fa fa-money' />
-                        <span className='m-nav__link-text'>Billing</span>
-                      </a>
-                    </li>
-                  }
-                    {
-                      this.props.user && this.props.user.plan['webhook'] && this.props.user.permissions['manage_webhooks'] &&
+                    {this.props.user && this.props.user.platform === 'messenger' && this.props.user.plan['webhook'] && this.props.user.permissions['manage_webhooks'] &&
                       <li className='m-nav__item'>
                         <a href='#/' className='m-nav__link' onClick={this.setWebhook} style={{cursor: 'pointer'}}>
                           <i className='m-nav__link-icon la la-link' />
