@@ -28,11 +28,13 @@ const handleIncomingMessage = (payload, state, props, updateLiveChatInfo, clearS
     let allChatMessages = props.allChatMessages
     allChatMessages[payload.subscriber._id] = userChat
     session = sessions.splice(index, 1)[0]
-    session.unreadCount = session.unreadCount ? session.unreadCount + 1 : 1
     session.lastPayload = payload.message.payload
     session.last_activity_time = new Date()
     if (payload.message.format === 'facebook') {
       session.lastMessagedAt = new Date()
+      session.unreadCount = session.unreadCount ? session.unreadCount + 1 : 1
+    } else {
+      session.unreadCount = 0
     }
     session.pendingResponse = true
     if (state.tabValue === 'open') {
@@ -54,11 +56,13 @@ const handleIncomingMessage = (payload, state, props, updateLiveChatInfo, clearS
       allChatMessages[payload.subscriber._id] = [...allChatMessages[payload.subscriber._id], payload.message]
     }
     session = sessions.splice(index, 1)[0]
-    session.unreadCount = session.unreadCount ? session.unreadCount + 1 : 1
     session.lastPayload = payload.message.payload
     session.last_activity_time = new Date()
     if (payload.message.format === 'facebook') {
       session.lastMessagedAt = new Date()
+      session.unreadCount = session.unreadCount ? session.unreadCount + 1 : 1
+    } else {
+      session.unreadCount = 0
     }
     session.pendingResponse = true
     session.status = 'new'
