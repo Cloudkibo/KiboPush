@@ -28,7 +28,6 @@ import { RingLoader } from 'halogenium'
 //  import GettingStarted from './gettingStarted'
 import { registerAction } from '../../utility/socketio'
 import { readShopifyInstallRequest } from '../../utility/utils'
-import { validateUserAccessToken, isFacebookConnected } from '../../redux/actions/basicinfo.actions'
 // import Reports from './reports'
 // import TopPages from './topPages'
 import moment from 'moment'
@@ -65,13 +64,11 @@ class Dashboard extends React.Component {
     this.hideDropDown = this.hideDropDown.bind(this)
     this.changePage = this.changePage.bind(this)
     this.goToSettings = this.goToSettings.bind(this)
-    this.checkUserAccessToken = this.checkUserAccessToken.bind(this)
     this.changeDays = this.changeDays.bind(this)
     this.onKeyDown = this.onKeyDown.bind(this)
     this.openVideoTutorial = this.openVideoTutorial.bind(this)
     this.getNewsPages = this.getNewsPages.bind(this)
     this.handlePermissions = this.handlePermissions.bind(this)
-    this.checkFacebookConnected = this.checkFacebookConnected.bind(this)
     if (window.location.hostname.includes('kiboengage.cloudkibo.com')) {
       this.props.checkSubscriptionPermissions(this.handlePermissions)
     }
@@ -95,45 +92,17 @@ class Dashboard extends React.Component {
     this.refs.videoDashboard.click()
   }
 
-  checkFacebookConnected(response) {
-    if (this.props.user && this.props.user.role !== 'buyer' && !response.payload.buyerInfo.connectFacebook) {
-      this.props.history.push({
-        pathname: '/sessionInvalidated',
-        state: { session_inavalidated: false, role: response.payload.role, buyerInfo: response.payload.buyerInfo }
-      })
-    }
-  }
   UNSAFE_componentWillMount() {
-
-    this.props.validateUserAccessToken(this.checkUserAccessToken)
-    this.props.isFacebookConnected(this.checkFacebookConnected)
     this.props.loadDashboardData()
     if (window.location.hostname.includes('kiboengage.cloudkibo.com')) {
       this.props.loadSubscribersCount({})
     }
     this.props.loadGraphData(0)
     this.props.loadTopPages()
-    this.props.loadMyPagesList()
     this.props.loadSubscriberSummary({ pageId: 'all', days: 'all' })
     this.props.loadSentSeen({ pageId: 'all', days: '30' })
   }
-  checkUserAccessToken(response) {
-    console.log('checkUserAccessToken response', response)
-    if (response.status === 'failed' && response.payload.error &&
-      response.payload.error.code === 190 && this.props.user && this.props.user.platform === 'messenger') {
-      if (this.props.user.role === 'buyer') {
-        this.props.history.push({
-          pathname: '/sessionInvalidated',
-          state: { session_inavalidated: true, role: 'buyer' }
-        })
-      } else {
-        this.props.history.push({
-          pathname: '/sessionInvalidated',
-          state: { session_inavalidated: true, role: this.props.user.role, buyerInfo: response.payload.buyerInfo }
-        })
-      }
-    }
-  }
+
   goToSettings() {
     this.props.history.push({
       pathname: `/settings`,
@@ -677,27 +646,16 @@ class Dashboard extends React.Component {
                   !this.props.isMobile &&
                   <div className='m-form m-form--label-align-right m--margin-bottom-30 col-12'>
                     {
-                      this.props.user.currentPlan.unique_ID === 'plan_A' || this.props.user.currentPlan.unique_ID === 'plan_C'
-                        ? <button className='btn btn-success m-btn m-btn--icon pull-right' onClick={this.exportDashboardInformation}>
-                          <span>
-                            <i className='fa fa-download' />
-                            <span>
-                              Export Records in CSV File
-                    </span>
-                          </span>
-                        </button>
-                        : <button className='btn btn-success m-btn m-btn--icon pull-right' data-toggle="modal" data-target="#upgrade">
-                          <span>
-                            <i className='fa fa-download' />
-                            <span>
-                              Export Records in CSV File
-                    </span>&nbsp;&nbsp;
-                    <span style={{ border: '1px solid #f4516c', padding: '0px 5px', borderRadius: '10px', fontSize: '12px' }}>
-                              <span style={{ color: '#f4516c' }}>PRO</span>
-                            </span>
-                          </span>
-                        </button>
-                    }
+                    this.props.user.plan['csv_exports'] &&
+                    <button className='btn btn-success m-btn m-btn--icon pull-right' onClick={this.exportDashboardInformation}>
+                      <span>
+                        <i className='fa fa-download' />
+                        <span>
+                          Export Records in CSV File
+                      </span>
+                      </span>
+                    </button>
+                  }
                   </div>
                 }
               </div>
@@ -739,9 +697,7 @@ function mapDispatchToProps(dispatch) {
       loadGraphData: loadGraphData,
       loadTopPages: loadTopPages,
       loadSubscriberSummary: loadSubscriberSummary,
-      loadSentSeen: loadSentSeen,
-      validateUserAccessToken,
-      isFacebookConnected
+      loadSentSeen: loadSentSeen
     },
     dispatch)
 }

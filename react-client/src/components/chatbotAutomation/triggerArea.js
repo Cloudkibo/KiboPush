@@ -35,9 +35,11 @@ class TriggerArea extends React.Component {
     if (this.props.allTriggers) {
       if ((actionMeta.action === 'remove-value' || actionMeta.action === 'pop-value')) {
         let allTriggers = this.props.allTriggers
-        const removeIndex = allTriggers.indexOf(actionMeta.removedValue.value)
-        allTriggers.splice(removeIndex, 1)
-        this.props.updateGrandParentState({ allTriggers })
+        if (actionMeta.removedValue) {
+          const removeIndex = allTriggers.indexOf(actionMeta.removedValue.value)
+          allTriggers.splice(removeIndex, 1)
+          this.props.updateGrandParentState({ allTriggers })
+        }
       } else if (actionMeta.action === 'clear') {
         let allTriggers = this.props.allTriggers
         const removedElements = this.state.value.map((item) => item.value)
@@ -104,7 +106,7 @@ class TriggerArea extends React.Component {
     return (
       <div className='row'>
         <div className='col-md-12'>
-          <div style={{ position: 'relative' }}>
+          <div style={{ position: 'relative', marginRight: '20px' }}>
             <span className='m--font-boldest'>Triggers:</span>
             <CreatableSelect
               components={components}
