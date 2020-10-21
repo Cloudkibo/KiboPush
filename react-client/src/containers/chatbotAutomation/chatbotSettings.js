@@ -95,6 +95,7 @@ class ChatbotSettings extends React.Component {
   }
 
   addOption (title, action, uniqueId) {
+    console.log('this.props.addoption', this.props)
     const options = this.state.options
     let option = {
       content_type: 'text',
