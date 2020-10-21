@@ -85,7 +85,7 @@ class Webhook extends React.Component {
   }
 
   showDialog () {
-    this.setState({isShowingModal: true, errorUrl: '', errorToken: ''})
+    this.setState({isShowingModal: true, errorUrl: '', errorToken: '', token: ''})
   }
 
   closeDialog () {
