@@ -500,7 +500,10 @@ class LiveChat extends React.Component {
     if (this.props.user.currentPlan.unique_ID === 'plan_C' || this.props.user.currentPlan.unique_ID === 'plan_D') {
       this.props.loadTeamsList({ pageId: session.pageId._id })
     }
-    this.setState({ activeSession: session })
+    const sessions = this.state.sessions
+    const index = sessions.findIndex((item) => item._id === session._id)
+    sessions[index] = session
+    this.setState({ activeSession: session, sessions })
   }
 
   markSessionsRead(selectedSessions) {
