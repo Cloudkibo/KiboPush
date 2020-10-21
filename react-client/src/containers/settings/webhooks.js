@@ -17,23 +17,11 @@ class Webhook extends React.Component {
       pageSelected: '',
       selectAllChecked: null,
       selectAllCheckedEdit: null,
-      subscriptions: [
-        {'name': 'New Subscriber', selected: false},
-        {'name': 'Chat Message', selected: false},
-        {'name': 'Chatbot Option Selected', selected: false},
-        {'name': 'Session Assignment', selected: false},
-        {'name': 'Checkbox Optin', selected: false},
-      ],
+      subscriptions: [],
       url: '',
       token: '',
       urlEdit: '',
-      subscriptionsEdit: [
-        {'name': 'New Subscriber', selected: false},
-        {'name': 'Chat Message', selected: false},
-        {'name': 'Chatbot Option Selected', selected: false},
-        {'name': 'Session Assignment', selected: false},
-        {'name': 'Checkbox Optin', selected: false}
-      ],
+      subscriptionsEdit: [],
       errorUrl: '',
       errorToken: false,
       pageEdit: '',
@@ -84,6 +72,16 @@ class Webhook extends React.Component {
     }
   }
   componentDidMount () {
+    let data = []
+    window.location.hostname === 'skibochat.cloudkibo.com' || window.location.hostname === 'kibochat.cloudkibo.com'
+    ? data = [{'name': 'New Subscriber', selected: false},
+      {'name': 'Chat Message', selected: false},
+      {'name': 'Chatbot Option Selected', selected: false},
+      {'name': 'Session Assignment', selected: false},
+      {'name': 'Checkbox Optin', selected: false}]
+    : data = [{'name': 'New Subscriber', selected: false},
+      {'name': 'Checkbox Optin', selected: false}]
+    this.setState({subscriptionsEdit: data, subscriptions: data})
   }
 
   showDialog () {
