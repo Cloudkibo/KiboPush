@@ -51,6 +51,7 @@ class SmsChat extends React.Component {
     super(props, context)
     this.state = {
       loading: true,
+      redirected: this.props.location.state && this.props.location.state.module === 'notifications',
       fetchingChat: false,
       loadingChat: true,
       sessionsLoading: false,
@@ -98,11 +99,8 @@ class SmsChat extends React.Component {
     this.backToSessions = this.backToSessions.bind(this)
 
     props.loadTwilioNumbers()
+    props.loadMembersList()
     this.fetchSessions(true, 'none', true)
-    if (props.user.currentPlan.unique_ID === 'plan_C' || props.user.currentPlan.unique_ID === 'plan_D') {
-      props.loadMembersList()
-      props.loadTeamsList({platform: 'sms'})
-    }
     if (props.socketData) {
       props.clearSocketDataSms()
     }
@@ -354,6 +352,9 @@ class SmsChat extends React.Component {
     if (session.is_assigned && session.assigned_to.type === 'team') {
       this.props.fetchTeamAgents(session.assigned_to.id, this.handleTeamAgents)
     }
+    if (this.props.user.currentPlan.unique_ID === 'plan_C' || this.props.user.currentPlan.unique_ID === 'plan_D') {
+      this.props.loadTeamsList({platform: 'sms'})
+    }
     this.setState({activeSession: session})
   }
 
@@ -413,6 +414,7 @@ class SmsChat extends React.Component {
       state.sessions = sessions
       state.sessionsCount = this.state.tabValue === 'open' ? nextProps.openCount : nextProps.closeCount
     }
+    
     if (nextProps.redirectToSession && nextProps.redirectToSession.sessionId) {
       if (nextProps.openSessions && nextProps.closeSessions) {
         nextProps.saveNotificationSessionId({sessionId: null})

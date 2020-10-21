@@ -72,6 +72,7 @@ class LiveChat extends React.Component {
     super(props, context)
     this.state = {
       loading: true,
+      redirected: this.props.location.state && this.props.location.state.module === 'notifications',
       fetchingChat: false,
       loadingChat: true,
       sessionsLoading: false,
@@ -500,7 +501,10 @@ class LiveChat extends React.Component {
     if (this.props.user.currentPlan.unique_ID === 'plan_C' || this.props.user.currentPlan.unique_ID === 'plan_D') {
       this.props.loadTeamsList({ pageId: session.pageId._id })
     }
-    this.setState({ activeSession: session })
+    const sessions = this.state.sessions
+    const index = sessions.findIndex((item) => item._id === session._id)
+    sessions[index] = session
+    this.setState({ activeSession: session, sessions })
   }
 
   markSessionsRead(selectedSessions) {
@@ -792,34 +796,34 @@ class LiveChat extends React.Component {
                   />
                 }
                 {
-                  !this.props.isMobile && this.state.activeSession.constructor === Object && Object.keys(this.state.activeSession).length > 0 && !this.state.showSearch &&
-                  <PROFILE
-                    updateState={this.updateState}
-                    teams={this.props.teams ? this.props.teams : []}
-                    tags={this.state.tags ? this.state.tags : []}
-                    agents={this.props.members ? this.getAgents(this.props.members) : []}
-                    subscriberTags={this.state.subscriberTags}
-                    activeSession={this.state.activeSession}
-                    user={this.props.user}
-                    profilePicError={this.profilePicError}
-                    alertMsg={this.alertMsg}
-                    unSubscribe={this.props.unSubscribe}
-                    customers={this.props.customers}
-                    getCustomers={this.props.getCustomers}
-                    fetchTeamAgents={this.fetchTeamAgents}
-                    assignToTeam={this.props.assignToTeam}
-                    appendSubscriber={this.props.appendSubscriber}
-                    sendNotifications={this.props.sendNotifications}
-                    assignToAgent={this.props.assignToAgent}
-                    assignTags={this.props.assignTags}
-                    unassignTags={this.props.unassignTags}
-                    createTag={this.props.createTag}
-                    customFieldOptions={this.state.customFieldOptions}
-                    setCustomFieldValue={this.saveCustomField}
-                    showTags={true}
-                    showCustomFields={true}
-                    showUnsubscribe={true}
-                  />
+                   !this.props.isMobile && this.state.activeSession.constructor === Object && Object.keys(this.state.activeSession).length > 0 && !this.state.showSearch &&
+                   <PROFILE
+                      updateState={this.updateState}
+                      teams={this.props.teams ? this.props.teams : []}
+                      tags={this.state.tags ? this.state.tags : []}
+                      agents={this.props.members ? this.getAgents(this.props.members) : []}
+                      subscriberTags={this.state.subscriberTags}
+                      activeSession={this.state.activeSession}
+                      user={this.props.user}
+                      profilePicError={this.profilePicError}
+                      alertMsg={this.alertMsg}
+                      unSubscribe={this.props.unSubscribe}
+                      customers={this.props.customers}
+                      getCustomers={this.props.getCustomers}
+                      fetchTeamAgents={this.fetchTeamAgents}
+                      assignToTeam={this.props.assignToTeam}
+                      appendSubscriber={this.props.appendSubscriber}
+                      sendNotifications={this.props.sendNotifications}
+                      assignToAgent={this.props.assignToAgent}
+                      assignTags={this.props.assignTags}
+                      unassignTags={this.props.unassignTags}
+                      createTag={this.props.createTag}
+                      customFieldOptions={this.state.customFieldOptions}
+                      setCustomFieldValue={this.saveCustomField}
+                      showTags={true}
+                      showCustomFields={true}
+                      showUnsubscribe={(this.props.user && this.props.user.plan['unsubscribe_subscribers'] && this.props.user.permissions['unsubsubscribe_subscribers'])}
+                    />
                 }
                 {
                   !this.props.isMobile && Object.keys(this.state.activeSession).length > 0 && this.state.activeSession.constructor === Object && this.state.showSearch &&
@@ -883,7 +887,6 @@ function mapStateToProps(state) {
     superUser: (state.basicInfo.superUser),
     redirectToSession: state.liveChat.redirectToSession,
     socketMessageStatus: state.liveChat.socketMessageStatus
-
   }
 }
 

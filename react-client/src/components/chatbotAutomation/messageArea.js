@@ -8,6 +8,9 @@ import MOREOPTIONS from './moreOptions'
 import MODAL from '../extras/modal'
 import TRIGGERAREA from './triggerArea'
 import MESSAGEBLOCKUSAGE from './messageBlockUsage'
+import COMPONENTSELECTION from './componentSelection'
+import CAROUSELAREA from './carouselArea'
+import CONFIRMATIONMODAL from '../extras/confirmationModal'
 
 const MessengerPlugin = require('react-messenger-plugin').default
 
@@ -20,7 +23,9 @@ class MessageArea extends React.Component {
       attachment: {},
       quickReplies: [],
       showTestContent: false,
-      disableNext: false
+      disableNext: false,
+      selectedComponent: '',
+      carousel: {}
     }
     this.onNext = this.onNext.bind(this)
     this.preparePayload = this.preparePayload.bind(this)
@@ -42,6 +47,9 @@ class MessageArea extends React.Component {
     this.renameBlock = this.renameBlock.bind(this)
     this.checkEmptyBlock = this.checkEmptyBlock.bind(this)
     this.isOrphanBlock = this.isOrphanBlock.bind(this)
+    this.onSelectComponent = this.onSelectComponent.bind(this)
+    this.onRemoveComponent = this.onRemoveComponent.bind(this)
+    this.getRemoveModalContent = this.getRemoveModalContent.bind(this)
   }
 
   componentDidMount () {
@@ -412,8 +420,50 @@ class MessageArea extends React.Component {
     }
   }
 
+  onSelectComponent (component) {
+    this.setState({selectedComponent: component})
+  }
+
+  getRemoveModalContent () {
+    switch (this.state.selectedComponent) {
+      case 'attachment': {
+        return {
+          title: 'Remove Attachment',
+          description: 'Are you sure you want to remove this attachment? You will lose any data you have inputted.'
+        }
+      }
+      case 'carousel': {
+        return {
+          title: 'Remove Carousel',
+          description: 'Are you sure you want to remove this carousel? You will lose any data you have inputted.'
+        }
+      }
+      case 'linkCarousel': {
+        return {
+          title: 'Remove Link Carousel',
+          description: 'Are you sure you want to remove this link carousel? You will lose any data you have inputted.'
+        }
+      }
+      default: {
+        return {
+          title: 'Remove Component',
+          description: 'Are you sure you want to remove this component? You will lose any data you have inputted.'
+        }
+      }
+    }
+  }
+
+  onRemoveComponent () {
+    if (this.state.selectedComponent === 'attachment') {
+      this.setState({selectedComponent: '', attachment: {}})
+    } else if (this.state.selectedComponent === 'carousel' || this.state.selectedComponent === 'linkCarousel') {
+      this.setState({selectedComponent: '', carousel: {}})
+    }
+  }
+
   render () {
     console.log('this.props.block', this.props.block)
+    const removeModalContent = this.getRemoveModalContent()
     return (
       <div style={{border: '1px solid #ccc', backgroundColor: 'white', padding: '0px'}} className='col-md-9'>
         <div style={{margin: '0px'}} className='m-portlet m-portlet-mobile'>
@@ -448,16 +498,43 @@ class MessageArea extends React.Component {
               updateParentState={this.updateState}
             />
             <div className='m--space-10' />
-            <ATTACHMENTAREA
-              attachment={this.state.attachment}
-              alertMsg={this.props.alertMsg}
-              chatbot={this.props.chatbot}
-              uploadAttachment={this.props.uploadAttachment}
-              handleAttachment={this.props.handleAttachment}
-              updateParentState={this.updateState}
-              checkWhitelistedDomains={this.props.checkWhitelistedDomains}
-              toggleWhitelistModal={this.props.toggleWhitelistModal}
-            />
+            {
+              !this.state.selectedComponent &&
+              <>
+                <COMPONENTSELECTION onSelectComponent={this.onSelectComponent}/>
+                <div className='m--space-10' />
+              </>
+            }
+            {
+              this.state.selectedComponent === 'attachment' &&
+              <ATTACHMENTAREA
+                attachment={this.state.attachment}
+                alertMsg={this.props.alertMsg}
+                chatbot={this.props.chatbot}
+                uploadAttachment={this.props.uploadAttachment}
+                handleAttachment={this.props.handleAttachment}
+                updateParentState={this.updateState}
+                checkWhitelistedDomains={this.props.checkWhitelistedDomains}
+                toggleWhitelistModal={this.props.toggleWhitelistModal}
+                onRemove={() => this.removeComponentTrigger.click()}
+              />
+            }
+            {
+              this.state.selectedComponent === 'carousel' &&
+              <CAROUSELAREA
+                title="Carousel:"
+                buttonTitle="Edit Carousel"
+                onRemove={() => this.removeComponentTrigger.click()}
+              />
+            }
+            {
+              this.state.selectedComponent === 'linkCarousel' &&
+              <CAROUSELAREA
+                title="Link Carousel:"
+                buttonTitle="Edit Link Carousel"
+                onRemove={() => this.removeComponentTrigger.click()}
+              />
+            }
             <div className='m--space-10' />
             {
               (this.state.text || Object.keys(this.state.attachment).length > 0) &&
@@ -495,6 +572,13 @@ class MessageArea extends React.Component {
               title='Test Chatbot'
               content={this.getTestModalContent()}
               onClose={this.toggleTestModalContent}
+            />
+            <button style={{display: 'none'}} ref={(el) => this.removeComponentTrigger = el} data-toggle='modal' data-target='#_remove_component' />
+            <CONFIRMATIONMODAL
+              id='_remove_component'
+              title={removeModalContent.title}
+              description={removeModalContent.description}
+              onConfirm={this.onRemoveComponent}
             />
           </div>
         </div>
