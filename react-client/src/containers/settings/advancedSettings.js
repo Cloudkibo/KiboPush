@@ -1,6 +1,6 @@
 /* eslint-disable no-useless-constructor */
 import React from 'react'
-import { getAdvancedSettings, updateAdvancedSettings} from '../../redux/actions/settings.actions'
+import { getAdvancedSettings, updateAdvancedSettings } from '../../redux/actions/settings.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import AlertContainer from 'react-alert'
@@ -9,9 +9,11 @@ class AdvancedSettings extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      saveAutomationMessages: false
+      saveAutomationMessages: false,
+      hideChatSessions: false
     }
     this.onChangeSaveSetting = this.onChangeSaveSetting.bind(this)
+    this.onChangeChatSessionsSwitch = this.onChangeChatSessionsSwitch.bind(this)
 
     props.getAdvancedSettings()
   }
@@ -26,10 +28,21 @@ class AdvancedSettings extends React.Component {
     this.props.updateAdvancedSettings(data, advancedSettings, this.msg)
   }
 
+  onChangeChatSessionsSwitch (e) {
+    const data = {
+      hideChatSessions: e.target.checked
+    }
+    let advancedSettings = this.props.advancedSettings
+    advancedSettings.hideChatSessions = e.target.checked
+    this.setState({hideChatSessions: e.target.checked})
+    this.props.updateAdvancedSettings(data, advancedSettings, this.msg)
+  }
+
   UNSAFE_componentWillReceiveProps (nextProps) {
     if (nextProps.advancedSettings) {
       this.setState({
-        saveAutomationMessages: nextProps.advancedSettings.saveAutomationMessages
+        saveAutomationMessages: nextProps.advancedSettings.saveAutomationMessages,
+        hideChatSessions: nextProps.advancedSettings.hideChatSessions
       })
     }
   }
@@ -71,6 +84,21 @@ class AdvancedSettings extends React.Component {
                         <span className='m-switch m-switch--outline m-switch--icon m-switch--success'>
                           <label>
                             <input type='checkbox' data-switch='true' checked={this.state.saveAutomationMessages} onChange={(e) => {this.onChangeSaveSetting(e)}} />
+                            <span></span>
+                          </label>
+                        </span>
+                      </div>
+                    </div>
+                  </span>
+                  <span className='m-widget4__sub'>
+                    <div className='m-form__group form-group row'>
+                      <span className='col-9 col-form-label'>
+                        Hide chat sessions where subscriber did not send any chat message and just initiated session.
+                      </span>
+                      <div className='col-3'>
+                        <span className='m-switch m-switch--outline m-switch--icon m-switch--success'>
+                          <label>
+                            <input type='checkbox' data-switch='true' checked={this.state.hideChatSessions} onChange={(e) => {this.onChangeChatSessionsSwitch(e)}} />
                             <span></span>
                           </label>
                         </span>
