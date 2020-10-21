@@ -21,6 +21,7 @@ class CarouselArea extends React.Component {
                     type="button"
                     style={{border: '1px solid #36a3f7'}}
                     className="btn m-btn--pill btn-outline-info btn-sm"
+                    onClick={this.props.onClick}
                 >
                     {this.props.buttonTitle}
                 </button>

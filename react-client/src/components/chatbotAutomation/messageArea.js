@@ -11,6 +11,7 @@ import MESSAGEBLOCKUSAGE from './messageBlockUsage'
 import COMPONENTSELECTION from './componentSelection'
 import CAROUSELAREA from './carouselArea'
 import CONFIRMATIONMODAL from '../extras/confirmationModal'
+import CAROUSELMODAL from './carouselModal'
 
 const MessengerPlugin = require('react-messenger-plugin').default
 
@@ -25,7 +26,7 @@ class MessageArea extends React.Component {
       showTestContent: false,
       disableNext: false,
       selectedComponent: '',
-      carousel: {}
+      carouselCards: null
     }
     this.onNext = this.onNext.bind(this)
     this.preparePayload = this.preparePayload.bind(this)
@@ -166,6 +167,12 @@ class MessageArea extends React.Component {
           fileurl: state.attachment.fileurl
         })
       }
+    }
+    if (this.state.carouselCards) {
+      payload.push({
+        cards: this.state.carouselCards,
+        componentType: 'gallery'
+      })
     }
     if (payload.length > 0) {
       payload[payload.length - 1].quickReplies = state.quickReplies
@@ -453,11 +460,19 @@ class MessageArea extends React.Component {
     }
   }
 
-  onRemoveComponent () {
+  onRemoveComponent (force) {
     if (this.state.selectedComponent === 'attachment') {
-      this.setState({selectedComponent: '', attachment: {}})
+      if (!force && Object.keys(this.state.attachment).length > 0) {
+        this.removeComponentTrigger.click()
+      } else {
+        this.setState({selectedComponent: '', attachment: {}})
+      }
     } else if (this.state.selectedComponent === 'carousel' || this.state.selectedComponent === 'linkCarousel') {
-      this.setState({selectedComponent: '', carousel: {}})
+      if (!force && this.state.carouselCards) {
+        this.removeComponentTrigger.click()
+      } else {
+        this.setState({selectedComponent: '', carouselCards: null})
+      }
     }
   }
 
@@ -516,7 +531,7 @@ class MessageArea extends React.Component {
                 updateParentState={this.updateState}
                 checkWhitelistedDomains={this.props.checkWhitelistedDomains}
                 toggleWhitelistModal={this.props.toggleWhitelistModal}
-                onRemove={() => this.removeComponentTrigger.click()}
+                onRemove={() => this.onRemoveComponent(false)}
               />
             }
             {
@@ -524,7 +539,8 @@ class MessageArea extends React.Component {
               <CAROUSELAREA
                 title="Carousel:"
                 buttonTitle="Edit Carousel"
-                onRemove={() => this.removeComponentTrigger.click()}
+                onRemove={() => this.onRemoveComponent(false)}
+                onClick={() => this.showCarouselModalTrigger.click()}
               />
             }
             {
@@ -532,7 +548,7 @@ class MessageArea extends React.Component {
               <CAROUSELAREA
                 title="Link Carousel:"
                 buttonTitle="Edit Link Carousel"
-                onRemove={() => this.removeComponentTrigger.click()}
+                onRemove={() => this.onRemoveComponent(false)}
               />
             }
             <div className='m--space-10' />
@@ -578,8 +594,18 @@ class MessageArea extends React.Component {
               id='_remove_component'
               title={removeModalContent.title}
               description={removeModalContent.description}
-              onConfirm={this.onRemoveComponent}
+              onConfirm={() => this.onRemoveComponent(true)}
             />
+
+            <button style={{display: 'none'}} ref={(el) => this.showCarouselModalTrigger = el} data-toggle='modal' data-target='#_carousel_modal' />
+            <CAROUSELMODAL
+                id = '_carousel_modal'
+                title = 'Edit Carousel'
+                chatbot={this.props.chatbot} 
+                uploadAttachment={this.props.uploadAttachment}
+                updateParentState={this.updateState}
+                cards={this.state.carouselCards}
+              />
           </div>
         </div>
       </div>
