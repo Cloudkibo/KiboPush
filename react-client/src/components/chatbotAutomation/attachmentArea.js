@@ -289,6 +289,14 @@ class AttachmentArea extends React.Component {
           <div className="form-group m-form__group">
             <span className='m--font-boldest'>Attachment:</span>
               <COMPONENTCONTAINER onRemove={this.props.onRemove}>
+                <input
+                  ref='_upload_attachment_in_chatbot'
+                  style={{display: 'none'}}
+                  type='file'
+                  accept='image/*, video/*, audio/*, application/*, text/*'
+                  onChange={this.onFileChange}
+                  onClick={(e) => {e.target.value = ''}}
+                />
                 <div className="input-group">
                   <input
                     style={{cursor: this.state.isUploaded && 'not-allowed'}}
