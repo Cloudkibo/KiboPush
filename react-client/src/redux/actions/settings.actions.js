@@ -394,32 +394,27 @@ export function loadWebhook() {
       })
   }
 }
-export function createEndpoint(data, msg) {
+export function createEndpoint(data, cb) {
   console.log('data for createEndpoint', data)
   return (dispatch) => {
     callApi('webhooks/create', 'post', data)
       .then(res => {
+        if (cb) cb(res)
         if (res.status === 'success') {
-          dispatch(showWebhookResponse('success'))
           dispatch(loadWebhook())
-        } else {
-          //  dispatch(showWebhookResponse(res.description))
-          msg.error(res.description)
         }
       })
   }
 }
-export function editEndpoint(data, msg) {
+export function editEndpoint(data, cb) {
   console.log('data for editEndpoint', data)
   return (dispatch) => {
     callApi('webhooks/edit', 'post', data)
       .then(res => {
+        if (cb) cb(res)
         if (res.status === 'success') {
-          dispatch(showWebhookResponse('success'))
+          // dispatch(showWebhookResponse('success'))
           dispatch(loadWebhook())
-        } else {
-          //  dispatch(showWebhookResponse(res.description))
-          msg.error(res.description)
         }
       })
   }
@@ -438,7 +433,7 @@ export function enabled(data, msg) {
           }
           dispatch(loadWebhook())
         } else {
-           msg.error(res.description)
+           msg.error(res.description || res.payload)
         }
       })
   }

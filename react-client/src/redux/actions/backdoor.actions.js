@@ -44,7 +44,9 @@ export function loadUsersList (data) {
   return (dispatch) => {
     callApi('backdoor/getAllUsers', 'post', data).then(res => {
       console.log('response from getAllUsers', res)
-      dispatch(updateUsersList(res.payload, data))
+      if (res.status === 'success') {
+        dispatch(updateUsersList(res.payload, data))
+      }
     })
   }
 }

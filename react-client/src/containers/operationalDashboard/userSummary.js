@@ -62,7 +62,7 @@ class UserSummary extends React.Component {
           <div className='m-portlet__body'>
           { (this.props.userSummary)
             ? <div className='row'>
-              <div className='col-md-6'>
+              <div className='col-md-3'>
                 <IconStack
                   icon='fa fa-users'
                   title={this.props.userSummary.subscribersCount}
@@ -71,13 +71,31 @@ class UserSummary extends React.Component {
                   id='subscribers'
                 />
               </div>
-              <div className='col-md-6'>
+              <div className='col-md-3'>
                 <IconStack
                   icon='fa fa-send-o'
                   title={this.props.userSummary.messagesCount}
-                  subtitle='Messages Count'
+                  subtitle='Messages Sent From KiboPush'
                   iconStyle='warning'
                   id='messagesSent'
+                />
+              </div>
+              <div className='col-md-3'>
+                <IconStack
+                  icon='fa fa-send-o'
+                  title={this.props.userSummary.facebookInboxMessagesCount}
+                  subtitle='Messages Sent From Facebook Inbox'
+                  iconStyle='success'
+                  id='facebookMessagesCount'
+                />
+              </div>
+              <div className='col-md-3'>
+                <IconStack
+                  icon='fa fa-envelope'
+                  title={this.props.userSummary.facebookMessageReceived}
+                  subtitle='Messages Recieved From Facebook'
+                  iconStyle='success'
+                  id='facebookMessagesCount'
                 />
               </div>
             </div>

@@ -13,6 +13,7 @@ import { clearSocketData } from './redux/actions/socket.actions'
 import { joinRoom } from './utility/socketio'
 import { handleSocketEvent } from './handleSocketEvent'
 import Notification from 'react-web-notification'
+import { getCurrentProduct } from './utility/utils'
 import AlertContainer from 'react-alert'
 import HEADER from './components/header/header'
 import { getLandingPage } from './utility/utils'
@@ -171,7 +172,6 @@ class App extends Component {
   }
 
   componentDidMount () {
-   
     this.unlisten = this.props.history.listen(location => {
       this.setPathAndHeaderProps(location.pathname)
       if (!this.isWizardOrLogin(location.pathname)) {
