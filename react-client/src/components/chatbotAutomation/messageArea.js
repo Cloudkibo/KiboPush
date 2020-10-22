@@ -61,7 +61,7 @@ class MessageArea extends React.Component {
     this.props.registerSocketAction({
       event: 'chatbot.test.message',
       action: function (data) {
-        comp.props.alertMsg.success('Sent successfully on messenger')
+        comp.props.alertMsg.success('Sent successfully on messenger. Test session is activated on unpublished bot for next 1 hour.')
         comp.refs._open_test_chatbot_modal.click()
         comp.toggleTestModalContent()
       }
