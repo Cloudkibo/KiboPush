@@ -549,6 +549,28 @@ class ConfigureChatbot extends React.Component {
                 content={this.getTestModalContent()}
                 onClose={this.toggleTestModalContent}
               />
+              <PROGRESS progress={`${this.state.progress}%`} />
+              <BACKBUTTON
+                onBack={this.onBack}
+                position='bottom-left'
+              />
+              <HELPWIDGET
+                documentation={{ visibility: true, link: 'https://kibopush.com/chatbot-automation/' }}
+                videoTutorial={{ visibility: true, videoId: '6v1bnraz6CQ' }}
+              />
+              <MODAL
+                zIndex={9999}
+                id='_cb_whitelist_domains'
+                title='Manage Whitelist Domains'
+                content={this.getWhitelistModalContent()}
+              />
+              <button ref='_open_test_chatbot_modal' style={{ display: 'none' }} data-toggle='modal' data-target='#_test_chatbot' />
+              <MODAL
+                id='_test_chatbot'
+                title='Test Chatbot'
+                content={this.getTestModalContent()}
+                onClose={this.toggleTestModalContent}
+              />
             </div>
         }
         {

@@ -16,7 +16,7 @@ class ConfirmationModal extends React.Component {
               <h5 className="modal-title" id="exampleModalLabel">
                 {this.props.title}
               </h5>
-              <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+              <button id={`close${this.props.id}`} style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">
                   &times;
                 </span>
