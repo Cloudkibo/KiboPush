@@ -209,7 +209,6 @@ class App extends Component {
   }
 
   componentDidMount() {
-
     this.unlisten = this.props.history.listen(location => {
       this.setPathAndHeaderProps(location.pathname)
       if (!this.isWizardOrLogin(location.pathname)) {
