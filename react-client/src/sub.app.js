@@ -109,37 +109,6 @@ class App extends Component {
     }
   }
 
-  callbackUserDetails (payload) {
-    this.props.loadMyPagesListNew({
-      last_id: 'none',
-      number_of_records: 10,
-      first_page: 'first',
-      filter: false,
-      filter_criteria: { search_value: '' }
-    }, this.redirectToConnectPage)
-    this.props.validateUserAccessToken(this.checkUserAccessToken)
-    this.props.isFacebookConnected(this.checkFacebookConnected)
-
-    if (this.props.history.location.pathname.toLowerCase() === '/demossa') {
-      this.handleDemoSSAPage()
-    } else if (this.props.history.location.pathname.toLowerCase() !== '/integrations/zoom') {
-      if (
-        !this.props.history.location.pathname.startsWith('/liveChat') &&
-        getCurrentProduct() === 'KiboChat'
-      ) {
-        this.props.history.push({
-          pathname: getLandingPage(payload.user.platform),
-          state: {obj: {_id: 1}}
-        })
-      } else if (getCurrentProduct() === 'KiboEngage') {
-        this.props.history.push({
-          pathname: '/',
-          state: {obj: {_id: 1}}
-        })
-      }
-    }
-  }
-
   checkFacebookConnected(response) {
     if (this.props.user && this.props.user.role !== 'buyer' && !response.payload.buyerInfo.connectFacebook) {
       this.props.history.push({
