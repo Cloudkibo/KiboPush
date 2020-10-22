@@ -109,8 +109,8 @@ class Chat extends React.Component {
 
   render() {
     return (
-      <div id='_chat_area' style={{padding: '0px', border: '1px solid #F2F3F8', overflow: 'hidden', marginBottom: '0px'}} className='col-xl-5'>
-        <div style={{display: 'flex', flexDirection: 'column', height: '80vh', overflow: 'hidden'}} className='m-portlet'>
+      <div id='_chat_area' style={{padding: '0px', border: '1px solid #F2F3F8', height: '87vh', overflow: 'hidden', marginBottom: '0px'}} className='col-xl-5'>
+        <div style={{display: 'flex', flexDirection: 'column', height: '87vh', overflow: 'hidden'}} className='m-portlet'>
         {
           !this.props.isMobile &&
           <ReactTooltip
@@ -187,7 +187,6 @@ class Chat extends React.Component {
           ? <div
             className='m-messenger'
             style={{
-              position: this.props.isMobile ? '' : 'absolute',
               bottom: 0,
               borderTop: '1px solid #ebedf2',
               width: '100%',
@@ -208,7 +207,6 @@ class Chat extends React.Component {
           ? <div
             className='m-messenger'
             style={{
-              position: this.props.isMobile ? '' : 'absolute',
               bottom: 0,
               borderTop: '1px solid #ebedf2',
               width: '100%',

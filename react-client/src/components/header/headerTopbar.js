@@ -60,12 +60,16 @@ class HeaderTopbar extends React.Component {
             }
             {
               showAppChooser &&
-              <APPCHOOSER />
+              <APPCHOOSER 
+                currentEnvironment={this.props.currentEnvironment}
+              />
             }
             <USERPROFILE
               updatePicture={this.props.updatePicture}
               user={this.props.user}
               logout={this.logout}
+              showDisconnectFacebook={this.props.user && this.props.user.role === 'buyer' && this.props.user.platform === 'messenger'}
+              showSetupUsingWizard={this.props.user && this.props.user.role !== 'agent' && this.props.user.platform === 'messenger'}
             />
             {
               showDocumentation &&
@@ -86,6 +90,7 @@ HeaderTopbar.propTypes = {
   'showAppChooser': PropTypes.bool.isRequired,
   'showDocumentation': PropTypes.bool.isRequired,
   'user': PropTypes.object.isRequired,
+  'currentEnvironment': PropTypes.object.isRequired,
   'userView': PropTypes.bool.isRequired,
   'notifications': PropTypes.array.isRequired,
   'seenNotifications': PropTypes.array.isRequired,

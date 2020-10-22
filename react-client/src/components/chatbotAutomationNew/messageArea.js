@@ -209,10 +209,18 @@ class MessageArea extends React.Component {
   }
 
   onDelete () {
-    let blockUniqueIds = this.props.sidebarItems.filter((item) => item.parentId && item.parentId.toString() === this.props.block.uniqueId.toString()).map((item) => item.id.toString())
-    blockUniqueIds = [...blockUniqueIds, this.props.block.uniqueId.toString()]
+    let blockUniqueIds = [this.props.block.uniqueId.toString()]
+    let childBlocks = this.props.sidebarItems.filter((item) => blockUniqueIds.indexOf(item.id.toString()) === -1)
+    /* eslint-disable */
+    do {
+      let ids = childBlocks
+        .filter((item) => blockUniqueIds.includes(item.parentId))
+        .map((item) => item.id)
+      blockUniqueIds = [...blockUniqueIds, ...ids]
+      childBlocks = this.props.sidebarItems.filter((item) => blockUniqueIds.indexOf(item.id) === -1)
+    } while (childBlocks.filter((item) => blockUniqueIds.includes(item.parentId)).length > 0)
+    /* eslint-enable */
     const blockIds = this.props.blocks.filter((item) => item._id && blockUniqueIds.includes(item.uniqueId)).map((item) => item._id)
-    console.log('blockIds', blockIds)
     if (blockIds.includes('welcome-id') || blockIds.length === 0) {
       this.afterDelete({status: 'success'}, blockUniqueIds)
     } else {
@@ -224,7 +232,7 @@ class MessageArea extends React.Component {
     if (res.status === 'success') {
       this.props.alertMsg.success('Message block deleted successfully')
       let blocks = this.props.blocks.filter((item) => !blockUniqueIds.includes(item.uniqueId.toString()))
-      let sidebarItems = this.props.sidebarItems.filter((item) => !blockUniqueIds.includes(item.id))
+      let sidebarItems = this.props.sidebarItems.filter((item) => !blockUniqueIds.includes(item.id.toString()))
       let currentBlock = {}
       if (blocks.length === 0) {
         const id = new Date().getTime()
@@ -292,6 +300,7 @@ class MessageArea extends React.Component {
   }
 
   onAddChild (title) {
+    console.log('add child', this.props)
     const childTitles = this.state.quickReplies.map((item) => item.title)
     if (childTitles.includes(title)) {
       this.props.alertMsg.error('You can not create two children with same name.')
@@ -317,7 +326,7 @@ class MessageArea extends React.Component {
       const option = {
         content_type: 'text',
         title,
-        payload: JSON.stringify([{action: '_chatbot', blockUniqueId: `${id}`, payloadAction: 'create'}])
+        payload: JSON.stringify([{action: '_chatbot', blockUniqueId: `${id}`, payloadAction: 'create', parentBlockTitle: this.props.block.title}])
       }
       options.push(option)
       if (currentBlock.payload.length > 0) {
@@ -353,11 +362,11 @@ class MessageArea extends React.Component {
       quickReplies.push({
         content_type: 'text',
         title,
-        payload: JSON.stringify([{action: '_chatbot', blockUniqueId: uniqueId}])
+        payload: JSON.stringify([{action: '_chatbot', blockUniqueId: uniqueId, parentBlockTitle: this.props.block.title}])
       })
 
       const currentBlock = this.props.block
-      
+
       if (currentBlock.payload.length > 0) {
         currentBlock.payload[currentBlock.payload.length - 1].quickReplies = quickReplies
       } else {
@@ -413,7 +422,6 @@ class MessageArea extends React.Component {
   }
 
   render () {
-    console.log('this.props.block', this.props.block)
     return (
       <div style={{border: '1px solid #ccc', backgroundColor: 'white', padding: '0px'}} className='col-md-9'>
         <div style={{margin: '0px'}} className='m-portlet m-portlet-mobile'>

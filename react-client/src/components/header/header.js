@@ -11,17 +11,23 @@ import {
   updatePicture,
   updateShowIntegrations,
   disconnectFacebook,
-  logout
+  logout,
+  saveEnvironment
 } from '../../redux/actions/basicinfo.actions'
 import {
   setUsersView
 } from '../../redux/actions/backdoor.actions'
+import {
+  saveNotificationSessionId
+} from '../../redux/actions/livechat.actions'
 import { fetchNotifications, markRead } from '../../redux/actions/notifications.actions'
 import AlertContainer from 'react-alert'
+import { getLandingPage } from '../../utility/utils'
 
 // Components
 import HEADERMENU from './headerMenu'
 import HEADERTOPBAR from './headerTopbar'
+import cookie from 'react-cookie'
 
 // styles
 const darkSkinStyle = {
@@ -52,13 +58,21 @@ class Header extends React.Component {
     this.goToSettings = this.goToSettings.bind(this)
     this.logout = this.logout.bind(this)
     this.isPlatformConnected = this.isPlatformConnected.bind(this)
+    this.handleChangePlatform = this.handleChangePlatform.bind(this)
 
     props.fetchNotifications()
+  }
+  handleChangePlatform (data) {
+    this.props.fetchNotifications()
+    this.redirectToDashboard(data)
   }
 
   componentDidMount () {
     if (this.props.user) {
       this.setPlatform(this.props.user)
+    }
+    if (cookie.load('environment')) {
+      this.props.saveEnvironment(cookie.load('environment'))
     }
   }
 
@@ -90,8 +104,7 @@ class Header extends React.Component {
     } else if (!isPlatformConnected) {
       this.props.alertMsg.error(`${value} platform is not configured for your account. Please contact your account buyer.`)
     } else {
-      this.redirectToDashboard(value)
-      this.props.updatePlatform({ platform: value }, this.props.fetchNotifications)
+      this.props.updatePlatform({ platform: value }, this.handleChangePlatform)
     }
   }
 
@@ -138,19 +151,20 @@ class Header extends React.Component {
   }
 
   redirectToDashboard (value) {
+    debugger
     if (value === 'sms') {
       this.props.history.push({
-        pathname: '/SmsDashboard',
+        pathname: getLandingPage(value),
         state: 'sms'
       })
     } else if (value === 'whatsApp') {
       this.props.history.push({
-        pathname: '/WhatsAppDashboard',
+        pathname: getLandingPage(value),
         state: 'whatsApp'
       })
     } else if (value === 'messenger') {
       this.props.history.push({
-        pathname: '/messengerDashboard',
+        pathname: getLandingPage(value),
         state: 'messenger'
       })
     }
@@ -190,18 +204,18 @@ class Header extends React.Component {
       if (this.props.user.platform === 'messenger') {
         this.props.history.push({
           pathname: `/liveChat`,
-          state: { id: id }
         })
+        this.props.saveNotificationSessionId({sessionId: id})
       } else if (this.props.user.platform === 'whatsApp') {
         this.props.history.push({
           pathname: `/whatsAppChat`,
-          state: { id: id }
         })
+        this.props.saveNotificationSessionId({sessionId: id})
       } else if (this.props.user.platform === 'sms') {
         this.props.history.push({
-          pathname: `/smsChat`,
-          state: { id: id }
+          pathname: `/smsChat`
         })
+        this.props.saveNotificationSessionId({sessionId: id})
       }
     }
   }
@@ -357,6 +371,7 @@ class Header extends React.Component {
                 updatePicture={this.props.updatePicture}
                 logout={this.props.logout}
                 setUsersView={this.props.setUsersView}
+                currentEnvironment= {this.props.currentEnvironment}
               />
             </div>
           </div>
@@ -425,7 +440,8 @@ function mapStateToProps(state) {
     userView: (state.backdoorInfo.userView),
     notifications: (state.notificationsInfo.notifications),
     subscribers: (state.subscribersInfo.subscribers),
-    otherPages: (state.pagesInfo.otherPages)
+    otherPages: (state.pagesInfo.otherPages),
+    currentEnvironment: (state.basicInfo.currentEnvironment)
   }
 }
 
@@ -439,7 +455,9 @@ function mapDispatchToProps(dispatch) {
     updateShowIntegrations,
     disconnectFacebook,
     logout,
-    setUsersView
+    saveEnvironment,
+    setUsersView,
+    saveNotificationSessionId
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Header)

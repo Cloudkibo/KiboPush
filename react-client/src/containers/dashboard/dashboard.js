@@ -28,7 +28,6 @@ import { RingLoader } from 'halogenium'
 //  import GettingStarted from './gettingStarted'
 import { registerAction } from '../../utility/socketio'
 import { readShopifyInstallRequest } from '../../utility/utils'
-import { validateUserAccessToken, isFacebookConnected } from '../../redux/actions/basicinfo.actions'
 // import Reports from './reports'
 // import TopPages from './topPages'
 import moment from 'moment'
@@ -65,13 +64,11 @@ class Dashboard extends React.Component {
     this.hideDropDown = this.hideDropDown.bind(this)
     this.changePage = this.changePage.bind(this)
     this.goToSettings = this.goToSettings.bind(this)
-    this.checkUserAccessToken = this.checkUserAccessToken.bind(this)
     this.changeDays = this.changeDays.bind(this)
     this.onKeyDown = this.onKeyDown.bind(this)
     this.openVideoTutorial = this.openVideoTutorial.bind(this)
     this.getNewsPages = this.getNewsPages.bind(this)
     this.handlePermissions = this.handlePermissions.bind(this)
-    this.checkFacebookConnected = this.checkFacebookConnected.bind(this)
     if (window.location.hostname.includes('kiboengage.cloudkibo.com')) {
       this.props.checkSubscriptionPermissions(this.handlePermissions)
     }
@@ -95,45 +92,17 @@ class Dashboard extends React.Component {
     this.refs.videoDashboard.click()
   }
 
-  checkFacebookConnected(response) {
-    if (this.props.user && this.props.user.role !== 'buyer' && !response.payload.buyerInfo.connectFacebook) {
-      this.props.history.push({
-        pathname: '/sessionInvalidated',
-        state: { session_inavalidated: false, role: response.payload.role, buyerInfo: response.payload.buyerInfo }
-      })
-    }
-  }
   UNSAFE_componentWillMount() {
-
-    this.props.validateUserAccessToken(this.checkUserAccessToken)
-    this.props.isFacebookConnected(this.checkFacebookConnected)
     this.props.loadDashboardData()
     if (window.location.hostname.includes('kiboengage.cloudkibo.com')) {
       this.props.loadSubscribersCount({})
     }
     this.props.loadGraphData(0)
     this.props.loadTopPages()
-    this.props.loadMyPagesList()
     this.props.loadSubscriberSummary({ pageId: 'all', days: 'all' })
     this.props.loadSentSeen({ pageId: 'all', days: '30' })
   }
-  checkUserAccessToken(response) {
-    console.log('checkUserAccessToken response', response)
-    if (response.status === 'failed' && response.payload.error &&
-      response.payload.error.code === 190 && this.props.user && this.props.user.platform === 'messenger') {
-      if (this.props.user.role === 'buyer') {
-        this.props.history.push({
-          pathname: '/sessionInvalidated',
-          state: { session_inavalidated: true, role: 'buyer' }
-        })
-      } else {
-        this.props.history.push({
-          pathname: '/sessionInvalidated',
-          state: { session_inavalidated: true, role: this.props.user.role, buyerInfo: response.payload.buyerInfo }
-        })
-      }
-    }
-  }
+
   goToSettings() {
     this.props.history.push({
       pathname: `/settings`,
@@ -739,9 +708,7 @@ function mapDispatchToProps(dispatch) {
       loadGraphData: loadGraphData,
       loadTopPages: loadTopPages,
       loadSubscriberSummary: loadSubscriberSummary,
-      loadSentSeen: loadSentSeen,
-      validateUserAccessToken,
-      isFacebookConnected
+      loadSentSeen: loadSentSeen
     },
     dispatch)
 }

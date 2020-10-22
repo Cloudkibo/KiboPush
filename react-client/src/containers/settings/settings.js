@@ -25,11 +25,11 @@ import AdvancedSetting from './advancedSettings'
 import CannedResponses from './cannedResponses/cannedResponses'
 import ZoomIntegration from './zoomIntegration'
 import Notifications from './notifications'
-import ShopifyIntegration from './shopifyIntegration'
+import CommerceIntegration from './commerceIntegration'
 import NotificationSettings from './notificationSettings'
 
 class Settings extends React.Component {
-  constructor (props, context) {
+  constructor(props, context) {
     super(props, context)
     this.state = {
       type: 'password',
@@ -65,7 +65,7 @@ class Settings extends React.Component {
     this.setConfiguration = this.setConfiguration.bind(this)
     this.setIntegrations = this.setIntegrations.bind(this)
     this.setZoomIntegration = this.setZoomIntegration.bind(this)
-    this.setShopifyIntegration = this.setShopifyIntegration.bind(this)
+    this.setCommerceIntegration = this.setCommerceIntegration.bind(this)
     this.setAdvancedSettings = this.setAdvancedSettings.bind(this)
     this.setNGP = this.setNGP.bind(this)
     this.setConnectFb = this.setConnectFb.bind(this)
@@ -88,12 +88,12 @@ class Settings extends React.Component {
     this.setNotificationSettings = this.setNotificationSettings.bind(this)
   }
 
-  UNSAFE_componentWillMount () {
+  UNSAFE_componentWillMount() {
     let url = window.location.hostname
     console.log('this.props.location', this.props.location)
     if (url === 'skibochat.cloudkibo.com' || url === 'kibochat.cloudkibo.com') {
       console.log('kibochat')
-      this.setState({isKiboChat: true})
+      this.setState({ isKiboChat: true })
     }
     if (this.props.location && this.props.location.state && this.props.location.state.module === 'addPages') {
       this.setState({
@@ -120,54 +120,54 @@ class Settings extends React.Component {
         openTab: 'whitelistDomains', show: false
       })
     }
-    this.props.getNGP({company_id: this.props.user.companyId})
+    this.props.getNGP({ company_id: this.props.user.companyId })
   }
 
-  goToSettings () {
+  goToSettings() {
     this.setState({
       openTab: 'billing', show: false, pro: true
     })
   }
 
-  handleNGPKeyChange (event) {
-    this.setState({NGPKey: event.target.value})
+  handleNGPKeyChange(event) {
+    this.setState({ NGPKey: event.target.value })
     if (event.target.value.toString().trim() !== '' && this.state.NGPSecret.toString().trim() !== '') {
-      this.setState({isDisableButton: false})
+      this.setState({ isDisableButton: false })
     } else {
-      this.setState({isDisableButton: true})
+      this.setState({ isDisableButton: true })
     }
   }
 
-  handleNGPSecretChange (event) {
-    this.setState({NGPSecret: event.target.value})
+  handleNGPSecretChange(event) {
+    this.setState({ NGPSecret: event.target.value })
 
     if (event.target.value.toString().trim() !== '' && this.state.NGPKey.toString().trim() !== '') {
-      this.setState({isDisableButton: false})
+      this.setState({ isDisableButton: false })
     } else {
-      this.setState({isDisableButton: true})
+      this.setState({ isDisableButton: true })
     }
   }
 
-  getPlanInfo (plan) {
-    this.setState({show: false})
+  getPlanInfo(plan) {
+    this.setState({ show: false })
     var planInfo
     if (plan === 'plan_A') {
       planInfo = 'Individual, Premium Account'
     } else if (plan === 'plan_B') {
       planInfo = 'Individual, Free Account'
-      this.setState({showAPIbyPlan: false})
+      this.setState({ showAPIbyPlan: false })
     } else if (plan === 'plan_C') {
       planInfo = 'Team, Premium Account'
     } else if (plan === 'plan_D') {
-      this.setState({showAPIbyPlan: false})
+      this.setState({ showAPIbyPlan: false })
       planInfo = 'Team, Free Account)'
     } else {
       planInfo = ''
     }
-    this.setState({planInfo: planInfo})
+    this.setState({ planInfo: planInfo })
   }
 
-  setNGP () {
+  setNGP() {
     this.setState({
       openTab: 'showNGP'
     }, () => {
@@ -175,130 +175,130 @@ class Settings extends React.Component {
     })
   }
 
-  setNotification () {
+  setNotification() {
     this.setState({
       openTab: 'notifications'
     })
   }
 
-  setWhiteListDomains () {
+  setWhiteListDomains() {
     this.setState({
       openTab: 'whitelistDomains'
     })
   }
 
-  setAccountSettings () {
+  setAccountSettings() {
     this.setState({
       openTab: 'accountSettings'
     })
   }
 
-  setConfiguration () {
+  setConfiguration() {
     this.setState({
       openTab: 'configuration'
     })
   }
 
-  setIntegrations () {
+  setIntegrations() {
     this.setState({
       openTab: 'integrations'
     })
   }
 
-  setCannedResponses () {
+  setCannedResponses() {
     this.setState({
       openTab: 'cannedResponses'
     })
   }
-  
+
   setZoomIntegration () {
     this.setState({
       openTab: 'zoomIntegration'
     })
   }
 
-  setShopifyIntegration () {
+  setCommerceIntegration() {
     this.setState({
-      openTab: 'shopifyIntegration'
+      openTab: 'commerceIntegration'
     })
   }
 
-  setAdvancedSettings () {
+  setAdvancedSettings() {
     this.setState({
       openTab: 'advancedSettings'
     })
   }
 
-  setPermissions () {
+  setPermissions() {
     this.setState({
       openTab: 'permissions'
     })
   }
 
-  setGreetingMessage () {
+  setGreetingMessage() {
     this.setState({
       openTab: 'greetingMessage'
     })
   }
 
-  setUploadCustomerFile () {
+  setUploadCustomerFile() {
     this.setState({
       openTab: 'uploadCustomerInformation'
     })
   }
 
-  setBilling () {
+  setBilling() {
     this.setState({
       openTab: 'billing', show: false
     })
   }
 
-  setWebhook () {
+  setWebhook() {
     this.setState({
       openTab: 'webhook'
     })
   }
 
-  setPayementMethods () {
+  setPayementMethods() {
     this.setState({
       openTab: 'paymentMethods'
     })
   }
 
-  setConnectFb () {
+  setConnectFb() {
     this.setState({
       openTab: 'connectFb'
     })
   }
 
-  setWelcomeMessage () {
+  setWelcomeMessage() {
     this.setState({
       openTab: 'welcomeMessage'
     })
   }
 
-  setResponseMethods () {
+  setResponseMethods() {
     this.setState({
       openTab: 'responseMethods'
     })
   }
 
-  setDeleteUserData () {
+  setDeleteUserData() {
     this.setState({
       openTab: 'deleteUserData'
     })
   }
-  setNotificationSettings () {
+  setNotificationSettings() {
     this.setState({
       openTab: 'notificationSettings'
     })
   }
 
-  scrollToTop () {
-    this.top.scrollIntoView({behavior: 'instant'})
+  scrollToTop() {
+    this.top.scrollIntoView({ behavior: 'instant' })
   }
 
-  componentDidMount () {
+  componentDidMount() {
     const hostname = window.location.hostname
     let title = ''
     if (hostname.includes('kiboengage.cloudkibo.com')) {
@@ -337,23 +337,23 @@ class Settings extends React.Component {
       }
     }
     if (this.props.location.state && this.props.location.state.tab) {
-      if (this.props.location.state.tab === 'shopifyIntegration') {
-        this.setShopifyIntegration()
+      if (this.props.location.state.tab === 'commerceIntegration') {
+        this.setCommerceIntegration()
       }
     }
   }
-  componentDidUpdate () {
+  componentDidUpdate() {
     console.log('in componentDidUpdate')
   }
-  changeType (e) {
+  changeType(e) {
     if (this.state.type === 'password') {
-      this.setState({type: 'text', buttonText: 'Hide'})
+      this.setState({ type: 'text', buttonText: 'Hide' })
     } else {
-      this.setState({type: 'password', buttonText: 'Show'})
+      this.setState({ type: 'password', buttonText: 'Show' })
     }
     e.preventDefault()
   }
-  initializeSwitchNGP (state) {
+  initializeSwitchNGP(state) {
     var self = this
     /* eslint-disable */
     $("[name='switch-NGP']").bootstrapSwitch({
@@ -366,22 +366,22 @@ class Settings extends React.Component {
     /* eslint-disable */
     $('input[name="switch-NGP"]').on('switchChange.bootstrapSwitch', function (event, state) {
       /* eslint-enable */
-      console.log('state',state)
-      self.setState({ngpButtonState: state})
+      console.log('state', state)
+      self.setState({ ngpButtonState: state })
       if (state === true) {
         self.setState({ngpDisable: false, ngpButtonState: true})
-        self.props.enableNGP({company_id: self.props.user.companyId})
+        self.props.enableNGP({company_id: self.props.user.companyId}, self.msg)
       } else {
         self.setState({ngpDisable: true, ngpButtonState: false})
-        self.props.disableNGP({company_id: self.props.user.companyId})
+        self.props.disableNGP({company_id: self.props.user.companyId}, self.msg)
       }
     })
   }
-  setReset (e) {
+  setReset(e) {
     e.preventDefault()
-    this.props.reset({company_id: this.props.user._id})
+    this.props.reset({ company_id: this.props.user._id })
   }
-  saveNGPBtn (e) {
+  saveNGPBtn(e) {
 
     e.preventDefault()
     this.props.saveNGP({
@@ -390,7 +390,7 @@ class Settings extends React.Component {
       app_secret: this.state.NGPSecret
     }, this.msg)
   }
-  UNSAFE_componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     console.log('iin UNSAFE_componentWillReceiveProps', nextProps)
     if (nextProps.user && nextProps.user.emailVerified === false &&
       (nextProps.user.currentPlan.unique_ID === 'plan_A' || nextProps.user.currentPlan.unique_ID === 'plan_B')) {
@@ -405,22 +405,22 @@ class Settings extends React.Component {
     /*
     NGP Work Starts
     */console.log('nextProps.apiEnableNGP', nextProps.apiEnableNGP)
-   console.log('nextProps.apiDisableNGP', nextProps.apiDisableNGP)
-   console.log('this.state.ngpDisable', this.state.ngpDisable)
+    console.log('nextProps.apiDisableNGP', nextProps.apiDisableNGP)
+    console.log('this.state.ngpDisable', this.state.ngpDisable)
     if (nextProps.apiEnableNGP) {
       if (this.state.ngpDisable === false) {
-        this.setState({NGPKey: nextProps.apiEnableNGP.app_id, NGPSecret: nextProps.apiEnableNGP.app_secret, isDisableInput: false, isDisableButton: false})
+        this.setState({ NGPKey: nextProps.apiEnableNGP.app_id, NGPSecret: nextProps.apiEnableNGP.app_secret, isDisableInput: false, isDisableButton: false })
       }
     }
     if (nextProps.apiDisableNGP) {
       if (this.state.ngpDisable === true) {
-        this.setState({NGPKey: '', NGPSecret: '', isDisableButton: true, isDisableInput: true})
+        this.setState({ NGPKey: '', NGPSecret: '', isDisableButton: true, isDisableInput: true })
       }
     }
     if (!nextProps.apiDisableNGP && nextProps.apiEnableNGP) {
       console.log('call this function')
       if (this.state.ngpDisable === true) {
-        this.setState({NGPKey: nextProps.apiEnableNGP.app_id, NGPSecret: nextProps.apiEnableNGP.app_secret, isDisableInput: false, isDisableButton: false, ngpButtonState: true})
+        this.setState({ NGPKey: nextProps.apiEnableNGP.app_id, NGPSecret: nextProps.apiEnableNGP.app_secret, isDisableInput: false, isDisableButton: false, ngpButtonState: true })
       }
     }
     // if (nextProps.resetDataNGP) {
@@ -434,13 +434,13 @@ class Settings extends React.Component {
       console.log('nextProps.apiSuccessNGP', nextProps.apiSuccessNGP)
       console.log('nextProps.apiFailureNGP', nextProps.apiFailureNGP)
       if (this.state.count_ngp === 1) {
-        this.setState({NGPKey: nextProps.apiSuccessNGP.app_id, NGPSecret: nextProps.apiSuccessNGP.app_secret, ngpButtonState: nextProps.apiSuccessNGP.enabled})
-        if(nextProps.apiSuccessNGP.enabled) {
-          this.setState({isDisableButton: false, isDisableInput: false})
+        this.setState({ NGPKey: nextProps.apiSuccessNGP.app_id, NGPSecret: nextProps.apiSuccessNGP.app_secret, ngpButtonState: nextProps.apiSuccessNGP.enabled })
+        if (nextProps.apiSuccessNGP.enabled) {
+          this.setState({ isDisableButton: false, isDisableInput: false })
 
         }
         else {
-           this.setState({isDisableButton: true, isDisableInput: true})
+          this.setState({ isDisableButton: true, isDisableInput: true })
 
         }
         // if (this.state.count1_ngp !== 1) {
@@ -452,15 +452,15 @@ class Settings extends React.Component {
     } else if (nextProps.apiFailureNGP) {
       if (this.state.firstTimeNGP === true) {
         this.initializeSwitchNGP(false)
-        this.setState({NGPKey: '', NGPSecret: '', ngpButtonState: false, firstTimeNGP: false, count1_ngp: 1})
-        this.setState({saveStateNGP: false})
+        this.setState({ NGPKey: '', NGPSecret: '', ngpButtonState: false, firstTimeNGP: false, count1_ngp: 1 })
+        this.setState({ saveStateNGP: false })
       }
     }
     /*
      NGP Work Ends
      */
   }
-  render () {
+  render() {
     var alertOptions = {
       offset: 14,
       position: 'bottom right',
@@ -473,7 +473,7 @@ class Settings extends React.Component {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        <div style={{float: 'left', clear: 'both'}}
+        <div style={{ float: 'left', clear: 'both' }}
           ref={(el) => { this.top = el }} />
         <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="upgrade" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
@@ -522,14 +522,14 @@ class Settings extends React.Component {
                         <img src={(this.props.user) ? this.props.user.profilePic : ''} alt='' style={{width: '100px'}} />
                       </div>
                     </div> */}
-                    <div style={{whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'}} className='m-card-profile__details'>
+                    <div style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }} className='m-card-profile__details'>
                       <span className='m-card-profile__name'>
                         {(this.props.user) ? this.props.user.name : ''}
                       </span>
                       <span className='m-card-profile__email'>
                         {(this.props.user) ? this.props.user.email : ''}
                       </span>
-                      <span className='m-card-profile__email' style={{display: 'block'}}>
+                      <span className='m-card-profile__email' style={{ display: 'block' }}>
                         {this.state.planInfo}
                       </span>
                     </div>
@@ -540,89 +540,89 @@ class Settings extends React.Component {
                       <span className='m-nav__section-text'>Section</span>
                     </li>
                     <li className='m-nav__item'>
-                      <a href='#/' className='m-nav__link' onClick={this.setAccountSettings} style={{cursor: 'pointer'}} >
+                      <a href='#/' className='m-nav__link' onClick={this.setAccountSettings} style={{ cursor: 'pointer' }} >
                         <i className='m-nav__link-icon flaticon-lock-1' />
                         <span className='m-nav__link-text'>Account Settings</span>
                       </a>
                     </li>
                     <li className='m-nav__item'>
-                      <a href='#/' className='m-nav__link' onClick={this.setConfiguration} style={{cursor: 'pointer'}} >
+                      <a href='#/' className='m-nav__link' onClick={this.setConfiguration} style={{ cursor: 'pointer' }} >
                         <i className='m-nav__link-icon 	flaticon-interface-6' />
                         <span className='m-nav__link-text'>Configuration</span>
                       </a>
                     </li>
-                    { (url.includes('localhost') || (url.includes('kibochat.cloudkibo.com') && this.props.user.isSuperUser)) && (this.props.user.role === 'admin' || this.props.user.role === 'buyer') &&
-                    <li className='m-nav__item'>
-                      <a href='#/' className='m-nav__link' onClick={this.setZoomIntegration} style={{cursor: 'pointer'}} >
-                        <i className='m-nav__link-icon flaticon-network' />
-                        <span className='m-nav__link-text'>Zoom Integration</span>
-                      </a>
-                    </li>
+                    {(url.includes('localhost') || (url.includes('kibochat.cloudkibo.com') && this.props.user.isSuperUser)) && (this.props.user.role === 'admin' || this.props.user.role === 'buyer') &&
+                      <li className='m-nav__item'>
+                        <a href='#/' className='m-nav__link' onClick={this.setZoomIntegration} style={{ cursor: 'pointer' }} >
+                          <i className='m-nav__link-icon flaticon-network' />
+                          <span className='m-nav__link-text'>Zoom Integration</span>
+                        </a>
+                      </li>
                     }
-                    { (url.includes('localhost') || (url.includes('kibochat.cloudkibo.com') && this.props.user.isSuperUser)) && (this.props.user.role === 'admin' || this.props.user.role === 'buyer') &&
-                    <li className='m-nav__item'>
-                      <a href='#/' className='m-nav__link' onClick={this.setShopifyIntegration} style={{cursor: 'pointer'}} >
-                        <i className='m-nav__link-icon flaticon-network' />
-                        <span className='m-nav__link-text'>Shopify Integration</span>
-                      </a>
-                    </li>
+                    {(url.includes('localhost') || (url.includes('kibochat.cloudkibo.com') && this.props.user.isSuperUser)) && (this.props.user.role === 'admin' || this.props.user.role === 'buyer') &&
+                      <li className='m-nav__item'>
+                        <a href='#/' className='m-nav__link' onClick={this.setCommerceIntegration} style={{ cursor: 'pointer' }} >
+                          <i className='m-nav__link-icon flaticon-network' />
+                          <span className='m-nav__link-text'>Commerce Integration</span>
+                        </a>
+                      </li>
                     }
-                    { (url.includes('localhost') || url.includes('kiboengage.cloudkibo.com')) && (this.props.user.role === 'admin' || this.props.user.role === 'buyer') &&
-                    <li className='m-nav__item'>
-                      <a href='#/' className='m-nav__link' onClick={this.setIntegrations} style={{cursor: 'pointer'}} >
-                        <i className='m-nav__link-icon flaticon-network' />
-                        <span className='m-nav__link-text'>Integrations</span>
-                      </a>
-                    </li>
+                    {(url.includes('localhost') || url.includes('kiboengage.cloudkibo.com')) && (this.props.user.role === 'admin' || this.props.user.role === 'buyer') &&
+                      <li className='m-nav__item'>
+                        <a href='#/' className='m-nav__link' onClick={this.setIntegrations} style={{ cursor: 'pointer' }} >
+                          <i className='m-nav__link-icon flaticon-network' />
+                          <span className='m-nav__link-text'>Integrations</span>
+                        </a>
+                      </li>
                     }
-                    { (url.includes('localhost') || url.includes('kibochat.cloudkibo.com')) && (this.props.user.role === 'admin' || this.props.user.role === 'buyer') &&
-                    <li className='m-nav__item'>
-                      <a href='#/' className='m-nav__link' onClick={this.setCannedResponses} style={{cursor: 'pointer'}} >
-                        <i className='m-nav__link-icon flaticon-menu-button' />
-                        <span className='m-nav__link-text'>Canned Responses</span>
-                      </a>
-                    </li>
+                    {(url.includes('localhost') || url.includes('kibochat.cloudkibo.com')) && (this.props.user.role === 'admin' || this.props.user.role === 'buyer') &&
+                      <li className='m-nav__item'>
+                        <a href='#/' className='m-nav__link' onClick={this.setCannedResponses} style={{ cursor: 'pointer' }} >
+                          <i className='m-nav__link-icon flaticon-menu-button' />
+                          <span className='m-nav__link-text'>Canned Responses</span>
+                        </a>
+                      </li>
                     }
-                    { (url.includes('localhost') || url.includes('kibochat.cloudkibo.com')) && (this.props.user.role === 'buyer' || this.props.user.role === 'admin' ) &&  (this.props.user.currentPlan.unique_ID === 'plan_C' || this.props.user.currentPlan.unique_ID === 'plan_D') &&
-                    <li className='m-nav__item'>
-                      <a href='#/' className='m-nav__link' onClick={this.setNotification} style={{cursor: 'pointer'}} >
-                        <i className='m-nav__link-icon flaticon-bell' />
-                        <span className='m-nav__link-text'>Message Alerts</span>
-                      </a>
-                    </li>
+                    {(url.includes('localhost') || url.includes('kibochat.cloudkibo.com')) && (this.props.user.role === 'buyer' || this.props.user.role === 'admin') && (this.props.user.currentPlan.unique_ID === 'plan_C' || this.props.user.currentPlan.unique_ID === 'plan_D') &&
+                      <li className='m-nav__item'>
+                        <a href='#/' className='m-nav__link' onClick={this.setNotification} style={{ cursor: 'pointer' }} >
+                          <i className='m-nav__link-icon flaticon-bell' />
+                          <span className='m-nav__link-text'>Message Alerts</span>
+                        </a>
+                      </li>
                     }
                     {this.props.user && !(this.props.user.role === 'admin' || this.props.user.role === 'agent') &&
-                    <li className='m-nav__item'>
-                      <a href='#/' className='m-nav__link' onClick={this.setNGP} style={{cursor: 'pointer'}}>
-                        <i className='m-nav__link-icon flaticon-share' />
-                        <span className='m-nav__link-text'>NGP Integration</span>
-                      </a>
-                    </li>
+                      <li className='m-nav__item'>
+                        <a href='#/' className='m-nav__link' onClick={this.setNGP} style={{ cursor: 'pointer' }}>
+                          <i className='m-nav__link-icon flaticon-share' />
+                          <span className='m-nav__link-text'>NGP Integration</span>
+                        </a>
+                      </li>
                     }
                     {this.props.user && this.props.user.role === 'buyer' && (this.props.user.currentPlan === 'plan_C' || this.props.user.currentPlan === 'plan_D') &&
-                    <li className='m-nav__item'>
-                      <a href='#/' className='m-nav__link' onClick={this.setPermissions} style={{cursor: 'pointer'}}>
-                        <i className='m-nav__link-icon flaticon-mark' />
-                        <span className='m-nav__link-text'>User Permissions</span>
-                      </a>
-                    </li>
+                      <li className='m-nav__item'>
+                        <a href='#/' className='m-nav__link' onClick={this.setPermissions} style={{ cursor: 'pointer' }}>
+                          <i className='m-nav__link-icon flaticon-mark' />
+                          <span className='m-nav__link-text'>User Permissions</span>
+                        </a>
+                      </li>
                     }
-                    { this.props.user && this.props.user.platform === 'messenger' &&
-                    <li className='m-nav__item'>
-                      <a href='#/' className='m-nav__link' onClick={this.setNotificationSettings} style={{cursor: 'pointer'}} >
-                        <i className='m-nav__link-icon flaticon-chat' />
-                        <span className='m-nav__link-text'>Notifications Settings</span>
-                      </a>
-                    </li>
+                    {this.props.user && this.props.user.platform === 'messenger' &&
+                      <li className='m-nav__item'>
+                        <a href='#/' className='m-nav__link' onClick={this.setNotificationSettings} style={{ cursor: 'pointer' }} >
+                          <i className='m-nav__link-icon flaticon-chat' />
+                          <span className='m-nav__link-text'>Notifications Settings</span>
+                        </a>
+                      </li>
                     }
-                    { this.props.user && this.props.user.role === 'buyer' && this.state.isKiboChat &&
-                    <li className='m-nav__item'>
-                      {/* this.props.user.currentPlan.unique_ID === 'plan_A' || this.props.user.currentPlan.unique_ID === 'plan_C' */}
-                      <a href='#/' className='m-nav__link' onClick={this.setResponseMethods} style={{cursor: 'pointer'}}>
-                        <i className='m-nav__link-icon flaticon-list-2' />
-                        <span className='m-nav__link-text'> Live Chat Response Methods</span>
-                      </a>
-                      {/* }: <a className='m-nav__link' onClick={this.showDialog} style={{cursor: 'pointer'}}>
+                    {this.props.user && this.props.user.role === 'buyer' && this.state.isKiboChat &&
+                      <li className='m-nav__item'>
+                        {/* this.props.user.currentPlan.unique_ID === 'plan_A' || this.props.user.currentPlan.unique_ID === 'plan_C' */}
+                        <a href='#/' className='m-nav__link' onClick={this.setResponseMethods} style={{ cursor: 'pointer' }}>
+                          <i className='m-nav__link-icon flaticon-list-2' />
+                          <span className='m-nav__link-text'> Live Chat Response Methods</span>
+                        </a>
+                        {/* }: <a className='m-nav__link' onClick={this.showDialog} style={{cursor: 'pointer'}}>
                         <i className='m-nav__link-icon flaticon-list-2' />
                         <span className='m-nav__link-text'>Live Chat Response Methods&nbsp;&nbsp;&nbsp;
                           <span style={{border: '1px solid #34bfa3', padding: '0px 5px', borderRadius: '10px', fontSize: '12px'}}>
@@ -631,15 +631,15 @@ class Settings extends React.Component {
                         </span>
                       </a>
                     */}
-                    </li>
+                      </li>
                     }
-                    { this.props.user && !this.props.user.facebookInfo && this.props.user.role === 'buyer' &&
-                    <li className='m-nav__item'>
-                      <a href='#/' className='m-nav__link' onClick={this.setConnectFb} style={{cursor: 'pointer'}}>
-                        <i className='m-nav__link-icon fa fa-facebook' />
-                        <span className='m-nav__link-text'>Connect with Facebook</span>
-                      </a>
-                    </li>
+                    {this.props.user && !this.props.user.facebookInfo && this.props.user.role === 'buyer' &&
+                      <li className='m-nav__item'>
+                        <a href='#/' className='m-nav__link' onClick={this.setConnectFb} style={{ cursor: 'pointer' }}>
+                          <i className='m-nav__link-icon fa fa-facebook' />
+                          <span className='m-nav__link-text'>Connect with Facebook</span>
+                        </a>
+                      </li>
                     }
                     {/* {this.props.user.isSuperUser &&
                     <li className='m-nav__item'>
@@ -649,54 +649,46 @@ class Settings extends React.Component {
                       </a>
                     </li>
                     } */}
-                    { this.props.user && this.props.user.isSuperUser &&
-                    <li className='m-nav__item'>
-                      <a href='#?' className='m-nav__link' onClick={this.setPayementMethods} style={{cursor: 'pointer'}}>
-                        <i className='m-nav__link-icon fa fa-cc-mastercard' />
-                        <span className='m-nav__link-text'>Payment Methods</span>
-                      </a>
-                    </li>
+                    {this.props.user && this.props.user.isSuperUser &&
+                      <li className='m-nav__item'>
+                        <a href='#?' className='m-nav__link' onClick={this.setPayementMethods} style={{ cursor: 'pointer' }}>
+                          <i className='m-nav__link-icon fa fa-cc-mastercard' />
+                          <span className='m-nav__link-text'>Payment Methods</span>
+                        </a>
+                      </li>
                     }
-                    { this.props.user && this.props.user.isSuperUser &&
-                    <li className='m-nav__item'>
-                      <a href='#/' className='m-nav__link' onClick={this.setBilling} style={{cursor: 'pointer'}}>
-                        <i className='m-nav__link-icon fa fa-money' />
-                        <span className='m-nav__link-text'>Billing</span>
-                      </a>
-                    </li>
-                  }
-                    <li className='m-nav__item'>
-                      {/* this.props.user.currentPlan.unique_ID === 'plan_A' || this.props.user.currentPlan.unique_ID === 'plan_C' */}
-                      <a href='#/' className='m-nav__link' onClick={this.setWebhook} style={{cursor: 'pointer'}}>
-                        <i className='m-nav__link-icon la la-link' />
-                        <span className='m-nav__link-text'>Webhooks</span>
-                      </a>
-                      {/* <a className='m-nav__link' onClick={this.showDialog} style={{cursor: 'pointer'}}>
-                         <i className='m-nav__link-icon la la-link' />
-                         <span className='m-nav__link-text'>Webhooks&nbsp;&nbsp;&nbsp;
-                           <span style={{border: '1px solid #34bfa3', padding: '0px 5px', borderRadius: '10px', fontSize: '12px'}}>
-                             <span style={{color: '#34bfa3'}}>PRO</span>
-                           </span>
-                         </span>
-                       </a>
-                     */}
-                    </li>
-                    { this.props.user && this.props.user.role === 'buyer' &&
-                    <li className='m-nav__item'>
-                      <a href='#/' className='m-nav__link' onClick={this.setDeleteUserData} style={{cursor: 'pointer'}}>
-                        <i className='m-nav__link-icon flaticon-delete' />
-                        <span className='m-nav__link-text'>Delete Information</span>
-                      </a>
-                    </li>
+                    {this.props.user && this.props.user.isSuperUser &&
+                      <li className='m-nav__item'>
+                        <a href='#/' className='m-nav__link' onClick={this.setBilling} style={{ cursor: 'pointer' }}>
+                          <i className='m-nav__link-icon fa fa-money' />
+                          <span className='m-nav__link-text'>Billing</span>
+                        </a>
+                      </li>
+                    }
+                    {this.props.user && this.props.user.platform === 'messenger' &&
+                      <li className='m-nav__item'>
+                        <a href='#/' className='m-nav__link' onClick={this.setWebhook} style={{ cursor: 'pointer' }}>
+                          <i className='m-nav__link-icon la la-link' />
+                          <span className='m-nav__link-text'>Webhooks</span>
+                        </a>
+                      </li>
+                    }
+                    {this.props.user && this.props.user.role === 'buyer' &&
+                      <li className='m-nav__item'>
+                        <a href='#/' className='m-nav__link' onClick={this.setDeleteUserData} style={{ cursor: 'pointer' }}>
+                          <i className='m-nav__link-icon flaticon-delete' />
+                          <span className='m-nav__link-text'>Delete Information</span>
+                        </a>
+                      </li>
                     }
                     <li className='m-nav__item'>
-                      <a href='#/' className='m-nav__link' onClick={this.setWhiteListDomains} style={{cursor: 'pointer'}}>
+                      <a href='#/' className='m-nav__link' onClick={this.setWhiteListDomains} style={{ cursor: 'pointer' }}>
                         <i className='m-nav__link-icon la la-list' />
                         <span className='m-nav__link-text'>Whitelist Domains</span>
                       </a>
                     </li>
                     <li className='m-nav__item'>
-                      <a href='#/' className='m-nav__link' onClick={this.setAdvancedSettings} style={{cursor: 'pointer'}}>
+                      <a href='#/' className='m-nav__link' onClick={this.setAdvancedSettings} style={{ cursor: 'pointer' }}>
                         <i className='m-nav__link-icon fa flaticon-settings' />
                         <span className='m-nav__link-text'>Advanced Settings</span>
                       </a>
@@ -705,133 +697,133 @@ class Settings extends React.Component {
                 </div>
               </div>
             </div>
-            { this.state.openTab === 'showNGP' &&
-            <div id='target' className='col-lg-8 col-md-8 col-sm-8 col-xs-12'>
-              <div className='m-portlet m-portlet--full-height m-portlet--tabs  '>
-                <div className='m-portlet__head'>
-                  <div className='m-portlet__head-tools'>
-                    <ul className='nav nav-tabs m-tabs m-tabs-line   m-tabs-line--left m-tabs-line--primary' role='tablist'>
-                      <li className='nav-item m-tabs__item'>
-                        <span className='nav-link m-tabs__link active'>
-                          <i className='flaticon-share m--hide' />
+            {this.state.openTab === 'showNGP' &&
+              <div id='target' className='col-lg-8 col-md-8 col-sm-8 col-xs-12'>
+                <div className='m-portlet m-portlet--full-height m-portlet--tabs  '>
+                  <div className='m-portlet__head'>
+                    <div className='m-portlet__head-tools'>
+                      <ul className='nav nav-tabs m-tabs m-tabs-line   m-tabs-line--left m-tabs-line--primary' role='tablist'>
+                        <li className='nav-item m-tabs__item'>
+                          <span className='nav-link m-tabs__link active'>
+                            <i className='flaticon-share m--hide' />
                           NGP Integration
                         </span>
-                      </li>
-                    </ul>
+                        </li>
+                      </ul>
+                    </div>
                   </div>
-                </div>
-                <div className='tab-content'>
-                  <div className='tab-pane active' id='m_user_profile_tab_1'>
-                    <form className='m-form m-form--fit m-form--label-align-right'>
-                      <div className='m-portlet__body'>
-                        <div className='form-group m-form__group m--margin-top-10 m--hide'>
-                          <div className='alert m-alert m-alert--default' role='alert'>
-                            The example form below demonstrates common HTML form elements that receive updated styles from Bootstrap with additional classNamees.
+                  <div className='tab-content'>
+                    <div className='tab-pane active' id='m_user_profile_tab_1'>
+                      <form className='m-form m-form--fit m-form--label-align-right'>
+                        <div className='m-portlet__body'>
+                          <div className='form-group m-form__group m--margin-top-10 m--hide'>
+                            <div className='alert m-alert m-alert--default' role='alert'>
+                              The example form below demonstrates common HTML form elements that receive updated styles from Bootstrap with additional classNamees.
                           </div>
-                        </div>
-                        <div className='form-group m-form__group row'>
-                          <div className='col-lg-8 col-md-8 col-sm-12' />
-                          <div className='col-lg-4 col-md-4 col-sm-4'>
-                            <div className='bootstrap-switch-id-test bootstrap-switch bootstrap-switch-wrapper bootstrap-switch-animate bootstrap-switch-on' style={{width: '130px'}}>
-                              <div className='bootstrap-switch-container' style={{width: '177px', marginLeft: '0px'}}>
-                                <input data-switch='true' type='checkbox' name='switch-NGP' id='test' data-on-color='success' data-off-color='warning' aria-describedby='switch-error' aria-invalid='false' checked={this.state.ngpButtonState} />
+                          </div>
+                          <div className='form-group m-form__group row'>
+                            <div className='col-lg-8 col-md-8 col-sm-12' />
+                            <div className='col-lg-4 col-md-4 col-sm-4'>
+                              <div className='bootstrap-switch-id-test bootstrap-switch bootstrap-switch-wrapper bootstrap-switch-animate bootstrap-switch-on' style={{ width: '130px' }}>
+                                <div className='bootstrap-switch-container' style={{ width: '177px', marginLeft: '0px' }}>
+                                  <input data-switch='true' type='checkbox' name='switch-NGP' id='test' data-on-color='success' data-off-color='warning' aria-describedby='switch-error' aria-invalid='false' checked={this.state.ngpButtonState} />
+                                </div>
                               </div>
                             </div>
                           </div>
-                        </div>
-                        <br /><br />
-                        {
-                          <div>
-                            <div className='form-group m-form__group row'>
-                              <label className='col-2 col-form-label' style={{textAlign: 'left'}}>NGP APP Name</label>
-                              <div className='col-7 input-group'>
-                                <input disabled={this.state.isDisableInput} className='form-control m-input' type='text' value={this.state.ngpButtonState ? this.state.NGPKey : ''} onChange={this.handleNGPKeyChange} />
+                          <br /><br />
+                          {
+                            <div>
+                              <div className='form-group m-form__group row'>
+                                <label className='col-2 col-form-label' style={{ textAlign: 'left' }}>NGP APP Name</label>
+                                <div className='col-7 input-group'>
+                                  <input disabled={this.state.isDisableInput} className='form-control m-input' type='text' value={this.state.ngpButtonState ? this.state.NGPKey : ''} onChange={this.handleNGPKeyChange} />
+                                </div>
                               </div>
-                            </div>
-                            <div className='form-group m-form__group row'>
-                              <label className='col-2 col-form-label' style={{textAlign: 'left'}}>
+                              <div className='form-group m-form__group row'>
+                                <label className='col-2 col-form-label' style={{ textAlign: 'left' }}>
                                   NGP API Key
                                 </label>
-                              <div className='col-7 input-group'>
-                                <input disabled={this.state.isDisableInput} className='form-control m-input' type='text' value={this.state.ngpButtonState ? this.state.NGPSecret : ''} onChange={this.handleNGPSecretChange} />
+                                <div className='col-7 input-group'>
+                                  <input disabled={this.state.isDisableInput} className='form-control m-input' type='text' value={this.state.ngpButtonState ? this.state.NGPSecret : ''} onChange={this.handleNGPSecretChange} />
+                                </div>
                               </div>
                             </div>
-                          </div>
-                        }
-                        <br />
-                        {
-                          <button disabled={this.state.isDisableButton} className='btn btn-primary' style={{marginLeft: '30px'}} onClick={(e) => this.saveNGPBtn(e)}>Save</button>
-                        }
-                        <br />
-                      </div>
-                    </form>
+                          }
+                          <br />
+                          {
+                            <button disabled={this.state.isDisableButton} className='btn btn-primary' style={{ marginLeft: '30px' }} onClick={(e) => this.saveNGPBtn(e)}>Save</button>
+                          }
+                          <br />
+                        </div>
+                      </form>
+                    </div>
+                    <div className='tab-pane active' id='m_user_profile_tab_2' />
                   </div>
-                  <div className='tab-pane active' id='m_user_profile_tab_2' />
                 </div>
               </div>
-            </div>
             }
-            { this.state.openTab === 'accountSettings' &&
-              <AccountSettings history= {this.props.history}/>
+            {this.state.openTab === 'accountSettings' &&
+              <AccountSettings history={this.props.history} />
             }
-            { this.state.openTab === 'permissions' &&
-              <ShowPermissions history= {this.props.history}/>
+            {this.state.openTab === 'permissions' &&
+              <ShowPermissions history={this.props.history} />
             }
-            { this.state.openTab === 'greetingMessage' &&
-              <GreetingMessage user={this.props.user} history= {this.props.history}/>
+            {this.state.openTab === 'greetingMessage' &&
+              <GreetingMessage user={this.props.user} history={this.props.history} />
             }
-            { this.state.openTab === 'welcomeMessage' &&
-              <WelcomeMessage history= {this.props.history}/>
+            {this.state.openTab === 'welcomeMessage' &&
+              <WelcomeMessage history={this.props.history} />
             }
-            { this.state.openTab === 'connectFb' &&
-              <ConnectFb history= {this.props.history}/>
+            {this.state.openTab === 'connectFb' &&
+              <ConnectFb history={this.props.history} />
             }
-            { this.state.openTab === 'uploadCustomerInformation' &&
-              <UploadCustomerInformation history= {this.props.history}/>
+            {this.state.openTab === 'uploadCustomerInformation' &&
+              <UploadCustomerInformation history={this.props.history} />
             }
-            { this.state.openTab === 'billing' &&
-              <Billing showPaymentMethods={this.setPayementMethods} pro={this.state.pro} history= {this.props.history}/>
+            {this.state.openTab === 'billing' &&
+              <Billing showPaymentMethods={this.setPayementMethods} pro={this.state.pro} history={this.props.history} />
             }
-            { this.state.openTab === 'paymentMethods' &&
-              <PaymentMethods history= {this.props.history}/>
+            {this.state.openTab === 'paymentMethods' &&
+              <PaymentMethods history={this.props.history} />
             }
-            { this.state.openTab === 'responseMethods' &&
-              <ResponseMethods history= {this.props.history}/>
+            {this.state.openTab === 'responseMethods' &&
+              <ResponseMethods history={this.props.history} />
             }
-            { this.state.openTab === 'deleteUserData' &&
-              <DeleteUserData history= {this.props.history}/>
+            {this.state.openTab === 'deleteUserData' &&
+              <DeleteUserData history={this.props.history} />
             }
-            { this.state.openTab === 'webhook' &&
-              <Webhook history= {this.props.history}/>
+            {this.state.openTab === 'webhook' &&
+              <Webhook history={this.props.history} />
             }
-            { this.state.openTab === 'whitelistDomains' &&
-              <WhiteListDomains history= {this.props.history}/>
+            {this.state.openTab === 'whitelistDomains' &&
+              <WhiteListDomains history={this.props.history} />
             }
-            { this.state.openTab === 'configuration' &&
-              <Configuration  history= {this.props.history} />
+            {this.state.openTab === 'configuration' &&
+              <Configuration history={this.props.history} />
             }
-            { this.state.openTab === 'integrations' &&
-              <Integrations history= {this.props.history}/>
+            {this.state.openTab === 'integrations' &&
+              <Integrations history={this.props.history} />
             }
-            { this.state.openTab === 'notifications' &&
-              <Notifications history= {this.props.history}/>
+            {this.state.openTab === 'notifications' &&
+              <Notifications history={this.props.history} />
             }
-             { this.state.openTab === 'notificationSettings' &&
-              <NotificationSettings history= {this.props.history}/>
+            {this.state.openTab === 'notificationSettings' &&
+              <NotificationSettings history={this.props.history} />
             }
-            { this.state.openTab === 'advancedSettings' &&
+            {this.state.openTab === 'advancedSettings' &&
               <AdvancedSetting />
             }
             { this.state.openTab === 'cannedResponses' &&
               <CannedResponses history= {this.props.history}/>
-            } 
+            }
             {
               this.state.openTab === 'zoomIntegration' &&
               <ZoomIntegration />
             }
             {
-              this.state.openTab === 'shopifyIntegration' &&
-              <ShopifyIntegration />
+              this.state.openTab === 'commerceIntegration' &&
+              <CommerceIntegration />
             }
           </div>
         </div>
@@ -839,7 +831,7 @@ class Settings extends React.Component {
     )
   }
 }
-function mapStateToProps (state) {
+function mapStateToProps(state) {
   return {
     user: (state.basicInfo.user),
     apiEnableNGP: (state.settingsInfo.apiEnableNGP),
@@ -850,7 +842,7 @@ function mapStateToProps (state) {
   }
 }
 
-function mapDispatchToProps (dispatch) {
+function mapDispatchToProps(dispatch) {
   return bindActionCreators({
     getNGP: getNGP,
     enableNGP: enableNGP,

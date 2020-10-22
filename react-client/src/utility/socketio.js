@@ -3,7 +3,7 @@
  */
 import io from 'socket.io-client'
 import { setSocketStatus } from './../redux/actions/basicinfo.actions'
-import { socketUpdate, socketUpdateSeen, fetchSingleSession, updateSessions } from './../redux/actions/livechat.actions'
+import { socketUpdate, socketUpdateMessageStatus, moveSession, updateSessions } from './../redux/actions/livechat.actions'
 import { loadAutopostingList } from './../redux/actions/autoposting.actions'
 import { loadMyPagesList } from './../redux/actions/pages.actions'
 import { fetchAllSequence } from './../redux/actions/sequence.action'
@@ -12,7 +12,7 @@ import { loadDashboardData, sentVsSeen } from './../redux/actions/dashboard.acti
 import auth from './auth.service'
 import { loadPollsListNew } from './../redux/actions/poll.actions'
 import { loadSurveysListNew } from './../redux/actions/surveys.actions'
-import {updateCustomFieldValue, addCustomField, removeCustomField, updateSingleCustomField} from './../redux/actions/customFields.actions'
+import { updateCustomFieldValue, addCustomField, removeCustomField, updateSingleCustomField } from './../redux/actions/customFields.actions'
 import { addTag, removeTag, updateTag, assignTag, unassignTag } from './../redux/actions/tags.actions'
 import { loadAllSubscribersListNew, updateCustomFieldForSubscriber } from './../redux/actions/subscribers.actions'
 import { fetchNotifications, setMessageAlert } from './../redux/actions/notifications.actions'
@@ -49,11 +49,11 @@ var callbacks = {
   new_chat_whatsapp: false
 }
 
-export function registerAction (callback) {
+export function registerAction(callback) {
   callbacks[callback.event] = callback.action
 }
 
-export function initiateSocket (storeObj) {
+export function initiateSocket(storeObj) {
   store = storeObj
   socket.connect()
 }
@@ -100,8 +100,8 @@ socket.on('message', (data) => {
   }
   if (data.action === 'whatsapp_message_seen') {
     store.dispatch(whatsAppActions.socketUpdateWhatsAppSeen(data.payload))
-  } else if (data.action === 'message_seen') {
-    store.dispatch(socketUpdateSeen(data.payload))
+  } else if (data.action === 'message_seen'|| data.action === 'message_delivered') {
+    store.dispatch(socketUpdateMessageStatus(data.payload))
   } else if (data.action === 'autoposting_updated' || data.action === 'autoposting_removed') {
     store.dispatch(loadAutopostingList())
   } else if (data.action === 'page_disconnect' || data.action === 'page_connect') {
@@ -111,18 +111,18 @@ socket.on('message', (data) => {
     // store.dispatch(loadBroadcastsList())
     store.dispatch(sentVsSeen())
   } else if (data.action === 'poll_created') {
-    store.dispatch(loadPollsListNew({last_id: 'none', number_of_records: 10, first_page: true, days: '0'}))
+    store.dispatch(loadPollsListNew({ last_id: 'none', number_of_records: 10, first_page: true, days: '0' }))
     store.dispatch(sentVsSeen())
   } else if (data.action === 'poll_send') {
     console.log('poll send function called')
-    store.dispatch(loadPollsListNew({last_id: 'none', number_of_records: 10, first_page: 'first', days: '0'}))
+    store.dispatch(loadPollsListNew({ last_id: 'none', number_of_records: 10, first_page: 'first', days: '0' }))
     // store.dispatch(sentVsSeen())
   } else if (data.action === 'survey_created') {
-    store.dispatch(loadSurveysListNew({last_id: 'none', number_of_records: 10, first_page: 'first', days: '0'}))
+    store.dispatch(loadSurveysListNew({ last_id: 'none', number_of_records: 10, first_page: 'first', days: '0' }))
     store.dispatch(sentVsSeen())
   } else if (data.action === 'survey_send') {
     console.log('survey send function called')
-    store.dispatch(loadSurveysListNew({last_id: 'none', number_of_records: 10, first_page: 'first', days: '0'}))
+    store.dispatch(loadSurveysListNew({ last_id: 'none', number_of_records: 10, first_page: 'first', days: '0' }))
     // store.dispatch(sentVsSeen())
   } else if (['new_tag', 'tag_rename', 'tag_remove'].indexOf(data.action) > -1) {
     //store.dispatch(loadTags())
@@ -149,7 +149,7 @@ socket.on('message', (data) => {
         }))
       }
     }
-    store.dispatch(loadAllSubscribersListNew({last_id: 'none', number_of_records: 10, first_page: 'first', filter: false, filter_criteria: {search_value: '', gender_value: '', page_value: '', locale_value: '', tag_value: '', status_value: ''}}))
+    store.dispatch(loadAllSubscribersListNew({ last_id: 'none', number_of_records: 10, first_page: 'first', filter: false, filter_criteria: { search_value: '', gender_value: '', page_value: '', locale_value: '', tag_value: '', status_value: '' } }))
   } else if (data.action === 'session_assign') {
     store.dispatch(updateSessions(data.payload.data))
   } else if (data.action === 'session_assign_sms') {
@@ -158,9 +158,9 @@ socket.on('message', (data) => {
     store.dispatch(whatsAppActions.updateSessions(data.payload.data))
   } else if (data.action === 'session_status') {
     if (data.payload.status === 'new') {
-      store.dispatch(fetchSingleSession(data.payload.session_id, {appendTo: 'open', deleteFrom: 'close'}))
+      store.dispatch(moveSession(data.payload.session_id, { appendTo: 'open', deleteFrom: 'close' }))
     } else {
-      store.dispatch(fetchSingleSession(data.payload.session_id, {appendTo: 'close', deleteFrom: 'open'}))
+      store.dispatch(moveSession(data.payload.session_id, { appendTo: 'close', deleteFrom: 'open' }))
     }
     store.dispatch(fetchNotifications())
   } else if (['sequence_create', 'sequence_update', 'sequence_delete'].indexOf(data.action) > -1) {
@@ -192,7 +192,7 @@ socket.on('message', (data) => {
   }
 })
 
-export function log (tag, data) {
+export function log(tag, data) {
   console.log(`${tag}: ${data}`)
   socket.emit('logClient', {
     tag,
@@ -200,7 +200,7 @@ export function log (tag, data) {
   })
 }
 
-export function joinRoom (data) {
+export function joinRoom(data) {
   console.log('Trying to join room socket', data)
   myId = data
   if (joined) {

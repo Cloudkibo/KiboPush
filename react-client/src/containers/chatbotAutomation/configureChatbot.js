@@ -318,6 +318,7 @@ class ConfigureChatbot extends React.Component {
                 onAnalytics={this.onAnalytics}
                 allTriggers={this.state.allTriggers}
                 attachmentUploading={this.state.attachmentUploading}
+                superUser={this.props.superUser}
               />
             </div>
             <PROGRESS progress={`${this.state.progress}%`} />
@@ -344,7 +345,8 @@ class ConfigureChatbot extends React.Component {
 
 function mapStateToProps (state) {
   return {
-    fbAppId: state.basicInfo.fbAppId
+    fbAppId: state.basicInfo.fbAppId,
+    superUser: (state.basicInfo.superUser)
   }
 }
 

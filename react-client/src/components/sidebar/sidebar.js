@@ -9,7 +9,6 @@ import { connect } from 'react-redux'
 import { getAutomatedOptions } from '../../redux/actions/basicinfo.actions'
 import { bindActionCreators } from 'redux'
 import { getCurrentProduct } from '../../utility/utils'
-import { fetchSingleSession, fetchUserChats, resetSocket } from '../../redux/actions/livechat.actions'
 
 class Sidebar extends Component {
   constructor(props, context) {
@@ -156,7 +155,6 @@ class Sidebar extends Component {
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
-    console.log('nextProps in sidebar', nextProps)
 
     /* if (nextProps.user) {
        this.setState({broadcasts: nextProps.user.uiMode.broadcasts,
@@ -219,7 +217,7 @@ class Sidebar extends Component {
     if (this.props.user) {
       if (this.props.user.permissions.dashboardPermission && this.props.user.plan.dashboard) {
         return (
-          <li onClick={() => {document.getElementById('m_aside_left_close_btn').click()}} className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
+          <li onClick={() => { document.getElementById('m_aside_left_close_btn').click() }} className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
             <Link to='/dashboard' state={{ isKiboLite: this.state.businessGateway }} className='m-menu__link m-menu__toggle'>
               <i className='m-menu__link-icon flaticon-squares-4' title='Dashboard' />
               <span className='m-menu__link-text'>Dashboard</span>
@@ -236,7 +234,7 @@ class Sidebar extends Component {
     if (this.props.user) {
       if (this.state.subscribers && this.props.user.permissions.subscriberPermission && this.props.user.plan.manage_subscribers) {
         return (
-          <li onClick={() => {document.getElementById('m_aside_left_close_btn').click()}} className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
+          <li onClick={() => { document.getElementById('m_aside_left_close_btn').click() }} className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
             <Link to={this.props.user.platform === 'messenger' ? '/subscribers' : '/smsSubscribers'} className='m-menu__link m-menu__toggle'>
               <i className='m-menu__link-icon flaticon-user-ok' title='Subscribers' />
               <span className='m-menu__link-text'>Subscribers</span>
@@ -345,7 +343,7 @@ class Sidebar extends Component {
         (this.props.automated_options.automated_options === 'MIX_CHAT' ||
           this.props.automated_options.automated_options === 'HUMAN_CHAT')) {
         return (
-          <li onClick={() => {document.getElementById('m_aside_left_close_btn').click()}} className='m-menu__item  m-menu__item--submenu' aria-haspopup='true'>
+          <li onClick={() => { document.getElementById('m_aside_left_close_btn').click() }} className='m-menu__item  m-menu__item--submenu' aria-haspopup='true'>
             <Link to={this.props.user.platform === 'sms' ? 'smsChat' : this.props.user.platform === 'messenger' ? '/liveChat' : 'whatsAppChat'} className='m-menu__link m-menu__toggle'>
               <i className='m-menu__link-icon flaticon-chat-1' title='Live Chat' />
               <span className='m-menu__link-text'>Live Chat (Beta)</span>
@@ -359,7 +357,7 @@ class Sidebar extends Component {
   }
 
   showAutomationItems() {
-    if (!this.props.isMobile && !this.state.isKiboLite && this.props.user && (this.props.user.platform === 'messenger' || this.props.user.platform === 'whatsApp')) {
+    if (!this.props.isMobile && !this.state.isKiboLite && this.props.user) {
       return (
         <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
           <span className='m-menu__link m-menu__toggle'>
@@ -381,7 +379,6 @@ class Sidebar extends Component {
                 this.props.user.platform === 'messenger' &&
                 <>
                   {this.showSmartRespliesItem()}
-                  {this.showChatbots()}
                   {this.showChatbotAutomation()}
                   {this.showChatbotAutomationNew()}
                   {this.showAutoPostingItem()}
@@ -394,6 +391,13 @@ class Sidebar extends Component {
                 this.props.user.platform === 'whatsApp' &&
                 <>
                   {this.showWhatsAppChatbot()}
+                  {this.showChatbots()}
+                </>
+              }
+              {
+                this.props.user.platform === 'sms' &&
+                <>
+                  {this.showChatbots()}
                 </>
               }
             </ul>
@@ -699,7 +703,7 @@ class Sidebar extends Component {
               <span />
             </i>
             <span className='m-menu__link-text'>
-              Shopify Chatbot
+              Commerce Chatbot
             </span>
           </Link>
         </li>
@@ -729,7 +733,7 @@ class Sidebar extends Component {
   }
 
   showChatbotAutomation() {
-    if (this.props.user && (this.state.isKiboChat || this.state.isLocalhost)) {
+    if (this.props.user && this.props.user.isSuperUser && (this.state.isKiboChat || this.state.isLocalhost)) {
       return (
         <li className='m-menu__item' aria-haspopup='true' >
           <Link to='/chatbotAutomation' className='m-menu__link'>
@@ -737,7 +741,7 @@ class Sidebar extends Component {
               <span />
             </i>
             <span className='m-menu__link-text'>
-              Chatbot Automation
+              Chatbot Automation (OLD)
             </span>
           </Link>
         </li>
@@ -748,7 +752,7 @@ class Sidebar extends Component {
   }
 
   showChatbotAutomationNew() {
-    if (this.props.user && this.props.user.isSuperUser && (this.state.isKiboChat || this.state.isLocalhost)) {
+    if (this.props.user && (this.state.isKiboChat || this.state.isLocalhost)) {
       return (
         <li className='m-menu__item' aria-haspopup='true' >
           <Link to='/chatbotAutomationNew' className='m-menu__link'>
@@ -756,7 +760,7 @@ class Sidebar extends Component {
               <span />
             </i>
             <span className='m-menu__link-text'>
-              Chatbot Automation (NEW)
+              Chatbot Automation
             </span>
           </Link>
         </li>
@@ -1132,7 +1136,7 @@ class Sidebar extends Component {
     if (this.props.user) {
       if (this.state.pages && this.props.user.permissions.pagesPermission && this.props.user.plan.manage_pages) {
         return (
-          <li onClick={() => {document.getElementById('m_aside_left_close_btn').click()}} className='m-menu__item' aria-haspopup='true' >
+          <li onClick={() => { document.getElementById('m_aside_left_close_btn').click() }} className='m-menu__item' aria-haspopup='true' >
             <Link to='/pages' className='m-menu__link'>
               <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
                 <span />
@@ -1307,7 +1311,7 @@ class Sidebar extends Component {
     // }
     if (this.props.user && this.props.user.platform === 'sms') {
       return (
-        <li onClick={() => {document.getElementById('m_aside_left_close_btn').click()}} className='m-menu__item' aria-haspopup='true' >
+        <li onClick={() => { document.getElementById('m_aside_left_close_btn').click() }} className='m-menu__item' aria-haspopup='true' >
           <Link to={'/uploadContacts'} className='m-menu__link'>
             <i className='m-menu__link-icon fa fa-id-card-o'>
               <span />
@@ -1326,7 +1330,7 @@ class Sidebar extends Component {
   inviteSubscribers() {
     if (this.props.user && this.props.user.platform === 'whatsApp') {
       return (
-        <li onClick={() => {document.getElementById('m_aside_left_close_btn').click()}} className='m-menu__item' aria-haspopup='true' >
+        <li onClick={() => { document.getElementById('m_aside_left_close_btn').click() }} className='m-menu__item' aria-haspopup='true' >
           <Link to='/uploadContactsWhatsApp' className='m-menu__link'>
             <i className='m-menu__link-icon flaticon-user-add'>
               <span />
@@ -1343,7 +1347,6 @@ class Sidebar extends Component {
   }
 
   render() {
-    console.log('this.state', this.state)
 
     if (this.props.user && this.props.user.permissionsRevoked) {
       this.props.history.push({ pathname: '/connectFb', state: { permissionsRevoked: true } })
@@ -1398,7 +1401,6 @@ class Sidebar extends Component {
   }
 }
 function mapStateToProps(state) {
-  console.log('state in sidebar', state)
   return {
     sessions: (state.liveChat.sessions),
     user: (state.basicInfo.user),
@@ -1414,9 +1416,6 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return bindActionCreators({
     getAutomatedOptions: getAutomatedOptions,
-    fetchUserChats: fetchUserChats,
-    resetSocket: resetSocket,
-    fetchSingleSession: fetchSingleSession
   }, dispatch)
 }
 

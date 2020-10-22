@@ -26,6 +26,13 @@ export function unsubscribeSubscriber(subscriberId) {
   }
 }
 
+export function saveNotificationSessionId(data) {
+  return {
+    type: ActionTypes.REDIRECT_TO_SESSION,
+    data: data
+  }
+}
+
 export function clearUserChat() {
   console.log('clearUserChat called')
   return {
@@ -144,11 +151,10 @@ export function showCloseChatSessions(sessions, firstPage) {
     count: sessions.count
   }
 }
-export function updateChatSessions(session, appendDeleteInfo) {
-  session.name = `${session.firstName} ${session.lastName}`
+export function updateChatSessions(sessionId, appendDeleteInfo) {
   return {
     type: ActionTypes.UPDATE_CHAT_SESSIONS,
-    session,
+    data: { sessionId },
     appendDeleteInfo
   }
 }
@@ -160,9 +166,9 @@ export function socketUpdate(data) {
   }
 }
 
-export function socketUpdateSeen(data) {
+export function socketUpdateMessageStatus(data) {
   return {
-    type: ActionTypes.SOCKET_UPDATE_SEEN,
+    type: ActionTypes.SOCKET_UPDATE_MESSAGE_STATUS,
     data
   }
 }
@@ -318,13 +324,19 @@ export function fetchCloseSessions(data) {
   }
 }
 
-export function fetchSingleSession(sessionid, appendDeleteInfo) {
+export function fetchSingleSession(psid, callback) {
   return (dispatch) => {
-    callApi(`sessions/${sessionid}`)
+    callApi(`sessions/single`, 'post', {psid})
       .then(res => {
         console.log('response from fetchSingleSession', res)
-        dispatch(updateChatSessions(res.payload, appendDeleteInfo))
+        callback(res)
       })
+  }
+}
+
+export function moveSession(sessionid, appendDeleteInfo) {
+  return (dispatch) => {
+    dispatch(updateChatSessions(sessionid, appendDeleteInfo))
   }
 }
 
@@ -408,7 +420,7 @@ export function searchChat(data) {
 }
 
 
-export function sendChatMessage (data, cb) {
+export function sendChatMessage(data, cb) {
   return (dispatch) => {
     callApi('livechat/', 'post', data).then(res => {
       console.log('response from sendChatMessage', res)

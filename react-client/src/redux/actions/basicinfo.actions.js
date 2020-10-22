@@ -23,6 +23,14 @@ export function fetchPlan(data) {
   }
 }
 
+export function saveEnvironment (data) {
+  return {
+    type: ActionTypes.CURRENT_ENVIRONMENT,
+    data
+  }
+}
+
+
 export function showuserdetails(data) {
   // NOTE: don't remove following auth method call
   console.log('user details', data)
@@ -87,7 +95,7 @@ export function setSocketStatus(data) {
   }
 }
 
-export function getuserdetails(joinRoom) {
+export function getuserdetails(joinRoom, cb) {
   return (dispatch) => {
     callApi('users').then(res => {
       console.log('response from getuserdetails', res)
@@ -100,6 +108,9 @@ export function getuserdetails(joinRoom) {
           } else {
             joinRoom(res.payload.companyId)
           }
+        }
+        if (res.status === 'success' && cb) {
+          cb(res.payload)
         }
         dispatch(showuserdetails(res.payload))
       }
@@ -250,13 +261,13 @@ export function disconnectFacebook(callback) {
   }
 }
 
-export function updatePlatform(data, fetchNotifications) {
+export function updatePlatform(data, handleChangePlatform) {
   return (dispatch) => {
     callApi('users/updatePlatform', 'post', data).then(res => {
       if (res.status === 'success') {
         dispatch(getuserdetails())
-        if (fetchNotifications) {
-          fetchNotifications()
+        if (handleChangePlatform) {
+          handleChangePlatform(data.platform)
         }
       } else {
         console.log('Failed to update platform', res)

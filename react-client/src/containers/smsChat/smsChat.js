@@ -24,6 +24,7 @@ import {
   sendChatMessage,
   loadTwilioNumbers
 } from '../../redux/actions/smsChat.actions'
+import { saveNotificationSessionId } from '../../redux/actions/livechat.actions'
 import { updatePicture } from '../../redux/actions/subscribers.actions'
 import { loadTeamsList } from '../../redux/actions/teams.actions'
 import { loadMembersList } from '../../redux/actions/members.actions'
@@ -97,11 +98,8 @@ class SmsChat extends React.Component {
     this.backToSessions = this.backToSessions.bind(this)
 
     props.loadTwilioNumbers()
+    props.loadMembersList()
     this.fetchSessions(true, 'none', true)
-    if (props.user.currentPlan.unique_ID === 'plan_C' || props.user.currentPlan.unique_ID === 'plan_D') {
-      props.loadMembersList()
-      props.loadTeamsList({platform: 'sms'})
-    }
     if (props.socketData) {
       props.clearSocketDataSms()
     }
@@ -353,6 +351,9 @@ class SmsChat extends React.Component {
     if (session.is_assigned && session.assigned_to.type === 'team') {
       this.props.fetchTeamAgents(session.assigned_to.id, this.handleTeamAgents)
     }
+    if (this.props.user.currentPlan.unique_ID === 'plan_C' || this.props.user.currentPlan.unique_ID === 'plan_D') {
+      this.props.loadTeamsList({platform: 'sms'})
+    }
     this.setState({activeSession: session})
   }
 
@@ -412,7 +413,26 @@ class SmsChat extends React.Component {
       state.sessions = sessions
       state.sessionsCount = this.state.tabValue === 'open' ? nextProps.openCount : nextProps.closeCount
     }
-
+    if (nextProps.redirectToSession && nextProps.redirectToSession.sessionId) {
+      if (nextProps.openSessions && nextProps.closeSessions) {
+        nextProps.saveNotificationSessionId({sessionId: null})
+        let openSessions = nextProps.openSessions
+        let closeSessions =nextProps.closeSessions
+        let openIndex = openSessions.findIndex((session) => session._id === nextProps.redirectToSession.sessionId)
+        let closeIndex = closeSessions.findIndex((session) => session._id === nextProps.redirectToSession.sessionId)
+        if (openIndex !== -1) {
+          state.activeSession = openSessions[openIndex]
+          this.changeActiveSession(openSessions[openIndex])
+          this.changeTab('open')
+        } else if (closeIndex !== -1) {
+          state.activeSession = closeSessions[closeIndex]
+          this.changeActiveSession(closeSessions[closeIndex])
+          this.changeTab('close')
+        } else {
+          state.activeSession = {}
+        }
+      }
+    }
     if (nextProps.customFields && nextProps.customFieldValues ) {
       let fieldOptions = []
       for (let a = 0; a < nextProps.customFields.length; a++) {
@@ -637,7 +657,8 @@ function mapStateToProps(state) {
     searchChatMsgs: (state.smsChatInfo.searchChat),
     socketData: (state.socketInfo.socketDataSms),
     twilioNumbers: (state.smsBroadcastsInfo.twilioNumbers),
-    zoomIntegrations: (state.settingsInfo.zoomIntegrations)
+    zoomIntegrations: (state.settingsInfo.zoomIntegrations),
+    redirectToSession: state.liveChat.redirectToSession
   }
 }
 
@@ -664,7 +685,8 @@ function mapDispatchToProps(dispatch) {
     urlMetaData,
     loadTwilioNumbers,
     getZoomIntegrations,
-    createZoomMeeting
+    createZoomMeeting,
+    saveNotificationSessionId
   }, dispatch)
 }
 

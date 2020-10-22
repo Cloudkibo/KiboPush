@@ -9,6 +9,7 @@ import { bindActionCreators } from 'redux'
 import { Link } from 'react-router-dom'
 import { skip } from '../../redux/actions/signup.actions'
 import $ from 'jquery'
+import { getLandingPage } from '../../utility/utils'
 
 class InvalidatedSession extends React.Component {
   constructor (props, context) {
@@ -24,13 +25,13 @@ class InvalidatedSession extends React.Component {
   }
   UNSAFE_componentWillReceiveProps (nextProps) {
     console.log('nextProps in connect', nextProps)
-    if (nextProps.user && nextProps.user.role !== 'buyer') {
+    if (nextProps.user && nextProps.user.role !== 'buyer' && nextProps.user.platform) {
       this.props.history.push({
-        pathname: '/dashboard'
+        pathname: getLandingPage(nextProps.user.platform)
       })
     } else if (nextProps.successSkip && nextProps.user && nextProps.user.skippedFacebookConnect) {
       this.props.history.push({
-        pathname: '/dashboard'
+        pathname: getLandingPage(nextProps.user.platform)
       })
     }
   }
@@ -92,14 +93,14 @@ class InvalidatedSession extends React.Component {
                         <div className='m-widget5'>
                           <div className='m-widget5__item'>
                             <div className='m-widget5__pic' style={{width: '5px'}}>
-                              <img className='m-widget7__img' onError={this.profilePicError} alt='pic' src={this.props.location.state.buyerInfo.profilePic !== '' ? this.props.location.state.buyerInfo.profilePic : 'https://cdn.cloudkibo.com/public/icons/users.jpg' } style={{height: '50px', borderRadius: '50%', width: '50px'}} />
+                              <img className='m-widget7__img' onError={this.profilePicError} alt='pic' src={this.props.automated_options && this.props.automated_options.facebookInfo ? this.props.automated_options.facebookInfo.profilePic : 'https://cdn.cloudkibo.com/public/icons/users.jpg' } style={{height: '50px', borderRadius: '50%', width: '50px'}} />
                             </div>
                             <div className='m-widget5__content'>
                               <h4 className='m-widget5__title'>
-                                {this.props.location.state.buyerInfo.buyerName}
+                                {this.props.automated_options && this.props.automated_options.buyerInfo ? this.props.automated_options.buyerInfo.name: ''}
                               </h4>
                               <span className='m-widget5__desc'>
-                                <b>Email:</b> {this.props.location.state.buyerInfo.email}
+                                <b>Email:</b> {this.props.automated_options && this.props.automated_options.buyerInfo ? this.props.automated_options.buyerInfo.email: ''}
                               </span>
                             </div>
                           </div>
@@ -145,7 +146,8 @@ InvalidatedSession.defaultProps = {
 function mapStateToProps (state) {
   return {
     successSkip: (state.signupInfo.successSkip),
-    user: (state.basicInfo.user)
+    user: (state.basicInfo.user),
+    automated_options: (state.basicInfo.automated_options)
   }
 }
 

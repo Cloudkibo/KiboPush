@@ -30,7 +30,10 @@ import {
   clearSearchResult,
   getSMPStatus,
   updateSessionProfilePicture,
-  setUserChat
+  setUserChat,
+  saveNotificationSessionId,
+  resetSocket,
+  fetchSingleSession
 } from '../../redux/actions/livechat.actions'
 import { updatePicture } from '../../redux/actions/subscribers.actions'
 import { loadTeamsList } from '../../redux/actions/teams.actions'
@@ -123,6 +126,8 @@ class LiveChat extends React.Component {
     this.markSessionsRead = this.markSessionsRead.bind(this)
     this.backToSessions = this.backToSessions.bind(this)
     this.updateNewMessage = this.updateNewMessage.bind(this)
+    this.setActiveSession = this.setActiveSession.bind(this)
+    this.checkParams = this.checkParams.bind(this)
     this.props.loadcannedResponses()
     this.fetchSessions(true, 'none', true)
     props.getSMPStatus(this.handleSMPStatus)
@@ -138,6 +143,50 @@ class LiveChat extends React.Component {
 
   updateNewMessage (value) {
     this.newMessage = value
+  }
+
+  componentDidMount () {
+    const hostname = window.location.hostname
+    let title = ''
+    if (hostname.includes('kiboengage.cloudkibo.com')) {
+      title = 'KiboEngage'
+    } else if (hostname.includes('kibochat.cloudkibo.com')) {
+      title = 'KiboChat'
+    }
+
+    document.title = `${title} | Live Chat`
+  }
+
+  checkParams (props, sessions) {
+    if (
+      this.props.match && this.props.match.params &&
+      this.props.match.params.id && this.state.activeSession.constructor === Object &&
+      Object.keys(this.state.activeSession).length === 0
+    ) {
+      const params = this.props.match.params.id.split('-')
+      if (params.length === 3) {
+        const psid = params[2]
+        const session = sessions.find((item) => item.senderId === psid)
+        if (session) {
+          this.changeActiveSession(session, null, false)
+        } else {
+          this.props.fetchSingleSession(psid, this.setActiveSession)
+        }
+      } else {
+        this.props.history.push({
+          pathname: '/liveChat'
+        })
+      }
+    }
+  }
+
+  setActiveSession (res) {
+    if (res.status === 'success') {
+      const session = res.payload
+      this.changeActiveSession(session, null, false)
+    } else {
+      window.history.replaceState(null, null, '/liveChat')
+    }
   }
 
   clearSearchResults() {
@@ -176,7 +225,7 @@ class LiveChat extends React.Component {
       activeSession.pendingResponse = value
       this.setState({ sessions, activeSession })
     } else {
-      let message = res.description ? res.description :  value ? 'Failed to remove pending flag' : 'Failed to mark session as pending'
+      let message = res.description ? res.description : value ? 'Failed to remove pending flag' : 'Failed to mark session as pending'
       console.log('message', message)
       this.alertMsg.error(message)
     }
@@ -191,6 +240,7 @@ class LiveChat extends React.Component {
 
   setMessageData(session, payload) {
     const data = {
+      _id: new Date().getTime(),
       sender_id: session.pageId._id,
       recipient_id: session._id,
       sender_fb_id: session.pageId.pageId,
@@ -201,6 +251,8 @@ class LiveChat extends React.Component {
       url_meta: this.state.urlmeta,
       datetime: new Date().toString(),
       status: 'unseen',
+      seen: false,
+      delivered: false,
       replied_by: {
         type: 'agent',
         id: this.props.user._id,
@@ -301,7 +353,7 @@ class LiveChat extends React.Component {
     }
   }
 
-  handleStatusChange (session, status, res) {
+  handleStatusChange(session, status, res) {
     if (res.status === 'success') {
       console.log('in handleStatusChange', session)
       const message = (status === 'resolved') ? 'Session has been marked as resolved successfully' : 'Session has been reopened successfully'
@@ -315,13 +367,13 @@ class LiveChat extends React.Component {
         ? `Session of subscriber ${session.firstName + ' ' + session.lastName} has been marked as resolved by ${this.props.user.name}`
         : `Session of subscriber ${session.firstName + ' ' + session.lastName} has been reopened by ${this.props.user.name}`
       if (!session.assigned_to || !session.is_assigned) {
-          let notificationsData = {
-            message: notificationMessage,
-            category: { type: 'session_status', id: session._id },
-            agentIds: this.props.members.length > 0 ? this.props.members.filter(a => a.userId._id !== this.props.user._id).map(b => b.userId._id): [],
-            companyId: session.companyId
-          }
-          this.props.sendNotifications(notificationsData)
+        let notificationsData = {
+          message: notificationMessage,
+          category: { type: 'session_status', id: session._id },
+          agentIds: this.props.members.length > 0 ? this.props.members.filter(a => a.userId._id !== this.props.user._id).map(b => b.userId._id) : [],
+          companyId: session.companyId
+        }
+        this.props.sendNotifications(notificationsData)
       } else if (session.assigned_to && session.assigned_to.type === 'team') {
         this.props.fetchTeamAgents(session.assigned_to.id, (teamAgents) => {
           let agentIds = []
@@ -375,7 +427,7 @@ class LiveChat extends React.Component {
     let errorMsg = (status === 'resolved') ? 'mark this session as resolved' : 'reopen this session'
     const data = this.performAction(errorMsg, session)
     if (data.isAllowed) {
-      this.props.changeStatus({_id: session._id, status: status}, (res) => this.handleStatusChange(session, status, res))
+      this.props.changeStatus({ _id: session._id, status: status }, (res) => this.handleStatusChange(session, status, res))
     } else {
       this.alertMsg.error(data.errorMsg)
     }
@@ -408,9 +460,13 @@ class LiveChat extends React.Component {
     }
   }
 
-  changeActiveSession(session, e) {
+  changeActiveSession(session, e, updateRoute = true) {
     if (e && e.target.type === 'checkbox') {
       return
+    }
+    if (updateRoute) {
+      const path = `/liveChat/${session.firstName}-${session.lastName}-${session.senderId}`
+      window.history.replaceState(null, null, path)
     }
     if (session._id !== this.state.activeSession._id) {
       this.setState({
@@ -448,7 +504,10 @@ class LiveChat extends React.Component {
     if (this.props.user.currentPlan.unique_ID === 'plan_C' || this.props.user.currentPlan.unique_ID === 'plan_D') {
       this.props.loadTeamsList({ pageId: session.pageId._id })
     }
-    this.setState({ activeSession: session })
+    const sessions = this.state.sessions
+    const index = sessions.findIndex((item) => item._id === session._id)
+    sessions[index] = session
+    this.setState({ activeSession: session, sessions })
   }
 
   markSessionsRead(selectedSessions) {
@@ -509,6 +568,19 @@ class LiveChat extends React.Component {
     })
   }
 
+  updateMessageStatus (chatMessages, event) {
+    if(event === 'seen') {
+      var unseenChats = chatMessages.filter(chat => !chat.seen)
+      for (var i = 0; i < unseenChats.length; i++) {
+        unseenChats[i].seen = true
+        unseenChats[i].status = 'seen'
+      }
+    } else if (event === 'delivered') {
+      var undeliveredChats = chatMessages.filter(chat => !chat.delivered)
+      undeliveredChats.map((undeliveredChat, i) => undeliveredChat.delivered = true)
+    }
+  }
+
   UNSAFE_componentWillReceiveProps(nextProps) {
     console.log('UNSAFE_componentWillMount called in live chat', nextProps.userChat)
     console.log('UNSAFE_componentWillMount called in live chat props', this.props.userChat)
@@ -518,6 +590,7 @@ class LiveChat extends React.Component {
     if (nextProps.cannedResponses !== this.props.cannedResponses) {
       this.setState({ cannedResponses: nextProps.cannedResponses })
     }
+
     if (nextProps.openSessions || nextProps.closeSessions) {
       state.loading = false
       state.sessionsLoading = false
@@ -532,6 +605,28 @@ class LiveChat extends React.Component {
       }
       state.sessions = sessions
       state.sessionsCount = this.state.tabValue === 'open' ? nextProps.openCount : nextProps.closeCount
+      this.checkParams(nextProps, sessions)
+    }
+
+    if (nextProps.redirectToSession && nextProps.redirectToSession.sessionId) {
+      if (nextProps.openSessions && nextProps.closeSessions) {
+        nextProps.saveNotificationSessionId({ sessionId: null })
+        let openSessions = nextProps.openSessions
+        let closeSessions = nextProps.closeSessions
+        let openIndex = openSessions.findIndex((session) => session._id === nextProps.redirectToSession.sessionId)
+        let closeIndex = closeSessions.findIndex((session) => session._id === nextProps.redirectToSession.sessionId)
+        if (openIndex !== -1) {
+          state.activeSession = openSessions[openIndex]
+          this.changeActiveSession(openSessions[openIndex])
+          this.changeTab('open')
+        } else if (closeIndex !== -1) {
+          state.activeSession = closeSessions[closeIndex]
+          this.changeActiveSession(closeSessions[closeIndex])
+          this.changeTab('close')
+        } else {
+          state.activeSession = {}
+        }
+      }
     }
 
     if (nextProps.customFields && nextProps.customFieldValues) {
@@ -586,6 +681,17 @@ class LiveChat extends React.Component {
         nextProps.clearSocketData
       )
     }
+    if (nextProps.socketMessageStatus && nextProps.socketMessageStatus.sessionInfo && this.state.activeSession) {
+     if (nextProps.socketMessageStatus.sessionInfo._id === this.state.activeSession._id) {
+        this.updateMessageStatus(nextProps.userChat,nextProps.socketMessageStatus.event)
+      } else  {
+        var chatMessages = this.props.allChatMessages[nextProps.socketMessageStatus.sessionInfo._id]
+        if (chatMessages && chatMessages.length > 0) {
+          this.updateMessageStatus(chatMessages, nextProps.socketMessageStatus.event)
+        }
+      }
+      nextProps.resetSocket()
+    }
   }
 
   render() {
@@ -624,7 +730,7 @@ class LiveChat extends React.Component {
                   videoTutorial={{ visibility: true, videoId: 'bLotpQLvsfE' }}
                 />
               }
-              <div style={{ marginTop: this.props.isMobile ? '20px' : '0px' }} className='row'>
+              <div className='row'>
                 {
                   ((this.props.isMobile && !this.state.showChat) || !this.props.isMobile) &&
                   <SESSIONS
@@ -647,6 +753,8 @@ class LiveChat extends React.Component {
                     fetchSessions={this.fetchSessions}
                     getChatPreview={this.getChatPreview}
                     markSessionsRead={this.markSessionsRead}
+                    superUser={this.props.superUser}
+                    alertMsg={this.alertMsg}
                     selected={this.state.selected}
                     showingBulkActions={this.state.showingBulkActions}
                     showBulkActions={true}
@@ -788,7 +896,10 @@ function mapStateToProps(state) {
     searchChatMsgs: (state.liveChat.searchChat),
     socketData: (state.socketInfo.socketData),
     zoomIntegrations: (state.settingsInfo.zoomIntegrations),
-    cannedResponses: state.settingsInfo.cannedResponses
+    cannedResponses: state.settingsInfo.cannedResponses,
+    superUser: (state.basicInfo.superUser),
+    redirectToSession: state.liveChat.redirectToSession,
+    socketMessageStatus: state.liveChat.socketMessageStatus
 
   }
 }
@@ -834,7 +945,10 @@ function mapDispatchToProps(dispatch) {
     getZoomIntegrations,
     createZoomMeeting,
     setUserChat,
-    loadcannedResponses
+    loadcannedResponses,
+    saveNotificationSessionId,
+    resetSocket,
+    fetchSingleSession
   }, dispatch)
 }
 

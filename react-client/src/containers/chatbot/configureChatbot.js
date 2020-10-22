@@ -17,7 +17,8 @@ import BACKBUTTON from '../../components/extras/backButton'
 // import HELPWIDGET from '../../components/extras/helpWidget'
 import TREESTRUCTURE from '../../components/chatbot/treeStructure'
 import $ from 'jquery'
-
+import { validateAttachment } from '../../global/chatbot'
+import ReactTooltip from 'react-tooltip'
 
 class ConfigureChatbot extends React.Component {
   constructor(props, context) {
@@ -50,6 +51,7 @@ class ConfigureChatbot extends React.Component {
     this.afterDisable = this.afterDisable.bind(this)
     this.showTreeStructure = this.showTreeStructure.bind(this)
     this.closeTreeStructure = this.closeTreeStructure.bind(this)
+    this.validateAttachment = this.validateAttachment.bind(this)
   }
 
   componentDidMount() {
@@ -124,7 +126,7 @@ class ConfigureChatbot extends React.Component {
     this.setState({
       blocks,
       sidebarItems,
-      currentBlock: blocks[0],
+      currentBlock: blocks.find((item) => item.uniqueId === this.state.chatbot.startingBlockId),
       loading: false,
       progress,
       allTriggers
@@ -136,6 +138,7 @@ class ConfigureChatbot extends React.Component {
       return false
     } else {
       let options = data.options
+      options = options.filter((item) => ['home', 'back'].indexOf(item.title.toLowerCase()) === -1)
       if (options && options.length > 0) {
         return true
       } else {
@@ -148,6 +151,7 @@ class ConfigureChatbot extends React.Component {
     for (let i = 0; i < data.length; i++) {
       if (data[i].payload.length > 0) {
         let options = data[i].options
+        options = options.filter((item) => ['home', 'back'].indexOf(item.title.toLowerCase()) === -1)
         if (options && options.length > 0) {
           let blockIds = options.map((item) => item.blockId)
           if (blockIds.includes(current.uniqueId)) {
@@ -168,7 +172,8 @@ class ConfigureChatbot extends React.Component {
             blocks.push({
               title: data[i].options[j].title,
               payload: [],
-              uniqueId: data[i].options[j].blockId
+              uniqueId: data[i].options[j].blockId,
+              options: []
             })
           }
         }
@@ -220,6 +225,7 @@ class ConfigureChatbot extends React.Component {
       this.setState({ chatbot, powerLoading: false })
     } else {
       this.msg.error(res.description || 'Failed to publish chatbot')
+      this.setState({ powerLoading: false })
     }
   }
 
@@ -229,6 +235,10 @@ class ConfigureChatbot extends React.Component {
 
   closeTreeStructure() {
     this.setState({ showTreeStructure: false })
+  }
+
+  validateAttachment (file) {
+    return validateAttachment(file, this.props.automated_options, this.props.user.platform)
   }
 
   componentWillUnmount() {
@@ -260,13 +270,19 @@ class ConfigureChatbot extends React.Component {
               <h3 className='m-subheader__title'>Configure Chatbot - {this.state.chatbot.title}</h3>
             </div>
             <div className='pull-right'>
+              <ReactTooltip
+                id='publish-chatbot'
+                place='bottom'
+                type='dark'
+                effect='solid'
+              />
               <button
                 id='_chatbot_message_area_header_publish'
                 style={{ marginLeft: '10px', borderColor: this.state.chatbot.published ? '#34bfa3' : '#f4516c' }}
                 className={`pull-right btn btn-${this.state.chatbot.published ? 'success' : 'danger'} m-btn m-btn--icon m-btn--icon-only m-btn--custom m-btn--pill m-btn--air`}
                 onClick={this.state.chatbot.published ? this.onDisable : this.onPublish}
                 data-tip={this.state.chatbot.published ? 'Disable Chatbot' : 'Publish Chatbot'}
-                data-place='bottom'
+                data-for='publish-chatbot'
                 disabled={this.state.progress !== 100}
               >
                 {
@@ -275,13 +291,19 @@ class ConfigureChatbot extends React.Component {
                     : <i className="la la-power-off" />
                 }
               </button>
+              <ReactTooltip
+                id='tree-structure'
+                place='bottom'
+                type='dark'
+                effect='solid'
+              />
               <button
                 id='_chatbot_message_area_header_tree'
                 style={{ marginLeft: '10px', borderColor: '#ffb822' }}
                 className="pull-right btn btn-warning m-btn m-btn--icon m-btn--icon-only m-btn--custom m-btn--pill m-btn--air"
                 onClick={this.showTreeStructure}
                 data-tip='View Tree Structure'
-                data-place='bottom'
+                data-for='tree-structure'
               >
                 <i className="fa flaticon-network"></i>
               </button>
@@ -329,6 +351,7 @@ class ConfigureChatbot extends React.Component {
                   sidebarItems={this.state.sidebarItems}
                   allTriggers={this.state.allTriggers}
                   attachmentUploading={this.state.attachmentUploading}
+                  validateAttachment={this.validateAttachment}
                 />
               }
             </div>
@@ -362,7 +385,10 @@ class ConfigureChatbot extends React.Component {
 }
 
 function mapStateToProps(state) {
-  return {}
+  return {
+    automated_options: (state.basicInfo.automated_options),
+    user: (state.basicInfo.user)
+  }
 }
 
 function mapDispatchToProps(dispatch) {

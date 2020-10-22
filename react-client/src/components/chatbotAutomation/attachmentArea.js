@@ -4,6 +4,7 @@ import { isWebURL, validateYoutubeURL } from '../../utility/utils'
 import { Popover, PopoverBody} from 'reactstrap'
 import BUTTONACTION from './buttonAction'
 import CONFIRMATIONMODAL from '../extras/confirmationModal'
+import COMPONENTCONTAINER from './componentContainer'
 
 class AttachmentArea extends React.Component {
   constructor(props, context) {
@@ -287,42 +288,37 @@ class AttachmentArea extends React.Component {
         <div className='col-md-12'>
           <div className="form-group m-form__group">
             <span className='m--font-boldest'>Attachment:</span>
-            <input
-              ref='_upload_attachment_in_chatbot'
-              style={{display: 'none'}}
-              type='file'
-              accept='image/*, video/*, audio/*, application/*, text/*'
-              onChange={this.onFileChange}
-              onClick={(e) => {e.target.value = ''}}
-            />
-            <div className="input-group">
-              <input
-                style={{cursor: this.state.isUploaded && 'not-allowed'}}
-                type="text"
-                id='_attachment_in_chatbot'
-                className="form-control m-input"
-                placeholder="Paste url or upload an attachment"
-                value={this.getInputValue()}
-                onChange={this.onInputChange}
-                disabled={this.state.isUploaded || this.state.waitingForAttachment}
-              />
-              {
-                this.state.isUploaded &&
-                <span onClick={this.removeAttachment} id='_chatbot_message_area_attachment_remove' style={{border: 'none', cursor: 'pointer', backgroundColor: '#eee', boxShadow: 'inset 0 1px 1px rgba(0, 0, 0, .075)'}} className='input-group-addon'>
-                  <span>
-                    <i className='la la-times-circle' />
+              <COMPONENTCONTAINER onRemove={this.props.onRemove}>
+                <div className="input-group">
+                  <input
+                    style={{cursor: this.state.isUploaded && 'not-allowed'}}
+                    type="text"
+                    id='_attachment_in_chatbot'
+                    className="form-control m-input"
+                    placeholder="Paste url or upload an attachment"
+                    value={this.getInputValue()}
+                    onChange={this.onInputChange}
+                    disabled={this.state.isUploaded || this.state.waitingForAttachment}
+                  />
+                  {
+                    this.state.isUploaded &&
+                    <span onClick={this.removeAttachment} id='_chatbot_message_area_attachment_remove' style={{border: 'none', cursor: 'pointer', backgroundColor: '#eee', boxShadow: 'inset 0 1px 1px rgba(0, 0, 0, .075)'}} className='input-group-addon'>
+                      <span>
+                        <i className='la la-times-circle' />
+                      </span>
+                    </span>
+                  }
+                  <span id='_chatbot_message_area_attachment_upload' style={{border: '1px solid #ccc', cursor: 'pointer'}} onClick={this.handleFilChange} className="input-group-addon m--font-boldest">
+                    {
+                      this.state.waitingForAttachment
+                      ? <div id='_chatbot_message_area_attachment_upload_loader' className="m-loader" style={{width: "30px"}} />
+                      : <span>
+                        <i style={{color: '#575962'}} className='fa fa-cloud-upload' /> Upload
+                      </span>
+                    }
                   </span>
-                </span>
-              }
-              <span id='_chatbot_message_area_attachment_upload' style={{border: '1px solid #ccc', cursor: 'pointer'}} onClick={this.handleFilChange} className="input-group-addon m--font-boldest">
-                {
-                  this.state.waitingForAttachment
-                  ? <div id='_chatbot_message_area_attachment_upload_loader' className="m-loader" style={{width: "30px"}} />
-                  : <span>
-                    <i style={{color: '#575962'}} className='fa fa-cloud-upload' /> Upload
-                  </span>
-                }
-              </span>
+                </div>
+              </COMPONENTCONTAINER>
             </div>
             <span id='_cb_ma_attachment_hm' className={`m-form__help m--font-${this.state.invalidUrl ? 'danger' : this.state.waitingForUrlData ? 'info' : 'success'}`}>
               {this.state.inputValue && this.state.helpMessage}
@@ -407,7 +403,6 @@ class AttachmentArea extends React.Component {
             onConfirm={() => this.refs._upload_attachment_in_chatbot.click()}
           />
         </div>
-      </div>
     )
   }
 }

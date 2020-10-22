@@ -17,7 +17,6 @@ export function settingsInfo (state = initialState, action) {
       for (let i = 0; i < oldPermissions.length; i++) {
         if (oldPermissions[i].userId._id === action.data.userId._id) {
           oldPermissions[i] = action.data
-          console.log('updated the data')
         }
       }
       return Object.assign({}, state, {

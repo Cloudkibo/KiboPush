@@ -255,24 +255,28 @@ export function getAPIFailureNGP(data) {
   }
 }
 
-export function enableNGP(API) {
+export function enableNGP(API, msg) {
   return (dispatch) => {
     callApi('api_ngp/enable', 'post', API)
       .then(res => {
         if (res.status === 'success') {
           console.log('enable ngp', res.payload)
           dispatch(enableSuccessNGP(res.payload))
+        } else {
+          msg.error(res.description || 'Failed to enable NGP')
         }
       })
   }
 }
-export function disableNGP(API) {
+export function disableNGP(API, msg) {
   return (dispatch) => {
     callApi('api_ngp/disable', 'post', API)
       .then(res => {
         if (res.status === 'success') {
           console.log('disable', res.payload)
           dispatch(disableSuccessNGP(res.payload))
+        } else {
+          msg.error(res.description || 'Failed to enable NGP')
         }
       })
   }
@@ -390,32 +394,27 @@ export function loadWebhook() {
       })
   }
 }
-export function createEndpoint(data, msg) {
+export function createEndpoint(data, cb) {
   console.log('data for createEndpoint', data)
   return (dispatch) => {
     callApi('webhooks/create', 'post', data)
       .then(res => {
+        if (cb) cb(res)
         if (res.status === 'success') {
-          dispatch(showWebhookResponse('success'))
           dispatch(loadWebhook())
-        } else {
-          //  dispatch(showWebhookResponse(res.description))
-          msg.error(res.description)
         }
       })
   }
 }
-export function editEndpoint(data, msg) {
+export function editEndpoint(data, cb) {
   console.log('data for editEndpoint', data)
   return (dispatch) => {
     callApi('webhooks/edit', 'post', data)
       .then(res => {
+        if (cb) cb(res)
         if (res.status === 'success') {
-          dispatch(showWebhookResponse('success'))
+          // dispatch(showWebhookResponse('success'))
           dispatch(loadWebhook())
-        } else {
-          //  dispatch(showWebhookResponse(res.description))
-          msg.error(res.description)
         }
       })
   }
@@ -434,7 +433,7 @@ export function enabled(data, msg) {
           }
           dispatch(loadWebhook())
         } else {
-           msg.error(res.description)
+           msg.error(res.description || res.payload)
         }
       })
   }
@@ -787,25 +786,29 @@ export function deleteCannedResponse(data, msg) {
   }
 }
 
-export function enable2FA(data) {
+export function enable2FA(data, msg) {
   return (dispatch) => {
     callApi('auth/tfa/setup', 'post', data, 'accounts')
       .then(res => {
         if (res.status === 'success') {
           console.log('response from enable2fa', res)
           dispatch(getuserdetails())
+        } else {
+          msg.error(res.description || 'Failed to enable 2FA')
         }
       })
   }
 }
 
-export function disable2FA(data) {
+export function disable2FA(data, msg) {
   return (dispatch) => {
     callApi('auth/tfa/setup', 'delete', data, 'accounts')
       .then(res => {
         if (res.status === 'success') {
           console.log('response from disabel2fa', res)
           dispatch(getuserdetails())
+        } else {
+          msg.error(res.description || 'Failed to disable 2FA')
         }
       })
   }

@@ -104,7 +104,7 @@ class TriggerArea extends React.Component {
     return (
       <div className='row'>
         <div className='col-md-12'>
-          <div style={{ position: 'relative' }}>
+          <div style={{ position: 'relative', marginRight: '20px' }}>
             <span className='m--font-boldest'>Triggers:</span>
             <CreatableSelect
               components={components}
