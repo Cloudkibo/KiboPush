@@ -166,7 +166,6 @@ import WhatsAppDashboard from './containers/smsWhatsAppDashboard/whatsAppDashboa
 import messengerDashboard from './containers/dashboard/dashboard'
 import Chatbots from './containers/chatbot/chatbot'
 import ChatbotAutomation from './containers/chatbotAutomation/chatbotAutomation'
-import ChatbotAutomationNew from './containers/chatbotAutomationNew/chatbotAutomation'
 import ChatbotSettings from './containers/chatbotAutomation/chatbotSettings'
 import IntegrateZoom from './containers/zoomIntegration/integrateZoom'
 import WhatsAppChatbot from './containers/whatsAppChatbot/whatsAppChatbot'
@@ -187,7 +186,6 @@ const AddSurvey = asyncComponent(() => import("./containers/survey/add_survey"))
 const SurveyResult = asyncComponent(() => import("./containers/survey/SurveyResult"))
 const ConfigureChatbot = asyncComponent(() => import('./containers/chatbot/configureChatbot'))
 const ConfigureChatbotAutomation = asyncComponent(() => import('./containers/chatbotAutomation/configureChatbot'))
-const ConfigureChatbotAutomationNew = asyncComponent(() => import('./containers/chatbotAutomationNew/configureChatbot'))
 const ConfigureCommerceChatbot = asyncComponent(() => import('./containers/commerceChatbot/configureCommerceChatbot'))
 const ChatbotAnalytics = asyncComponent(() => import('./containers/chatbotAutomation/analytics'))
 const WhatsAppChatbotAnalytics = asyncComponent(() => import('./containers/whatsAppChatbot/analytics'))
@@ -406,9 +404,7 @@ const Routes = () => (
     <Route path='/chatbots/configure' component={ConfigureChatbot} onEnter={requireAuth} />
     <Route path='/chatbots' component={Chatbots} onEnter={requireAuth} />
     <Route path='/chatbotAutomation' component={ChatbotAutomation} onEnter={requireAuth} />
-    <Route path='/chatbotAutomationNew' component={ChatbotAutomationNew} onEnter={requireAuth} />
     <Route path='/configureChatbot' component={ConfigureChatbotAutomation} onEnter={requireAuth} />
-    <Route path='/configureChatbotNew' component={ConfigureChatbotAutomationNew} onEnter={requireAuth} />
     <Route path='/ConfigureCommerceChatbot' component={ConfigureCommerceChatbot} onEnter={requireAuth} />
     <Route path='/chatbotSettings' component={ChatbotSettings} onEnter={requireAuth} />
     <Route path='/chatbotAnalytics' component={ChatbotAnalytics} onEnter={requireAuth} />
