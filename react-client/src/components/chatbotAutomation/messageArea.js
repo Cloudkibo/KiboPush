@@ -79,7 +79,10 @@ class MessageArea extends React.Component {
       const attachmentComponent = block.payload.find((item) => item.componentType !== 'text')
       let attachment = {}
       let carouselCards = null
-      let selectedComponent = this.state.selectedComponent
+      let selectedComponent = block.payload.find((item) => item.componentName === 'carousel') ? 'carousel' : ''
+      if (!selectedComponent) {
+        selectedComponent = block.payload.find((item) => item.componentName === 'linkCarousel') ? 'linkCarousel' : ''
+      }
       if (attachmentComponent) {
         selectedComponent = 'attachment'
         switch (attachmentComponent.componentType) {
@@ -179,7 +182,8 @@ class MessageArea extends React.Component {
     if (this.state.carouselCards) {
       payload.push({
         cards: this.state.carouselCards,
-        componentType: 'gallery'
+        componentType: 'gallery',
+        componentName: this.state.selectedComponent
       })
     }
     if (payload.length > 0) {
