@@ -79,8 +79,9 @@ class MessageArea extends React.Component {
       const attachmentComponent = block.payload.find((item) => item.componentType !== 'text')
       let attachment = {}
       let carouselCards = null
-      let selectedComponent = 'attachment'
+      let selectedComponent = this.state.selectedComponent
       if (attachmentComponent) {
+        selectedComponent = 'attachment'
         switch (attachmentComponent.componentType) {
           case 'media':
             attachment = {
@@ -98,8 +99,8 @@ class MessageArea extends React.Component {
             }
             break
           case 'gallery':
-            carouselCards = attachmentComponent.cards
             selectedComponent = 'carousel'
+            carouselCards = attachmentComponent.cards
           default:
             attachment = {
               type: attachmentComponent.componentType,
@@ -435,7 +436,11 @@ class MessageArea extends React.Component {
   }
 
   onSelectComponent (component) {
-    this.setState({selectedComponent: component})
+    if (component === 'carousel' || component === 'linkCarousel') {
+      this.showCarouselModalTrigger.click()
+    } else {
+      this.setState({selectedComponent: component})
+    }
   }
 
   getRemoveModalContent () {
