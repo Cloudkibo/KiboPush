@@ -380,7 +380,6 @@ class Sidebar extends Component {
                 <>
                   {this.showSmartRespliesItem()}
                   {this.showChatbotAutomation()}
-                  {this.showChatbotAutomationNew()}
                   {this.showAutoPostingItem()}
                   {this.showRssIntegrationItem()}
                   {this.showNewsIntegrationItem()}
@@ -733,29 +732,10 @@ class Sidebar extends Component {
   }
 
   showChatbotAutomation() {
-    if (this.props.user && this.props.user.isSuperUser && (this.state.isKiboChat || this.state.isLocalhost)) {
-      return (
-        <li className='m-menu__item' aria-haspopup='true' >
-          <Link to='/chatbotAutomation' className='m-menu__link'>
-            <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
-              <span />
-            </i>
-            <span className='m-menu__link-text'>
-              Chatbot Automation (OLD)
-            </span>
-          </Link>
-        </li>
-      )
-    } else {
-      return (null)
-    }
-  }
-
-  showChatbotAutomationNew() {
     if (this.props.user && (this.state.isKiboChat || this.state.isLocalhost)) {
       return (
         <li className='m-menu__item' aria-haspopup='true' >
-          <Link to='/chatbotAutomationNew' className='m-menu__link'>
+          <Link to='/chatbotAutomation' className='m-menu__link'>
             <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
               <span />
             </i>
