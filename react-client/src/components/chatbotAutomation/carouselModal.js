@@ -8,14 +8,15 @@ class CarouselModal extends React.Component {
   constructor(props) {
     super(props)
     this.cardLimit = 10
+    this.initialCarouselCards = [{
+      fileurl: null,
+      image_url: '',
+      title: '',
+      buttons: [],
+      subtitle: ''
+    }]
     this.state = {
-      cards: this.props.cards ? JSON.parse(JSON.stringify(this.props.cards)) : [{
-        fileurl: null,
-        image_url: '',
-        title: '',
-        buttons: [],
-        subtitle: ''
-      }],
+      cards: this.props.cards ? JSON.parse(JSON.stringify(this.props.cards)) : JSON.parse(JSON.stringify(this.initialCarouselCards)),
       edited: false,
       selectedIndex: 0
     }
@@ -46,6 +47,14 @@ class CarouselModal extends React.Component {
     this.getRequirements = this.getRequirements.bind(this)
     this.closeModal = this.closeModal.bind(this)
     this.handleDone = this.handleDone.bind(this)
+  }
+
+  UNSAFE_componentWillReceiveProps (nextProps) {
+    if (nextProps.cards) {
+      this.setState({cards: JSON.parse(JSON.stringify(nextProps.cards))})
+    } else {
+      this.setState({cards: JSON.parse(JSON.stringify(this.initialCarouselCards))})
+    }
   }
 
   toggleHover(index, hover) {
@@ -122,28 +131,27 @@ class CarouselModal extends React.Component {
   }
 
   handleDone () {
-    this.props.updateParentState({carouselCards: this.state.cards})
+    this.props.updateParentState({carouselCards: this.state.cards, selectedComponent: 'carousel'})
     this.closeModal(true, false)
+  }
+
+  updateCards (cards) {
+    this.setState({cards})
   }
 
   closeModal (force, reinitialize) {
     if (force || !this.state.edited) {
       if (reinitialize) {
-        let cards = [{
-          fileurl: null,
-          image_url: '',
-          title: '',
-          buttons: [],
-          subtitle: ''
-        }]
-        if (this.props.cards) {
-          cards = JSON.parse(JSON.stringify(this.props.cards))
-        }
-        this.setState({cards, edited: false, error : ''}, () => {
+        this.setState({
+          cards: this.props.cards ? JSON.parse(JSON.stringify(this.props.cards)) : JSON.parse(JSON.stringify(this.initialCarouselCards)), 
+          edited: false, 
+          error : '', 
+          selectedIndex: 0
+        }, () => {
           this.closeModalTrigger.click()
         })
       } else {
-        this.setState({edited: false, error: ''}, () => {
+        this.setState({edited: false, error : '', selectedIndex: 0}, () => {
           this.closeModalTrigger.click()
         })
       }
@@ -191,7 +199,7 @@ class CarouselModal extends React.Component {
                 </h5>
                   <button
                     id={`_close${this.props.id}`}
-                    onClick={() => this.closeModal(false, true)}
+                    onClick={() => this.closeModal(false)}
                     style={{ marginTop: "-10px", opacity: "0.5", color: "black" }}
                     type="button"
                     className="close"
@@ -219,15 +227,19 @@ class CarouselModal extends React.Component {
                                     this.removeCard(this.state.selectedIndex)
                                   }
                                   style={{
-                                    transform: "scale(0.8, 0.8)",
                                     marginLeft: "95%",
                                     marginTop: "-23px",
                                     cursor: "pointer",
                                   }}
                                 >
-                                  <span role="img" aria-label="times">
-                                    ❌
-                                  </span>
+                                <i style={{
+                                    cursor: 'pointer',
+                                    zIndex: '1',
+                                    fontSize: '1.5rem'
+                                    }} 
+                                    className="flaticon-circle" 
+                                    onClick={this.props.onRemove}
+                                />
                                 </div>
                               </h4>
                             </div>
@@ -490,7 +502,7 @@ class CarouselModal extends React.Component {
                   <div className="col-6" style={{ marginTop: "-5vh" }}>
                     <div className="pull-right">
                       <button
-                        onClick={() => this.closeModal(false, true)}
+                        onClick={() => this.closeModal(false)}
                         className="btn btn-primary"
                         style={{ marginRight: "20px" }}
                       >

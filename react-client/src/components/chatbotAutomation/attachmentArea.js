@@ -326,82 +326,82 @@ class AttachmentArea extends React.Component {
                     }
                   </span>
                 </div>
-              </COMPONENTCONTAINER>
-            </div>
-            <span id='_cb_ma_attachment_hm' className={`m-form__help m--font-${this.state.invalidUrl ? 'danger' : this.state.waitingForUrlData ? 'info' : 'success'}`}>
-              {this.state.inputValue && this.state.helpMessage}
-            </span>
-          </div>
-          {
-            this.state.attachmentType &&
-            ['file', 'audio'].indexOf(this.state.attachmentType) === -1 &&
-            this.state.buttons.length > 0 &&
-            <button
-              id='_attach_button_in_chatbot'
-              type="button"
-              style={{border: '1px solid #36a3f7'}}
-              className="btn btn-outline-info btn-sm"
-              onClick={this.showPopover}
-            >
-							{this.state.buttons[0].title}
-						</button>
-          }
-          {
-            this.state.attachmentType &&
-            ['file', 'audio'].indexOf(this.state.attachmentType) === -1 &&
-            this.state.buttons.length === 0 &&
-            <button
-              id='_attach_button_in_chatbot'
-              style={{border: 'none', cursor: 'pointer', background: 'none'}}
-              className='m-link m-link--state m-link--info'
-              onClick={this.showPopover}
-            >
-							+ Attach button
-						</button>
-          }
-          {
-            this.state.showPopover &&
-            <div style={{
-                background: 'rgba(33, 37, 41, 0.6)',
-                position: 'fixed',
-                top: 0,
-                bottom: 0,
-                right: 0,
-                left: 0,
-                width: '100vw',
-                height: '100vh',
-                zIndex: 1050
-              }}
-            />
-          }
-          <div id='_action_in_chatbot'>
-            <Popover
-              placement='right'
-              trigger='click'
-              isOpen={this.state.showPopover}
-              className='chatPopover'
-              target={this.state.popoverTarget}
-            >
-              <PopoverBody>
+                <div id='_cb_ma_attachment_hm' className={`m-form__help m--font-${this.state.invalidUrl ? 'danger' : this.state.waitingForUrlData ? 'info' : 'success'}`}>
+                  {this.state.inputValue && this.state.helpMessage}
+                </div>
+                {
+                  this.state.attachmentType &&
+                  ['file', 'audio'].indexOf(this.state.attachmentType) === -1 &&
+                  this.state.buttons.length > 0 &&
+                  <button
+                    id='_attach_button_in_chatbot'
+                    type="button"
+                    style={{border: '1px solid #36a3f7'}}
+                    className="btn btn-outline-info btn-sm"
+                    onClick={this.showPopover}
+                  >
+                    {this.state.buttons[0].title}
+                  </button>
+                }
+                {
+                  this.state.attachmentType &&
+                  ['file', 'audio'].indexOf(this.state.attachmentType) === -1 &&
+                  this.state.buttons.length === 0 &&
+                  <button
+                    id='_attach_button_in_chatbot'
+                    style={{border: 'none', cursor: 'pointer', background: 'none'}}
+                    className='m-link m-link--state m-link--info'
+                    onClick={this.showPopover}
+                  >
+                    + Attach button
+                  </button>
+                }
                 {
                   this.state.showPopover &&
-                  <BUTTONACTION
-                    title={this.state.currentButton.title}
-                    url={this.state.currentButton.url}
-                    webview={this.state.currentButton.messenger_extensions}
-                    webviewHeight={this.state.currentButton.webview_height_ratio}
-                    onCancel={this.togglePopover}
-                    onSave={this.onSaveAction}
-                    onRemove={this.onRemoveAction}
-                    showRemove={this.state.buttons.length > 0}
-                    alertMsg={this.props.alertMsg}
-                    chatbot={this.props.chatbot}
-                    checkWhitelistedDomains={this.props.checkWhitelistedDomains}
-                    toggleWhitelistModal={this.props.toggleWhitelistModal}
+                  <div style={{
+                      background: 'rgba(33, 37, 41, 0.6)',
+                      position: 'fixed',
+                      top: 0,
+                      bottom: 0,
+                      right: 0,
+                      left: 0,
+                      width: '100vw',
+                      height: '100vh',
+                      zIndex: 1050
+                    }}
                   />
                 }
-              </PopoverBody>
-            </Popover>
+                <div id='_action_in_chatbot'>
+                  <Popover
+                    placement='right'
+                    trigger='click'
+                    isOpen={this.state.showPopover}
+                    className='chatPopover'
+                    target={this.state.popoverTarget}
+                  >
+                    <PopoverBody>
+                      {
+                        this.state.showPopover &&
+                        <BUTTONACTION
+                          title={this.state.currentButton.title}
+                          url={this.state.currentButton.url}
+                          webview={this.state.currentButton.messenger_extensions}
+                          webviewHeight={this.state.currentButton.webview_height_ratio}
+                          onCancel={this.togglePopover}
+                          onSave={this.onSaveAction}
+                          onRemove={this.onRemoveAction}
+                          showRemove={this.state.buttons.length > 0}
+                          alertMsg={this.props.alertMsg}
+                          chatbot={this.props.chatbot}
+                          checkWhitelistedDomains={this.props.checkWhitelistedDomains}
+                          toggleWhitelistModal={this.props.toggleWhitelistModal}
+                        />
+                      }
+                    </PopoverBody>
+                  </Popover>
+                </div>
+              </COMPONENTCONTAINER>
+            </div>
           </div>
           <button style={{display: 'none'}} ref='_override_attachment' data-toggle='modal' data-target='#_override_attachment_chatbot' />
           <CONFIRMATIONMODAL
