@@ -11,6 +11,7 @@ import {
   removePageInAddPage,
   loadMyPagesList
 } from '../../redux/actions/pages.actions'
+import { getLandingPage } from '../../utility/utils'
 import { bindActionCreators } from 'redux'
 import $ from 'jquery'
 import AlertContainer from 'react-alert'
@@ -167,7 +168,7 @@ class AddPage extends React.Component {
                       <ul className='nav nav-pills nav-pills--brand m-nav-pills--align-right m-nav-pills--btn-pill m-nav-pills--btn-sm' role='tablist'>
                         <li className='nav-item m-tabs__item'>
                           {this.props.pages && this.props.pages.length > 0
-                            ? <Link to={{ pathname: '/dashboard', state: { loadScript: true } }} className='btn m-btn--pill btn-success'>
+                            ? <Link to={{ pathname: getLandingPage(this.props.user.platform), state: { loadScript: true } }} className='btn m-btn--pill btn-success'>
                               Done
                         </Link>
                             : <Link className='btn m-btn--pill btn-success' disabled>

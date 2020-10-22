@@ -71,6 +71,11 @@ export function loadMyPagesListNew(data, cb) {
   return (dispatch) => {
     callApi(`pages/allConnectedPages`, 'post', data).then(res => {
       console.log('res.payload', res)
+      if (res.status === 'success') {
+        if (cb) {
+          cb(res.payload)
+        }
+      }
       dispatch(updatePagesListNew(res.payload))
     })
   }
