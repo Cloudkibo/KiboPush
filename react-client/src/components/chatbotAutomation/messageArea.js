@@ -5,15 +5,12 @@ import FOOTER from './footer'
 import TEXTAREA from './textArea'
 import ATTACHMENTAREA from './attachmentArea'
 import MOREOPTIONS from './moreOptions'
-import MODAL from '../extras/modal'
 import TRIGGERAREA from './triggerArea'
 import MESSAGEBLOCKUSAGE from './messageBlockUsage'
 import COMPONENTSELECTION from './componentSelection'
 import CAROUSELAREA from './carouselArea'
 import CONFIRMATIONMODAL from '../extras/confirmationModal'
 import CAROUSELMODAL from './carouselModal'
-
-const MessengerPlugin = require('react-messenger-plugin').default
 
 class MessageArea extends React.Component {
   constructor(props, context) {
@@ -33,15 +30,8 @@ class MessageArea extends React.Component {
     this.updateState = this.updateState.bind(this)
     this.afterNext = this.afterNext.bind(this)
     this.setStateData = this.setStateData.bind(this)
-    this.showTestModal = this.showTestModal.bind(this)
-    this.getTestModalContent = this.getTestModalContent.bind(this)
-    this.onPublish = this.onPublish.bind(this)
-    this.onDisable = this.onDisable.bind(this)
     this.onDelete = this.onDelete.bind(this)
     this.afterDelete = this.afterDelete.bind(this)
-    this.toggleTestModalContent = this.toggleTestModalContent.bind(this)
-    this.afterPublish = this.afterPublish.bind(this)
-    this.afterDisable = this.afterDisable.bind(this)
     this.addOption = this.addOption.bind(this)
     this.removeOption = this.removeOption.bind(this)
     this.updateOption = this.updateOption.bind(this)
@@ -57,20 +47,6 @@ class MessageArea extends React.Component {
     if (this.props.block) {
       this.setStateData(this.props.block)
     }
-
-    let comp = this
-    this.props.registerSocketAction({
-      event: 'chatbot.test.message',
-      action: function (data) {
-        comp.props.alertMsg.success('Sent successfully on messenger. Test session is activated on unpublished bot for next 1 hour.')
-        comp.refs._open_test_chatbot_modal.click()
-        comp.toggleTestModalContent()
-      }
-    })
-  }
-
-  toggleTestModalContent () {
-    this.setState({showTestContent: !this.state.showTestContent})
   }
 
   setStateData (block) {
@@ -247,47 +223,6 @@ class MessageArea extends React.Component {
     callback()
   }
 
-  showTestModal () {
-    if (!this.props.superUser) {
-      this.setState({showTestContent: true}, () => {
-        this.refs._open_test_chatbot_modal.click()
-      })
-    } else {
-      this.props.alertMsg.error('You are not allowed to perform this action')
-    }
-  }
-
-  getTestModalContent () {
-    if (this.state.showTestContent) {
-      return (
-        <MessengerPlugin
-          appId={this.props.fbAppId}
-          pageId={this.props.chatbot.pageFbId}
-          size='large'
-          passthroughParams='_chatbot'
-        />
-      )
-    } else {
-      return (<div />)
-    }
-  }
-
-  onPublish (callback) {
-    const data = {
-      chatbotId: this.props.chatbot._id,
-      published: true
-    }
-    this.props.changeActiveStatus(data, (res) => this.afterPublish(res, callback))
-  }
-
-  onDisable (callback) {
-    const data = {
-      chatbotId: this.props.chatbot._id,
-      published: false
-    }
-    this.props.changeActiveStatus(data, (res) => this.afterDisable(res, callback))
-  }
-
   onDelete () {
     this.props.deleteMessageBlock([this.props.block._id], this.afterDelete)
   }
@@ -307,24 +242,6 @@ class MessageArea extends React.Component {
       this.props.updateParentState({blocks, sidebarItems, currentBlock: blocks[0]})
     } else {
       this.props.alertMsg.error(res.description || 'Failed to delete message block')
-    }
-  }
-
-  afterPublish (res, callback) {
-    callback(res)
-    if (res.status === 'success') {
-      let chatbot = this.props.chatbot
-      chatbot.published = true
-      this.props.updateParentState({chatbot})
-    }
-  }
-
-  afterDisable (res, callback) {
-    callback(res)
-    if (res.status === 'success') {
-      let chatbot = this.props.chatbot
-      chatbot.published = false
-      this.props.updateParentState({chatbot})
     }
   }
 
@@ -500,22 +417,14 @@ class MessageArea extends React.Component {
     return (
       <div style={{border: '1px solid #ccc', backgroundColor: 'white', padding: '0px'}} className='col-md-9'>
         <div style={{margin: '0px'}} className='m-portlet m-portlet-mobile'>
-          <div id='_chatbot_message_area' style={{height: '80vh', position: 'relative', padding: '15px', overflowY: 'scroll'}} className='m-portlet__body'>
+          <div id='_chatbot_message_area' style={{height: '70vh', position: 'relative', padding: '15px', overflowY: 'scroll'}} className='m-portlet__body'>
             <HEADER
               title={this.props.block.title}
               showDelete={this.isOrphanBlock()}
               onDelete={this.onDelete}
-              onTest={this.showTestModal}
-              canTest={this.props.progress === 100}
-              canPublish={this.props.progress === 100}
-              onPublish={this.onPublish}
-              onDisable={this.onDisable}
-              isPublished={this.props.chatbot.published}
               alertMsg={this.props.alertMsg}
               onRename={this.renameBlock}
               blocks={this.props.blocks}
-              showAnalytics={this.props.chatbot.published}
-              onAnalytics={this.props.onAnalytics}
             />
             <div className='m--space-30' />
             <TRIGGERAREA
@@ -600,13 +509,6 @@ class MessageArea extends React.Component {
               onPrevious={() => {}}
               emptyBlocks={this.checkEmptyBlock()}
             />
-            <button ref='_open_test_chatbot_modal' style={{display: 'none'}} data-toggle='modal' data-target='#_test_chatbot' />
-            <MODAL
-              id='_test_chatbot'
-              title='Test Chatbot'
-              content={this.getTestModalContent()}
-              onClose={this.toggleTestModalContent}
-            />
             <button style={{display: 'none'}} ref={(el) => this.removeComponentTrigger = el} data-toggle='modal' data-target='#_remove_component' />
             <CONFIRMATIONMODAL
               id='_remove_component'
@@ -636,15 +538,11 @@ MessageArea.propTypes = {
   'chatbot': PropTypes.object.isRequired,
   'uploadAttachment': PropTypes.func.isRequired,
   'handleAttachment': PropTypes.func.isRequired,
-  'currentLevel': PropTypes.number.isRequired,
-  'maxLevel': PropTypes.number.isRequired,
   'blocks': PropTypes.array.isRequired,
   'sidebarItems': PropTypes.array.isRequired,
   'handleMessageBlock': PropTypes.func.isRequired,
-  'fbAppId': PropTypes.string.isRequired,
   'changeActiveStatus': PropTypes.func.isRequired,
   'deleteMessageBlock': PropTypes.func.isRequired,
-  'registerSocketAction': PropTypes.func.isRequired,
   'progress': PropTypes.number.isRequired,
   'updateParentState': PropTypes.func.isRequired,
   'checkWhitelistedDomains': PropTypes.func.isRequired,
