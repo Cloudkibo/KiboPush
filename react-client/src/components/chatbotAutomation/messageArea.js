@@ -127,7 +127,7 @@ class MessageArea extends React.Component {
         triggers: block.triggers || [],
         quickReplies: [],
         carouselCards: null,
-        selectedComponent: ''
+        selectedComponent: this.props.block.uniqueId === block.uniqueId ? this.state.selectedComponent : ''
       })
     }
   }

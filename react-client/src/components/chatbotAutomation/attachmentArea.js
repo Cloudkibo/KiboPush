@@ -36,6 +36,7 @@ class AttachmentArea extends React.Component {
     this.onSaveAction = this.onSaveAction.bind(this)
     this.onRemoveAction = this.onRemoveAction.bind(this)
     this.handleFilChange = this.handleFilChange.bind(this)
+    this.setStateData = this.setStateData.bind(this)
   }
 
   componentDidMount () {
@@ -71,6 +72,7 @@ class AttachmentArea extends React.Component {
         }
       }, doneTypingInterval)
     })
+    this.setStateData(this.props)
     input.addEventListener('keydown', () => {clearTimeout(typingTimer)})
   }
 
@@ -259,15 +261,15 @@ class AttachmentArea extends React.Component {
     }
   }
 
-  UNSAFE_componentWillReceiveProps (nextProps) {
+  setStateData (props) {
     if (!(this.state.waitingForUrlData || this.state.waitingForAttachment)) {
-      if (nextProps.attachment && Object.keys(nextProps.attachment).length > 0) {
+      if (props.attachment && Object.keys(props.attachment).length > 0) {
         this.setState({
-          inputValue: nextProps.attachment.fileData ? (nextProps.attachment.fileData.url || '') : nextProps.attachment.cardData.url,
-          attachment: nextProps.attachment.fileData || {},
-          attachmentType: nextProps.attachment.type,
-          buttons: nextProps.attachment.buttons,
-          isUploaded: nextProps.attachment.fileData && nextProps.attachment.type && !nextProps.attachment.fileData.url ? true : false
+          inputValue: props.attachment.fileData ? (props.attachment.fileData.url || '') : props.attachment.cardData.url,
+          attachment: props.attachment.fileData || {},
+          attachmentType: props.attachment.type,
+          buttons: props.attachment.buttons ? props.attachment.buttons : [],
+          isUploaded: props.attachment.fileData && props.attachment.type && !props.attachment.fileData.url ? true : false
         })
       } else {
         this.setState({
@@ -280,6 +282,10 @@ class AttachmentArea extends React.Component {
         })
       }
     }
+  }
+
+  UNSAFE_componentWillReceiveProps (nextProps) {
+    this.setStateData(nextProps)
   }
 
   render () {
