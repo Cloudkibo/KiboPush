@@ -79,14 +79,11 @@ class MessageArea extends React.Component {
       const attachmentComponent = block.payload.find((item) => item.componentType !== 'text')
       let attachment = {}
       let carouselCards = null
-      let selectedComponent = block.payload.find((item) => item.componentName === 'carousel') ? 'carousel' : ''
-      if (!selectedComponent) {
-        selectedComponent = block.payload.find((item) => item.componentName === 'linkCarousel') ? 'linkCarousel' : ''
-      }
+      let selectedComponent = ''
       if (attachmentComponent) {
-        selectedComponent = 'attachment'
         switch (attachmentComponent.componentType) {
           case 'media':
+            selectedComponent = 'attachment'
             attachment = {
               type: attachmentComponent.mediaType,
               fileurl: attachmentComponent.fileurl,
@@ -95,6 +92,7 @@ class MessageArea extends React.Component {
             }
             break
           case 'card':
+            selectedComponent = 'attachment'
             attachment = {
               type: 'card',
               buttons: attachmentComponent.buttons,
@@ -105,6 +103,7 @@ class MessageArea extends React.Component {
             selectedComponent = 'carousel'
             carouselCards = attachmentComponent.cards
           default:
+            selectedComponent = 'attachment'
             attachment = {
               type: attachmentComponent.componentType,
               fileurl: attachmentComponent.fileurl,
@@ -125,7 +124,9 @@ class MessageArea extends React.Component {
         text: '',
         attachment: {},
         triggers: block.triggers || [],
-        quickReplies: []
+        quickReplies: [],
+        carouselCards: null,
+        selectedComponent: ''
       })
     }
   }
