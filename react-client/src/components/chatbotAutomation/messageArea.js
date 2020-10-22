@@ -102,6 +102,7 @@ class MessageArea extends React.Component {
           case 'gallery':
             selectedComponent = 'carousel'
             carouselCards = attachmentComponent.cards
+            break
           default:
             selectedComponent = 'attachment'
             attachment = {
