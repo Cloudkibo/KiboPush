@@ -52,7 +52,10 @@ class Header extends React.Component {
   }
 
   onTitleChange (e) {
-    this.setState({title: e.target.value})
+    const str = e.target.value
+    if ((str.split(' ').join('').length > 0 || str.length === 0) && str.length <= 20) {
+      this.setState({title: e.target.value})
+    }
   }
 
   UNSAFE_componentWillReceiveProps (nextProps) {
