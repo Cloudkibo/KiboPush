@@ -101,11 +101,23 @@ class Header extends React.Component {
             </h3>
           }
         </div>
+        <div className='col-md-6'>
+          <button
+            id='_chatbot_message_area_header_delete'
+            style={{marginLeft: '10px'}}
+            type='button'
+            className='pull-right btn btn-primary'
+            onClick={() => this.refs._delete_message_block.click()}
+            disabled={!this.props.canDelete}
+          >
+            Delete
+          </button>
+        </div>
         <button style={{display: 'none'}} ref='_delete_message_block' data-toggle='modal' data-target='#_cb_ma_delete_mb' />
         <CONFIRMATIONMODAL
           id='_cb_ma_delete_mb'
           title='Delete Step'
-          description='Are you sure you want to delete this step?'
+          description='Deleting this step will delete all its children (if any) as well. Are you sure you want to delete this step?'
           onConfirm={this.onDelete}
         />
       </div>
@@ -115,9 +127,9 @@ class Header extends React.Component {
 
 Header.propTypes = {
   'title': PropTypes.string.isRequired,
-  'showDelete': PropTypes.bool.isRequired,
   'onDelete': PropTypes.func.isRequired,
-  'blocks': PropTypes.array.isRequired
+  'blocks': PropTypes.array.isRequired,
+  'canDelete': PropTypes.bool.isRequired
 }
 
 export default Header
