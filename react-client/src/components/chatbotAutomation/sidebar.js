@@ -34,6 +34,12 @@ class Sidebar extends React.Component {
     this.gotoEmptyBlock = this.gotoEmptyBlock.bind(this)
     this.isChatbotEmpty = this.isChatbotEmpty.bind(this)
   }
+  
+  setItems (data, currentBlock, blocks) {
+    const items = data.filter((d) => d.parentId && d.parentId.toString() === currentBlock.uniqueId.toString())
+    const emptyBlocks = blocks.filter((item) => item.payload.length === 0)
+    this.setState({items, emptyBlocks: emptyBlocks.length})
+  }
 
   componentDidMount () {
     if (this.props.data && this.props.data.length > 0) {
