@@ -32,12 +32,7 @@ class Sidebar extends React.Component {
     this.afterRestoreBackup = this.afterRestoreBackup.bind(this)
     this.afterSave = this.afterSave.bind(this)
     this.gotoEmptyBlock = this.gotoEmptyBlock.bind(this)
-  }
-
-  setItems (data, currentBlock, blocks) {
-    const items = data.filter((d) => d.parentId && d.parentId.toString() === currentBlock.uniqueId.toString())
-    const emptyBlocks = blocks.filter((item) => item.payload.length === 0)
-    this.setState({items, emptyBlocks: emptyBlocks.length})
+    this.isChatbotEmpty = this.isChatbotEmpty.bind(this)
   }
 
   componentDidMount () {
@@ -227,6 +222,15 @@ class Sidebar extends React.Component {
     }
   }
 
+  isChatbotEmpty () {
+    const notEmptyBlocks = this.props.blocks.filter((item) => item.payload.length > 0)
+    if (notEmptyBlocks.length > 0) {
+      return false
+    } else {
+      return true
+    }
+  }
+
   UNSAFE_componentWillReceiveProps (nextProps) {
     if (nextProps.data && nextProps.data.length > 0) {
       this.expandAll(nextProps.data)
@@ -276,6 +280,7 @@ class Sidebar extends React.Component {
               createBackup={this.createBackup}
               restoreBackup={this.restoreBackup}
               toggleBackupModal={this.toggleBackupModal}
+              emptyChatbot={this.isChatbotEmpty()}
             />
           </div>
           <div
