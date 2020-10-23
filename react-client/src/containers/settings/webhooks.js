@@ -61,16 +61,6 @@ class Webhook extends React.Component {
     if (nextProps.pages) {
       this.setState({pageSelected: nextProps.pages[0]._id})
     }
-    if (nextProps.response) {
-      if (nextProps.response === 'success') {
-        this.msg.success('Webhook saved')
-        var subscriptions = this.state.subscriptions
-        for (var i = 0; i < this.state.subscriptions.length; i++) {
-          subscriptions[i].selected = false
-        }
-        this.setState({url: '', token: '', errorToken: false, errorUrl: '', subscriptions: subscriptions, isShowingModal: false})
-      }
-    }
   }
   componentDidMount () {
     let data = []
@@ -85,7 +75,12 @@ class Webhook extends React.Component {
   }
 
   showDialog () {
-    this.setState({isShowingModal: true, errorUrl: '', errorToken: '', token: ''})
+    let subscriptions = this.state.subscriptions
+    for (var i = 0; i < this.state.subscriptions.length; i++) {
+      subscriptions[i].selected = false
+    }
+    console.log('subscriptions git', subscriptions)
+    this.setState({isShowingModal: true, errorUrl: '', errorToken: '', token: '', url: '', subscriptions: subscriptions})
   }
 
   closeDialog () {
@@ -138,6 +133,7 @@ class Webhook extends React.Component {
     this.setState({pageSelected: e.target.value})
   }
   handleSubscriptionClick (e) {
+    console.log('handleSubscriptionClick')
     var subscriptions = this.state.subscriptions
     var subscriptionsAll = this.state.subscriptions
     if (e.target.value === 'All') {
@@ -352,7 +348,7 @@ class Webhook extends React.Component {
   }
 
   render () {
-    console.log('in render', this.state.subscriptionsEdit)
+    console.log('in render', this.state.subscriptions)
     var alertOptions = {
       offset: 75,
       position: 'bottom right',
