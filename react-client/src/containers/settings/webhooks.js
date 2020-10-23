@@ -57,19 +57,8 @@ class Webhook extends React.Component {
     this.refs.videoWebhook.click()
   }
   UNSAFE_componentWillReceiveProps (nextProps) {
-    console.log('nextProps in webhooks', nextProps)
     if (nextProps.pages) {
       this.setState({pageSelected: nextProps.pages[0]._id})
-    }
-    if (nextProps.response) {
-      if (nextProps.response === 'success') {
-        this.msg.success('Webhook saved')
-        var subscriptions = this.state.subscriptions
-        for (var i = 0; i < this.state.subscriptions.length; i++) {
-          subscriptions[i].selected = false
-        }
-        this.setState({url: '', token: '', errorToken: false, errorUrl: '', subscriptions: subscriptions, isShowingModal: false})
-      }
     }
   }
   componentDidMount () {
@@ -85,14 +74,17 @@ class Webhook extends React.Component {
   }
 
   showDialog () {
-    this.setState({isShowingModal: true, errorUrl: '', errorToken: '', token: ''})
+    let subscriptions = this.state.subscriptions
+    for (var i = 0; i < this.state.subscriptions.length; i++) {
+      subscriptions[i].selected = false
+    }
+    this.setState({isShowingModal: true, errorUrl: '', errorToken: '', token: '', url: '', subscriptions: subscriptions})
   }
 
   closeDialog () {
     this.setState({isShowingModal: false})
   }
   showDialogEdit (webhook) {
-    console.log('webhook got', webhook)
     let subscriptionsEdit = this.state.subscriptionsEdit
     for (var i = 0; i < subscriptionsEdit.length; i++) {
       if (subscriptionsEdit[i].name === 'New Subscriber') {
@@ -182,8 +174,6 @@ class Webhook extends React.Component {
     }
   }
   handleSubscriptionClickEdit (e) {
-    console.log('handleSubscriptionClickEdit', e.target.value)
-    console.log('this.state.subscriptionsEdit', this.state.subscriptionsEdit)
     var subscriptions = this.state.subscriptionsEdit
     if (e.target.value === 'All') {
       if (e.target.checked) {
@@ -216,11 +206,9 @@ class Webhook extends React.Component {
       } else {
         for (var q = 0; q < this.state.subscriptionsEdit.length; q++) {
           if (subscriptions[q].name === e.target.value) {
-            console.log('in if')
             subscriptions[q].selected = false
           }
         }
-        console.log('subscriptions', subscriptions)
         // subscribers[e.target.value].selected = false
         this.setState({subscriptionsEdit: subscriptions, selectAllCheckedEdit: false})
         // this.setState({subscribersDataAll: subscribersAll})
@@ -352,7 +340,6 @@ class Webhook extends React.Component {
   }
 
   render () {
-    console.log('in render', this.state.subscriptionsEdit)
     var alertOptions = {
       offset: 75,
       position: 'bottom right',
@@ -644,7 +631,6 @@ class Webhook extends React.Component {
   }
 }
 function mapStateToProps (state) {
-  console.log('state in webhook', state)
   return {
     webhooks: (state.settingsInfo.webhook),
     response: (state.settingsInfo.response),
