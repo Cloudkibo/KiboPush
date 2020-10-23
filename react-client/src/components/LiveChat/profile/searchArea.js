@@ -103,7 +103,7 @@ class SearchArea extends React.Component {
               <div className='input-group'>
                 <input onChange={this.changeSearchValue} value={this.state.searchValue} type='text' className='form-control' placeholder='Search Messages...' />
                 <span className='input-group-btn'>
-                  <button onClick={this.searchChat} className='btn btn-primary' type='button'>
+                  <button onClick={this.searchChat} className='btn btn-primary' type='button' disabled={this.state.searchValue ? false : true}>
                     Go!
                   </button>
                 </span>
