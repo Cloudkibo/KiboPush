@@ -200,23 +200,30 @@ class Sessions extends React.Component {
                           : <p style={{ marginLeft: '30px' }}>No data to display</p>
                       }
                       {
-                        this.props.sessionsCount > 0 &&
+                        this.props.loadingMoreSession
+                        ? <div className='align-center'>
+                          <center>
+                            <div className="m-loader" style={{ width: "30px", display: "inline-block" }}></div>
+                            <span>Loading...</span>
+                          </center>
+                        </div>
+                        : this.props.sessionsCount > 0 &&
                         this.props.sessionsCount > this.props.sessions.length &&
                         <center style={{ marginBottom: '15px' }}>
                           <i className='fa fa-refresh' style={{ color: '#716aca' }} />&nbsp;
-                        <button
-                            id='load-more-chat-sessions'
-                            className='m-link'
-                            style={{
-                              color: '#716aca',
-                              cursor: 'pointer',
-                              marginTop: '20px',
-                              border: 'none'
-                            }}
-                            onClick={this.onLoadMore}
-                          >
-                            Load More
-                        </button>
+                          <button
+                              id='load-more-chat-sessions'
+                              className='m-link'
+                              style={{
+                                color: '#716aca',
+                                cursor: 'pointer',
+                                marginTop: '20px',
+                                border: 'none'
+                              }}
+                              onClick={this.onLoadMore}
+                            >
+                              Load More
+                          </button>
                         </center>
                       }
                     </div>
@@ -241,7 +248,8 @@ Sessions.propTypes = {
   'updateState': PropTypes.func.isRequired,
   'changeTab': PropTypes.func.isRequired,
   'fetchSessions': PropTypes.func.isRequired,
-  'getChatPreview': PropTypes.func.isRequired
+  'getChatPreview': PropTypes.func.isRequired,
+  'loadingMoreSession': PropTypes.bool.isRequired
 }
 
 Sessions.defaultProps = {

@@ -75,6 +75,7 @@ class LiveChat extends React.Component {
       fetchingChat: false,
       loadingChat: true,
       sessionsLoading: false,
+      loadingMoreSession: false,
       tabValue: 'open',
       numberOfRecords: 25,
       filterSort: -1,
@@ -546,9 +547,9 @@ class LiveChat extends React.Component {
       for (let i = 0; i < sessions.length; i++) {
         sessions[i].selected = false
       }
-      this.setState({ sessions, allSelected: false, selected: [], showingBulkActions: false })
+      this.setState({ sessions, allSelected: false, selected: [], showingBulkActions: false, loadingMoreSession: true })
     } else {
-      this.setState({ allSelected: false })
+      this.setState({ allSelected: false, loadingMoreSession: true })
     }
   }
 
@@ -588,6 +589,7 @@ class LiveChat extends React.Component {
     if (nextProps.openSessions || nextProps.closeSessions) {
       state.loading = false
       state.sessionsLoading = false
+      state.loadingMoreSession = false
       let sessions = this.state.tabValue === 'open' ? nextProps.openSessions : nextProps.closeSessions
       sessions = sessions || []
       let index = sessions.findIndex((session) => session._id === this.state.activeSession._id)
@@ -725,6 +727,7 @@ class LiveChat extends React.Component {
                   <SESSIONS
                     pages={this.props.pages}
                     loading={this.state.sessionsLoading}
+                    loadingMoreSession={this.state.loadingMoreSession}
                     tabValue={this.state.tabValue}
                     sessions={this.state.sessions}
                     sessionsCount={this.state.sessionsCount}
