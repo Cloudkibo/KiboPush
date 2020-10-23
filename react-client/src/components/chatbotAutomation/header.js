@@ -41,6 +41,8 @@ class Header extends React.Component {
   }
 
   onRename () {
+    let error = ''
+    if (this.state.title) {
     const titles = this.props.blocks.map((item) => item.title.toLowerCase())
     if (titles.indexOf(this.state.title.toLowerCase()) > -1) {
       this.props.alertMsg.error('A block with this title already exists. Please choose a diffrent title')
@@ -49,10 +51,19 @@ class Header extends React.Component {
         this.props.onRename(this.state.title)
       })
     }
+   } else {
+      error = 'Title can not be empty.'
+   }
+   if (error) {
+    this.props.alertMsg.error(error)
   }
+}
 
   onTitleChange (e) {
-    this.setState({title: e.target.value})
+    const str = e.target.value
+    if ((str.split(' ').join('').length > 0 || str.length === 0) && str.length <= 20) {
+      this.setState({title: e.target.value})
+    }
   }
 
   UNSAFE_componentWillReceiveProps (nextProps) {
