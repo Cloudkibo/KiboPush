@@ -10,8 +10,12 @@ class Sidebar extends React.Component {
     this.state = {
       expandedNodes: [],
       backup: '',
-      showBackup: false
+      showBackup: false,
+      items: [],
+      selectedItem: '',
+      emptyBlocks: 0
     }
+    this.setItems = this.setItems.bind(this)
     this.getCollapseIcon = this.getCollapseIcon.bind(this)
     this.getExpandIcon = this.getExpandIcon.bind(this)
     this.getItems = this.getItems.bind(this)
@@ -27,11 +31,19 @@ class Sidebar extends React.Component {
     this.afterCreateBackup = this.afterCreateBackup.bind(this)
     this.afterRestoreBackup = this.afterRestoreBackup.bind(this)
     this.afterSave = this.afterSave.bind(this)
+    this.gotoEmptyBlock = this.gotoEmptyBlock.bind(this)
+  }
+
+  setItems (data, currentBlock, blocks) {
+    const items = data.filter((d) => d.parentId && d.parentId.toString() === currentBlock.uniqueId.toString())
+    const emptyBlocks = blocks.filter((item) => item.payload.length === 0)
+    this.setState({items, emptyBlocks: emptyBlocks.length})
   }
 
   componentDidMount () {
     if (this.props.data && this.props.data.length > 0) {
       this.expandAll(this.props.data)
+      this.setItems(this.props.data, this.props.currentBlock, this.props.blocks)
     }
   }
 
@@ -218,6 +230,28 @@ class Sidebar extends React.Component {
   UNSAFE_componentWillReceiveProps (nextProps) {
     if (nextProps.data && nextProps.data.length > 0) {
       this.expandAll(nextProps.data)
+      this.setItems(nextProps.data, nextProps.currentBlock, nextProps.blocks)
+    }
+  }
+
+  gotoEmptyBlock () {
+    const block = this.props.blocks.find((item) => item.payload.length === 0)
+    if (this.props.unsavedChanges) {
+      if (this.props.currentBlock.payload && this.props.currentBlock.payload.length === 0) {
+        this.props.alertMsg.error('Text or attachment is required')
+      } else {
+        const data = {
+          triggers: this.props.currentBlock.triggers,
+          uniqueId: `${this.props.currentBlock.uniqueId}`,
+          title: this.props.currentBlock.title,
+          chatbotId: this.props.chatbot._id,
+          payload: this.props.currentBlock.payload
+        }
+        console.log('data to save for message block', data)
+        this.props.handleMessageBlock(data, (res) => this.afterSave(res, data, block))
+      }
+    } else {
+      this.props.updateParentState({currentBlock: block})
     }
   }
 
@@ -247,7 +281,7 @@ class Sidebar extends React.Component {
           <div
             style={{
               position: 'absolute',
-              bottom: 0,
+              bottom: 30,
               left: 0,
               width: '100%',
               paddinng: '1.1rem',
@@ -255,7 +289,7 @@ class Sidebar extends React.Component {
             }}
             className="m-portlet__foot"
           >
-            <div className="row align-items-center">
+            <div className="align-items-center">
               <div className="col-lg-12">
                 <button
                   ref='chatbotBackup'
@@ -273,11 +307,47 @@ class Sidebar extends React.Component {
                   className="m-link m--font-boldest m-btn m-btn--icon"
                   onClick={this.openBackupModal}
                 >
+                <br/>
                   <span>
                     <i className='fa fa-cloud-upload'/>
                     <span>Backup</span>
                   </span>
                 </button>
+              </div>
+            </div>
+          </div>
+          <div
+            style={{
+              position: 'absolute',
+              bottom: 0,
+              left: 0,
+              width: '100%',
+              paddinng: '1.1rem',
+              borderTop: 'none'
+            }}
+            className="m-portlet__foot"
+          >
+            <div className="row align-items-center">
+              <div className="col-lg-12">
+                <span className='pull-right'>
+                  Empty blocks: {this.state.emptyBlocks}
+                  {
+                    this.state.emptyBlocks > 0 &&
+                    <button
+                      style={{
+                        background: 'none',
+                        border: 'none',
+                        cursor: 'pointer'
+                      }}
+                      onClick={this.gotoEmptyBlock}
+                      className="m-link m--font-boldest m-btn"
+                    >
+                      <span>
+                        (Fix)
+                      </span>
+                    </button>
+                  }
+                </span>
               </div>
             </div>
           </div>
