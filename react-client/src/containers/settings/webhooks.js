@@ -5,7 +5,7 @@ import { loadMyPagesList } from '../../redux/actions/pages.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import AlertContainer from 'react-alert'
-import { isWebURL } from './../../utility/utils'
+import { isWebURL, getCurrentProduct } from './../../utility/utils'
 import YouTube from 'react-youtube'
 import HELPWIDGET from '../../components/extras/helpWidget'
 
@@ -27,7 +27,8 @@ class Webhook extends React.Component {
       pageEdit: '',
       id: '',
       openVideo: false,
-      loading: false
+      loading: false,
+      webhook: null
     }
     props.loadWebhook()
     props.loadMyPagesList()
@@ -73,12 +74,11 @@ class Webhook extends React.Component {
   }
   componentDidMount () {
     let data = []
-    window.location.hostname === 'skibochat.cloudkibo.com' || window.location.hostname === 'kibochat.cloudkibo.com'
+    getCurrentProduct() === 'KiboChat' || getCurrentProduct() === 'localhost'
     ? data = [{'name': 'New Subscriber', selected: false},
       {'name': 'Chat Message', selected: false},
       {'name': 'Chatbot Option Selected', selected: false},
-      {'name': 'Session Assignment', selected: false},
-      {'name': 'Checkbox Optin', selected: false}]
+      {'name': 'Session Assignment', selected: false}]
     : data = [{'name': 'New Subscriber', selected: false},
       {'name': 'Checkbox Optin', selected: false}]
     this.setState({subscriptionsEdit: data, subscriptions: data})
@@ -109,6 +109,7 @@ class Webhook extends React.Component {
     }
     let all = subscriptionsEdit.filter(s => !s.selected)
     this.setState({
+      webhook: webhook,
       pageEdit: webhook.pageId,
       id: webhook._id,
       urlEdit: webhook.webhook_url,
@@ -250,9 +251,9 @@ class Webhook extends React.Component {
           optIn['SESSION_UNASSIGNED'] = this.state.subscriptions[i].selected
         }
       }
-      this.cancel()
       this.props.createEndpoint({pageId: this.state.pageSelected, webhook_url: this.state.url, token: this.state.token, optIn: optIn}, (res) => {
         if (res.status === 'success') {
+          this.cancel()
           this.setState({loading: false})
           this.refs.createModal.click()
           this.msg.success('webhook saved successfully')
@@ -318,7 +319,17 @@ class Webhook extends React.Component {
           optIn['SESSION_UNASSIGNED'] = this.state.subscriptionsEdit[i].selected
         }
       }
-      this.props.editEndpoint({_id: this.state.id, webhook_url: this.state.urlEdit, token: this.state.token, optIn: optIn}, (res) => {
+      if (getCurrentProduct() === 'KiboEngage') {
+        optIn['SESSION_ASSIGNED'] = this.state.webhook.optIn.SESSION_ASSIGNED
+        optIn['SESSION_UNASSIGNED'] = this.state.webhook.optIn.SESSION_UNASSIGNED
+        optIn['CHATBOT_OPTION_SELECTED'] = this.state.webhook.optIn.CHATBOT_OPTION_SELECTED
+        optIn['CHAT_MESSAGE'] = this.state.webhook.optIn.CHAT_MESSAGE
+      }
+      if (getCurrentProduct() === 'KiboChat' || getCurrentProduct() === 'localhost') {
+        optIn['CHECKBOX_OPTIN'] = this.state.webhook.optIn.CHECKBOX_OPTIN
+      }
+      this.props.editEndpoint(
+        {_id: this.state.id, webhook_url: this.state.urlEdit, token: this.state.token, optIn: optIn}, (res) => {
         if (res.status === 'success') {
           this.setState({loading: false})
           this.refs.editModal.click()
