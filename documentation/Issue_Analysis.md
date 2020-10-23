@@ -6,6 +6,7 @@ For any bug, please don’t rush to just fix it. I know most of them would be ei
 2. Identify the commit and developer who is responsible for that change.
 3. What is the way that we can ensure that this code doesn’t break again.
 4. Don’t just blindly fix by doing the reverse of code that broke it. There must be some reason for writing of that code. Explain the reason before you put fix.
+5. If it is a **Sentry** bug, then developer should go and resolve it from Sentry afer making resolved on production.
 
 **Note:** I won’t accept the pull request if I don’t get answers to these questions before the fix.
 
