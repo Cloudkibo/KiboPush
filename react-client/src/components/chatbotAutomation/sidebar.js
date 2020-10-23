@@ -281,22 +281,22 @@ class Sidebar extends React.Component {
           <div
             style={{
               position: 'absolute',
-              bottom: 30,
+              bottom: 0,
               left: 0,
               width: '100%',
-              paddinng: '1.1rem',
+              padding: '1.2rem',
               borderTop: 'none'
             }}
             className="m-portlet__foot"
           >
-            <div className="align-items-center">
+            <div className="row align-items-center">
+              <button
+                ref='chatbotBackup'
+                style={{display: 'none'}}
+                data-toggle='modal'
+                data-target='#_chatbot_backup_modal'
+              />
               <div className="col-lg-12">
-                <button
-                  ref='chatbotBackup'
-                  style={{display: 'none'}}
-                  data-toggle='modal'
-                  data-target='#_chatbot_backup_modal'
-                />
                 <button
                   style={{
                     background: 'none',
@@ -315,18 +315,7 @@ class Sidebar extends React.Component {
                 </button>
               </div>
             </div>
-          </div>
-          <div
-            style={{
-              position: 'absolute',
-              bottom: 0,
-              left: 0,
-              width: '100%',
-              paddinng: '1.1rem',
-              borderTop: 'none'
-            }}
-            className="m-portlet__foot"
-          >
+            <div className='m--space-10' />
             <div className="row align-items-center">
               <div className="col-lg-12">
                 <span className='pull-right'>
