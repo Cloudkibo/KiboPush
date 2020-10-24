@@ -7,8 +7,9 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import AlertContainer from 'react-alert'
 import { isWebURL, isWebViewUrl } from './../../utility/utils'
-import { saveWhiteListDomains, fetchWhiteListedDomains, deleteDomain } from '../../redux/actions/settings.actions'
+import { saveWhiteListDomains, fetchWhiteListedDomains } from '../../redux/actions/settings.actions'
 import URL from 'url'
+import { Prompt } from 'react-router'
 
 class WhiteListDomains extends React.Component {
   constructor (props, context) {
@@ -16,7 +17,8 @@ class WhiteListDomains extends React.Component {
     this.state = {
       domainText: '',
       domains: [],
-      selectPage: {}
+      selectPage: {},
+      unsavedChanges: false
     }
     this.onDomainTextChange = this.onDomainTextChange.bind(this)
     this.saveDomain = this.saveDomain.bind(this)
@@ -24,29 +26,47 @@ class WhiteListDomains extends React.Component {
     this.onPageChange = this.onPageChange.bind(this)
     this.handleSaveDomain = this.handleSaveDomain.bind(this)
     this.handleFetch = this.handleFetch.bind(this)
-    this.handleDeleteDomain = this.handleDeleteDomain.bind(this)
+    this.onKeyPressDomainInput = this.onKeyPressDomainInput.bind(this)
   }
 
+  onKeyPressDomainInput (event) {
+    if (event.key === 'Enter') {
+      let domains = this.state.domains
+      console.log('entered domain', URL.parse(this.state.domainText))
+      for (var i = 0; i < domains.length; i++) {
+        console.log('domains', URL.parse(domains[i]))
+         if (URL.parse(domains[i]).href === URL.parse(this.state.domainText).href) {
+           this.msg.error('Domain is already whitelisted')
+           return
+         }
+  
+      }
+      if (isWebURL(this.state.domainText)) {
+        if (!isWebViewUrl(this.state.domainText)) {
+          return this.msg.error('Webview must include a protocol identifier e.g.(https://)')
+        }
+        domains.push(this.state.domainText)
+        this.setState({
+          domains: domains,
+          domainText: '',
+          unsavedChanges: true
+        })
+      }
+    }
+  }
   handleFetch (resp) {
     if (resp.status === 'success') {
       this.setState({domains: resp.payload})
     }
   }
-  handleDeleteDomain (resp) {
-    if (resp.status === 'success') {
-      this.setState({domains: resp.payload})
-      this.msg.success('Domain deleted successfully')
-    }
-  }
   handleSaveDomain (resp) {
-    if (resp.status === 'success') {
-      var domains = resp.payload
+      var domains = resp.whitelistDomains
       this.setState({
         domains: domains,
-        domainText: ''
+        domainText: '',
+        unsavedChanges: false
       })
-      this.msg.success('Domain saved successfully')
-    }
+      this.msg.success('Domains saved successfully')
   }
 
   selectPage () {
@@ -95,29 +115,22 @@ class WhiteListDomains extends React.Component {
     })
   }
   removeDomain (value) {
-    var payload = {page_id: this.state.selectPage.pageId, whitelistDomain: value}
-    this.props.deleteDomain(payload, this.msg, this.handleDeleteDomain)
-  }
-  saveDomain () {
     let domains = this.state.domains
-    console.log('entered domain', URL.parse(this.state.domainText))
+    let domainsArray = []
     for (var i = 0; i < domains.length; i++) {
       console.log('domains', URL.parse(domains[i]))
-       if (URL.parse(domains[i]).href === URL.parse(this.state.domainText).href) {
-         this.msg.error('Domain is already whitelisted')
-         return
+       if (URL.parse(domains[i]).href !== URL.parse(value).href) {
+        domainsArray.push(domains[i])
        }
-
     }
-    if (isWebURL(this.state.domainText)) {
-      if (!isWebViewUrl(this.state.domainText)) {
-        return this.msg.error('Webview must include a protocol identifier e.g.(https://)')
-      }
-      var payload = {page_id: this.state.selectPage.pageId, whitelistDomains: [this.state.domainText]}
+    this.setState({
+      domains: domainsArray,
+      unsavedChanges: true
+    })
+  }
+  saveDomain () {
+      var payload = {page_id: this.state.selectPage.pageId, whitelistDomains: this.state.domains}
       this.props.saveWhiteListDomains(payload, this.msg, this.handleSaveDomain)
-    } else {
-      this.msg.error('Please enter a valid URL, including the protocol identifier (e.g. "https://"")')
-    }
   }
   UNSAFE_componentWillReceiveProps (nextProps) {
   }
@@ -131,6 +144,10 @@ class WhiteListDomains extends React.Component {
     }
     return (
       <div id='target' className='col-lg-8 col-md-8 col-sm-8 col-xs-12'>
+        <Prompt
+          when={this.state.unsavedChanges}
+          message='You have unsaved changes, are you sure you want to leave?'
+        />
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div className='m-portlet m-portlet--full-height m-portlet--tabs  '>
           <div className='m-portlet__head'>
@@ -177,10 +194,10 @@ class WhiteListDomains extends React.Component {
                     </div>
                   }
                   <div className='form-group m-form__group m--margin-top-10'>
-                    <input className='form-control m-input m-input--air' placeholder='Enter valid domain' value={this.state.domainText} onChange={this.onDomainTextChange} />
+                    <input className='form-control m-input m-input--air' placeholder='Add a valid domain and press Enter' value={this.state.domainText} onChange={this.onDomainTextChange} onKeyPress={this.onKeyPressDomainInput} />
                   </div>
                   <div className='input-group pull-right'>
-                    <button className='btn btn-primary pull-right' disabled={this.state.domainText === ''} onClick={this.saveDomain}>Save</button>
+                    <button className='btn btn-primary pull-right' disabled={!this.state.unsavedChanges} onClick={this.saveDomain}>Save</button>
                   </div>
                 </div>
               </div>
@@ -200,8 +217,7 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     fetchWhiteListedDomains: fetchWhiteListedDomains,
-    saveWhiteListDomains: saveWhiteListDomains,
-    deleteDomain: deleteDomain
+    saveWhiteListDomains: saveWhiteListDomains
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(WhiteListDomains)
