@@ -66,7 +66,7 @@ class WhiteListDomains extends React.Component {
         domainText: '',
         unsavedChanges: false
       })
-      this.msg.success('Domains saved successfully')
+      this.msg.success('Whitelisted domains updated successfully')
   }
 
   selectPage () {
@@ -165,6 +165,18 @@ class WhiteListDomains extends React.Component {
           <div className='tab-content'>
             <div className='tab-pane active' id='m_user_profile_tab_1'>
               <div className='m-portlet__body'>
+              {
+                this.state.unsavedChanges &&
+                <div className='m-alert m-alert--icon m-alert--icon-solid m-alert--outline alert alert-warning alert-dismissible fade show' role='alert'>
+                  <div className='m-alert__icon'>
+                    <i className='flaticon-exclamation-1' style={{ color: 'white' }} />
+                    <span />
+                  </div>
+                  <div className='m-alert__text'>
+                    You have unsaved changes. Click on 'Save' to update whitelisted domains.
+                  </div>
+                </div>
+              }
                 <div className='m-form '>
                   <div className='form-group m-form__group row'>
                     <label className='col-3 col-form-label' style={{textAlign: 'left'}}>Select Page</label>
@@ -193,8 +205,13 @@ class WhiteListDomains extends React.Component {
                       }
                     </div>
                   }
-                  <div className='form-group m-form__group m--margin-top-10'>
-                    <input className='form-control m-input m-input--air' placeholder='Add a valid domain and press Enter' value={this.state.domainText} onChange={this.onDomainTextChange} onKeyPress={this.onKeyPressDomainInput} />
+                  <div className='form-group m-form__group row'>
+                    <div className='col-12'>
+                      <label className='col-form-label' style={{textAlign: 'left'}}>Add a valid domain and press Enter</label>
+                    </div>
+                    <div className='col-12'>
+                      <input className='form-control m-input m-input--air' placeholder='Ex: https://www.kibopush.com' value={this.state.domainText} onChange={this.onDomainTextChange} onKeyPress={this.onKeyPressDomainInput} />
+                    </div>
                   </div>
                   <div className='input-group pull-right'>
                     <button className='btn btn-primary pull-right' disabled={!this.state.unsavedChanges} onClick={this.saveDomain}>Save</button>
