@@ -326,7 +326,7 @@ class LiveChat extends React.Component {
           chatPreview = `${chatPreview}: ${message.text}`
         }
       } else {
-        chatPreview = `${chatPreview}: ${message.text}`
+        chatPreview = `${chatPreview}: ${message.text ? message.text: message.link}`
       }
     }
     return chatPreview
