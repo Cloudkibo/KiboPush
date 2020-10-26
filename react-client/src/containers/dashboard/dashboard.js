@@ -590,7 +590,7 @@ class Dashboard extends React.Component {
                 }
               </div>
               {
-                !this.props.isMobile && (url.includes('kibochat.cloudkibo.com') || url.includes('kiboengage.cloudkibo.com')) &&
+                !this.props.isMobile && (url.includes('kibochat.cloudkibo.com') || url.includes('localhost') || url.includes('kiboengage.cloudkibo.com')) &&
                 <div className='row'>
                   <SubscriberSummary includeZeroCounts={this.includeZeroCounts} msg={this.msg} />
                 </div>
