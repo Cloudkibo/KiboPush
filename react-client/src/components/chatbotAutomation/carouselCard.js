@@ -110,23 +110,14 @@ class CarouselCard extends React.Component {
               </div>
             </div>
           </div>
-          {/* <AddButton
-            cardId={this.props.id}
-            edit={this.props.edit}
-            required={this.props.onlyCard}
-            replyWithMessage={this.props.replyWithMessage}
-            buttons={this.state.buttons}
-            finalButtons={this.props.card.component.buttons}
-            pageId={this.props.pageId}
-            buttonLimit={this.state.buttonLimit}
-            buttonActions={this.state.buttonActions}
-            ref={(ref) => { this.AddButton = ref }}
-            updateButtonStatus={this.updateStatus}
-            toggleGSModal={this.props.toggleGSModal}
-            closeGSModal={this.props.closeGSModal}
-            addComponent={(buttons) => this.addCard(buttons)}
-            disabled={this.props.disabled}
-            /> */}
+            <CarouselButton
+              button={this.props.card.buttons[0]}
+              alertMsg={this.props.alertMsg}
+              blocks={this.props.blocks}
+              cardIndex={this.props.index}
+              updateButtonOption={this.props.updateButtonOption}
+              buttonOption={this.props.card.buttonOption}
+            />
         </div>
       </div>
     )

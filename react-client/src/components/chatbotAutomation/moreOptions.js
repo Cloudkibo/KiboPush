@@ -89,7 +89,7 @@ class MoreOptions extends React.Component {
                 ))
               }
               {
-                this.props.currentLevel < this.props.maxLevel && this.state.options.length < 13 &&
+                this.state.options.length < 13 &&
                 <button
                   style={{border: 'none', cursor: 'pointer', background: 'none'}}
                   className='m-link m-link--state m-link--info'
@@ -127,6 +127,7 @@ class MoreOptions extends React.Component {
                   payloadAction={this.state.selectedOption.payloadAction || ''}
                   alertMsg={this.props.alertMsg}
                   isCreatable={this.props.isCreatable}
+                  type='quickReply'
                 />
               }
             </PopoverBody>
