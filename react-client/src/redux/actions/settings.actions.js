@@ -347,7 +347,7 @@ export function saveWhiteListDomains(data, msg, handleResponse) {
     callApi('pages/whitelistDomain', 'post', data)
       .then(res => {
         if (res.status === 'success') {
-          handleResponse(res)
+          handleResponse(res.payload)
         } else {
           msg.error(res.description)
         }

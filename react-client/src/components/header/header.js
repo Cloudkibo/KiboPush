@@ -23,11 +23,11 @@ import {
 import { fetchNotifications, markRead } from '../../redux/actions/notifications.actions'
 import AlertContainer from 'react-alert'
 import { getLandingPage } from '../../utility/utils'
+import cookie from 'react-cookie'
 
 // Components
 import HEADERMENU from './headerMenu'
 import HEADERTOPBAR from './headerTopbar'
-import cookie from 'react-cookie'
 
 // styles
 const darkSkinStyle = {
@@ -175,7 +175,7 @@ class Header extends React.Component {
     // e.target.src = 'https://emblemsbf.com/img/27447.jpg'
     this.props.updatePicture({ user: this.props.user })
   }
- 
+
   logout(res) {
     if (res.status === 'success') {
       this.props.updateShowIntegrations({ showIntegrations: true })
