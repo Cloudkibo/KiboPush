@@ -55,14 +55,17 @@ class Backup extends React.Component {
             </div>
           </div>
           <div style={{textAlign: 'center'}} className='col-md-6'>
-            <button
-              type="button"
-              className={`btn m-btn--pill m-btn--air btn-outline-primary ${this.state.waitingForCreate && 'm-loader m-loader--light m-loader--left'}`}
-              style={{border: '1px solid #5867dd', margin: '5px'}}
-              onClick={this.onCreate}
-            >
-              Create New Backup
-            </button>
+            {
+              !this.props.emptyChatbot &&
+              <button
+                type="button"
+                className={`btn m-btn--pill m-btn--air btn-outline-primary ${this.state.waitingForCreate && 'm-loader m-loader--light m-loader--left'}`}
+                style={{border: '1px solid #5867dd', margin: '5px'}}
+                onClick={this.onCreate}
+              >
+                Override Backup
+              </button>
+            }
             <button
               type="button"
               className={`btn m-btn--pill m-btn--air btn-outline-primary ${this.state.waitingForRestore && 'm-loader m-loader--light m-loader--left'}`}
@@ -72,6 +75,20 @@ class Backup extends React.Component {
   						Restore Backup
   					</button>
           </div>
+        </div>
+      )
+    } else if (this.props.emptyChatbot) {
+      return (
+        <div style={{textAlign: 'center'}}>
+          <p>You can not create backup for an empty chatbot. Please feed some data to chatbot and then try to create backup.</p>
+          <button
+            type="button"
+            className={`btn m-btn--pill m-btn--air btn-outline-primary`}
+            style={{border: '1px solid #5867dd'}}
+            onClick={this.props.toggleBackupModal}
+          >
+						Ok
+					</button>
         </div>
       )
     } else {
@@ -116,7 +133,8 @@ Backup.propTypes = {
   'data': PropTypes.any,
   'createBackup': PropTypes.func.isRequired,
   'restoreBackup': PropTypes.func.isRequired,
-  'toggleBackupModal': PropTypes.func.isRequired
+  'toggleBackupModal': PropTypes.func.isRequired,
+  'emptyChatbot': PropTypes.bool.isRequired
 }
 
 export default Backup
