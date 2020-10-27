@@ -10,6 +10,8 @@ import { isWebURL, isWebViewUrl } from './../../utility/utils'
 import { saveWhiteListDomains, fetchWhiteListedDomains } from '../../redux/actions/settings.actions'
 import URL from 'url'
 import { Prompt } from 'react-router'
+import { Link } from 'react-router-dom'
+import { RingLoader } from 'halogenium'
 
 class WhiteListDomains extends React.Component {
   constructor (props, context) {
@@ -18,7 +20,8 @@ class WhiteListDomains extends React.Component {
       domainText: '',
       domains: [],
       selectPage: {},
-      unsavedChanges: false
+      unsavedChanges: false,
+      loading: true
     }
     this.onDomainTextChange = this.onDomainTextChange.bind(this)
     this.saveDomain = this.saveDomain.bind(this)
@@ -27,6 +30,18 @@ class WhiteListDomains extends React.Component {
     this.handleSaveDomain = this.handleSaveDomain.bind(this)
     this.handleFetch = this.handleFetch.bind(this)
     this.onKeyPressDomainInput = this.onKeyPressDomainInput.bind(this)
+    this.revertChanges = this.revertChanges.bind(this)
+  }
+
+  revertChanges () {
+    var pageId = null
+    if (this.state.selectPage.pageId) {
+      pageId = this.state.selectPage.pageId
+    } else {
+      pageId = this.props.pages[0].pageId
+    }
+    this.setState({loading: true})
+    this.props.fetchWhiteListedDomains(pageId, this.handleFetch)
   }
 
   onKeyPressDomainInput (event) {
@@ -56,7 +71,7 @@ class WhiteListDomains extends React.Component {
   }
   handleFetch (resp) {
     if (resp.status === 'success') {
-      this.setState({domains: resp.payload})
+      this.setState({domains: resp.payload, unsavedChanges: false, loading: false})
     }
   }
   handleSaveDomain (resp) {
@@ -64,7 +79,8 @@ class WhiteListDomains extends React.Component {
       this.setState({
         domains: domains,
         domainText: '',
-        unsavedChanges: false
+        unsavedChanges: false,
+        loading: false
       })
       this.msg.success('Whitelisted domains updated successfully')
   }
@@ -93,7 +109,8 @@ class WhiteListDomains extends React.Component {
       if (page) {
         this.setState({
           selectPage: page,
-          domainText: ''
+          domainText: '',
+          loading: true
         })
       }
       this.props.fetchWhiteListedDomains(page.pageId, this.handleFetch)
@@ -173,15 +190,14 @@ class WhiteListDomains extends React.Component {
                     <span />
                   </div>
                   <div className='m-alert__text'>
-                    You have unsaved changes. Click on 'Save' to update whitelisted domains.
+                    You have unsaved changes. Click on 'Save' to update whitelisted domains. Or click here to discard changes: <span style={{ cursor: 'pointer', textDecoration:'underline', color: 'blue'}} onClick={this.revertChanges} >Revert</span>
                   </div>
                 </div>
-              }
-                <div className='m-form '>
+          }      <div className='m-form '>
                   <div className='form-group m-form__group row'>
                     <label className='col-3 col-form-label' style={{textAlign: 'left'}}>Select Page</label>
                     <div className='col-8 input-group'>
-                      <select className='form-control m-input' value={this.state.selectPage.pageId} onChange={this.onPageChange}>
+                      <select className='form-control m-input' disabled={this.state.unsavedChanges} value={this.state.selectPage.pageId} onChange={this.onPageChange}>
                         {
                           this.props.pages && this.props.pages.length > 0 && this.props.pages.map((page, i) => (
                             <option key={page.pageId} value={page.pageId} selected={page.pageId === this.state.selectPage.pageId}>{page.pageName}</option>
@@ -190,32 +206,37 @@ class WhiteListDomains extends React.Component {
                       </select>
                     </div>
                   </div>
-                  <p>Third-party domains that are accessible in the Messenger webview.</p>
-                  {this.state.domains && this.state.domains.length > 0 &&
-                    <div className='row' style={{minWidth: '150px', padding: '10px', wordBreak: 'break-all'}}>
-                      {
-                        this.state.domains.map((domain, i) => (
-                          <span key={i} style={{display: 'flex'}} className='tagLabel'>
-                            <label className='tagName'>{domain}</label>
-                            <div className='deleteTag' style={{marginLeft: '10px'}}>
-                              <i className='fa fa-times fa-stack' style={{marginRight: '-8px', cursor: 'pointer'}} onClick={() => this.removeDomain(domain)} />
-                            </div>
-                          </span>
-                        ))
-                      }
+                  { this.state.loading
+                  ? <div className='align-center'><center><RingLoader color='#FF5E3A' /></center></div>
+                  : <div>
+                    <p>Third-party domains that are accessible in the Messenger webview.</p>
+                    {this.state.domains && this.state.domains.length > 0 &&
+                      <div className='row' style={{minWidth: '150px', padding: '10px', wordBreak: 'break-all'}}>
+                        {
+                          this.state.domains.map((domain, i) => (
+                            <span key={i} style={{display: 'flex'}} className='tagLabel'>
+                              <label className='tagName'>{domain}</label>
+                              <div className='deleteTag' style={{marginLeft: '10px'}}>
+                                <i className='fa fa-times fa-stack' style={{marginRight: '-8px', cursor: 'pointer'}} onClick={() => this.removeDomain(domain)} />
+                              </div>
+                            </span>
+                          ))
+                        }
+                      </div>
+                    }
+                    <div className='form-group m-form__group row'>
+                      <div className='col-12'>
+                        <label className='col-form-label' style={{textAlign: 'left'}}>Add a valid domain and press Enter</label>
+                      </div>
+                      <div className='col-12'>
+                        <input className='form-control m-input m-input--air' placeholder='Ex: https://www.kibopush.com' value={this.state.domainText} onChange={this.onDomainTextChange} onKeyPress={this.onKeyPressDomainInput} />
+                      </div>
                     </div>
+                    <div className='input-group pull-right'>
+                      <button className='btn btn-primary pull-right' disabled={!this.state.unsavedChanges} onClick={this.saveDomain}>Save</button>
+                    </div>
+                  </div>
                   }
-                  <div className='form-group m-form__group row'>
-                    <div className='col-12'>
-                      <label className='col-form-label' style={{textAlign: 'left'}}>Add a valid domain and press Enter</label>
-                    </div>
-                    <div className='col-12'>
-                      <input className='form-control m-input m-input--air' placeholder='Ex: https://www.kibopush.com' value={this.state.domainText} onChange={this.onDomainTextChange} onKeyPress={this.onKeyPressDomainInput} />
-                    </div>
-                  </div>
-                  <div className='input-group pull-right'>
-                    <button className='btn btn-primary pull-right' disabled={!this.state.unsavedChanges} onClick={this.saveDomain}>Save</button>
-                  </div>
                 </div>
               </div>
             </div>
