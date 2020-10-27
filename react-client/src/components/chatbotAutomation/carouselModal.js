@@ -59,7 +59,7 @@ class CarouselModal extends React.Component {
     }
     cards[index].buttonOption = buttonOption
     cards[index].buttons = []
-    this.setState({cards})
+    this.setState({cards, edited: true})
   }
 
   UNSAFE_componentWillReceiveProps (nextProps) {
