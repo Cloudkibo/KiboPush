@@ -127,6 +127,7 @@ class MoreOptions extends React.Component {
                   payloadAction={this.state.selectedOption.payloadAction || ''}
                   alertMsg={this.props.alertMsg}
                   isCreatable={this.props.isCreatable}
+                  type='quickReply'
                 />
               }
             </PopoverBody>
