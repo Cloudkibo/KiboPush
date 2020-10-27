@@ -41,6 +41,7 @@ class MessageArea extends React.Component {
     this.onSelectComponent = this.onSelectComponent.bind(this)
     this.onRemoveComponent = this.onRemoveComponent.bind(this)
     this.getRemoveModalContent = this.getRemoveModalContent.bind(this)
+    this.updateCarouselCards = this.updateCarouselCards.bind(this)
     this.canDeleteBlock = this.canDeleteBlock.bind(this)
   }
 
@@ -109,19 +110,22 @@ class MessageArea extends React.Component {
     }
   }
 
-  updateState (state, allTriggers) {
+  updateState (state, allTriggers, callback) {
     this.setState(state, () => {
       const currentBlock = this.props.block
       const payload = this.preparePayload(this.state)
       currentBlock.payload = payload
       currentBlock.triggers = this.state.triggers
       const chatbot = this.props.chatbot
-      // if (this.state.triggers) {
+      // if (this.s2tate.triggers) {
       //   chatbot.triggers = this.state.triggers
       // }
       let parentState = {currentBlock, chatbot, unsavedChanges: true}
       if (allTriggers) {
         parentState.allTriggers = allTriggers
+      }
+      if (callback) {
+        callback()
       }
       this.props.updateParentState(parentState)
     })
@@ -289,16 +293,16 @@ class MessageArea extends React.Component {
     }
   }
 
-  addOption (title, action, uniqueId) {
+  addOption (title, action, uniqueId, type) {
     const titles = this.props.blocks.map((item) => item.title.toLowerCase())
     if (action === 'create' && titles.indexOf(title.toLowerCase()) > -1) {
       this.props.alertMsg.error('A block with this title already exists. Please choose a diffrent title')
     } else {
       const options = this.state.quickReplies
-      let option = {
-        content_type: 'text',
-        title
-      }
+      const option = {
+          content_type: 'text',
+          title
+        }
       if (action === 'link') {
         option.payload = JSON.stringify([{action: '_chatbot', blockUniqueId: uniqueId, parentBlockTitle: this.props.block.title}])
         options.push(option)
@@ -332,29 +336,124 @@ class MessageArea extends React.Component {
     }
   }
 
-  updateOption (uniqueId, index, title) {
-    const quickReplies = this.state.quickReplies
-    quickReplies[index].title = title
-    const payload = JSON.parse(quickReplies[index].payload)
-    payload[0].blockUniqueId = uniqueId
-    quickReplies[index].payload = JSON.stringify(payload)
+  updateCarouselCards (cards) {
+    const blocks = [...this.props.blocks]
+    const sidebarItems = [...this.props.sidebarItems]
+    let carouselCards = [...cards]
+    for (let i = 0; i < cards.length; i++) {
+      if (!cards[i].buttonOption) {
+        carouselCards[i].buttons = []
+        break  
+      } 
+      const title = cards[i].buttonOption.title
+      const action = cards[i].buttonOption.action
+      const uniqueId = cards[i].buttonOption.blockId
 
-    this.setState({quickReplies})
+      let addingNew = true
+      if (this.state.carouselCards) {
+        for (let j = 0; j < this.state.carouselCards.length; j++) {
+          if (this.state.carouselCards[j].buttons[0]) {
+            const buttonPayload = JSON.parse(this.state.carouselCards[j].buttons[0].payload) 
+            if ('' + buttonPayload[0].blockUniqueId === ''+uniqueId) {
+              addingNew = false
+              break
+            }
+          }
+        }
+      }
+      const button = {
+        type: 'postback',
+        title
+      }
+      if (addingNew) {
+        if (action === 'link') {
+          button.payload = JSON.stringify([{action: '_chatbot', blockUniqueId: uniqueId, parentBlockTitle: this.props.block.title}])
+        } else if (action === 'create') {
+          const id = new Date().getTime() + i
+          const newBlock = {title, payload: [], uniqueId: id, triggers: [title.toLowerCase()]}
+          const index = sidebarItems.findIndex((item) => item.id.toString() === this.props.block.uniqueId.toString())
+          sidebarItems[index].isParent = true
+          const newSidebarItem = {title, isParent: false, id, parentId: this.props.block.uniqueId}
+          sidebarItems.push(newSidebarItem)
+          blocks.push(newBlock)
+          button.payload = JSON.stringify([{action: '_chatbot', blockUniqueId: id, payloadAction: 'create', parentBlockTitle: this.props.block.title}])
+          carouselCards[i].buttons = [button]
+        } 
+      } else {
+        button.payload = JSON.stringify([{action: '_chatbot', blockUniqueId: uniqueId, parentBlockTitle: this.props.block.title}])
+        carouselCards[i].buttons = [button]           
+      }
+    }
+    const completed = blocks.filter((item) => item.payload.length > 0).length
+    const progress = Math.floor((completed / blocks.length) * 100)
+    this.setState({carouselCards, selectedComponent: 'carousel'}, () => {
+      const currentBlock = this.props.block
+      const payload = this.preparePayload(this.state)
+      currentBlock.payload = payload
+      this.props.updateParentState({
+        currentBlock,
+        blocks,
+        progress,
+        sidebarItems,
+        unsavedChanges: true
+      })
+    })
   }
 
-  removeOption (uniqueId, index) {
-    const quickReplies = this.state.quickReplies
-    quickReplies.splice(index, 1)
+  updateOption (uniqueId, index, title) {
+    let options = []
+    options = this.state.quickReplies
+    options[index].title = title
+    const payload = JSON.parse(options[index].payload)
+    payload[0].blockUniqueId = uniqueId
+    options[index].payload = JSON.stringify(payload)
+    this.setState({quickReplies: options})
+  }
 
+  removeOption (uniqueId, index, type) {
+    let options = []
+    if (type === 'quickReply') {
+      options = this.state.quickReplies
+      options.splice(index, 1)
+    } else if (type === 'carouselButton') {
+      options = this.state.carouselCards[index].buttons
+      options = []
+    }
     const currentBlock = this.props.block
-    if (currentBlock.payload.length > 0) {
-      currentBlock.payload[currentBlock.payload.length - 1].quickReplies = quickReplies
-    } else {
-      currentBlock.payload.push({quickReplies})
+    if (type === 'quickReply') {
+      if (currentBlock.payload.length > 0) {
+        currentBlock.payload[currentBlock.payload.length - 1].quickReplies = options
+      } else {
+        currentBlock.payload.push({quickReplies: options})
+      }
+      this.setState({quickReplies: options})
+    } else if (type === 'carouselButton') {
+      let carouselCards = this.state.carouselCards
+      carouselCards[index].buttons = options
+      let buttonFound = false
+      for (let i = 0; i < currentBlock.payload.length; i++) {
+        if (currentBlock.payload[i].cards) {
+          for (let j = 0; j < currentBlock.payload[i].cards.length; j++) {
+            for (let k = 0; k < currentBlock.payload[i].cards[j].buttons.length; k++) {
+              const payload = JSON.parse(currentBlock.payload[i].cards[j].buttons.payload)
+              if (payload.uniqueId === uniqueId) {
+                currentBlock.payload[i].cards[j].buttons.splice(k, 1)
+                buttonFound = true
+                break
+              }
+            }
+            if (buttonFound) {
+              break
+            }
+          }
+        }
+        if (buttonFound) {
+          break
+        }
+      }
     }
 
     this.props.updateParentState({currentBlock, unsavedChanges: true})
-    this.setState({quickReplies})
   }
 
   renameBlock (title) {
@@ -531,7 +630,7 @@ class MessageArea extends React.Component {
             }
             <div className='m--space-10' />
             {
-              (this.state.text || Object.keys(this.state.attachment).length > 0) &&
+              (this.state.text || Object.keys(this.state.attachment).length > 0 || this.state.carouselCards) &&
               <MOREOPTIONS
                 data={this.state.quickReplies}
                 alertMsg={this.props.alertMsg}
@@ -550,32 +649,35 @@ class MessageArea extends React.Component {
               />
             }
             <div className='m--space-10' />
-          </div>
-          <FOOTER
-            showPrevious={false}
-            showNext={true}
-            onNext={this.onNext}
-            disableNext={this.state.disableNext}
-            onPrevious={() => {}}
-            emptyBlocks={this.checkEmptyBlock()}
-          />
-          <button style={{display: 'none'}} ref={(el) => this.removeComponentTrigger = el} data-toggle='modal' data-target='#_remove_component' />
-          <CONFIRMATIONMODAL
-            id='_remove_component'
-            title={removeModalContent.title}
-            description={removeModalContent.description}
-            onConfirm={() => this.onRemoveComponent(true)}
-          />
+            <FOOTER
+              showPrevious={false}
+              showNext={true}
+              onNext={this.onNext}
+              disableNext={this.state.disableNext}
+              onPrevious={() => {}}
+              emptyBlocks={this.checkEmptyBlock()}
+            />
+            <button style={{display: 'none'}} ref={(el) => this.removeComponentTrigger = el} data-toggle='modal' data-target='#_remove_component' />
+            <CONFIRMATIONMODAL
+              id='_remove_component'
+              title={removeModalContent.title}
+              description={removeModalContent.description}
+              onConfirm={() => this.onRemoveComponent(true)}
+            />
 
-          <button style={{display: 'none'}} ref={(el) => this.showCarouselModalTrigger = el} data-toggle='modal' data-target='#_carousel_modal' />
-          <CAROUSELMODAL
-            id = '_carousel_modal'
-            title = 'Edit Carousel'
-            chatbot={this.props.chatbot}
-            uploadAttachment={this.props.uploadAttachment}
-            updateParentState={this.updateState}
-            cards={this.state.carouselCards}
-          />
+            <button style={{display: 'none'}} ref={(el) => this.showCarouselModalTrigger = el} data-toggle='modal' data-target='#_carousel_modal' />
+            <CAROUSELMODAL
+                id = '_carousel_modal'
+                title = 'Edit Carousel'
+                chatbot={this.props.chatbot} 
+                uploadAttachment={this.props.uploadAttachment}
+                updateParentState={this.updateState}
+                cards={this.state.carouselCards}
+                alertMsg={this.props.alertMsg}
+                blocks={this.props.blocks}
+                updateCarouselCards={this.updateCarouselCards}
+              />
+          </div>
         </div>
       </div>
     )

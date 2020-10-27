@@ -211,17 +211,34 @@ class ConfigureChatbot extends React.Component {
   }
 
   getAllBlocks (data) {
-    let blocks = data
+    const blocks = data
+    const uniqueIds = blocks.map((item) => item.uniqueId.toString())
     for (let i = 0; i < data.length; i++) {
       if (data[i].payload.length > 0) {
         let quickReplies = data[i].payload[data[i].payload.length - 1].quickReplies
         if (quickReplies && quickReplies.length > 0) {
           for (let j = 0; j < quickReplies.length; j++) {
             let payload = JSON.parse(quickReplies[j].payload)
-            let uniqueIds = blocks.map((item) => item.uniqueId.toString())
             if (!uniqueIds.includes(payload[0].blockUniqueId.toString())) {
               blocks.push({
                 title: quickReplies[j].title,
+                payload: [],
+                uniqueId: payload[0].blockUniqueId
+              })
+            }
+          }
+        }
+      }
+    }
+    for (let i = 0; i < data.length; i++) {
+      for (let j = 0; j < data[i].payload.length; j++) {
+        if (data[i].payload[j].cards) {
+          for (let k = 0; k < data[i].payload[j].cards.length; k++) {
+            const button = data[i].payload[j].cards[k].buttons[0]
+            const payload = JSON.parse(button.payload)
+            if (!uniqueIds.includes(payload[0].blockUniqueId.toString())) {
+              blocks.push({
+                title: button.title,
                 payload: [],
                 uniqueId: payload[0].blockUniqueId
               })

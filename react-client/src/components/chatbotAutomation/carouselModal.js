@@ -1,7 +1,6 @@
 /* eslint-disable no-undef */
 import React from 'react'
 import CarouselCard from './carouselCard'
-import {deleteFile} from '../../utility/utils'
 import CONFIRMATIONMODAL from '../extras/confirmationModal'
 
 class CarouselModal extends React.Component {
@@ -13,12 +12,13 @@ class CarouselModal extends React.Component {
       image_url: '',
       title: '',
       buttons: [],
-      subtitle: ''
+      subtitle: '',
+      buttonOption: null
     }]
     this.state = {
       cards: this.props.cards ? JSON.parse(JSON.stringify(this.props.cards)) : JSON.parse(JSON.stringify(this.initialCarouselCards)),
       edited: false,
-      selectedIndex: 0
+      selectedIndex: 0,
     }
 
     this.carouselIndicatorStyle = {
@@ -47,6 +47,19 @@ class CarouselModal extends React.Component {
     this.getRequirements = this.getRequirements.bind(this)
     this.closeModal = this.closeModal.bind(this)
     this.handleDone = this.handleDone.bind(this)
+    this.updateButtonOption = this.updateButtonOption.bind(this)
+  }
+
+  updateButtonOption (buttonOption, index) {
+    console.log('updateButtonOption', index)
+    const cards = this.state.cards
+    if (buttonOption) {
+      buttonOption.showRemove = true
+      buttonOption.cardIndex = index
+    }
+    cards[index].buttonOption = buttonOption
+    cards[index].buttons = []
+    this.setState({cards})
   }
 
   UNSAFE_componentWillReceiveProps (nextProps) {
@@ -92,7 +105,8 @@ class CarouselModal extends React.Component {
         image_url: '',
         title: '',
         buttons: [],
-        subtitle: ''
+        subtitle: '',
+        buttonOption: null
     })
     this.setState({cards, selectedIndex: cards.length - 1, error: '', edited: true})
   }
@@ -126,12 +140,14 @@ class CarouselModal extends React.Component {
               </ul>
             </li>
           )
+        } else {
+          return null
         }
     }).filter(c => !!c)
   }
 
   handleDone () {
-    this.props.updateParentState({carouselCards: this.state.cards, selectedComponent: 'carousel'})
+    this.props.updateCarouselCards(JSON.parse(JSON.stringify(this.state.cards)))
     this.closeModal(true, false)
   }
 
@@ -151,9 +167,8 @@ class CarouselModal extends React.Component {
           this.closeModalTrigger.click()
         })
       } else {
-        this.setState({edited: false, error : '', selectedIndex: 0}, () => {
-          this.closeModalTrigger.click()
-        })
+        this.setState({edited: false, error : '', selectedIndex: 0})
+        this.closeModalTrigger.click()
       }
     } else {
       this.closeModalConfirm.click()
@@ -177,7 +192,6 @@ class CarouselModal extends React.Component {
           style={{ background: "rgba(33, 37, 41, 0.6)", zIndex: 1050 }}
           className="modal fade"
           id={this.props.id}
-          tabindex="-1"
           role="dialog"
           aria-labelledby="exampleModalLabel"
           aria-hidden="true"
@@ -214,7 +228,6 @@ class CarouselModal extends React.Component {
                     <div className="col-6">
                       <div
                         id="cardsContainer"
-                        style={{ maxHeight: "55vh", overflowY: "scroll" }}
                       >
                         <div className="panel-group" id="accordion">
                           <div style={{ color: "red" }}>{this.state.error}</div>
@@ -251,6 +264,9 @@ class CarouselModal extends React.Component {
                                   index={this.state.selectedIndex}
                                   card={this.state.cards[this.state.selectedIndex]}
                                   updateCard={this.updateCard}
+                                  alertMsg={this.props.alertMsg}
+                                  blocks={this.props.blocks}
+                                  updateButtonOption={this.updateButtonOption}
                                 />
                               </div>
                             </div>
@@ -345,7 +361,6 @@ class CarouselModal extends React.Component {
                                   style={{
                                     border: "1px solid rgba(0,0,0,.1)",
                                     borderRadius: "10px",
-                                    minHeight: "200px",
                                     maxWidth: "250px",
                                     margin: "auto",
                                     marginTop: "60px",
