@@ -649,7 +649,6 @@ class MessageArea extends React.Component {
               />
             }
             <div className='m--space-10' />
-
             <button style={{display: 'none'}} ref={(el) => this.showCarouselModalTrigger = el} data-toggle='modal' data-target='#_carousel_modal' />
             <CAROUSELMODAL
                 id = '_carousel_modal'
