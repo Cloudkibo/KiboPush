@@ -468,17 +468,16 @@ class MessageArea extends React.Component {
     const removeModalContent = this.getRemoveModalContent()
     return (
       <div style={{border: '1px solid #ccc', backgroundColor: 'white', padding: '0px'}} className='col-md-9'>
-        <div style={{margin: '0px'}} className='m-portlet m-portlet-mobile'>
-          <div id='_chatbot_message_area' style={{height: '70vh', position: 'relative', padding: '15px', overflowY: 'scroll'}} className='m-portlet__body'>
-            <HEADER
-              title={this.props.block.title}
-              onDelete={this.onDelete}
-              alertMsg={this.props.alertMsg}
-              onRename={this.renameBlock}
-              blocks={this.props.blocks}
-              canDelete={this.canDeleteBlock()}
-            />
-            <div className='m--space-30' />
+        <div style={{margin: '0px', height: '70vh', overflow: 'hidden', display: 'flex', flexDirection: 'column'}} className='m-portlet m-portlet-mobile'>
+          <HEADER
+            title={this.props.block.title}
+            onDelete={this.onDelete}
+            alertMsg={this.props.alertMsg}
+            onRename={this.renameBlock}
+            blocks={this.props.blocks}
+            canDelete={this.canDeleteBlock()}
+          />
+          <div id='_chatbot_message_area' style={{padding: '15px', overflowY: 'scroll', flex: '1 1 auto'}} className='m-portlet__body'>
             <TRIGGERAREA
               triggers={this.state.triggers}
               updateParentState={this.updateState}
@@ -536,8 +535,6 @@ class MessageArea extends React.Component {
               <MOREOPTIONS
                 data={this.state.quickReplies}
                 alertMsg={this.props.alertMsg}
-                currentLevel={this.props.currentLevel}
-                maxLevel={this.props.maxLevel}
                 blocks={this.props.blocks}
                 addOption={this.addOption}
                 removeOption={this.removeOption}
@@ -553,32 +550,32 @@ class MessageArea extends React.Component {
               />
             }
             <div className='m--space-10' />
-            <FOOTER
-              showPrevious={false}
-              showNext={true}
-              onNext={this.onNext}
-              disableNext={this.state.disableNext}
-              onPrevious={() => {}}
-              emptyBlocks={this.checkEmptyBlock()}
-            />
-            <button style={{display: 'none'}} ref={(el) => this.removeComponentTrigger = el} data-toggle='modal' data-target='#_remove_component' />
-            <CONFIRMATIONMODAL
-              id='_remove_component'
-              title={removeModalContent.title}
-              description={removeModalContent.description}
-              onConfirm={() => this.onRemoveComponent(true)}
-            />
-
-            <button style={{display: 'none'}} ref={(el) => this.showCarouselModalTrigger = el} data-toggle='modal' data-target='#_carousel_modal' />
-            <CAROUSELMODAL
-                id = '_carousel_modal'
-                title = 'Edit Carousel'
-                chatbot={this.props.chatbot}
-                uploadAttachment={this.props.uploadAttachment}
-                updateParentState={this.updateState}
-                cards={this.state.carouselCards}
-              />
           </div>
+          <FOOTER
+            showPrevious={false}
+            showNext={true}
+            onNext={this.onNext}
+            disableNext={this.state.disableNext}
+            onPrevious={() => {}}
+            emptyBlocks={this.checkEmptyBlock()}
+          />
+          <button style={{display: 'none'}} ref={(el) => this.removeComponentTrigger = el} data-toggle='modal' data-target='#_remove_component' />
+          <CONFIRMATIONMODAL
+            id='_remove_component'
+            title={removeModalContent.title}
+            description={removeModalContent.description}
+            onConfirm={() => this.onRemoveComponent(true)}
+          />
+
+          <button style={{display: 'none'}} ref={(el) => this.showCarouselModalTrigger = el} data-toggle='modal' data-target='#_carousel_modal' />
+          <CAROUSELMODAL
+            id = '_carousel_modal'
+            title = 'Edit Carousel'
+            chatbot={this.props.chatbot}
+            uploadAttachment={this.props.uploadAttachment}
+            updateParentState={this.updateState}
+            cards={this.state.carouselCards}
+          />
         </div>
       </div>
     )

@@ -34,7 +34,7 @@ class Sidebar extends React.Component {
     this.gotoEmptyBlock = this.gotoEmptyBlock.bind(this)
     this.isChatbotEmpty = this.isChatbotEmpty.bind(this)
   }
-  
+
   setItems (data, currentBlock, blocks) {
     const items = data.filter((d) => d.parentId && d.parentId.toString() === currentBlock.uniqueId.toString())
     const emptyBlocks = blocks.filter((item) => item.payload.length === 0)
@@ -53,6 +53,7 @@ class Sidebar extends React.Component {
     const sidebar = (
       <StyledTreeItem
         nodeId={`${firstLevel[0].id}`}
+        onNodeSelect={this.onNodeSelect}
         label={firstLevel[0].title}
         selected={firstLevel[0].id === this.props.currentBlock.uniqueId}
         completed={this.props.blocks.find((item) => item.uniqueId.toString() === firstLevel[0].id.toString()).payload.length > 0}
@@ -73,6 +74,7 @@ class Sidebar extends React.Component {
           <StyledTreeItem
             key={children[i].id}
             nodeId={`${children[i].id}`}
+            onNodeSelect={this.onNodeSelect}
             label={children[i].title}
             selected={children[i].id === this.props.currentBlock.uniqueId}
             completed={this.props.blocks.find((item) => item.uniqueId.toString() === children[i].id.toString()).payload.length > 0}
@@ -96,6 +98,7 @@ class Sidebar extends React.Component {
           <StyledTreeItem
             key={blocks[i].id}
             nodeId={`${blocks[i].id}`}
+            onNodeSelect={this.onNodeSelect}
             label={blocks[i].title}
             selected={blocks[i].id === this.props.currentBlock.uniqueId}
             completed={this.props.blocks.find((item) => item.uniqueId.toString() === blocks[i].id.toString()).payload.length > 0}
@@ -127,7 +130,7 @@ class Sidebar extends React.Component {
     this.setState({expandedNodes: nodes})
   }
 
-  onNodeSelect (event, value) {
+  onNodeSelect (value) {
     const currentBlock = this.props.blocks.find((item) => item.uniqueId.toString() === value)
     if (this.props.unsavedChanges) {
       if (this.props.currentBlock.payload && this.props.currentBlock.payload.length === 0) {
@@ -268,15 +271,14 @@ class Sidebar extends React.Component {
   render () {
     return (
       <div id='_chatbot_sidebar' style={{border: '1px solid #ccc', backgroundColor: 'white', padding: '0px'}} className='col-md-3'>
-        <div style={{margin: '0px', height: '100%'}} className='m-portlet m-portlet-mobile'>
-          <div id='_chatbot_sidebar_items' style={{padding: '1.2rem 1.2rem', overflowY: 'scroll'}} className='m-portlet__body'>
+        <div style={{margin: '0px', height: '70vh', overflow: 'hidden', display: 'flex', flexDirection: 'column'}} className='m-portlet m-portlet-mobile'>
+          <div id='_chatbot_sidebar_items' style={{padding: '1.2rem 1.2rem', overflowY: 'scroll', flex: '1 1 auto'}} className='m-portlet__body'>
             {
               this.state.expandedNodes.length > 0 &&
               <TreeView
                 defaultCollapseIcon={this.getCollapseIcon()}
                 defaultExpandIcon={this.getExpandIcon()}
                 defaultExpanded={this.state.expandedNodes}
-                onNodeSelect={this.onNodeSelect}
               >
                 {this.getItems()}
               </TreeView>
@@ -291,11 +293,11 @@ class Sidebar extends React.Component {
           </div>
           <div
             style={{
-              position: 'absolute',
+              flex: '0 0 auto',
               bottom: 0,
               left: 0,
               width: '100%',
-              padding: '1.2rem',
+              padding: '0 1.2rem 1.2rem 1.2rem',
               borderTop: 'none'
             }}
             className="m-portlet__foot"
