@@ -64,13 +64,13 @@ class ButtonOption extends React.Component {
             blockId: this.state.selectedBlock.value,
             type: this.props.type,
             cardIndex: this.props.cardIndex
-        }, this.props.cardIndex)
+        }, this.props.cardIndex, true)
         this.props.onCancel()
     }
   }
 
   onRemove () {
-    this.props.updateButtonOption(null, this.props.cardIndex)
+    this.props.updateButtonOption(null, this.props.cardIndex, true)
     this.props.onCancel()
   }
 

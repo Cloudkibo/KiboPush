@@ -23,7 +23,7 @@ class CarouselButton extends React.Component {
         blockId: payload[0] ? payload[0].blockUniqueId : null,
         action: 'link',
         showRemove: true
-      }, this.props.cardIndex)
+      }, this.props.cardIndex, false)
     }
   }
 
@@ -35,7 +35,7 @@ class CarouselButton extends React.Component {
         blockId: payload[0] ? payload[0].blockUniqueId : null,
         action: 'link',
         showRemove: true
-      }, this.props.cardIndex)
+      }, this.props.cardIndex, false)
     }
   }
 
@@ -58,7 +58,7 @@ class CarouselButton extends React.Component {
         </div>
         <div className='col-9'>
           <div className="form-group m-form__group">
-            <div style={{padding: '10px'}} className='row'>
+            <div style={{marginLeft: '0', marginTop: '10px'}} className='row'>
               {
                 this.props.buttonOption && Object.keys(this.props.buttonOption).length > 0 ?
                 (<button
@@ -67,7 +67,7 @@ class CarouselButton extends React.Component {
                 onClick={() => this.showPopover()}
                 id='_carousel_add_button'
               >
-                Edit Button
+                {this.props.buttonOption.title}
               </button>) : 
               (<button
                 style={{border: 'none', cursor: 'pointer', background: 'none'}}

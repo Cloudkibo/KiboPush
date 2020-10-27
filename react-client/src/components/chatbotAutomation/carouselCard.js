@@ -81,7 +81,7 @@ class CarouselCard extends React.Component {
               <div style={{marginTop: '5px', position: 'relative', textAlign: 'left'}}>Image:</div>
             </div>
             <div className='col-9'>
-              <div onClick={() => this.fileInput.click()} className='ui-block hoverborder'>
+              <div onClick={() => this.fileInput.click()} className='ui-block hoverborder' style={{margin: '0', borderRadius: '5px'}}>
                 {
                 this.state.imageLoading
                 ? <div className='align-center'><center><RingLoader color='#FF5E3A' /></center></div>
