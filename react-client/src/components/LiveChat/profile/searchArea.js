@@ -62,9 +62,9 @@ class SearchArea extends React.Component {
       if (this.state.scrollingToMessage) {
         this.props.showFetchingChat(false)
         this.setState({scrollingToMessage: null})
-        setTimeout(() => message.scrollIntoView({behavior: 'smooth', block: 'start'}), 500)
+        setTimeout(() => message.scrollIntoView({behavior: 'smooth', block: 'nearest'}), 500)
       } else {
-        message.scrollIntoView({behavior: 'smooth', block: 'start'})
+        message.scrollIntoView({behavior: 'smooth', block: 'nearest'})
       }
     } else {
       this.setState({scrollingToMessage: messageId}, () => {
@@ -94,7 +94,7 @@ class SearchArea extends React.Component {
 
   render () {
     return (
-      <div id='searchArea' style={{padding: '0px', border: '1px solid #F2F3F8', marginBottom: '0px'}} className='col-xl-3 m-portlet'>
+      <div id='searchArea' style={{height: '87vh', padding: '0px', border: '1px solid #F2F3F8', marginBottom: '0px'}} className='col-xl-3 m-portlet'>
         <div className='m-card-profile'>
           <div style={{padding: '0px'}} className='m-portlet__body'>
             <div style={{padding: '1.5rem'}}>
@@ -103,7 +103,7 @@ class SearchArea extends React.Component {
               <div className='input-group'>
                 <input onChange={this.changeSearchValue} value={this.state.searchValue} type='text' className='form-control' placeholder='Search Messages...' />
                 <span className='input-group-btn'>
-                  <button onClick={this.searchChat} className='btn btn-primary' type='button'>
+                  <button onClick={this.searchChat} className='btn btn-primary' type='button' disabled={this.state.searchValue ? false : true}>
                     Go!
                   </button>
                 </span>

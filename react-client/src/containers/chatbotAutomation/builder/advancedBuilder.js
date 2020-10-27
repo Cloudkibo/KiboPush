@@ -75,7 +75,7 @@ AdvancedBuilder.propTypes = {
   'deleteMessageBlock': PropTypes.func.isRequired,
   'checkWhitelistedDomains': PropTypes.func.isRequired,
   'toggleWhitelistModal': PropTypes.func.isRequired,
-  'superUser': PropTypes.object.isRequired
+  'superUser': PropTypes.object
 }
 
 export default AdvancedBuilder

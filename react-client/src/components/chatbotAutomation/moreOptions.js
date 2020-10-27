@@ -146,8 +146,6 @@ MoreOptions.defaultProps = {
 MoreOptions.propTypes = {
   'showLabel': PropTypes.bool,
   'data': PropTypes.array.isRequired,
-  'currentLevel': PropTypes.number.isRequired,
-  'maxLevel': PropTypes.number.isRequired,
   'addOption': PropTypes.func.isRequired,
   'removeOption': PropTypes.func.isRequired,
   'updateOption': PropTypes.func.isRequired,
