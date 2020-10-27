@@ -56,7 +56,7 @@ class MessageArea extends React.Component {
       const attachmentComponent = block.payload.find((item) => item.componentType !== 'text')
       let attachment = {}
       let carouselCards = null
-      let selectedComponent = ''
+      let selectedComponent = this.state.selectedComponent
       if (attachmentComponent) {
         switch (attachmentComponent.componentType) {
           case 'media':
