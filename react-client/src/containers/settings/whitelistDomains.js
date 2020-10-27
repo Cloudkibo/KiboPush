@@ -190,7 +190,7 @@ class WhiteListDomains extends React.Component {
                     <span />
                   </div>
                   <div className='m-alert__text'>
-                    You have unsaved changes. Click on 'Save' to update whitelisted domains. Or click here to discard changes: <span style={{ cursor: 'pointer', textDecoration:'underline', color: 'blue'}} onClick={this.revertChanges} >Revert</span>
+                    You have unsaved changes. Click on 'Save' to update whitelisted domains. Or click here to discard changes: <span style={{ cursor: 'pointer', textDecoration:'underline', color: 'blue'}} onClick={this.revertChanges} >Discard</span>
                   </div>
                 </div>
           }      <div className='m-form '>
