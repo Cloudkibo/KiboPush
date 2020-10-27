@@ -10,7 +10,6 @@ import { isWebURL, isWebViewUrl } from './../../utility/utils'
 import { saveWhiteListDomains, fetchWhiteListedDomains } from '../../redux/actions/settings.actions'
 import URL from 'url'
 import { Prompt } from 'react-router'
-import { Link } from 'react-router-dom'
 import { RingLoader } from 'halogenium'
 
 class WhiteListDomains extends React.Component {
@@ -20,6 +19,7 @@ class WhiteListDomains extends React.Component {
       domainText: '',
       domains: [],
       selectPage: {},
+      savedDomains: [],
       unsavedChanges: false,
       loading: true
     }
@@ -34,14 +34,11 @@ class WhiteListDomains extends React.Component {
   }
 
   revertChanges () {
-    var pageId = null
-    if (this.state.selectPage.pageId) {
-      pageId = this.state.selectPage.pageId
-    } else {
-      pageId = this.props.pages[0].pageId
-    }
-    this.setState({loading: true})
-    this.props.fetchWhiteListedDomains(pageId, this.handleFetch)
+    var savedDomains = JSON.parse(this.state.savedDomains)
+    this.setState({
+      domains: savedDomains,
+      unsavedChanges: false
+    })
   }
 
   onKeyPressDomainInput (event) {
@@ -71,12 +68,13 @@ class WhiteListDomains extends React.Component {
   }
   handleFetch (resp) {
     if (resp.status === 'success') {
-      this.setState({domains: resp.payload, unsavedChanges: false, loading: false})
+      this.setState({savedDomains: JSON.stringify(resp.payload), domains: resp.payload, unsavedChanges: false, loading: false})
     }
   }
   handleSaveDomain (resp) {
       var domains = resp.whitelistDomains
       this.setState({
+        savedDomains: JSON.stringify(domains),
         domains: domains,
         domainText: '',
         unsavedChanges: false,
