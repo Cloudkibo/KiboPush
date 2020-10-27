@@ -252,19 +252,21 @@ class MessageArea extends React.Component {
         this.props.updateParentState({blocks, sidebarItems, currentBlock})
       } else {
         const parentId = this.props.sidebarItems.find((item) =>  item.id.toString() === this.props.block.uniqueId.toString()).parentId
-        const parent = this.props.blocks.find((item) => item.uniqueId.toString() === parentId.toString())
-        const quickReplies = parent.payload[parent.payload.length - 1].quickReplies
-        const qrIndex = quickReplies.findIndex((item) => item.title === this.props.block.title)
-        quickReplies.splice(qrIndex, 1)
-        parent.quickReplies = quickReplies
-        const bIndex = this.props.blocks.findIndex((item) => item._id === parent._id)
-        blocks[bIndex] = parent
-        currentBlock = parent
-        this.props.handleMessageBlock({...parent, chatbotId: this.props.chatbot._id}, (res) => {
-          const completed = blocks.filter((item) => item.payload.length > 0).length
-          const progress = Math.floor((completed / blocks.length) * 100)
-          this.props.updateParentState({blocks, sidebarItems, currentBlock, progress, unsavedChanges: false})
-        })
+        if (parentId) {
+          const parent = this.props.blocks.find((item) => item.uniqueId.toString() === parentId.toString())
+          const quickReplies = parent.payload[parent.payload.length - 1].quickReplies
+          const qrIndex = quickReplies.findIndex((item) => item.title === this.props.block.title)
+          quickReplies.splice(qrIndex, 1)
+          parent.quickReplies = quickReplies
+          const bIndex = this.props.blocks.findIndex((item) => item._id === parent._id)
+          blocks[bIndex] = parent
+          currentBlock = parent
+          this.props.handleMessageBlock({...parent, chatbotId: this.props.chatbot._id}, (res) => {
+            const completed = blocks.filter((item) => item.payload.length > 0).length
+            const progress = Math.floor((completed / blocks.length) * 100)
+            this.props.updateParentState({blocks, sidebarItems, currentBlock, progress, unsavedChanges: false})
+          })
+        }
       }
     } else {
       this.props.alertMsg.error(res.description || 'Failed to delete message block')
@@ -353,7 +355,9 @@ class MessageArea extends React.Component {
       let uniqueId = ''
       if (title === 'Back') {
         const parentId = this.props.sidebarItems.find((item) => item.id.toString() === this.props.block.uniqueId.toString()).parentId
-        uniqueId = this.props.blocks.find((item) => item.uniqueId.toString() === parentId.toString()).uniqueId
+        if(parentId) {
+         uniqueId = this.props.blocks.find((item) => item.uniqueId.toString() === parentId.toString()).uniqueId
+        }
       } else {
         uniqueId = this.props.blocks.find((item) => item._id === this.props.chatbot.startingBlockId).uniqueId
       }
