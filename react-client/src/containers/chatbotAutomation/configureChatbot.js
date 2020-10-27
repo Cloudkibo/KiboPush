@@ -235,13 +235,15 @@ class ConfigureChatbot extends React.Component {
         if (data[i].payload[j].cards) {
           for (let k = 0; k < data[i].payload[j].cards.length; k++) {
             const button = data[i].payload[j].cards[k].buttons[0]
-            const payload = JSON.parse(button.payload)
-            if (!uniqueIds.includes(payload[0].blockUniqueId.toString())) {
-              blocks.push({
-                title: button.title,
-                payload: [],
-                uniqueId: payload[0].blockUniqueId
-              })
+            if (button) {
+              const payload = JSON.parse(button.payload)
+              if (!uniqueIds.includes(payload[0].blockUniqueId.toString())) {
+                blocks.push({
+                  title: button.title,
+                  payload: [],
+                  uniqueId: payload[0].blockUniqueId
+                })
+              }
             }
           }
         }

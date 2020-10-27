@@ -50,7 +50,7 @@ class CarouselModal extends React.Component {
     this.updateButtonOption = this.updateButtonOption.bind(this)
   }
 
-  updateButtonOption (buttonOption, index) {
+  updateButtonOption (buttonOption, index, edited) {
     console.log('updateButtonOption', index)
     const cards = this.state.cards
     if (buttonOption) {
@@ -59,7 +59,7 @@ class CarouselModal extends React.Component {
     }
     cards[index].buttonOption = buttonOption
     cards[index].buttons = []
-    this.setState({cards, edited: true})
+    this.setState({cards, edited})
   }
 
   UNSAFE_componentWillReceiveProps (nextProps) {
@@ -379,6 +379,7 @@ class CarouselModal extends React.Component {
                                   }
                                 >
                                   {card.image_url && (
+                                  <>
                                     <img
                                       alt=""
                                       src={card.image_url}
@@ -394,13 +395,13 @@ class CarouselModal extends React.Component {
                                         height: "100%",
                                       }}
                                     />
-                                  )}
-                                  <hr
+                                    <hr
                                     style={{
-                                      marginTop: card.image_url ? "" : "100px",
                                       marginBottom: "5px",
                                     }}
-                                  />
+                                    />
+                                  </>
+                                  )}
                                   <h6
                                     style={{
                                       textAlign: "justify",
@@ -421,7 +422,7 @@ class CarouselModal extends React.Component {
                                   >
                                     {card.subtitle}
                                   </p>
-                                  {card.buttons.map((button, index) => (
+                                  {card.buttonOption &&
                                     <div>
                                       <hr
                                         style={{
@@ -432,10 +433,10 @@ class CarouselModal extends React.Component {
                                         }}
                                       />
                                       <h5 style={{ color: "#0782FF" }}>
-                                        {button.title}
+                                        {card.buttonOption.title}
                                       </h5>
                                     </div>
-                                  ))}
+                                  }
                                 </div>
                               );
                             })}

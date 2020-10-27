@@ -56,7 +56,7 @@ class MessageArea extends React.Component {
       const attachmentComponent = block.payload.find((item) => item.componentType !== 'text')
       let attachment = {}
       let carouselCards = null
-      let selectedComponent = this.state.selectedComponent
+      let selectedComponent = this.props.block.uniqueId === block.uniqueId ? this.state.selectedComponent : ''
       if (attachmentComponent) {
         switch (attachmentComponent.componentType) {
           case 'media':
@@ -598,21 +598,6 @@ class MessageArea extends React.Component {
               />
             }
             <div className='m--space-10' />
-            <FOOTER
-              showPrevious={false}
-              showNext={true}
-              onNext={this.onNext}
-              disableNext={this.state.disableNext}
-              onPrevious={() => {}}
-              emptyBlocks={this.checkEmptyBlock()}
-            />
-            <button style={{display: 'none'}} ref={(el) => this.removeComponentTrigger = el} data-toggle='modal' data-target='#_remove_component' />
-            <CONFIRMATIONMODAL
-              id='_remove_component'
-              title={removeModalContent.title}
-              description={removeModalContent.description}
-              onConfirm={() => this.onRemoveComponent(true)}
-            />
 
             <button style={{display: 'none'}} ref={(el) => this.showCarouselModalTrigger = el} data-toggle='modal' data-target='#_carousel_modal' />
             <CAROUSELMODAL
@@ -627,6 +612,21 @@ class MessageArea extends React.Component {
                 updateCarouselCards={this.updateCarouselCards}
               />
           </div>
+          <FOOTER
+            showPrevious={false}
+            showNext={true}
+            onNext={this.onNext}
+            disableNext={this.state.disableNext}
+            onPrevious={() => {}}
+            emptyBlocks={this.checkEmptyBlock()}
+          />
+          <button style={{display: 'none'}} ref={(el) => this.removeComponentTrigger = el} data-toggle='modal' data-target='#_remove_component' />
+          <CONFIRMATIONMODAL
+            id='_remove_component'
+            title={removeModalContent.title}
+            description={removeModalContent.description}
+            onConfirm={() => this.onRemoveComponent(true)}
+          />
         </div>
       </div>
     )
