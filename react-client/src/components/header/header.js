@@ -23,11 +23,11 @@ import {
 import { fetchNotifications, markRead } from '../../redux/actions/notifications.actions'
 import AlertContainer from 'react-alert'
 import { getLandingPage } from '../../utility/utils'
+import cookie from 'react-cookie'
 
 // Components
 import HEADERMENU from './headerMenu'
 import HEADERTOPBAR from './headerTopbar'
-import cookie from 'react-cookie'
 
 // styles
 const darkSkinStyle = {
@@ -45,8 +45,11 @@ class Header extends React.Component {
     this.state = {
       selectedPlatform: {},
       planInfo: '',
-      seenNotifications: [],
-      unseenNotifications: []
+      notifications: [],
+      notificationsRecords: 50,
+      unreadNotifications: 0,
+      totalNotifications: 0,
+      loadingMoreNotifications: false
     }
 
     this.changePlatform = this.changePlatform.bind(this)
@@ -59,9 +62,34 @@ class Header extends React.Component {
     this.logout = this.logout.bind(this)
     this.isPlatformConnected = this.isPlatformConnected.bind(this)
     this.handleChangePlatform = this.handleChangePlatform.bind(this)
+    this.fetchNotifications = this.fetchNotifications.bind(this)
 
-    props.fetchNotifications()
+    this.fetchNotifications()
   }
+
+  fetchNotifications (lastId) {
+    this.setState({loadingMoreNotifications: true})
+    this.props.fetchNotifications({
+      records: this.state.notificationsRecords,
+      lastId
+    }, (res) => {
+      if (res.status === 'success') {
+        let {totalCount, unreadCount, notifications} = res.payload
+        notifications = notifications.map((item) => {
+          item.date = this.timeSince(item.datetime)
+          return item
+        })
+        notifications = [...this.state.notifications, ...notifications]
+        this.setState({
+          loadingMoreNotifications: false,
+          notifications,
+          unreadNotifications: unreadCount,
+          totalNotifications: totalCount
+        })
+      }
+    })
+  }
+
   handleChangePlatform (data) {
     this.props.fetchNotifications()
     this.redirectToDashboard(data)
@@ -175,7 +203,7 @@ class Header extends React.Component {
     // e.target.src = 'https://emblemsbf.com/img/27447.jpg'
     this.props.updatePicture({ user: this.props.user })
   }
- 
+
   logout(res) {
     if (res.status === 'success') {
       this.props.updateShowIntegrations({ showIntegrations: true })
@@ -188,8 +216,7 @@ class Header extends React.Component {
     this.setState({ showDropDown: true })
     // this.changeMode = this.changeMode.bind(this)
   }
-  gotoView (id, _id, type) {
-    this.props.markRead({ notificationId: _id })
+  gotoView (id, _id, type, markRead) {
     if (type === 'webhookFailed') {
       this.props.history.push({
         pathname: `/settings`,
@@ -217,6 +244,17 @@ class Header extends React.Component {
         })
         this.props.saveNotificationSessionId({sessionId: id})
       }
+    }
+    if (markRead) {
+      this.props.markRead({ notificationId: _id }, (res) => {
+        if (res.status === 'success') {
+          const notifications = this.state.notifications
+          const index = notifications.findIndex((item) => item._id === _id)
+          notifications[index] = {...notifications[index], seen: true}
+          const unreadNotifications = this.state.unreadNotifications - 1
+          this.setState({notifications, unreadNotifications})
+        }
+      })
     }
   }
 
@@ -264,25 +302,6 @@ class Header extends React.Component {
       this.setPlatform(nextProps.user)
       let plan = nextProps.user.currentPlan.unique_ID
       this.getPlanInfo(plan)
-    }
-    if (nextProps.notifications) {
-      var seen = []
-      var unseen = []
-      for (var i = 0; i < nextProps.notifications.length; i++) {
-        var jsonObject = {
-          message: nextProps.notifications[i].message,
-          category: nextProps.notifications[i].category,
-          date: this.timeSince(nextProps.notifications[i].datetime),
-          seen: nextProps.notifications[i].seen,
-          _id: nextProps.notifications[i]._id
-        }
-        if (nextProps.notifications[i].seen === true) {
-          seen.push(jsonObject)
-        } else {
-          unseen.push(jsonObject)
-        }
-      }
-      this.setState({ seenNotifications: seen, unseenNotifications: unseen })
     }
   }
 
@@ -361,9 +380,9 @@ class Header extends React.Component {
                 user={this.props.user}
                 userView={this.props.userView}
                 superUser={this.props.superUser}
-                notifications={this.props.notifications}
-                seenNotifications={this.state.seenNotifications}
-                unseenNotifications={this.state.unseenNotifications}
+                notifications={this.state.notifications}
+                totalNotifications={this.state.totalNotifications}
+                unreadNotifications={this.state.unreadNotifications}
                 gotoView={this.gotoView}
                 goToSettings={this.goToSettings}
                 subscribers={this.props.subscribers}
@@ -372,6 +391,8 @@ class Header extends React.Component {
                 logout={this.props.logout}
                 setUsersView={this.props.setUsersView}
                 currentEnvironment= {this.props.currentEnvironment}
+                loadingMoreNotifications={this.state.loadingMoreNotifications}
+                fetchNotifications={this.fetchNotifications}
               />
             </div>
           </div>
@@ -438,7 +459,6 @@ function mapStateToProps(state) {
     superUser: (state.basicInfo.superUser),
     automated_options: (state.basicInfo.automated_options),
     userView: (state.backdoorInfo.userView),
-    notifications: (state.notificationsInfo.notifications),
     subscribers: (state.subscribersInfo.subscribers),
     otherPages: (state.pagesInfo.otherPages),
     currentEnvironment: (state.basicInfo.currentEnvironment)
