@@ -558,7 +558,7 @@ class Settings extends React.Component {
                         </a>
                       </li>
                     }
-                    { (url.includes('localhost') || (url.includes('kibochat.cloudkibo.com') && this.props.user.isSuperUser)) && (this.props.user.role === 'admin' || this.props.user.role === 'buyer') &&
+                    { (url.includes('localhost') || (url.includes('kibochat.cloudkibo.com'))) && (this.props.user.role === 'admin' || this.props.user.role === 'buyer') &&
                     <li className='m-nav__item'>
                       <a href='#/' className='m-nav__link' onClick={this.setZoomIntegration} style={{cursor: 'pointer'}} >
                         <i className='m-nav__link-icon flaticon-network' />
@@ -566,7 +566,7 @@ class Settings extends React.Component {
                       </a>
                     </li>
                     }
-                    {(url.includes('localhost') || (url.includes('kibochat.cloudkibo.com') && this.props.user.isSuperUser)) && (this.props.user.role === 'admin' || this.props.user.role === 'buyer') &&
+                    {(url.includes('localhost') || (url.includes('kibochat.cloudkibo.com'))) && (this.props.user.role === 'admin' || this.props.user.role === 'buyer') &&
                       <li className='m-nav__item'>
                         <a href='#/' className='m-nav__link' onClick={this.setCommerceIntegration} style={{ cursor: 'pointer' }} >
                           <i className='m-nav__link-icon flaticon-network' />
