@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { localeCodeToEnglish } from '../../../utility/utils'
+// import { localeCodeToEnglish } from '../../../utility/utils'
 
 // Components
 import CONFIRMATIONMODAL from '../../extras/confirmationModal'
