@@ -595,7 +595,7 @@ class LiveChat extends React.Component {
       sessions = sessions || []
       let index = sessions.findIndex((session) => session._id === this.state.activeSession._id)
       if (index === -1) {
-        state.activeSession = {}
+        state.activeSession = this.state.activeSession
         state.userChat = []
       } else {
         state.activeSession = sessions[index]
