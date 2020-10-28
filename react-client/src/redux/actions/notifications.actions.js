@@ -2,16 +2,6 @@ import * as ActionTypes from '../constants/constants'
 import callApi from '../../utility/api.caller.service'
 export const API_URL = '/api'
 
-export function showNotifications (data) {
-  var sorted = data.sort(function (a, b) {
-    return new Date(b.datetime) - new Date(a.datetime)
-  })
-  return {
-    type: ActionTypes.SHOW_NOTIFICATIONS,
-    data: sorted
-  }
-}
-
 export function setMessageAlert(data) {
   return {
     type: ActionTypes.SHOW_MESSAGE_ALERT,
@@ -19,25 +9,21 @@ export function setMessageAlert(data) {
   }
 }
 
-export function fetchNotifications () {
+export function fetchNotifications (data, cb) {
   console.log('fetchNotifications')
   return (dispatch) => {
-    callApi('notifications').then(res => {
+    callApi('notifications', 'post', data).then(res => {
       console.log('response from notifications', res)
-      if (res.status === 'success') {
-        dispatch(showNotifications(res.payload.notifications))
-      }
+      cb(res)
     })
   }
 }
 
-export function markRead (data) {
+export function markRead (data, cb) {
   return (dispatch) => {
     callApi('notifications/markRead', 'post', data).then(res => {
       console.log('response from notifications', res)
-      if (res.status === 'success') {
-        dispatch(fetchNotifications())
-      }
+      cb(res)
     })
   }
 }

@@ -44,11 +44,13 @@ class HeaderTopbar extends React.Component {
               showNotifcations &&
               <NOTIFICATIONS
                 notifications={this.props.notifications}
-                seenNotifications={this.props.seenNotifications}
-                unseenNotifications={this.props.unseenNotifications}
+                totalNotifications={this.props.totalNotifications}
+                unreadNotifications={this.props.unreadNotifications}
                 user={this.props.user}
                 gotoView={this.props.gotoView}
                 goToSettings={this.props.goToSettings}
+                loadingMoreNotifications={this.props.loadingMoreNotifications}
+                fetchNotifications={this.props.fetchNotifications}
               />
             }
             {
@@ -60,7 +62,7 @@ class HeaderTopbar extends React.Component {
             }
             {
               showAppChooser &&
-              <APPCHOOSER 
+              <APPCHOOSER
                 currentEnvironment={this.props.currentEnvironment}
               />
             }
@@ -93,14 +95,16 @@ HeaderTopbar.propTypes = {
   'currentEnvironment': PropTypes.object.isRequired,
   'userView': PropTypes.bool.isRequired,
   'notifications': PropTypes.array.isRequired,
-  'seenNotifications': PropTypes.array.isRequired,
-  'unseenNotifications': PropTypes.array.isRequired,
+  'unreadNotifications': PropTypes.number.isRequired,
+  'totalNotifications': PropTypes.number.isRequired,
   'gotoView': PropTypes.func.isRequired,
   'goToSettings': PropTypes.func.isRequired,
   'subscribers': PropTypes.array.isRequired,
   'otherPages': PropTypes.array.isRequired,
   'updatePicture': PropTypes.func.isRequired,
-  'logout': PropTypes.func.isRequired
+  'logout': PropTypes.func.isRequired,
+  'loadingMoreNotifications': PropTypes.bool.isRequired,
+  'fetchNotifications': PropTypes.func.isRequired
 }
 
 export default HeaderTopbar
