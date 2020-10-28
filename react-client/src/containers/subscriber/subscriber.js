@@ -2021,8 +2021,8 @@ class Subscriber extends React.Component {
                                 }
                                 {
                                   this.state.subscriber.locale
-                                    ? <span style={{ display: 'block', marginTop: '5px' }}><i style={{ fontWeight: 'bold' }} className='la la-globe' /> {localeCodeToEnglish(this.state.subscriber.locale)}</span>
-                                    : <span style={{ display: 'block', marginTop: '5px' }}><i style={{ fontWeight: 'bold' }} className='la la-globe' /></span>
+                                    ? <span style={{ display: 'block', marginTop: '5px' }}><i style={{ fontWeight: 'bold' }} className='la la-comments' /> {localeCodeToEnglish(this.state.subscriber.locale)}</span>
+                                    : <span style={{ display: 'block', marginTop: '5px' }}><i style={{ fontWeight: 'bold' }} className='la la-comments' /></span>
                                 }
                                 {
                                   this.state.subscriber.email &&
