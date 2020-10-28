@@ -157,15 +157,15 @@ class ProfileHeader extends React.Component {
               </span>
             </div>
           }
-          {
+          {/* --- Hide by Imran because we want to show location and this is language locale
             (this.props.activeSession.locale) &&
             <div>
               <span style={{ pointerEvents: 'none' }} className='m-card-profile__email m-link'>
                 {localeCodeToEnglish(this.props.activeSession.locale)}
               </span>
             </div>
-          }
-          <br />
+            <br />
+          */}
           {
             this.props.user.isSuperUser && this.props.activeSession.customerId &&
             <div>
