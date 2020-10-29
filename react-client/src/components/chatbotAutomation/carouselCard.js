@@ -11,15 +11,10 @@ class CarouselCard extends React.Component {
     }
     this.updateCard = this.updateCard.bind(this)
     this.uploadImage = this.uploadImage.bind(this)
-    this.updateLoading = this.updateLoading.bind(this)
   }
 
   updateCard (data, callback) {
     this.props.updateCard(this.props.index, {...this.props.card, ...data}, callback)
-  }
-
-  updateLoading (loading) {
-    this.props.updateLoading(this.props.index, {loading})
   }
 
   uploadImage() {
@@ -30,6 +25,7 @@ class CarouselCard extends React.Component {
           return
         }
         console.log('image file', file)
+        this.props.updateLoading(true)
         this.setState({imageLoading: true})
 
         const fileData = new FormData()
@@ -42,6 +38,7 @@ class CarouselCard extends React.Component {
         this.props.uploadAttachment(fileData, (res) => {
           console.log('uploaded image', res.payload)
           this.updateCard({image_url: res.payload.url, fileurl: res.payload}, () => {
+            this.props.updateLoading(false)
             this.setState({imageLoading: false})
           })
         })

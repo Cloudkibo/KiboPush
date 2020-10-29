@@ -144,7 +144,7 @@ class CarouselModal extends React.Component {
         }
         if (requirements.length > 0) {
           return (
-            <li style={{ textAlign: 'left', marginLeft: '75px', color: 'red' }}>{msg}
+            <li key={index} style={{ textAlign: 'left', marginLeft: '75px', color: 'red' }}>{msg}
               <ul>
                 {requirements.map((req, index) => <li key={index}>{req}</li>)}
               </ul>
@@ -190,9 +190,9 @@ class CarouselModal extends React.Component {
 
     return (
       <>
-        <button style={{display: 'none'}} ref={(el) => this.closeModalConfirm = el} data-toggle='modal' data-target='#_close_carousel_modal_confirm' />
+        <button style={{display: 'none'}} ref={(el) => this.closeModalConfirm = el} data-toggle='modal' data-target={`#${this.props.id + '_close_confirm'}`} />
         <CONFIRMATIONMODAL
-          id='_close_carousel_modal_confirm'
+          id={this.props.id + '_close_confirm'}
           title='Warning'
           description='Are you sure you want to exit? You will lose any data inputted.'
           onConfirm={() => this.closeModal(true, true)}
@@ -341,6 +341,7 @@ class CarouselModal extends React.Component {
                               {this.state.cards.map((card, index) => {
                                 return (
                                   <li
+                                    key={index}
                                     style={
                                       this.state.hover === index ||
                                       this.state.selectedIndex === index

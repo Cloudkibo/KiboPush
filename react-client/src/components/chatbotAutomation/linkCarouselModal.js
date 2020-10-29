@@ -149,7 +149,7 @@ class LinkCarouselModal extends React.Component {
           return (
             <li key={index} style={{ textAlign: 'left', marginLeft: '75px', color: 'red' }}>{msg}
               <ul>
-                {requirements.map(req => <li>{req}</li>)}
+                {requirements.map((req, reqIndex) => <li key={reqIndex}>{req}</li>)}
               </ul>
             </li>
           )
@@ -193,9 +193,9 @@ class LinkCarouselModal extends React.Component {
 
     return (
       <>
-        <button style={{display: 'none'}} ref={(el) => this.closeModalConfirm = el} data-toggle='modal' data-target='#_close_carousel_modal_confirm' />
+        <button style={{display: 'none'}} ref={(el) => this.closeModalConfirm = el} data-toggle='modal' data-target={`#${this.props.id + '_close_confirm'}`} />
         <CONFIRMATIONMODAL
-          id='_close_carousel_modal_confirm'
+          id={this.props.id + '_close_confirm'}
           title='Warning'
           description='Are you sure you want to exit? You will lose any data inputted.'
           onConfirm={() => this.closeModal(true, true)}
@@ -282,6 +282,7 @@ class LinkCarouselModal extends React.Component {
                                   blocks={this.props.blocks}
                                   updateButtonOption={this.updateButtonOption}
                                   urlMetaData={this.props.urlMetaData}
+                                  updateLoading={this.updateLoading}
                                 />
                               </div>
                             </div>
@@ -344,6 +345,7 @@ class LinkCarouselModal extends React.Component {
                               {this.state.cards.map((card, index) => {
                                 return (
                                   <li
+                                    key={index}
                                     style={
                                       this.state.hover === index ||
                                       this.state.selectedIndex === index
@@ -373,6 +375,7 @@ class LinkCarouselModal extends React.Component {
                               console.log("cards carousel inner", card);
                               return (
                                 <div
+                                  key={index}
                                   style={{
                                     border: "1px solid rgba(0,0,0,.1)",
                                     borderRadius: "10px",

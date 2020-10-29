@@ -18,9 +18,9 @@ class LinkCarouselCard extends React.Component {
   }
 
   UNSAFE_componentWillReceiveProps (nextProps) {
-      if (nextProps.card.link) {
-          this.setState({link: nextProps.card.link, errorMsg: '', linkValid: true})
-      } else {
+      if ((!this.state.link || this.props.index !== nextProps.index) && nextProps.card.link) {
+        this.setState({link: nextProps.card.link, errorMsg: '', linkValid: true})
+      } else if (this.state.link && this.props.index !== nextProps.index && !nextProps.card.link) {
         this.setState({link: '', errorMsg: 'Required', linkValid: false})
       }
   }
@@ -46,6 +46,7 @@ class LinkCarouselCard extends React.Component {
             link: ''
         }
         this.setState({ linkValid: false, errorMsg, loading: false }, () => {
+            this.props.updateLoading(false)
             this.updateCard(card)
         })
     } else {
@@ -69,6 +70,7 @@ class LinkCarouselCard extends React.Component {
             link: this.state.link
         }
         this.setState({ linkValid: true, loading: false, errorMsg: '' }, () => {
+            this.props.updateLoading(false)
             this.updateCard(card)
         })
     }
@@ -83,9 +85,8 @@ class LinkCarouselCard extends React.Component {
     if (this.validateURL(link)) {
         loading = true
         linkValid = true
+        this.props.updateLoading(true)
     } else {
-        loading = false
-        linkValid = false
         errorMsg = 'Please enter a valid website link'
     }
     this.setState({ link, loading, linkValid, errorMsg}, () => {
