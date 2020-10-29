@@ -47,6 +47,7 @@ class AdvancedBuilder extends React.Component {
           allTriggers={this.props.allTriggers}
           attachmentUploading={this.props.attachmentUploading}
           superUser={this.props.superUser}
+          urlMetaData={this.props.urlMetaData}
         />
       </div>
     )

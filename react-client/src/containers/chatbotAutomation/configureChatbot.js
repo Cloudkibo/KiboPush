@@ -21,6 +21,7 @@ import { Prompt } from 'react-router'
 import AlertContainer from 'react-alert'
 import $ from 'jquery'
 import ReactTooltip from 'react-tooltip'
+import { urlMetaData } from '../../redux/actions/convos.actions'
 
 import ADVANCEDBUILDER from './builder/advancedBuilder'
 import BASICBUILDER from './builder/basicBuilder'
@@ -589,6 +590,7 @@ class ConfigureChatbot extends React.Component {
                 checkWhitelistedDomains={this.props.checkWhitelistedDomains}
                 toggleWhitelistModal={this.toggleWhitelistModal}
                 alertMsg={this.msg}
+                urlMetaData={this.props.urlMetaData}
               />
             }
             <PROGRESS progress={`${this.state.progress}%`} />
@@ -658,7 +660,8 @@ function mapDispatchToProps (dispatch) {
     checkWhitelistedDomains,
     deleteDomain,
     saveWhiteListDomains,
-    fetchWhiteListedDomains
+    fetchWhiteListedDomains,
+    urlMetaData
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(ConfigureChatbot)
