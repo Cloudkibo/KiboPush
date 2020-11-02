@@ -666,6 +666,7 @@ class MessageArea extends React.Component {
             alertMsg={this.props.alertMsg}
             blocks={this.props.blocks}
             updateCarouselCards={this.updateCarouselCards}
+            currentBlock={this.props.block}
           />
           <button style={{display: 'none'}} ref={(el) => this.showLinkCarouselModalTrigger = el} data-toggle='modal' data-target='#_link_carousel_modal' />
           <LinkCarouselModal
@@ -679,6 +680,7 @@ class MessageArea extends React.Component {
             blocks={this.props.blocks}
             updateCarouselCards={this.updateCarouselCards}
             urlMetaData={this.props.urlMetaData}
+            currentBlock={this.props.block}
           />
           <FOOTER
             showPrevious={false}

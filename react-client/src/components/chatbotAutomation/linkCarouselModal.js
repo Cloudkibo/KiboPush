@@ -283,6 +283,7 @@ class LinkCarouselModal extends React.Component {
                                   updateButtonOption={this.updateButtonOption}
                                   urlMetaData={this.props.urlMetaData}
                                   updateLoading={this.updateLoading}
+                                  currentBlock={this.props.currentBlock}
                                 />
                               </div>
                             </div>
@@ -423,20 +424,22 @@ class LinkCarouselModal extends React.Component {
                                   )}
                                   <h6
                                     style={{
-                                      textAlign: "justify",
+                                      textAlign: "left",
                                       marginLeft: "10px",
                                       marginTop: "10px",
                                       fontSize: "16px",
+                                      wordBreak: 'break-word',
                                     }}
                                   >
                                     {card.title}
                                   </h6>
                                   <p
                                     style={{
-                                      textAlign: "justify",
+                                      textAlign: "left",
                                       marginLeft: "10px",
                                       marginTop: "5px",
                                       fontSize: "13px",
+                                      wordBreak: 'break-word',
                                     }}
                                   >
                                     {card.subtitle}
