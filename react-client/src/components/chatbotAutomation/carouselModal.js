@@ -279,6 +279,7 @@ class CarouselModal extends React.Component {
                                   blocks={this.props.blocks}
                                   updateButtonOption={this.updateButtonOption}
                                   updateLoading={this.updateLoading}
+                                  currentBlock={this.props.currentBlock}
                                 />
                               </div>
                             </div>
@@ -419,20 +420,22 @@ class CarouselModal extends React.Component {
                                   )}
                                   <h6
                                     style={{
-                                      textAlign: "justify",
+                                      textAlign: "left",
                                       marginLeft: "10px",
                                       marginTop: "10px",
                                       fontSize: "16px",
+                                      wordBreak: 'break-word',
                                     }}
                                   >
                                     {card.title}
                                   </h6>
                                   <p
                                     style={{
-                                      textAlign: "justify",
+                                      textAlign: "left",
                                       marginLeft: "10px",
                                       marginTop: "5px",
                                       fontSize: "13px",
+                                      wordBreak: 'break-word',
                                     }}
                                   >
                                     {card.subtitle}

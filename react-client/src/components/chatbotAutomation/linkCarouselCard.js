@@ -20,9 +20,9 @@ class LinkCarouselCard extends React.Component {
   UNSAFE_componentWillReceiveProps (nextProps) {
       if ((!this.state.link || this.props.index !== nextProps.index) && nextProps.card.link) {
         this.setState({link: nextProps.card.link, errorMsg: '', linkValid: true})
-      } else if (this.state.link && this.props.index !== nextProps.index && !nextProps.card.link) {
+      } else if (this.state.link && !nextProps.card.link) {
         this.setState({link: '', errorMsg: 'Required', linkValid: false})
-      }
+      } 
   }
 
   updateCard (data, callback) {
