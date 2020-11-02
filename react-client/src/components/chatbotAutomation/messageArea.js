@@ -369,6 +369,7 @@ class MessageArea extends React.Component {
       if (addingNew) {
         if (action === 'link') {
           button.payload = JSON.stringify([{action: '_chatbot', blockUniqueId: uniqueId, parentBlockTitle: this.props.block.title}])
+          carouselCards[i].buttons = [button]  
         } else if (action === 'create') {
           const id = new Date().getTime() + i
           const newBlock = {title, payload: [], uniqueId: id, triggers: [title.toLowerCase()]}

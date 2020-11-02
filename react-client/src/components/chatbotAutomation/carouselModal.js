@@ -378,6 +378,7 @@ class CarouselModal extends React.Component {
                                     maxWidth: "250px",
                                     margin: "auto",
                                     marginTop: "30px",
+                                    height: "calc(100% - 30px)",
                                   }}
                                   className={
                                     "carousel-item " +
