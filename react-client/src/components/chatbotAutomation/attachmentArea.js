@@ -345,7 +345,7 @@ class AttachmentArea extends React.Component {
                   <button
                     id='_attach_button_in_chatbot'
                     type="button"
-                    style={{border: '1px solid #36a3f7'}}
+                    style={{border: '1px solid #36a3f7', marginTop: '5px'}}
                     className="btn btn-outline-info btn-sm"
                     onClick={this.showPopover}
                   >
@@ -358,7 +358,7 @@ class AttachmentArea extends React.Component {
                   this.state.buttons.length === 0 &&
                   <button
                     id='_attach_button_in_chatbot'
-                    style={{border: 'none', cursor: 'pointer', background: 'none'}}
+                    style={{border: 'none', cursor: 'pointer', background: 'none', marginTop: '5px'}}
                     className='m-link m-link--state m-link--info'
                     onClick={this.showPopover}
                   >
