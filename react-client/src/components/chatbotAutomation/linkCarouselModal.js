@@ -1,19 +1,21 @@
 /* eslint-disable no-undef */
 import React from 'react'
-import CarouselCard from './carouselCard'
+import LinkCarouselCard from './linkCarouselCard'
 import CONFIRMATIONMODAL from '../extras/confirmationModal'
 
-class CarouselModal extends React.Component {
+class LinkCarouselModal extends React.Component {
   constructor(props) {
     super(props)
     this.cardLimit = 10
     this.initialCarouselCards = [{
+      link: '',
       fileurl: null,
       image_url: '',
       title: '',
       buttons: [],
       subtitle: '',
-      buttonOption: null
+      buttonOption: null,
+      default_action: undefined
     }]
     this.state = {
       cards: this.props.cards ? JSON.parse(JSON.stringify(this.props.cards)) : JSON.parse(JSON.stringify(this.initialCarouselCards)),
@@ -50,14 +52,6 @@ class CarouselModal extends React.Component {
     this.handleDone = this.handleDone.bind(this)
     this.updateButtonOption = this.updateButtonOption.bind(this)
     this.updateLoading = this.updateLoading.bind(this)
-  }
-
-  updateLoading (loading, callback) {
-    this.setState({loading}, () => {
-      if (callback) {
-        callback()
-      }
-    })
   }
 
   updateButtonOption (buttonOption, index, edited) {
@@ -108,6 +102,14 @@ class CarouselModal extends React.Component {
     })
   }
 
+  updateLoading (loading, callback) {
+    this.setState({loading}, () => {
+      if (callback) {
+        callback()
+      }
+    })
+  }
+
   addCard () {
     let cards = this.state.cards
     cards.push({
@@ -116,7 +118,8 @@ class CarouselModal extends React.Component {
         title: '',
         buttons: [],
         subtitle: '',
-        buttonOption: null
+        buttonOption: null,
+        link: ''
     })
     this.setState({cards, selectedIndex: cards.length - 1, error: '', edited: true})
   }
@@ -140,13 +143,13 @@ class CarouselModal extends React.Component {
         let requirements = []
         let msg = `Card ${index + 1} requires:`
         if (!card.title) {
-          requirements.push('a title')
+          requirements.push('a valid link')
         }
         if (requirements.length > 0) {
           return (
             <li key={index} style={{ textAlign: 'left', marginLeft: '75px', color: 'red' }}>{msg}
               <ul>
-                {requirements.map((req, index) => <li key={index}>{req}</li>)}
+                {requirements.map((req, reqIndex) => <li key={reqIndex}>{req}</li>)}
               </ul>
             </li>
           )
@@ -157,7 +160,7 @@ class CarouselModal extends React.Component {
   }
 
   handleDone () {
-    this.props.updateCarouselCards(JSON.parse(JSON.stringify(this.state.cards)), 'carousel')
+    this.props.updateCarouselCards(JSON.parse(JSON.stringify(this.state.cards)), 'linkCarousel')
     this.closeModal(true, false)
   }
 
@@ -268,7 +271,7 @@ class CarouselModal extends React.Component {
                             </div>
                             <div>
                               <div className="panel-body">
-                                <CarouselCard
+                                <LinkCarouselCard
                                   id={this.props.id}
                                   chatbot={this.props.chatbot}
                                   uploadAttachment={this.props.uploadAttachment}
@@ -278,6 +281,7 @@ class CarouselModal extends React.Component {
                                   alertMsg={this.props.alertMsg}
                                   blocks={this.props.blocks}
                                   updateButtonOption={this.updateButtonOption}
+                                  urlMetaData={this.props.urlMetaData}
                                   updateLoading={this.updateLoading}
                                   currentBlock={this.props.currentBlock}
                                 />
@@ -561,4 +565,4 @@ class CarouselModal extends React.Component {
   }
 }
 
-export default CarouselModal
+export default LinkCarouselModal

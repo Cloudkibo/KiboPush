@@ -11,6 +11,7 @@ import COMPONENTSELECTION from './componentSelection'
 import CAROUSELAREA from './carouselArea'
 import CONFIRMATIONMODAL from '../extras/confirmationModal'
 import CAROUSELMODAL from './carouselModal'
+import LinkCarouselModal from './linkCarouselModal'
 
 class MessageArea extends React.Component {
   constructor(props, context) {
@@ -78,7 +79,7 @@ class MessageArea extends React.Component {
             }
             break
           case 'gallery':
-            selectedComponent = 'carousel'
+            selectedComponent = attachmentComponent.componentName
             carouselCards = attachmentComponent.cards
             break
           default:
@@ -336,7 +337,7 @@ class MessageArea extends React.Component {
     }
   }
 
-  updateCarouselCards (cards) {
+  updateCarouselCards (cards, carouselType) {
     const blocks = [...this.props.blocks]
     const sidebarItems = [...this.props.sidebarItems]
     let carouselCards = [...cards]
@@ -368,6 +369,7 @@ class MessageArea extends React.Component {
       if (addingNew) {
         if (action === 'link') {
           button.payload = JSON.stringify([{action: '_chatbot', blockUniqueId: uniqueId, parentBlockTitle: this.props.block.title}])
+          carouselCards[i].buttons = [button]  
         } else if (action === 'create') {
           const id = new Date().getTime() + i
           const newBlock = {title, payload: [], uniqueId: id, triggers: [title.toLowerCase()]}
@@ -386,7 +388,7 @@ class MessageArea extends React.Component {
     }
     const completed = blocks.filter((item) => item.payload.length > 0).length
     const progress = Math.floor((completed / blocks.length) * 100)
-    this.setState({carouselCards, selectedComponent: 'carousel'}, () => {
+    this.setState({carouselCards, selectedComponent: carouselType}, () => {
       const currentBlock = this.props.block
       const payload = this.preparePayload(this.state)
       currentBlock.payload = payload
@@ -510,8 +512,10 @@ class MessageArea extends React.Component {
   }
 
   onSelectComponent (component) {
-    if (component === 'carousel' || component === 'linkCarousel') {
+    if (component === 'carousel') {
       this.showCarouselModalTrigger.click()
+    } else if (component === 'linkCarousel') {
+      this.showLinkCarouselModalTrigger.click()
     } else {
       this.setState({selectedComponent: component})
     }
@@ -626,6 +630,7 @@ class MessageArea extends React.Component {
                 title="Link Carousel:"
                 buttonTitle="Edit Link Carousel"
                 onRemove={() => this.onRemoveComponent(false)}
+                onClick={() => this.showLinkCarouselModalTrigger.click()}
               />
             }
             <div className='m--space-10' />
@@ -649,19 +654,34 @@ class MessageArea extends React.Component {
               />
             }
             <div className='m--space-10' />
-            <button style={{display: 'none'}} ref={(el) => this.showCarouselModalTrigger = el} data-toggle='modal' data-target='#_carousel_modal' />
-            <CAROUSELMODAL
-                id = '_carousel_modal'
-                title = 'Edit Carousel'
-                chatbot={this.props.chatbot} 
-                uploadAttachment={this.props.uploadAttachment}
-                updateParentState={this.updateState}
-                cards={this.state.carouselCards}
-                alertMsg={this.props.alertMsg}
-                blocks={this.props.blocks}
-                updateCarouselCards={this.updateCarouselCards}
-              />
           </div>
+          <button style={{display: 'none'}} ref={(el) => this.showCarouselModalTrigger = el} data-toggle='modal' data-target='#_carousel_modal' />
+          <CAROUSELMODAL
+            id = '_carousel_modal'
+            title = 'Edit Carousel'
+            chatbot={this.props.chatbot} 
+            uploadAttachment={this.props.uploadAttachment}
+            updateParentState={this.updateState}
+            cards={this.state.carouselCards}
+            alertMsg={this.props.alertMsg}
+            blocks={this.props.blocks}
+            updateCarouselCards={this.updateCarouselCards}
+            currentBlock={this.props.block}
+          />
+          <button style={{display: 'none'}} ref={(el) => this.showLinkCarouselModalTrigger = el} data-toggle='modal' data-target='#_link_carousel_modal' />
+          <LinkCarouselModal
+            id = '_link_carousel_modal'
+            title = 'Edit Link Carousel'
+            chatbot={this.props.chatbot} 
+            uploadAttachment={this.props.uploadAttachment}
+            updateParentState={this.updateState}
+            cards={this.state.carouselCards}
+            alertMsg={this.props.alertMsg}
+            blocks={this.props.blocks}
+            updateCarouselCards={this.updateCarouselCards}
+            urlMetaData={this.props.urlMetaData}
+            currentBlock={this.props.block}
+          />
           <FOOTER
             showPrevious={false}
             showNext={true}
@@ -697,7 +717,8 @@ MessageArea.propTypes = {
   'updateParentState': PropTypes.func.isRequired,
   'checkWhitelistedDomains': PropTypes.func.isRequired,
   'toggleWhitelistModal': PropTypes.func.isRequired,
-  'allTriggers': PropTypes.array.isRequired
+  'allTriggers': PropTypes.array.isRequired,
+  'urlMetaData': PropTypes.func.isRequired
 }
 
 export default MessageArea

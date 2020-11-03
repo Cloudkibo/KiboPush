@@ -25,6 +25,7 @@ class CarouselCard extends React.Component {
           return
         }
         console.log('image file', file)
+        this.props.updateLoading(true)
         this.setState({imageLoading: true})
 
         const fileData = new FormData()
@@ -37,6 +38,7 @@ class CarouselCard extends React.Component {
         this.props.uploadAttachment(fileData, (res) => {
           console.log('uploaded image', res.payload)
           this.updateCard({image_url: res.payload.url, fileurl: res.payload}, () => {
+            this.props.updateLoading(false)
             this.setState({imageLoading: false})
           })
         })
@@ -48,12 +50,12 @@ class CarouselCard extends React.Component {
       <div>
         <div className='ui-block' style={{padding: '5px'}}>
           <div className='row'>
-            <div className='col-3'>
+            <div className='col-2'>
               <div style={{marginTop: '5px', position: 'relative', textAlign: 'left'}}>
                 Title:
               </div>
             </div>
-            <div className='col-9'>
+            <div className='col-10'>
               <input 
                 placeholder={'Please type here...'} 
                 value={this.props.card.title} 
@@ -67,20 +69,20 @@ class CarouselCard extends React.Component {
           </div>
 
           <div className='row'>
-            <div className='col-3'>
+            <div className='col-2'>
               <div style={{marginTop: '5px', position: 'relative', textAlign: 'left'}}>
                 Subtitle:
               </div>
             </div>
-            <div className='col-9'>
+            <div className='col-10'>
               <input placeholder={'Please type here...'} value={this.props.card.subtitle} style={{maxWidth: '100%', marginBottom: '30px'}} onChange={(e) => this.updateCard({subtitle: e.target.value})} className='form-control' />
             </div>
           </div>
           <div className='row'>
-            <div className='col-3'>
+            <div className='col-2'>
               <div style={{marginTop: '5px', position: 'relative', textAlign: 'left'}}>Image:</div>
             </div>
-            <div className='col-9'>
+            <div className='col-10'>
               <div onClick={() => this.fileInput.click()} className='ui-block hoverborder' style={{margin: '0', borderRadius: '5px'}}>
                 {
                 this.state.imageLoading
@@ -111,6 +113,7 @@ class CarouselCard extends React.Component {
             </div>
           </div>
             <CarouselButton
+              id={this.props.id}
               button={this.props.card.buttons[0]}
               alertMsg={this.props.alertMsg}
               blocks={this.props.blocks}

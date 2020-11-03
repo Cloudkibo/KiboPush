@@ -9,7 +9,7 @@ class CarouselButton extends React.Component {
     this.state = {
       options: [],
       showPopover: false,
-      popoverTarget: '_carousel_button_in_chatbot',
+      popoverTarget: this.props.id + '_button_in_chatbot',
     }
     this.showPopover = this.showPopover.bind(this)
     this.togglePopover = this.togglePopover.bind(this)
@@ -42,7 +42,7 @@ class CarouselButton extends React.Component {
   showPopover () {
     this.setState({
       showPopover: true,
-      popoverTarget: `_carousel_add_button`
+      popoverTarget: this.props.id + `_add_button`
     })
   }
 
@@ -53,10 +53,10 @@ class CarouselButton extends React.Component {
   render () {
     return (
       <div id='_carousel_button' className='row' style={{marginTop: '20px', maxHeight: '30px'}}>
-        <div style={{marginTop: '10px', position: 'relative', textAlign: 'left'}} className='col-3'>
+        <div style={{marginTop: '10px', position: 'relative', textAlign: 'left'}} className='col-2'>
             Button:
         </div>
-        <div className='col-9'>
+        <div className='col-10'>
           <div className="form-group m-form__group">
             <div style={{marginLeft: '0', marginTop: '10px'}} className='row'>
               {
@@ -65,7 +65,7 @@ class CarouselButton extends React.Component {
                 style={{border: '1px solid #36a3f7', borderRadius: '5px', padding: '5px', cursor: 'pointer', background: 'none'}}
                 className='m-link m-link--state m-link--info'
                 onClick={() => this.showPopover()}
-                id='_carousel_add_button'
+                id={this.props.id + '_add_button'}
               >
                 {this.props.buttonOption.title}
               </button>) : 
@@ -73,7 +73,7 @@ class CarouselButton extends React.Component {
                 style={{border: 'none', cursor: 'pointer', background: 'none'}}
                 className='m-link m-link--state m-link--info'
                 onClick={() => this.showPopover()}
-                id='_carousel_add_button'
+                id={this.props.id + '_add_button'}
               >
                 + Add Button
               </button>)
@@ -82,7 +82,7 @@ class CarouselButton extends React.Component {
             </div>
           </div>
         </div>
-        <div id='_carousel_button_in_chatbot'>
+        <div id={this.props.id + '_button_in_chatbot'}>
           <Popover
             placement='top'
             isOpen={this.state.showPopover}
@@ -122,12 +122,10 @@ CarouselButton.defaultProps = {
 
 CarouselButton.propTypes = {
   'showLabel': PropTypes.bool,
-  'button': PropTypes.object.isRequired,
-  'currentLevel': PropTypes.number.isRequired,
-  'maxLevel': PropTypes.number.isRequired,
-  'addOption': PropTypes.func.isRequired,
-  'removeOption': PropTypes.func.isRequired,
-  'updateOption': PropTypes.func.isRequired,
+  'button': PropTypes.object,
+  'buttonOption': PropTypes.object,
+  'updateButtonOption': PropTypes.func.isRequired,
+  'blocks': PropTypes.array.isRequired,
   'isCreatable': PropTypes.bool
 }
 
