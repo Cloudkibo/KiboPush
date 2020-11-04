@@ -14,7 +14,7 @@ export function fetchNotifications (data, cb) {
   return (dispatch) => {
     callApi('notifications', 'post', data).then(res => {
       console.log('response from notifications', res)
-      cb(res)
+      if (cb) cb(res)
     })
   }
 }
