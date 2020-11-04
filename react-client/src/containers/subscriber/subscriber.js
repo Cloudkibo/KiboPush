@@ -23,6 +23,7 @@ import moment from 'moment'
 import YouTube from 'react-youtube'
 import {localeCodeToEnglish, handleDate, validateEmail, isWebURL,validatePhoneNumber} from '../../utility/utils'
 import InputDebounce from '../../components/extras/inputDebounce'
+import { RingLoader } from 'halogenium'
 
 var json2csv = require('json2csv')
 
@@ -882,17 +883,18 @@ class Subscriber extends React.Component {
   }
 
   searchSubscriber(event) {
-    this.setState({ searchValue: event.target.value, pageSelected: 0 })
     if (event.target.value !== '') {
-    this.setState({ searchValue: event.target.value, pageSelected: 0, filter: true }, () => {
-      this.loadSubscribers()
+    this.setState({ searching: true, searchValue: event.target.value, pageSelected: 0, filter: true }, () => {
+      clearTimeout(this.typingTimer)
+      this.typingTimer = setTimeout(() => {
+        this.loadSubscribers()
+      }, 500)
     })
     } else {
       this.setState({ searchValue: event.target.value, pageSelected: 0 }, () => {
         this.loadSubscribers()
       })
     }
-
   }
 
   displayData(n, subscribers) {
@@ -909,7 +911,7 @@ class Subscriber extends React.Component {
       data[index] = subscribers[i]
       index++
     }
-    this.setState({ subscribersData: data, subscribersDataAll: subscribers })
+    this.setState({ subscribersData: data, subscribersDataAll: subscribers, searching: false })
   }
   handleSubscriberClick(e) {
     var subscribers = JSON.parse(JSON.stringify(this.state.subscribersData))
@@ -1855,6 +1857,9 @@ class Subscriber extends React.Component {
 
                               <tbody className='m-datatable__body' style={{ textAlign: 'center' }}>
                                 {
+                                  this.state.searching ?
+                                  <center><RingLoader color='#FF5E3A' /></center>
+                                  : 
                                   this.state.subscribersData.map((subscriber, i) => (
                                     <tr data-row={i}
                                       className='m-datatable__row m-datatable__row--even subscriberRow'
