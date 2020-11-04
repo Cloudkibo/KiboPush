@@ -2323,7 +2323,7 @@ class Subscriber extends React.Component {
                                   </div>
 
                                   <div style={{ marginTop: '10px', marginLeft: '10px' }} className='row'>
-                                    <span><strong>Browser</strong>: {this.state.subscriber.siteInfo.browser.browserName + ' ' + this.state.subscriber.siteInfo.browser.browserFullVersion}</span>
+                                    <span><strong>Browser</strong>: {this.state.subscriber.siteInfo.browser && this.state.subscriber.siteInfo.browser.browserName ? this.state.subscriber.siteInfo.browser.browserName + ' ' + this.state.subscriber.siteInfo.browser.browserFullVersion : 'Unavailable'}</span>
                                   </div>
 
                                   <div style={{ marginTop: '10px', marginLeft: '10px' }} className='row'>
