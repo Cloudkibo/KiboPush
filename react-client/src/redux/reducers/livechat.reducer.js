@@ -41,11 +41,13 @@ export function liveChat(state = initialState, action) {
       let sessions = [...state.openSessions]
       let ids = sessions.map(s => s._id)
       let index = ids.indexOf(action.data.subscriberId)
-      sessions[index].is_assigned = action.data.isAssigned
-      sessions[index].assigned_to = {
-        type: action.data.teamId ? 'team' : 'agent',
-        id: action.data.teamId ? action.data.teamId : action.data.agentId,
-        name: action.data.teamName ? action.data.teamName : action.data.agentName
+      if (index >= 0) {
+        sessions[index].is_assigned = action.data.isAssigned
+        sessions[index].assigned_to = {
+          type: action.data.teamId ? 'team' : 'agent',
+          id: action.data.teamId ? action.data.teamId : action.data.agentId,
+          name: action.data.teamName ? action.data.teamName : action.data.agentName
+        }
       }
       return Object.assign({}, state, {
         openSessions: sessions,
@@ -185,7 +187,7 @@ export function liveChat(state = initialState, action) {
       return Object.assign({}, state, {
         socketMessageStatus: null
     })
-  
+
 
     case ActionTypes.UPDATE_USER_CHAT:
       let newChat = state.userChat
@@ -194,7 +196,7 @@ export function liveChat(state = initialState, action) {
         userChat: newChat,
         socketData: state.socketData
       })
-      
+
     case ActionTypes.SET_ACTIVE_SESSION:
       return Object.assign({}, state, {
         activeSession: action.activeSession

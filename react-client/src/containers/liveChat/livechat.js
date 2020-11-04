@@ -372,8 +372,9 @@ class LiveChat extends React.Component {
         }
         this.props.sendNotifications(notificationsData)
       } else if (session.assigned_to && session.assigned_to.type === 'team') {
-        this.props.fetchTeamAgents(session.assigned_to.id, (teamAgents) => {
+        // this.props.fetchTeamAgents(session.assigned_to.id, (teamAgents) => {
           let agentIds = []
+          let teamAgents = this.state.teamAgents
           for (let i = 0; i < teamAgents.length; i++) {
             if (teamAgents[i].agentId._id !== this.props.user._id) {
               agentIds.push(teamAgents[i].agentId._id)
@@ -388,7 +389,7 @@ class LiveChat extends React.Component {
             }
             this.props.sendNotifications(notificationsData)
           }
-        })
+        // })
       }
     } else {
       let errorMsg = res.description || res.payload
@@ -407,13 +408,13 @@ class LiveChat extends React.Component {
         isAllowed = false
         errorMsg = `Only assigned agent can ${errorMsg}`
       } else if (session.assigned_to.type === 'team') {
-        this.fetchTeamAgents(session._id, (teamAgents) => {
-          const agentIds = teamAgents.map((agent) => agent.agentId._id)
+        // this.fetchTeamAgents(session._id, (teamAgents) => {
+          const agentIds = this.state.teamAgents.map((agent) => agent.agentId._id)
           if (!agentIds.includes(this.props.user._id)) {
             isAllowed = false
             errorMsg = `Only agents who are part of assigned team can ${errorMsg}`
           }
-        })
+        // })
       }
     }
     errorMsg = `You can not perform this action. ${errorMsg}`
