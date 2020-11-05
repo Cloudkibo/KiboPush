@@ -153,7 +153,7 @@ class App extends Component {
         })
       }
     }
-    if (nextProps.socketData && this.props.history.location.pathname !== '/liveChat') {
+    if (nextProps.socketData && !this.props.history.location.pathname.startsWith('/liveChat')) {
       handleSocketEvent(
         nextProps.socketData,
         nextProps,
