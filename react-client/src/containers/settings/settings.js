@@ -60,6 +60,7 @@ class Settings extends React.Component {
     }
     this.changeType = this.changeType.bind(this)
     this.initializeSwitchNGP = this.initializeSwitchNGP.bind(this)
+    this.handleNGPSwitch = this.handleNGPSwitch.bind(this)
     this.setReset = this.setReset.bind(this)
     this.setAccountSettings = this.setAccountSettings.bind(this)
     this.setConfiguration = this.setConfiguration.bind(this)
@@ -170,8 +171,6 @@ class Settings extends React.Component {
   setNGP() {
     this.setState({
       openTab: 'showNGP'
-    }, () => {
-      this.initializeSwitchNGP(this.state.ngpButtonState)
     })
   }
 
@@ -312,7 +311,7 @@ class Settings extends React.Component {
     document.body.appendChild(addScript)
     this.scrollToTop()
 
-    this.initializeSwitchNGP(this.state.ngpButtonState)
+    // this.initializeSwitchNGP(this.state.ngpButtonState)
 
     console.log('this.state.ngpButtonState', this.state.ngpButtonState)
     if (this.state.ngpButtonState) {
@@ -377,6 +376,18 @@ class Settings extends React.Component {
       }
     })
   }
+
+  handleNGPSwitch (enable) {
+    this.setState({ ngpButtonState: enable })
+    if (enable === true) {
+      this.setState({ngpDisable: false, ngpButtonState: true})
+      this.props.enableNGP({company_id: this.props.user.companyId}, this.msg)
+    } else {
+      this.setState({ngpDisable: true, ngpButtonState: false})
+      this.props.disableNGP({company_id: this.props.user.companyId}, this.msg)
+    }
+  }
+
   setReset(e) {
     e.preventDefault()
     this.props.reset({ company_id: this.props.user._id })
@@ -451,7 +462,7 @@ class Settings extends React.Component {
       }
     } else if (nextProps.apiFailureNGP) {
       if (this.state.firstTimeNGP === true) {
-        this.initializeSwitchNGP(false)
+        // this.initializeSwitchNGP(false)
         this.setState({ NGPKey: '', NGPSecret: '', ngpButtonState: false, firstTimeNGP: false, count1_ngp: 1 })
         this.setState({ saveStateNGP: false })
       }
@@ -724,11 +735,17 @@ class Settings extends React.Component {
                           <div className='form-group m-form__group row'>
                             <div className='col-lg-8 col-md-8 col-sm-12' />
                             <div className='col-lg-4 col-md-4 col-sm-4'>
-                              <div className='bootstrap-switch-id-test bootstrap-switch bootstrap-switch-wrapper bootstrap-switch-animate bootstrap-switch-on' style={{ width: '130px' }}>
+                              <span className={'m-switch m-switch--outline m-switch--icon m-switch--success'}>
+                                <label>
+                                  <input type='checkbox' data-switch='true' checked={this.state.ngpButtonState} onChange={() => { this.handleNGPSwitch(!this.state.ngpButtonState)}} />
+                                  <span></span>
+                                </label>
+                              </span>
+                              {/*<div className='bootstrap-switch-id-test bootstrap-switch bootstrap-switch-wrapper bootstrap-switch-animate bootstrap-switch-on' style={{ width: '130px' }}>
                                 <div className='bootstrap-switch-container' style={{ width: '177px', marginLeft: '0px' }}>
                                   <input data-switch='true' type='checkbox' name='switch-NGP' id='test' data-on-color='success' data-off-color='warning' aria-describedby='switch-error' aria-invalid='false' checked={this.state.ngpButtonState} />
                                 </div>
-                              </div>
+                              </div>*/}
                             </div>
                           </div>
                           <br /><br />
