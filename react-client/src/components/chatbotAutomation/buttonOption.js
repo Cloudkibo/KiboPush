@@ -6,11 +6,13 @@ class ButtonOption extends React.Component {
   constructor(props, context) {
     super(props, context)
     this.state = {
-      title: '',
+      buttonTitle: '',
+      blockTitle: '',
       selectedBlock: '',
       selectedRadio: ''
     }
-    this.onTitleChange = this.onTitleChange.bind(this)
+    this.onButtonTitleChange = this.onButtonTitleChange.bind(this)
+    this.onBlockTitleChange = this.onBlockTitleChange.bind(this)
     this.onBlockChange = this.onBlockChange.bind(this)
     this.onSave = this.onSave.bind(this)
     this.onRemove = this.onRemove.bind(this)
@@ -28,15 +30,23 @@ class ButtonOption extends React.Component {
       }
     }
     this.setState({
-      title: this.props.title,
+      blockTitle: selectedBlock ? selectedBlock.label : this.props.blockTitle,
+      buttonTitle: this.props.buttonTitle,
       selectedBlock,
-      selectedRadio: this.props.action
+      selectedRadio: this.props.action,
+
     })
   }
 
-  onTitleChange (e) {
+  onBlockTitleChange (e) {
     if (e.target.value.length <= 20) {
-      this.setState({title: e.target.value})
+      this.setState({blockTitle: e.target.value})
+    }
+  }
+
+  onButtonTitleChange (e) {
+    if (e.target.value.length <= 20) {
+      this.setState({buttonTitle: e.target.value})
     }
   }
 
@@ -51,15 +61,18 @@ class ButtonOption extends React.Component {
 
   onSave () {
     const titles = this.props.blocks.map((item) => item.title.toLowerCase())
-    if (!this.state.title) {
-      this.props.alertMsg.error('Title cannot empty')
+    if (this.state.selectedRadio === 'create' && !this.state.blockTitle) {
+      this.props.alertMsg.error('Block Title cannot empty')
+    } else if (!this.state.buttonTitle) {
+      this.props.alertMsg.error('Button Title cannot empty')
     } else if (this.state.selectedRadio === 'link' && !this.state.selectedBlock) {
       this.props.alertMsg.error('Please select a block to trigger')
-    } else if (this.state.selectedRadio === 'create' && titles.indexOf(this.state.title.toLowerCase()) > -1) {
+    } else if (this.state.selectedRadio === 'create' && titles.indexOf(this.state.blockTitle.toLowerCase()) > -1) {
        this.props.alertMsg.error('A block with this title already exists. Please choose a diffrent title')
     } else {
         this.props.updateButtonOption({
-            title: this.state.title,
+            buttonTitle: this.state.buttonTitle,
+            blockTitle: this.state.blockTitle,
             action: this.state.selectedRadio,
             blockId: this.state.selectedBlock.value,
             type: this.props.type,
@@ -91,13 +104,13 @@ class ButtonOption extends React.Component {
         <i onClick={this.props.onCancel} style={{cursor: 'pointer'}} className='la la-close pull-right' />
         <div style={{paddingTop: '10px'}}>
           <div className="form-group m-form__group">
-            <label>Title:</label>
+            <label>Button Title:</label>
             <input
               type="text"
               className="form-control m-input"
-              placeholder="Enter title..."
-              value={this.state.title}
-              onChange={this.onTitleChange}
+              placeholder="Enter button title..."
+              value={this.state.buttonTitle}
+              onChange={this.onButtonTitleChange}
             />
           </div>
           <div className='m--space-10' />
@@ -119,6 +132,17 @@ class ButtonOption extends React.Component {
                       Create new block
                     <span />
                   </label>
+                }
+                {
+                  this.state.selectedRadio === 'create' &&
+                  <input
+                    type="text"
+                    className="form-control m-input"
+                    placeholder="Enter block title..."
+                    value={this.state.blockTitle}
+                    onChange={this.onBlockTitleChange}
+                    style={{marginBottom: '10px'}}
+                  />
                 }
                 <label className="m-radio m-radio--bold m-radio--state-brand">
                   <input
@@ -162,7 +186,7 @@ class ButtonOption extends React.Component {
             style={{marginBottom: '10px'}}
             className='btn btn-primary btn-sm pull-right'
             onClick={this.onSave}
-            disabled={!(this.state.title)}
+            disabled={!(this.state.buttonTitle)}
           >
             Save
           </button>
