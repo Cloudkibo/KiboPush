@@ -284,7 +284,7 @@ class EditTeam extends React.Component {
         }
       }
     } else {
-      let removedAgents = this.state.removedAgents.filter(removedAgent => removedAgents !== agent._id)
+      let removedAgents = this.state.removedAgents.filter(removedAgent => removedAgent !== agent._id)
       this.setState({removedAgents: removedAgents})
       for (var j = 0; j < this.props.members.length; j++) {
         if (agent._id === this.props.members[j].userId._id) {
