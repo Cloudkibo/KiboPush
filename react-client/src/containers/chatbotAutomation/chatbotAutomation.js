@@ -120,6 +120,8 @@ class ChatbotAutomation extends React.Component {
       const chatbotPages = chatbots.map((item) => item.pageId._id)
       const pages = this.props.pages.filter((item) => chatbotPages.indexOf(item._id) === -1)
       return pages
+    } else {
+      return []
     }
   }
 
