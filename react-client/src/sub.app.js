@@ -70,7 +70,7 @@ class App extends Component {
       }
     }
   }
-  
+
   checkFacebookConnected(response) {
     if (this.props.user && this.props.user.role !== 'buyer' && !response.payload.buyerInfo.connectFacebook) {
       this.props.history.push({
@@ -145,7 +145,7 @@ class App extends Component {
         })
       }
     }
-    if (nextProps.socketData && this.props.history.location.pathname !== '/liveChat') {
+    if (nextProps.socketData && !this.props.history.location.pathname.startsWith('/liveChat')) {
       handleSocketEvent(
         nextProps.socketData,
         nextProps,
