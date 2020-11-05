@@ -68,7 +68,9 @@ class CarouselModal extends React.Component {
       buttonOption.cardIndex = index
     }
     cards[index].buttonOption = buttonOption
-    cards[index].buttons = []
+    if (edited) {
+      cards[index].buttons = []
+    }
     this.setState({cards, edited})
   }
 
@@ -369,7 +371,6 @@ class CarouselModal extends React.Component {
                           )}
                           <div className="carousel-inner">
                             {this.state.cards.map((card, index) => {
-                              console.log("cards carousel inner", card);
                               return (
                                 <div
                                   key={index}
@@ -451,7 +452,7 @@ class CarouselModal extends React.Component {
                                         }}
                                       />
                                       <h5 style={{ color: "#0782FF" }}>
-                                        {card.buttonOption.title}
+                                        {card.buttonOption.buttonTitle}
                                       </h5>
                                     </div>
                                   }

@@ -294,7 +294,7 @@ class MessageArea extends React.Component {
     }
   }
 
-  addOption (title, action, uniqueId, type) {
+  addOption (title, action, uniqueId) {
     const titles = this.props.blocks.map((item) => item.title.toLowerCase())
     if (action === 'create' && titles.indexOf(title.toLowerCase()) > -1) {
       this.props.alertMsg.error('A block with this title already exists. Please choose a diffrent title')
@@ -344,9 +344,10 @@ class MessageArea extends React.Component {
     for (let i = 0; i < cards.length; i++) {
       if (!cards[i].buttonOption) {
         carouselCards[i].buttons = []
-        break  
+        continue  
       } 
-      const title = cards[i].buttonOption.title
+      const buttonTitle = cards[i].buttonOption.buttonTitle
+      const blockTitle = cards[i].buttonOption.blockTitle
       const action = cards[i].buttonOption.action
       const uniqueId = cards[i].buttonOption.blockId
 
@@ -364,7 +365,7 @@ class MessageArea extends React.Component {
       }
       const button = {
         type: 'postback',
-        title
+        title: buttonTitle
       }
       if (addingNew) {
         if (action === 'link') {
@@ -372,10 +373,10 @@ class MessageArea extends React.Component {
           carouselCards[i].buttons = [button]  
         } else if (action === 'create') {
           const id = new Date().getTime() + i
-          const newBlock = {title, payload: [], uniqueId: id, triggers: [title.toLowerCase()]}
+          const newBlock = {title: blockTitle, payload: [], uniqueId: id, triggers: [blockTitle.toLowerCase()]}
           const index = sidebarItems.findIndex((item) => item.id.toString() === this.props.block.uniqueId.toString())
           sidebarItems[index].isParent = true
-          const newSidebarItem = {title, isParent: false, id, parentId: this.props.block.uniqueId}
+          const newSidebarItem = {title: blockTitle, isParent: false, id, parentId: this.props.block.uniqueId}
           sidebarItems.push(newSidebarItem)
           blocks.push(newBlock)
           button.payload = JSON.stringify([{action: '_chatbot', blockUniqueId: id, payloadAction: 'create', parentBlockTitle: this.props.block.title}])
@@ -412,49 +413,17 @@ class MessageArea extends React.Component {
     this.setState({quickReplies: options})
   }
 
-  removeOption (uniqueId, index, type) {
+  removeOption (uniqueId, index) {
     let options = []
-    if (type === 'quickReply') {
-      options = this.state.quickReplies
-      options.splice(index, 1)
-    } else if (type === 'carouselButton') {
-      options = this.state.carouselCards[index].buttons
-      options = []
-    }
+    options = this.state.quickReplies
+    options.splice(index, 1)
     const currentBlock = this.props.block
-    if (type === 'quickReply') {
-      if (currentBlock.payload.length > 0) {
-        currentBlock.payload[currentBlock.payload.length - 1].quickReplies = options
-      } else {
-        currentBlock.payload.push({quickReplies: options})
-      }
-      this.setState({quickReplies: options})
-    } else if (type === 'carouselButton') {
-      let carouselCards = this.state.carouselCards
-      carouselCards[index].buttons = options
-      let buttonFound = false
-      for (let i = 0; i < currentBlock.payload.length; i++) {
-        if (currentBlock.payload[i].cards) {
-          for (let j = 0; j < currentBlock.payload[i].cards.length; j++) {
-            for (let k = 0; k < currentBlock.payload[i].cards[j].buttons.length; k++) {
-              const payload = JSON.parse(currentBlock.payload[i].cards[j].buttons.payload)
-              if (payload.uniqueId === uniqueId) {
-                currentBlock.payload[i].cards[j].buttons.splice(k, 1)
-                buttonFound = true
-                break
-              }
-            }
-            if (buttonFound) {
-              break
-            }
-          }
-        }
-        if (buttonFound) {
-          break
-        }
-      }
+    if (currentBlock.payload.length > 0) {
+      currentBlock.payload[currentBlock.payload.length - 1].quickReplies = options
+    } else {
+      currentBlock.payload.push({quickReplies: options})
     }
-
+    this.setState({quickReplies: options})
     this.props.updateParentState({currentBlock, unsavedChanges: true})
   }
 

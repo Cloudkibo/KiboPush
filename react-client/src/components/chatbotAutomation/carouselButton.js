@@ -30,12 +30,20 @@ class CarouselButton extends React.Component {
   UNSAFE_componentWillReceiveProps (nextProps) {
     if (nextProps.button && (!nextProps.buttonOption || nextProps.buttonOption.action !== 'link')) {
       const payload = JSON.parse(nextProps.button.payload)
+      let blockTitle = ''
+      if (payload[0] && payload[0].blockUniqueId) {
+        const block = nextProps.blocks.find(b => ""+b.uniqueId === ""+payload[0].blockUniqueId)
+        if (block) {
+          blockTitle = block.title
+        }
+      }
       this.props.updateButtonOption({
-        title: nextProps.button.title,
+        buttonTitle: nextProps.button.title,
+        blockTitle,
         blockId: payload[0] ? payload[0].blockUniqueId : null,
         action: 'link',
         showRemove: true
-      }, this.props.cardIndex, false)
+      }, nextProps.cardIndex, false)
     }
   }
 
@@ -67,7 +75,7 @@ class CarouselButton extends React.Component {
                 onClick={() => this.showPopover()}
                 id={this.props.id + '_add_button'}
               >
-                {this.props.buttonOption.title}
+                {this.props.buttonOption.buttonTitle}
               </button>) : 
               (<button
                 style={{border: 'none', cursor: 'pointer', background: 'none'}}
@@ -84,7 +92,7 @@ class CarouselButton extends React.Component {
         </div>
         <div id={this.props.id + '_button_in_chatbot'}>
           <Popover
-            placement='top'
+            placement='right'
             isOpen={this.state.showPopover}
             className='chatPopover _popover_max_width_400'
             target={this.state.popoverTarget}
@@ -95,11 +103,12 @@ class CarouselButton extends React.Component {
                 this.state.showPopover &&
                 <ButtonOption
                   cardIndex={this.props.cardIndex}
-                  title={this.props.buttonOption ? this.props.buttonOption.title : ''}
+                  buttonTitle={this.props.buttonOption ? this.props.buttonOption.buttonTitle : ''}
+                  blockTitle={this.props.buttonOption ? this.props.buttonOption.blockTitle : ''}
                   blockId={this.props.buttonOption ? this.props.buttonOption.blockId : ''}
                   blocks={this.props.blocks}
                   onCancel={this.togglePopover}
-                  showRemove={this.props.buttonOption ? this.props.buttonOption.showRemove : false}
+                  showRemove={!!this.props.button}
                   action={this.props.buttonOption ? this.props.buttonOption.action : (this.props.isCreatable ? 'create' : 'link')}
                   alertMsg={this.props.alertMsg}
                   isCreatable={this.props.isCreatable}
