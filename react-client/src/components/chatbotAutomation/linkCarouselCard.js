@@ -10,18 +10,40 @@ class LinkCarouselCard extends React.Component {
     this.doneTypingInterval = 500
     this.state = {
         link: this.props.card.link,
-        linkValid: false,
         loading: false,
-        errorMsg: this.props.card.link ? '' : 'Required'
+        errorMsg: ''
     }
     this.updateCard = this.updateCard.bind(this)
+    this.validateURL = this.validateURL.bind(this)
+    this.getErrorMsg = this.getErrorMsg.bind(this)
+  }
+
+  componentDidMount () {
+    this.setState({errorMsg: this.getErrorMsg(this.props.card)})
+  }
+
+  getErrorMsg (card) {
+    let errorMsg = ''
+    if (card.link) {
+        if (this.validateURL(card.link)) {
+            if (!card.title) {
+                errorMsg = 'Invalid or private website link'
+            }
+         } else {
+            errorMsg = 'Please enter a valid website link'
+         }  
+    } else {
+        errorMsg = 'Please enter a valid website link'
+    }
+    return errorMsg
   }
 
   UNSAFE_componentWillReceiveProps (nextProps) {
       if ((!this.state.link || this.props.index !== nextProps.index) && nextProps.card.link) {
-        this.setState({link: nextProps.card.link, errorMsg: '', linkValid: true})
-      } else if (this.state.link && !nextProps.card.link) {
-        this.setState({link: '', errorMsg: 'Required', linkValid: false})
+        let errorMsg = this.getErrorMsg(nextProps.card)
+        this.setState({link: nextProps.card.link, errorMsg})
+      } else if (this.state.link && this.props.index !== nextProps.index && !nextProps.card.link) {
+        this.setState({link: '', errorMsg: 'Please enter a valid website link'})
       } 
   }
 
@@ -45,7 +67,7 @@ class LinkCarouselCard extends React.Component {
             default_action: undefined,
             link: ''
         }
-        this.setState({ linkValid: false, errorMsg, loading: false }, () => {
+        this.setState({ errorMsg, loading: false }, () => {
             this.props.updateLoading(false)
             this.updateCard(card)
         })
@@ -69,7 +91,7 @@ class LinkCarouselCard extends React.Component {
             },
             link: this.state.link
         }
-        this.setState({ linkValid: true, loading: false, errorMsg: '' }, () => {
+        this.setState({ loading: false, errorMsg: '' }, () => {
             this.props.updateLoading(false)
             this.updateCard(card)
         })
@@ -79,18 +101,16 @@ class LinkCarouselCard extends React.Component {
   handleLinkChange(e) {
     console.log('changing link', e.target.value)
     const link = e.target.value
-    let linkValid = false
     let loading = false
     let errorMsg = ''
     if (this.validateURL(link)) {
         loading = true
-        linkValid = true
         this.props.updateLoading(true)
     } else {
         errorMsg = 'Please enter a valid website link'
     }
-    this.setState({ link, loading, linkValid, errorMsg}, () => {
-        if (this.state.linkValid) {
+    this.setState({ link, loading, errorMsg}, () => {
+        if (!this.state.errorMsg) {
             clearTimeout(this.typingTimer)
             this.typingTimer = setTimeout(
                 () => this.props.urlMetaData(link, 
@@ -104,7 +124,7 @@ class LinkCarouselCard extends React.Component {
                 subtitle: '',
                 image_url: '',
                 default_action: undefined,
-                link: ''
+                link
             }
             this.updateCard(card)
         }
@@ -130,9 +150,9 @@ validateURL(textval) {
                     </div>
                 </div>
                 <div className='col-10'>
-                    <input value={this.state.link} style={{ maxWidth: '100%', borderColor: !this.state.linkValid && !this.state.loading ? 'red' : (this.state.loading || this.state.linkValid) ? 'green' : '' }} onChange={(e) => this.handleLinkChange(e)} className='form-control' />
-                    <div style={{ color: 'green', textAlign: 'left' }}>{this.state.linkValid && !this.state.loading ? this.props.validMsg ? `*${this.props.validMsg}` : '*Link is valid.' : ''}</div>
-                    <div style={{ color: 'red', textAlign: 'left' }}>{!this.state.linkValid && !this.state.loading  ? `*${this.state.errorMsg}` : ''}</div>
+                    <input value={this.state.link} style={{ maxWidth: '100%', borderColor: this.state.errorMsg && !this.state.loading ? 'red' : (this.state.loading && !this.state.errorMsg) ? 'green' : '' }} onChange={(e) => this.handleLinkChange(e)} className='form-control' />
+                    <div style={{ color: 'green', textAlign: 'left' }}>{!this.state.errorMsg && !this.state.loading ? this.props.validMsg ? `*${this.props.validMsg}` : '*Link is valid.' : ''}</div>
+                    <div style={{ color: 'red', textAlign: 'left' }}>{this.state.errorMsg && !this.state.loading  ? `*${this.state.errorMsg}` : ''}</div>
                     <div style={{ color: 'green', textAlign: 'left' }}>{this.state.loading ? '*Retrieving webpage meta data.' : ''}</div>
                 </div>   
             </div>
