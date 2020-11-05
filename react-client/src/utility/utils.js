@@ -87,6 +87,9 @@ export function getCurrentProduct() {
   } else if (hostname.includes('kibochat.cloudkibo.com') || window.location.port.includes('3022')) {
     console.log('KiboChat')
     return 'KiboChat'
+  } else if (hostname.includes('kibolite.cloudkibo.com') || window.location.port.includes('8000')) {
+    console.log('KiboLite')
+    return 'KiboLite'
   } else {
     return 'localhost'
   }
