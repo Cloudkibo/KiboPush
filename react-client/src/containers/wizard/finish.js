@@ -209,7 +209,7 @@ class Finish extends React.Component {
                       <div className='m-portlet__head-caption'>
                         <div className='m-portlet__head-title'>
                           <h3 className='m-portlet__head-text'>
-                            Step {6}: Subscribe To Kibopush
+                            Step {getCurrentProduct() === 'KiboLite' ? 5 : 6}: Subscribe To Kibopush
                           </h3>
                         </div>
                       </div>
@@ -238,7 +238,7 @@ class Finish extends React.Component {
                                 </Link>
                               </div> */}
                           <div className='col-lg-6 m--align-left' >
-                            <Link to={getCurrentProduct() === 'KiboEngage' || getCurrentProduct() === 'localhost' ? '/menuWizard' : '/responseMethods'} className='btn btn-secondary m-btn m-btn--custom m-btn--icon' data-wizard-action='next'>
+                            <Link to={getCurrentProduct() === 'KiboEngage' || getCurrentProduct() === 'KiboLite' || getCurrentProduct() === 'localhost' ? '/menuWizard' : '/responseMethods'} className='btn btn-secondary m-btn m-btn--custom m-btn--icon' data-wizard-action='next'>
                               <span>
                                 <i className='la la-arrow-left' />
                                 <span>Back</span>&nbsp;&nbsp;

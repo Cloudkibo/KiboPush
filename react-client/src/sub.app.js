@@ -5,7 +5,7 @@ import { bindActionCreators } from 'redux'
 import Sidebar from './components/sidebar/sidebar'
 import auth from './utility/auth.service'
 import $ from 'jquery'
-import { getuserdetails } from './redux/actions/basicinfo.actions'
+import { getuserdetails, switchToBasicPlan } from './redux/actions/basicinfo.actions'
 import { loadMyPagesListNew } from './redux/actions/pages.actions'
 import { setMessageAlert } from './redux/actions/notifications.actions'
 import { updateLiveChatInfo } from './redux/actions/livechat.actions'
@@ -14,6 +14,7 @@ import { joinRoom } from './utility/socketio'
 import { handleSocketEvent } from './handleSocketEvent'
 import Notification from 'react-web-notification'
 import { getCurrentProduct } from './utility/utils'
+import MODAL from './components/extras/modal'
 import AlertContainer from 'react-alert'
 import HEADER from './components/header/header'
 import { getLandingPage } from './utility/utils'
@@ -21,7 +22,7 @@ import { getHiddenHeaderRoutes, getWhiteHeaderRoutes } from './utility/utils'
 import { validateUserAccessToken, isFacebookConnected } from './redux/actions/basicinfo.actions'
 
 class App extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = {
       message_alert: null,
@@ -36,6 +37,9 @@ class App extends Component {
     this.checkUserAccessToken = this.checkUserAccessToken.bind(this)
     this.checkFacebookConnected = this.checkFacebookConnected.bind(this)
     this.callbackUserDetails = this.callbackUserDetails.bind(this)
+    this.checkTrialPeriod = this.checkTrialPeriod.bind(this)
+    this.getTrialModalContent = this.getTrialModalContent.bind(this)
+    this.onPurchaseSubscription = this.onPurchaseSubscription.bind(this)
 
     props.getuserdetails(joinRoom, this.callbackUserDetails)
   }
@@ -97,6 +101,7 @@ class App extends Component {
       }
     }
   }
+
   redirectToConnectPage(payload) {
     if (payload.count !== 'undefined' && payload.count < 1 && this.props.user.platform === 'messenger') {
       this.props.history.push({
@@ -105,7 +110,7 @@ class App extends Component {
     }
   }
 
-  handleDemoSSAPage () {
+  handleDemoSSAPage() {
     const sidebar = document.getElementById('sidebarDiv')
     sidebar.parentNode.removeChild(sidebar)
     document.getElementsByTagName('body')[0].className = 'm-page--fluid m--skin- m-content--skin-light2 m-header--fixed m-header--fixed-mobile m-footer--push'
@@ -115,24 +120,27 @@ class App extends Component {
     if (nextProps.message_alert) {
       nextProps.setMessageAlert(null)
     }
+    this.setState({
+      message_alert: nextProps.message_alert
+    })
     if (nextProps.user) {
       if (!nextProps.user.emailVerified) {
         this.props.history.push({
           pathname: '/resendVerificationEmail'
         })
-      } else if ((!nextProps.user.platform  || nextProps.user.platform === '') && nextProps.user.role === 'buyer') {
+      } else if ((!nextProps.user.platform || nextProps.user.platform === '') && nextProps.user.role === 'buyer') {
         this.props.history.push({
           pathname: '/integrations'
         })
-      }  else if ((!nextProps.user.platform  || nextProps.user.platform === '') && nextProps.user.role !== 'buyer') {
+      } else if ((!nextProps.user.platform || nextProps.user.platform === '') && nextProps.user.role !== 'buyer') {
         this.props.history.push({
           pathname: '/sessionInvalidated',
-          state: { session_inavalidated: false}
+          state: { session_inavalidated: false }
         })
       } else if (nextProps.user.platform === 'messenger' && (!nextProps.user.facebookInfo || !nextProps.user.connectFacebook) && nextProps.user.role === 'buyer') {
-          this.props.history.push({
-            pathname: '/integrations'
-          })
+        this.props.history.push({
+          pathname: '/integrations'
+        })
       } else if (nextProps.user.platform === 'sms' && nextProps.automated_options && !nextProps.automated_options.twilio && nextProps.user.role === 'buyer') {
         this.props.history.push({
           pathname: '/integrations',
@@ -154,14 +162,11 @@ class App extends Component {
         nextProps.clearSocketData
       )
     }
-    this.setState({
-      message_alert: nextProps.message_alert
-    })
   }
 
-  setPathAndHeaderProps (path) {
+  setPathAndHeaderProps(path) {
     if (auth.loggedIn() && getHiddenHeaderRoutes().indexOf(path) === -1) {
-      this.setState({headerProps: {}, path})
+      this.setState({ headerProps: {}, path })
     } else if (getWhiteHeaderRoutes().indexOf(path) > -1) {
       this.setState({
         headerProps: {
@@ -181,16 +186,35 @@ class App extends Component {
     }
   }
 
-  componentDidMount () {
-     this.unlisten = this.props.history.listen(location => {
+  setPathAndHeaderProps(path) {
+    if (auth.loggedIn() && getHiddenHeaderRoutes().indexOf(path) === -1) {
+      this.setState({ headerProps: {}, path })
+    } else if (getWhiteHeaderRoutes().indexOf(path) > -1) {
+      this.setState({
+        headerProps: {
+          skin: this.props.isMobile ? 'dark' : 'white',
+          showToggleSidebar: false,
+          showHeaderMenu: false,
+          showHeaderTopbar: true,
+          showSelectPlatform: false,
+          showPlanPermissions: false,
+          showNotifcations: false,
+          showQuickActions: false,
+          showAppChooser: true,
+          showDocumentation: true
+        },
+        path
+      })
+    }
+  }
+
+  componentDidMount() {
+    this.unlisten = this.props.history.listen(location => {
       this.setPathAndHeaderProps(location.pathname)
       if (!this.isWizardOrLogin(location.pathname)) {
         /* eslint-disable */
         if ($('#sidebarDiv')) {
           $('#sidebarDiv').removeClass('hideSideBar')
-        }
-        if ($('#headerDiv')) {
-          $('#headerDiv').removeClass('hideHeader')
         }
         /* eslint-enable */
       }
@@ -205,11 +229,51 @@ class App extends Component {
     }
   }
 
-  componentWillUnmount () {
+  checkTrialPeriod() {
+    if (this.props.history.location.pathname.toLowerCase() !== '/settings') {
+      if (this.props.user &&
+        this.props.user.trialPeriod &&
+        this.props.user.trialPeriod.status &&
+        new Date(this.props.user.trialPeriod.endDate) < new Date()
+      ) {
+        this.refs._open_trial_modal.click()
+      }
+    }
+  }
+
+  getTrialModalContent() {
+    return (
+      <div>
+        <p>Your trial period has ended. If you wish to continue using the Premium plan, we suggest you to kindly purchase its subscription. Else, you can choose to switch to our Basic (free) plan.</p>
+        <div style={{ width: '100%', textAlign: 'center' }}>
+          <div style={{ display: 'inline-block', padding: '5px' }}>
+            <button className='btn btn-secondary' onClick={this.props.switchToBasicPlan} data-dismiss='modal'>
+              Switch to Basic Plan
+            </button>
+          </div>
+          <div style={{ display: 'inline-block', padding: '5px' }}>
+            <button onClick={this.onPurchaseSubscription} className='btn btn-primary' data-dismiss='modal'>
+              Purchase Subscription
+            </button>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  onPurchaseSubscription() {
+    this.refs._open_trial_modal.click()
+    this.props.history.push({
+      pathname: '/settings',
+      state: 'payment_methods'
+    })
+  }
+
+  componentWillUnmount() {
     this.unlisten()
   }
 
-  isWizardOrLogin (path) {
+  isWizardOrLogin(path) {
     if ([
       '/addPageWizard',
       '/inviteUsingLinkWizard',
@@ -235,7 +299,7 @@ class App extends Component {
     return false
   }
 
-  onNotificationClick () {
+  onNotificationClick() {
     window.focus()
     this.props.history.push({
       pathname: '/liveChat',
@@ -251,9 +315,25 @@ class App extends Component {
       time: 5000,
       transition: 'scale'
     }
+    if (this.refs._open_trial_modal) {
+      this.checkTrialPeriod()
+    }
     return (
       <div>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
+        <button
+          style={{ display: 'none' }}
+          ref='_open_trial_modal'
+          data-target='#_trial_period'
+          data-backdrop="static"
+          data-keyboard="false"
+          data-toggle='modal'
+        />
+        <MODAL
+          id='_trial_period'
+          title='Trial Period Ended'
+          content={this.getTrialModalContent()}
+        />
         {
           this.state.message_alert && !this.state.message_alert.muteNotification && this.state.message_alert.agentId === this.props.user._id && this.props.user.platform === this.state.message_alert.platform &&
           <Notification
@@ -280,7 +360,7 @@ class App extends Component {
               auth.loggedIn() &&
               <Sidebar history={this.props.history} location={this.props.location} />
             }
-            { this.props.children }
+            {this.props.children}
           </div>
         }
       </div>
@@ -303,16 +383,17 @@ function mapStateToProps (state) {
   }
 }
 
-function mapDispatchToProps (dispatch) {
+function mapDispatchToProps(dispatch) {
   return bindActionCreators({
-      getuserdetails,
-      setMessageAlert,
-      updateLiveChatInfo,
-      clearSocketData,
-      loadMyPagesListNew,
-      validateUserAccessToken,
-      isFacebookConnected
-    }, dispatch)
+    getuserdetails,
+    switchToBasicPlan,
+    loadMyPagesListNew,
+    setMessageAlert,
+    updateLiveChatInfo,
+    clearSocketData,
+    validateUserAccessToken,
+    isFacebookConnected
+  }, dispatch)
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(App)
