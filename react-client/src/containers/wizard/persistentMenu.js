@@ -705,7 +705,7 @@ class Menu extends React.Component {
                             </Link>
                           </div>
                           <div className='col-lg-6 m--align-right'>
-                            <Link to={getCurrentProduct() === 'KiboEngage' || getCurrentProduct() === 'localhost' ? '/finish' : '/responseMethods'} className='btn btn-success m-btn m-btn--custom m-btn--icon' data-wizard-action='next'>
+                            <Link to={getCurrentProduct() === 'KiboEngage' || getCurrentProduct() === 'KiboLite' || getCurrentProduct() === 'localhost' ? '/finish' : '/responseMethods'} className='btn btn-success m-btn m-btn--custom m-btn--icon' data-wizard-action='next'>
                               <span>
                                 <span>Next</span>&nbsp;&nbsp;
                                 <i className='la la-arrow-right' />
