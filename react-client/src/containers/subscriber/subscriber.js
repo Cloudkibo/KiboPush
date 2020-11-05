@@ -2312,11 +2312,11 @@ class Subscriber extends React.Component {
                                 <div>
                                   <span>This is the information captured when a customer sends a message from the chat plugin installed on your website</span>
                                   <div style={{ marginTop: '10px', marginLeft: '10px' }} className='row'>
-                                    <span><strong>Page Title</strong>: {this.state.subscriber.siteInfo.pageTitle}</span>
+                                    <span><strong>Page Title</strong>: {this.state.subscriber.siteInfo.pageTitle ? this.state.subscriber.siteInfo.pageTitle: 'Unavailable'}</span>
                                   </div>
 
                                   <div style={{ marginTop: '10px', marginLeft: '10px' }} className='row'>
-                                    <span><strong>Page URL</strong>: {this.state.subscriber.siteInfo.fullUrl}</span>
+                                    <span><strong>Page URL</strong>: {this.state.subscriber.siteInfo.fullUrl ? this.state.subscriber.siteInfo.fullUrl : 'Unavailable'}</span>
                                   </div>
 
                                   <div style={{ marginTop: '10px', marginLeft: '10px' }} className='row'>
@@ -2332,7 +2332,7 @@ class Subscriber extends React.Component {
                                   </div>
 
                                   <div style={{ marginTop: '10px', marginLeft: '10px' }} className='row'>
-                                    <span><strong>Platform</strong>: {this.state.subscriber.siteInfo.platform}</span>
+                                    <span><strong>Platform</strong>: {this.state.subscriber.siteInfo.platform ? this.state.subscriber.siteInfo.platform : 'Unavailable'}</span>
                                   </div>
                                 </div>
                               </div>
