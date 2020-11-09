@@ -48,7 +48,8 @@ class Card extends React.Component {
           style={{
             objectFit: 'cover',
             paddingRight: '2px',
-            minHeight: '105px',
+            minHeight: '125px',
+            maxHeight: '125px',
             minWidth: '150px',
             paddingTop: '15px',
             margin: '-10px auto',

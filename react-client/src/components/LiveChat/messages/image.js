@@ -13,7 +13,7 @@ class Image extends React.Component {
         <img
           alt=''
           src={this.props.image.fileurl.url || this.props.image.fileurl}
-          style={{maxWidth: '150px', maxHeight: '85px'}}
+          style={{width: '100%', maxHeight: '85px'}}
         />
       </a>
     )
