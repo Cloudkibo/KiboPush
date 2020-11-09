@@ -16,14 +16,20 @@ class Configuration extends React.Component {
       twilio: {
         provider: 'twilio',
         accessToken: '',
-        businessNumber: '+14155238886',
-        accountSID: '',
-        sandBoxCode: ''
+        businessNumber: '',
+        accountSID: ''
       },
       flockSend: {
         provider: 'flockSend',
         accessToken: '',
         businessNumber: ''
+      },
+      twilioFree: {
+        provider: 'twilioFree',
+        accessToken: '',
+        businessNumber: '+14155238886',
+        accountSID: '',
+        sandBoxCode: ''
       }
     }
     this.state = {
@@ -79,6 +85,7 @@ class Configuration extends React.Component {
     this.setState({retainData : e.target.checked})
   }
   updateWhatsAppData(e, data) {
+    console.log('updateWhatsAppData', e)
     if (data.businessNumber) {
       if (!validatePhoneNumber(data.businessNumber)) {
         e.target.setCustomValidity('Please enter a valid WhatsApp number')
@@ -145,9 +152,13 @@ class Configuration extends React.Component {
     // console.log('nextProps.automated_options', nextProps.automated_options.whatsApp.connected)
     if (nextProps.automated_options && nextProps.automated_options.whatsApp && (nextProps.automated_options.whatsApp.connected !== false)) {
       let whatsappData = JSON.parse(JSON.stringify(this.initialWhatsappData))
-      whatsappData[nextProps.automated_options.whatsApp.provider] = nextProps.automated_options.whatsApp
+      if (nextProps.automated_options.whatsApp.sandBoxCode) {
+        whatsappData['twilioFree'] = nextProps.automated_options.whatsApp
+      } else {
+        whatsappData[nextProps.automated_options.whatsApp.provider] = nextProps.automated_options.whatsApp
+      }
       this.setState({
-        whatsappProvider: nextProps.automated_options.whatsApp.provider,
+        whatsappProvider: nextProps.automated_options.whatsApp.sandBoxCode ? 'twilioFree' : nextProps.automated_options.whatsApp.provider,
         whatsappData
       })
     }
@@ -198,6 +209,7 @@ class Configuration extends React.Component {
   updateData () {
     let whatsappData = this.state.whatsappData[this.state.whatsappProvider]
     whatsappData.connected = true
+    if (whatsappData.provider === 'twilioFree') whatsappData.provider = 'twilio'
     this.props.updatePlatformWhatsApp(whatsappData, this.msg, null, this.handleResponse)
   }
 
@@ -228,9 +240,13 @@ class Configuration extends React.Component {
   clearFieldsWapp() {
     if (this.props.automated_options && this.props.automated_options.whatsApp && this.props.automated_options.whatsApp.connected !== false) {
       let whatsappData = JSON.parse(JSON.stringify(this.initialWhatsappData))
-      whatsappData[this.props.automated_options.whatsApp.provider] = this.props.automated_options.whatsApp
+      if (this.props.automated_options.whatsApp.sandBoxCode) {
+        whatsappData['twilioFree'] = this.props.automated_options.whatsApp
+      } else {
+        whatsappData[this.props.automated_options.whatsApp.provider] = this.props.automated_options.whatsApp
+      }
       this.setState({
-        whatsappProvider: this.props.automated_options.whatsApp.provider,
+        whatsappProvider: this.props.automated_options.whatsApp.sandBoxCode ? 'twilioFree': this.props.automated_options.whatsApp.provider,
         whatsappData
       })
     } else {
@@ -242,6 +258,7 @@ class Configuration extends React.Component {
   }
 
   render() {
+    console.log('this.state.provider', this.state.whatsappProvider)
     var alertOptions = {
       offset: 75,
       position: 'bottom right',
@@ -432,6 +449,9 @@ class Configuration extends React.Component {
                           <option value='' selected disabled>Select a WhatsApp Provider...</option>
                           <option value='flockSend'>FlockSend</option>
                           <option value='twilio'>Twilio</option>
+                          {this.props.user && this.props.user.isSuperUser &&
+                            <option value='twilioFree'>Twilio (Free)</option>
+                          }
                         </select>
                       </div>
 
@@ -462,12 +482,27 @@ class Configuration extends React.Component {
                           <input required={this.state.whatsappProvider === 'twilio'} className='form-control' value={this.state.whatsappData.twilio.accessToken} onChange={(e) => this.updateWhatsAppData(e, { accessToken: e.target.value })} />
                         </div>
                         <div id='question' className='form-group m-form__group'>
+                          <label className='control-label'>WhatsApp Number:</label>
+                          <input required={this.state.whatsappProvider === 'twilio'} className='form-control' value={this.state.whatsappData.twilio.businessNumber} onChange={(e) => this.updateWhatsAppData(e, { businessNumber: e.target.value })} />
+                        </div>
+                      </div>
+
+                      <div style={{ display: this.state.whatsappProvider === 'twilioFree' ? 'initial' : 'none' }}>
+                        <div id='question' className='form-group m-form__group'>
+                          <label className='control-label'>Twilio Account SID</label>
+                          <input required={this.state.whatsappProvider === 'twilioFree'} className='form-control' value={this.state.whatsappData.twilioFree.accountSID} onChange={(e) => this.updateWhatsAppData(e, { accountSID: e.target.value })} />
+                        </div>
+                        <div id='question' className='form-group m-form__group'>
+                          <label className='control-label'>Twilio Auth Token:</label>
+                          <input required={this.state.whatsappProvider === 'twilioFree'} className='form-control' value={this.state.whatsappData.twilioFree.accessToken} onChange={(e) => this.updateWhatsAppData(e, { accessToken: e.target.value })} />
+                        </div>
+                        <div id='question' className='form-group m-form__group'>
                           <label className='control-label'>WhatsApp Sandbox Number:</label>
-                          <input className='form-control' value={this.state.whatsappData.twilio.businessNumber} disabled />
+                          <input required={this.state.whatsappProvider === 'twilioFree'} className='form-control' value={this.state.whatsappData.twilioFree.businessNumber} disabled />
                         </div>
                         <div id='question' className='form-group m-form__group'>
                           <label className='control-label'>Sandbox Code:</label>
-                          <input required={this.state.whatsappProvider === 'twilio'} className='form-control' value={this.state.whatsappData.twilio.sandBoxCode} onChange={(e) => this.updateWhatsAppData(e, { sandBoxCode: e.target.value })} />
+                          <input required={this.state.whatsappProvider === 'twilioFree'} className='form-control' value={this.state.whatsappData.twilioFree.sandBoxCode} onChange={(e) => this.updateWhatsAppData(e, { sandBoxCode: e.target.value })} />
                         </div>
                         <span><b>Note:</b> You can find your sandbox code <a href='https://www.twilio.com/console/sms/whatsapp/sandbox' target='_blank' rel='noopener noreferrer'>here</a></span>
                       </div>
