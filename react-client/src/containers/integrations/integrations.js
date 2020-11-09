@@ -27,6 +27,13 @@ class FacebookIntegration extends React.Component {
         provider: 'flockSend',
         accessToken: '',
         businessNumber: ''
+      },
+      twilioFree: {
+        provider: 'twilioFree',
+        accessToken: '',
+        businessNumber: '+14155238886',
+        accountSID: '',
+        sandBoxCode: ''
       }
     }
     this.state = {
@@ -131,6 +138,7 @@ class FacebookIntegration extends React.Component {
   updateData () {
     let whatsappData = this.state.whatsappData[this.state.whatsappProvider]
     whatsappData.connected = true
+    if (whatsappData.provider === 'twilioFree') whatsappData.provider = 'twilio'
     this.props.updatePlatformWhatsApp(whatsappData, this.msg, null, this.handleResponse)
   }
 
@@ -363,6 +371,9 @@ class FacebookIntegration extends React.Component {
                           <option value='' selected disabled>Select a WhatsApp Provider...</option>
                           <option value='flockSend'>FlockSend</option>
                           <option value='twilio'>Twilio</option>
+                            {this.props.user && this.props.user.isSuperUser &&
+                              <option value='twilioFree'>Twilio (Free)</option>
+                            }
                         </select>
                       </div>
 
@@ -394,12 +405,27 @@ class FacebookIntegration extends React.Component {
                           <input required={this.state.whatsappProvider === 'twilio'} className='form-control' value={this.state.whatsappData.twilio.accessToken} onChange={(e) => this.updateWhatsAppData(e, { accessToken: e.target.value })} />
                         </div>
                         <div id='question' className='form-group m-form__group'>
+                          <label className='control-label'>WhatsApp Number:</label>
+                          <input className='form-control' value={this.state.whatsappData.twilio.businessNumber} onChange={(e) => this.updateWhatsAppData(e, { businessNumber: e.target.value })} />
+                        </div>
+                      </div>
+
+                      <div style={{ display: this.state.whatsappProvider === 'twilioFree' ? 'initial' : 'none' }}>
+                        <div id='question' className='form-group m-form__group'>
+                          <label className='control-label'>Twilio Account SID</label>
+                          <input required={this.state.whatsappProvider === 'twilioFree'} className='form-control' value={this.state.whatsappData.twilioFree.accountSID} onChange={(e) => this.updateWhatsAppData(e, { accountSID: e.target.value })} />
+                        </div>
+                        <div id='question' className='form-group m-form__group'>
+                          <label className='control-label'>Twilio Auth Token:</label>
+                          <input required={this.state.whatsappProvider === 'twilioFree'} className='form-control' value={this.state.whatsappData.twilioFree.accessToken} onChange={(e) => this.updateWhatsAppData(e, { accessToken: e.target.value })} />
+                        </div>
+                        <div id='question' className='form-group m-form__group'>
                           <label className='control-label'>WhatsApp Sandbox Number:</label>
-                          <input className='form-control' value={this.state.whatsappData.twilio.businessNumber} disabled />
+                          <input required={this.state.whatsappProvider === 'twilioFree'} className='form-control' value={this.state.whatsappData.twilioFree.businessNumber} disabled />
                         </div>
                         <div id='question' className='form-group m-form__group'>
                           <label className='control-label'>Sandbox Code:</label>
-                          <input required={this.state.whatsappProvider === 'twilio'} className='form-control' value={this.state.whatsappData.twilio.sandBoxCode} onChange={(e) => this.updateWhatsAppData(e, { sandBoxCode: e.target.value })} />
+                          <input required={this.state.whatsappProvider === 'twilioFree'} className='form-control' value={this.state.whatsappData.twilioFree.sandBoxCode} onChange={(e) => this.updateWhatsAppData(e, { sandBoxCode: e.target.value })} />
                         </div>
                         <span><b>Note:</b> You can find your sandbox code <a href='https://www.twilio.com/console/sms/whatsapp/sandbox' target='_blank' rel='noopener noreferrer'>here</a></span>
                       </div>
