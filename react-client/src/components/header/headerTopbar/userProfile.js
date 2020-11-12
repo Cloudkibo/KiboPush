@@ -36,7 +36,7 @@ class UserProfile extends React.Component {
       <li className='m-nav__item m-topbar__user-profile m-topbar__user-profile--img  m-dropdown m-dropdown--medium m-dropdown--arrow m-dropdown--header-bg-fill m-dropdown--align-right m-dropdown--mobile-full-width m-dropdown--skin-light' data-dropdown-toggle='click'>
         <span className='m-nav__link m-dropdown__toggle'>
           <span className='m-topbar__userpic'>
-            <img onError={this.profilePicError} src={(this.props.user && this.props.user.facebookInfo && this.props.user.facebookInfo.profilePic) ? this.props.user.facebookInfo.profilePic : 'https://cdn.cloudkibo.com/public/icons/users.jpg'} className='m--img-rounded m--marginless m--img-centered' alt='' />
+            <img onError={this.profilePicError} src={(this.props.user && this.props.user.role === 'buyer' && this.props.user.facebookInfo && this.props.user.facebookInfo.profilePic) ? this.props.user.facebookInfo.profilePic : 'https://cdn.cloudkibo.com/public/icons/users.jpg'} className='m--img-rounded m--marginless m--img-centered' alt='' />
           </span>
           <span style={{color: 'black', paddingLeft: '10px'}} className='m-topbar__username'>
             {(this.props.user) ? this.props.user.name : ''} <i className='fa fa-chevron-down' />
