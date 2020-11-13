@@ -40,13 +40,13 @@ class Text extends React.Component {
               url = "http://" + url
           }
           return (
-            <a style={{color: this.props.color, whiteSpace: 'break-spaces'}} href={url} target='_blank' rel='noopener noreferrer'>
+            <a key={index} style={{color: this.props.color, whiteSpace: 'break-spaces'}} href={url} target='_blank' rel='noopener noreferrer'>
               {word + (index < words.length - 1 ? " " : "")}
             </a>
           )
         } else {
           return (
-            <span style={{whiteSpace: 'break-spaces'}}>
+            <span key={index} style={{whiteSpace: 'break-spaces'}}>
               {word + (index < words.length - 1 ? " " : "")}
             </span>
           )

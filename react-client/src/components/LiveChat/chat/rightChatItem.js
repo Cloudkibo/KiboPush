@@ -12,6 +12,8 @@ import SURVEY from '../messages/survey'
 import LIST from '../messages/list'
 import CARD from '../messages/card'
 import GALLERY from '../messages/gallery'
+import BUTTONS from '../messages/buttons'
+import QUICKREPLIES from '../messages/quickReplies'
 
 class RightChatItem extends React.Component {
   constructor(props, context) {
@@ -62,6 +64,7 @@ class RightChatItem extends React.Component {
               />
             </div>
           }
+          <BUTTONS buttons={message.buttons} />
         </div>
       )
     } else if (type === 'audio') {
@@ -84,6 +87,7 @@ class RightChatItem extends React.Component {
               />
             </div>
           }
+          <BUTTONS buttons={message.buttons} />
         </div>
       )
     } else if (type === 'file') {
@@ -152,6 +156,9 @@ class RightChatItem extends React.Component {
               {this.getMessage()}
               {this.props.seenElement}
             </div>
+            <div style={{ maxWidth: '250px', marginTop: '5px' }}>
+            <QUICKREPLIES buttons={this.props.message.payload.quickReplies} />
+            </div>
           </div>
         </div>
       </div>
@@ -167,7 +174,7 @@ RightChatItem.propTypes = {
   'activeSession': PropTypes.object.isRequired,
   'previousMessage': PropTypes.object,
   'user': PropTypes.object.isRequired,
-  'seenElement': PropTypes.element.isRequired
+  'seenElement': PropTypes.element
 }
 
 export default RightChatItem
