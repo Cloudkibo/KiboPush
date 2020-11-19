@@ -1,4 +1,4 @@
-import { getAutomatedOptions, getuserdetails } from './basicinfo.actions'
+import { getAutomatedOptions, getuserdetails,showDetailUser } from './basicinfo.actions'
 import * as ActionTypes from '../constants/constants'
 import callApi from '../../utility/api.caller.service'
 import auth from '../../utility/auth.service'
@@ -10,6 +10,7 @@ export function updateZoomIntegrations(data) {
     data
   }
 }
+
 
 export function removeZoomIntegration(data) {
   return {
@@ -531,8 +532,7 @@ export function updatePlatformSettings(data, msg, clearFields, platform) {
       .then(res => {
         console.log('response from updatePlatformSettings', res)
         if (res.status === 'success') {
-          dispatch(getAutomatedOptions())
-          dispatch(getuserdetails())
+          fetchUserDetails(dispatch)
           msg.success('Saved Successfully')
           if (platform && platform === 'sms') {
             dispatch(fetchValidCallerIds(data))
@@ -562,13 +562,35 @@ export function disconnect(data, msg) {
       .then(res => {
         console.log('response from disconnect', res)
         if (res.status === 'success') {
-          dispatch(getAutomatedOptions())
-          dispatch(getuserdetails())
+          fetchUserDetails(dispatch)
         } else {
           msg.error(res.description || 'Failed to disconnect')
         }
       })
   }
+}
+
+function fetchUserDetails(dispatch) {
+  let requests = []
+  requests.push(new Promise((resolve, reject) => {
+    callApi('users').then(res => {
+      resolve(res.payload)
+    }).catch((err) => reject(err))
+  }))
+  requests.push(new Promise((resolve, reject) => {
+    callApi('company/getAutomatedOptions').then(res => {
+      resolve(res.payload)
+    }).catch((err) => reject(err))
+  }))
+  Promise.all(requests)
+  .then((responses) => {
+    console.log('response in promise', responses[1])
+    let data = {
+        user: responses[0],
+        AutomatedOption: responses[1]
+      }
+      dispatch(showDetailUser(data))
+  })
 }
 export function deleteWhatsApp(data, handleResponse) {
   console.log('data for deleteWhatsApp', data)
@@ -576,8 +598,7 @@ export function deleteWhatsApp(data, handleResponse) {
     callApi('company/deleteWhatsAppInfo', 'post', data)
       .then(res => {
         if (res.status === 'success') {
-          dispatch(getAutomatedOptions())
-          dispatch(getuserdetails())
+          fetchUserDetails(dispatch)
         }
         console.log('response from deleteWhatsApp', res)
         handleResponse(res)
@@ -591,8 +612,7 @@ export function updatePlatformWhatsApp(data, msg, clearFields, handleResponse) {
       .then(res => {
         console.log('response from updatePlatformWhatsApp', res)
         if (res.status === 'success') {
-          dispatch(getAutomatedOptions())
-          dispatch(getuserdetails())
+          fetchUserDetails(dispatch)
           if (handleResponse) {
             handleResponse(res.payload)
           } else {

@@ -33,6 +33,12 @@ export function showuserdetails(data) {
   }
 }
 
+export function showDetailUser(data) {
+  return {
+    type: ActionTypes.SHOW_USER_DETAIL_AUTOMATE_OPTION,
+    data
+  }
+}
 export function updateTrialPeriod () {
   return {
     type: ActionTypes.UPDATE_TRIAL_PERIOD
@@ -133,7 +139,10 @@ export function updatePicture(data, callback) {
 
 export function getAutomatedOptions() {
   return (dispatch) => {
-    callApi('company/getAutomatedOptions').then(res => dispatch(showAutomatedOptions(res.payload)))
+    callApi('company/getAutomatedOptions').then(res => {
+    console.log('getAutomatedOptions response')
+    dispatch(showAutomatedOptions(res.payload))
+    })
   }
 }
 
