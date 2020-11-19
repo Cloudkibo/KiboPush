@@ -207,10 +207,12 @@ class WhatsAppChatbot extends React.Component {
   }
 
   clearTestSubscribers() {
-    this.setState({
-      testSubscribers: this.props.chatbot.testSubscribers.join(','),
-      arePhoneNumbersValid: true
-    })
+    if (this.props.chatbot) {
+      this.setState({
+        testSubscribers: this.props.chatbot.testSubscribers.join(','),
+        arePhoneNumbersValid: true
+      })
+    }
   }
 
   getTestChatbotContent() {
