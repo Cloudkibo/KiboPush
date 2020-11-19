@@ -81,6 +81,12 @@ export function basicInfo (state = initialState, action) {
       return Object.assign({}, state, {
         error: action.data
       })
+    case ActionTypes.SHOW_USER_DETAIL_AUTOMATE_OPTION:
+    console.log('action.data in userDetails', action.data)
+      return Object.assign({}, state, {
+        user: action.data.user.user,
+        automated_options: action.data.AutomatedOption
+      })
 
     default:
       return state
