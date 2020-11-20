@@ -33,7 +33,6 @@ export function saveEnvironment (data) {
 
 export function showuserdetails(data) {
   // NOTE: don't remove following auth method call
-  console.log('user details', data)
   auth.putUserId(data.user._id)
   return {
     type: ActionTypes.LOAD_USER_DETAILS,
@@ -106,7 +105,6 @@ export function setSocketStatus(data) {
 export function getuserdetails(joinRoom, cb) {
   return (dispatch) => {
     callApi('users').then(res => {
-      console.log('response from getuserdetails', res)
       if (res.status === 'Unauthorized') {
         auth.logout()
       } else {
@@ -130,7 +128,6 @@ export function updatePicture(data, callback) {
   return (dispatch) => {
     callApi('updatePicture', 'post', data, 'accounts')
       .then(res => {
-        console.log('response from updatePicture', res)
         if (res.status === 'success') {
           dispatch(getuserdetails())
           if (callback) {

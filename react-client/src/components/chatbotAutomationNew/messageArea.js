@@ -232,7 +232,7 @@ class MessageArea extends React.Component {
     if (res.status === 'success') {
       this.props.alertMsg.success('Message block deleted successfully')
       let blocks = this.props.blocks.filter((item) => !blockUniqueIds.includes(item.uniqueId.toString()))
-      let sidebarItems = this.props.sidebarItems.filter((item) => !blockUniqueIds.includes(item.id.toString()))
+      let sidebarItems = this.props.sidebarItems.filter((item) => !blockUniqueIds.includes(item.id))
       let currentBlock = {}
       if (blocks.length === 0) {
         const id = new Date().getTime()
