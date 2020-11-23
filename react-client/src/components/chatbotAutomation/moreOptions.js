@@ -30,8 +30,23 @@ class MoreOptions extends React.Component {
       blockId: data.blockId,
       showRemove: true,
       action: 'link',
-      payloadAction: data.payloadAction
+      payloadAction: data.payloadAction,
+      additionalActions: data.query ? 
+      {
+        query: data.query,
+        skipAllowed: data.skipAllowed,
+        keyboardInputAllowed: data.keyboardInputAllowed,
+        showing: true,
+      } : 
+      {
+        query: '',
+        skipAllowed: false,
+        keyboardInputAllowed: false,
+        showing: false,
+      }
     }
+    console.log('option data', data)
+    console.log('option set', option)
     this.setState({
       showPopover: true,
       popoverTarget: `_more_options_chatbot_${id}`,
@@ -45,12 +60,16 @@ class MoreOptions extends React.Component {
 
   setOptions (data) {
     const options = data.map((item) => {
-      let payload = JSON.parse(item.payload)
-      return {
-        title: item.title,
-        action: payload[0].action,
-        payloadAction: payload[0].payloadAction,
-        blockId: payload[0].blockUniqueId
+      if (item.payload) {
+        let payload = JSON.parse(item.payload)
+        return {
+          title: item.title,
+          action: payload[0].action,
+          payloadAction: payload[0].payloadAction,
+          blockId: payload[0].blockUniqueId
+        }
+      } else {
+        return item
       }
     })
     this.setState({options})
@@ -127,6 +146,7 @@ class MoreOptions extends React.Component {
                   payloadAction={this.state.selectedOption.payloadAction || ''}
                   alertMsg={this.props.alertMsg}
                   isCreatable={this.props.isCreatable}
+                  additionalActions={this.state.selectedOption.additionalActions}
                   type='quickReply'
                 />
               }

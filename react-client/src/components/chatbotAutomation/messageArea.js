@@ -294,18 +294,28 @@ class MessageArea extends React.Component {
     }
   }
 
-  addOption (title, action, uniqueId) {
+  addOption (title, action, uniqueId, additionalActions) {
     const titles = this.props.blocks.map((item) => item.title.toLowerCase())
     if (action === 'create' && titles.indexOf(title.toLowerCase()) > -1) {
       this.props.alertMsg.error('A block with this title already exists. Please choose a diffrent title')
     } else {
       const options = this.state.quickReplies
-      const option = {
+      let option = {
           content_type: 'text',
           title
-        }
+      }
       if (action === 'link') {
-        option.payload = JSON.stringify([{action: '_chatbot', blockUniqueId: uniqueId, parentBlockTitle: this.props.block.title}])
+        if (additionalActions) {
+          option = {
+            title,
+            query: additionalActions.query,
+            keyboardInputAllowed: additionalActions.keyboardInputAllowed,
+            skipAllowed: additionalActions.skipAllowed,
+            blockId: uniqueId
+          }
+        } else {
+          option.payload = JSON.stringify([{action: '_chatbot', blockUniqueId: uniqueId, parentBlockTitle: this.props.block.title}])
+        }
         options.push(option)
       } else if (action === 'create') {
         const id = new Date().getTime()
@@ -317,7 +327,17 @@ class MessageArea extends React.Component {
         const blocks = [...this.props.blocks, newBlock]
         const completed = blocks.filter((item) => item.payload.length > 0).length
         const progress = Math.floor((completed / blocks.length) * 100)
-        option.payload = JSON.stringify([{action: '_chatbot', blockUniqueId: id, payloadAction: 'create', parentBlockTitle: this.props.block.title}])
+        if (additionalActions) {
+          option = {
+            title,
+            query: additionalActions.query,
+            keyboardInputAllowed: additionalActions.keyboardInputAllowed,
+            skipAllowed: additionalActions.skipAllowed,
+            blockId: id
+          }
+        } else {
+          option.payload = JSON.stringify([{action: '_chatbot', blockUniqueId: id, payloadAction: 'create', parentBlockTitle: this.props.block.title}])
+        }
         options.push(option)
         const currentBlock = this.props.block
         if (currentBlock.payload.length > 0) {
