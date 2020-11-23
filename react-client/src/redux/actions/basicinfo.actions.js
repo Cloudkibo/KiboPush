@@ -38,11 +38,13 @@ export function showDetailUser(data) {
     data
   }
 }
+
 export function updateTrialPeriod () {
   return {
     type: ActionTypes.UPDATE_TRIAL_PERIOD
   }
 }
+
 
 export function showAutomatedOptions(data) {
   console.log(data)

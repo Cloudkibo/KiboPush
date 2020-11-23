@@ -64,7 +64,7 @@ class Header extends React.Component {
     this.handleChangePlatform = this.handleChangePlatform.bind(this)
     this.fetchNotifications = this.fetchNotifications.bind(this)
 
-    this.fetchNotifications()
+    this.fetchNotifications({records: 50})
   }
 
   fetchNotifications (lastId) {
@@ -91,7 +91,7 @@ class Header extends React.Component {
   }
 
   handleChangePlatform (data) {
-    this.props.fetchNotifications()
+    this.props.fetchNotifications({records: this.state.notificationsRecords})
     this.redirectToDashboard(data)
   }
 
