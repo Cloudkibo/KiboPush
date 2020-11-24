@@ -7,7 +7,7 @@ import { configureStore } from './redux/store/store'
 import Routes from './routes'
 import { initiateSocket } from './utility/socketio'
 import App from "./sub.app.js"
-
+import './setupTests.js'
 import {setBrowserName, setBrowserVersion, setIsMobile} from './redux/actions/basicinfo.actions'
 import {BROWSER_NAME, BROWSER_VERSION, IS_MOBILE} from './utility/browser.utility'
 
