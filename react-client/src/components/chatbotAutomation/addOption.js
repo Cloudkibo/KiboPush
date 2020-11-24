@@ -99,7 +99,8 @@ class AddOption extends React.Component {
     this.props.onUpdate(
       this.state.selectedBlock.value,
       this.props.index,
-      this.state.title
+      this.state.title,
+      this.state.additionalActions.query ? this.state.additionalActions : null
     )
     this.props.onCancel()
   }

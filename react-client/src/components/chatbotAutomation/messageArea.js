@@ -423,13 +423,25 @@ class MessageArea extends React.Component {
     })
   }
 
-  updateOption (uniqueId, index, title) {
+  updateOption (uniqueId, index, title, additionalActions) {
     let options = []
     options = this.state.quickReplies
     options[index].title = title
-    const payload = JSON.parse(options[index].payload)
-    payload[0].blockUniqueId = uniqueId
-    options[index].payload = JSON.stringify(payload)
+    if (options[index].query) {
+      if (additionalActions) {
+        options[index].blockId = uniqueId
+      } else {
+        options[index] = {
+          title: options[index].title,
+          payload: JSON.stringify([{action: '_chatbot', blockUniqueId: uniqueId, parentBlockTitle: this.props.block.title}])
+        }
+      }
+    }
+    if (options[index].payload) {
+      const payload = JSON.parse(options[index].payload)
+      payload[0].blockUniqueId = uniqueId
+      options[index].payload = JSON.stringify(payload)
+    }
     this.setState({quickReplies: options})
   }
 
