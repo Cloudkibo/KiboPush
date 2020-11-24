@@ -10,6 +10,7 @@ import {
   displayDate,
   showDate
 } from '../../../containers/liveChat/utilities'
+import GetContactInfo from './getContactInfo'
 
 // components
 import HEADER from './header'
@@ -25,7 +26,7 @@ class Chat extends React.Component {
       chatAreaHieght: '57vh',
       showPopover: false,
       popoverOptions: {
-        placement: 'left',
+        placement: 'top',
         target: '_picker',
         content: (<div />)
       }
@@ -35,6 +36,7 @@ class Chat extends React.Component {
     this.overrideUserInput = this.overrideUserInput.bind(this)
     this.updateNewMessage = this.updateNewMessage.bind(this)
     this.updateChatAreaHeight = this.updateChatAreaHeight.bind(this)
+    this.refreshPopover = this.refreshPopover.bind(this)
 
     this.newMessage = false
   }
@@ -49,6 +51,16 @@ class Chat extends React.Component {
 
   togglePopover () {
     this.setState({showPopover: !this.state.showPopover})
+  }
+
+  refreshPopover () {
+    let popoverOptions = this.state.popoverOptions
+    popoverOptions.placement = 'left'
+    this.setState({popoverOptions}, () => {
+      let popoverOptions = this.state.popoverOptions
+      popoverOptions.placement = 'top'
+      this.setState({popoverOptions})
+    })
   }
 
   overrideUserInput () {
@@ -68,7 +80,7 @@ class Chat extends React.Component {
             emojiSize={24}
             perLine={6}
             skin={1}
-            set='facebook'
+            set='facebook'c
             showPreview={false}
             showSkinTones={false}
             custom={[]}
@@ -91,6 +103,11 @@ class Chat extends React.Component {
           <GiphySelect
             onEntrySelect={(gif) => { otherOptions.sendGif(gif) }}
           />
+        )
+        break
+      case 'contact_info':
+        popoverOptions.content = (
+          <GetContactInfo refreshPopover={this.refreshPopover}/>
         )
         break
       default:
