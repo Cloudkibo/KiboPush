@@ -5,11 +5,28 @@ import Select from 'react-select'
 class AddOption extends React.Component {
   constructor(props, context) {
     super(props, context)
+    this.initialAdditionalActions = {
+      showing: false,
+      query: '',
+      keyboardInputAllowed: false,
+      skipAllowed: false
+    }
     this.state = {
       title: '',
       selectedBlock: '',
-      selectedRadio: ''
+      selectedRadio: '',
+      additionalActions: this.props.additionalActions ? this.props.additionalActions : this.initialAdditionalActions
     }
+    this.additionalOptions = [
+      {
+        label: 'Get Email Address',
+        value: 'email'
+      },
+      {
+        label: 'Get Phone Number',
+        value: 'phone'
+      }
+    ]
     this.onTitleChange = this.onTitleChange.bind(this)
     this.onBlockChange = this.onBlockChange.bind(this)
     this.onSave = this.onSave.bind(this)
@@ -17,6 +34,17 @@ class AddOption extends React.Component {
     this.onRemove = this.onRemove.bind(this)
     this.onRadioClick = this.onRadioClick.bind(this)
     this.getSelectOptions = this.getSelectOptions.bind(this)
+    this.updateAdditonalActions = this.updateAdditonalActions.bind(this)
+    this.getCorrespondingCustomField = this.getCorrespondingCustomField.bind(this)
+  }
+
+  updateAdditonalActions (updated) {
+    this.setState({
+      additionalActions: {
+        ...this.state.additionalActions, 
+        ...updated
+      }
+    })
   }
 
   componentDidMount () {
@@ -31,7 +59,8 @@ class AddOption extends React.Component {
     this.setState({
       title: this.props.title,
       selectedBlock,
-      selectedRadio: this.props.action
+      selectedRadio: this.props.action,
+      additionalActions: this.props.additionalActions ? this.props.additionalActions : this.initialAdditionalActions
     })
   }
 
@@ -59,7 +88,8 @@ class AddOption extends React.Component {
       this.props.onSave(
         this.state.title,
         this.state.selectedRadio,
-        this.state.selectedBlock.value
+        this.state.selectedBlock.value,
+        this.state.additionalActions.query ? this.state.additionalActions : null
       )
       this.props.onCancel()
     }
@@ -69,7 +99,8 @@ class AddOption extends React.Component {
     this.props.onUpdate(
       this.state.selectedBlock.value,
       this.props.index,
-      this.state.title
+      this.state.title,
+      this.state.additionalActions.query ? this.state.additionalActions : null
     )
     this.props.onCancel()
   }
@@ -90,6 +121,14 @@ class AddOption extends React.Component {
       }
     })
     return options
+  }
+
+  getCorrespondingCustomField () {
+    if (this.state.additionalActions.query === 'email') {
+      return "Email"
+    } else if (this.state.additionalActions.query === 'phone') {
+      return "Phone Number"
+    }
   }
 
   render () {
@@ -154,10 +193,67 @@ class AddOption extends React.Component {
             }
           </div>
           {
+            <div style={{    
+                marginBottom: "10px",
+                marginLeft: "5px",
+                cursor: "pointer",
+                fontWeight: 500,
+                color: "#575962",
+              }}>
+             <span data-toggle='collapse' data-target='#customFields'
+               onClick={() => this.updateAdditonalActions({showing: !this.state.additionalActions.showing})}>
+                Additional Actions{" "}
+               {this.state.additionalActions.showing
+                 ? <i style={{ fontSize: '12px' }} className='la la-angle-up ' />
+                 : <i style={{ fontSize: '12px' }} className='la la-angle-down ' />
+               }
+             </span>
+           </div>
+          }
+          {
+            this.state.additionalActions.showing &&
+            <div style={{maxWidth: '220px'}}>
+              <Select
+                className="basic-single"
+                classNamePrefix="select"
+                isClearable={true}
+                options={this.additionalOptions}
+                value={this.additionalOptions.find(o => o.value === this.state.additionalActions.query)}
+                onChange={(value) => this.updateAdditonalActions({query: value ? value.value : ""})}
+              />
+              {
+                this.state.additionalActions.query &&
+                <>
+                  <div style={{marginTop: '5px', marginLeft: '3px', fontSize: '12px'}}>
+                    Note: Subscriber's {this.getCorrespondingCustomField()} will be stored in the {this.getCorrespondingCustomField()} custom field once this is selected.
+                  </div>
+                  <label style={{fontSize: '13px', marginLeft: '5px', color: "#575962", marginTop: "10px"}} className="m--font-bolder">
+                    <input
+                      style={{position: 'relative', top: '2px', marginRight: "5px"}}
+                      type="checkbox"
+                      checked={this.state.additionalActions.keyboardInputAllowed}
+                      onChange={(e) => this.updateAdditonalActions({keyboardInputAllowed: e.target.checked})}
+                    />
+                    Allow Keyboard Input
+                  </label>
+                  <label style={{fontSize: '13px', marginLeft: '5px', color: "#575962", marginTop: "5px"}} className="m--font-bolder">
+                    <input
+                      style={{position: 'relative', top: '2px', marginRight: "5px"}}
+                      type="checkbox"
+                      checked={this.state.additionalActions.skipAllowed}
+                      onChange={(e) => this.updateAdditonalActions({skipAllowed: e.target.checked})}
+                    />
+                    Allow Skip
+                  </label>
+                </>
+              }
+            </div>
+          }
+          {
             this.props.showRemove &&
             <button
               type='button'
-              style={{marginBottom: '10px'}}
+              style={{marginTop: '20px', marginBottom: '10px'}}
               className='btn btn-danger btn-sm pull-left'
               onClick={this.onRemove}
             >
@@ -166,7 +262,7 @@ class AddOption extends React.Component {
           }
           <button
             type='button'
-            style={{marginBottom: '10px'}}
+            style={{marginTop: '20px', marginBottom: '10px'}}
             className='btn btn-primary btn-sm pull-right'
             onClick={this.props.showRemove ? this.onUpdate : this.onSave}
             disabled={!(this.state.title)}
