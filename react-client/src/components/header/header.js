@@ -91,7 +91,7 @@ class Header extends React.Component {
   }
 
   handleChangePlatform (data) {
-    this.props.fetchNotifications()
+    this.props.fetchNotifications({records: this.state.notificationsRecords})
     this.redirectToDashboard(data)
   }
 
