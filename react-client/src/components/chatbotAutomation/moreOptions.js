@@ -27,7 +27,6 @@ class MoreOptions extends React.Component {
 
     document.getElementById('_chatbot_message_area').addEventListener("scroll", () => {
       if (this.state.showingSuggestion) {
-        ReactTooltip.hide(document.getElementById('_more_options_chatbot_add'))
         ReactTooltip.show(document.getElementById('_more_options_chatbot_add')) 
       }
     });
