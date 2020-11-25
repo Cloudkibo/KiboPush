@@ -177,17 +177,6 @@ class MoreOptions extends React.Component {
               }
             </PopoverBody>
           </Popover>
-
-          {/* <Popover
-            placement='top'
-            isOpen={this.state.showingSuggestion}
-            className='chatPopover _popover_max_width_400'
-            target='_more_options_chatbot_add'
-          >
-            <PopoverBody>
-              Consider adding an additional action to capture email or phone number
-            </PopoverBody>
-          </Popover> */}
         </div>
       </div>
       </>
