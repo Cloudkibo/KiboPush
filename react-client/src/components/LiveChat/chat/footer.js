@@ -6,6 +6,7 @@ import { getmetaurl } from '../../../containers/liveChat/utilities'
 import MODAL from '../../extras/modal'
 import AUDIORECORDER from '../../audioRecorder'
 import CARD from '../messages/horizontalCard'
+import GetContactInfo from './getContactInfo'
 class Footer extends React.Component {
   constructor(props, context) {
     super(props, context)
@@ -76,6 +77,7 @@ class Footer extends React.Component {
     this.responseMessageHandleChange = this.responseMessageHandleChange.bind(this)
     this.listDataDisplay = this.listDataDisplay.bind(this)
     this.onCaptionChange = this.onCaptionChange.bind(this)
+    this.sendQuickReplyMessage = this.sendQuickReplyMessage.bind(this)
   }
 
   componentDidMount() {
@@ -789,7 +791,7 @@ class Footer extends React.Component {
     }
   }
 
-  sendMessage() {
+  sendMessage(quickReplies) {
     console.log('this.state.urlMeta', this.state.urlmeta)
     const data = this.props.performAction('send messages', this.props.activeSession)
     if (data.isAllowed) {
@@ -799,6 +801,9 @@ class Footer extends React.Component {
       if (this.state.text !== '' && /\S/gm.test(this.state.text)) {
         console.log('updating chat data', data)
         payload = this.setDataPayload('text')
+        if (quickReplies) {
+          payload.quickReplies = quickReplies
+        }
         data = this.props.setMessageData(this.props.activeSession, payload, this.state.urlmeta)
         this.props.sendChatMessage(data, (res) => {
           if (res.status !== 'success') {
@@ -859,6 +864,15 @@ class Footer extends React.Component {
       placement: 'top',
       target: `_${type}_picker`
     }
+    if (type === 'contact_info') {
+      popoverOptions.content = (
+        <GetContactInfo 
+          sendQuickReplyMessage={this.sendQuickReplyMessage}
+          refreshPopover={this.props.refreshPopover}
+          togglePopover={this.props.togglePopover}
+        />
+      )
+    }
     const otherOptions = {
       setEmoji: (emoji) => this.setEmoji(emoji),
       sendSticker: (sticker) => this.sendSticker(sticker),
@@ -868,6 +882,12 @@ class Footer extends React.Component {
       type = 'emoji'
     }
     this.props.getPicker(type, popoverOptions, otherOptions)
+  }
+
+  sendQuickReplyMessage (text, quickReplies) {
+    this.setState({text}, () => {
+      this.sendMessage(quickReplies)
+    })
   }
 
   componentWillUnmount() {

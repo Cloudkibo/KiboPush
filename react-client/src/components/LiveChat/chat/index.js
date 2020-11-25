@@ -10,7 +10,6 @@ import {
   displayDate,
   showDate
 } from '../../../containers/liveChat/utilities'
-import GetContactInfo from './getContactInfo'
 
 // components
 import HEADER from './header'
@@ -80,7 +79,7 @@ class Chat extends React.Component {
             emojiSize={24}
             perLine={6}
             skin={1}
-            set='facebook'c
+            set='facebook'
             showPreview={false}
             showSkinTones={false}
             custom={[]}
@@ -103,11 +102,6 @@ class Chat extends React.Component {
           <GiphySelect
             onEntrySelect={(gif) => { otherOptions.sendGif(gif) }}
           />
-        )
-        break
-      case 'contact_info':
-        popoverOptions.content = (
-          <GetContactInfo refreshPopover={this.refreshPopover}/>
         )
         break
       default:
@@ -271,6 +265,7 @@ class Chat extends React.Component {
             createZoomMeeting={this.props.createZoomMeeting}
             showCaption={this.props.showCaption}
             isMobile={this.props.isMobile}
+            refreshPopover={this.refreshPopover}
           />
         }
 
