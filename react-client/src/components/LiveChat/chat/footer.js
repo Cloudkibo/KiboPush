@@ -1162,6 +1162,15 @@ class Footer extends React.Component {
             />
           }
           {
+            <i
+            style={{ cursor: 'pointer', fontSize: '20px', margin: '0px 5px' }}
+            data-tip='Get Email or Phone Number'
+            className='fa fa-id-card-o'
+            id='_contact_info_picker'
+            onClick={() => this.openPicker('contact_info')}
+          />
+          }
+          {
             this.props.showZoom &&
             <img
               style={{ cursor: 'pointer', height: '30px', margin: '-5px 5px 0px 5px' }}
