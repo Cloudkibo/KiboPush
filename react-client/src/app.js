@@ -63,7 +63,7 @@ class App extends Component {
   }
 
   render () {
-    if (auth.loggedIn) {
+    if (auth.loggedIn()) {
       return (
         <SubApp history={this.props.history}>
           <Routes />
