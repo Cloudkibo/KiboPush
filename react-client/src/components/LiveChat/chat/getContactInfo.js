@@ -1,16 +1,20 @@
 import React from 'react'
+import QuickReplies from '../messages/quickReplies'
 
 class GetContactInfo extends React.Component {
   constructor(props, context) {
     super(props, context)
     this.state = {
         query: '',
-        text: '',
+        message: '',
         keyboardInputAllowed: false,
-        skipAllowed: ''
+        skipAllowed: '',
     }
     this.getCorrespondingCustomField = this.getCorrespondingCustomField.bind(this)
     this.updateQuery = this.updateQuery.bind(this)
+    this.getQuickReply = this.getQuickReply.bind(this)
+    this.getQuickReplyTitle = this.getQuickReplyTitle.bind(this)
+    this.sendMessage = this.sendMessage.bind(this)
   }
 
   getCorrespondingCustomField () {
@@ -21,14 +25,36 @@ class GetContactInfo extends React.Component {
     }
   }
 
+  getQuickReplyTitle () {
+    if (this.state.query === 'email') {
+      return "subscriber's email"
+    } else if (this.state.query === 'phone') {
+      return "subscriber's phone number"
+    }
+  }
+
+  getQuickReply () {
+    return [{title: this.getQuickReplyTitle()}]
+  }
+
   sendMessage (e) {
     e.preventDefault()
+    this.props.togglePopover()
+    const quickReplies = [
+      {
+        title: this.getQuickReplyTitle(),
+        query: this.state.query,
+        keyboardInputAllowed: this.state.keyboardInputAllowed,
+        skipAllowed: this.state.skipAllowed
+      }
+    ]
+    this.props.sendQuickReplyMessage(this.state.message, quickReplies)
   }
 
   updateQuery (query) {
     const updatedState = {query}
     if (!query) {
-      updatedState.text = ''
+      updatedState.message = ''
       updatedState.keyboardInputAllowed = false
       updatedState.skipAllowed = false
     }
@@ -78,23 +104,28 @@ class GetContactInfo extends React.Component {
         </>
       }
       {
-        this.state.query === 'email' && 
+        this.state.query && 
         <form onSubmit={this.sendMessage}>
           <h5>
-            Ask for Subscriber's Email
+            Ask for Subscriber's {this.getCorrespondingCustomField()}
           </h5>
           <p>
-            This will enable you to retrieve subscriber's email and store it in a custom field: "Email".
-            Note: This quick reply will be removed if you send another message before the user taps on it.
+            This will enable you to retrieve subscriber's {this.getCorrespondingCustomField().toLowerCase()} and store it in a custom field: "{this.getCorrespondingCustomField()}".
+            <br />
+            <br />
+            {this.state.query === 'phone' && "Note: You will only be able to retrieve user's phone number if they have made their number public on Facebook. Also, this quick reply will be removed if you send another message before the user taps on it."}
+            {this.state.query === 'email' && 'Note: This quick reply will be removed if you send another message before the user taps on it.'}
           </p>
 
           <textarea 
             id="contactInfoMessage"
+            value={this.state.message}
+            onChange={(e) => this.setState({message: e.target.value})}
             placeholder="Enter Message Text..."
             required 
             className="form-control m-input" 
-            rows="3" />
-
+            rows="3" 
+          />
 
           <label style={{fontSize: '13px', marginLeft: '5px', color: "#575962", marginTop: "10px", display: 'block'}} className="m--font-bolder">
             <input
@@ -115,6 +146,16 @@ class GetContactInfo extends React.Component {
             Allow Skip
           </label>
 
+          <h6 style={{marginTop: '20px', marginBottom: '10px'}}>Preview:</h6>
+          <div style={{border: '1px solid lightgray', borderRadius: '5px', padding: '10px'}}>
+            <div className='discussion' style={{ display: 'inline-block', paddingLeft: '10px', paddingRight: '10px' }} >
+              <div style={{ maxWidth: '100%', fontSize: '16px', textAlign: 'center', whiteSpace: 'pre-wrap', wordBreak: 'break-word' }} className='bubble recipient'>{this.state.message}</div>
+            </div>
+            <div style={{textAlign: 'center', marginTop: '10px'}}>
+              <QuickReplies buttons={this.getQuickReply()}/>
+            </div>
+          </div>
+
           <div style={{display: 'flex', justifyContent: 'flex-end', marginTop: '15px', marginBottom: '15px'}}>
             <button onClick={() => this.updateQuery('')} style={{ float: 'right' }} className="btn btn-default">
               Cancel
@@ -125,15 +166,6 @@ class GetContactInfo extends React.Component {
           </div>
         </form>
       }
-      {
-        this.state.query === 'phone' && 
-        <div>
-          <h5>
-            Ask for subscriber's phone number
-          </h5>
-        </div>
-      }
-
     </div>
     )
   }
