@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Popover, PopoverBody} from 'reactstrap'
 import ADDOPTION from './addOption'
+import ReactTooltip from 'react-tooltip'
 
 class MoreOptions extends React.Component {
   constructor(props, context) {
@@ -10,7 +11,9 @@ class MoreOptions extends React.Component {
       options: [],
       showPopover: false,
       popoverTarget: '_more_options_in_chatbot',
-      selectedOption: {}
+      selectedOption: {},
+      showingSuggestion: false,
+      suggestionShown: false
     }
     this.showPopover = this.showPopover.bind(this)
     this.togglePopover = this.togglePopover.bind(this)
@@ -21,6 +24,13 @@ class MoreOptions extends React.Component {
     if (this.props.data && this.props.data.length > 0) {
       this.setOptions(this.props.data)
     }
+
+    document.getElementById('_chatbot_message_area').addEventListener("scroll", () => {
+      if (this.state.showingSuggestion) {
+        ReactTooltip.hide(document.getElementById('_more_options_chatbot_add'))
+        ReactTooltip.show(document.getElementById('_more_options_chatbot_add')) 
+      }
+    });
   }
 
   showPopover (data, id) {
@@ -76,6 +86,15 @@ class MoreOptions extends React.Component {
   }
 
   UNSAFE_componentWillReceiveProps (nextProps) {
+    if (!this.state.suggestionShown && nextProps.text && /email|e-mail|phone|contact/.test(nextProps.text.toLowerCase())) {
+      this.setState({suggestionShown: true, showingSuggestion: true}, () => {
+        ReactTooltip.show(document.getElementById('_more_options_chatbot_add'))
+      })
+      setTimeout(() => {
+        ReactTooltip.hide(document.getElementById('_more_options_chatbot_add'))
+        this.setState({showingSuggestion: false})
+      }, 5000)
+    }
     if (nextProps.data && nextProps.data.length > 0) {
       this.setOptions(nextProps.data)
     } else {
@@ -85,6 +104,12 @@ class MoreOptions extends React.Component {
 
   render () {
     return (
+      <>
+      <ReactTooltip
+        place='top'
+        type='dark'
+        effect='solid'
+      />
       <div id='_cb_ma_mo' className='row'>
         <div className='col-md-12'>
           <div className="form-group m-form__group">
@@ -110,6 +135,7 @@ class MoreOptions extends React.Component {
               {
                 this.state.options.length < 13 &&
                 <button
+                  data-tip={this.state.showingSuggestion ? "Consider adding an additional action to capture email or phone number" : ""}
                   style={{border: 'none', cursor: 'pointer', background: 'none'}}
                   className='m-link m-link--state m-link--info'
                   onClick={() => this.showPopover({}, 'add')}
@@ -152,8 +178,20 @@ class MoreOptions extends React.Component {
               }
             </PopoverBody>
           </Popover>
+
+          {/* <Popover
+            placement='top'
+            isOpen={this.state.showingSuggestion}
+            className='chatPopover _popover_max_width_400'
+            target='_more_options_chatbot_add'
+          >
+            <PopoverBody>
+              Consider adding an additional action to capture email or phone number
+            </PopoverBody>
+          </Popover> */}
         </div>
       </div>
+      </>
     )
   }
 }
