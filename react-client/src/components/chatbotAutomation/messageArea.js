@@ -24,7 +24,9 @@ class MessageArea extends React.Component {
       showTestContent: false,
       disableNext: false,
       selectedComponent: '',
-      carouselCards: null
+      carouselCards: null,
+      showingSuggestion: false,
+      suggestionShown: false
     }
     this.onNext = this.onNext.bind(this)
     this.preparePayload = this.preparePayload.bind(this)
@@ -638,6 +640,7 @@ class MessageArea extends React.Component {
             {
               (this.state.text || Object.keys(this.state.attachment).length > 0 || this.state.carouselCards) &&
               <MOREOPTIONS
+                text={this.state.text}
                 data={this.state.quickReplies}
                 alertMsg={this.props.alertMsg}
                 blocks={this.props.blocks}

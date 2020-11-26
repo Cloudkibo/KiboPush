@@ -119,7 +119,7 @@ class Chat extends React.Component {
         {
           !this.props.isMobile &&
           <ReactTooltip
-            place='bottom'
+            place='top'
             type='dark'
             effect='solid'
           />

@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { getmetaurl } from '../../../containers/liveChat/utilities'
+import ReactTooltip from 'react-tooltip'
 
 // components
 import MODAL from '../../extras/modal'
@@ -39,6 +40,8 @@ class Footer extends React.Component {
       selectedCannMessage: false,
       selectedIndex: 0,
       caption: '',
+      showingSuggestion: false,
+      suggestionShown: false
     }
     this.onInputChange = this.onInputChange.bind(this)
     this.onEnter = this.onEnter.bind(this)
@@ -379,6 +382,12 @@ class Footer extends React.Component {
       }
     }
     let state = { text }
+    if (!this.state.suggestionShown && /email|e-mail|phone|contact/.test(text.toLowerCase())) {
+      state.showingSuggestion = true
+      state.suggestionShown = true
+    } else {
+      state.showingSuggestion = false
+    }
     const url = getmetaurl(text)
     if (url && url !== this.state.currentUrl) {
       state.loadingUrlMeta = true
@@ -386,6 +395,18 @@ class Footer extends React.Component {
       this.props.fetchUrlMeta(url, this.handleUrlMeta)
     }
     this.setState(state)
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.showingSuggestion) {
+      setTimeout(() => {
+        ReactTooltip.hide(document.getElementById('_contact_info_picker'))
+        if (this.state.showingSuggestion) {
+          this.setState({showingSuggestion: false})
+        }
+      }, 5000)
+      ReactTooltip.show(document.getElementById('_contact_info_picker'))
+    }
   }
 
   search(value) {
@@ -1184,7 +1205,7 @@ class Footer extends React.Component {
           {
             <i
             style={{ cursor: 'pointer', fontSize: '20px', margin: '0px 5px' }}
-            data-tip='Get Email or Phone Number'
+            data-tip={this.state.showingSuggestion ? "Consider using this to get subscriber's email or phone number": 'Get Email or Phone Number'}
             className='fa fa-id-card-o'
             id='_contact_info_picker'
             onClick={() => this.openPicker('contact_info')}
