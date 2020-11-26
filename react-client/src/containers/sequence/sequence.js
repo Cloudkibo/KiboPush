@@ -401,8 +401,10 @@ class Sequence extends React.Component {
                 className='btn btn-primary btn-sm'
                 onClick={() => {
                   let sequence = this.state.sequencesData.find(s => s.sequence._id === this.state.deleteid)
-                  for (let i = 0; i < sequence.messages.length; i++) {
-                    deleteFiles(sequence.messages[i].payload)
+                  if (sequence) {
+                    for (let i = 0; i < sequence.messages.length; i++) {
+                      deleteFiles(sequence.messages[i].payload)
+                    }
                   }
                   this.props.deleteSequence(this.state.deleteid, this.msg)
                 }} data-dismiss='modal'>Delete
