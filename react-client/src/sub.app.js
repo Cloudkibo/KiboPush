@@ -20,13 +20,12 @@ import { getLandingPage } from './utility/utils'
 import { getHiddenHeaderRoutes, getWhiteHeaderRoutes } from './utility/utils'
 import { validateUserAccessToken, isFacebookConnected } from './redux/actions/basicinfo.actions'
 
-class App extends Component {
+class SubApp extends Component {
   constructor (props) {
     super(props)
     this.state = {
       message_alert: null,
       path: '/',
-      showContent: (auth.getToken() !== undefined && auth.getToken() !== ''),
       headerProps: {}
     }
     this.handleDemoSSAPage = this.handleDemoSSAPage.bind(this)
@@ -195,14 +194,6 @@ class App extends Component {
         /* eslint-enable */
       }
     })
-    if (!this.state.showContent) {
-      let interval = setInterval(() => {
-        if (auth.getToken() !== undefined && auth.getToken() !== '') {
-          window.location.reload()
-          clearInterval(interval)
-        }
-      }, 1000)
-    }
   }
 
   componentWillUnmount () {
@@ -273,22 +264,19 @@ class App extends Component {
           location={this.props.location}
           {...this.state.headerProps}
         />
-        {
-          this.state.showContent &&
-          <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
-            {
-              auth.loggedIn() &&
-              <Sidebar history={this.props.history} location={this.props.location} />
-            }
-            { this.props.children }
-          </div>
-        }
+        <div className='m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body'>
+          {
+            auth.loggedIn() &&
+            <Sidebar history={this.props.history} location={this.props.location} />
+          }
+          { this.props.children }
+        </div>
       </div>
     )
   }
 }
 
-App.propTypes = {
+SubApp.propTypes = {
   children: PropTypes.object.isRequired
 }
 
@@ -315,4 +303,4 @@ function mapDispatchToProps (dispatch) {
     }, dispatch)
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(App)
+export default connect(mapStateToProps, mapDispatchToProps)(SubApp)

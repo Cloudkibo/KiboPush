@@ -2,7 +2,6 @@
  * Created by sojharo on 25/07/2017.
  */
 import cookie from 'react-cookie'
-
 // If login was successful, set the token in local storage
 // cookie.save('token', user.token.token, {path: '/'});
 // printlogs('log', cookie.load('token'));
@@ -11,6 +10,10 @@ import cookie from 'react-cookie'
 const auth = {
   getToken () {
     return cookie.load('token')
+  },
+
+  getEnvironment () {
+    return cookie.load('environment')
   },
 
   putCookie (val) {
