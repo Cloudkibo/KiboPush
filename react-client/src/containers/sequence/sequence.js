@@ -405,8 +405,8 @@ class Sequence extends React.Component {
                     for (let i = 0; i < sequence.messages.length; i++) {
                       deleteFiles(sequence.messages[i].payload)
                     }
-                    this.props.deleteSequence(this.state.deleteid, this.msg)
                   }
+                  this.props.deleteSequence(this.state.deleteid, this.msg)
                 }} data-dismiss='modal'>Delete
               </button>
                 </div>
