@@ -58,6 +58,7 @@ class MessageArea extends React.Component {
     if (block.payload.length > 0) {
       const textComponent = block.payload.find((item) => item.componentType === 'text')
       const attachmentComponent = block.payload.find((item) => item.componentType !== 'text')
+      const additionalActions = block.payload[block.payload.length - 1].quickReplies ? block.payload[block.payload.length - 1].quickReplies.find((qr) => !!qr.query) : null
       let attachment = {}
       let carouselCards = null
       let selectedComponent = this.props.block.uniqueId === block.uniqueId ? this.state.selectedComponent : ''
@@ -99,7 +100,8 @@ class MessageArea extends React.Component {
         quickReplies: block.payload[block.payload.length - 1].quickReplies || [],
         triggers: block.triggers || [],
         carouselCards,
-        selectedComponent
+        selectedComponent,
+        additionalActions
       })
     } else {
       this.setState({
@@ -355,7 +357,7 @@ class MessageArea extends React.Component {
           unsavedChanges: true
         })
       }
-      this.setState({quickReplies: options})
+      this.setState({quickReplies: options, additionalActions})
     }
   }
 
@@ -448,8 +450,12 @@ class MessageArea extends React.Component {
   }
 
   removeOption (uniqueId, index) {
+    let additionalActions = this.state.additionalActions
     let options = []
     options = this.state.quickReplies
+    if (this.state.quickReplies[index].query) {
+      additionalActions = null
+    }
     options.splice(index, 1)
     const currentBlock = this.props.block
     if (currentBlock.payload.length > 0) {
@@ -457,7 +463,7 @@ class MessageArea extends React.Component {
     } else {
       currentBlock.payload.push({quickReplies: options})
     }
-    this.setState({quickReplies: options})
+    this.setState({quickReplies: options, additionalActions})
     this.props.updateParentState({currentBlock, unsavedChanges: true})
   }
 
@@ -647,6 +653,7 @@ class MessageArea extends React.Component {
                 addOption={this.addOption}
                 removeOption={this.removeOption}
                 updateOption={this.updateOption}
+                additionalActions={this.state.additionalActions}
               />
             }
             {
