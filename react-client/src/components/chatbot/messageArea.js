@@ -283,6 +283,7 @@ class MessageArea extends React.Component {
     } else if (['back', 'home'].includes(title.toLowerCase())) {
       this.props.alertMsg.error(`Child name ${title} is not allowed. Please enter a different name.`)
     } else {
+      console.log('this.props.block', this.props.block)
       const currentBlock = this.props.block
       const options = this.state.options
       const id = `${new Date().getTime()}`
