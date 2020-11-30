@@ -134,7 +134,9 @@ class WhatsAppChatbot extends React.Component {
             returnPolicy: this.state.returnPolicy,
             faqs: this.state.faqs
           },
-          storeType: this.props.store.storeType
+          storeType: this.props.store.storeType,
+          type: 'automated',
+          vertical: 'commerce'
         }, (res) => {
           if (res.status === 'success') {
             this.msg.success(res.description)
@@ -181,7 +183,9 @@ class WhatsAppChatbot extends React.Component {
           returnPolicy: this.state.returnPolicy,
           faqs: this.state.faqs
         },
-        testSubscribers: this.state.testSubscribers.split(",").map(number => number.replace(/ /g, ''))
+        testSubscribers: this.state.testSubscribers.split(",").map(number => number.replace(/ /g, '')),
+        type: 'automated',
+        vertical: 'commerce'
       }, (res) => {
         if (res.status === 'success') {
           this.msg.success(res.description)
