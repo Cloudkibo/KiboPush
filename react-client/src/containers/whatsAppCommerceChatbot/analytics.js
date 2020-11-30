@@ -75,7 +75,7 @@ class Analytics extends React.Component {
 
   onBack() {
     this.props.history.push({
-      pathname: '/whatsAppChatbot'
+      pathname: '/whatsAppCommerceChatbot'
     })
   }
 
@@ -121,7 +121,7 @@ class Analytics extends React.Component {
 
                 <div className='d-flex align-items-center'>
                   <div className='mr-auto'>
-                    <h3 className='m-subheader__title'>Chatbot Analytics</h3>
+                    <h3 className='m-subheader__title'>Commerce Chatbot Analytics</h3>
                   </div>
                 </div>
               </div>
