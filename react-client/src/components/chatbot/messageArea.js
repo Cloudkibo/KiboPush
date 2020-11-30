@@ -220,7 +220,7 @@ class MessageArea extends React.Component {
           const bIndex = this.props.blocks.findIndex((item) => item.uniqueId === parent.uniqueId)
           blocks[bIndex] = parent
           currentBlock = parent
-          this.props.handleMessageBlock({...parent}, (res) => {
+          this.props.handleMessageBlock({...parent, chatbotId: this.props.chatbot._id}, (res) => {
             const completed = blocks.filter((item) => item.payload.length > 0).length
             const progress = Math.floor((completed / blocks.length) * 100)
             this.props.updateParentState({blocks, sidebarItems, currentBlock, progress, unsavedChanges: false})
