@@ -212,7 +212,10 @@ class MessageArea extends React.Component {
       } else {
         const parentId = this.props.sidebarItems.find((item) =>  item.id === this.props.block.uniqueId).parentId
         if (parentId) {
+          console.log('parentId', parentId)
+          console.log('this.props.blocks', this.props.blocks)
           const parent = this.props.blocks.find((item) => item.uniqueId === parentId)
+          console.log('parent', parent)
           const options = parent.options
           const qrIndex = options.findIndex((item) => item.title === this.props.block.title)
           options.splice(qrIndex, 1)
@@ -220,7 +223,7 @@ class MessageArea extends React.Component {
           const bIndex = this.props.blocks.findIndex((item) => item.uniqueId === parent.uniqueId)
           blocks[bIndex] = parent
           currentBlock = parent
-          this.props.handleMessageBlock({...parent, chatbotId: this.props.chatbot._id}, (res) => {
+          this.props.handleMessageBlock({...parent}, (res) => {
             const completed = blocks.filter((item) => item.payload.length > 0).length
             const progress = Math.floor((completed / blocks.length) * 100)
             this.props.updateParentState({blocks, sidebarItems, currentBlock, progress, unsavedChanges: false})
@@ -283,7 +286,7 @@ class MessageArea extends React.Component {
       const currentBlock = this.props.block
       const options = this.state.options
       const id = `${new Date().getTime()}`
-      const newBlock = {title, payload: [], uniqueId: `${id}`, triggers: [], options: []}
+      const newBlock = {title, payload: [], uniqueId: `${id}`, triggers: [], options: [], chatbotId: this.props.block.chatbotId}
       const sidebarItems = this.props.sidebarItems
       const index = sidebarItems.findIndex((item) => item.id === currentBlock.uniqueId)
       sidebarItems[index].isParent = true
