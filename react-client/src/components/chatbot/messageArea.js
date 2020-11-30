@@ -212,7 +212,10 @@ class MessageArea extends React.Component {
       } else {
         const parentId = this.props.sidebarItems.find((item) =>  item.id === this.props.block.uniqueId).parentId
         if (parentId) {
+          console.log('parentId', parentId)
+          console.log('this.props.blocks', this.props.blocks)
           const parent = this.props.blocks.find((item) => item.uniqueId === parentId)
+          console.log('parent', parent)
           const options = parent.options
           const qrIndex = options.findIndex((item) => item.title === this.props.block.title)
           options.splice(qrIndex, 1)
@@ -280,10 +283,11 @@ class MessageArea extends React.Component {
     } else if (['back', 'home'].includes(title.toLowerCase())) {
       this.props.alertMsg.error(`Child name ${title} is not allowed. Please enter a different name.`)
     } else {
+      console.log('this.props.block', this.props.block)
       const currentBlock = this.props.block
       const options = this.state.options
       const id = `${new Date().getTime()}`
-      const newBlock = {title, payload: [], uniqueId: `${id}`, triggers: [], options: []}
+      const newBlock = {title, payload: [], uniqueId: `${id}`, triggers: [], options: [], chatbotId: this.props.block.chatbotId}
       const sidebarItems = this.props.sidebarItems
       const index = sidebarItems.findIndex((item) => item.id === currentBlock.uniqueId)
       sidebarItems[index].isParent = true
