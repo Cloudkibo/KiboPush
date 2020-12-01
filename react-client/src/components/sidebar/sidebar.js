@@ -342,7 +342,7 @@ class Sidebar extends Component {
       return (
         <li onClick={() => { document.getElementById('m_aside_left_close_btn').click() }} className='m-menu__item  m-menu__item--submenu' aria-haspopup='true'>
           <Link to={'/messengerComponents'} className='m-menu__link m-menu__toggle'>
-            <i className='m-menu__link-icon flaticon-chat-1' title='Live Chat' />
+            <i className='m-menu__link-icon flaticon-folder-1' title='Live Chat' />
             <span className='m-menu__link-text'>Messenger Components</span>
           </Link>
         </li>
