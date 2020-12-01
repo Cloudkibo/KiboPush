@@ -38,9 +38,9 @@ export function createChatbot(data, callback) {
   }
 }
 
-export function fetchChatbot() {
+export function fetchChatbot(query) {
   return (dispatch) => {
-    callApi('whatsAppChatbot')
+    callApi('whatsAppChatbot/fetch', 'post', query)
       .then(res => {
         console.log('fetchChatbot respones', res.payload)
         if (res.status === 'success') {

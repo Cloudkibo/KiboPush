@@ -142,6 +142,192 @@ class Sidebar extends Component {
         icon: 'flaticon-paper-plane'
       })
     }
+  }
+
+  showAutomationItems() {
+    if (!this.props.isMobile && !this.state.isKiboLite && this.props.user) {
+      return (
+        <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
+          <span className='m-menu__link m-menu__toggle'>
+            <i className='m-menu__link-icon flaticon-share' title='Automation' />
+            <span className='m-menu__link-text'>Automation</span>
+            <i className='m-menu__ver-arrow la la-angle-right' />
+          </span>
+          <div className='m-menu__submenu'>
+            <span className='m-menu__arrow' />
+            <ul className='m-menu__subnav'>
+              <li className='m-menu__item  m-menu__item--parent' aria-haspopup='true' >
+                <span className='m-menu__link'>
+                  <span className='m-menu__link-text'>
+                    Automation
+                  </span>
+                </span>
+              </li>
+              {
+                this.props.user.platform === 'messenger' &&
+                <>
+                  {this.showSmartRespliesItem()}
+                  {this.showChatbotAutomation()}
+                  {this.showAutoPostingItem()}
+                  {this.showRssIntegrationItem()}
+                  {this.showNewsIntegrationItem()}
+                  {this.showSequenceMessaging()}
+                </>
+              }
+              {
+                this.props.user.platform === 'whatsApp' &&
+                <>
+                  {this.showWhatsAppCommerceChatbot()}
+                  {this.showWhatsAppAirlinesChatbot()}
+                  {this.showChatbots()}
+                </>
+              }
+              {
+                this.props.user.platform === 'sms' &&
+                <>
+                  {this.showChatbots()}
+                </>
+              }
+            </ul>
+          </div>
+        </li>
+      )
+    } else {
+      return (
+        <div />
+      )
+    }
+  }
+
+  showSubscriptionsItem() {
+    if (!this.state.isKiboLite && this.props.user && this.props.user.platform === 'messenger') {
+      return (
+        <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
+          <span className='m-menu__link m-menu__toggle'>
+            <i className='m-menu__link-icon flaticon-users' title='Subscriptions' />
+            <span className='m-menu__link-text'>Subscriptions</span>
+            <i className='m-menu__ver-arrow la la-angle-right' />
+          </span>
+          <div className='m-menu__submenu'>
+            <span className='m-menu__arrow' />
+            <ul className='m-menu__subnav'>
+              <li className='m-menu__item  m-menu__item--parent' aria-haspopup='true' >
+                <span className='m-menu__link'>
+                  <span className='m-menu__link-text'>
+                    Subscriptions
+                  </span>
+                </span>
+              </li>
+              {this.showSubscribersItem()}
+              {this.showCustomFields()}
+              {this.showTags()}
+            </ul>
+          </div>
+        </li>
+      )
+    } else if (['sms', 'whatsApp'].includes(this.props.user.platform)) {
+      return (this.showSubscribersItem())
+    } else {
+      return (
+        <div />
+      )
+    }
+  }
+
+  showGrowthToolsItems() {
+    if (!this.props.isMobile && this.props.user && this.props.user.platform === 'messenger' && (window.location.host.includes('kiboengage.cloudkibo.com') || window.location.host === 'localhost:3021' || window.location.host === 'localhost:3000')) {
+      return (
+        <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
+          <span className='m-menu__link m-menu__toggle'>
+            <i className='m-menu__link-icon flaticon-diagram' title='Growth Tools' />
+            <span className='m-menu__link-text'>Growth Tools</span>
+            <i className='m-menu__ver-arrow la la-angle-right' />
+          </span>
+          <div className='m-menu__submenu'>
+            <span className='m-menu__arrow' />
+            <ul className='m-menu__subnav'>
+              <li className='m-menu__item  m-menu__item--parent' aria-haspopup='true' >
+                <span className='m-menu__link'>
+                  <span className='m-menu__link-text'>
+                    Growth Tools
+                  </span>
+                </span>
+              </li>
+              {this.showCommentCapture()}
+              {this.showInviteUsingPhoneNumber()}
+              {this.showInviteSubscribers()}
+              {this.showMessengerCode()}
+              {/* {this.showDiscoverTabs()} */}
+              {this.showLandingPages()}
+              {this.showMessengerAds()}
+              {this.showMessengerRefURL()}
+              {this.showMessageUs()}
+              {this.showChatWidget()}
+              {this.showCheckbox()}
+              {this.showOverlayWidgets()}
+            </ul>
+          </div>
+        </li>
+      )
+    }
+  }
+
+  showManagePagesItems() {
+    if (this.props.user && this.props.user.platform === 'messenger') {
+      return (
+        <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
+          <span className='m-menu__link m-menu__toggle'>
+            <i className='m-menu__link-icon flaticon-add' title='Manage Pages' />
+            <span className='m-menu__link-text'>Manage Pages</span>
+            <i className='m-menu__ver-arrow la la-angle-right' />
+          </span>
+          <div className='m-menu__submenu'>
+            <span className='m-menu__arrow' />
+            <ul className='m-menu__subnav'>
+              <li className='m-menu__item  m-menu__item--parent' aria-haspopup='true' >
+                <span className='m-menu__link'>
+                  <span className='m-menu__link-text'>
+                    Manage Pages
+                  </span>
+                </span>
+              </li>
+              {this.showPagesItem()}
+              {this.showPersistentMenuItem()}
+              {this.showWelcomeMessageItem()}
+              {!this.props.isMobile && this.showGreetingText()}
+            </ul>
+          </div>
+        </li>
+      )
+    }
+  }
+
+  showOrganizationItems() {
+    if (!this.props.isMobile && this.props.user && (this.props.user.currentPlan.unique_ID === 'plan_C' || this.props.user.currentPlan.unique_ID === 'plan_D')) {
+      return (
+        <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
+          <span className='m-menu__link m-menu__toggle'>
+            <i className='m-menu__link-icon flaticon-share' title='Organization' />
+            <span className='m-menu__link-text'>Organization</span>
+            <i className='m-menu__ver-arrow la la-angle-right' />
+          </span>
+          <div className='m-menu__submenu'>
+            <span className='m-menu__arrow' />
+            <ul className='m-menu__subnav'>
+              <li className='m-menu__item  m-menu__item--parent' aria-haspopup='true' >
+                <span className='m-menu__link'>
+                  <span className='m-menu__link-text'>
+                    Organization
+                  </span>
+                </span>
+              </li>
+              {this.showInviteMembersItem()}
+              {this.showMembersItem()}
+              {this.showTeams()}
+            </ul>
+          </div>
+        </li>
+      )
     if (platform === 'sms') {
       menuItems.push({
         priority: 'f',
@@ -221,7 +407,14 @@ class Sidebar extends Component {
         submenu.push({
           priority: 'g',
           name: 'Commerce Chatbot',
-          route: '/whatsAppChatbot'
+          route: '/whatsAppCommerceChatbot'
+        })
+      }
+      if (platform === 'whatsApp' && (isKiboChat || isLocalhost) && platform === 'whatsApp') {
+        submenu.push({
+          priority: 'g',
+          name: 'Commerce Chatbot',
+          route: '/whatsAppAirlinesChatbot'
         })
       }
       menuItems.push({
