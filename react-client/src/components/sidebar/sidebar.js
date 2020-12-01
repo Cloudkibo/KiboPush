@@ -338,7 +338,7 @@ class Sidebar extends Component {
   }
 
   showMessengerComponentsItem() {
-    // if (this.props.user && this.props.user.isSuperUser && this.state.isKiboChat && this.props.user.platform === 'messenger') {
+    if (this.props.user && this.props.user.isSuperUser && this.state.isKiboChat && this.props.user.platform === 'messenger') {
       return (
         <li onClick={() => { document.getElementById('m_aside_left_close_btn').click() }} className='m-menu__item  m-menu__item--submenu' aria-haspopup='true'>
           <Link to={'/messengerComponents'} className='m-menu__link m-menu__toggle'>
@@ -347,7 +347,7 @@ class Sidebar extends Component {
           </Link>
         </li>
       )
-    // }
+    }
   }
 
   showLiveChatItem() {
