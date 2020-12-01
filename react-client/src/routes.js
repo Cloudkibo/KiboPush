@@ -169,6 +169,9 @@ import ChatbotAutomation from './containers/chatbotAutomation/chatbotAutomation'
 import ChatbotSettings from './containers/chatbotAutomation/chatbotSettings'
 import IntegrateZoom from './containers/zoomIntegration/integrateZoom'
 import WhatsAppChatbot from './containers/whatsAppChatbot/whatsAppChatbot'
+import MessengerComponents from './containers/messengerComponents/messengerComponents'
+import CreateMessengerComponent from './containers/messengerComponents/create'
+
 
 const Subscriber = asyncComponent(() => import("./containers/subscriber/subscriber"))
 const OperationalDashboard = asyncComponent(() => import("./containers/operationalDashboard/operationalDashboard"))
@@ -416,6 +419,8 @@ const Routes = () => (
     <Route path='/whatsAppChatbot' component={WhatsAppChatbot} onEnter={requireAuth} />
     <Route path='/whatsAppChatbotAnalytics' component={WhatsAppChatbotAnalytics} onEnter={requireAuth} />
     <Route path='/commerceChatbotAnalytics' component={CommerceChatbotAnalytics} onEnter={requireAuth} />
+    <Route path='/messengerComponents' component={MessengerComponents} onEnter={requireAuth} />
+    <Route path='/createMessengerComponent' component={CreateMessengerComponent} onEnter={requireAuth} />
     <Route path='*' render={() => <Redirect to='/' />} />
   </Switch>
 

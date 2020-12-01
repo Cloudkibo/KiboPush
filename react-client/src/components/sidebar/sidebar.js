@@ -337,6 +337,19 @@ class Sidebar extends Component {
     }
   }
 
+  showMessengerComponentsItem() {
+    if (this.props.user && this.props.user.isSuperUser && this.state.isKiboChat && this.props.user.platform === 'messenger') {
+      return (
+        <li onClick={() => { document.getElementById('m_aside_left_close_btn').click() }} className='m-menu__item  m-menu__item--submenu' aria-haspopup='true'>
+          <Link to={'/messengerComponents'} className='m-menu__link m-menu__toggle'>
+            <i className='m-menu__link-icon flaticon-folder-1' title='Live Chat' />
+            <span className='m-menu__link-text'>Messenger Components</span>
+          </Link>
+        </li>
+      )
+    }
+  }
+
   showLiveChatItem() {
     if (this.props.user) {
       if (this.state.livechat && this.props.user.permissions.livechatPermission && this.props.user.plan.livechat && this.props.automated_options &&
@@ -1354,6 +1367,7 @@ class Sidebar extends Component {
                     {this.uploadContacts()}
                     {this.inviteSubscribers()}
                     {this.showLiveChatItem()}
+                    {this.showMessengerComponentsItem()}
                     {this.showAutomationItems()}
                     {this.showGrowthToolsItems()}
                     {this.showManagePagesItems()}
