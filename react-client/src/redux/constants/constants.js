@@ -524,4 +524,7 @@ export const DELETE_CANNED_RESPONSE = 'DELETE_CANNED_RESPONSE'
 //constants for shopify
 export const FETCH_STORE = 'FETCH_STORE'
 
+//constants for messengerComponents
+export const SHOW_MESSENGER_COMPONENTS = 'SHOW_MESSENGER_COMPONENTS'
+
 export const SHOW_USER_DETAIL_AUTOMATE_OPTION = 'SHOW_USER_DETAIL_AUTOMATE_OPTION'
