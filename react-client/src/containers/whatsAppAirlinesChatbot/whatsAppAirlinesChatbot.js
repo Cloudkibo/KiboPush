@@ -87,7 +87,7 @@ class WhatsAppAirlinesChatbot extends React.Component {
         query: {
             _id: this.props.chatbot._id,
             companyId: this.props.user.companyId,
-            vertical: 'commerce'
+            vertical: 'airlines'
         },
         updated: {
             published: e.target.checked
@@ -106,16 +106,9 @@ class WhatsAppAirlinesChatbot extends React.Component {
   }
 
   setTestSubscribers() {
-    if (!this.props.store) {
-      let commerceConnectModal = document.getElementById('_commerce_integration_trigger')
-      if (commerceConnectModal) {
-        commerceConnectModal.click()
-      }
-    } else {
-      let testSubscribersModal = document.getElementById('_test_subscribers_trigger')
-      if (testSubscribersModal) {
-        testSubscribersModal.click()
-      }
+    let testSubscribersModal = document.getElementById('_test_subscribers_trigger')
+    if (testSubscribersModal) {
+      testSubscribersModal.click()
     }
   }
 
@@ -392,7 +385,6 @@ function mapStateToProps(state) {
   return {
     user: (state.basicInfo.user),
     chatbot: (state.whatsAppChatbot.chatbot),
-    store: (state.commerceInfo.store)
   }
 }
 
