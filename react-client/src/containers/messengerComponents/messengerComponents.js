@@ -233,8 +233,13 @@ class MessengerComponents extends React.Component {
                                             style={{margin: 2}}>
                                             View
                                         </button>
-                                        <button className='btn btn-primary btn-sm'
-                                            style={{margin: 2}}>
+                                        <button className='btn btn-primary btn-sm' style={{margin: 2}}
+                                          onClick={() => {
+                                            this.props.history.push({
+                                              pathname: `/createMessengerComponent`,
+                                              state: {messengerComponent, module: 'edit'}
+                                            })
+                                          }}>
                                             Edit
                                         </button>
                                     </span>

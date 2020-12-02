@@ -54,6 +54,7 @@ export function showPendingSubscriptions (data) {
 }
 
 export function saveFileForPhoneNumbers (filedata, handleResponse) {
+  console.log('filedata', filedata)
   return (dispatch) => {
     // eslint-disable-next-line no-undef
     fetch(`${API_URL}/growthtools/upload`, {
