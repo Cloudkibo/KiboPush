@@ -87,7 +87,7 @@ class WhatsAppAirlinesChatbot extends React.Component {
         query: {
             _id: this.props.chatbot._id,
             companyId: this.props.user.companyId,
-            vertical: 'commerce'
+            vertical: 'airlines'
         },
         updated: {
             published: e.target.checked
