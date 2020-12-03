@@ -128,6 +128,8 @@ class Builders extends React.Component {
     this.showValidationModal = this.showValidationModal.bind(this)
     this.getModalContent= this.getModalContent.bind(this)
     this.toggleModalContent = this.toggleModalContent.bind(this)
+    this.getLevel = this.getLevel.bind(this)
+    this.canCreateNewLevel = this.canCreateNewLevel.bind(this)
     this.GSModalContent = null
 
     if (props.setReset) {
@@ -141,7 +143,7 @@ class Builders extends React.Component {
       let messageContent = this.props.linkedMessages[0].messageContent
       if (messageContent[messageContent.length - 1].quickReplies) {
         quickReplies[currentId] = messageContent[messageContent.length - 1].quickReplies
-        quickRepliesComponents[currentId] = this.getQuickReplies(quickReplies[currentId]) 
+        quickRepliesComponents[currentId] = this.getQuickReplies(quickReplies[currentId])
         this.state.quickReplies = quickReplies
         this.state.quickRepliesComponents = quickRepliesComponents
       }
@@ -151,6 +153,28 @@ class Builders extends React.Component {
     this.props.fetchAllSequence()
     this.props.loadCustomFields()
     console.log('builders props in constructor', this.props)
+  }
+
+  getLevel (id) {
+    const currentBlock = this.state.linkedMessages.find((item) => item.id === id)
+    let level = 1
+    if (currentBlock.parentId) {
+      level = level + this.getLevel(currentBlock.parentId)
+    }
+    return level
+  }
+
+  canCreateNewLevel () {
+    if (this.getLevel(this.state.currentId) >= this.props.user.plan.broadcast_levels) {
+      return {
+        canCreate: false,
+        errorMessage: `Broadcast levels limit has reached. Your current plan does not allow you to create more than ${this.props.user.plan.broadcast_levels} levels.`
+      }
+    } else {
+      return {
+        canCreate: true
+      }
+    }
   }
 
   showValidationModal (errorMessage) {
@@ -238,11 +262,11 @@ class Builders extends React.Component {
     this.setState({showGSModal: false})
     this.refs.ActionModal.click()
   }
-  
+
 
   onFilesError (errorMsg) {
     this.setState({
-      fileError: errorMsg   
+      fileError: errorMsg
     })
     this.refs.fileError.click()
   }
@@ -675,7 +699,7 @@ class Builders extends React.Component {
                 componentType: "image",
                 id: component.cards[k].fileurl.id,
                 name: component.cards[k].fileurl.name
-              }, { 
+              }, {
                 id: component.id,
                 componentType: "image",
                 fileName: component.cards[k].fileurl.name,
@@ -692,7 +716,7 @@ class Builders extends React.Component {
             componentType: component.mediaType || component.componentType,
             id: component.fileurl.id,
             name: component.fileurl.name
-          }, { 
+          }, {
             id: component.id,
             componentType: component.mediaType || component.componentType,
             fileName: component.fileurl.name,
@@ -1204,7 +1228,7 @@ class Builders extends React.Component {
                 if (payload[l].blockUniqueId) {
                   deletePayload.push(payload[l].blockUniqueId)
                 }
-              } 
+              }
             }
           }
           if (messageContent.buttons) {
@@ -1295,7 +1319,7 @@ class Builders extends React.Component {
                 linkedMessages[i].messageContent[j].quickReplies[k].payload = JSON.stringify(payload)
                 return
               }
-            } 
+            }
           }
         }
         if (component.buttons) {
@@ -1359,7 +1383,7 @@ class Builders extends React.Component {
                 unlinkedMessages[i].messageContent[j].quickReplies[k].payload = JSON.stringify(payload)
                 return
               }
-            } 
+            }
           }
         }
         if (component.buttons) {
@@ -1408,7 +1432,7 @@ class Builders extends React.Component {
     this.setState({linkedMessages, unlinkedMessages})
   }
 
-  
+
 
   addComponent (componentDetails, edit) {
     console.log('componentDetails', componentDetails)
@@ -1449,6 +1473,8 @@ class Builders extends React.Component {
       'text': (<TextModal
         buttons={[]}
         module = {this.props.module}
+        canCreateNewLevel={this.canCreateNewLevel}
+        alertMsg={this.msg}
         edit={this.state.editData ? true : false}
         {...this.state.editData}
         noButtons={this.props.noButtons}
@@ -1467,6 +1493,8 @@ class Builders extends React.Component {
         setTempFiles={this.setTempFiles}
         initialFiles={this.state.initialFiles}
         module = {this.props.module}
+        canCreateNewLevel={this.canCreateNewLevel}
+        alertMsg={this.msg}
         edit={this.state.editData ? true : false}
         {...this.state.editData}
         pages={this.props.pages}
@@ -1522,6 +1550,8 @@ class Builders extends React.Component {
         setTempFiles={this.setTempFiles}
         initialFiles={this.state.initialFiles}
         module = {this.props.module}
+        canCreateNewLevel={this.canCreateNewLevel}
+        alertMsg={this.msg}
         edit={this.state.editData ? true : false}
         {...this.state.editData}
         buttonActions={this.props.buttonActions}
@@ -1680,7 +1710,7 @@ class Builders extends React.Component {
             header: broadcast.header,
             defaultErrorMsg: broadcast.defaultErrorMsg,
             invalidMsg: broadcast.invalidMsg,
-            validMsg: broadcast.validMsg, 
+            validMsg: broadcast.validMsg,
             retrievingMsg: broadcast.retrievingMsg,
             buttonTitle: broadcast.buttonTitle,
             validateUrl: broadcast.validateUrl,
@@ -1897,6 +1927,8 @@ class Builders extends React.Component {
           tags={this.props.tags}
           quickReplies={quickReplies}
           updateQuickReplies={this.updateQuickReplies}
+          canCreateNewLevel={this.canCreateNewLevel}
+          alertMsg={this.msg}
         />
     }
   }
@@ -1926,6 +1958,8 @@ class Builders extends React.Component {
                 quickReplies={this.state.quickReplies[id]}
                 updateQuickReplies={this.updateQuickReplies}
                 currentId={this.state.currentId}
+                canCreateNewLevel={this.canCreateNewLevel}
+                alertMsg={this.msg}
               />
           }
           this.setState({quickRepliesComponents})
@@ -1967,7 +2001,7 @@ class Builders extends React.Component {
 
       <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
       <div style={{float: 'left', clear: 'both'}}
-        ref={(el) => { this.top = el }} /> 
+        ref={(el) => { this.top = el }} />
          { this.state.loading &&
         <div style={{ width: '100vw', height: '100vh', background: 'rgba(33, 37, 41, 0.6)', position: 'fixed', zIndex: '99999', top: '0px' }}>
             <div style={{ position: 'fixed', top: '50%', left: '50%', width: '30em', height: '18em', marginLeft: '-10em' }}
@@ -2100,7 +2134,7 @@ class Builders extends React.Component {
           </div>
         </div>
 
-        
+
 
       <a href='#/' style={{ display: 'none' }} ref='lossData' data-toggle="modal" data-target="#lossData">lossData</a>
       <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="lossData" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -2224,6 +2258,7 @@ class Builders extends React.Component {
           titleEditable={this.props.titleEditable}
           showTabs={this.props.showTabs}
           removeMessage={this.removeMessage}
+          user={this.props.user}
         />
         : this.props.builderValue === 'flow' &&
         <FLOWBUILDER
@@ -2294,6 +2329,7 @@ function mapStateToProps (state) {
   return {
     sequences: state.sequenceInfo.sequences,
     tags: state.tagsInfo.tags,
+    user: state.basicInfo.user,
     customFields: (state.customFieldInfo.customFields)
   }
 }
