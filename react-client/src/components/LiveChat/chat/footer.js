@@ -678,8 +678,11 @@ class Footer extends React.Component {
       const file = e.target.files[0]
       if (file.size > 25000000) {
         this.props.alertMsg.error('Attachment exceeds the limit of 25MB')
-      } else if (file.type === 'text/javascript' || file.type === 'text/exe') {
-        this.props.alertMsg.error('Cannot add js or exe files. Please select another file')
+      } else if ([
+        'application/zip', 'text/javascript', 'text/exe', 'application/x-ms-dos-executable',
+        'application/x-pem-file', 'application/x-x509-ca-cert'
+      ].includes(file.type)) {
+        this.props.alertMsg.error(`${file.type} files are not supported. Please select another file`)
       } else {
         const data = this.props.performAction('send attachments', this.props.activeSession)
         if (data.isAllowed) {
