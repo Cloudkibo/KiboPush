@@ -168,10 +168,10 @@ import Chatbots from './containers/chatbot/chatbot'
 import ChatbotAutomation from './containers/chatbotAutomation/chatbotAutomation'
 import ChatbotSettings from './containers/chatbotAutomation/chatbotSettings'
 import IntegrateZoom from './containers/zoomIntegration/integrateZoom'
-import WhatsAppChatbot from './containers/whatsAppChatbot/whatsAppChatbot'
+import WhatsAppCommerceChatbot from './containers/whatsAppCommerceChatbot/whatsAppCommerceChatbot'
+import WhatsAppAirlinesChatbot from './containers/whatsAppAirlinesChatbot/whatsAppAirlinesChatbot'
 import MessengerComponents from './containers/messengerComponents/messengerComponents'
 import CreateMessengerComponent from './containers/messengerComponents/create'
-
 
 const Subscriber = asyncComponent(() => import("./containers/subscriber/subscriber"))
 const OperationalDashboard = asyncComponent(() => import("./containers/operationalDashboard/operationalDashboard"))
@@ -191,7 +191,8 @@ const ConfigureChatbot = asyncComponent(() => import('./containers/chatbot/confi
 const ConfigureChatbotAutomation = asyncComponent(() => import('./containers/chatbotAutomation/configureChatbot'))
 const ConfigureCommerceChatbot = asyncComponent(() => import('./containers/commerceChatbot/configureCommerceChatbot'))
 const ChatbotAnalytics = asyncComponent(() => import('./containers/chatbotAutomation/analytics'))
-const WhatsAppChatbotAnalytics = asyncComponent(() => import('./containers/whatsAppChatbot/analytics'))
+const WhatsAppCommerceChatbotAnalytics = asyncComponent(() => import('./containers/whatsAppCommerceChatbot/analytics'))
+const WhatsAppAirlinesChatbotAnalytics = asyncComponent(() => import('./containers/whatsAppAirlinesChatbot/analytics'))
 const CommerceChatbotAnalytics = asyncComponent(() => import('./containers/commerceChatbot/analytics'))
 
 function requireAuth(nextState, replace) {
@@ -416,8 +417,10 @@ const Routes = () => (
     <Route path='/successMessage' component={successMessage} onEnter={requireAuth} />
     <Route path='/alreadyConnected' component={AlreadyConnected} onEnter={requireAuth} />
     <Route path='/ErrorMessage' component={ErrorMessage} onEnter={requireAuth} />
-    <Route path='/whatsAppChatbot' component={WhatsAppChatbot} onEnter={requireAuth} />
-    <Route path='/whatsAppChatbotAnalytics' component={WhatsAppChatbotAnalytics} onEnter={requireAuth} />
+    <Route path='/WhatsAppCommerceChatbot' component={WhatsAppCommerceChatbot} onEnter={requireAuth} />
+    <Route path='/WhatsAppCommerceChatbotAnalytics' component={WhatsAppCommerceChatbotAnalytics} onEnter={requireAuth} />
+    <Route path='/WhatsAppAirlinesChatbot' component={WhatsAppAirlinesChatbot} onEnter={requireAuth} />
+    <Route path='/WhatsAppAirlinesChatbotAnalytics' component={WhatsAppAirlinesChatbotAnalytics} onEnter={requireAuth} />
     <Route path='/commerceChatbotAnalytics' component={CommerceChatbotAnalytics} onEnter={requireAuth} />
     <Route path='/messengerComponents' component={MessengerComponents} onEnter={requireAuth} />
     <Route path='/createMessengerComponent' component={CreateMessengerComponent} onEnter={requireAuth} />
