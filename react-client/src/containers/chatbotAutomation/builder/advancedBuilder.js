@@ -48,6 +48,7 @@ class AdvancedBuilder extends React.Component {
           attachmentUploading={this.props.attachmentUploading}
           superUser={this.props.superUser}
           urlMetaData={this.props.urlMetaData}
+          messengerComponents={this.props.messengerComponents}
         />
       </div>
     )

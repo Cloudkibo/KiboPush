@@ -76,7 +76,7 @@ class CarouselButton extends React.Component {
                 id={this.props.id + '_add_button'}
               >
                 {this.props.buttonOption.buttonTitle}
-              </button>) : 
+              </button>) :
               (<button
                 style={{border: 'none', cursor: 'pointer', background: 'none'}}
                 className='m-link m-link--state m-link--info'
@@ -115,6 +115,8 @@ class CarouselButton extends React.Component {
                   type='carouselButton'
                   updateButtonOption={this.props.updateButtonOption}
                   buttonOption={this.props.buttonOption}
+                  messengerComponents={this.props.messengerComponents}
+                  messengerComponentId={this.props.buttonOption ? this.props.buttonOption.messengerComponentId : ''}
                 />
               }
             </PopoverBody>

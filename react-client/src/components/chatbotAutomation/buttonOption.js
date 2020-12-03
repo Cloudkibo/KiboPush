@@ -9,11 +9,13 @@ class ButtonOption extends React.Component {
       buttonTitle: '',
       blockTitle: '',
       selectedBlock: '',
-      selectedRadio: ''
+      selectedRadio: '',
+      selectedMessengerComponent: ''
     }
     this.onButtonTitleChange = this.onButtonTitleChange.bind(this)
     this.onBlockTitleChange = this.onBlockTitleChange.bind(this)
     this.onBlockChange = this.onBlockChange.bind(this)
+    this.onMessengerComponentChange = this.onMessengerComponentChange.bind(this)
     this.onSave = this.onSave.bind(this)
     this.onRemove = this.onRemove.bind(this)
     this.onRadioClick = this.onRadioClick.bind(this)
@@ -22,6 +24,7 @@ class ButtonOption extends React.Component {
 
   componentDidMount () {
     let selectedBlock = ''
+    let selectedMessengerComponent
     if (this.props.blockId) {
       const block = this.props.blocks.find((item) => item.uniqueId.toString() === this.props.blockId.toString())
       selectedBlock = {
@@ -29,12 +32,19 @@ class ButtonOption extends React.Component {
         value: this.props.blockId
       }
     }
+    if (this.props.messengerComponentId) {
+      const messengerComponent = this.props.messengerComponents.find((item) => item._id === this.props.messengerComponentId)
+      selectedMessengerComponent = {
+        label: messengerComponent.componentName,
+        value: this.props.messengerComponentId
+      }
+    }
     this.setState({
       blockTitle: selectedBlock ? selectedBlock.label : this.props.blockTitle,
       buttonTitle: this.props.buttonTitle,
       selectedBlock,
+      selectedMessengerComponent,
       selectedRadio: this.props.action,
-
     })
   }
 
@@ -59,6 +69,11 @@ class ButtonOption extends React.Component {
     this.setState({selectedBlock: value})
   }
 
+  onMessengerComponentChange (value, others) {
+    console.log('onMessengerComponentChange', {value, others})
+    this.setState({selectedMessengerComponent: value})
+  }
+
   onSave () {
     const titles = this.props.blocks.map((item) => item.title.toLowerCase())
     if (this.state.selectedRadio === 'create' && !this.state.blockTitle) {
@@ -67,16 +82,19 @@ class ButtonOption extends React.Component {
       this.props.alertMsg.error('Button Title cannot empty')
     } else if (this.state.selectedRadio === 'link' && !this.state.selectedBlock) {
       this.props.alertMsg.error('Please select a block to trigger')
+    } else if (this.state.selectedRadio === 'messengerComponent' && !this.state.selectedMessengerComponent) {
+      this.props.alertMsg.error('Please select a Messenger Component')
     } else if (this.state.selectedRadio === 'create' && titles.indexOf(this.state.blockTitle.toLowerCase()) > -1) {
        this.props.alertMsg.error('A block with this title already exists. Please choose a diffrent title')
     } else {
         this.props.updateButtonOption({
-            buttonTitle: this.state.buttonTitle,
-            blockTitle: this.state.blockTitle,
-            action: this.state.selectedRadio,
-            blockId: this.state.selectedBlock.value,
-            type: this.props.type,
-            cardIndex: this.props.cardIndex
+          buttonTitle: this.state.buttonTitle,
+          blockTitle: this.state.blockTitle,
+          action: this.state.selectedRadio,
+          blockId: this.state.selectedBlock.value,
+          type: this.props.type,
+          cardIndex: this.props.cardIndex,
+          messengerComponentId: this.state.selectedMessengerComponent.value
         }, this.props.cardIndex, true)
         this.props.onCancel()
     }
@@ -88,14 +106,23 @@ class ButtonOption extends React.Component {
   }
 
   getSelectOptions () {
-    const options = this.props.blocks.map((item) => {
-      return {
-        label: item.title,
-        value: item.uniqueId
-      }
-    })
-    console.log('select options', options)
-    return options
+    if (this.state.selectedRadio === 'messengerComponent') {
+      const options = this.props.messengerComponents.map((item) => {
+        return {
+          label: item.componentName,
+          value: item._id
+        }
+      })
+      return options
+    } else {
+      const options = this.props.blocks.map((item) => {
+        return {
+          label: item.title,
+          value: item.uniqueId
+        }
+      })
+      return options
+    }
   }
 
   render () {
@@ -155,6 +182,19 @@ class ButtonOption extends React.Component {
                     Link existing block
                   <span />
                 </label>
+                {this.props.messengerComponents.length > 0 &&
+                  <label className="m-radio m-radio--bold m-radio--state-brand">
+                    <input
+                      type="radio"
+                      onClick={this.onRadioClick}
+                      onChange={() => {}}
+                      value='messengerComponent'
+                      checked={this.state.selectedRadio === 'messengerComponent'}
+                    />
+                      Open Messenger Component
+                    <span />
+                  </label>
+                }
               </div>
             }
             {
@@ -167,6 +207,18 @@ class ButtonOption extends React.Component {
                 options={this.getSelectOptions()}
                 value={this.state.selectedBlock}
                 onChange={this.onBlockChange}
+              />
+            }
+            {
+              this.state.selectedRadio === 'messengerComponent' &&
+              <Select
+                className="basic-single"
+                classNamePrefix="select"
+                isClearable={true}
+                isSearchable={true}
+                options={this.getSelectOptions()}
+                value={this.state.selectedMessengerComponent}
+                onChange={this.onMessengerComponentChange}
               />
             }
           </div>

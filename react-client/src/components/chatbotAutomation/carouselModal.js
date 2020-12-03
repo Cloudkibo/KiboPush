@@ -171,9 +171,9 @@ class CarouselModal extends React.Component {
     if (force || !this.state.edited) {
       if (reinitialize) {
         this.setState({
-          cards: this.props.cards ? JSON.parse(JSON.stringify(this.props.cards)) : JSON.parse(JSON.stringify(this.initialCarouselCards)), 
-          edited: false, 
-          error : '', 
+          cards: this.props.cards ? JSON.parse(JSON.stringify(this.props.cards)) : JSON.parse(JSON.stringify(this.initialCarouselCards)),
+          edited: false,
+          error : '',
           selectedIndex: 0
         }, () => {
           this.closeModalTrigger.click()
@@ -261,8 +261,8 @@ class CarouselModal extends React.Component {
                                     cursor: 'pointer',
                                     zIndex: '1',
                                     fontSize: '1.5rem'
-                                    }} 
-                                    className="flaticon-circle" 
+                                    }}
+                                    className="flaticon-circle"
                                     onClick={this.props.onRemove}
                                 />
                                 </div>
@@ -282,6 +282,7 @@ class CarouselModal extends React.Component {
                                   updateButtonOption={this.updateButtonOption}
                                   updateLoading={this.updateLoading}
                                   currentBlock={this.props.currentBlock}
+                                  messengerComponents={this.props.messengerComponents}
                                 />
                               </div>
                             </div>
