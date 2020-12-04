@@ -23,11 +23,11 @@ import {
 import { fetchNotifications, markRead } from '../../redux/actions/notifications.actions'
 import AlertContainer from 'react-alert'
 import { getLandingPage } from '../../utility/utils'
+import cookie from 'react-cookie'
 
 // Components
 import HEADERMENU from './headerMenu'
 import HEADERTOPBAR from './headerTopbar'
-import cookie from 'react-cookie'
 
 // styles
 const darkSkinStyle = {
@@ -91,7 +91,7 @@ class Header extends React.Component {
   }
 
   handleChangePlatform (data) {
-    this.props.fetchNotifications()
+    this.props.fetchNotifications({records: this.state.notificationsRecords})
     this.redirectToDashboard(data)
   }
 

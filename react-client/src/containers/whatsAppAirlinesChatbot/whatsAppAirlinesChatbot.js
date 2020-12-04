@@ -7,9 +7,8 @@ import AlertContainer from 'react-alert'
 import MODAL from '../../components/extras/modal'
 import { validateCommaSeparatedPhoneNumbers } from "../../utility/utils"
 import { UncontrolledTooltip } from 'reactstrap'
-import { fetchBigCommerceStore, fetchShopifyStore } from '../../redux/actions/commerce.actions'
 
-class WhatsAppChatbot extends React.Component {
+class WhatsAppAirlinesChatbot extends React.Component {
   constructor(props, context) {
     super(props, context)
     this.state = {
@@ -32,19 +31,13 @@ class WhatsAppChatbot extends React.Component {
     this.handleTestSubscribers = this.handleTestSubscribers.bind(this)
     this.saveTestSubscribers = this.saveTestSubscribers.bind(this)
     this.clearTestSubscribers = this.clearTestSubscribers.bind(this)
-    this.goToCommerceSettings = this.goToCommerceSettings.bind(this)
-    this.getConnectEcommerceContent = this.getConnectEcommerceContent.bind(this)
 
-    props.fetchChatbot()
-    props.fetchBigCommerceStore()
-    props.fetchShopifyStore()
+    props.fetchChatbot({companyId: this.props.user.companyId, vertical: 'airlines'})
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.chatbot && nextProps.chatbot.botLinks) {
       this.setState({
-        paymentMethod: nextProps.chatbot.botLinks.paymentMethod,
-        returnPolicy: nextProps.chatbot.botLinks.returnPolicy,
         faqs: nextProps.chatbot.botLinks.faqs,
         published: nextProps.chatbot.published,
         testSubscribers: nextProps.chatbot.testSubscribers ? nextProps.chatbot.testSubscribers.join(',') : []
@@ -58,7 +51,7 @@ class WhatsAppChatbot extends React.Component {
   }
 
   componentDidMount() {
-    document.title = 'KiboChat | WhatsApp Commerce Chatbot'
+    document.title = 'KiboChat | WhatsApp Airlines Chatbot'
   }
 
   setPaymentMethod(e) {
@@ -91,7 +84,14 @@ class WhatsAppChatbot extends React.Component {
       published: e.target.checked
     })
     this.props.updateChatbot({
-      published: e.target.checked
+        query: {
+            _id: this.props.chatbot._id,
+            companyId: this.props.user.companyId,
+            vertical: 'airlines'
+        },
+        updated: {
+            published: e.target.checked
+        }
     }, (res) => {
       if (res.status === 'success') {
         if (this.state.published) {
@@ -106,59 +106,47 @@ class WhatsAppChatbot extends React.Component {
   }
 
   setTestSubscribers() {
-    if (!this.props.store) {
-      let commerceConnectModal = document.getElementById('_commerce_integration_trigger')
-      if (commerceConnectModal) {
-        commerceConnectModal.click()
-      }
-    } else {
-      let testSubscribersModal = document.getElementById('_test_subscribers_trigger')
-      if (testSubscribersModal) {
-        testSubscribersModal.click()
-      }
+    let testSubscribersModal = document.getElementById('_test_subscribers_trigger')
+    if (testSubscribersModal) {
+      testSubscribersModal.click()
     }
   }
 
   saveChatbot(e) {
     e.preventDefault()
-    if (!this.props.store) {
-      let commerceConnectModal = document.getElementById('_commerce_integration_trigger')
-      if (commerceConnectModal) {
-        commerceConnectModal.click()
-      }
-    } else {
-      if (!this.props.chatbot) {
+    if (!this.props.chatbot) {
         this.props.createChatbot({
-          botLinks: {
-            paymentMethod: this.state.paymentMethod,
-            returnPolicy: this.state.returnPolicy,
-            faqs: this.state.faqs
-          },
-          storeType: this.props.store.storeType,
-          type: 'automated',
-          vertical: 'commerce'
+            botLinks: {
+                faqs: this.state.faqs
+            },
+            type: 'automated',
+            vertical: 'airlines'
         }, (res) => {
-          if (res.status === 'success') {
+            if (res.status === 'success') {
             this.msg.success(res.description)
-          } else {
+            } else {
             this.msg.error(res.description)
-          }
+            }
         })
-      } else {
+    } else {
         this.props.updateChatbot({
-          botLinks: {
-            paymentMethod: this.state.paymentMethod,
-            returnPolicy: this.state.returnPolicy,
-            faqs: this.state.faqs
-          }
+            query: {
+                _id: this.props.chatbot._id,
+                companyId: this.props.user.companyId,
+                vertical: 'airlines'
+            },
+            updated: {
+                botLinks: {
+                    faqs: this.state.faqs
+                }
+            }
         }, (res) => {
-          if (res.status === 'success') {
+            if (res.status === 'success') {
             this.msg.success(res.description)
-          } else {
+            } else {
             this.msg.error(res.description)
-          }
+            }
         })
-      }
     }
   }
 
@@ -179,13 +167,11 @@ class WhatsAppChatbot extends React.Component {
       }
       this.props.createChatbot({
         botLinks: {
-          paymentMethod: this.state.paymentMethod,
-          returnPolicy: this.state.returnPolicy,
           faqs: this.state.faqs
         },
         testSubscribers: this.state.testSubscribers.split(",").map(number => number.replace(/ /g, '')),
         type: 'automated',
-        vertical: 'commerce'
+        vertical: 'airlines'
       }, (res) => {
         if (res.status === 'success') {
           this.msg.success(res.description)
@@ -199,7 +185,14 @@ class WhatsAppChatbot extends React.Component {
         modalClose.click()
       }
       this.props.updateChatbot({
-        testSubscribers: this.state.testSubscribers.split(",").map(number => number.replace(/ /g, ''))
+        query: {
+            _id: this.props.chatbot._id,
+            companyId: this.props.user.companyId,
+            vertical: 'airlines'
+        },
+        updated: {
+            testSubscribers: this.state.testSubscribers.split(",").map(number => number.replace(/ /g, ''))
+        }
       }, (res) => {
         if (res.status === 'success') {
           this.msg.success(res.description)
@@ -261,31 +254,6 @@ class WhatsAppChatbot extends React.Component {
     )
   }
 
-  goToCommerceSettings() {
-    document.getElementById('_close_commerce_integration').click()
-    this.props.history.push({
-      pathname: '/settings',
-      state: { tab: 'commerceIntegration' }
-    })
-  }
-
-  getConnectEcommerceContent() {
-    return (
-      <div>
-        <div>
-          <span>
-            You have not integrated an e-commerce provider with KiboPush. Please integrate an e-commerce provider to continue.
-        </span>
-        </div>
-        <div style={{ marginTop: '25px', textAlign: 'center' }}>
-          <div onClick={this.goToCommerceSettings} className='btn btn-primary'>
-            Integrate
-        </div>
-        </div>
-      </div>
-    )
-  }
-
   render() {
     var alertOptions = {
       offset: 75,
@@ -313,25 +281,9 @@ class WhatsAppChatbot extends React.Component {
           style={{ display: 'none' }}>
           Test Subscribers Modal
         </button>
-        <MODAL
-          id='_commerce_integration'
-          title='Commerce Integration'
-          content={this.getConnectEcommerceContent()}
-        />
-        <button
-          id="_commerce_integration_trigger"
-          data-target='#_commerce_integration'
-          data-backdrop="static"
-          data-keyboard="false"
-          data-toggle='modal'
-          type='button'
-          style={{ display: 'none' }}>
-          Commerce Integration Modal
-        </button>
-
 
         <div className='m-subheader'>
-          <h3 className='m-subheader__title'>WhatsApp Commerce Chatbot</h3>
+          <h3 className='m-subheader__title'>WhatsApp Airlines Chatbot</h3>
 
 
           <span style={{ float: 'right' }} className={"m-switch m-switch--lg m-switch--icon " + (this.state.published ? "m-switch--success" : "m-switch--danger")}>
@@ -342,7 +294,7 @@ class WhatsAppChatbot extends React.Component {
           </span>
           {
             this.props.chatbot &&
-            <Link to='/whatsAppChatbotAnalytics' >
+            <Link to='/whatsAppAirlinesChatbotAnalytics' >
               <button
                 id='_chatbot_message_area_header_analytics'
                 style={{ marginRight: '20px', marginTop: '5px' }}
@@ -363,16 +315,6 @@ class WhatsAppChatbot extends React.Component {
             <div className='col-xl-12'>
               <div className='m-portlet'>
 
-                {/* <div className='m-portlet__head'>
-                  <div className='m-portlet__head-caption'>
-                    <div className='m-portlet__head-title'>
-                      <p className='m-portlet__head-text'>
-                        People fill the form below to generate a WhatsApp Chatbot
-                      </p>
-                    </div>
-                  </div>
-                </div> */}
-
                 <div className='m-portlet__body'>
                   <div className='row'>
                     <div className='col-12'>
@@ -381,59 +323,11 @@ class WhatsAppChatbot extends React.Component {
                         <div className="m-form m-form--fit row">
 
                           <div className="form-group m-form__group col-lg-8">
-                            <h6>Store:</h6>
-                            <input required type="text" disabled value={this.props.store ? this.props.store.name : ''} className="form-control m-input" id="_commerce_store" />
-                          </div>
-
-                          {
-                            this.state.store && this.state.store.storeType === 'shopify' &&
-                            <div className="col-lg-4">
-                              <img alt="shopify-logo" style={{ width: '100px', marginTop: '15px' }} src='https://i.pcmag.com/imagery/reviews/02lLbDwVdtIQN2uDFnHeN41-11..v_1569480019.jpg' />
-                            </div>
-                          }
-                          {
-                            this.state.store && this.state.store.storeType === 'bigcommerce' &&
-                            <div className="col-lg-4">
-                              <img alt="bigcommerce-logo" style={{ width: '100px', marginTop: '25px' }} src='https://s3.amazonaws.com/www1.bigcommerce.com/assets/mediakit/downloads/BigCommerce-logo-dark.png' />
-                            </div>
-                          }
-
-                          {/* <div className="form-group m-form__group col-lg-8">
-                            <h6>
-                              Payment Methods (Optional):
-                            </h6>
-                            <input type="text" onChange={this.setPaymentMethod} value={this.state.paymentMethod} className="form-control m-input" id="_payment_method" placeholder="Enter payment method url..." />
-                            <span className="m-form__help">
-                              By default, chatbot is configured with "Cash on delivery" payment method.
-                              If you wish to provide other payment methods as well then please provide a link to other payment methods.
-                              If you leave this empty, then only "Cash on delivery" option will be shown as a payment method to your subscribers.
-                            </span>
-                          </div> */}
-
-                          {/* <div className="form-group m-form__group col-lg-8">
-                            <h6>
-                              Refund Policy URL (Optional):
-                            </h6>
-                            <input type="text" onChange={this.setReturnPolicy} value={this.state.returnPolicy} className="form-control m-input" id="_refund_policy_url" placeholder="Enter refund policy URL..." />
-                          </div> */}
-
-                          <div className="form-group m-form__group col-lg-8">
                             <h6>
                               FAQs URL (Optional):
                             </h6>
                             <input type="text" onChange={this.setFAQs} value={this.state.faqs} className="form-control m-input" id="_faqs_url" placeholder="Enter FAQs URL..." />
                           </div>
-
-
-
-                          {/* <div class="form-group m-form__group m--margin-top-10">
-                            <h6>Payment Methods (Optional)</h6>
-                            <span>
-                              By default, chatbot is configured with "Cash on delivery" payment method.
-                              If you wish to provide other payment methods as well then please provide a link to other payment methods.
-                              If you leave this empty, then only "Cash on delivery" option will be shown as a payment method to your subscribers.
-                            </span>
-                          </div> */}
 
 
                           <div class="form-group m-form__group m--margin-top-10">
@@ -491,7 +385,6 @@ function mapStateToProps(state) {
   return {
     user: (state.basicInfo.user),
     chatbot: (state.whatsAppChatbot.chatbot),
-    store: (state.commerceInfo.store)
   }
 }
 
@@ -500,8 +393,6 @@ function mapDispatchToProps(dispatch) {
     updateChatbot,
     createChatbot,
     fetchChatbot,
-    fetchShopifyStore,
-    fetchBigCommerceStore
   }, dispatch)
 }
-export default connect(mapStateToProps, mapDispatchToProps)(WhatsAppChatbot)
+export default connect(mapStateToProps, mapDispatchToProps)(WhatsAppAirlinesChatbot)

@@ -9,7 +9,7 @@ import { validateCommaSeparatedPhoneNumbers } from "../../utility/utils"
 import { UncontrolledTooltip } from 'reactstrap'
 import { fetchBigCommerceStore, fetchShopifyStore } from '../../redux/actions/commerce.actions'
 
-class WhatsAppChatbot extends React.Component {
+class WhatsAppCommerceChatbot extends React.Component {
   constructor(props, context) {
     super(props, context)
     this.state = {
@@ -35,7 +35,7 @@ class WhatsAppChatbot extends React.Component {
     this.goToCommerceSettings = this.goToCommerceSettings.bind(this)
     this.getConnectEcommerceContent = this.getConnectEcommerceContent.bind(this)
 
-    props.fetchChatbot()
+    props.fetchChatbot({companyId: this.props.user.companyId, vertical: 'commerce'})
     props.fetchBigCommerceStore()
     props.fetchShopifyStore()
   }
@@ -91,7 +91,14 @@ class WhatsAppChatbot extends React.Component {
       published: e.target.checked
     })
     this.props.updateChatbot({
-      published: e.target.checked
+      query: {
+        _id: this.props.chatbot._id,
+        companyId: this.props.user.companyId,
+        vertical: 'commerce'
+      },
+      updated: {
+        published: e.target.checked
+      }
     }, (res) => {
       if (res.status === 'success') {
         if (this.state.published) {
@@ -146,10 +153,17 @@ class WhatsAppChatbot extends React.Component {
         })
       } else {
         this.props.updateChatbot({
-          botLinks: {
-            paymentMethod: this.state.paymentMethod,
-            returnPolicy: this.state.returnPolicy,
-            faqs: this.state.faqs
+          query: {
+            _id: this.props.chatbot._id,
+            companyId: this.props.user.companyId,
+            vertical: 'commerce'
+          },
+          updated: {
+            botLinks: {
+              paymentMethod: this.state.paymentMethod,
+              returnPolicy: this.state.returnPolicy,
+              faqs: this.state.faqs
+            }
           }
         }, (res) => {
           if (res.status === 'success') {
@@ -199,7 +213,14 @@ class WhatsAppChatbot extends React.Component {
         modalClose.click()
       }
       this.props.updateChatbot({
-        testSubscribers: this.state.testSubscribers.split(",").map(number => number.replace(/ /g, ''))
+        query: {
+          _id: this.props.chatbot._id,
+          companyId: this.props.user.companyId,
+          vertical: 'commerce'
+        },
+        updated: {
+          testSubscribers: this.state.testSubscribers.split(",").map(number => number.replace(/ /g, ''))
+        }
       }, (res) => {
         if (res.status === 'success') {
           this.msg.success(res.description)
@@ -342,7 +363,7 @@ class WhatsAppChatbot extends React.Component {
           </span>
           {
             this.props.chatbot &&
-            <Link to='/whatsAppChatbotAnalytics' >
+            <Link to='/whatsAppCommerceChatbotAnalytics' >
               <button
                 id='_chatbot_message_area_header_analytics'
                 style={{ marginRight: '20px', marginTop: '5px' }}
@@ -504,4 +525,4 @@ function mapDispatchToProps(dispatch) {
     fetchBigCommerceStore
   }, dispatch)
 }
-export default connect(mapStateToProps, mapDispatchToProps)(WhatsAppChatbot)
+export default connect(mapStateToProps, mapDispatchToProps)(WhatsAppCommerceChatbot)

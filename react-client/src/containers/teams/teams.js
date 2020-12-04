@@ -200,7 +200,7 @@ class Teams extends React.Component {
                   <h5 className="modal-title" id="exampleModalLabel">
                     Team Video Tutorial
 									</h5>
-                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" 
+                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal"
                   aria-label="Close"
                   onClick={() => {
                     this.setState({
@@ -282,7 +282,7 @@ class Teams extends React.Component {
                   </div>
                   <div className='m-portlet__head-tools'>
                     {
-                      this.props.user.role !== 'agent' &&
+                      this.props.user.permissions['create_teams'] &&
                       <Link to='/createTeam'>
                         <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
                           <span>
@@ -380,7 +380,7 @@ class Teams extends React.Component {
                                        View
                                      </button>
                                      {
-                                       this.props.user.role !== 'agent' &&
+                                       this.props.user.permissions['update_teams'] &&
                                        <button className='btn btn-primary btn-sm' style={{marginLeft: '3px'}} onClick={() => this.goToEdit(team)}>
                                          Edit
                                        </button>
