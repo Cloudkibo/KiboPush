@@ -86,8 +86,11 @@ class File extends React.Component {
       console.log('file', file)
     //   this.props.updateFile(file)
       this.setState({file: file})
-      if (file.type === 'text/javascript' || file.type === 'text/exe') {
-        this.msg.error('Cannot add js or exe files. Please select another file')
+      if ([
+        'application/zip', 'text/javascript', 'text/exe', 'application/x-ms-dos-executable',
+        'application/x-pem-file', 'application/x-x509-ca-cert'
+      ].includes(file.type)) {
+        this.msg.error(`${file.type} files are not supported. Please select another file`)
       } else if (file.size > 10000000) {
         this.msg.error('Files greater than 25MB not allowed')
       } else {

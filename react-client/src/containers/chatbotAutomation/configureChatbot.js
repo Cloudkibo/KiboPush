@@ -177,7 +177,7 @@ class ConfigureChatbot extends React.Component {
     } else {
       let quickReplies = data.payload[data.payload.length - 1].quickReplies
       if (quickReplies && quickReplies.length > 0) {
-        quickReplies = quickReplies.filter((item) => JSON.parse(item.payload)[0].payloadAction === 'create')
+        quickReplies = quickReplies.filter((item) => item.payload && JSON.parse(item.payload)[0].payloadAction === 'create')
         if (quickReplies.length > 0) {
           return true
         } else {
@@ -194,9 +194,9 @@ class ConfigureChatbot extends React.Component {
       if (data[i].payload.length > 0) {
         let replies = data[i].payload[data[i].payload.length - 1].quickReplies
         if (replies) {
-          replies = replies.filter((item) => JSON.parse(item.payload)[0].payloadAction === 'create')
+          replies = replies.filter((item) => item.payload && JSON.parse(item.payload)[0].payloadAction === 'create')
           if (replies.length > 0) {
-            let payload = replies.map((item) => JSON.parse(item.payload))
+            let payload = replies.map((item) => item.payload && JSON.parse(item.payload))
             payload = payload.map((item) => item[0].blockUniqueId.toString())
             if (payload.includes(current.uniqueId.toString())) {
               return data[i].uniqueId
@@ -219,12 +219,18 @@ class ConfigureChatbot extends React.Component {
         let quickReplies = data[i].payload[data[i].payload.length - 1].quickReplies
         if (quickReplies && quickReplies.length > 0) {
           for (let j = 0; j < quickReplies.length; j++) {
-            let payload = JSON.parse(quickReplies[j].payload)
-            if (!uniqueIds.includes(payload[0].blockUniqueId.toString())) {
+            let blockId = ""
+            if (quickReplies[j].payload) {
+              let payload = JSON.parse(quickReplies[j].payload)
+              blockId = payload[0].blockUniqueId.toString()
+            } else {
+              blockId = quickReplies[j].blockId.toString()
+            }
+            if (!uniqueIds.includes(blockId)) {
               blocks.push({
                 title: quickReplies[j].title,
                 payload: [],
-                uniqueId: payload[0].blockUniqueId
+                uniqueId: blockId
               })
             }
           }
