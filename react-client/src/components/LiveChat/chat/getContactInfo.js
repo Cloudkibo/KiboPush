@@ -34,7 +34,11 @@ class GetContactInfo extends React.Component {
   }
 
   getQuickReply () {
-    return [{title: this.getQuickReplyTitle()}]
+    const quickReplies = [{title: this.getQuickReplyTitle()}]
+    if (this.state.skipAllowed) {
+      quickReplies.push({title: 'skip'})
+    }
+    return quickReplies
   }
 
   sendMessage (e) {

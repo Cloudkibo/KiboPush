@@ -432,6 +432,9 @@ class MessageArea extends React.Component {
     if (options[index].query) {
       if (additionalActions) {
         options[index].blockId = uniqueId
+        options[index].query = additionalActions.query
+        options[index].skipAllowed = additionalActions.skipAllowed
+        options[index].keyboardInputAllowed = additionalActions.keyboardInputAllowed
       } else {
         options[index] = {
           title: options[index].title,
