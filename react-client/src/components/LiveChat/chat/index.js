@@ -25,7 +25,7 @@ class Chat extends React.Component {
       chatAreaHieght: '57vh',
       showPopover: false,
       popoverOptions: {
-        placement: 'left',
+        placement: 'top',
         target: '_picker',
         content: (<div />)
       }
@@ -35,6 +35,7 @@ class Chat extends React.Component {
     this.overrideUserInput = this.overrideUserInput.bind(this)
     this.updateNewMessage = this.updateNewMessage.bind(this)
     this.updateChatAreaHeight = this.updateChatAreaHeight.bind(this)
+    this.refreshPopover = this.refreshPopover.bind(this)
 
     this.newMessage = false
   }
@@ -50,6 +51,17 @@ class Chat extends React.Component {
   togglePopover () {
     this.setState({showPopover: !this.state.showPopover})
   }
+
+  refreshPopover () {
+    let popoverOptions = this.state.popoverOptions
+    popoverOptions.placement = 'left'
+    this.setState({popoverOptions}, () => {
+      let popoverOptions = this.state.popoverOptions
+      popoverOptions.placement = 'top'
+      this.setState({popoverOptions})
+    })
+  }
+
   overrideUserInput () {
     let activeSession = this.props.activeSession
     activeSession.waitingForUserInput.componentIndex = -1
@@ -107,7 +119,7 @@ class Chat extends React.Component {
         {
           !this.props.isMobile &&
           <ReactTooltip
-            place='bottom'
+            place='top'
             type='dark'
             effect='solid'
           />
@@ -254,6 +266,7 @@ class Chat extends React.Component {
             createZoomMeeting={this.props.createZoomMeeting}
             showCaption={this.props.showCaption}
             isMobile={this.props.isMobile}
+            refreshPopover={this.refreshPopover}
           />
         }
 

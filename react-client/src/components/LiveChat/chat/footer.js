@@ -1,11 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { getmetaurl } from '../../../containers/liveChat/utilities'
+import ReactTooltip from 'react-tooltip'
 
 // components
 import MODAL from '../../extras/modal'
 import AUDIORECORDER from '../../audioRecorder'
 import CARD from '../messages/horizontalCard'
+import GetContactInfo from './getContactInfo'
 class Footer extends React.Component {
   constructor(props, context) {
     super(props, context)
@@ -38,6 +40,8 @@ class Footer extends React.Component {
       selectedCannMessage: false,
       selectedIndex: 0,
       caption: '',
+      showingSuggestion: false,
+      suggestionShown: false
     }
     this.onInputChange = this.onInputChange.bind(this)
     this.onEnter = this.onEnter.bind(this)
@@ -76,6 +80,7 @@ class Footer extends React.Component {
     this.responseMessageHandleChange = this.responseMessageHandleChange.bind(this)
     this.listDataDisplay = this.listDataDisplay.bind(this)
     this.onCaptionChange = this.onCaptionChange.bind(this)
+    this.sendQuickReplyMessage = this.sendQuickReplyMessage.bind(this)
   }
 
   componentDidMount() {
@@ -377,6 +382,12 @@ class Footer extends React.Component {
       }
     }
     let state = { text }
+    if (!this.state.suggestionShown && /email|e-mail|phone|contact/.test(text.toLowerCase())) {
+      state.showingSuggestion = true
+      state.suggestionShown = true
+    } else {
+      state.showingSuggestion = false
+    }
     const url = getmetaurl(text)
     if (url && url !== this.state.currentUrl) {
       state.loadingUrlMeta = true
@@ -384,6 +395,18 @@ class Footer extends React.Component {
       this.props.fetchUrlMeta(url, this.handleUrlMeta)
     }
     this.setState(state)
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.showingSuggestion) {
+      setTimeout(() => {
+        ReactTooltip.hide(document.getElementById('_contact_info_picker'))
+        if (this.state.showingSuggestion) {
+          this.setState({showingSuggestion: false})
+        }
+      }, 5000)
+      ReactTooltip.show(document.getElementById('_contact_info_picker'))
+    }
   }
 
   search(value) {
@@ -792,7 +815,7 @@ class Footer extends React.Component {
     }
   }
 
-  sendMessage() {
+  sendMessage(quickReplies) {
     console.log('this.state.urlMeta', this.state.urlmeta)
     const data = this.props.performAction('send messages', this.props.activeSession)
     if (data.isAllowed) {
@@ -802,6 +825,9 @@ class Footer extends React.Component {
       if (this.state.text !== '' && /\S/gm.test(this.state.text)) {
         console.log('updating chat data', data)
         payload = this.setDataPayload('text')
+        if (quickReplies) {
+          payload.quickReplies = quickReplies
+        }
         data = this.props.setMessageData(this.props.activeSession, payload, this.state.urlmeta)
         this.props.sendChatMessage(data, (res) => {
           if (res.status !== 'success') {
@@ -862,6 +888,15 @@ class Footer extends React.Component {
       placement: 'top',
       target: `_${type}_picker`
     }
+    if (type === 'contact_info') {
+      popoverOptions.content = (
+        <GetContactInfo 
+          sendQuickReplyMessage={this.sendQuickReplyMessage}
+          refreshPopover={this.props.refreshPopover}
+          togglePopover={this.props.togglePopover}
+        />
+      )
+    }
     const otherOptions = {
       setEmoji: (emoji) => this.setEmoji(emoji),
       sendSticker: (sticker) => this.sendSticker(sticker),
@@ -871,6 +906,12 @@ class Footer extends React.Component {
       type = 'emoji'
     }
     this.props.getPicker(type, popoverOptions, otherOptions)
+  }
+
+  sendQuickReplyMessage (text, quickReplies) {
+    this.setState({text}, () => {
+      this.sendMessage(quickReplies)
+    })
   }
 
   componentWillUnmount() {
@@ -1163,6 +1204,15 @@ class Footer extends React.Component {
               id='_gif_picker'
               onClick={() => this.openPicker('gif')}
             />
+          }
+          {
+            <i
+            style={{ cursor: 'pointer', fontSize: '20px', margin: '0px 5px' }}
+            data-tip={this.state.showingSuggestion ? "Consider using this to get subscriber's email or phone number": 'Get Email or Phone Number'}
+            className='fa fa-id-card-o'
+            id='_contact_info_picker'
+            onClick={() => this.openPicker('contact_info')}
+          />
           }
           {
             this.props.showZoom &&
