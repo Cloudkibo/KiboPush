@@ -128,6 +128,7 @@ class Builders extends React.Component {
     this.showValidationModal = this.showValidationModal.bind(this)
     this.getModalContent= this.getModalContent.bind(this)
     this.toggleModalContent = this.toggleModalContent.bind(this)
+    this.handleMediaValidationMessage = this.handleMediaValidationMessage.bind(this)
     this.getLevel = this.getLevel.bind(this)
     this.canCreateNewLevel = this.canCreateNewLevel.bind(this)
     this.GSModalContent = null
@@ -1048,6 +1049,7 @@ class Builders extends React.Component {
     this.handleChange({broadcast: temp}, obj)
   }
 
+
   handleMedia (obj) {
     if (obj.error) {
       if (obj.error === 'invalid image') {
@@ -1088,6 +1090,23 @@ class Builders extends React.Component {
     temp = this.appendQuickRepliesToEnd(temp, this.state.quickReplies[this.state.currentId])
     this.setState({broadcast: temp})
     this.handleChange({broadcast: temp}, obj)
+  }
+
+  handleMediaValidationMessage (obj) {
+    if (obj.error) {
+      if (obj.error === 'invalid image') {
+        this.msg.error('Please select an image of type jpg, gif, bmp or png')
+        return
+      }
+      if (obj.error === 'file size error') {
+        this.msg.error('File size cannot exceed 25MB')
+        return
+      }
+      if (obj.error === 'invalid file') {
+        this.msg.error('File type is not valid. Please select an image or video')
+        return
+      }
+    }
   }
 
   handleGallery (obj) {
@@ -1562,6 +1581,7 @@ class Builders extends React.Component {
         showCloseModalAlertDialog={this.showCloseModalAlertDialog}
         closeModal={this.closeAddComponentModal}
         onFilesError={this.onFilesError}
+        handleMedia={this.handleMedia}
         showValidationModal= {this.showValidationModal}
         addComponent={this.addComponent} />),
       'video': (<VideoLinkModal
@@ -1866,7 +1886,7 @@ class Builders extends React.Component {
           videoLink={broadcast.videoLink && broadcast.videoLink}
           media={broadcast}
           mediaType={broadcast.mediaType}
-          handleMedia={this.handleMedia}
+          handleMedia={this.handleMediaValidationMessage}
           onRemove={this.removeComponent}
           buttonActions={this.props.buttonActions}
           replyWithMessage={this.props.replyWithMessage} />),
