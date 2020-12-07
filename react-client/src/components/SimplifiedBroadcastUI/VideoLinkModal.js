@@ -80,7 +80,7 @@ class VideoLinkModal extends React.Component {
   handleProcessingError (res) {
     if (res.status !== 'success') {
       this.setState({
-        processingError: `Unable to process file. Please try again. ${res.description ? res.description: ''}`,
+        processingError: res.description ? res.description: `Unable to process video link. Please try again.`,
         fileSizeExceeded: false, 
         youtubeDisabled: true,
         youtubeLoading: false
