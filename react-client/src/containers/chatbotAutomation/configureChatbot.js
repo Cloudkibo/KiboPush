@@ -13,6 +13,7 @@ import {
   restoreBackup,
   fetchChatbot
 } from '../../redux/actions/chatbotAutomation.actions'
+import { getMessengerComponents } from '../../redux/actions/messengerComponents.actions'
 import { getFbAppId } from '../../redux/actions/basicinfo.actions'
 import { checkWhitelistedDomains } from '../../redux/actions/broadcast.actions'
 import { saveWhiteListDomains, fetchWhiteListedDomains, deleteDomain } from '../../redux/actions/settings.actions'
@@ -83,6 +84,7 @@ class ConfigureChatbot extends React.Component {
     this.switchBuilder = this.switchBuilder.bind(this)
 
     props.getFbAppId()
+    props.getMessengerComponents()
   }
 
   componentDidMount () {
@@ -591,6 +593,7 @@ class ConfigureChatbot extends React.Component {
                 toggleWhitelistModal={this.toggleWhitelistModal}
                 alertMsg={this.msg}
                 urlMetaData={this.props.urlMetaData}
+                messengerComponents={this.props.messengerComponents}
               />
             }
             <PROGRESS progress={`${this.state.progress}%`} />
@@ -640,7 +643,8 @@ function mapStateToProps (state) {
   return {
     fbAppId: state.basicInfo.fbAppId,
     user: (state.basicInfo.user),
-    superUser: (state.basicInfo.superUser)
+    superUser: (state.basicInfo.superUser),
+    messengerComponents: state.messengerComponentsInfo.messengerComponents
   }
 }
 
@@ -661,7 +665,8 @@ function mapDispatchToProps (dispatch) {
     deleteDomain,
     saveWhiteListDomains,
     fetchWhiteListedDomains,
-    urlMetaData
+    urlMetaData,
+    getMessengerComponents
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(ConfigureChatbot)

@@ -31,7 +31,7 @@ class LinkCarouselCard extends React.Component {
             }
          } else {
             errorMsg = 'Please enter a valid website link'
-         }  
+         }
     } else {
         errorMsg = 'Please enter a valid website link'
     }
@@ -44,7 +44,7 @@ class LinkCarouselCard extends React.Component {
         this.setState({link: nextProps.card.link, errorMsg})
       } else if (this.state.link && this.props.index !== nextProps.index && !nextProps.card.link) {
         this.setState({link: '', errorMsg: 'Please enter a valid website link'})
-      } 
+      }
   }
 
   updateCard (data, callback) {
@@ -113,9 +113,9 @@ class LinkCarouselCard extends React.Component {
         if (!this.state.errorMsg) {
             clearTimeout(this.typingTimer)
             this.typingTimer = setTimeout(
-                () => this.props.urlMetaData(link, 
-                    (data) => this.handleUrlMetaData(data), 
-                    (err) => this.handleUrlMetaData(null)), 
+                () => this.props.urlMetaData(link,
+                    (data) => this.handleUrlMetaData(data),
+                    (err) => this.handleUrlMetaData(null)),
                 this.doneTypingInterval
             )
         } else {
@@ -154,7 +154,7 @@ validateURL(textval) {
                     <div style={{ color: 'green', textAlign: 'left' }}>{!this.state.errorMsg && !this.state.loading ? this.props.validMsg ? `*${this.props.validMsg}` : '*Link is valid.' : ''}</div>
                     <div style={{ color: 'red', textAlign: 'left' }}>{this.state.errorMsg && !this.state.loading  ? `*${this.state.errorMsg}` : ''}</div>
                     <div style={{ color: 'green', textAlign: 'left' }}>{this.state.loading ? '*Retrieving webpage meta data.' : ''}</div>
-                </div>   
+                </div>
             </div>
             <CarouselButton
               id={this.props.id}
@@ -164,6 +164,7 @@ validateURL(textval) {
               cardIndex={this.props.index}
               updateButtonOption={this.props.updateButtonOption}
               buttonOption={this.props.card.buttonOption}
+              messengerComponents={this.props.messengerComponents}
             />
         </div>
       </div>

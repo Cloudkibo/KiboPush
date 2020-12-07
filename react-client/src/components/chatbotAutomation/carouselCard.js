@@ -56,13 +56,13 @@ class CarouselCard extends React.Component {
               </div>
             </div>
             <div className='col-10'>
-              <input 
-                placeholder={'Please type here...'} 
-                value={this.props.card.title} 
-                style={{maxWidth: '100%', 
-                borderColor: !this.props.card.title ? 'red' : ''}} 
-                onChange={(e) => this.updateCard({title: e.target.value})} 
-                className='form-control' 
+              <input
+                placeholder={'Please type here...'}
+                value={this.props.card.title}
+                style={{maxWidth: '100%',
+                borderColor: !this.props.card.title ? 'red' : ''}}
+                onChange={(e) => this.updateCard({title: e.target.value})}
+                className='form-control'
               />
               <div style={{marginBottom: '30px', color: 'red', textAlign: 'left'}}>{!this.props.card.title ? '*Required' : ''}</div>
             </div>
@@ -120,6 +120,7 @@ class CarouselCard extends React.Component {
               cardIndex={this.props.index}
               updateButtonOption={this.props.updateButtonOption}
               buttonOption={this.props.card.buttonOption}
+              messengerComponents={this.props.messengerComponents}
             />
         </div>
       </div>
