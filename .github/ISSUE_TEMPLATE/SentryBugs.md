@@ -27,6 +27,15 @@ First instance of the bug seen
 
 **Server_Name**:
 
+**Page Name**:
+Please add the page name here if page id is available in sentry.
+
+**Subscriber Name**:
+Please add the subscriber name here if subscriber id is available in sentry.
+
+**User Name**:
+Please add the user name (buyer, admin or agent) here if user id is available in sentry.
+
 **IP**: <if_available>
 
 **Front End or Backend End issue?**
