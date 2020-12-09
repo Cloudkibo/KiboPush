@@ -208,7 +208,7 @@ class MediaModal extends React.Component {
                     </div>
                   }
                   {
-                    (this.state.file && !this.state.imgSrc) &&
+                    (this.state.file && !this.state.imgSrc && this.state.file.componentType === 'video') &&
                     <div style={{ border: '1px solid rgba(0,0,0,.1)', borderRadius: '5px' }}>
                       <video ref="video" controls style={{ width: '100%', borderRadius: '10px', marginTop: '-10px', borderBottomLeftRadius: '0px', borderBottomRightRadius: '0px' }} name='media' id='youtube_player'>
                         <source src={this.state.file.fileurl.url} type='audio/mpeg' />
