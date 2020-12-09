@@ -258,6 +258,7 @@ class MessageArea extends React.Component {
     blocks[blockIndex].title = title
     sidebarItems[sidebarIndex].title = title
     const parentId = sidebarItems[sidebarIndex].parentId
+    if(parentId) {
     const parentIndex = blocks.findIndex((item) => item.uniqueId === parentId)
     const optionsIndex = blocks[parentIndex].options.findIndex((item) => item.blockId === block.uniqueId)
     blocks[parentIndex].options[optionsIndex].title = title
@@ -271,7 +272,10 @@ class MessageArea extends React.Component {
       options: blocks[parentIndex].options
     }
     this.props.handleMessageBlock(data, (res) => {})
+  } else {
+    this.props.updateParentState({currentBlock: block, blocks, sidebarItems, unsavedChanges: true})
   }
+}
 
   onAddChild (title) {
     const childTitles = this.state.options.map((item) => item.title.toLowerCase())
