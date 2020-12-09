@@ -177,7 +177,9 @@ class MediaModal extends React.Component {
                 fileName={this.state.file ? this.state.file.fileName : ''}
                 image_url={this.state.file && this.state.file.image_url ? this.state.file.image_url : ''}
                 size={this.state.file ? this.state.file.size : ''}
-                type={this.state.file ? this.state.file.type : ''} />
+                type={this.state.file ? this.state.file.type : ''} 
+                handleMedia={this.props.handleMedia}
+                />
               {
                 (!this.props.noButtons && this.state.file) &&
                 <AddButton
