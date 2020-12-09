@@ -215,10 +215,10 @@ class ChatbotAutomation extends React.Component {
                         <label className="m-radio m-radio--bold m-radio--state-brand">
                           <input
                             type="radio"
-                            onClick={this.onRadioClick}
+                            onClick={(e) => this.onRadioClick(e, 'manualChatbot')}
                             onChange={() => {}}
                             value='create'
-                            checked={this.state.selectedRadio === 'create'}
+                            checked={this.state.manualChatbot.selectedRadio === 'create'}
                           />
                             Create New Chatbot
                           <span />
