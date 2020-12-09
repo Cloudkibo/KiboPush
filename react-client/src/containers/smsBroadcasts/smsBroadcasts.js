@@ -9,6 +9,7 @@ import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
 import { Link } from 'react-router-dom'
 import { loadContactsList } from '../../redux/actions/uploadContacts.actions'
+import { Popover, PopoverBody} from 'reactstrap'
 
 class SmsBroadcast extends React.Component {
   constructor (props) {
@@ -18,7 +19,12 @@ class SmsBroadcast extends React.Component {
       totalLength: 0,
       pageNumber: 0,
       isShowingModal: false,
-      numberValue: ''
+      numberValue: '',
+      popoverOptions: {
+        placement: 'left-start',
+        target: 'createBroadcastButton'
+      },
+      showPopover: false
     }
 
     props.loadContactsList({last_id: 'none', number_of_records: 10, first_page: 'first'})
@@ -26,6 +32,7 @@ class SmsBroadcast extends React.Component {
     props.loadTwilioNumbers()
 
     this.displayData = this.displayData.bind(this)
+    this.togglePopover = this.togglePopover.bind(this)
     this.showDialog = this.showDialog.bind(this)
     this.closeDialog = this.closeDialog.bind(this)
     this.gotoCreate = this.gotoCreate.bind(this)
@@ -33,6 +40,9 @@ class SmsBroadcast extends React.Component {
     this.handlePageClick = this.handlePageClick.bind(this)
   }
 
+  togglePopover () {
+    this.setState({showPopover: !this.state.showPopover})
+  }
   onNumberChange (e) {
     this.setState({numberValue: e.target.value})
   }
@@ -45,7 +55,7 @@ class SmsBroadcast extends React.Component {
   }
 
   showDialog () {
-    this.setState({isShowingModal: true})
+    this.setState({isShowingModal: true, showPopover: false})
   }
 
   closeDialog () {
@@ -141,7 +151,7 @@ class SmsBroadcast extends React.Component {
             <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
               <div className="modal-content">
                 <div style={{ display: 'block' }} className="modal-header">
-                  <h5 className="modal-title" id="exampleModalLabel">
+                  <h5 className="modal-title">
                   Create Broadcast
 									</h5>
                   <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
@@ -201,7 +211,7 @@ class SmsBroadcast extends React.Component {
                       </div>
                     </div>
                     <div className='m-portlet__head-tools'>
-                      <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' data-toggle="modal" data-target="#create" onClick={this.showDialog} disabled={this.props.contacts && this.props.contacts.length === 0}>
+                      <button id="createBroadcastButton" className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'  onClick={() => {this.setState({showPopover: true})}} disabled={this.props.contacts && this.props.contacts.length === 0}>
                         <span>
                           <i className='la la-plus' />
                           <span>Create New</span>
@@ -237,6 +247,14 @@ class SmsBroadcast extends React.Component {
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
                             <span style={{width: '100px'}}>Delivered</span>
                           </th>
+                          <th data-field='delivered'
+                            className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                            <span style={{width: '100px'}}>Is Follow Up</span>
+                          </th>
+                          <th data-field='delivered'
+                            className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                            <span style={{width: '100px'}}>Action</span>
+                          </th>
                         </tr>
                       </thead>
                       <tbody className='m-datatable__body'>
@@ -249,6 +267,8 @@ class SmsBroadcast extends React.Component {
                             <td data-field='createAt' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{broadcast.datetime}</span></td>
                             <td data-field='sent' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{broadcast.phoneNumber}</span></td>
                             <td data-field='delivered' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{broadcast.sent}</span></td>
+                            <td data-field='isFollowUp' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{broadcast.isFollowUp}</span></td>
+                            <td data-field='action' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}><button style={{width: '60px'}} className='btn btn-primary btn-sm m-btn--pill' onClick={() => {}}>View</button></span></td>
                           </tr>
                         ))
                       }
@@ -281,6 +301,48 @@ class SmsBroadcast extends React.Component {
             </div>
 
           </div>
+          <Popover
+            placement={this.state.popoverOptions.placement}
+            isOpen={this.state.showPopover}
+            className='chatPopover _popover_max_width_400'
+            target={this.state.popoverOptions.target}
+            toggle={this.togglePopover}
+          >
+            <PopoverBody>
+            <div data-toggle="modal" data-target="#create"
+              onClick={this.showDialog}
+              className="ui-block hoverborder"
+              style={{
+                minHeight: "30px",
+                width: "100%",
+                marginLeft: "0px",
+                marginBottom: "15px",
+                paddingLeft: "10px",
+                paddingRight: "10px"
+              }}
+            >
+            <div className="align-center">
+              <h6> New Broadcast </h6>
+            </div>
+          </div>
+          <div
+            onClick={() => {}}
+            className="ui-block hoverborder"
+            style={{
+              minHeight: "30px",
+              width: "100%",
+              marginLeft: "0px",
+              marginBottom: "15px",
+              paddingLeft: "10px",
+              paddingRight: "10px"
+            }}
+          >
+            <div className="align-center">
+              <h6> Follow-up Broadcast </h6>
+            </div>
+          </div>
+            </PopoverBody>
+          </Popover>
         </div>
       </div>
     )
