@@ -181,7 +181,8 @@
           Raven.config('https://6c7958e0570f455381d6f17122fbd117@sentry.io/292307', {
             autoBreadcrumbs: {
               console: false
-            }
+            },
+            ignoreErrors: ['ResizeObserver loop limit exceeded']
           }).install()
         }
       }
