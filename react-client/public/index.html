@@ -206,11 +206,11 @@
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
     <script>
-      $(document).ready(function ($) {
-        $(document).on('hide.bs.modal','#singleModal', function () {
+        window.onload = function() {
+          jQuery(document).on('hide.bs.modal','#singleModal', function () {
           document.body.style.overflow = 'auto'
         })
-      })
+      }
     </script>
     <script>
       window.onscroll = function() {myFunction()};
