@@ -17,6 +17,23 @@ export function showTwilioNumbers (data) {
   }
 }
 
+
+export function showAnalytics (data) {
+  console.log('data in showAnalytics', data)
+  return {
+    type: ActionTypes.SHOW_SMS_ANALYTICS,
+    data
+  }
+}
+
+
+export function saveCurrentSmsBroadcast (broadcast) {
+  return {
+    type: ActionTypes.CURRENT_SMSBROADCAST,
+    data: broadcast
+  }
+}
+
 export function loadBroadcastsList (data) {
   console.log('data for loadBroadcastsList', data)
   return (dispatch) => {
@@ -62,6 +79,19 @@ export function getCount (data, onGetCount) {
         console.log('response from getCount', res.payload)
         if (onGetCount) {
           onGetCount(res.payload)
+        }
+      })
+  }
+}
+
+export function fetchSmsAnalytics (id) {
+  console.log('data for fetchSmsAnalytics', id)
+  return (dispatch) => {
+    callApi(`smsBroadcasts/${id}/analytics`, 'get')
+      .then(res => {
+        console.log('response from analytics', res.payload)
+        if (res.status === 'success') {
+          dispatch(showAnalytics(res.payload))
         }
       })
   }
