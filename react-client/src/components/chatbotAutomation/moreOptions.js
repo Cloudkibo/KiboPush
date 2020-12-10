@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Popover, PopoverBody} from 'reactstrap'
 import ADDOPTION from './addOption'
+import ReactTooltip from 'react-tooltip'
 
 class MoreOptions extends React.Component {
   constructor(props, context) {
@@ -10,7 +11,9 @@ class MoreOptions extends React.Component {
       options: [],
       showPopover: false,
       popoverTarget: '_more_options_in_chatbot',
-      selectedOption: {}
+      selectedOption: {},
+      showingSuggestion: false,
+      suggestionShown: false
     }
     this.showPopover = this.showPopover.bind(this)
     this.togglePopover = this.togglePopover.bind(this)
@@ -21,6 +24,12 @@ class MoreOptions extends React.Component {
     if (this.props.data && this.props.data.length > 0) {
       this.setOptions(this.props.data)
     }
+
+    document.getElementById('_chatbot_message_area').addEventListener("scroll", () => {
+      if (this.state.showingSuggestion) {
+        ReactTooltip.show(document.getElementById('_more_options_chatbot_add')) 
+      }
+    });
   }
 
   showPopover (data, id) {
@@ -30,8 +39,23 @@ class MoreOptions extends React.Component {
       blockId: data.blockId,
       showRemove: true,
       action: 'link',
-      payloadAction: data.payloadAction
+      payloadAction: data.payloadAction,
+      additionalActions: data.query ? 
+      {
+        query: data.query,
+        skipAllowed: data.skipAllowed,
+        keyboardInputAllowed: data.keyboardInputAllowed,
+        showing: true,
+      } : 
+      {
+        query: '',
+        skipAllowed: false,
+        keyboardInputAllowed: false,
+        showing: false,
+      }
     }
+    console.log('option data', data)
+    console.log('option set', option)
     this.setState({
       showPopover: true,
       popoverTarget: `_more_options_chatbot_${id}`,
@@ -45,18 +69,31 @@ class MoreOptions extends React.Component {
 
   setOptions (data) {
     const options = data.map((item) => {
-      let payload = JSON.parse(item.payload)
-      return {
-        title: item.title,
-        action: payload[0].action,
-        payloadAction: payload[0].payloadAction,
-        blockId: payload[0].blockUniqueId
+      if (item.payload) {
+        let payload = JSON.parse(item.payload)
+        return {
+          title: item.title,
+          action: payload[0].action,
+          payloadAction: payload[0].payloadAction,
+          blockId: payload[0].blockUniqueId
+        }
+      } else {
+        return item
       }
     })
     this.setState({options})
   }
 
   UNSAFE_componentWillReceiveProps (nextProps) {
+    if (!this.state.suggestionShown && nextProps.text && /email|e-mail|phone|contact/.test(nextProps.text.toLowerCase())) {
+      this.setState({suggestionShown: true, showingSuggestion: true}, () => {
+        ReactTooltip.show(document.getElementById('_more_options_chatbot_add'))
+      })
+      setTimeout(() => {
+        ReactTooltip.hide(document.getElementById('_more_options_chatbot_add'))
+        this.setState({showingSuggestion: false})
+      }, 5000)
+    }
     if (nextProps.data && nextProps.data.length > 0) {
       this.setOptions(nextProps.data)
     } else {
@@ -66,6 +103,12 @@ class MoreOptions extends React.Component {
 
   render () {
     return (
+      <>
+      <ReactTooltip
+        place='top'
+        type='dark'
+        effect='solid'
+      />
       <div id='_cb_ma_mo' className='row'>
         <div className='col-md-12'>
           <div className="form-group m-form__group">
@@ -91,6 +134,7 @@ class MoreOptions extends React.Component {
               {
                 this.state.options.length < 13 &&
                 <button
+                  data-tip={this.state.showingSuggestion ? "Consider adding an additional action to capture email or phone number" : ""}
                   style={{border: 'none', cursor: 'pointer', background: 'none'}}
                   className='m-link m-link--state m-link--info'
                   onClick={() => this.showPopover({}, 'add')}
@@ -127,6 +171,7 @@ class MoreOptions extends React.Component {
                   payloadAction={this.state.selectedOption.payloadAction || ''}
                   alertMsg={this.props.alertMsg}
                   isCreatable={this.props.isCreatable}
+                  additionalActions={this.state.selectedOption.additionalActions}
                   type='quickReply'
                 />
               }
@@ -134,6 +179,7 @@ class MoreOptions extends React.Component {
           </Popover>
         </div>
       </div>
+      </>
     )
   }
 }
