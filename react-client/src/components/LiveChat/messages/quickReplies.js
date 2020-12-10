@@ -2,6 +2,9 @@ import React from 'react'
 
 export default function QuickReplies (props) {
   const buttons = props.buttons ? [...props.buttons] : []
+  if (buttons.find(b => !!b.skipAllowed)) {
+    buttons.push({title: 'skip'})
+  }
   return (
     buttons.length > 0 &&
     buttons.map((b, x) => (
