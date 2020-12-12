@@ -23,40 +23,37 @@ class ViewBroadcast extends React.Component {
 
     UNSAFE_componentWillReceiveProps (nextProps) {
         if (nextProps.smsAnalytics) {
-            var radarChart = document.getElementById('radar-chart')
-            var counts = [1, 2, 3, 4, 5]
-            var vals = []
+            var counts = []
+            var values = []
             var colors = ['#46b963','#53ac69', '#609f70', '#6c9376', '#738c79']
-            var values = ['yes', 'no','maybe' ]
             var backcolors = []
-
-            backcolors.push(colors[0])
-            vals.push(values[0])
-
-            backcolors.push(colors[1])
-            vals.push(values[1])
-
-            backcolors.push(colors[2])
-            vals.push(values[2])
-
-            if (radarChart !== null) {
-                // eslint-disable-next-line camelcase
-                var ctx_rc = radarChart.getContext('2d')
-
-                // eslint-disable-next-line camelcase
-                var data_rc = {
-                    datasets: [
-                    {
-                        data: counts,
-                        backgroundColor: backcolors
-                    }],
-                    labels: vals
+            if (nextProps.smsAnalytics.responses) {
+                for (var i =0; i < nextProps.smsAnalytics.responses.length; i++) {
+                    values.push(nextProps.smsAnalytics.responses[i]._id)
+                    counts.push(nextProps.smsAnalytics.responses[i].count)
+                    backcolors.push(colors[i])
                 }
-                // eslint-disable-next-line no-unused-vars,no-undef
-                var radarChartEl = new Chart(ctx_rc, {
-                    type: 'pie',
-                    data: data_rc
-                })
+                var radarChart = document.getElementById('radar-chart')
+
+                if (radarChart !== null) {
+                    // eslint-disable-next-line camelcase
+                    var ctx_rc = radarChart.getContext('2d')
+
+                    // eslint-disable-next-line camelcase
+                    var data_rc = {
+                        datasets: [
+                        {
+                            data: counts,
+                            backgroundColor: backcolors
+                        }],
+                        labels: values
+                    }
+                    // eslint-disable-next-line no-unused-vars,no-undef
+                    var radarChartEl = new Chart(ctx_rc, {
+                        type: 'pie',
+                        data: data_rc
+                    })
+                }
             }
         }
     }
@@ -116,6 +113,9 @@ class ViewBroadcast extends React.Component {
                                         </div>
                                     </div>
                                 </div>
+                                { this.props.smsAnalytics && this.props.smsAnalytics.responded < 1 &&
+                                    <div style={{marginLeft: '10px', marginTop: '20px'}}> No data to display </div>
+                                }
                                 <div className='col-md-9 col-lg-5 col-sm-9'>
                                     <div style={{'width': '600px', 'height': '400px', 'margin': '0 auto'}} className='col m--align-left'>
                                         <canvas id='radar-chart' width={250} height={170}  />
