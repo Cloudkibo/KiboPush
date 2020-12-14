@@ -87,6 +87,7 @@ class Webhook extends React.Component {
   showDialogEdit (webhook) {
     let subscriptionsEdit = this.state.subscriptionsEdit
     for (var i = 0; i < subscriptionsEdit.length; i++) {
+      if(webhook.optIn) {
       if (subscriptionsEdit[i].name === 'New Subscriber') {
         subscriptionsEdit[i].selected = webhook.optIn.NEW_SUBSCRIBER
       } else if (subscriptionsEdit[i].name === 'Chat Message') {
@@ -97,7 +98,12 @@ class Webhook extends React.Component {
         subscriptionsEdit[i].selected = webhook.optIn.CHATBOT_OPTION_SELECTED
       } else if (subscriptionsEdit[i].name === 'Session Assignment') {
         subscriptionsEdit[i].selected = webhook.optIn.SESSION_ASSIGNED
+      } else {
+        subscriptionsEdit[i].selected = false
       }
+    } else {
+      subscriptionsEdit[i].selected = false
+    }
     }
     let all = subscriptionsEdit.filter(s => !s.selected)
     this.setState({
@@ -308,13 +314,13 @@ class Webhook extends React.Component {
         }
       }
       if (getCurrentProduct() === 'KiboEngage') {
-        optIn['SESSION_ASSIGNED'] = this.state.webhook.optIn.SESSION_ASSIGNED
-        optIn['SESSION_UNASSIGNED'] = this.state.webhook.optIn.SESSION_UNASSIGNED
-        optIn['CHATBOT_OPTION_SELECTED'] = this.state.webhook.optIn.CHATBOT_OPTION_SELECTED
-        optIn['CHAT_MESSAGE'] = this.state.webhook.optIn.CHAT_MESSAGE
+        optIn['SESSION_ASSIGNED'] = this.state.webhook.optIn ? this.state.webhook.optIn.SESSION_ASSIGNED: false
+        optIn['SESSION_UNASSIGNED'] = this.state.webhook.optIn ? this.state.webhook.optIn.SESSION_UNASSIGNED :false
+        optIn['CHATBOT_OPTION_SELECTED'] = this.state.webhook.optIn ? this.state.webhook.optIn.CHATBOT_OPTION_SELECTED :false
+        optIn['CHAT_MESSAGE'] = this.state.webhook.optIn ? this.state.webhook.optIn.CHAT_MESSAGE :false
       }
       if (getCurrentProduct() === 'KiboChat' || getCurrentProduct() === 'localhost') {
-        optIn['CHECKBOX_OPTIN'] = this.state.webhook.optIn.CHECKBOX_OPTIN
+        optIn['CHECKBOX_OPTIN'] = this.state.webhook.optIn ? this.state.webhook.optIn.CHECKBOX_OPTIN :false
       }
       this.props.editEndpoint(
         {_id: this.state.id, webhook_url: this.state.urlEdit, token: this.state.token, optIn: optIn}, (res) => {
