@@ -98,6 +98,8 @@ class Webhook extends React.Component {
         subscriptionsEdit[i].selected = webhook.optIn.CHATBOT_OPTION_SELECTED
       } else if (subscriptionsEdit[i].name === 'Session Assignment') {
         subscriptionsEdit[i].selected = webhook.optIn.SESSION_ASSIGNED
+      } else {
+        subscriptionsEdit[i].selected = false
       }
     } else {
       subscriptionsEdit[i].selected = false
