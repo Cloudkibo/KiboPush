@@ -3,19 +3,19 @@
  * Created by sojharo on 20/07/2017.
  */
 
-import React, { Component } from 'react'
-import { Link } from 'react-router-dom'
-import { connect } from 'react-redux'
-import { getAutomatedOptions } from '../../redux/actions/basicinfo.actions'
-import { bindActionCreators } from 'redux'
-import { getCurrentProduct } from '../../utility/utils'
+import React, { Component } from "react"
+import { Link } from "react-router-dom"
+import { connect } from "react-redux"
+import { getAutomatedOptions } from "../../redux/actions/basicinfo.actions"
+import { bindActionCreators } from "redux"
+import { getCurrentProduct } from "../../utility/utils"
 
 class Sidebar extends Component {
   constructor(props, context) {
     super(props, context)
     this.state = {
       isShowingModal: false,
-      activeSession: '',
+      activeSession: "",
       currentProfile: {},
       loading: true,
       ignore: true,
@@ -62,9 +62,9 @@ class Sidebar extends Component {
   }
   UNSAFE_componentWillMount() {
     let url = window.location.hostname
-    console.log('url', url)
-    if (url === 'skibochat.cloudkibo.com' || url === 'kibochat.cloudkibo.com') {
-      console.log('kibochat')
+    console.log("url", url)
+    if (url === "skibochat.cloudkibo.com" || url === "kibochat.cloudkibo.com") {
+      console.log("kibochat")
       this.setState({
         rssIntegration: false,
         newsIntegration: false,
@@ -79,8 +79,8 @@ class Sidebar extends Component {
         autoposting: false,
         isKiboChat: true
       })
-    } else if (url === 'skiboengage.cloudkibo.com' || url === 'kiboengage.cloudkibo.com') {
-      console.log('kiboEngage')
+    } else if (url === "skiboengage.cloudkibo.com" || url === "kiboengage.cloudkibo.com") {
+      console.log("kiboEngage")
       this.setState({
         rssIntegration: true,
         newsIntegration: true,
@@ -95,8 +95,8 @@ class Sidebar extends Component {
         waitingResponse: false,
         abandonedCarts: false
       })
-    } else if (url === 'staging.kibopush.com') {
-      console.log('staging')
+    } else if (url === "staging.kibopush.com") {
+      console.log("staging")
       this.setState({
         broadcasts: true,
         polls: true,
@@ -108,8 +108,8 @@ class Sidebar extends Component {
         smartReplies: true,
         waitingResponse: true
       })
-    } else if (url.includes('localhost')) {
-      console.log('localhost')
+    } else if (url.includes("localhost")) {
+      console.log("localhost")
       this.setState({
         rssIntegration: true,
         newsIntegration: true,
@@ -125,8 +125,8 @@ class Sidebar extends Component {
         businessGateway: true,
         isLocalhost: true
       })
-    } else if (url === 'skibolite.cloudkibo.com' || url === 'kibolite.cloudkibo.com') {
-      console.log('kibolite')
+    } else if (url === "skibolite.cloudkibo.com" || url === "kibolite.cloudkibo.com") {
+      console.log("kibolite")
       this.setState({
         rssIntegration: false,
         newsIntegration: false,
@@ -155,7 +155,6 @@ class Sidebar extends Component {
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
-
     /* if (nextProps.user) {
        this.setState({broadcasts: nextProps.user.uiMode.broadcasts,
          polls: nextProps.user.uiMode.polls,
@@ -183,32 +182,36 @@ class Sidebar extends Component {
       if (!this.props.isMobile && this.state.abandonedCarts && this.props.user.isSuperUser) {
         // include user persmissions
         return (
-          <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-            <Link to='/abandonedCarts' className='m-menu__link m-menu__toggle'>
-              <i className='m-menu__link-icon flaticon-comment' title='Comment Capture' />
-              <span className='m-menu__link-text'>Abandoned Carts</span>
+          <li className="m-menu__item  m-menu__item--submenu" aria-haspopup="true" data-menu-submenu-toggle="hover">
+            <Link to="/abandonedCarts" className="m-menu__link m-menu__toggle">
+              <i className="m-menu__link-icon flaticon-comment" title="Comment Capture" />
+              <span className="m-menu__link-text">Abandoned Carts</span>
             </Link>
           </li>
         )
       } else {
-        return (null)
+        return null
       }
     }
   }
 
   showOperationalDashboard() {
     if (this.props.user) {
-      if (!this.props.isMobile && this.props.user.isSuperUser && (getCurrentProduct() === 'KiboEngage' || getCurrentProduct() === 'localhost')) {
+      if (
+        !this.props.isMobile &&
+        this.props.user.isSuperUser &&
+        (getCurrentProduct() === "KiboEngage" || getCurrentProduct() === "localhost")
+      ) {
         return (
-          <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-            <Link to='/operationalDashboard' className='m-menu__link m-menu__toggle'>
-              <i className='m-menu__link-icon flaticon-statistics' title='Operational Dashboard' />
-              <span className='m-menu__link-text'>Operational Dashboard</span>
+          <li className="m-menu__item  m-menu__item--submenu" aria-haspopup="true" data-menu-submenu-toggle="hover">
+            <Link to="/operationalDashboard" className="m-menu__link m-menu__toggle">
+              <i className="m-menu__link-icon flaticon-statistics" title="Operational Dashboard" />
+              <span className="m-menu__link-text">Operational Dashboard</span>
             </Link>
           </li>
         )
       } else {
-        return (null)
+        return null
       }
     }
   }
@@ -217,66 +220,128 @@ class Sidebar extends Component {
     if (this.props.user) {
       if (this.props.user.permissions.dashboardPermission && this.props.user.plan.dashboard) {
         return (
-          <li onClick={() => { document.getElementById('m_aside_left_close_btn').click() }} className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-            <Link to='/dashboard' state={{ isKiboLite: this.state.businessGateway }} className='m-menu__link m-menu__toggle'>
-              <i className='m-menu__link-icon flaticon-squares-4' title='Dashboard' />
-              <span className='m-menu__link-text'>Dashboard</span>
+          <li
+            onClick={() => {
+              document.getElementById("m_aside_left_close_btn").click()
+            }}
+            className="m-menu__item  m-menu__item--submenu"
+            aria-haspopup="true"
+            data-menu-submenu-toggle="hover"
+          >
+            <Link
+              to="/dashboard"
+              state={{ isKiboLite: this.state.businessGateway }}
+              className="m-menu__link m-menu__toggle"
+            >
+              <i className="m-menu__link-icon flaticon-squares-4" title="Dashboard" />
+              <span className="m-menu__link-text">Dashboard</span>
             </Link>
           </li>
         )
       } else {
-        return (null)
+        return null
+      }
+    }
+  }
+
+  showSLADashboard() {
+    if (this.props.user) {
+      if (
+        this.state.livechat &&
+        this.props.user.permissions.livechatPermission &&
+        this.props.user.plan.livechat &&
+        this.props.automated_options
+      ) {
+        return (
+          <li
+            onClick={() => {
+              document.getElementById("m_aside_left_close_btn").click()
+            }}
+            className="m-menu__item  m-menu__item--submenu"
+            aria-haspopup="true"
+            data-menu-submenu-toggle="hover"
+          >
+            <Link to="/slaDashboard" className="m-menu__link m-menu__toggle">
+              <i className="m-menu__link-icon flaticon-squares-4" title="SLA Dashboard" />
+              <span className="m-menu__link-text">SLA Dashboard</span>
+            </Link>
+          </li>
+        )
+      } else {
+        return null
       }
     }
   }
 
   showSubscribersItem() {
     if (this.props.user) {
-      if (this.state.subscribers && this.props.user.permissions.subscriberPermission && this.props.user.plan.manage_subscribers) {
+      if (
+        this.state.subscribers &&
+        this.props.user.permissions.subscriberPermission &&
+        this.props.user.plan.manage_subscribers
+      ) {
         return (
-          <li onClick={() => { document.getElementById('m_aside_left_close_btn').click() }} className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-            <Link to={this.props.user.platform === 'messenger' ? '/subscribers' : '/smsSubscribers'} className='m-menu__link m-menu__toggle'>
-              <i className='m-menu__link-icon flaticon-user-ok' title='Subscribers' />
-              <span className='m-menu__link-text'>Subscribers</span>
+          <li
+            onClick={() => {
+              document.getElementById("m_aside_left_close_btn").click()
+            }}
+            className="m-menu__item  m-menu__item--submenu"
+            aria-haspopup="true"
+            data-menu-submenu-toggle="hover"
+          >
+            <Link
+              to={this.props.user.platform === "messenger" ? "/subscribers" : "/smsSubscribers"}
+              className="m-menu__link m-menu__toggle"
+            >
+              <i className="m-menu__link-icon flaticon-user-ok" title="Subscribers" />
+              <span className="m-menu__link-text">Subscribers</span>
             </Link>
           </li>
         )
       } else {
-        return (null)
+        return null
       }
     }
   }
 
   showCustomFields() {
-    if (!this.props.isMobile && this.props.user && this.props.user.platform === 'messenger') {
-      if (this.state.subscribers && this.props.user.permissions.subscriberPermission && this.props.user.plan.manage_subscribers) {
+    if (!this.props.isMobile && this.props.user && this.props.user.platform === "messenger") {
+      if (
+        this.state.subscribers &&
+        this.props.user.permissions.subscriberPermission &&
+        this.props.user.plan.manage_subscribers
+      ) {
         return (
-          <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-            <Link to={'/customFields'} className='m-menu__link m-menu__toggle'>
-              <i className='m-menu__link-icon flaticon-profile' title='Custom Fields' />
-              <span className='m-menu__link-text'>Custom Fields</span>
+          <li className="m-menu__item  m-menu__item--submenu" aria-haspopup="true" data-menu-submenu-toggle="hover">
+            <Link to={"/customFields"} className="m-menu__link m-menu__toggle">
+              <i className="m-menu__link-icon flaticon-profile" title="Custom Fields" />
+              <span className="m-menu__link-text">Custom Fields</span>
             </Link>
           </li>
         )
       } else {
-        return (null)
+        return null
       }
     }
   }
 
   showTags() {
-    if (!this.props.isMobile && this.props.user && this.props.user.platform === 'messenger') {
-      if (this.state.subscribers && this.props.user.permissions.subscriberPermission && this.props.user.plan.manage_subscribers) {
+    if (!this.props.isMobile && this.props.user && this.props.user.platform === "messenger") {
+      if (
+        this.state.subscribers &&
+        this.props.user.permissions.subscriberPermission &&
+        this.props.user.plan.manage_subscribers
+      ) {
         return (
-          <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-            <Link to={'/tags'} className='m-menu__link m-menu__toggle'>
-              <i className='m-menu__link-icon flaticon-interface-9' title='Custom Fields' />
-              <span className='m-menu__link-text'>Tags</span>
+          <li className="m-menu__item  m-menu__item--submenu" aria-haspopup="true" data-menu-submenu-toggle="hover">
+            <Link to={"/tags"} className="m-menu__link m-menu__toggle">
+              <i className="m-menu__link-icon flaticon-interface-9" title="Custom Fields" />
+              <span className="m-menu__link-text">Tags</span>
             </Link>
           </li>
         )
       } else {
-        return (null)
+        return null
       }
     }
   }
@@ -286,72 +351,85 @@ class Sidebar extends Component {
       // include user persmissions
 
       return (
-        <li className='m-menu__item' aria-haspopup='true' >
-          <Link to='/sponsoredMessaging' className='m-menu__link'>
-            <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
+        <li className="m-menu__item" aria-haspopup="true">
+          <Link to="/sponsoredMessaging" className="m-menu__link">
+            <i className="m-menu__link-bullet m-menu__link-bullet--dot">
               <span />
             </i>
-            <span className='m-menu__link-text'>
-              Sponsored Broadcast (Beta)
-              </span>
+            <span className="m-menu__link-text">Sponsored Broadcast (Beta)</span>
           </Link>
         </li>
       )
-
     }
   }
 
   showBroadcastingItems() {
     if (!this.props.isMobile && !this.state.isKiboChat && !this.state.isKiboLite) {
       return (
-        <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-          <span className='m-menu__link m-menu__toggle'>
-            <i className='m-menu__link-icon flaticon-paper-plane' title='Broadcasting' />
-            <span className='m-menu__link-text'>Broadcasting</span>
-            <i className='m-menu__ver-arrow la la-angle-right' />
+        <li className="m-menu__item  m-menu__item--submenu" aria-haspopup="true" data-menu-submenu-toggle="hover">
+          <span className="m-menu__link m-menu__toggle">
+            <i className="m-menu__link-icon flaticon-paper-plane" title="Broadcasting" />
+            <span className="m-menu__link-text">Broadcasting</span>
+            <i className="m-menu__ver-arrow la la-angle-right" />
           </span>
-          <div className='m-menu__submenu'>
-            <span className='m-menu__arrow' />
-            <ul className='m-menu__subnav'>
-              <li className='m-menu__item  m-menu__item--parent' aria-haspopup='true' >
-                <span className='m-menu__link'>
-                  <span className='m-menu__link-text'>
-                    Broadcasting
-                  </span>
+          <div className="m-menu__submenu">
+            <span className="m-menu__arrow" />
+            <ul className="m-menu__subnav">
+              <li className="m-menu__item  m-menu__item--parent" aria-haspopup="true">
+                <span className="m-menu__link">
+                  <span className="m-menu__link-text">Broadcasting</span>
                 </span>
               </li>
               {this.showBroadcastsItem()}
-              {this.props.user && this.props.user.platform === 'messenger' && this.showSurveysItem()}
-              {this.props.user && this.props.user.platform === 'messenger' && this.showPollsItem()}
-              {this.props.user && this.props.user.platform === 'messenger' && this.showSegmentSubscribers()}
-              {this.props.user && this.props.user.platform === 'messenger' && this.showTemplates()}
-              {this.props.user && this.props.user.platform === 'messenger' && this.showSponsoredMessaging()}
+              {this.props.user && this.props.user.platform === "messenger" && this.showSurveysItem()}
+              {this.props.user && this.props.user.platform === "messenger" && this.showPollsItem()}
+              {this.props.user && this.props.user.platform === "messenger" && this.showSegmentSubscribers()}
+              {this.props.user && this.props.user.platform === "messenger" && this.showTemplates()}
+              {this.props.user && this.props.user.platform === "messenger" && this.showSponsoredMessaging()}
             </ul>
           </div>
         </li>
       )
     } else {
-      return (
-        <div />
-      )
+      return <div />
     }
   }
 
   showLiveChatItem() {
     if (this.props.user) {
-      if (this.state.livechat && this.props.user.permissions.livechatPermission && this.props.user.plan.livechat && this.props.automated_options &&
-        (this.props.automated_options.automated_options === 'MIX_CHAT' ||
-          this.props.automated_options.automated_options === 'HUMAN_CHAT')) {
+      if (
+        this.state.livechat &&
+        this.props.user.permissions.livechatPermission &&
+        this.props.user.plan.livechat &&
+        this.props.automated_options &&
+        (this.props.automated_options.automated_options === "MIX_CHAT" ||
+          this.props.automated_options.automated_options === "HUMAN_CHAT")
+      ) {
         return (
-          <li onClick={() => { document.getElementById('m_aside_left_close_btn').click() }} className='m-menu__item  m-menu__item--submenu' aria-haspopup='true'>
-            <Link to={this.props.user.platform === 'sms' ? 'smsChat' : this.props.user.platform === 'messenger' ? '/liveChat' : 'whatsAppChat'} className='m-menu__link m-menu__toggle'>
-              <i className='m-menu__link-icon flaticon-chat-1' title='Live Chat' />
-              <span className='m-menu__link-text'>Live Chat (Beta)</span>
+          <li
+            onClick={() => {
+              document.getElementById("m_aside_left_close_btn").click()
+            }}
+            className="m-menu__item  m-menu__item--submenu"
+            aria-haspopup="true"
+          >
+            <Link
+              to={
+                this.props.user.platform === "sms"
+                  ? "smsChat"
+                  : this.props.user.platform === "messenger"
+                  ? "/liveChat"
+                  : "whatsAppChat"
+              }
+              className="m-menu__link m-menu__toggle"
+            >
+              <i className="m-menu__link-icon flaticon-chat-1" title="Live Chat" />
+              <span className="m-menu__link-text">Live Chat (Beta)</span>
             </Link>
           </li>
         )
       } else {
-        return (null)
+        return null
       }
     }
   }
@@ -359,24 +437,21 @@ class Sidebar extends Component {
   showAutomationItems() {
     if (!this.props.isMobile && !this.state.isKiboLite && this.props.user) {
       return (
-        <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-          <span className='m-menu__link m-menu__toggle'>
-            <i className='m-menu__link-icon flaticon-share' title='Automation' />
-            <span className='m-menu__link-text'>Automation</span>
-            <i className='m-menu__ver-arrow la la-angle-right' />
+        <li className="m-menu__item  m-menu__item--submenu" aria-haspopup="true" data-menu-submenu-toggle="hover">
+          <span className="m-menu__link m-menu__toggle">
+            <i className="m-menu__link-icon flaticon-share" title="Automation" />
+            <span className="m-menu__link-text">Automation</span>
+            <i className="m-menu__ver-arrow la la-angle-right" />
           </span>
-          <div className='m-menu__submenu'>
-            <span className='m-menu__arrow' />
-            <ul className='m-menu__subnav'>
-              <li className='m-menu__item  m-menu__item--parent' aria-haspopup='true' >
-                <span className='m-menu__link'>
-                  <span className='m-menu__link-text'>
-                    Automation
-                  </span>
+          <div className="m-menu__submenu">
+            <span className="m-menu__arrow" />
+            <ul className="m-menu__subnav">
+              <li className="m-menu__item  m-menu__item--parent" aria-haspopup="true">
+                <span className="m-menu__link">
+                  <span className="m-menu__link-text">Automation</span>
                 </span>
               </li>
-              {
-                this.props.user.platform === 'messenger' &&
+              {this.props.user.platform === "messenger" && (
                 <>
                   {this.showSmartRespliesItem()}
                   {this.showChatbotAutomation()}
@@ -385,49 +460,39 @@ class Sidebar extends Component {
                   {this.showNewsIntegrationItem()}
                   {this.showSequenceMessaging()}
                 </>
-              }
-              {
-                this.props.user.platform === 'whatsApp' &&
+              )}
+              {this.props.user.platform === "whatsApp" && (
                 <>
                   {this.showWhatsAppCommerceChatbot()}
                   {this.showWhatsAppAirlinesChatbot()}
                   {this.showChatbots()}
                 </>
-              }
-              {
-                this.props.user.platform === 'sms' &&
-                <>
-                  {this.showChatbots()}
-                </>
-              }
+              )}
+              {this.props.user.platform === "sms" && <>{this.showChatbots()}</>}
             </ul>
           </div>
         </li>
       )
     } else {
-      return (
-        <div />
-      )
+      return <div />
     }
   }
 
   showSubscriptionsItem() {
-    if (!this.state.isKiboLite && this.props.user && this.props.user.platform === 'messenger') {
+    if (!this.state.isKiboLite && this.props.user && this.props.user.platform === "messenger") {
       return (
-        <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-          <span className='m-menu__link m-menu__toggle'>
-            <i className='m-menu__link-icon flaticon-users' title='Subscriptions' />
-            <span className='m-menu__link-text'>Subscriptions</span>
-            <i className='m-menu__ver-arrow la la-angle-right' />
+        <li className="m-menu__item  m-menu__item--submenu" aria-haspopup="true" data-menu-submenu-toggle="hover">
+          <span className="m-menu__link m-menu__toggle">
+            <i className="m-menu__link-icon flaticon-users" title="Subscriptions" />
+            <span className="m-menu__link-text">Subscriptions</span>
+            <i className="m-menu__ver-arrow la la-angle-right" />
           </span>
-          <div className='m-menu__submenu'>
-            <span className='m-menu__arrow' />
-            <ul className='m-menu__subnav'>
-              <li className='m-menu__item  m-menu__item--parent' aria-haspopup='true' >
-                <span className='m-menu__link'>
-                  <span className='m-menu__link-text'>
-                    Subscriptions
-                  </span>
+          <div className="m-menu__submenu">
+            <span className="m-menu__arrow" />
+            <ul className="m-menu__subnav">
+              <li className="m-menu__item  m-menu__item--parent" aria-haspopup="true">
+                <span className="m-menu__link">
+                  <span className="m-menu__link-text">Subscriptions</span>
                 </span>
               </li>
               {this.showSubscribersItem()}
@@ -437,32 +502,35 @@ class Sidebar extends Component {
           </div>
         </li>
       )
-    } else if (['sms', 'whatsApp'].includes(this.props.user.platform)) {
-      return (this.showSubscribersItem())
+    } else if (["sms", "whatsApp"].includes(this.props.user.platform)) {
+      return this.showSubscribersItem()
     } else {
-      return (
-        <div />
-      )
+      return <div />
     }
   }
 
   showGrowthToolsItems() {
-    if (!this.props.isMobile && this.props.user && this.props.user.platform === 'messenger' && (window.location.host.includes('kiboengage.cloudkibo.com') || window.location.host === 'localhost:3021' || window.location.host === 'localhost:3000')) {
+    if (
+      !this.props.isMobile &&
+      this.props.user &&
+      this.props.user.platform === "messenger" &&
+      (window.location.host.includes("kiboengage.cloudkibo.com") ||
+        window.location.host === "localhost:3021" ||
+        window.location.host === "localhost:3000")
+    ) {
       return (
-        <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-          <span className='m-menu__link m-menu__toggle'>
-            <i className='m-menu__link-icon flaticon-diagram' title='Growth Tools' />
-            <span className='m-menu__link-text'>Growth Tools</span>
-            <i className='m-menu__ver-arrow la la-angle-right' />
+        <li className="m-menu__item  m-menu__item--submenu" aria-haspopup="true" data-menu-submenu-toggle="hover">
+          <span className="m-menu__link m-menu__toggle">
+            <i className="m-menu__link-icon flaticon-diagram" title="Growth Tools" />
+            <span className="m-menu__link-text">Growth Tools</span>
+            <i className="m-menu__ver-arrow la la-angle-right" />
           </span>
-          <div className='m-menu__submenu'>
-            <span className='m-menu__arrow' />
-            <ul className='m-menu__subnav'>
-              <li className='m-menu__item  m-menu__item--parent' aria-haspopup='true' >
-                <span className='m-menu__link'>
-                  <span className='m-menu__link-text'>
-                    Growth Tools
-                  </span>
+          <div className="m-menu__submenu">
+            <span className="m-menu__arrow" />
+            <ul className="m-menu__subnav">
+              <li className="m-menu__item  m-menu__item--parent" aria-haspopup="true">
+                <span className="m-menu__link">
+                  <span className="m-menu__link-text">Growth Tools</span>
                 </span>
               </li>
               {this.showCommentCapture()}
@@ -485,22 +553,20 @@ class Sidebar extends Component {
   }
 
   showManagePagesItems() {
-    if (this.props.user && this.props.user.platform === 'messenger') {
+    if (this.props.user && this.props.user.platform === "messenger") {
       return (
-        <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-          <span className='m-menu__link m-menu__toggle'>
-            <i className='m-menu__link-icon flaticon-add' title='Manage Pages' />
-            <span className='m-menu__link-text'>Manage Pages</span>
-            <i className='m-menu__ver-arrow la la-angle-right' />
+        <li className="m-menu__item  m-menu__item--submenu" aria-haspopup="true" data-menu-submenu-toggle="hover">
+          <span className="m-menu__link m-menu__toggle">
+            <i className="m-menu__link-icon flaticon-add" title="Manage Pages" />
+            <span className="m-menu__link-text">Manage Pages</span>
+            <i className="m-menu__ver-arrow la la-angle-right" />
           </span>
-          <div className='m-menu__submenu'>
-            <span className='m-menu__arrow' />
-            <ul className='m-menu__subnav'>
-              <li className='m-menu__item  m-menu__item--parent' aria-haspopup='true' >
-                <span className='m-menu__link'>
-                  <span className='m-menu__link-text'>
-                    Manage Pages
-                  </span>
+          <div className="m-menu__submenu">
+            <span className="m-menu__arrow" />
+            <ul className="m-menu__subnav">
+              <li className="m-menu__item  m-menu__item--parent" aria-haspopup="true">
+                <span className="m-menu__link">
+                  <span className="m-menu__link-text">Manage Pages</span>
                 </span>
               </li>
               {this.showPagesItem()}
@@ -515,22 +581,24 @@ class Sidebar extends Component {
   }
 
   showOrganizationItems() {
-    if (!this.props.isMobile && this.props.user && (this.props.user.currentPlan.unique_ID === 'plan_C' || this.props.user.currentPlan.unique_ID === 'plan_D')) {
+    if (
+      !this.props.isMobile &&
+      this.props.user &&
+      (this.props.user.currentPlan.unique_ID === "plan_C" || this.props.user.currentPlan.unique_ID === "plan_D")
+    ) {
       return (
-        <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-          <span className='m-menu__link m-menu__toggle'>
-            <i className='m-menu__link-icon flaticon-share' title='Organization' />
-            <span className='m-menu__link-text'>Organization</span>
-            <i className='m-menu__ver-arrow la la-angle-right' />
+        <li className="m-menu__item  m-menu__item--submenu" aria-haspopup="true" data-menu-submenu-toggle="hover">
+          <span className="m-menu__link m-menu__toggle">
+            <i className="m-menu__link-icon flaticon-share" title="Organization" />
+            <span className="m-menu__link-text">Organization</span>
+            <i className="m-menu__ver-arrow la la-angle-right" />
           </span>
-          <div className='m-menu__submenu'>
-            <span className='m-menu__arrow' />
-            <ul className='m-menu__subnav'>
-              <li className='m-menu__item  m-menu__item--parent' aria-haspopup='true' >
-                <span className='m-menu__link'>
-                  <span className='m-menu__link-text'>
-                    Organization
-                  </span>
+          <div className="m-menu__submenu">
+            <span className="m-menu__arrow" />
+            <ul className="m-menu__subnav">
+              <li className="m-menu__item  m-menu__item--parent" aria-haspopup="true">
+                <span className="m-menu__link">
+                  <span className="m-menu__link-text">Organization</span>
                 </span>
               </li>
               {this.showInviteMembersItem()}
@@ -546,10 +614,10 @@ class Sidebar extends Component {
   showSettings() {
     if (!this.props.isMobile && this.state.settings) {
       return (
-        <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-          <Link to='/settings' className='m-menu__link m-menu__toggle'>
-            <i className='m-menu__link-icon flaticon-cogwheel' title='Settings' />
-            <span className='m-menu__link-text'>Settings</span>
+        <li className="m-menu__item  m-menu__item--submenu" aria-haspopup="true" data-menu-submenu-toggle="hover">
+          <Link to="/settings" className="m-menu__link m-menu__toggle">
+            <i className="m-menu__link-icon flaticon-cogwheel" title="Settings" />
+            <span className="m-menu__link-text">Settings</span>
           </Link>
         </li>
       )
@@ -559,10 +627,15 @@ class Sidebar extends Component {
   showUserGuide() {
     if (this.state.settings) {
       return (
-        <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-          <a href='http://kibopush.com/user-guide/' target='_blank' rel='noopener noreferrer' className='m-menu__link m-menu__toggle'>
-            <i className='m-menu__link-icon flaticon-info' title='User Guide' />
-            <span className='m-menu__link-text'>User Guide</span>
+        <li className="m-menu__item  m-menu__item--submenu" aria-haspopup="true" data-menu-submenu-toggle="hover">
+          <a
+            href="http://kibopush.com/user-guide/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="m-menu__link m-menu__toggle"
+          >
+            <i className="m-menu__link-icon flaticon-info" title="User Guide" />
+            <span className="m-menu__link-text">User Guide</span>
           </a>
         </li>
       )
@@ -573,19 +646,26 @@ class Sidebar extends Component {
     if (this.props.user) {
       if (this.state.broadcasts && this.props.user.permissions.broadcastPermission && this.props.user.plan.broadcasts) {
         return (
-          <li className='m-menu__item' aria-haspopup='true' >
-            <Link to={this.props.user.platform === 'sms' ? 'smsBroadcasts' : this.props.user.platform === 'messenger' ? '/broadcasts' : '/whatsAppBroadcasts'} className='m-menu__link'>
-              <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
+          <li className="m-menu__item" aria-haspopup="true">
+            <Link
+              to={
+                this.props.user.platform === "sms"
+                  ? "smsBroadcasts"
+                  : this.props.user.platform === "messenger"
+                  ? "/broadcasts"
+                  : "/whatsAppBroadcasts"
+              }
+              className="m-menu__link"
+            >
+              <i className="m-menu__link-bullet m-menu__link-bullet--dot">
                 <span />
               </i>
-              <span className='m-menu__link-text'>
-                Broadcasts
-              </span>
+              <span className="m-menu__link-text">Broadcasts</span>
             </Link>
           </li>
         )
       } else {
-        return (null)
+        return null
       }
     }
   }
@@ -594,19 +674,17 @@ class Sidebar extends Component {
     if (this.props.user) {
       if (this.state.surveys && this.props.user.permissions.surveyPermission && this.props.user.plan.surveys) {
         return (
-          <li className='m-menu__item' aria-haspopup='true' >
-            <Link to='/surveys' className='m-menu__link'>
-              <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
+          <li className="m-menu__item" aria-haspopup="true">
+            <Link to="/surveys" className="m-menu__link">
+              <i className="m-menu__link-bullet m-menu__link-bullet--dot">
                 <span />
               </i>
-              <span className='m-menu__link-text'>
-                Surveys
-              </span>
+              <span className="m-menu__link-text">Surveys</span>
             </Link>
           </li>
         )
       } else {
-        return (null)
+        return null
       }
     }
   }
@@ -615,19 +693,17 @@ class Sidebar extends Component {
     if (this.props.user) {
       if (this.state.polls && this.props.user.permissions.pollsPermission && this.props.user.plan.polls) {
         return (
-          <li className='m-menu__item' aria-haspopup='true' >
-            <Link to='/poll' className='m-menu__link'>
-              <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
+          <li className="m-menu__item" aria-haspopup="true">
+            <Link to="/poll" className="m-menu__link">
+              <i className="m-menu__link-bullet m-menu__link-bullet--dot">
                 <span />
               </i>
-              <span className='m-menu__link-text'>
-                Polls
-              </span>
+              <span className="m-menu__link-text">Polls</span>
             </Link>
           </li>
         )
       } else {
-        return (null)
+        return null
       }
     }
   }
@@ -636,157 +712,159 @@ class Sidebar extends Component {
     // add paid plan check later
     if (this.state.segmentSubscribers && this.props.user) {
       return (
-        <li className='m-menu__item' aria-haspopup='true' >
-          <Link to='/segmentedLists' className='m-menu__link'>
-            <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
+        <li className="m-menu__item" aria-haspopup="true">
+          <Link to="/segmentedLists" className="m-menu__link">
+            <i className="m-menu__link-bullet m-menu__link-bullet--dot">
               <span />
             </i>
-            <span className='m-menu__link-text'>
-              Segment Subscribers
-            </span>
+            <span className="m-menu__link-text">Segment Subscribers</span>
           </Link>
         </li>
       )
     } else {
-      return (null)
+      return null
     }
   }
 
   showTemplates() {
     // add paid plan check later
     if (this.props.user && this.state.templates) {
-      if ((this.props.user.role === 'buyer' || this.props.user.role === 'admin' || this.props.user.isSuperUser)) {
+      if (this.props.user.role === "buyer" || this.props.user.role === "admin" || this.props.user.isSuperUser) {
         return (
-          <li className='m-menu__item' aria-haspopup='true' >
-            <Link to='/templates' className='m-menu__link'>
-              <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
+          <li className="m-menu__item" aria-haspopup="true">
+            <Link to="/templates" className="m-menu__link">
+              <i className="m-menu__link-bullet m-menu__link-bullet--dot">
                 <span />
               </i>
-              <span className='m-menu__link-text'>
-                Templates
-              </span>
+              <span className="m-menu__link-text">Templates</span>
             </Link>
           </li>
         )
       } else {
-        return (null)
+        return null
       }
     }
   }
 
   showSmartRespliesItem() {
-    if (this.props.user && this.props.user.isSuperUser && this.state.smartReplies && this.props.automated_options && (this.props.automated_options.automated_options === 'MIX_CHAT' ||
-      this.props.automated_options.automated_options === 'AUTOMATED_CHAT')) {
+    if (
+      this.props.user &&
+      this.props.user.isSuperUser &&
+      this.state.smartReplies &&
+      this.props.automated_options &&
+      (this.props.automated_options.automated_options === "MIX_CHAT" ||
+        this.props.automated_options.automated_options === "AUTOMATED_CHAT")
+    ) {
       return (
-        <li className='m-menu__item' aria-haspopup='true' >
-          <Link to='/bots' className='m-menu__link'>
-            <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
+        <li className="m-menu__item" aria-haspopup="true">
+          <Link to="/bots" className="m-menu__link">
+            <i className="m-menu__link-bullet m-menu__link-bullet--dot">
               <span />
             </i>
-            <span className='m-menu__link-text'>
-              Smart Replies
-            </span>
+            <span className="m-menu__link-text">Smart Replies</span>
           </Link>
         </li>
       )
     } else {
-      return (null)
+      return null
     }
   }
 
   showWhatsAppCommerceChatbot() {
-    if (this.props.user && this.props.user.platform === 'whatsApp' && (this.state.isKiboChat || this.state.isLocalhost)) {
+    if (
+      this.props.user &&
+      this.props.user.platform === "whatsApp" &&
+      (this.state.isKiboChat || this.state.isLocalhost)
+    ) {
       return (
-        <li className='m-menu__item' aria-haspopup='true' >
-          <Link to='/whatsAppCommerceChatbot' className='m-menu__link'>
-            <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
+        <li className="m-menu__item" aria-haspopup="true">
+          <Link to="/whatsAppCommerceChatbot" className="m-menu__link">
+            <i className="m-menu__link-bullet m-menu__link-bullet--dot">
               <span />
             </i>
-            <span className='m-menu__link-text'>
-              Commerce Chatbot
-            </span>
+            <span className="m-menu__link-text">Commerce Chatbot</span>
           </Link>
         </li>
       )
     } else {
-      return (null)
+      return null
     }
   }
 
   showWhatsAppAirlinesChatbot() {
-    if (this.props.user && this.props.user.platform === 'whatsApp' && (this.state.isKiboChat || this.state.isLocalhost)) {
+    if (
+      this.props.user &&
+      this.props.user.platform === "whatsApp" &&
+      (this.state.isKiboChat || this.state.isLocalhost)
+    ) {
       return (
-        <li className='m-menu__item' aria-haspopup='true' >
-          <Link to='/whatsAppAirlinesChatbot' className='m-menu__link'>
-            <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
+        <li className="m-menu__item" aria-haspopup="true">
+          <Link to="/whatsAppAirlinesChatbot" className="m-menu__link">
+            <i className="m-menu__link-bullet m-menu__link-bullet--dot">
               <span />
             </i>
-            <span className='m-menu__link-text'>
-              Airlines Chatbot
-            </span>
+            <span className="m-menu__link-text">Airlines Chatbot</span>
           </Link>
         </li>
       )
     } else {
-      return (null)
+      return null
     }
   }
 
   showChatbots() {
     if (this.props.user && this.props.user.isSuperUser && (this.state.isKiboChat || this.state.isLocalhost)) {
       return (
-        <li className='m-menu__item' aria-haspopup='true' >
-          <Link to='/chatbots' className='m-menu__link'>
-            <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
+        <li className="m-menu__item" aria-haspopup="true">
+          <Link to="/chatbots" className="m-menu__link">
+            <i className="m-menu__link-bullet m-menu__link-bullet--dot">
               <span />
             </i>
-            <span className='m-menu__link-text'>
-              Chatbots
-            </span>
+            <span className="m-menu__link-text">Chatbots</span>
           </Link>
         </li>
       )
     } else {
-      return (null)
+      return null
     }
   }
 
   showChatbotAutomation() {
     if (this.props.user && (this.state.isKiboChat || this.state.isLocalhost)) {
       return (
-        <li className='m-menu__item' aria-haspopup='true' >
-          <Link to='/chatbotAutomation' className='m-menu__link'>
-            <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
+        <li className="m-menu__item" aria-haspopup="true">
+          <Link to="/chatbotAutomation" className="m-menu__link">
+            <i className="m-menu__link-bullet m-menu__link-bullet--dot">
               <span />
             </i>
-            <span className='m-menu__link-text'>
-              Chatbot Automation
-            </span>
+            <span className="m-menu__link-text">Chatbot Automation</span>
           </Link>
         </li>
       )
     } else {
-      return (null)
+      return null
     }
   }
 
   showAutoPostingItem() {
     if (this.props.user) {
-      if (this.state.autoposting && this.props.user.permissions.autopostingPermission && this.props.user.plan.autoposting) {
+      if (
+        this.state.autoposting &&
+        this.props.user.permissions.autopostingPermission &&
+        this.props.user.plan.autoposting
+      ) {
         return (
-          <li className='m-menu__item' aria-haspopup='true' >
-            <Link to='/autoposting' className='m-menu__link'>
-              <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
+          <li className="m-menu__item" aria-haspopup="true">
+            <Link to="/autoposting" className="m-menu__link">
+              <i className="m-menu__link-bullet m-menu__link-bullet--dot">
                 <span />
               </i>
-              <span className='m-menu__link-text'>
-                Autoposting
-              </span>
+              <span className="m-menu__link-text">Autoposting</span>
             </Link>
           </li>
         )
       } else {
-        return (null)
+        return null
       }
     }
   }
@@ -794,57 +872,51 @@ class Sidebar extends Component {
   showRssIntegrationItem() {
     if (this.state.rssIntegration) {
       return (
-        <li className='m-menu__item' aria-haspopup='true' >
-          <Link to='/rssIntegration' className='m-menu__link'>
-            <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
+        <li className="m-menu__item" aria-haspopup="true">
+          <Link to="/rssIntegration" className="m-menu__link">
+            <i className="m-menu__link-bullet m-menu__link-bullet--dot">
               <span />
             </i>
-            <span className='m-menu__link-text'>
-              Rss Integration
-              </span>
+            <span className="m-menu__link-text">Rss Integration</span>
           </Link>
         </li>
       )
     } else {
-      return (null)
+      return null
     }
   }
 
   showNewsIntegrationItem() {
     if (this.state.newsIntegration) {
       return (
-        <li className='m-menu__item' aria-haspopup='true' >
-          <Link to='/newsIntegration' className='m-menu__link'>
-            <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
+        <li className="m-menu__item" aria-haspopup="true">
+          <Link to="/newsIntegration" className="m-menu__link">
+            <i className="m-menu__link-bullet m-menu__link-bullet--dot">
               <span />
             </i>
-            <span className='m-menu__link-text'>
-              News Integration
-              </span>
+            <span className="m-menu__link-text">News Integration</span>
           </Link>
         </li>
       )
     } else {
-      return (null)
+      return null
     }
   }
 
   showSequenceMessaging() {
     if (this.props.user && this.state.sequenceMessaging) {
       return (
-        <li className='m-menu__item' aria-haspopup='true' >
-          <Link to='/sequenceMessaging' className='m-menu__link'>
-            <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
+        <li className="m-menu__item" aria-haspopup="true">
+          <Link to="/sequenceMessaging" className="m-menu__link">
+            <i className="m-menu__link-bullet m-menu__link-bullet--dot">
               <span />
             </i>
-            <span className='m-menu__link-text'>
-              Sequence Messaging
-              </span>
+            <span className="m-menu__link-text">Sequence Messaging</span>
           </Link>
         </li>
       )
     } else {
-      return (null)
+      return null
     }
   }
 
@@ -853,19 +925,17 @@ class Sidebar extends Component {
       // include user persmissions
       if (this.state.commentCapture) {
         return (
-          <li className='m-menu__item' aria-haspopup='true' >
-            <Link to='/commentCapture' className='m-menu__link'>
-              <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
+          <li className="m-menu__item" aria-haspopup="true">
+            <Link to="/commentCapture" className="m-menu__link">
+              <i className="m-menu__link-bullet m-menu__link-bullet--dot">
                 <span />
               </i>
-              <span className='m-menu__link-text'>
-                Comment Capture
-              </span>
+              <span className="m-menu__link-text">Comment Capture</span>
             </Link>
           </li>
         )
       } else {
-        return (null)
+        return null
       }
     }
   }
@@ -875,19 +945,17 @@ class Sidebar extends Component {
       // include user persmissions
       if (this.state.landingPages) {
         return (
-          <li className='m-menu__item' aria-haspopup='true' >
-            <Link to='/landingPages' className='m-menu__link'>
-              <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
+          <li className="m-menu__item" aria-haspopup="true">
+            <Link to="/landingPages" className="m-menu__link">
+              <i className="m-menu__link-bullet m-menu__link-bullet--dot">
                 <span />
               </i>
-              <span className='m-menu__link-text'>
-                Landing Pages
-              </span>
+              <span className="m-menu__link-text">Landing Pages</span>
             </Link>
           </li>
         )
       } else {
-        return (null)
+        return null
       }
     }
   }
@@ -896,19 +964,17 @@ class Sidebar extends Component {
       // include user persmissions
       if (this.state.overlayWidgets) {
         return (
-          <li className='m-menu__item' aria-haspopup='true' >
-            <Link to='/overlayWidgets' className='m-menu__link'>
-              <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
+          <li className="m-menu__item" aria-haspopup="true">
+            <Link to="/overlayWidgets" className="m-menu__link">
+              <i className="m-menu__link-bullet m-menu__link-bullet--dot">
                 <span />
               </i>
-              <span className='m-menu__link-text'>
-                Overlay Widgets
-              </span>
+              <span className="m-menu__link-text">Overlay Widgets</span>
             </Link>
           </li>
         )
       } else {
-        return (null)
+        return null
       }
     }
   }
@@ -918,19 +984,17 @@ class Sidebar extends Component {
       // include user persmissions
       if (this.state.messengerRefURL) {
         return (
-          <li className='m-menu__item' aria-haspopup='true' >
-            <Link to='/messengerRefURL' className='m-menu__link'>
-              <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
+          <li className="m-menu__item" aria-haspopup="true">
+            <Link to="/messengerRefURL" className="m-menu__link">
+              <i className="m-menu__link-bullet m-menu__link-bullet--dot">
                 <span />
               </i>
-              <span className='m-menu__link-text'>
-                Messenger Ref URL
-              </span>
+              <span className="m-menu__link-text">Messenger Ref URL</span>
             </Link>
           </li>
         )
       } else {
-        return (null)
+        return null
       }
     }
   }
@@ -940,19 +1004,17 @@ class Sidebar extends Component {
       // include user persmissions
       if (this.state.messengerAds) {
         return (
-          <li className='m-menu__item' aria-haspopup='true' >
-            <Link to='/jsonAds' className='m-menu__link'>
-              <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
+          <li className="m-menu__item" aria-haspopup="true">
+            <Link to="/jsonAds" className="m-menu__link">
+              <i className="m-menu__link-bullet m-menu__link-bullet--dot">
                 <span />
               </i>
-              <span className='m-menu__link-text'>
-                JSON Ads
-              </span>
+              <span className="m-menu__link-text">JSON Ads</span>
             </Link>
           </li>
         )
       } else {
-        return (null)
+        return null
       }
     }
   }
@@ -962,19 +1024,17 @@ class Sidebar extends Component {
       // include user persmissions
       if (this.state.messageUs) {
         return (
-          <li className='m-menu__item' aria-haspopup='true' >
-            <Link to='/messageUs' className='m-menu__link'>
-              <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
+          <li className="m-menu__item" aria-haspopup="true">
+            <Link to="/messageUs" className="m-menu__link">
+              <i className="m-menu__link-bullet m-menu__link-bullet--dot">
                 <span />
               </i>
-              <span className='m-menu__link-text'>
-                Message Us Button
-              </span>
+              <span className="m-menu__link-text">Message Us Button</span>
             </Link>
           </li>
         )
       } else {
-        return (null)
+        return null
       }
     }
   }
@@ -984,19 +1044,17 @@ class Sidebar extends Component {
       // include user persmissions
       if (this.state.chatWidget) {
         return (
-          <li className='m-menu__item' aria-haspopup='true' >
-            <Link to='/chatWidget' className='m-menu__link'>
-              <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
+          <li className="m-menu__item" aria-haspopup="true">
+            <Link to="/chatWidget" className="m-menu__link">
+              <i className="m-menu__link-bullet m-menu__link-bullet--dot">
                 <span />
               </i>
-              <span className='m-menu__link-text'>
-                Customer Chat Plugin
-              </span>
+              <span className="m-menu__link-text">Customer Chat Plugin</span>
             </Link>
           </li>
         )
       } else {
-        return (null)
+        return null
       }
     }
   }
@@ -1006,19 +1064,17 @@ class Sidebar extends Component {
       // include user persmissions
       if (this.state.checkbox) {
         return (
-          <li className='m-menu__item' aria-haspopup='true' >
-            <Link to='/checkbox' className='m-menu__link'>
-              <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
+          <li className="m-menu__item" aria-haspopup="true">
+            <Link to="/checkbox" className="m-menu__link">
+              <i className="m-menu__link-bullet m-menu__link-bullet--dot">
                 <span />
               </i>
-              <span className='m-menu__link-text'>
-                Checkbox Plugin
-              </span>
+              <span className="m-menu__link-text">Checkbox Plugin</span>
             </Link>
           </li>
         )
       } else {
-        return (null)
+        return null
       }
     }
   }
@@ -1028,57 +1084,51 @@ class Sidebar extends Component {
       // include user persmissions
       if (this.state.messengerCode) {
         return (
-          <li className='m-menu__item' aria-haspopup='true' >
-            <Link to='/messengerCode' className='m-menu__link'>
-              <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
+          <li className="m-menu__item" aria-haspopup="true">
+            <Link to="/messengerCode" className="m-menu__link">
+              <i className="m-menu__link-bullet m-menu__link-bullet--dot">
                 <span />
               </i>
-              <span className='m-menu__link-text'>
-                Messenger Code
-              </span>
+              <span className="m-menu__link-text">Messenger Code</span>
             </Link>
           </li>
         )
       } else {
-        return (null)
+        return null
       }
     }
   }
   showDiscoverTabs() {
     if (this.props.user) {
       return (
-        <li className='m-menu__item' aria-haspopup='true' >
-          <Link to='/discoverTabs' className='m-menu__link'>
-            <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
+        <li className="m-menu__item" aria-haspopup="true">
+          <Link to="/discoverTabs" className="m-menu__link">
+            <i className="m-menu__link-bullet m-menu__link-bullet--dot">
               <span />
             </i>
-            <span className='m-menu__link-text'>
-              Discover Tabs
-            </span>
+            <span className="m-menu__link-text">Discover Tabs</span>
           </Link>
         </li>
       )
     } else {
-      return (null)
+      return null
     }
   }
   showInviteUsingPhoneNumber() {
     // add paid plan check later
     if (this.props.user && this.state.phoneNumber) {
       return (
-        <li className='m-menu__item' aria-haspopup='true' >
-          <Link to='/customerMatchingUsingPhNum' className='m-menu__link'>
-            <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
+        <li className="m-menu__item" aria-haspopup="true">
+          <Link to="/customerMatchingUsingPhNum" className="m-menu__link">
+            <i className="m-menu__link-bullet m-menu__link-bullet--dot">
               <span />
             </i>
-            <span className='m-menu__link-text'>
-              Invite Using Phone Numbers
-            </span>
+            <span className="m-menu__link-text">Invite Using Phone Numbers</span>
           </Link>
         </li>
       )
     } else {
-      return (null)
+      return null
     }
   }
 
@@ -1086,32 +1136,28 @@ class Sidebar extends Component {
     // add paid plan check later
     if (this.props.user && this.state.phoneNumber) {
       return (
-        <li className='m-menu__item' aria-haspopup='true' >
-          <Link to='/inviteSubscribers' className='m-menu__link'>
-            <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
+        <li className="m-menu__item" aria-haspopup="true">
+          <Link to="/inviteSubscribers" className="m-menu__link">
+            <i className="m-menu__link-bullet m-menu__link-bullet--dot">
               <span />
             </i>
-            <span className='m-menu__link-text'>
-              Invite Subscribers
-            </span>
+            <span className="m-menu__link-text">Invite Subscribers</span>
           </Link>
         </li>
       )
     } else {
-      return (null)
+      return null
     }
   }
 
   showHTMLWidget() {
     return (
-      <li className='m-menu__item' aria-haspopup='true' >
-        <span className='m-menu__link'>
-          <i className='m-mesing Phone Numbersnu__link-bullet m-menu__link-bullet--dot'>
+      <li className="m-menu__item" aria-haspopup="true">
+        <span className="m-menu__link">
+          <i className="m-mesing Phone Numbersnu__link-bullet m-menu__link-bullet--dot">
             <span />
           </i>
-          <span className='m-menu__link-text'>
-            HTML Widget
-          </span>
+          <span className="m-menu__link-text">HTML Widget</span>
         </span>
       </li>
     )
@@ -1119,14 +1165,12 @@ class Sidebar extends Component {
 
   showKiboPushWidget() {
     return (
-      <li className='m-menu__item' aria-haspopup='true' >
-        <span className='m-menu__link'>
-          <i className='m-mesing Phone Numbersnu__link-bullet m-menu__link-bullet--dot'>
+      <li className="m-menu__item" aria-haspopup="true">
+        <span className="m-menu__link">
+          <i className="m-mesing Phone Numbersnu__link-bullet m-menu__link-bullet--dot">
             <span />
           </i>
-          <span className='m-menu__link-text'>
-            KiboPush Widget
-          </span>
+          <span className="m-menu__link-text">KiboPush Widget</span>
         </span>
       </li>
     )
@@ -1136,40 +1180,47 @@ class Sidebar extends Component {
     if (this.props.user) {
       if (this.state.pages && this.props.user.permissions.pagesPermission && this.props.user.plan.manage_pages) {
         return (
-          <li onClick={() => { document.getElementById('m_aside_left_close_btn').click() }} className='m-menu__item' aria-haspopup='true' >
-            <Link to='/pages' className='m-menu__link'>
-              <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
+          <li
+            onClick={() => {
+              document.getElementById("m_aside_left_close_btn").click()
+            }}
+            className="m-menu__item"
+            aria-haspopup="true"
+          >
+            <Link to="/pages" className="m-menu__link">
+              <i className="m-menu__link-bullet m-menu__link-bullet--dot">
                 <span />
               </i>
-              <span className='m-menu__link-text'>
-                Pages
-              </span>
+              <span className="m-menu__link-text">Pages</span>
             </Link>
           </li>
         )
       } else {
-        return (null)
+        return null
       }
     }
   }
 
   showPersistentMenuItem() {
     if (this.props.user) {
-      if (!this.props.isMobile && this.state.persistentMenu && this.props.user.permissions.menuPermission && this.props.user.plan.menu) {
+      if (
+        !this.props.isMobile &&
+        this.state.persistentMenu &&
+        this.props.user.permissions.menuPermission &&
+        this.props.user.plan.menu
+      ) {
         return (
-          <li className='m-menu__item' aria-haspopup='true' >
-            <Link to='/menu' className='m-menu__link'>
-              <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
+          <li className="m-menu__item" aria-haspopup="true">
+            <Link to="/menu" className="m-menu__link">
+              <i className="m-menu__link-bullet m-menu__link-bullet--dot">
                 <span />
               </i>
-              <span className='m-menu__link-text'>
-                Persistent Menu
-              </span>
+              <span className="m-menu__link-text">Persistent Menu</span>
             </Link>
           </li>
         )
       } else {
-        return (null)
+        return null
       }
     }
   }
@@ -1178,33 +1229,29 @@ class Sidebar extends Component {
     if (this.props.user) {
       if (!this.props.isMobile && this.state.welcomeMessage && this.props.user.permissions.pagesPermission) {
         return (
-          <li className='m-menu__item' aria-haspopup='true' >
-            <Link to='/welcomeMessage' className='m-menu__link'>
-              <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
+          <li className="m-menu__item" aria-haspopup="true">
+            <Link to="/welcomeMessage" className="m-menu__link">
+              <i className="m-menu__link-bullet m-menu__link-bullet--dot">
                 <span />
               </i>
-              <span className='m-menu__link-text'>
-                Welcome Message
-              </span>
+              <span className="m-menu__link-text">Welcome Message</span>
             </Link>
           </li>
         )
       } else {
-        return (null)
+        return null
       }
     }
   }
 
   showGreetingText() {
     return (
-      <li className='m-menu__item' aria-haspopup='true' >
-        <Link to='/greetingMessage' className='m-menu__link'>
-          <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
+      <li className="m-menu__item" aria-haspopup="true">
+        <Link to="/greetingMessage" className="m-menu__link">
+          <i className="m-menu__link-bullet m-menu__link-bullet--dot">
             <span />
           </i>
-          <span className='m-menu__link-text'>
-            Greeting Text
-          </span>
+          <span className="m-menu__link-text">Greeting Text</span>
         </Link>
       </li>
     )
@@ -1212,63 +1259,65 @@ class Sidebar extends Component {
 
   showInviteMembersItem() {
     if (this.props.user) {
-      if (this.state.inviteMembers && (this.props.user.permissions.inviteAdminPermission || this.props.user.permissions.inviteAgentPermission) && this.props.user.plan.invite_team) {
+      if (
+        this.state.inviteMembers &&
+        (this.props.user.permissions.inviteAdminPermission || this.props.user.permissions.inviteAgentPermission) &&
+        this.props.user.plan.invite_team
+      ) {
         return (
-          <li className='m-menu__item' aria-haspopup='true' >
-            <Link to='/inviteMembers' className='m-menu__link'>
-              <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
+          <li className="m-menu__item" aria-haspopup="true">
+            <Link to="/inviteMembers" className="m-menu__link">
+              <i className="m-menu__link-bullet m-menu__link-bullet--dot">
                 <span />
               </i>
-              <span className='m-menu__link-text'>
-                Invite Members
-              </span>
+              <span className="m-menu__link-text">Invite Members</span>
             </Link>
           </li>
         )
       } else {
-        return (null)
+        return null
       }
     }
   }
 
   showMembersItem() {
     if (this.props.user) {
-      if (this.state.members && this.props.user.permissions.membersPermission && this.props.user.plan.team_members_management) {
+      if (
+        this.state.members &&
+        this.props.user.permissions.membersPermission &&
+        this.props.user.plan.team_members_management
+      ) {
         return (
-          <li className='m-menu__item' aria-haspopup='true' >
-            <Link to='/members' className='m-menu__link'>
-              <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
+          <li className="m-menu__item" aria-haspopup="true">
+            <Link to="/members" className="m-menu__link">
+              <i className="m-menu__link-bullet m-menu__link-bullet--dot">
                 <span />
               </i>
-              <span className='m-menu__link-text'>
-                Members
-              </span>
+              <span className="m-menu__link-text">Members</span>
             </Link>
           </li>
         )
       } else {
-        return (null)
+        return null
       }
     }
   }
 
   showTeams() {
     if (this.props.user) {
-      if (this.props.user.currentPlan.unique_ID === 'plan_C' || this.props.user.currentPlan.unique_ID === 'plan_D') {
+      if (this.props.user.currentPlan.unique_ID === "plan_C" || this.props.user.currentPlan.unique_ID === "plan_D") {
         return (
-          <li className='m-menu__item' aria-haspopup='true' >
-            <Link to='/teams' className='m-menu__link'>
-              <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
+          <li className="m-menu__item" aria-haspopup="true">
+            <Link to="/teams" className="m-menu__link">
+              <i className="m-menu__link-bullet m-menu__link-bullet--dot">
                 <span />
               </i>
-              <span className='m-menu__link-text'>
-                Teams
-              </span>
+              <span className="m-menu__link-text">Teams</span>
             </Link>
           </li>
         )
       } else {
-        return (null)
+        return null
       }
     }
   }
@@ -1276,19 +1325,17 @@ class Sidebar extends Component {
   showBusinessGateway() {
     if (!this.props.isMobile && this.props.user && this.state.businessGateway) {
       return (
-        <li className='m-menu__item' aria-haspopup='true' >
-          <Link to='/businessGateway' className='m-menu__link'>
-            <i className='m-menu__link-icon flaticon-network'>
+        <li className="m-menu__item" aria-haspopup="true">
+          <Link to="/businessGateway" className="m-menu__link">
+            <i className="m-menu__link-icon flaticon-network">
               <span />
             </i>
-            <span className='m-menu__link-text'>
-              Broadcast
-            </span>
+            <span className="m-menu__link-text">Broadcast</span>
           </Link>
         </li>
       )
     } else {
-      return (null)
+      return null
     }
   }
 
@@ -1309,65 +1356,84 @@ class Sidebar extends Component {
     // } else {
     //   return (null)
     // }
-    if (this.props.user && this.props.user.platform === 'sms') {
+    if (this.props.user && this.props.user.platform === "sms") {
       return (
-        <li onClick={() => { document.getElementById('m_aside_left_close_btn').click() }} className='m-menu__item' aria-haspopup='true' >
-          <Link to={'/uploadContacts'} className='m-menu__link'>
-            <i className='m-menu__link-icon fa fa-id-card-o'>
+        <li
+          onClick={() => {
+            document.getElementById("m_aside_left_close_btn").click()
+          }}
+          className="m-menu__item"
+          aria-haspopup="true"
+        >
+          <Link to={"/uploadContacts"} className="m-menu__link">
+            <i className="m-menu__link-icon fa fa-id-card-o">
               <span />
             </i>
-            <span className='m-menu__link-text'>
-              {'Upload Contacts'}
-            </span>
+            <span className="m-menu__link-text">{"Upload Contacts"}</span>
           </Link>
         </li>
       )
     } else {
-      return (null)
+      return null
     }
   }
 
   inviteSubscribers() {
-    if (this.props.user && this.props.user.platform === 'whatsApp') {
+    if (this.props.user && this.props.user.platform === "whatsApp") {
       return (
-        <li onClick={() => { document.getElementById('m_aside_left_close_btn').click() }} className='m-menu__item' aria-haspopup='true' >
-          <Link to='/uploadContactsWhatsApp' className='m-menu__link'>
-            <i className='m-menu__link-icon flaticon-user-add'>
+        <li
+          onClick={() => {
+            document.getElementById("m_aside_left_close_btn").click()
+          }}
+          className="m-menu__item"
+          aria-haspopup="true"
+        >
+          <Link to="/uploadContactsWhatsApp" className="m-menu__link">
+            <i className="m-menu__link-icon flaticon-user-add">
               <span />
             </i>
-            <span className='m-menu__link-text'>
-              Invite Subscribers
-            </span>
+            <span className="m-menu__link-text">Invite Subscribers</span>
           </Link>
         </li>
       )
     } else {
-      return (null)
+      return null
     }
   }
 
   render() {
-
     if (this.props.user && this.props.user.permissionsRevoked) {
-      this.props.history.push({ pathname: '/connectFb', state: { permissionsRevoked: true } })
+      this.props.history.push({ pathname: "/connectFb", state: { permissionsRevoked: true } })
     }
     return (
-      <div id='sidebarDiv'>
-        <button className='m-aside-left-close  m-aside-left-close--skin-dark ' id='m_aside_left_close_btn'>
-          <i className='la la-close' />
+      <div id="sidebarDiv">
+        <button className="m-aside-left-close  m-aside-left-close--skin-dark " id="m_aside_left_close_btn">
+          <i className="la la-close" />
         </button>
-        <div id='m_aside_left' className='m-grid__item m-aside-left  m-aside-left--skin-dark'>
+        <div id="m_aside_left" className="m-grid__item m-aside-left  m-aside-left--skin-dark">
           <div
-            id='m_ver_menu'
-            className='m-aside-menu  m-aside-menu--skin-dark m-aside-menu--submenu-skin-dark m-scroller mCustomScrollbar _mCS_2 mCS-autoHide'
-            data-menu-vertical='1'
-            data-menu-scrollable='1'>
-            <div id='mCSB_2' className='mCustomScrollBox mCS-minimal-dark mCSB_vertical mCSB_outside' tabIndex='0' style={{ maxHeight: 'none' }}>
-              <div id='mCSB_2_container' className='mCSB_container' style={{ position: 'relative', top: '0px', left: '0px' }} dir='ltr'>
-                {this.props.user &&
-                  <ul className='m-menu__nav  m-menu__nav--dropdown-submenu-arrow '>
+            id="m_ver_menu"
+            className="m-aside-menu  m-aside-menu--skin-dark m-aside-menu--submenu-skin-dark m-scroller mCustomScrollbar _mCS_2 mCS-autoHide"
+            data-menu-vertical="1"
+            data-menu-scrollable="1"
+          >
+            <div
+              id="mCSB_2"
+              className="mCustomScrollBox mCS-minimal-dark mCSB_vertical mCSB_outside"
+              tabIndex="0"
+              style={{ maxHeight: "none" }}
+            >
+              <div
+                id="mCSB_2_container"
+                className="mCSB_container"
+                style={{ position: "relative", top: "0px", left: "0px" }}
+                dir="ltr"
+              >
+                {this.props.user && (
+                  <ul className="m-menu__nav  m-menu__nav--dropdown-submenu-arrow ">
                     {this.showOperationalDashboard()}
                     {this.showDashboard()}
+                    {this.showSLADashboard()}
                     {this.showSubscriptionsItem()}
                     {this.showBusinessGateway()}
                     {this.showBroadcastingItems()}
@@ -1378,23 +1444,30 @@ class Sidebar extends Component {
                     {this.showGrowthToolsItems()}
                     {this.showManagePagesItems()}
                     {this.showOrganizationItems()}
-                    {false && this.props.user && this.props.user.platform === 'messenger' && this.showAbandonedCarts()}
+                    {false && this.props.user && this.props.user.platform === "messenger" && this.showAbandonedCarts()}
                     {this.showSettings()}
                     {this.showUserGuide()}
                   </ul>
-                }
+                )}
               </div>
             </div>
-            <div id='mCSB_2_scrollbar_vertical' className='mCSB_scrollTools mCSB_2_scrollbar mCS-minimal-dark mCSB_scrollTools_vertical' style={{ display: 'block' }}>
-              <div className='mCSB_draggerContainer'>
-                <div id='mCSB_2_dragger_vertical' className='mCSB_dragger' style={{ position: 'absolute', minHeight: '50px', display: 'block', maxHeight: '303px', top: '0px' }}>
-                  <div className='mCSB_dragger_bar' style={{ lineHeight: '50px' }} />
+            <div
+              id="mCSB_2_scrollbar_vertical"
+              className="mCSB_scrollTools mCSB_2_scrollbar mCS-minimal-dark mCSB_scrollTools_vertical"
+              style={{ display: "block" }}
+            >
+              <div className="mCSB_draggerContainer">
+                <div
+                  id="mCSB_2_dragger_vertical"
+                  className="mCSB_dragger"
+                  style={{ position: "absolute", minHeight: "50px", display: "block", maxHeight: "303px", top: "0px" }}
+                >
+                  <div className="mCSB_dragger_bar" style={{ lineHeight: "50px" }} />
                 </div>
-                <div className='mCSB_draggerRail' />
+                <div className="mCSB_draggerRail" />
               </div>
             </div>
           </div>
-
         </div>
       </div>
     )
@@ -1402,21 +1475,24 @@ class Sidebar extends Component {
 }
 function mapStateToProps(state) {
   return {
-    sessions: (state.liveChat.sessions),
-    user: (state.basicInfo.user),
-    isMobile: (state.basicInfo.isMobile),
-    updatedUser: (state.basicInfo.updatedUser),
-    socketSession: (state.liveChat.socketSession),
-    userChat: (state.liveChat.userChat),
-    socketData: (state.liveChat.socketData),
-    automated_options: (state.basicInfo.automated_options)
+    sessions: state.liveChat.sessions,
+    user: state.basicInfo.user,
+    isMobile: state.basicInfo.isMobile,
+    updatedUser: state.basicInfo.updatedUser,
+    socketSession: state.liveChat.socketSession,
+    userChat: state.liveChat.userChat,
+    socketData: state.liveChat.socketData,
+    automated_options: state.basicInfo.automated_options
   }
 }
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({
-    getAutomatedOptions: getAutomatedOptions,
-  }, dispatch)
+  return bindActionCreators(
+    {
+      getAutomatedOptions: getAutomatedOptions
+    },
+    dispatch
+  )
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Sidebar)
