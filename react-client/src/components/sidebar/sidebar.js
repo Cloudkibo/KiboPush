@@ -1,8 +1,8 @@
-import React, { Component } from "react"
-import { connect } from "react-redux"
-import { getAutomatedOptions } from "../../redux/actions/basicinfo.actions"
-import { bindActionCreators } from "redux"
-import MENUITEM from "./menuItem"
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import { getAutomatedOptions } from '../../redux/actions/basicinfo.actions'
+import { bindActionCreators } from 'redux'
+import MENUITEM from './menuItem'
 
 class Sidebar extends Component {
   constructor(props, context) {
@@ -18,415 +18,415 @@ class Sidebar extends Component {
   setMenuItems(user, automated_options) {
     const url = window.location.hostname
     let menuItems = []
-    const isLocalhost = url.includes("localhost")
-    const isKiboChat = url.includes("kibochat.cloudkibo.com")
-    const isKiboEngage = url.includes("kiboengage.cloudkibo.com")
-    const isKiboLite = url.includes("kibolite.cloudkibo.com")
+    const isLocalhost = url.includes('localhost')
+    const isKiboChat = url.includes('kibochat.cloudkibo.com')
+    const isKiboEngage = url.includes('kiboengage.cloudkibo.com')
+    const isKiboLite = url.includes('kibolite.cloudkibo.com')
     const platform = user.platform
     const isMobile = this.props.isMobile
     if (!isMobile && user.isSuperUser && (isKiboEngage || isLocalhost)) {
       menuItems.push({
-        priority: "a",
-        name: "Operational Dashboard",
-        route: "/operationalDashboard",
-        icon: "flaticon-statistics"
+        priority: 'a',
+        name: 'Operational Dashboard',
+        route: '/operationalDashboard',
+        icon: 'flaticon-statistics'
       })
     }
-    if (user.plan["dashboard"]) {
+    if (user.plan['dashboard']) {
       menuItems.push({
-        priority: "b",
-        name: "Dashboard",
-        route: "/dashboard",
+        priority: 'b',
+        name: 'Dashboard',
+        route: '/dashboard',
         routeState: { isKiboLite },
-        icon: "flaticon-squares-4"
+        icon: 'flaticon-squares-4'
       })
     }
-    if (!isKiboLite && platform === "messenger") {
+    if (!isKiboLite && platform === 'messenger') {
       let submenu = []
-      if (user.plan["manage_subscribers"] && user.permissions["view_subscribers"]) {
+      if (user.plan['manage_subscribers'] && user.permissions['view_subscribers']) {
         submenu.push({
-          priority: "a",
-          name: "Subscribers",
-          route: "/subscribers",
-          icon: "flaticon-user-ok"
+          priority: 'a',
+          name: 'Subscribers',
+          route: '/subscribers',
+          icon: 'flaticon-user-ok'
         })
       }
-      if (!isMobile && user.plan["custom_fields"] && user.permissions["view_custom_fields"]) {
+      if (!isMobile && user.plan['custom_fields'] && user.permissions['view_custom_fields']) {
         submenu.push({
-          priority: "b",
-          name: "Custom Fields",
-          route: "/customFields",
-          icon: "flaticon-profile"
+          priority: 'b',
+          name: 'Custom Fields',
+          route: '/customFields',
+          icon: 'flaticon-profile'
         })
       }
-      if (!isMobile && user.plan["tags"] && user.permissions["view_tags"]) {
+      if (!isMobile && user.plan['tags'] && user.permissions['view_tags']) {
         submenu.push({
-          priority: "c",
-          name: "Tags",
-          route: "/tags",
-          icon: "flaticon-interface-9"
+          priority: 'c',
+          name: 'Tags',
+          route: '/tags',
+          icon: 'flaticon-interface-9'
         })
       }
       menuItems.push({
-        priority: "c",
-        name: "Subscriptions",
+        priority: 'c',
+        name: 'Subscriptions',
         submenu,
-        icon: "flaticon-users"
+        icon: 'flaticon-users'
       })
     }
-    if (["sms", "whatsApp"].includes(platform) && user.permissions["view_subscribers"]) {
+    if (['sms', 'whatsApp'].includes(platform) && user.permissions['view_subscribers']) {
       menuItems.push({
-        priority: "c",
-        name: "Subscribers",
-        route: "/smsSubscribers",
-        icon: "flaticon-user-ok"
+        priority: 'c',
+        name: 'Subscribers',
+        route: '/smsSubscribers',
+        icon: 'flaticon-user-ok'
       })
     }
     if (!isMobile && isKiboLite) {
       menuItems.push({
-        priority: "d",
-        name: "Broadcast",
-        route: "/businessGateway",
-        icon: "flaticon-network"
+        priority: 'd',
+        name: 'Broadcast',
+        route: '/businessGateway',
+        icon: 'flaticon-network'
       })
     }
     if (!isMobile && (isKiboEngage || isLocalhost)) {
       let submenu = []
-      if (user.plan["broadcasts"] && user.permissions["view_broadcasts"]) {
+      if (user.plan['broadcasts'] && user.permissions['view_broadcasts']) {
         submenu.push({
-          priority: "a",
-          name: "Broadcasts",
+          priority: 'a',
+          name: 'Broadcasts',
           route:
-            platform === "messenger" ? "/broadcasts" : platform === "sms" ? "/smsBroadcasts" : "/whatsAppBroadcasts"
+            platform === 'messenger' ? '/broadcasts' : platform === 'sms' ? '/smsBroadcasts' : '/whatsAppBroadcasts'
         })
       }
 
-      if (platform === "messenger" && user.plan["surveys"] && user.permissions["view_surveys"]) {
+      if (platform === 'messenger' && user.plan['surveys'] && user.permissions['view_surveys']) {
         submenu.push({
-          priority: "b",
-          name: "Surveys",
-          route: "/surveys"
+          priority: 'b',
+          name: 'Surveys',
+          route: '/surveys'
         })
       }
-      if (platform === "messenger" && user.plan["polls"] && user.permissions["view_polls"]) {
+      if (platform === 'messenger' && user.plan['polls'] && user.permissions['view_polls']) {
         submenu.push({
-          priority: "c",
-          name: "Polls",
-          route: "/poll"
+          priority: 'c',
+          name: 'Polls',
+          route: '/poll'
         })
       }
-      if (platform === "messenger" && user.plan["segmentation_lists"] && user.permissions["view_segmentation_lists"]) {
+      if (platform === 'messenger' && user.plan['segmentation_lists'] && user.permissions['view_segmentation_lists']) {
         submenu.push({
-          priority: "d",
-          name: "Segment Subscribers",
-          route: "/segmentedLists"
-        })
-      }
-      if (
-        platform === "messenger" &&
-        (user.plan["broadcasts_templates"] || user.plan["poll_templates"] || user.plan["survey_templates"])
-      ) {
-        submenu.push({
-          priority: "e",
-          name: "Templates",
-          route: "/templates"
+          priority: 'd',
+          name: 'Segment Subscribers',
+          route: '/segmentedLists'
         })
       }
       if (
-        platform === "messenger" &&
-        user.plan["sponsored_broadcast"] &&
-        user.permissions["view_sponsored_broadcast"]
+        platform === 'messenger' &&
+        (user.plan['broadcasts_templates'] || user.plan['poll_templates'] || user.plan['survey_templates'])
       ) {
         submenu.push({
-          priority: "f",
-          name: "Sponsored Broadcast (Beta)",
-          route: "/sponsoredMessaging"
+          priority: 'e',
+          name: 'Templates',
+          route: '/templates'
+        })
+      }
+      if (
+        platform === 'messenger' &&
+        user.plan['sponsored_broadcast'] &&
+        user.permissions['view_sponsored_broadcast']
+      ) {
+        submenu.push({
+          priority: 'f',
+          name: 'Sponsored Broadcast (Beta)',
+          route: '/sponsoredMessaging'
         })
       }
       menuItems.push({
-        priority: "e",
-        name: "Broadcasting",
+        priority: 'e',
+        name: 'Broadcasting',
         submenu,
-        icon: "flaticon-paper-plane"
+        icon: 'flaticon-paper-plane'
       })
     }
-    if (platform === "sms") {
+    if (platform === 'sms') {
       menuItems.push({
-        priority: "f",
-        name: "Upload Contacts",
-        route: "/uploadContacts",
-        icon: "fa fa-id-card-o"
+        priority: 'f',
+        name: 'Upload Contacts',
+        route: '/uploadContacts',
+        icon: 'fa fa-id-card-o'
       })
     }
-    if (platform === "whatsApp") {
+    if (platform === 'whatsApp') {
       menuItems.push({
-        priority: "f",
-        name: "Invite Subscribers",
-        route: "/uploadContactsWhatsApp",
-        icon: "flaticon-user-add"
+        priority: 'f',
+        name: 'Invite Subscribers',
+        route: '/uploadContactsWhatsApp',
+        icon: 'flaticon-user-add'
       })
     }
     if (
       (isKiboChat || isLocalhost) &&
-      user.plan["livechat"] &&
-      user.permissions["manage_livechat"] &&
-      ["MIX_CHAT", "HUMAN_CHAT"].includes(automated_options.automated_options)
+      user.plan['livechat'] &&
+      user.permissions['manage_livechat'] &&
+      ['MIX_CHAT', 'HUMAN_CHAT'].includes(automated_options.automated_options)
     ) {
-      if (platform === "messenger") {
+      if (platform === 'messenger') {
         menuItems.push({
-          priority: "g",
-          name: "SLA Dashboard",
-          route: "/slaDashboard",
-          icon: "flaticon-squares-4"
+          priority: 'g',
+          name: 'SLA Dashboard',
+          route: '/slaDashboard',
+          icon: 'flaticon-squares-4'
         })
       }
       menuItems.push({
-        priority: "g",
-        name: "Live Chat",
-        route: platform === "messenger" ? "/liveChat" : platform === "sms" ? "/smsChat" : "/whatsAppChat",
-        icon: "flaticon-chat-1"
+        priority: 'g',
+        name: 'Live Chat',
+        route: platform === 'messenger' ? '/liveChat' : platform === 'sms' ? '/smsChat' : '/whatsAppChat',
+        icon: 'flaticon-chat-1'
       })
     }
     if (!isMobile && (isKiboEngage || isKiboChat || isLocalhost)) {
       let submenu = []
       if (
         (isKiboChat || isLocalhost) &&
-        user.plan["smart_replies"] &&
-        user.permissions["view_bots"] &&
-        ["MIX_CHAT", "AUTOMATED_CHAT"].includes(automated_options.automated_options)
+        user.plan['smart_replies'] &&
+        user.permissions['view_bots'] &&
+        ['MIX_CHAT', 'AUTOMATED_CHAT'].includes(automated_options.automated_options)
       ) {
         submenu.push({
-          priority: "a",
-          name: "Smart Replies",
-          route: "/bots"
+          priority: 'a',
+          name: 'Smart Replies',
+          route: '/bots'
         })
       }
       if (
-        platform !== "messenger" &&
+        platform !== 'messenger' &&
         (isKiboChat || isLocalhost) &&
         user.isSuperUser &&
-        user.plan["chatbot_automation"] &&
-        user.permissions["configure_chatbot_automation"]
+        user.plan['chatbot_automation'] &&
+        user.permissions['configure_chatbot_automation']
       ) {
         submenu.push({
-          priority: "b",
-          name: "Chatbots",
-          route: "/chatbots"
+          priority: 'b',
+          name: 'Chatbots',
+          route: '/chatbots'
         })
       }
       if (
-        platform === "messenger" &&
+        platform === 'messenger' &&
         (isKiboChat || isLocalhost) &&
-        user.plan["chatbot_automation"] &&
-        user.permissions["configure_chatbot_automation"]
+        user.plan['chatbot_automation'] &&
+        user.permissions['configure_chatbot_automation']
       ) {
         submenu.push({
-          priority: "b",
-          name: "Chatbot Automation",
-          route: "/chatbotAutomation"
+          priority: 'b',
+          name: 'Chatbot Automation',
+          route: '/chatbotAutomation'
         })
       }
-      if ((isKiboEngage || isLocalhost) && user.plan["autoposting"] && user.permissions["view_autoposting_feeds"]) {
+      if ((isKiboEngage || isLocalhost) && user.plan['autoposting'] && user.permissions['view_autoposting_feeds']) {
         submenu.push({
-          priority: "c",
-          name: "Autoposting",
-          route: "/autoposting"
+          priority: 'c',
+          name: 'Autoposting',
+          route: '/autoposting'
         })
       }
-      if ((isKiboEngage || isLocalhost) && user.plan["rss_integration"] && user.permissions["view_rss_fedds"]) {
+      if ((isKiboEngage || isLocalhost) && user.plan['rss_integration'] && user.permissions['view_rss_fedds']) {
         submenu.push({
-          priority: "d",
-          name: "RSS Integration",
-          route: "/rssIntegration"
+          priority: 'd',
+          name: 'RSS Integration',
+          route: '/rssIntegration'
         })
       }
-      if ((isKiboEngage || isLocalhost) && user.plan["news_integration"] && user.permissions["view_news_fedds"]) {
+      if ((isKiboEngage || isLocalhost) && user.plan['news_integration'] && user.permissions['view_news_fedds']) {
         submenu.push({
-          priority: "e",
-          name: "News Integration",
-          route: "/newsIntegration"
+          priority: 'e',
+          name: 'News Integration',
+          route: '/newsIntegration'
         })
       }
-      if ((isKiboEngage || isLocalhost) && user.plan["sequence_messaging"] && user.permissions["view_sequences"]) {
+      if ((isKiboEngage || isLocalhost) && user.plan['sequence_messaging'] && user.permissions['view_sequences']) {
         submenu.push({
-          priority: "f",
-          name: "Sequence Messaging",
-          route: "/sequenceMessaging"
+          priority: 'f',
+          name: 'Sequence Messaging',
+          route: '/sequenceMessaging'
         })
       }
-      if (platform === "whatsApp" && (isKiboChat || isLocalhost) && platform === "whatsApp") {
+      if (platform === 'whatsApp' && (isKiboChat || isLocalhost) && platform === 'whatsApp') {
         submenu.push({
-          priority: "g",
-          name: "Commerce Chatbot",
-          route: "/whatsAppCommerceChatbot"
+          priority: 'g',
+          name: 'Commerce Chatbot',
+          route: '/whatsAppCommerceChatbot'
         })
       }
-      if (platform === "whatsApp" && (isKiboChat || isLocalhost) && platform === "whatsApp") {
+      if (platform === 'whatsApp' && (isKiboChat || isLocalhost) && platform === 'whatsApp') {
         submenu.push({
-          priority: "g",
-          name: "Airlines Chatbot",
-          route: "/whatsAppAirlinesChatbot"
+          priority: 'g',
+          name: 'Airlines Chatbot',
+          route: '/whatsAppAirlinesChatbot'
         })
       }
       menuItems.push({
-        priority: "h",
-        name: "Automation",
+        priority: 'h',
+        name: 'Automation',
         submenu,
-        icon: "flaticon-share"
+        icon: 'flaticon-share'
       })
     }
     if (!isMobile && (isKiboEngage || isLocalhost)) {
       let submenu = []
-      if (user.plan["comment_capture"] && user.permissions["view_comment_capture_rules"]) {
+      if (user.plan['comment_capture'] && user.permissions['view_comment_capture_rules']) {
         submenu.push({
-          priority: "a",
-          name: "Comment Capture",
-          route: "/commentCapture"
+          priority: 'a',
+          name: 'Comment Capture',
+          route: '/commentCapture'
         })
       }
-      if (user.plan["customer_matching"] && user.permissions["invite_subscribers_using_phone_number"]) {
+      if (user.plan['customer_matching'] && user.permissions['invite_subscribers_using_phone_number']) {
         submenu.push({
-          priority: "b",
-          name: "Invite Using Phone Numbers",
-          route: "/customerMatchingUsingPhNum"
+          priority: 'b',
+          name: 'Invite Using Phone Numbers',
+          route: '/customerMatchingUsingPhNum'
         })
       }
       submenu.push({
-        priority: "c",
-        name: "Invite Subscribers",
-        route: "/inviteSubscribers"
+        priority: 'c',
+        name: 'Invite Subscribers',
+        route: '/inviteSubscribers'
       })
-      if (user.plan["messenger_code"] && user.permissions["view_messenger_codes"]) {
+      if (user.plan['messenger_code'] && user.permissions['view_messenger_codes']) {
         submenu.push({
-          priority: "d",
-          name: "Messenger Code",
-          route: "/messengerCode"
+          priority: 'd',
+          name: 'Messenger Code',
+          route: '/messengerCode'
         })
       }
-      if (user.plan["landing_pages"]) {
+      if (user.plan['landing_pages']) {
         submenu.push({
-          priority: "e",
-          name: "Landing Pages",
-          route: "/landingPages"
+          priority: 'e',
+          name: 'Landing Pages',
+          route: '/landingPages'
         })
       }
-      if (user.plan["json_ads"]) {
+      if (user.plan['json_ads']) {
         submenu.push({
-          priority: "f",
-          name: "JSON Ads",
-          route: "/jsonAds"
+          priority: 'f',
+          name: 'JSON Ads',
+          route: '/jsonAds'
         })
       }
-      if (user.plan["messenger_links"] && user.permissions["view_messenger_ref_urls"]) {
+      if (user.plan['messenger_links'] && user.permissions['view_messenger_ref_urls']) {
         submenu.push({
-          priority: "g",
-          name: "Messenger Ref Url",
-          route: "/messengerRefURL"
+          priority: 'g',
+          name: 'Messenger Ref Url',
+          route: '/messengerRefURL'
         })
       }
-      if (user.plan["subscribe_to_messenger"]) {
+      if (user.plan['subscribe_to_messenger']) {
         submenu.push({
-          priority: "h",
-          name: "Message Us Button",
-          route: "/messageUs"
+          priority: 'h',
+          name: 'Message Us Button',
+          route: '/messageUs'
         })
       }
-      if (user.plan["customer_chat_plugin"]) {
+      if (user.plan['customer_chat_plugin']) {
         submenu.push({
-          priority: "i",
-          name: "Customer Chat Plugin",
-          route: "/chatWidget"
+          priority: 'i',
+          name: 'Customer Chat Plugin',
+          route: '/chatWidget'
         })
       }
-      if (user.plan["checkbox_plugin"]) {
+      if (user.plan['checkbox_plugin']) {
         submenu.push({
-          priority: "j",
-          name: "Checkbox Plugin",
-          route: "/checkbox"
+          priority: 'j',
+          name: 'Checkbox Plugin',
+          route: '/checkbox'
         })
       }
-      if (user.plan["overlay_widgets"] && user.isSuperUser) {
+      if (user.plan['overlay_widgets'] && user.isSuperUser) {
         submenu.push({
-          priority: "k",
-          name: "Overlay Widgets",
-          route: "/overlayWidgets"
+          priority: 'k',
+          name: 'Overlay Widgets',
+          route: '/overlayWidgets'
         })
       }
       menuItems.push({
-        priority: "i",
-        name: "Growth Tools",
+        priority: 'i',
+        name: 'Growth Tools',
         submenu,
-        icon: "flaticon-diagram"
+        icon: 'flaticon-diagram'
       })
     }
-    if (platform === "messenger") {
+    if (platform === 'messenger') {
       let submenu = []
-      if (user.plan["manage_pages"] && user.permissions["manage_facebook_pages"]) {
+      if (user.plan['manage_pages'] && user.permissions['manage_facebook_pages']) {
         submenu.push({
-          priority: "a",
-          name: "Pages",
-          route: "/pages"
+          priority: 'a',
+          name: 'Pages',
+          route: '/pages'
         })
       }
-      if (!isMobile && user.plan["menu"] && user.permissions["set_persistent_menu"]) {
+      if (!isMobile && user.plan['menu'] && user.permissions['set_persistent_menu']) {
         submenu.push({
-          priority: "b",
-          name: "Persistent Menu",
-          route: "/menu"
+          priority: 'b',
+          name: 'Persistent Menu',
+          route: '/menu'
         })
       }
-      if (!isMobile && user.plan["welcome_message"] && user.permissions["manage_welcome_message"]) {
+      if (!isMobile && user.plan['welcome_message'] && user.permissions['manage_welcome_message']) {
         submenu.push({
-          priority: "c",
-          name: "Welcome Message",
-          route: "/welcomeMessage"
+          priority: 'c',
+          name: 'Welcome Message',
+          route: '/welcomeMessage'
         })
       }
-      if (!isMobile && user.plan["greeting_text"] && user.permissions["manage_greeting_text"]) {
+      if (!isMobile && user.plan['greeting_text'] && user.permissions['manage_greeting_text']) {
         submenu.push({
-          priority: "d",
-          name: "Greeting Text",
-          route: "/greetingMessage"
+          priority: 'd',
+          name: 'Greeting Text',
+          route: '/greetingMessage'
         })
       }
       menuItems.push({
-        priority: "j",
-        name: "Manage Pages",
+        priority: 'j',
+        name: 'Manage Pages',
         submenu,
-        icon: "flaticon-add"
+        icon: 'flaticon-add'
       })
     }
     if (!isMobile) {
       let submenu = []
-      if (user.plan["invite_members"] && user.permissions["invite_members"]) {
+      if (user.plan['invite_members'] && user.permissions['invite_members']) {
         submenu.push({
-          priority: "a",
-          name: "Invite Members",
-          route: "/inviteMembers"
+          priority: 'a',
+          name: 'Invite Members',
+          route: '/inviteMembers'
         })
       }
-      if (user.permissions["view_members"]) {
+      if (user.permissions['view_members']) {
         submenu.push({
-          priority: "b",
-          name: "Members",
-          route: "/members"
+          priority: 'b',
+          name: 'Members',
+          route: '/members'
         })
       }
-      if (user.plan["team_members_management"] && user.permissions["view_teams"]) {
+      if (user.plan['team_members_management'] && user.permissions['view_teams']) {
         submenu.push({
-          priority: "c",
-          name: "Teams",
-          route: "/teams"
+          priority: 'c',
+          name: 'Teams',
+          route: '/teams'
         })
       }
       menuItems.push({
-        priority: "k",
-        name: "Organization",
+        priority: 'k',
+        name: 'Organization',
         submenu,
-        icon: "flaticon-share"
+        icon: 'flaticon-share'
       })
     }
-    if (platform === "messenger" && user.isSuperUser) {
+    if (platform === 'messenger' && user.isSuperUser) {
       //       menuItems.push({
       //         priority: 'l',
       //         name: 'Abandoned Carts',
@@ -436,17 +436,17 @@ class Sidebar extends Component {
     }
     if (!isMobile) {
       menuItems.push({
-        priority: "m",
-        name: "Settings",
-        route: "/settings",
-        icon: "flaticon-cogwheel"
+        priority: 'm',
+        name: 'Settings',
+        route: '/settings',
+        icon: 'flaticon-cogwheel'
       })
     }
     menuItems.push({
-      priority: "n",
-      name: "User Guide",
-      link: "http://kibopush.com/user-guide/",
-      icon: "flaticon-info"
+      priority: 'n',
+      name: 'User Guide',
+      link: 'http://kibopush.com/user-guide/',
+      icon: 'flaticon-info'
     })
     return menuItems.sort((a, b) => (a.priority > b.priority ? 1 : -1))
   }
@@ -459,30 +459,30 @@ class Sidebar extends Component {
 
   render() {
     return (
-      <div id="sidebarDiv">
-        <button className="m-aside-left-close m-aside-left-close--skin-dark" id="m_aside_left_close_btn">
-          <i className="la la-close" />
+      <div id='sidebarDiv'>
+        <button className='m-aside-left-close m-aside-left-close--skin-dark' id='m_aside_left_close_btn'>
+          <i className='la la-close' />
         </button>
-        <div id="m_aside_left" className="m-grid__item m-aside-left  m-aside-left--skin-dark">
+        <div id='m_aside_left' className='m-grid__item m-aside-left  m-aside-left--skin-dark'>
           <div
-            id="m_ver_menu"
-            className="m-aside-menu  m-aside-menu--skin-dark m-aside-menu--submenu-skin-dark m-scroller mCustomScrollbar _mCS_2 mCS-autoHide"
-            data-menu-vertical="1"
-            data-menu-scrollable="1"
+            id='m_ver_menu'
+            className='m-aside-menu  m-aside-menu--skin-dark m-aside-menu--submenu-skin-dark m-scroller mCustomScrollbar _mCS_2 mCS-autoHide'
+            data-menu-vertical='1'
+            data-menu-scrollable='1'
           >
             <div
-              id="mCSB_2"
-              className="mCustomScrollBox mCS-minimal-dark mCSB_vertical mCSB_outside"
-              tabIndex="0"
-              style={{ maxHeight: "none" }}
+              id='mCSB_2'
+              className='mCustomScrollBox mCS-minimal-dark mCSB_vertical mCSB_outside'
+              tabIndex='0'
+              style={{ maxHeight: 'none' }}
             >
               <div
-                id="mCSB_2_container"
-                className="mCSB_container"
-                style={{ position: "relative", top: "0px", left: "0px" }}
-                dir="ltr"
+                id='mCSB_2_container'
+                className='mCSB_container'
+                style={{ position: 'relative', top: '0px', left: '0px' }}
+                dir='ltr'
               >
-                <ul className="m-menu__nav  m-menu__nav--dropdown-submenu-arrow ">
+                <ul className='m-menu__nav  m-menu__nav--dropdown-submenu-arrow '>
                   {this.state.menuItems.map((item, index) => (
                     <MENUITEM {...item} />
                   ))}
@@ -490,19 +490,19 @@ class Sidebar extends Component {
               </div>
             </div>
             <div
-              id="mCSB_2_scrollbar_vertical"
-              className="mCSB_scrollTools mCSB_2_scrollbar mCS-minimal-dark mCSB_scrollTools_vertical"
-              style={{ display: "block" }}
+              id='mCSB_2_scrollbar_vertical'
+              className='mCSB_scrollTools mCSB_2_scrollbar mCS-minimal-dark mCSB_scrollTools_vertical'
+              style={{ display: 'block' }}
             >
-              <div className="mCSB_draggerContainer">
+              <div className='mCSB_draggerContainer'>
                 <div
-                  id="mCSB_2_dragger_vertical"
-                  className="mCSB_dragger"
-                  style={{ position: "absolute", minHeight: "50px", display: "block", maxHeight: "303px", top: "0px" }}
+                  id='mCSB_2_dragger_vertical'
+                  className='mCSB_dragger'
+                  style={{ position: 'absolute', minHeight: '50px', display: 'block', maxHeight: '303px', top: '0px' }}
                 >
-                  <div className="mCSB_dragger_bar" style={{ lineHeight: "50px" }} />
+                  <div className='mCSB_dragger_bar' style={{ lineHeight: '50px' }} />
                 </div>
-                <div className="mCSB_draggerRail" />
+                <div className='mCSB_draggerRail' />
               </div>
             </div>
           </div>
@@ -513,7 +513,7 @@ class Sidebar extends Component {
 }
 
 function mapStateToProps(state) {
-  console.log("mapStateToProps in sidebar", state)
+  console.log('mapStateToProps in sidebar', state)
   return {
     user: state.basicInfo.user,
     isMobile: state.basicInfo.isMobile,
