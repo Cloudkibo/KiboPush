@@ -62,8 +62,11 @@ class Media extends React.Component {
         canBeDeleted = false
       }
       if (canBeDeleted) {
-        this.props.setTempFiles(null, [this.state.fileurl.id])
-        deleteFile(this.state.fileurl.id)
+        let data = {...this.state.fileurl}
+        setTimeout(() => {
+          this.props.setTempFiles(null, [data.id])
+          deleteFile(data.id)
+          }, 10000)
       }
     }
     this.props.updateImage('', true)
