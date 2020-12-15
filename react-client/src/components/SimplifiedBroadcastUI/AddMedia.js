@@ -66,7 +66,7 @@ class Media extends React.Component {
         deleteFile(this.state.fileurl.id)
       }
     }
-    this.props.updateImage('')
+    this.props.updateImage('', true)
     var file = this.refs.file.files[0]
     var video = file.type.match('video.*')
     var image = file.type.match('image.*')
