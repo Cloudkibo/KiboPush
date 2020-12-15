@@ -435,7 +435,11 @@ class Subscriber extends React.Component {
   }
   subscribe() {
     if (this.state.subscriber._id) {
-      this.props.subscribe(this.state.subscriber._id, this.handleSubscription, this.msg)
+      if (this.state.subscriber.unSubscribedBy === 'subscriber') {
+        this.msg.error('You can only subscribe those subscribers whom you have unsubscribed yourself. This subscriber has unsubscribed of their own accord (by messaging stop/unsubscribe to your page).')
+      } else {
+        this.props.subscribe(this.state.subscriber._id, this.handleSubscription, this.msg)
+      }
     }
   }
   unSubscribe() {
@@ -1859,7 +1863,7 @@ class Subscriber extends React.Component {
                                 {
                                   this.state.searching ?
                                   <center><RingLoader color='#FF5E3A' /></center>
-                                  : 
+                                  :
                                   this.state.subscribersData.map((subscriber, i) => (
                                     <tr data-row={i}
                                       className='m-datatable__row m-datatable__row--even subscriberRow'
@@ -2014,9 +2018,7 @@ class Subscriber extends React.Component {
                                     : <div style={{ display: 'block', marginTop: '5px' }}>
                                       <i style={{ fontWeight: 'bold' }} className='la la-times-circle' />
                                       unsubscribed
-                                    {this.state.subscriber.unSubscribedBy !== 'subscriber' &&
                                         <a href='#/' onClick={this.subscribe} style={{ color: 'blue', textDecoration: 'underline', cursor: 'pointer' }}> {'(Subscribe)'}</a>
-                                      }
                                     </div>
                                 }
                                 {
