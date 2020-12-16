@@ -13,6 +13,7 @@ class ViewBroadcast extends React.Component {
         this.state = {
             }
         this.goBack = this.goBack.bind(this)
+        this.goToResponses = this.goToResponses.bind(this)
         props.fetchSmsAnalytics(props.smsBroadcast._id)
     }
     goBack () {
@@ -20,6 +21,12 @@ class ViewBroadcast extends React.Component {
             pathname: `/smsBroadcasts`,
         })
     }
+    goToResponses () {
+        this.props.history.push({
+            pathname: `/viewResponses`,
+        })
+    }
+
 
     UNSAFE_componentWillReceiveProps (nextProps) {
         if (nextProps.smsAnalytics) {
@@ -70,7 +77,7 @@ class ViewBroadcast extends React.Component {
                                 </div>
                             </div>
                             <div className='m-portlet__head-tools'>
-                            <button id="btnViewResponses" className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'  onClick={() => {}}>
+                            <button id="btnViewResponses" className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'  onClick={() => {this.goToResponses()}} disabled={this.props.smsAnalytics && this.props.smsAnalytics.responded < 1}>
                                 <span>
                                 <span>View Responses</span>
                                 </span>
