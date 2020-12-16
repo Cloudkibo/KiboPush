@@ -70,9 +70,7 @@ class AddPage extends React.Component {
   }
 
   UNSAFE_componentWillReceiveProps(nextprops) {
-    if (nextprops.message && nextprops.message !== '') {
-      this.setState({ showAlert: true, alertmsg: 'The page you are trying to connect is not published on Facebook. Please go to Facebook Page settings to publish your page and then try connecting this page.' })
-    } else if (nextprops.page_connected && nextprops.page_connected !== '') {
+    if (nextprops.page_connected && nextprops.page_connected !== '') {
       this.setState({ showAlert: true, alertmsg: nextprops.page_connected })
     } else {
       this.setState({ showAlert: false, alertmsg: '' })
@@ -208,8 +206,8 @@ class AddPage extends React.Component {
                               }
                             </div>
                           </div>
-                        ))
-                      }
+                          ))
+                        }
                     </div>
                   </div>
                 </div>
