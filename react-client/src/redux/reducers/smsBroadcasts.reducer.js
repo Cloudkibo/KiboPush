@@ -19,6 +19,12 @@ export function smsBroadcastsInfo (state = [], action) {
       return Object.assign({}, state, {
         smsAnalytics: action.data
       })
+    case ActionTypes.SHOW_SENDERS_INFO:
+      let updateSenderInfo = state.sendersInfo ? state.sendersInfo : {}
+      updateSenderInfo[action.responseId] = action.sendersInfo    
+      return Object.assign({}, state, {
+        sendersInfo: {...updateSenderInfo}
+      })
     default:
       return state
   }
