@@ -1536,6 +1536,7 @@ class Builders extends React.Component {
         pageId={this.props.pageId.pageId}
         showCloseModalAlertDialog={this.showCloseModalAlertDialog}
         closeModal={this.closeAddComponentModal}
+        alertMsg={this.msg}
         addComponent={this.addComponent} />),
       'file': (<FileModal
         onFilesError={this.onFilesError}
@@ -1550,6 +1551,7 @@ class Builders extends React.Component {
         showCloseModalAlertDialog={this.showCloseModalAlertDialog}
         closeModal={this.closeAddComponentModal}
         showValidationModal= {this.showValidationModal}
+        alertMsg={this.msg}
         addComponent={this.addComponent} />),
       'audio': (<AudioModal
         onFilesError={this.onFilesError}
@@ -1563,6 +1565,7 @@ class Builders extends React.Component {
         showCloseModalAlertDialog={this.showCloseModalAlertDialog}
         closeModal={this.closeAddComponentModal}
         showValidationModal= {this.showValidationModal}
+        alertMsg={this.msg}
         addComponent={this.addComponent} />),
       'media': (<MediaModal
         buttons={[]}
@@ -1583,6 +1586,7 @@ class Builders extends React.Component {
         onFilesError={this.onFilesError}
         handleMedia={this.handleMedia}
         showValidationModal= {this.showValidationModal}
+        alertMsg={this.msg}
         addComponent={this.addComponent} />),
       'video': (<VideoLinkModal
           buttons={[]}
@@ -1600,6 +1604,7 @@ class Builders extends React.Component {
           closeModal={this.closeAddComponentModal}
           toggleGSModal={this.toggleGSModal}
           closeGSModal={this.closeGSModal}
+          alertMsg={this.msg}
           addComponent={this.addComponent} />),
       'link': (<LinkCarousel
         buttons={[]}

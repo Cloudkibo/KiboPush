@@ -4,7 +4,7 @@ import callApi from '../../utility/api.caller.service'
 import { getAccountsUrl } from '../../utility/utils'
 export const API_URL = '/api'
 
-export function uploadFile (filedata, fileInfo, handleFunction, setLoading) {
+export function uploadFile (filedata, fileInfo, handleFunction, setLoading, msg) {
   return (dispatch) => {
     fetch(`${getAccountsUrl()}/uploadFile`, {
       method: 'post',
@@ -23,7 +23,12 @@ export function uploadFile (filedata, fileInfo, handleFunction, setLoading) {
           handleFunction(fileInfo)
         }
       } else {
-        console.log(res.description)
+        console.log('msg got', msg)
+        console.log(res)
+        msg && msg.error(res.description)
+        if (setLoading) {
+          setLoading()
+        }
       }
     })
   }
@@ -97,7 +102,7 @@ export function urlMetaData (url, handleFunction, handleError) {
   }
 }
 
-export function uploadImage (file, pages, componentType, data, handleUpload, setLoading) {
+export function uploadImage (file, pages, componentType, data, handleUpload, setLoading, msg) {
   // eslint-disable-next-line no-undef
   var fileData = new FormData()
   fileData.append('file', file)
@@ -129,6 +134,10 @@ export function uploadImage (file, pages, componentType, data, handleUpload, set
         }
       } else {
         console.log(res.description)
+        msg && msg.error(res.description)
+        if (setLoading) {
+          setLoading()
+        }
       }
     })
   }
@@ -150,7 +159,7 @@ export function uploadTemplate (dataTosend, data, handleUpload, setLoading, hand
           console.log('fileInfo: ', data)
           if (handleUpload) {
             handleUpload(data)
-          } 
+          }
         } else {
           if (handleError) {
             handleError(res)
