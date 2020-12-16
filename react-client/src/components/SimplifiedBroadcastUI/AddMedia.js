@@ -50,22 +50,6 @@ class Media extends React.Component {
   }
 
   _onChange () {
-    if (this.state.fileurl && this.state.fileurl.id) {
-      let canBeDeleted = true
-      for (let i = 0; i < this.props.initialFiles.length; i++) {
-        if (this.state.fileurl.id === this.props.initialFiles[i]) {
-          canBeDeleted = false
-          break
-        }
-      }
-      if (this.state.file.id === this.props.initialFile) {
-        canBeDeleted = false
-      }
-      if (canBeDeleted) {
-        this.props.setTempFiles(null, [this.state.fileurl.id])
-        deleteFile(this.state.fileurl.id)
-      }
-    }
     this.props.updateImage('', true)
     var file = this.refs.file.files[0]
     var video = file.type.match('video.*')
