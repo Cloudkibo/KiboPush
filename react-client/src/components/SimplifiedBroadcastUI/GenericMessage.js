@@ -111,7 +111,7 @@ class GenericMessage extends React.Component {
     props.fetchAllSequence()
 
     props.getWhatsAppMessageTemplates()
-    
+
     console.log('genericMessage props in constructor', props)
   }
 
@@ -348,11 +348,11 @@ class GenericMessage extends React.Component {
     if (!isPresent) {
       if (obj.templateName) {
         temp.push({
-          id: obj.id, 
-          text: obj.text, 
-          componentType: 'text', 
-          componentName: obj.componentName, 
-          buttons: obj.buttons, 
+          id: obj.id,
+          text: obj.text,
+          componentType: 'text',
+          componentName: obj.componentName,
+          buttons: obj.buttons,
           templateName: obj.templateName,
           templateArguments: obj.templateArguments
         })
@@ -669,6 +669,7 @@ class GenericMessage extends React.Component {
   openModal () {
     console.log('openModal this.state.editData', this.state.editData)
     console.log('{...this.state.editData}',{...this.state.editData})
+    console.log('this.state.componentType', this.state.componentType)
     let modals = {
       'text': (<TextModal
         buttons={[]}
@@ -713,6 +714,7 @@ class GenericMessage extends React.Component {
         pageId={this.props.pageId}
         showCloseModalAlertDialog={this.showCloseModalAlertDialog}
         closeModal={this.closeAddComponentModal}
+        alertMsg={this.msg}
         addComponent={this.addComponent} />),
       'file': (<FileModal
         edit={this.state.editData ? true : false}
@@ -726,6 +728,7 @@ class GenericMessage extends React.Component {
         showCloseModalAlertDialog={this.showCloseModalAlertDialog}
         closeModal={this.closeAddComponentModal}
         showValidationModal= {this.showValidationModal}
+        alertMsg={this.msg}
         addComponent={this.addComponent} />),
       'audio': (<AudioModal
         edit={this.state.editData ? true : false}
@@ -738,6 +741,7 @@ class GenericMessage extends React.Component {
         showCloseModalAlertDialog={this.showCloseModalAlertDialog}
         closeModal={this.closeAddComponentModal}
         showValidationModal= {this.showValidationModal}
+        alertMsg={this.msg}
         addComponent={this.addComponent} />),
       'media': (<MediaModal
         buttons={[]}
@@ -754,6 +758,7 @@ class GenericMessage extends React.Component {
         showCloseModalAlertDialog={this.showCloseModalAlertDialog}
         closeModal={this.closeAddComponentModal}
         showValidationModal= {this.showValidationModal}
+        alertMsg={this.msg}
         addComponent={this.addComponent} />),
       'video': (<VideoLinkModal
         buttons={[]}
@@ -771,6 +776,7 @@ class GenericMessage extends React.Component {
         closeModal={this.closeAddComponentModal}
         toggleGSModal={this.toggleGSModal}
         closeGSModal={this.closeGSModal}
+        alertMsg={this.msg}
         addComponent={this.addComponent} />),
       'link': (<LinkCarousel
         buttons={[]}
@@ -791,7 +797,7 @@ class GenericMessage extends React.Component {
         alertMsg={this.msg}
         id={new Date().getTime()}
         heading={'Message Template'}
-        addComponent={this.addComponent} 
+        addComponent={this.addComponent}
         showCloseModalAlertDialog={this.showCloseModalAlertDialog}
         closeModal={this.closeAddComponentModal}
         edit={this.state.editData ? true : false}
@@ -802,6 +808,7 @@ class GenericMessage extends React.Component {
   }
 
   getComponent (broadcast) {
+    console.log('this.msg', this.msg)
     console.log('getting component', broadcast)
     let componentId = broadcast.id || broadcast.id === 0 ? broadcast.id : new Date().getTime()
     console.log('componentId', componentId)
@@ -966,6 +973,7 @@ class GenericMessage extends React.Component {
           handleFile={this.handleFile}
           onRemove={this.removeComponent}
           buttonActions={this.props.buttonActions}
+          alertMsg={this.msg}
           replyWithMessage={this.props.replyWithMessage} />),
         handler: () => {
           this.handleFile({
@@ -987,6 +995,7 @@ class GenericMessage extends React.Component {
           handleFile={this.handleFile}
           onRemove={this.removeComponent}
           buttonActions={this.props.buttonActions}
+          alertMsg={this.msg}
           replyWithMessage={this.props.replyWithMessage} />),
         handler: () => {
           this.handleFile({id: componentId,
@@ -1007,6 +1016,7 @@ class GenericMessage extends React.Component {
           media={broadcast}
           key={componentId}
           handleMedia={this.handleMedia}
+          alertMsg={this.msg}
           onRemove={this.removeComponent} />),
         handler: () => {
           this.handleImage({
@@ -1035,6 +1045,7 @@ class GenericMessage extends React.Component {
           handleMedia={this.handleMedia}
           onRemove={this.removeComponent}
           buttonActions={this.props.buttonActions}
+          alertMsg={this.msg}
           replyWithMessage={this.props.replyWithMessage} />),
         handler: () => {
           this.handleMedia({id: componentId,
@@ -1069,6 +1080,7 @@ class GenericMessage extends React.Component {
           handleMedia={this.handleMedia}
           onRemove={this.removeComponent}
           buttonActions={this.props.buttonActions}
+          alertMsg={this.msg}
           replyWithMessage={this.props.replyWithMessage} />),
         handler: () => {
           this.handleMedia({

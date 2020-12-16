@@ -142,7 +142,7 @@ class Builders extends React.Component {
       let messageContent = this.props.linkedMessages[0].messageContent
       if (messageContent[messageContent.length - 1].quickReplies) {
         quickReplies[currentId] = messageContent[messageContent.length - 1].quickReplies
-        quickRepliesComponents[currentId] = this.getQuickReplies(quickReplies[currentId]) 
+        quickRepliesComponents[currentId] = this.getQuickReplies(quickReplies[currentId])
         this.state.quickReplies = quickReplies
         this.state.quickRepliesComponents = quickRepliesComponents
       }
@@ -239,11 +239,11 @@ class Builders extends React.Component {
     this.setState({showGSModal: false})
     this.refs.ActionModal.click()
   }
-  
+
 
   onFilesError (errorMsg) {
     this.setState({
-      fileError: errorMsg   
+      fileError: errorMsg
     })
     this.refs.fileError.click()
   }
@@ -676,7 +676,7 @@ class Builders extends React.Component {
                 componentType: "image",
                 id: component.cards[k].fileurl.id,
                 name: component.cards[k].fileurl.name
-              }, { 
+              }, {
                 id: component.id,
                 componentType: "image",
                 fileName: component.cards[k].fileurl.name,
@@ -693,7 +693,7 @@ class Builders extends React.Component {
             componentType: component.mediaType || component.componentType,
             id: component.fileurl.id,
             name: component.fileurl.name
-          }, { 
+          }, {
             id: component.id,
             componentType: component.mediaType || component.componentType,
             fileName: component.fileurl.name,
@@ -1223,7 +1223,7 @@ class Builders extends React.Component {
                 if (payload[l].blockUniqueId) {
                   deletePayload.push(payload[l].blockUniqueId)
                 }
-              } 
+              }
             }
           }
           if (messageContent.buttons) {
@@ -1314,7 +1314,7 @@ class Builders extends React.Component {
                 linkedMessages[i].messageContent[j].quickReplies[k].payload = JSON.stringify(payload)
                 return
               }
-            } 
+            }
           }
         }
         if (component.buttons) {
@@ -1378,7 +1378,7 @@ class Builders extends React.Component {
                 unlinkedMessages[i].messageContent[j].quickReplies[k].payload = JSON.stringify(payload)
                 return
               }
-            } 
+            }
           }
         }
         if (component.buttons) {
@@ -1427,7 +1427,7 @@ class Builders extends React.Component {
     this.setState({linkedMessages, unlinkedMessages})
   }
 
-  
+
 
   addComponent (componentDetails, edit) {
     console.log('componentDetails', componentDetails)
@@ -1508,6 +1508,7 @@ class Builders extends React.Component {
         pageId={this.props.pageId.pageId}
         showCloseModalAlertDialog={this.showCloseModalAlertDialog}
         closeModal={this.closeAddComponentModal}
+        alertMsg={this.msg}
         addComponent={this.addComponent} />),
       'file': (<FileModal
         onFilesError={this.onFilesError}
@@ -1522,6 +1523,7 @@ class Builders extends React.Component {
         showCloseModalAlertDialog={this.showCloseModalAlertDialog}
         closeModal={this.closeAddComponentModal}
         showValidationModal= {this.showValidationModal}
+        alertMsg={this.msg}
         addComponent={this.addComponent} />),
       'audio': (<AudioModal
         onFilesError={this.onFilesError}
@@ -1535,6 +1537,7 @@ class Builders extends React.Component {
         showCloseModalAlertDialog={this.showCloseModalAlertDialog}
         closeModal={this.closeAddComponentModal}
         showValidationModal= {this.showValidationModal}
+        alertMsg={this.msg}
         addComponent={this.addComponent} />),
       'media': (<MediaModal
         buttons={[]}
@@ -1553,6 +1556,7 @@ class Builders extends React.Component {
         onFilesError={this.onFilesError}
         handleMedia={this.handleMedia}
         showValidationModal= {this.showValidationModal}
+        alertMsg={this.msg}
         addComponent={this.addComponent} />),
       'video': (<VideoLinkModal
           buttons={[]}
@@ -1570,6 +1574,7 @@ class Builders extends React.Component {
           closeModal={this.closeAddComponentModal}
           toggleGSModal={this.toggleGSModal}
           closeGSModal={this.closeGSModal}
+          alertMsg={this.msg}
           addComponent={this.addComponent} />),
       'link': (<LinkCarousel
         buttons={[]}
@@ -1700,7 +1705,7 @@ class Builders extends React.Component {
             header: broadcast.header,
             defaultErrorMsg: broadcast.defaultErrorMsg,
             invalidMsg: broadcast.invalidMsg,
-            validMsg: broadcast.validMsg, 
+            validMsg: broadcast.validMsg,
             retrievingMsg: broadcast.retrievingMsg,
             buttonTitle: broadcast.buttonTitle,
             validateUrl: broadcast.validateUrl,
@@ -1987,7 +1992,7 @@ class Builders extends React.Component {
 
       <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
       <div style={{float: 'left', clear: 'both'}}
-        ref={(el) => { this.top = el }} /> 
+        ref={(el) => { this.top = el }} />
          { this.state.loading &&
         <div style={{ width: '100vw', height: '100vh', background: 'rgba(33, 37, 41, 0.6)', position: 'fixed', zIndex: '99999', top: '0px' }}>
             <div style={{ position: 'fixed', top: '50%', left: '50%', width: '30em', height: '18em', marginLeft: '-10em' }}
@@ -2120,7 +2125,7 @@ class Builders extends React.Component {
           </div>
         </div>
 
-        
+
 
       <a href='#/' style={{ display: 'none' }} ref='lossData' data-toggle="modal" data-target="#lossData">lossData</a>
       <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="lossData" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">

@@ -50,6 +50,7 @@ class Media extends React.Component {
   }
 
   _onChange () {
+    console.log('this.props', this.props)
     if (this.state.fileurl && this.state.fileurl.id) {
       let canBeDeleted = true
       for (let i = 0; i < this.props.initialFiles.length; i++) {
@@ -108,7 +109,7 @@ class Media extends React.Component {
         fileName: file.name,
         type: file.type,
         image_url: '',
-        size: file.size}, this.updateImageUrl)
+        size: file.size}, this.updateImageUrl, this.setLoading, this.props.alertMsg)
     }
     if (file && video) {
       this.setState({file: file, mediaType: 'video'})
@@ -127,7 +128,7 @@ class Media extends React.Component {
         size: file.size
       }
       this.setState({loading: true, showPreview: false})
-      this.props.uploadFile(fileData, fileInfo, this.updateFile)
+      this.props.uploadFile(fileData, fileInfo, this.updateFile, this.setLoading, this.props.alertMsg)
     }
   }
 
