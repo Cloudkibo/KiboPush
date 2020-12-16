@@ -231,7 +231,32 @@ class MessageArea extends React.Component {
     callback()
   }
 
+  deleteButtonOnCards(blockId) {
+    let blocks = JSON.parse(JSON.stringify(this.props.blocks))
+    blocks.forEach(function(block) {
+      block.payload.forEach(function(payload) {
+        if(payload.componentType === 'gallery') {
+          let cards = payload.cards
+          cards.forEach(function(card) {
+            if(card.buttonOption) {
+              let data = JSON.parse(card.buttons[0].payload)
+              if (data[0].blockUniqueId === blockId) {
+                console.log('condition true')
+                card.buttonOption = null
+                card.buttons = []
+              }
+            }
+
+          })
+        }
+      })
+    })
+    this.props.updateParentState({blocks: blocks})
+  }
+
   onDelete () {
+    console.log('carouselCards', this.state.carouselCards)
+    this.deleteButtonOnCards(this.props.block.uniqueId)
     let blockUniqueIds = [this.props.block.uniqueId.toString()]
     let childBlocks = this.props.sidebarItems.filter((item) => blockUniqueIds.indexOf(item.id.toString()) === -1)
     /* eslint-disable */

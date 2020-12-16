@@ -120,7 +120,6 @@ class Notifications extends React.Component {
           </div>
           <div className='tab-content'>
             <div className='m-content'>
-      
               <div style={{overflow: 'auto' }}>
                 {
                   this.state.notifications && this.state.notifications.length > 0 &&  this.state.notifications.map((notification, i) => 
