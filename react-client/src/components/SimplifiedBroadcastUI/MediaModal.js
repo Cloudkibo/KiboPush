@@ -118,8 +118,13 @@ class MediaModal extends React.Component {
     this.setState(status)
   }
 
-  updateImage(imgSrc) {
+  updateImage(imgSrc, isFile) {
     this.setState({ imgSrc, edited: true })
+    if(isFile) {
+      this.setState({ imgSrc, edited: true, file: ''})
+    } else{
+      this.setState({ imgSrc, edited: true})
+    }
   }
 
   updateFile(file) {
