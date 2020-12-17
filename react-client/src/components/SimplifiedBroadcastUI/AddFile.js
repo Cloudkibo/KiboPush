@@ -111,7 +111,7 @@ class File extends React.Component {
           size: file.size
         }
         this.setState({loading: true, showPreview: false})
-        this.props.uploadFile(fileData, fileInfo, this.handleFile, this.setLoading)
+        this.props.uploadFile(fileData, fileInfo, this.handleFile, this.setLoading, this.props.alertMsg)
       }
     }
   }

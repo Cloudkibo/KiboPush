@@ -30,7 +30,7 @@ class Image extends React.Component {
   clickFile () {
     this.file.click()
   }
-  
+
   UNSAFE_componentWillReceiveProps (nextProps) {
     let newState = {
       file: nextProps.file ? nextProps.file : null,
@@ -122,7 +122,7 @@ class Image extends React.Component {
         image_url: '',
         type: file.type, // jpg, png, gif
         size: file.size
-      }, this.handleImage, this.setLoading)
+      }, this.handleImage, this.setLoading, this.props.alertMsg)
     }
   }
 

@@ -50,7 +50,7 @@ class ImageModal extends React.Component {
       this.props.showCloseModalAlertDialog()
     }
   }
-  
+
   render() {
     return (
       <div className="modal-content" style={{ width: '72vw' }}>
@@ -68,7 +68,7 @@ class ImageModal extends React.Component {
           <div className='row'>
             <div className='col-6'>
               <h4>Image:</h4>
-              <Image required updateFile={this.updateFile} updateImage={this.updateImage} />
+              <Image required updateFile={this.updateFile} updateImage={this.updateImage} alertMsg={this.props.alertMsg} />
             </div>
             <div className='col-1'>
               <div style={{ minHeight: '100%', width: '1px', borderLeft: '1px solid rgba(0,0,0,.1)' }} />
