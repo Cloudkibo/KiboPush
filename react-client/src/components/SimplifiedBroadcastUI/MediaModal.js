@@ -48,7 +48,7 @@ class MediaModal extends React.Component {
           canBeDeleted = false
           break
         }
-      } 
+      }
       if (canBeDeleted) {
         if (this.state.file.fileurl.id !== this.state.initialFile) {
           deleteFile(this.state.initialFile)
@@ -118,12 +118,8 @@ class MediaModal extends React.Component {
     this.setState(status)
   }
 
-  updateImage(imgSrc, isFile) {
-    if(isFile) {
-      this.setState({ imgSrc, edited: true, file: ''})
-    } else{
-      this.setState({ imgSrc, edited: true})
-    }
+  updateImage(imgSrc) {
+    this.setState({ imgSrc, edited: true })
   }
 
   updateFile(file) {
@@ -181,8 +177,9 @@ class MediaModal extends React.Component {
                 fileName={this.state.file ? this.state.file.fileName : ''}
                 image_url={this.state.file && this.state.file.image_url ? this.state.file.image_url : ''}
                 size={this.state.file ? this.state.file.size : ''}
-                type={this.state.file ? this.state.file.type : ''} 
+                type={this.state.file ? this.state.file.type : ''}
                 handleMedia={this.props.handleMedia}
+                alertMsg={this.props.alertMsg}
                 />
               {
                 (!this.props.noButtons && this.state.file) &&

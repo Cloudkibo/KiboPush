@@ -50,7 +50,7 @@ class Media extends React.Component {
   }
 
   _onChange () {
-    this.props.updateImage('', true)
+    this.props.updateImage('')
     var file = this.refs.file.files[0]
     var video = file.type.match('video.*')
     var image = file.type.match('image.*')
@@ -92,7 +92,7 @@ class Media extends React.Component {
         fileName: file.name,
         type: file.type,
         image_url: '',
-        size: file.size}, this.updateImageUrl)
+        size: file.size}, this.updateImageUrl, this.setLoading, this.props.alertMsg)
     }
     if (file && video) {
       this.setState({file: file, mediaType: 'video'})
@@ -111,7 +111,7 @@ class Media extends React.Component {
         size: file.size
       }
       this.setState({loading: true, showPreview: false})
-      this.props.uploadFile(fileData, fileInfo, this.updateFile)
+      this.props.uploadFile(fileData, fileInfo, this.updateFile, this.setLoading, this.props.alertMsg)
     }
   }
 
