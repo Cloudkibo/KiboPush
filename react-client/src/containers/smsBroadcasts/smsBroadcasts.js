@@ -4,7 +4,7 @@
 
 import React from 'react'
 import { connect } from 'react-redux'
-import { loadBroadcastsList, loadTwilioNumbers } from '../../redux/actions/smsBroadcasts.actions'
+import { loadBroadcastsList, loadTwilioNumbers, saveCurrentSmsBroadcast } from '../../redux/actions/smsBroadcasts.actions'
 import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
 import { Link } from 'react-router-dom'
@@ -30,6 +30,7 @@ class SmsBroadcast extends React.Component {
     props.loadContactsList({last_id: 'none', number_of_records: 10, first_page: 'first'})
     props.loadBroadcastsList({last_id: 'none', number_of_records: 10, first_page: 'first'})
     props.loadTwilioNumbers()
+    props.saveCurrentSmsBroadcast(null)
 
     this.displayData = this.displayData.bind(this)
     this.togglePopover = this.togglePopover.bind(this)
@@ -38,6 +39,7 @@ class SmsBroadcast extends React.Component {
     this.gotoCreate = this.gotoCreate.bind(this)
     this.onNumberChange = this.onNumberChange.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
+    this.gotoView = this.gotoView.bind(this)
   }
 
   togglePopover () {
@@ -51,6 +53,13 @@ class SmsBroadcast extends React.Component {
     this.props.history.push({
       pathname: `/createsmsBroadcast`,
       state: {number: this.state.numberValue}
+    })
+  }
+  
+  gotoView (broadcast) {
+    this.props.saveCurrentSmsBroadcast(broadcast)
+    this.props.history.push({
+      pathname: `/viewBroadcast`,
     })
   }
 
@@ -267,8 +276,8 @@ class SmsBroadcast extends React.Component {
                             <td data-field='createAt' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{broadcast.datetime}</span></td>
                             <td data-field='sent' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{broadcast.phoneNumber}</span></td>
                             <td data-field='delivered' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{broadcast.sent}</span></td>
-                            <td data-field='isFollowUp' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{broadcast.isFollowUp}</span></td>
-                            <td data-field='action' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}><button style={{width: '60px'}} className='btn btn-primary btn-sm m-btn--pill' onClick={() => {}}>View</button></span></td>
+                            <td data-field='isFollowUp' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{broadcast.followUp}</span></td>
+                            <td data-field='action' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}><button style={{width: '60px'}} className='btn btn-primary btn-sm m-btn--pill' onClick={() => {this.gotoView(broadcast)}}>View</button></span></td>
                           </tr>
                         ))
                       }
@@ -362,7 +371,8 @@ function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     loadBroadcastsList,
     loadTwilioNumbers,
-    loadContactsList
+    loadContactsList,
+    saveCurrentSmsBroadcast
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(SmsBroadcast)

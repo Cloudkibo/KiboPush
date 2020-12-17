@@ -11,6 +11,14 @@ export function smsBroadcastsInfo (state = [], action) {
       return Object.assign({}, state, {
         twilioNumbers: action.twilioNumbers
       })
+    case ActionTypes.CURRENT_SMSBROADCAST:
+      return Object.assign({}, state, {
+        smsBroadcast: action.data
+      })
+    case ActionTypes.SHOW_SMS_ANALYTICS:
+      return Object.assign({}, state, {
+        smsAnalytics: action.data
+      })
     default:
       return state
   }
