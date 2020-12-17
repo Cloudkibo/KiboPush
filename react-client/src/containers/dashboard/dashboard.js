@@ -32,6 +32,7 @@ import { readShopifyInstallRequest } from '../../utility/utils'
 // import TopPages from './topPages'
 import moment from 'moment'
 import fileDownload from 'js-file-download'
+import SLADashboard from '../SLA_Dashboard/sla_dashboard'
 // import Connect from '../facebookConnect/connect'
 
 var json2csv = require('json2csv')
@@ -639,6 +640,12 @@ class Dashboard extends React.Component {
                 !this.props.isMobile && (url.includes('kiboengage.cloudkibo.com') || url.includes('localhost')) && this.state.newsPages.length > 0 &&
                 <div className='row'>
                   <IntegrationsSummary />
+                </div>
+              }
+              {
+                !this.props.isMobile && (url.includes('kibochat.cloudkibo.com') || url.includes('localhost')) &&
+                <div className='row'>
+                  <SLADashboard />
                 </div>
               }
               <div className='row'>
