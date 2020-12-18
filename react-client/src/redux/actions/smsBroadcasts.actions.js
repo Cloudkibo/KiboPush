@@ -26,6 +26,21 @@ export function showAnalytics (data) {
   }
 }
 
+export function showSenderInfo (id, data) {
+  console.log('data in showSenderInfo', data)
+  return {
+    type: ActionTypes.SHOW_SENDERS_INFO,
+    sendersInfo: data,
+    responseId: id
+  }
+}
+
+export function clearSendersInfo () {
+  return {
+    type: ActionTypes.CLEAR_SENDERS_INFO,
+    data: null
+  }
+}
 
 export function saveCurrentSmsBroadcast (broadcast) {
   return {
@@ -92,6 +107,19 @@ export function fetchSmsAnalytics (id) {
         console.log('response from analytics', res.payload)
         if (res.status === 'success') {
           dispatch(showAnalytics(res.payload))
+        }
+      })
+  }
+}
+
+export function fetchResponseDetails (id, responseId, payload) {
+  console.log('data for fetchResponseDetails', payload)
+  return (dispatch) => {
+    callApi(`smsBroadcasts/${id}/responses`, 'post', payload)
+      .then(res => {
+        console.log('response from fetchResponseDetails', res.payload)
+        if (res.status === 'success') {
+          dispatch(showSenderInfo(responseId, res.payload))
         }
       })
   }

@@ -144,6 +144,7 @@ import Checkbox from './containers/GrowthTools/checkbox'
 import SmsSubscribers from './containers/uploadContacts/contacts'
 import SmsBroadcasts from './containers/smsBroadcasts/smsBroadcasts'
 import ViewBroadcast from './containers/smsBroadcasts/viewBroadcast'
+import ViewResponses from './containers/smsBroadcasts/viewResponses'
 import CreatesmsBroadcast from './containers/smsBroadcasts/create'
 import SmsChat from './containers/smsChat/smsChat'
 import WhatsAppBroadcasts from './containers/whatsAppBroadcasts/whatsAppBroadcasts'
@@ -386,6 +387,7 @@ const Routes = () => (
     <Route path='/smsSubscribers' component={SmsSubscribers} onEnter={requireAuth} />
     <Route path='/smsBroadcasts' component={SmsBroadcasts} onEnter={requireAuth} />
     <Route path='/viewBroadcast' component={ViewBroadcast} onEnter={requireAuth} />
+    <Route path='/viewResponses' component={ViewResponses} onEnter={requireAuth} />
     <Route path='/createsmsBroadcast' component={CreatesmsBroadcast} onEnter={requireAuth} />
     <Route path='/smsChat' component={SmsChat} onEnter={requireAuth} />
     <Route path='/whatsAppChat' component={WhatsAppChat} onEnter={requireAuth} />

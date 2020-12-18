@@ -4,7 +4,7 @@
 
 import React from 'react'
 import { connect } from 'react-redux'
-import { fetchSmsAnalytics  } from '../../redux/actions/smsBroadcasts.actions'
+import { fetchSmsAnalytics, clearSendersInfo  } from '../../redux/actions/smsBroadcasts.actions'
 import { bindActionCreators } from 'redux'
 
 class ViewBroadcast extends React.Component {
@@ -13,6 +13,8 @@ class ViewBroadcast extends React.Component {
         this.state = {
             }
         this.goBack = this.goBack.bind(this)
+        this.goToResponses = this.goToResponses.bind(this)
+        props.clearSendersInfo()
         props.fetchSmsAnalytics(props.smsBroadcast._id)
     }
     goBack () {
@@ -20,6 +22,12 @@ class ViewBroadcast extends React.Component {
             pathname: `/smsBroadcasts`,
         })
     }
+    goToResponses () {
+        this.props.history.push({
+            pathname: `/viewResponses`,
+        })
+    }
+
 
     UNSAFE_componentWillReceiveProps (nextProps) {
         if (nextProps.smsAnalytics) {
@@ -70,7 +78,7 @@ class ViewBroadcast extends React.Component {
                                 </div>
                             </div>
                             <div className='m-portlet__head-tools'>
-                            <button id="btnViewResponses" className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'  onClick={() => {}}>
+                            <button id="btnViewResponses" className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'  onClick={() => {this.goToResponses()}} disabled={this.props.smsAnalytics && this.props.smsAnalytics.responded < 1}>
                                 <span>
                                 <span>View Responses</span>
                                 </span>
@@ -159,7 +167,8 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-    fetchSmsAnalytics
+    fetchSmsAnalytics,
+    clearSendersInfo
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(ViewBroadcast)
