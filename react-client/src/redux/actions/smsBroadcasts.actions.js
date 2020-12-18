@@ -124,3 +124,16 @@ export function fetchResponseDetails (id, responseId, payload) {
       })
   }
 }
+
+export function sendFollowupBroadcast (payload, msg) {
+  console.log('data for sendFollowupBroadcast', payload)
+  return (dispatch) => {
+    callApi(`smsBroadcasts/sendFollowupBroadcast`, 'post', payload)
+      .then(res => {
+        console.log('response from sendFollowupBroadcast', res.payload)
+        if (res.status === 'success') {
+         msg.success('Follow-up broadcat sent successfully')
+        }
+      })
+  }
+}
