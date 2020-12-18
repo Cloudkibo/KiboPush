@@ -23,9 +23,7 @@ class ViewResponses extends React.Component {
         })
     }
     handlePageClick(data, currentPage, response, senders) {
-        var payload = {}
-        if (data.selected === 0) {
-            payload = {
+        var payload = {
             "responses": [response._id],
             "operator": "in",
             "number_of_records": 1,
@@ -33,27 +31,21 @@ class ViewResponses extends React.Component {
             "requested_page": data.selected,
             "current_page": currentPage,
             "last_id":  senders.length > 0 ? senders[senders.length - 1]._id : 'none'
-            }
-        } else if (currentPage < data.selected ) {
-            payload = {
-                "responses": [response._id],
-                "operator": "in",
-                "number_of_records": 1,
-                "first_page": "next",
-                "requested_page": data.selected,
-                "current_page": currentPage,
-                "last_id":  senders.length > 0 ? senders[senders.length - 1]._id : 'none'
-            }
+        }
+        if ((response._id).trim().toLowerCase() === 'others') {
+            payload["responses"] = this.props.smsAnalytics.responses.map((response) => { return response._id})
+            payload["operator"] =  "nin"
         } else {
-                payload = {
-                    "responses": [response._id],
-                    "operator": "in",
-                    "number_of_records": 1,
-                    "first_page": "previous",
-                    "requested_page": data.selected,
-                    "current_page": currentPage,
-                    "last_id":  senders.length > 0 ? senders[senders.length - 1]._id : 'none',
-            }
+            payload["responses"] =  [response._id]
+            payload["operator"] =  "in"
+        }
+
+        if (data.selected === 0) {
+            payload["first_page"] = "first"
+        } else if (currentPage < data.selected ) {
+            payload["first_page"] = "next"
+        } else {
+            payload["first_page"] = "previous"
         }
         
         this.props.fetchResponseDetails(this.props.smsBroadcast._id, response._id, payload)
@@ -68,13 +60,18 @@ class ViewResponses extends React.Component {
           document.getElementById(`icon-${row}`).className = 'la la-angle-up'
         }
         var payload = {
-            "responses": [this.props.smsAnalytics.responses[row]._id],
-            "operator": "in",
             "number_of_records": 1,
             "first_page": "first",
             "requested_page": 0,
             "current_page": 1,
             "last_id": "none"
+        }
+        if ((this.props.smsAnalytics.responses[row]._id).trim().toLowerCase() === 'others') {
+            payload["responses"] = this.props.smsAnalytics.responses.map((response) => { return response._id}).filter((resp) => { return resp.trim().toLowerCase() !== 'others'})
+            payload["operator"] =  "nin"
+        } else {
+            payload["responses"] =  [this.props.smsAnalytics.responses[row]._id]
+            payload["operator"] =  "in"
         }
         if (!this.props.senders || ( this.props.senders && !this.props.senders[this.props.smsAnalytics.responses[row]._id])) {
           this.props.fetchResponseDetails(this.props.smsBroadcast._id, this.props.smsAnalytics.responses[row]._id, payload)
@@ -121,6 +118,11 @@ class ViewResponses extends React.Component {
                                                         aria-controls={`#collapse_${i}`}
                                                         >
                                                         {response._id}
+                                                        <span style={{marginLeft: '10px'}} className="m-menu__link-badge">
+                                                            <span className="m-badge m-badge--success m-badge--wide">
+                                                                {response.count}
+                                                            </span>
+													    </span>
                                                         </div>
                                                         <span style={{ overflow: 'visible', float: 'right' }}>
                                                         <i

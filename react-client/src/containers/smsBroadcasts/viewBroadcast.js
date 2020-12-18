@@ -4,7 +4,7 @@
 
 import React from 'react'
 import { connect } from 'react-redux'
-import { fetchSmsAnalytics  } from '../../redux/actions/smsBroadcasts.actions'
+import { fetchSmsAnalytics, clearSendersInfo  } from '../../redux/actions/smsBroadcasts.actions'
 import { bindActionCreators } from 'redux'
 
 class ViewBroadcast extends React.Component {
@@ -14,6 +14,7 @@ class ViewBroadcast extends React.Component {
             }
         this.goBack = this.goBack.bind(this)
         this.goToResponses = this.goToResponses.bind(this)
+        props.clearSendersInfo()
         props.fetchSmsAnalytics(props.smsBroadcast._id)
     }
     goBack () {
@@ -166,7 +167,8 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-    fetchSmsAnalytics
+    fetchSmsAnalytics,
+    clearSendersInfo
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(ViewBroadcast)

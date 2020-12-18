@@ -35,7 +35,12 @@ export function showSenderInfo (id, data) {
   }
 }
 
-
+export function clearSendersInfo () {
+  return {
+    type: ActionTypes.CLEAR_SENDERS_INFO,
+    data: null
+  }
+}
 
 export function saveCurrentSmsBroadcast (broadcast) {
   return {

@@ -25,6 +25,10 @@ export function smsBroadcastsInfo (state = [], action) {
       return Object.assign({}, state, {
         sendersInfo: {...updateSenderInfo}
       })
+    case ActionTypes.CLEAR_SENDERS_INFO:
+      return Object.assign({}, state, {
+        sendersInfo: action.data
+      })
     default:
       return state
   }
