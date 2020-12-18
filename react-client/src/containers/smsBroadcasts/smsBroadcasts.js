@@ -40,6 +40,7 @@ class SmsBroadcast extends React.Component {
     this.onNumberChange = this.onNumberChange.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
     this.gotoView = this.gotoView.bind(this)
+    this.createFollowUp = this.createFollowUp.bind(this)
   }
 
   togglePopover () {
@@ -47,6 +48,11 @@ class SmsBroadcast extends React.Component {
   }
   onNumberChange (e) {
     this.setState({numberValue: e.target.value})
+  }
+  createFollowUp () {
+    this.props.history.push({
+      pathname: `/createFollowupBroadcast`
+    })
   }
 
   gotoCreate (broadcast) {
@@ -276,7 +282,7 @@ class SmsBroadcast extends React.Component {
                             <td data-field='createAt' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{broadcast.datetime}</span></td>
                             <td data-field='sent' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{broadcast.phoneNumber}</span></td>
                             <td data-field='delivered' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{broadcast.sent}</span></td>
-                            <td data-field='isFollowUp' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{broadcast.followUp}</span></td>
+                            <td data-field='isFollowUp' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{broadcast.followUp ? "Yes" : "No"}</span></td>
                             <td data-field='action' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}><button style={{width: '60px'}} className='btn btn-primary btn-sm m-btn--pill' onClick={() => {this.gotoView(broadcast)}}>View</button></span></td>
                           </tr>
                         ))
@@ -335,7 +341,7 @@ class SmsBroadcast extends React.Component {
             </div>
           </div>
           <div
-            onClick={() => {}}
+            onClick={this.createFollowUp}
             className="ui-block hoverborder"
             style={{
               minHeight: "30px",
