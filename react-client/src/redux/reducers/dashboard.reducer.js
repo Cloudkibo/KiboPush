@@ -3,6 +3,7 @@ import * as ActionTypes from '../constants/constants'
 const initialState = {
   slaDashboard: null,
   slaDashboardError: '',
+  fetchingSLADashboard: false,
   dashboard: {
     pages: 0,
     subscribers: 0,
@@ -34,8 +35,11 @@ const initialState = {
 
 export function dashboardInfo(state = initialState, action) {
   switch (action.type) {
+    case ActionTypes.FETCHING_SLA_DASHBOARD: {
+      return Object.assign({}, state, { fetchingSLADashboard: true })
+    }
     case ActionTypes.UPDATE_SLA_DASHBOARD: {
-      const updatedState = { slaDashboardError: '' }
+      const updatedState = { slaDashboardError: '', fetchingSLADashboard: false }
       if (action.data) {
         updatedState.slaDashboard = action.data
       } else if (action.error) {

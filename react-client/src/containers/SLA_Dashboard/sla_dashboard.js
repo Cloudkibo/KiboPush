@@ -4,6 +4,8 @@ import { bindActionCreators } from 'redux'
 import AlertContainer from 'react-alert'
 import Select from 'react-select'
 
+import { loadTeamsList } from '../../redux/actions/teams.actions'
+import { loadMembersList } from '../../redux/actions/members.actions'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
 import { loadSLADashboardData } from '../../redux/actions/dashboard.actions'
 
@@ -15,17 +17,71 @@ class SLADashboard extends React.Component {
     super(props, context)
     this.state = {
       pageOptions: [],
-      loading: !props.slaDashboard,
-      daysFilter: 30,
+      agentOptions: [],
+      teamOptions: [],
+      days: 30,
+      page: null,
+      team: null,
+      agent: null,
       error: ''
     }
-    props.loadSLADashboardData()
-    props.loadMyPagesList()
+    this.handleDaysChange = this.handleDaysChange.bind(this)
+    this.handlePageChange = this.handlePageChange.bind(this)
+    this.handleAgentChange = this.handleAgentChange.bind(this)
+    this.handleTeamChange = this.handleTeamChange.bind(this)
+    this.fetchData = this.fetchData.bind(this)
+
+    if (!props.pages) {
+      props.loadMyPagesList()
+    }
+    if (!props.members) {
+      props.loadMembersList()
+    }
+    this.fetchTimer = null
+  }
+
+  fetchData() {
+    const query = {
+      pageId: this.state.page._id,
+      days: this.state.days
+    }
+    if (this.state.team) {
+      query.teamId = this.state.team._id
+    } else if (this.state.agent) {
+      query.agentId = this.state.agent._id
+    }
+    this.props.loadSLADashboardData(query)
+  }
+
+  handleDaysChange(days) {
+    this.setState({ days }, () => {
+      clearTimeout(this.fetchTimer)
+      this.fetchTimer = setTimeout(this.fetchData, 1000)
+    })
+  }
+
+  handlePageChange(page) {
+    this.props.loadTeamsList({ pageId: page.value })
+    this.setState({ page, team: null, teamOptions: [] }, () => {
+      this.fetchData()
+    })
+  }
+
+  handleAgentChange(agent) {
+    this.setState({ team: null, agent }, () => {
+      this.fetchData()
+    })
+  }
+
+  handleTeamChange(team) {
+    this.setState({ agent: null, team }, () => {
+      this.fetchData()
+    })
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
     const newState = {}
-    if (nextProps.pages) {
+    if (!prevState.page && nextProps.pages) {
       const pageOptions = nextProps.pages.map((page) => {
         return {
           label: page.pageName,
@@ -33,12 +89,34 @@ class SLADashboard extends React.Component {
         }
       })
       newState.pageOptions = pageOptions
+      newState.page = pageOptions[0]
+      if (pageOptions[0]) {
+        nextProps.loadTeamsList({ pageId: pageOptions[0]._id })
+        nextProps.loadSLADashboardData({ pageId: pageOptions[0]._id, days: prevState.days })
+      } else {
+        newState.error = 'No pages are connected'
+      }
     }
-    if (nextProps.slaDashboard) {
-      newState.loading = false
-    } else if (nextProps.slaDashboardError) {
+    if (nextProps.members) {
+      const agentOptions = nextProps.members.map((member) => {
+        return {
+          label: member.userId.name,
+          value: member._id
+        }
+      })
+      newState.agentOptions = agentOptions
+    }
+    if (nextProps.teams) {
+      const teamOptions = nextProps.teams.map((team) => {
+        return {
+          label: team.name,
+          value: team._id
+        }
+      })
+      newState.teamOptions = teamOptions
+    }
+    if (nextProps.slaDashboardError) {
       newState.error = nextProps.slaDashboardError
-      newState.loading = false
     }
     return newState
   }
@@ -67,32 +145,76 @@ class SLADashboard extends React.Component {
                   <h3 className='m-portlet__head-text'>SLA Dashboard</h3>
                 </div>
               </div>
-              {!this.state.loading && !this.state.error && (
-                <div className='m-portlet__head-tools'>
-                  <div style={{ display: 'flex', float: 'right' }}>
-                    <span htmlFor='example-text-input' className='col-form-label'>
-                      Show records for last:&nbsp;&nbsp;
-                    </span>
-                    <div style={{ width: '100px' }}>
-                      <input
-                        placeholder='days'
-                        type='number'
-                        min='1'
-                        step='1'
-                        value={this.state.daysFilter}
-                        className='form-control'
-                        onChange={this.props.onDaysChange}
-                      />
-                    </div>
-                    <span htmlFor='example-text-input' className='col-form-label'>
-                      &nbsp;&nbsp;days
-                    </span>
+              <div className='m-portlet__head-tools'>
+                <div style={{ display: 'flex', float: 'right' }}>
+                  <span htmlFor='example-text-input' className='col-form-label'>
+                    Show records for last:&nbsp;&nbsp;
+                  </span>
+                  <div style={{ width: '100px' }}>
+                    <input
+                      disabled={this.props.fetchingSLAData || this.state.error}
+                      placeholder='days'
+                      type='number'
+                      min='1'
+                      step='1'
+                      value={this.state.days}
+                      className='form-control'
+                      onChange={(e) => this.handleDaysChange(e.target.value)}
+                    />
                   </div>
+                  <span htmlFor='example-text-input' className='col-form-label'>
+                    &nbsp;&nbsp;days
+                  </span>
                 </div>
-              )}
+              </div>
             </div>
             <div className='m-portlet__body'>
-              {this.state.loading && (
+              <div
+                className='row'
+                style={{
+                  marginBottom: '35px',
+                  paddingBottom: '35px',
+                  borderBottom: '2px solid lightgray',
+                  borderBottomStyle: 'dotted'
+                }}
+              >
+                <div className='col-4'>
+                  <h6>Select Page:</h6>
+                  <Select
+                    isDisabled={this.props.fetchingSLAData || this.state.error}
+                    isSearchable
+                    options={this.state.pageOptions}
+                    onChange={this.handlePageChange}
+                    value={this.state.page}
+                    placeholder={'No Page Selected'}
+                  />
+                </div>
+                <div className='col-4'>
+                  <h6>Select Agent:</h6>
+                  <Select
+                    isDisabled={this.props.fetchingSLAData || this.state.error}
+                    isClearable
+                    isSearchable
+                    options={this.state.agentOptions}
+                    onChange={this.handleAgentChange}
+                    value={this.state.agent}
+                    placeholder={'No Agent Selected'}
+                  />
+                </div>
+                <div className='col-4'>
+                  <h6>Select Team:</h6>
+                  <Select
+                    isDisabled={this.props.fetchingSLAData || this.state.error}
+                    isClearable
+                    isSearchable
+                    options={this.state.teamOptions}
+                    onChange={this.handleTeamChange}
+                    value={this.state.team}
+                    placeholder={'No Team Selected'}
+                  />
+                </div>
+              </div>
+              {this.props.fetchingSLAData && (
                 <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                   <div className='m-loader m-loader--brand' style={{ width: '50px', height: '50px' }}></div>
                   <span className='m--font-brand'>Loading...Please wait</span>
@@ -107,51 +229,8 @@ class SLADashboard extends React.Component {
                   <span className='m--font-danger'>{this.state.error}</span>
                 </div>
               )}
-              {!this.state.loading && !this.state.error && (
+              {!this.props.fetchingSLAData && !this.state.error && this.props.slaDashboard && (
                 <>
-                  <div
-                    className='row'
-                    style={{
-                      marginBottom: '35px',
-                      paddingBottom: '35px',
-                      borderBottom: '2px solid lightgray',
-                      borderBottomStyle: 'dotted'
-                    }}
-                  >
-                    <div className='col-4'>
-                      <h6>Select Page:</h6>
-                      <Select
-                        isClearable
-                        isSearchable
-                        options={this.state.pageOptions}
-                        onChange={this.onSelectChange}
-                        value={this.state.currentSelected}
-                        placeholder={'No Page Selected'}
-                      />
-                    </div>
-                    <div className='col-4'>
-                      <h6>Select Agent:</h6>
-                      <Select
-                        isClearable
-                        isSearchable
-                        options={this.state.pageOptions}
-                        onChange={this.onSelectChange}
-                        value={this.state.currentSelected}
-                        placeholder={'No Agent Selected'}
-                      />
-                    </div>
-                    <div className='col-4'>
-                      <h6>Select Team:</h6>
-                      <Select
-                        isClearable
-                        isSearchable
-                        options={this.state.pageOptions}
-                        onChange={this.onSelectChange}
-                        value={this.state.currentSelected}
-                        placeholder={'No Team Selected'}
-                      />
-                    </div>
-                  </div>
                   <SLAStats
                     totalSessions={this.props.slaDashboard.sessions.total}
                     resolvedSessions={this.props.slaDashboard.sessions.resolved}
@@ -180,9 +259,12 @@ function mapStateToProps(state) {
   return {
     slaDashboard: state.dashboardInfo.slaDashboard,
     slaDashboardError: state.dashboardInfo.slaDashboardError,
+    fetchingSLAData: state.dashboardInfo.fetchingSLADashboard,
     pages: state.pagesInfo.pages,
     user: state.basicInfo.user,
-    superUser: state.basicInfo.superUser
+    superUser: state.basicInfo.superUser,
+    members: state.membersInfo.members,
+    teams: state.teamsInfo.teams
   }
 }
 
@@ -190,6 +272,8 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
       loadMyPagesList,
+      loadMembersList,
+      loadTeamsList,
       loadSLADashboardData
     },
     dispatch

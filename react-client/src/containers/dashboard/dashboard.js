@@ -1,4 +1,3 @@
-
 /* eslint-disable no-return-assign */
 /**
  * Created by sojharo on 20/07/2017.
@@ -14,13 +13,18 @@ import SubscriberSummary from './subscriberSummary'
 import AutopostingSummary from './autopostingSummary'
 import IntegrationsSummary from './integrationsSummary'
 import NewsIntegrationsSummary from './newsIntegrationsSummary'
-import { loadDashboardData, loadSubscriberSummary, sentVsSeen, loadGraphData, loadTopPages, loadSentSeen } from '../../redux/actions/dashboard.actions'
+import {
+  loadDashboardData,
+  loadSubscriberSummary,
+  sentVsSeen,
+  loadGraphData,
+  loadTopPages,
+  loadSentSeen
+} from '../../redux/actions/dashboard.actions'
 import { bindActionCreators } from 'redux'
 import { loadMyPagesList, updateCurrentPage } from '../../redux/actions/pages.actions'
 import { loadSubscribersCount } from '../../redux/actions/subscribers.actions'
-import {
-  createbroadcast
-} from '../../redux/actions/broadcast.actions'
+import { createbroadcast } from '../../redux/actions/broadcast.actions'
 import { checkSubscriptionPermissions } from '../../redux/actions/rssIntegration.actions'
 import AlertContainer from 'react-alert'
 import YouTube from 'react-youtube'
@@ -52,7 +56,7 @@ class Dashboard extends React.Component {
       pageId: 'all',
       selectedPage: {},
       openVideo: false,
-      newsPages: [],
+      newsPages: []
     }
     this.onDaysChange = this.onDaysChange.bind(this)
     this.prepareLineChartData = this.prepareLineChartData.bind(this)
@@ -76,7 +80,7 @@ class Dashboard extends React.Component {
   }
 
   getNewsPages(permissions) {
-    var newsPages = this.props.permissions.filter(permission => permission.smpStatus === 'approved')
+    var newsPages = this.props.permissions.filter((permission) => permission.smpStatus === 'approved')
     return newsPages
   }
 
@@ -119,7 +123,7 @@ class Dashboard extends React.Component {
     for (var i = 0; i < data.length; i++) {
       var recordId = data[i]._id
       var date = `${recordId.year}-${recordId.month}-${recordId.day}`
-      var tempObj = { '_id': date, 'count': data[i].count }
+      var tempObj = { _id: date, count: data[i].count }
       formattedData.push(tempObj)
     }
     return formattedData
@@ -130,12 +134,12 @@ class Dashboard extends React.Component {
     var dashboardObj = {}
     if (this.props.dashboard) {
       dashboardObj = {
-        'User': this.props.dashboard.username,
+        User: this.props.dashboard.username,
         'Connected Pages': this.props.dashboard.pages,
         'Total Pages': this.props.dashboard.totalPages,
         'Unread Count': this.props.dashboard.unreadCount,
-        'Activity': this.props.dashboard.activityChart,
-        'Subscribers': this.props.dashboard.subscribers
+        Activity: this.props.dashboard.activityChart,
+        Subscribers: this.props.dashboard.subscribers
       }
     }
     if (this.props.sentseendata) {
@@ -146,7 +150,9 @@ class Dashboard extends React.Component {
     console.log('this.props.graphData', this.props.graphData)
     if (this.props.graphData) {
       if (this.props.graphData.broadcastsgraphdata) {
-        dashboardObj['No.of broadcasts created on different days'] = this.formatDate(this.props.graphData.broadcastsgraphdata)
+        dashboardObj['No.of broadcasts created on different days'] = this.formatDate(
+          this.props.graphData.broadcastsgraphdata
+        )
       }
       if (this.props.graphData.pollsgraphdata) {
         dashboardObj['No.of polls created on different days'] = this.formatDate(this.props.graphData.pollsgraphdata)
@@ -155,7 +161,9 @@ class Dashboard extends React.Component {
         dashboardObj['No.of surveys created on different days'] = this.formatDate(this.props.graphData.surveysgraphdata)
       }
       if (this.props.graphData.sessionsgraphdata) {
-        dashboardObj['No.of chat session created on different days'] = this.formatDate(this.props.graphData.sessionsgraphdata)
+        dashboardObj['No.of chat session created on different days'] = this.formatDate(
+          this.props.graphData.sessionsgraphdata
+        )
       }
     }
     // console.log('this.props.topPages', this.props.topPages)
@@ -206,32 +214,32 @@ class Dashboard extends React.Component {
   UNSAFE_componentWillReceiveProps(nextprops) {
     console.log('in UNSAFE_componentWillReceiveProps dashboard', nextprops)
     if (nextprops.user && nextprops.pages) {
-        if (nextprops.pages.length === 0) {
-          this.props.history.push({
-            pathname: '/addfbpages'
-          })
-        } else if ((nextprops.user.role === 'admin' || nextprops.user.role === 'buyer') && !nextprops.user.wizardSeen) {
-          console.log('going to push add page wizard')
-          this.props.history.push({
-            pathname: '/inviteUsingLinkWizard'
-          })
-        } else if (readShopifyInstallRequest() && readShopifyInstallRequest() !== '') {
-          this.props.history.push({
-            pathname: '/abandonedCarts'
-          })
-        } else if (nextprops.subscribersCount > 0) {
-          // this means more than 0 subscribers
-          this.setState({ isShowingModal: false })
-        } else if (nextprops.pages.length > 0 && nextprops.subscribersCount === 0) {
-          // this means 0 subscribers
-          this.setState({ isShowingModal: true })
-        } else if (nextprops.pages.length === 0) {
-          // this means connected pages in 0
-          // this.props.history.push({
-          // pathname: '/addPages',
-          // state: {showMsg: true}
-          // })
-        }
+      if (nextprops.pages.length === 0) {
+        this.props.history.push({
+          pathname: '/addfbpages'
+        })
+      } else if ((nextprops.user.role === 'admin' || nextprops.user.role === 'buyer') && !nextprops.user.wizardSeen) {
+        console.log('going to push add page wizard')
+        this.props.history.push({
+          pathname: '/inviteUsingLinkWizard'
+        })
+      } else if (readShopifyInstallRequest() && readShopifyInstallRequest() !== '') {
+        this.props.history.push({
+          pathname: '/abandonedCarts'
+        })
+      } else if (nextprops.subscribersCount > 0) {
+        // this means more than 0 subscribers
+        this.setState({ isShowingModal: false })
+      } else if (nextprops.pages.length > 0 && nextprops.subscribersCount === 0) {
+        // this means 0 subscribers
+        this.setState({ isShowingModal: true })
+      } else if (nextprops.pages.length === 0) {
+        // this means connected pages in 0
+        // this.props.history.push({
+        // pathname: '/addPages',
+        // state: {showMsg: true}
+        // })
+      }
       if (nextprops.dashboard && nextprops.sentseendata && nextprops.graphData) {
         this.setState({ loading: false })
       }
@@ -476,64 +484,99 @@ class Dashboard extends React.Component {
     const url = window.location.hostname
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
-        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="upgrade" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-          <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
-            <div className="modal-content">
-              <div style={{ display: 'block' }} className="modal-header">
-                <h5 className="modal-title" id="exampleModalLabel">
+        <div
+          style={{ background: 'rgba(33, 37, 41, 0.6)' }}
+          className='modal fade'
+          id='upgrade'
+          tabindex='-1'
+          role='dialog'
+          aria-labelledby='exampleModalLabel'
+          aria-hidden='true'
+        >
+          <div style={{ transform: 'translate(0, 0)' }} className='modal-dialog' role='document'>
+            <div className='modal-content'>
+              <div style={{ display: 'block' }} className='modal-header'>
+                <h5 className='modal-title' id='exampleModalLabel'>
                   Upgrade to Pro
-									</h5>
-                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">
-                    &times;
-											</span>
+                </h5>
+                <button
+                  style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }}
+                  type='button'
+                  className='close'
+                  data-dismiss='modal'
+                  aria-label='Close'
+                >
+                  <span aria-hidden='true'>&times;</span>
                 </button>
               </div>
-              <div style={{ color: 'black' }} className="modal-body">
+              <div style={{ color: 'black' }} className='modal-body'>
                 <p>This feature is not available in free account. Kindly updrade your account to use this feature.</p>
                 <div style={{ width: '100%', textAlign: 'center' }}>
                   <div style={{ display: 'inline-block', padding: '5px' }}>
                     <button className='btn btn-primary' onClick={() => this.goToSettings()} data-dismiss='modal'>
                       Upgrade to Pro
-                      </button>
+                    </button>
                   </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-        <a href='#/' style={{ display: 'none' }} ref='videoDashboard' data-toggle='modal' data-backdrop='static' data-keyboard='false' data-target="#videoDashboard">videoMessengerRefModal</a>
-        <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="videoDashboard" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-          <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog modal-lg" role="document">
-            <div className="modal-content" style={{ width: '687px', top: '100' }}>
-              <div style={{ display: 'block' }} className="modal-header">
-                <h5 className="modal-title" id="exampleModalLabel">
+        <a
+          href='#/'
+          style={{ display: 'none' }}
+          ref='videoDashboard'
+          data-toggle='modal'
+          data-backdrop='static'
+          data-keyboard='false'
+          data-target='#videoDashboard'
+        >
+          videoMessengerRefModal
+        </a>
+        <div
+          style={{ background: 'rgba(33, 37, 41, 0.6)' }}
+          className='modal fade'
+          id='videoDashboard'
+          tabindex='-1'
+          role='dialog'
+          aria-labelledby='exampleModalLabel'
+          aria-hidden='true'
+        >
+          <div style={{ transform: 'translate(0, 0)' }} className='modal-dialog modal-lg' role='document'>
+            <div className='modal-content' style={{ width: '687px', top: '100' }}>
+              <div style={{ display: 'block' }} className='modal-header'>
+                <h5 className='modal-title' id='exampleModalLabel'>
                   Dashboard Video Tutorial
-									</h5>
-                <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal"
-                  aria-label="Close"
+                </h5>
+                <button
+                  style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }}
+                  type='button'
+                  className='close'
+                  data-dismiss='modal'
+                  aria-label='Close'
                   onClick={() => {
                     this.setState({
                       openVideo: false
                     })
-                  }}>
-                  <span aria-hidden="true">
-                    &times;
-											</span>
+                  }}
+                >
+                  <span aria-hidden='true'>&times;</span>
                 </button>
               </div>
-              <div style={{ color: 'black' }} className="modal-body">
-                {this.state.openVideo && <YouTube
-                  videoId='NhqPaGp3TF8'
-                  opts={{
-                    height: '390',
-                    width: '640',
-                    playerVars: { // https://developers.google.com/youtube/player_parameters
-                      autoplay: 0
-                    }
-                  }}
-                />
-                }
+              <div style={{ color: 'black' }} className='modal-body'>
+                {this.state.openVideo && (
+                  <YouTube
+                    videoId='NhqPaGp3TF8'
+                    opts={{
+                      height: '390',
+                      width: '640',
+                      playerVars: {
+                        // https://developers.google.com/youtube/player_parameters
+                        autoplay: 0
+                      }
+                    }}
+                  />
+                )}
               </div>
             </div>
           </div>
@@ -546,62 +589,78 @@ class Dashboard extends React.Component {
           </div>
         </div>
         <div className='m-content'>
-          {
-            this.props.user && this.props.user.platform === 'messenger' && this.props.pages && this.props.pages.length === 0 &&
-            <div className='m-alert m-alert--icon m-alert--icon-solid m-alert--outline alert alert-warning alert-dismissible fade show' role='alert'>
-              <div className='m-alert__icon'>
-                <i className='flaticon-exclamation-1' style={{ color: 'white' }} />
-                <span />
+          {this.props.user &&
+            this.props.user.platform === 'messenger' &&
+            this.props.pages &&
+            this.props.pages.length === 0 && (
+              <div
+                className='m-alert m-alert--icon m-alert--icon-solid m-alert--outline alert alert-warning alert-dismissible fade show'
+                role='alert'
+              >
+                <div className='m-alert__icon'>
+                  <i className='flaticon-exclamation-1' style={{ color: 'white' }} />
+                  <span />
+                </div>
+                <div className='m-alert__text'>
+                  <strong>0 Pages Connected!&nbsp;</strong>
+                  You have no pages connected. Please connect your facebook pages to get started.&nbsp;{' '}
+                  <Link style={{ cursor: 'pointer' }} to='/addPages'>
+                    Connect Page
+                  </Link>
+                </div>
               </div>
-              <div className='m-alert__text'>
-                <strong>
-                  0 Pages Connected!&nbsp;
-                </strong>
-                You have no pages connected. Please connect your facebook pages to get started.&nbsp; <Link style={{ cursor: 'pointer' }} to='/addPages' >Connect Page</Link>
-              </div>
-            </div>
-          }
-          <AlertContainer ref={a => this.msg = a} {...alertOptions} />
-          <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
+            )}
+          <AlertContainer ref={(a) => (this.msg = a)} {...alertOptions} />
+          <div
+            className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30'
+            role='alert'
+          >
             <div className='m-alert__icon'>
               <i className='flaticon-technology m--font-accent' />
             </div>
             <div className='m-alert__text'>
-              Need help in understanding dashboard? Here is the <a href='http://kibopush.com/dashboard/' target='_blank' rel='noopener noreferrer'>documentation</a>.
-              Or check out this <a href='#/' onClick={this.openVideoTutorial}>video tutorial</a>
+              Need help in understanding dashboard? Here is the{' '}
+              <a href='http://kibopush.com/dashboard/' target='_blank' rel='noopener noreferrer'>
+                documentation
+              </a>
+              . Or check out this{' '}
+              <a href='#/' onClick={this.openVideoTutorial}>
+                video tutorial
+              </a>
             </div>
           </div>
-          {
-            this.props.user && (((this.props.user.currentPlan === 'plan_A' || this.props.user.currentPlan === 'plan_ B') && !this.props.user.facebookInfo) || (this.props.user.emailVerified === false &&
-              (this.props.user.currentPlan === 'plan_C' || this.props.user.currentPlan === 'plan_D')))
-              ? null
-              : <div>
-                {/* this.props.user && (this.props.user.role === 'admin' || this.props.user.role === 'buyer') && !this.props.user.wizardSeen &&
-              <GettingStarted pages={this.props.pages} /> */ }
-              </div>
-          }
-          {
-            this.state.loading
-            ? <div className='align-center'><center><RingLoader color='#FF5E3A' /></center></div>
-            : <div>
-              <div className='row'>
-                {
-                  this.props.dashboard &&
-                  <CardBoxesContainer data={this.props.dashboard} />
-                }
-              </div>
-              {
-                !this.props.isMobile && (url.includes('kibochat.cloudkibo.com') || url.includes('localhost') || url.includes('kiboengage.cloudkibo.com')) &&
-                <div className='row'>
-                  <SubscriberSummary includeZeroCounts={this.includeZeroCounts} msg={this.msg} />
-                </div>
-              }
-              {
-                !this.props.isMobile && (url.includes('kibochat.cloudkibo.com') || url.includes('kiboengage.cloudkibo.com')) &&
-                <div className='row'>
-                  {
-                    this.props.pages && this.props.sentseendata && (url.includes('kiboengage.cloudkibo.com'))
-                      ? <ProgressBoxKiboEngage
+          {this.props.user &&
+          (((this.props.user.currentPlan === 'plan_A' || this.props.user.currentPlan === 'plan_ B') &&
+            !this.props.user.facebookInfo) ||
+            (this.props.user.emailVerified === false &&
+              (this.props.user.currentPlan === 'plan_C' || this.props.user.currentPlan === 'plan_D'))) ? null : (
+            <div>
+              {/* this.props.user && (this.props.user.role === 'admin' || this.props.user.role === 'buyer') && !this.props.user.wizardSeen &&
+              <GettingStarted pages={this.props.pages} /> */}
+            </div>
+          )}
+          {this.state.loading ? (
+            <div className='align-center'>
+              <center>
+                <RingLoader color='#FF5E3A' />
+              </center>
+            </div>
+          ) : (
+            <div>
+              <div className='row'>{this.props.dashboard && <CardBoxesContainer data={this.props.dashboard} />}</div>
+              {!this.props.isMobile &&
+                (url.includes('kibochat.cloudkibo.com') ||
+                  url.includes('localhost') ||
+                  url.includes('kiboengage.cloudkibo.com')) && (
+                  <div className='row'>
+                    <SubscriberSummary includeZeroCounts={this.includeZeroCounts} msg={this.msg} />
+                  </div>
+                )}
+              {!this.props.isMobile &&
+                (url.includes('kibochat.cloudkibo.com') || url.includes('kiboengage.cloudkibo.com')) && (
+                  <div className='row'>
+                    {this.props.pages && this.props.sentseendata && url.includes('kiboengage.cloudkibo.com') ? (
+                      <ProgressBoxKiboEngage
                         lineChartData={this.state.chartData}
                         pages={this.props.pages}
                         data={this.props.sentseendata}
@@ -610,8 +669,10 @@ class Dashboard extends React.Component {
                         pageId={this.state.pageId}
                         selectedPage={this.state.selectedPage}
                         changeDays={this.changeDays}
-                        onKeyDown={this.onKeyDown} />
-                      : <ProgressBoxKiboChat
+                        onKeyDown={this.onKeyDown}
+                      />
+                    ) : (
+                      <ProgressBoxKiboChat
                         lineChartData={this.state.chartData}
                         pages={this.props.pages}
                         data={this.props.sentseendata}
@@ -620,65 +681,76 @@ class Dashboard extends React.Component {
                         pageId={this.state.pageId}
                         selectedPage={this.state.selectedPage}
                         changeDays={this.changeDays}
-                        onKeyDown={this.onKeyDown} />
-                  }
-                </div>
-              }
-              {
-                !this.props.isMobile && (url.includes('kiboengage.cloudkibo.com') || url.includes('localhost')) &&
+                        onKeyDown={this.onKeyDown}
+                      />
+                    )}
+                  </div>
+                )}
+              {!this.props.isMobile && (url.includes('kiboengage.cloudkibo.com') || url.includes('localhost')) && (
                 <div className='row'>
                   <AutopostingSummary />
                 </div>
-              }
-              {
-                !this.props.isMobile && (url.includes('kiboengage.cloudkibo.com') || url.includes('localhost')) && this.state.newsPages.length > 0 &&
-                <div className='row'>
-                  <NewsIntegrationsSummary />
-                </div>
-              }
-              {
-                !this.props.isMobile && (url.includes('kiboengage.cloudkibo.com') || url.includes('localhost')) && this.state.newsPages.length > 0 &&
-                <div className='row'>
-                  <IntegrationsSummary />
-                </div>
-              }
-              {
-                !this.props.isMobile && (url.includes('kibochat.cloudkibo.com') || url.includes('localhost')) &&
+              )}
+              {!this.props.isMobile &&
+                (url.includes('kiboengage.cloudkibo.com') || url.includes('localhost')) &&
+                this.state.newsPages.length > 0 && (
+                  <div className='row'>
+                    <NewsIntegrationsSummary />
+                  </div>
+                )}
+              {!this.props.isMobile &&
+                (url.includes('kiboengage.cloudkibo.com') || url.includes('localhost')) &&
+                this.state.newsPages.length > 0 && (
+                  <div className='row'>
+                    <IntegrationsSummary />
+                  </div>
+                )}
+              {!this.props.isMobile && (url.includes('kibochat.cloudkibo.com') || url.includes('localhost')) && (
                 <div className='row'>
                   <SLADashboard />
                 </div>
-              }
+              )}
               <div className='row'>
-                {
-                  !this.props.isMobile &&
+                {!this.props.isMobile && (
                   <div className='m-form m-form--label-align-right m--margin-bottom-30 col-12'>
-                    {
-                      this.props.user.currentPlan.unique_ID === 'plan_A' || this.props.user.currentPlan.unique_ID === 'plan_C'
-                        ? <button className='btn btn-success m-btn m-btn--icon pull-right' onClick={this.exportDashboardInformation}>
-                          <span>
-                            <i className='fa fa-download' />
-                            <span>
-                              Export Records in CSV File
-                    </span>
+                    {this.props.user.currentPlan.unique_ID === 'plan_A' ||
+                    this.props.user.currentPlan.unique_ID === 'plan_C' ? (
+                      <button
+                        className='btn btn-success m-btn m-btn--icon pull-right'
+                        onClick={this.exportDashboardInformation}
+                      >
+                        <span>
+                          <i className='fa fa-download' />
+                          <span>Export Records in CSV File</span>
+                        </span>
+                      </button>
+                    ) : (
+                      <button
+                        className='btn btn-success m-btn m-btn--icon pull-right'
+                        data-toggle='modal'
+                        data-target='#upgrade'
+                      >
+                        <span>
+                          <i className='fa fa-download' />
+                          <span>Export Records in CSV File</span>&nbsp;&nbsp;
+                          <span
+                            style={{
+                              border: '1px solid #f4516c',
+                              padding: '0px 5px',
+                              borderRadius: '10px',
+                              fontSize: '12px'
+                            }}
+                          >
+                            <span style={{ color: '#f4516c' }}>PRO</span>
                           </span>
-                        </button>
-                        : <button className='btn btn-success m-btn m-btn--icon pull-right' data-toggle="modal" data-target="#upgrade">
-                          <span>
-                            <i className='fa fa-download' />
-                            <span>
-                              Export Records in CSV File
-                    </span>&nbsp;&nbsp;
-                    <span style={{ border: '1px solid #f4516c', padding: '0px 5px', borderRadius: '10px', fontSize: '12px' }}>
-                              <span style={{ color: '#f4516c' }}>PRO</span>
-                            </span>
-                          </span>
-                        </button>
-                    }
+                        </span>
+                      </button>
+                    )}
                   </div>
-                }
+                )}
               </div>
             </div>
-          }
+          )}
         </div>
       </div>
     )
@@ -688,17 +760,17 @@ class Dashboard extends React.Component {
 function mapStateToProps(state) {
   console.log('state', state)
   return {
-    user: (state.basicInfo.user),
-    isMobile: (state.basicInfo.isMobile),
-    dashboard: (state.dashboardInfo.dashboard),
-    sentseendata: (state.dashboardInfo.sentseendata),
-    pages: (state.pagesInfo.pages),
-    currentPage: (state.pagesInfo.currentPage),
-    subscribersCount: (state.subscribersInfo.subscribersCount),
-    graphData: (state.dashboardInfo.graphData),
-    topPages: (state.dashboardInfo.topPages),
-    automated_options: (state.basicInfo.automated_options),
-    superUser: (state.basicInfo.superUser)
+    user: state.basicInfo.user,
+    isMobile: state.basicInfo.isMobile,
+    dashboard: state.dashboardInfo.dashboard,
+    sentseendata: state.dashboardInfo.sentseendata,
+    pages: state.pagesInfo.pages,
+    currentPage: state.pagesInfo.currentPage,
+    subscribersCount: state.subscribersInfo.subscribersCount,
+    graphData: state.dashboardInfo.graphData,
+    topPages: state.dashboardInfo.topPages,
+    automated_options: state.basicInfo.automated_options,
+    superUser: state.basicInfo.superUser
   }
 }
 
@@ -717,6 +789,7 @@ function mapDispatchToProps(dispatch) {
       loadSubscriberSummary: loadSubscriberSummary,
       loadSentSeen: loadSentSeen
     },
-    dispatch)
+    dispatch
+  )
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Dashboard)
