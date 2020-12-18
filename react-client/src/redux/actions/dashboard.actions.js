@@ -78,6 +78,9 @@ export function updateSLADashboard(data, error) {
 export function loadSLADashboardData(data) {
   return async (dispatch) => {
     try {
+      dispatch({
+        type: ActionTypes.FETCHING_SLA_DASHBOARD
+      })
       // const response = await callApi('dashboard/sla', 'post', data)
       // dispatch(updateSLADashboard(response.payload))
       setTimeout(() => {
@@ -139,15 +142,10 @@ export function loadSLADashboardData(data) {
             ]
           })
         )
-      }, 2000)
+      }, 1000)
     } catch (err) {
       dispatch(
-        updateSLADashboard(
-          null,
-          err && err.message
-            ? err.message
-            : 'Error Fetching Data. Try Refreshing the Page.'
-        )
+        updateSLADashboard(null, err && err.message ? err.message : 'Error Fetching Data. Try Refreshing the Page.')
       )
     }
   }
@@ -156,9 +154,7 @@ export function loadSLADashboardData(data) {
 export function loadDashboardData() {
   // here we will fetch list of subscribers from endpoint
   return (dispatch) => {
-    callApi('dashboard/stats').then((res) =>
-      dispatch(updateDashboard(res.payload))
-    )
+    callApi('dashboard/stats').then((res) => dispatch(updateDashboard(res.payload)))
   }
 }
 
@@ -182,9 +178,7 @@ export function loadGraphData(days) {
 }
 export function loadTopPages() {
   return (dispatch) => {
-    callApi(`dashboard/topPages/`).then((res) =>
-      dispatch(updateTopPages(res.payload))
-    )
+    callApi(`dashboard/topPages/`).then((res) => dispatch(updateTopPages(res.payload)))
   }
 }
 
@@ -234,9 +228,7 @@ export function loadIntegrationsSummary() {
 }
 export function allLocales() {
   return (dispatch) => {
-    callApi('subscribers/allLocales').then((res) =>
-      dispatch(updateAllLocales(res.payload))
-    )
+    callApi('subscribers/allLocales').then((res) => dispatch(updateAllLocales(res.payload)))
   }
 }
 export function loadSentSeen(data) {
