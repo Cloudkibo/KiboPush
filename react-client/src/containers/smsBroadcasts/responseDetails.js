@@ -4,6 +4,7 @@
 
 import React from 'react'
 import ReactPaginate from 'react-paginate'
+import { formatDateTime } from '../../utility/utils'
 
 class ResponseDetails extends React.Component {
     constructor (props) {
@@ -18,24 +19,23 @@ class ResponseDetails extends React.Component {
 
     render () {
         return (
-        <div className='col-12' style={{minHeight: '300px'}}>
+        <div className='col-12' style={{minHeight: '200px'}}>
             { this.props.senders && this.props.senders.length > 0
                 ? <div className='m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
                 <table className='m-datatable__table' style={{display: 'block', height: 'auto', overflowX: 'auto'}}>
                     <thead className='m-datatable__head'>
-                    <tr className='m-datatable__row'
-                        style={{height: '53px'}}>
+                    <tr className='m-datatable__row'>
                         <th data-field='profilePic'
                         className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
                         <span style={{width: '100px'}}>Profile Pic</span>
                         </th>
                         <th data-field='name'
                         className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                        <span style={{width: '100px'}}>Name</span>
+                        <span style={{width: '150px'}}>Name</span>
                         </th>
                         <th data-field='phoneNumber'
                         className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                        <span style={{width: '100px'}}>Phone Number</span>
+                        <span style={{width: '150px'}}>Phone Number</span>
                         </th>
                         <th data-field='dateTime'
                         className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
@@ -46,12 +46,11 @@ class ResponseDetails extends React.Component {
                     <tbody className='m-datatable__body'>
                     {this.props.senders.map((sender, i) => (
                         <tr data-row={i}
-                        className='m-datatable__row m-datatable__row--even'
-                        style={{height: '55px'}} key={i}>
-                        <td data-field='profilePic' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{sender.profilePic}</span></td>
-                        <td data-field='name' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{sender.name}</span></td>
-                        <td data-field='phoneNumber' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{sender.number}</span></td>
-                        <td data-field='dateTime' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{sender.datetime}</span></td>
+                        className='m-datatable__row m-datatable__row--even' key={i}>
+                        <td data-field='profilePic' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}><img src={sender.profilePic ? sender.profilePic : 'https://cdn.cloudkibo.com/public/icons/users.jpg'} className='m--img-rounded m--marginless m--img-centered' alt='' /></span></td>
+                        <td data-field='name' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '150px'}}>{sender.name}</span></td>
+                        <td data-field='phoneNumber' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '150px'}}>{sender.number}</span></td>
+                        <td data-field='dateTime' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{formatDateTime(sender.datetime)}</span></td>
                         </tr>
                     ))
                     }
