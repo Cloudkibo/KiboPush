@@ -389,7 +389,8 @@ class Sidebar extends Component {
               {
                 this.props.user.platform === 'whatsApp' &&
                 <>
-                  {this.showWhatsAppChatbot()}
+                  {this.showWhatsAppCommerceChatbot()}
+                  {this.showWhatsAppAirlinesChatbot()}
                   {this.showChatbots()}
                 </>
               }
@@ -693,16 +694,35 @@ class Sidebar extends Component {
     }
   }
 
-  showWhatsAppChatbot() {
+  showWhatsAppCommerceChatbot() {
     if (this.props.user && this.props.user.platform === 'whatsApp' && (this.state.isKiboChat || this.state.isLocalhost)) {
       return (
         <li className='m-menu__item' aria-haspopup='true' >
-          <Link to='/whatsAppChatbot' className='m-menu__link'>
+          <Link to='/whatsAppCommerceChatbot' className='m-menu__link'>
             <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
               <span />
             </i>
             <span className='m-menu__link-text'>
               Commerce Chatbot
+            </span>
+          </Link>
+        </li>
+      )
+    } else {
+      return (null)
+    }
+  }
+
+  showWhatsAppAirlinesChatbot() {
+    if (this.props.user && this.props.user.platform === 'whatsApp' && (this.state.isKiboChat || this.state.isLocalhost)) {
+      return (
+        <li className='m-menu__item' aria-haspopup='true' >
+          <Link to='/whatsAppAirlinesChatbot' className='m-menu__link'>
+            <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
+              <span />
+            </i>
+            <span className='m-menu__link-text'>
+              Airlines Chatbot
             </span>
           </Link>
         </li>

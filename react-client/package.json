@@ -101,7 +101,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
-  "proxy": "http://localhost:3022",
+  "proxy": "http://localhost:3021",
   "eslintConfig": {
     "extends": "react-app"
   },
@@ -110,5 +110,8 @@
     "not dead",
     "not ie <= 11",
     "not op_mini all"
-  ]
+  ],
+  "jest": {
+    "setupFiles": ["setupTests.js"]
+ }
 }

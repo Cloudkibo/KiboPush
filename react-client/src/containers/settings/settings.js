@@ -6,6 +6,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { getNGP, enableNGP, disableNGP, saveNGP } from '../../redux/actions/settings.actions'
+import { loadMyPagesList } from '../../redux/actions/pages.actions'
 import AccountSettings from './accountSettings'
 import GreetingMessage from './greetingMessage'
 import WelcomeMessage from './welcomeMessage'
@@ -87,6 +88,8 @@ class Settings extends React.Component {
     this.setCannedResponses = this.setCannedResponses.bind(this)
     this.setNotification = this.setNotification.bind(this)
     this.setNotificationSettings = this.setNotificationSettings.bind(this)
+
+    props.loadMyPagesList()
   }
 
   UNSAFE_componentWillMount() {
@@ -864,7 +867,8 @@ function mapDispatchToProps(dispatch) {
     getNGP: getNGP,
     enableNGP: enableNGP,
     disableNGP: disableNGP,
-    saveNGP: saveNGP
+    saveNGP: saveNGP,
+    loadMyPagesList: loadMyPagesList
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Settings)

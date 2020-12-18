@@ -8,7 +8,7 @@ class GetContactInfo extends React.Component {
         query: '',
         message: '',
         keyboardInputAllowed: false,
-        skipAllowed: '',
+        skipAllowed: false,
     }
     this.getCorrespondingCustomField = this.getCorrespondingCustomField.bind(this)
     this.updateQuery = this.updateQuery.bind(this)
@@ -61,6 +61,12 @@ class GetContactInfo extends React.Component {
       updatedState.message = ''
       updatedState.keyboardInputAllowed = false
       updatedState.skipAllowed = false
+    } else {
+      if (query === 'email') {
+        updatedState.message = 'Please provide your email'
+      } else if (query === 'phone') {
+        updatedState.message = 'Please provide your phone number'
+      }
     }
     this.setState(updatedState, () => {
       this.props.refreshPopover()

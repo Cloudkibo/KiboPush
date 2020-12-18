@@ -48,7 +48,7 @@ class MediaModal extends React.Component {
           canBeDeleted = false
           break
         }
-      } 
+      }
       if (canBeDeleted) {
         if (this.state.file.fileurl.id !== this.state.initialFile) {
           deleteFile(this.state.initialFile)
@@ -118,8 +118,13 @@ class MediaModal extends React.Component {
     this.setState(status)
   }
 
-  updateImage(imgSrc) {
+  updateImage(imgSrc, isFile) {
     this.setState({ imgSrc, edited: true })
+    if(isFile) {
+      this.setState({ imgSrc, edited: true, file: ''})
+    } else{
+      this.setState({ imgSrc, edited: true})
+    }
   }
 
   updateFile(file) {
@@ -177,7 +182,10 @@ class MediaModal extends React.Component {
                 fileName={this.state.file ? this.state.file.fileName : ''}
                 image_url={this.state.file && this.state.file.image_url ? this.state.file.image_url : ''}
                 size={this.state.file ? this.state.file.size : ''}
-                type={this.state.file ? this.state.file.type : ''} />
+                type={this.state.file ? this.state.file.type : ''}
+                handleMedia={this.props.handleMedia}
+                alertMsg={this.props.alertMsg}
+                />
               {
                 (!this.props.noButtons && this.state.file) &&
                 <AddButton
@@ -208,7 +216,7 @@ class MediaModal extends React.Component {
                     </div>
                   }
                   {
-                    (this.state.file && !this.state.imgSrc) &&
+                    (this.state.file && !this.state.imgSrc && this.state.file.componentType === 'video') &&
                     <div style={{ border: '1px solid rgba(0,0,0,.1)', borderRadius: '5px' }}>
                       <video ref="video" controls style={{ width: '100%', borderRadius: '10px', marginTop: '-10px', borderBottomLeftRadius: '0px', borderBottomRightRadius: '0px' }} name='media' id='youtube_player'>
                         <source src={this.state.file.fileurl.url} type='audio/mpeg' />

@@ -98,6 +98,7 @@ class AudioModal extends React.Component {
                     pages={this.props.pages}
                     showValidationModal= {this.props.showValidationModal}
                     onFilesError={this.props.onFilesError}
+                    alertMsg={this.props.alertMsg}
                   />
                 </div>
                 <div className='col-1'>

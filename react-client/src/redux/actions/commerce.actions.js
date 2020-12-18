@@ -5,7 +5,7 @@ export function fetchShopifyStore() {
   return (dispatch) => {
     callApi('shopify/fetchStore')
       .then(res => {
-        if (res.status === 'success') {
+        if (res.status === 'success' && res.payload) {
           let data = res.payload
           data.storeType = 'shopify'
           dispatch({
@@ -21,7 +21,7 @@ export function fetchBigCommerceStore() {
   return (dispatch) => {
     callApi('bigcommerce/fetchStore')
       .then(res => {
-        if (res.status === 'success') {
+        if (res.status === 'success' && res.payload) {
           let data = res.payload
           data.storeType = 'bigcommerce'
           dispatch({

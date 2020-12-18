@@ -101,6 +101,7 @@ class FileModal extends React.Component {
                 pages={this.props.pages}
                 onFilesError={this.props.onFilesError}
                 showValidationModal= {this.props.showValidationModal}
+                alertMsg={this.props.alertMsg}
               />
             </div>
             <div className='col-1'>

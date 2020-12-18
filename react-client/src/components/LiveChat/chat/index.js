@@ -53,7 +53,7 @@ class Chat extends React.Component {
   }
 
   refreshPopover () {
-    let popoverOptions = this.state.popoverOptions
+    let popoverOptions = {...this.state.popoverOptions}
     popoverOptions.placement = 'left'
     this.setState({popoverOptions}, () => {
       let popoverOptions = this.state.popoverOptions
