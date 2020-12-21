@@ -16,17 +16,26 @@ class ViewResponses extends React.Component {
         this.goBack = this.goBack.bind(this)
         this.expandRowToggle = this.expandRowToggle.bind(this)
         this.handlePageClick = this.handlePageClick.bind(this)
+        this.goToCreateFollowUp = this.goToCreateFollowUp.bind(this)
     }
     goBack () {
         this.props.history.push({
             pathname: `/viewBroadcast`,
         })
     }
+
+    goToCreateFollowUp () {
+        this.props.history.push({
+            pathname: `/createFollowupBroadcast`,
+        })
+    }
+
     handlePageClick(data, currentPage, response, senders) {
         var payload = {
+            "purspose": "subscriber_responses",
             "responses": [response._id],
             "operator": "in",
-            "number_of_records": 1,
+            "number_of_records": 10,
             "first_page": "first",
             "requested_page": data.selected,
             "current_page": currentPage,
@@ -60,7 +69,8 @@ class ViewResponses extends React.Component {
           document.getElementById(`icon-${row}`).className = 'la la-angle-up'
         }
         var payload = {
-            "number_of_records": 1,
+            "purspose": "subscriber_responses",
+            "number_of_records": 10,
             "first_page": "first",
             "requested_page": 0,
             "current_page": 1,
@@ -93,7 +103,7 @@ class ViewResponses extends React.Component {
                                 </div>
                             </div>
                             <div className='m-portlet__head-tools'>
-                            <button id="btnViewResponses" className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'  onClick={() => {}}>
+                            <button id="btnViewResponses" className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'  onClick={this.goToCreateFollowUp}>
                                 <span>
                                 <span>Send FollowUp Broadcast</span>
                                 </span>
@@ -149,14 +159,14 @@ class ViewResponses extends React.Component {
                             </div>
                         </div>
                         <div className='row'>
-                                <div className='col-12'>
-                                    <div className='pull-right'>
-                                        <button className='btn btn-primary' style={{marginTop: '10px'}} onClick={this.goBack}>
-                                            Back
-                                        </button>
-                                    </div>
+                            <div className='col-12'>
+                                <div className='pull-right'>
+                                    <button className='btn btn-primary' style={{marginTop: '10px'}} onClick={this.goBack}>
+                                        Back
+                                    </button>
                                 </div>
                             </div>
+                        </div>
                     </div>
                 </div>
             </div>

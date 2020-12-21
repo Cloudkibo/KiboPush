@@ -121,15 +121,13 @@ class ViewBroadcast extends React.Component {
                                         </div>
                                     </div>
                                 </div>
-                                { this.props.smsAnalytics && this.props.smsAnalytics.responded < 1 &&
-                                    <div style={{marginLeft: '110px', marginTop: '20px'}}> No data to display </div>
-                                }
-                                { this.props.smsAnalytics && this.props.smsAnalytics.responded >  0 &&
-                                    <div className='col-md-9 col-lg-5 col-sm-9'>
-                                        <div style={{'width': '600px', 'height': '400px', 'margin': '0 auto'}} className='col m--align-left'>
-                                            <canvas id='radar-chart' width={250} height={170}  />
-                                        </div>
+                                { this.props.smsAnalytics && this.props.smsAnalytics.responded < 1 
+                                ? <div style={{marginLeft: '110px', marginTop: '20px'}}> No data to display </div>
+                                : <div className='col-md-9 col-lg-5 col-sm-9'>
+                                    <div style={{'width': '600px', 'height': '400px', 'margin': '0 auto'}} className='col m--align-left'>
+                                        <canvas id='radar-chart' width={250} height={170}  />
                                     </div>
+                                </div>
                                 }
                             </div>
                             <div className='row'>
