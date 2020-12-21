@@ -210,17 +210,20 @@ class ChatbotAutomation extends React.Component {
                           }
                         </div>
                       }
-                      <label className="m-radio m-radio--bold m-radio--state-brand">
-                        <input
-                          type="radio"
-                          onClick={(e) => this.onRadioClick(e, 'manualChatbot')}
-                          onChange={() => { }}
-                          value='create'
-                          checked={this.state.manualChatbot.selectedRadio === 'create'}
-                        />
-                          Create New Chatbot
-                        <span />
-                      </label>
+                      {
+                        this.props.user.permissions['create_chatbot_automation'] &&
+                        <label className="m-radio m-radio--bold m-radio--state-brand">
+                          <input
+                            type="radio"
+                            onClick={(e) => this.onRadioClick(e, 'manualChatbot')}
+                            onChange={() => {}}
+                            value='create'
+                            checked={this.state.manualChatbot.selectedRadio === 'create'}
+                          />
+                            Create New Chatbot
+                          <span />
+                        </label>
+                      }
                       {
                         this.state.manualChatbot.selectedRadio === 'create' &&
                         <div style={{ marginLeft: '50px' }} className='row'>
