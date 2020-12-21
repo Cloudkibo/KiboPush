@@ -4,8 +4,6 @@
 
 import React from 'react'
 import ReactPaginate from 'react-paginate'
-import { formatDateTime } from '../../utility/utils'
-
 class ResponseDetails extends React.Component {
     constructor (props) {
         super(props)
@@ -39,7 +37,7 @@ class ResponseDetails extends React.Component {
                         </th>
                         <th data-field='dateTime'
                         className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                        <span style={{width: '100px'}}>Date Time</span>
+                        <span style={{width: '100px'}}>Responded At</span>
                         </th>
                     </tr>
                     </thead>
@@ -50,7 +48,7 @@ class ResponseDetails extends React.Component {
                         <td data-field='profilePic' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}><img src={sender.profilePic ? sender.profilePic : 'https://cdn.cloudkibo.com/public/icons/users.jpg'} className='m--img-rounded m--marginless m--img-centered' alt='' /></span></td>
                         <td data-field='name' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '150px'}}>{sender.name}</span></td>
                         <td data-field='phoneNumber' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '150px'}}>{sender.number}</span></td>
-                        <td data-field='dateTime' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{formatDateTime(sender.datetime)}</span></td>
+                        <td data-field='dateTime' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{sender.datetime}</span></td>
                         </tr>
                     ))
                     }
@@ -62,7 +60,7 @@ class ResponseDetails extends React.Component {
                     nextLabel={'next'}
                     breakLabel={<a href='#/'>...</a>}
                     breakClassName={'break-me'}
-                    pageCount={Math.ceil(this.props.totalLength)}
+                    pageCount={Math.ceil(this.state.totalLength / 10)}
                     marginPagesDisplayed={2}
                     pageRangeDisplayed={3}
                     onPageChange={(data) => {

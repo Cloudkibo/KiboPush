@@ -42,6 +42,14 @@ export function clearSendersInfo () {
   }
 }
 
+export function clearSmsAnalytics () {
+  return {
+    type: ActionTypes.CLEAR_SMS_ANALYTICS,
+    data: null
+  }
+}
+
+
 export function saveCurrentSmsBroadcast (broadcast) {
   return {
     type: ActionTypes.CURRENT_SMSBROADCAST,
@@ -125,7 +133,7 @@ export function fetchResponseDetails (id, responseId, payload) {
   }
 }
 
-export function sendFollowupBroadcast (payload, msg) {
+export function sendFollowupBroadcast (payload, msg, setToDefault) {
   console.log('data for sendFollowupBroadcast', payload)
   return (dispatch) => {
     callApi(`smsBroadcasts/sendFollowupBroadcast`, 'post', payload)
@@ -133,6 +141,9 @@ export function sendFollowupBroadcast (payload, msg) {
         console.log('response from sendFollowupBroadcast', res.payload)
         if (res.status === 'success') {
          msg.success('Follow-up broadcat sent successfully')
+         if (setToDefault) {
+          setToDefault()
+         }
         }
       })
   }

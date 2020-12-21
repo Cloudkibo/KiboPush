@@ -4,7 +4,7 @@
 
 import React from 'react'
 import { connect } from 'react-redux'
-import { loadBroadcastsList, loadTwilioNumbers, saveCurrentSmsBroadcast } from '../../redux/actions/smsBroadcasts.actions'
+import { loadBroadcastsList, loadTwilioNumbers, saveCurrentSmsBroadcast, clearSmsAnalytics } from '../../redux/actions/smsBroadcasts.actions'
 import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
 import { Link } from 'react-router-dom'
@@ -31,6 +31,7 @@ class SmsBroadcast extends React.Component {
     props.loadBroadcastsList({last_id: 'none', number_of_records: 10, first_page: 'first'})
     props.loadTwilioNumbers()
     props.saveCurrentSmsBroadcast(null)
+    props.clearSmsAnalytics()
 
     this.displayData = this.displayData.bind(this)
     this.togglePopover = this.togglePopover.bind(this)
@@ -378,7 +379,8 @@ function mapDispatchToProps (dispatch) {
     loadBroadcastsList,
     loadTwilioNumbers,
     loadContactsList,
-    saveCurrentSmsBroadcast
+    saveCurrentSmsBroadcast,
+    clearSmsAnalytics
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(SmsBroadcast)
