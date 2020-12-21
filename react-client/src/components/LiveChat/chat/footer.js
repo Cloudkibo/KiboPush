@@ -12,7 +12,8 @@ class Footer extends React.Component {
   constructor(props, context) {
     super(props, context)
     this.initialZoomCountdown = 3
-    this.initialZoomInvitationMessage = 'Please join Zoom meeting to discuss this in detail. [invite_url]'
+    this.initialZoomInvitationMessage =
+      'Please join Zoom meeting to discuss this in detail. [invite_url]'
     this.state = {
       text: '',
       attachment: {},
@@ -91,12 +92,11 @@ class Footer extends React.Component {
         if (e.which === 40) {
           if (selectedIndex < this.state.cannedMessages.length - 1)
             this.setState({ selectedIndex: selectedIndex + 1 })
-          document.getElementById("cardBody").scrollTop += 55
-
+          document.getElementById('cardBody').scrollTop += 55
         } else if (e.which === 38) {
           if (selectedIndex !== 0) {
             this.setState({ selectedIndex: selectedIndex - 1 })
-            document.getElementById("cardBody").scrollTop -= 55
+            document.getElementById('cardBody').scrollTop -= 55
           }
         }
       }
@@ -108,12 +108,10 @@ class Footer extends React.Component {
     this.setState({ selectedCannMessage: selectedCannMessage })
   }
 
-
   toggleHover(id) {
     // console.log('Hovver called', id)
     // document.getElementById(id).style.backgroundColor = 'lightgrey'
     this.setState({ selectedIndex: id })
-
   }
 
   onMouseLeave(id) {
@@ -126,34 +124,48 @@ class Footer extends React.Component {
     if (cannResponse.responseMessage.includes('{{user_full_name}}')) {
       if (!activeSession.name) {
         cannResponse.responseMessage = cannResponse.responseMessage.replace(
-          /{{user_full_name}}/g, activeSession.firstName + ' ' + activeSession.lastName)
+          /{{user_full_name}}/g,
+          activeSession.firstName + ' ' + activeSession.lastName
+        )
       } else {
         cannResponse.responseMessage = cannResponse.responseMessage.replace(
-          /{{user_full_name}}/g, activeSession.name)
+          /{{user_full_name}}/g,
+          activeSession.name
+        )
       }
     }
     if (cannResponse.responseMessage.includes('{{user_first_name}}')) {
       if (!activeSession.name) {
         cannResponse.responseMessage = cannResponse.responseMessage.replace(
-          /{{user_first_name}}/g, activeSession.firstName)
+          /{{user_first_name}}/g,
+          activeSession.firstName
+        )
       } else {
         let subscriberName = activeSession.name.split(' ')
         cannResponse.responseMessage = cannResponse.responseMessage.replace(
-          /{{user_first_name}}/g, subscriberName[0])
+          /{{user_first_name}}/g,
+          subscriberName[0]
+        )
       }
     }
     if (cannResponse.responseMessage.includes('{{user_last_name}}')) {
       if (!activeSession.name) {
         cannResponse.responseMessage = cannResponse.responseMessage.replace(
-          /{{user_last_name}}/g, activeSession.lastName)
+          /{{user_last_name}}/g,
+          activeSession.lastName
+        )
       } else {
         let subscriberName = activeSession.name.split(' ')
         if (subscriberName.length >= 2) {
           cannResponse.responseMessage = cannResponse.responseMessage.replace(
-            /{{user_last_name}}/g, subscriberName[subscriberName.length - 1])
+            /{{user_last_name}}/g,
+            subscriberName[subscriberName.length - 1]
+          )
         } else {
           cannResponse.responseMessage = cannResponse.responseMessage.replace(
-            /{{user_last_name}}/g, '')
+            /{{user_last_name}}/g,
+            ''
+          )
         }
       }
     }
@@ -189,7 +201,10 @@ class Footer extends React.Component {
     console.log('UNSAFE_componentWillReceiveProps called in footer', nextProps.activeSession._id)
 
     if (nextProps.cannedResponses) {
-      this.setState({ cannedMessages: nextProps.cannedResponses, dataForSearch: nextProps.cannedResponses })
+      this.setState({
+        cannedMessages: nextProps.cannedResponses,
+        dataForSearch: nextProps.cannedResponses
+      })
     }
     if (this.props.activeSession._id !== nextProps.activeSession._id) {
       this.setState({ showCannedMessages: false, text: '' })
@@ -198,9 +213,12 @@ class Footer extends React.Component {
 
   appendInvitationUrl() {
     if (!this.state.zoomInvitationMessage.includes('invite_url')) {
-      this.setState({ zoomInvitationMessage: this.state.zoomInvitationMessage + " [invite_url]" }, () => {
-        document.getElementById('_zoom_invitation_message').setCustomValidity('')
-      })
+      this.setState(
+        { zoomInvitationMessage: this.state.zoomInvitationMessage + ' [invite_url]' },
+        () => {
+          document.getElementById('_zoom_invitation_message').setCustomValidity('')
+        }
+      )
     }
   }
 
@@ -209,43 +227,52 @@ class Footer extends React.Component {
     const data = this.props.performAction('create a zoom meeting', this.props.activeSession)
     if (data.isAllowed) {
       this.setState({ zoomMeetingLoading: true }, () => {
-        this.props.createZoomMeeting({
-          subscriberId: this.props.activeSession._id,
-          topic: this.state.zoomTopic,
-          agenda: this.state.zoomAgenda,
-          invitationMessage: this.state.zoomInvitationMessage,
-          zoomUserId: this.state.zoomUserId,
-          platform: this.props.user.platform
-        }, (res) => {
-          if (res.status === 'success' && res.payload) {
-            this.setState({
-              zoomMeetingLoading: false,
-              zoomMeetingCreated: true,
-              zoomMeetingUrl: res.payload.joinUrl,
-              text: this.state.zoomInvitationMessage.replace('[invite_url]', res.payload.joinUrl)
-            }, () => {
-              document.getElementById('_close_zoom_integration').style.display = 'none'
-              this.sendMessage()
-              this.zoomCountdownTimer = setInterval(() => {
-                if (this.state.zoomCountdown <= 1) {
-                  if (this.state.zoomMeetingUrl) {
-                    clearInterval(this.zoomCountdownTimer)
-                    document.getElementById('_zoomMeetingLink').click()
-                    //window.open(this.state.zoomMeetingUrl, '_blank')
-                    document.getElementById('_close_zoom_integration').style.display = 'block'
-                    document.getElementById('_close_zoom_integration').click()
-                  }
-                } else {
-                  this.setState({ zoomCountdown: this.state.zoomCountdown - 1 })
+        this.props.createZoomMeeting(
+          {
+            subscriberId: this.props.activeSession._id,
+            topic: this.state.zoomTopic,
+            agenda: this.state.zoomAgenda,
+            invitationMessage: this.state.zoomInvitationMessage,
+            zoomUserId: this.state.zoomUserId,
+            platform: this.props.user.platform
+          },
+          (res) => {
+            if (res.status === 'success' && res.payload) {
+              this.setState(
+                {
+                  zoomMeetingLoading: false,
+                  zoomMeetingCreated: true,
+                  zoomMeetingUrl: res.payload.joinUrl,
+                  text: this.state.zoomInvitationMessage.replace(
+                    '[invite_url]',
+                    res.payload.joinUrl
+                  )
+                },
+                () => {
+                  document.getElementById('_close_zoom_integration').style.display = 'none'
+                  this.sendMessage()
+                  this.zoomCountdownTimer = setInterval(() => {
+                    if (this.state.zoomCountdown <= 1) {
+                      if (this.state.zoomMeetingUrl) {
+                        clearInterval(this.zoomCountdownTimer)
+                        document.getElementById('_zoomMeetingLink').click()
+                        //window.open(this.state.zoomMeetingUrl, '_blank')
+                        document.getElementById('_close_zoom_integration').style.display = 'block'
+                        document.getElementById('_close_zoom_integration').click()
+                      }
+                    } else {
+                      this.setState({ zoomCountdown: this.state.zoomCountdown - 1 })
+                    }
+                  }, 1000)
                 }
-              }, 1000)
-            })
-          } else {
-            this.props.alertMsg.error(res.description || 'Failed to create Zoom Meeting')
-            console.log('error creating zoom meeting', res.description)
-            this.setState({ zoomMeetingCreationError: true, zoomMeetingLoading: false })
+              )
+            } else {
+              this.props.alertMsg.error(res.description || 'Failed to create Zoom Meeting')
+              console.log('error creating zoom meeting', res.description)
+              this.setState({ zoomMeetingCreationError: true, zoomMeetingLoading: false })
+            }
           }
-        })
+        )
       })
     } else {
       this.props.alertMsg.error(data.errorMsg)
@@ -369,7 +396,7 @@ class Footer extends React.Component {
     }
     if (this.state.selectedCannMessage) {
       if (/\s/.test(text)) {
-        var regex = new RegExp("^/" + this.state.selectedCannMessage.responseCode, "g")
+        var regex = new RegExp('^/' + this.state.selectedCannMessage.responseCode, 'g')
         if (!text.match(regex)) {
           this.setState({ selectedCannMessage: null })
           this.search(text)
@@ -402,7 +429,7 @@ class Footer extends React.Component {
       setTimeout(() => {
         ReactTooltip.hide(document.getElementById('_contact_info_picker'))
         if (this.state.showingSuggestion) {
-          this.setState({showingSuggestion: false})
+          this.setState({ showingSuggestion: false })
         }
       }, 5000)
       ReactTooltip.show(document.getElementById('_contact_info_picker'))
@@ -414,18 +441,18 @@ class Footer extends React.Component {
       let searchArray = []
       if (value[value.length - 1] === ' ') {
         let text = value.trim().slice(1)
-        this.state.dataForSearch.forEach(element => {
+        this.state.dataForSearch.forEach((element) => {
           if (element.responseCode.toLowerCase() === text.toLowerCase()) {
             this.setState({ selectedCannMessage: element })
             searchArray.push(element)
           }
         })
         this.setState({ cannedMessages: searchArray })
-      }
-      else if (value !== '/') {
+      } else if (value !== '/') {
         let text = value.slice(1)
-        this.state.dataForSearch.forEach(element => {
-          if (element.responseCode.toLowerCase().includes(text.toLowerCase())) searchArray.push(element)
+        this.state.dataForSearch.forEach((element) => {
+          if (element.responseCode.toLowerCase().includes(text.toLowerCase()))
+            searchArray.push(element)
         })
         this.setState({ cannedMessages: searchArray })
       } else {
@@ -451,7 +478,10 @@ class Footer extends React.Component {
   }
   onDoneRecording(recordedBlob) {
     console.log('recordedBlob object', recordedBlob)
-    const file = new File([recordedBlob.blob], 'recorded-audio.mp3', { type: recordedBlob.blob.type, lastModified: new Date() })
+    const file = new File([recordedBlob.blob], 'recorded-audio.mp3', {
+      type: recordedBlob.blob.type,
+      lastModified: new Date()
+    })
     if (file) {
       if (this.state.attachment) {
         this.props.deletefile(this.state.attachment.id)
@@ -473,22 +503,17 @@ class Footer extends React.Component {
 
   getRecordAudioContent() {
     if (this.state.showAudioRecording) {
-      return (
-        <AUDIORECORDER
-          onDoneRecording={this.onDoneRecording}
-          closeModalOnStop={true}
-        />
-      )
+      return <AUDIORECORDER onDoneRecording={this.onDoneRecording} closeModalOnStop={true} />
     } else {
-      return (<div />)
+      return <div />
     }
   }
 
   setZoomTopic(e) {
     if (e.target.value.length > 80) {
-      e.target.setCustomValidity("Topic must be 80 characters or less.")
+      e.target.setCustomValidity('Topic must be 80 characters or less.')
     } else {
-      e.target.setCustomValidity("")
+      e.target.setCustomValidity('')
     }
     this.setState({ zoomTopic: e.target.value })
   }
@@ -499,17 +524,22 @@ class Footer extends React.Component {
 
   setZoomInvitationMessage(e) {
     if (!e.target.value) {
-      e.target.setCustomValidity("Please fill in this field.")
+      e.target.setCustomValidity('Please fill in this field.')
     } else if (!e.target.value.includes('[invite_url]')) {
-      e.target.setCustomValidity("[invite_url] is required in the invitation message.")
+      e.target.setCustomValidity('[invite_url] is required in the invitation message.')
     } else {
-      e.target.setCustomValidity("")
+      e.target.setCustomValidity('')
     }
     this.setState({ zoomInvitationMessage: e.target.value })
   }
 
   checkZoomDisabled() {
-    return !this.state.zoomTopic || !this.state.zoomAgenda || !this.state.zoomInvitationMessage || !this.state.zoomUserId
+    return (
+      !this.state.zoomTopic ||
+      !this.state.zoomAgenda ||
+      !this.state.zoomInvitationMessage ||
+      !this.state.zoomUserId
+    )
   }
 
   getZoomIntegrationContent() {
@@ -518,7 +548,8 @@ class Footer extends React.Component {
         <div>
           <div>
             <span>
-              You have not integrated Zoom Meetings with KiboPush. Please integrate Zoom to continue.
+              You have not integrated Zoom Meetings with KiboPush. Please integrate Zoom to
+              continue.
             </span>
           </div>
           <div style={{ marginTop: '25px', textAlign: 'center' }}>
@@ -531,97 +562,166 @@ class Footer extends React.Component {
     } else if (!this.state.zoomMeetingCreated) {
       return (
         <form onSubmit={this.createZoomMeeting}>
-          <div className="m-form m-form--fit m-form--label-align-right">
+          <div className='m-form m-form--fit m-form--label-align-right'>
             <span>{`Please provide the following information to create a zoom meeting and send invitation to ${this.props.activeSession.firstName}.`}</span>
 
-            <div style={{ marginTop: '20px', paddingLeft: '0', paddingRight: '0' }} class="form-group m-form__group row">
-              <label for="_zoom_users" className="col-2 col-form-label">
+            <div
+              style={{ marginTop: '20px', paddingLeft: '0', paddingRight: '0' }}
+              class='form-group m-form__group row'
+            >
+              <label for='_zoom_users' className='col-2 col-form-label'>
                 Account:
               </label>
-              <div className="col-10">
-                <select onChange={this.selectZoomUser} class="form-control m-input" value={this.state.zoomUserId} id="_zoom_users" required>
-                  <option key='' value='' selected disabled>Select a Zoom Account...</option>
-                  {
-                    this.props.zoomIntegrations.map((account) => {
-                      return (
-                        <option value={account._id}>{account.firstName + " " + account.lastName}</option>
-                      )
-                    })
-                  }
+              <div className='col-10'>
+                <select
+                  onChange={this.selectZoomUser}
+                  class='form-control m-input'
+                  value={this.state.zoomUserId}
+                  id='_zoom_users'
+                  required
+                >
+                  <option key='' value='' selected disabled>
+                    Select a Zoom Account...
+                  </option>
+                  {this.props.zoomIntegrations.map((account) => {
+                    return (
+                      <option value={account._id}>
+                        {account.firstName + ' ' + account.lastName}
+                      </option>
+                    )
+                  })}
                 </select>
               </div>
             </div>
 
-            <div style={{ paddingLeft: '0', paddingRight: '0' }} className="form-group m-form__group row">
-              <label for="_zoom_topic" className="col-2 col-form-label">
+            <div
+              style={{ paddingLeft: '0', paddingRight: '0' }}
+              className='form-group m-form__group row'
+            >
+              <label for='_zoom_topic' className='col-2 col-form-label'>
                 Topic:
               </label>
-              <div className="col-10">
-                <input required onChange={this.setZoomTopic} className="form-control m-input" type="text" value={this.state.zoomTopic} id="_zoom_topic" />
+              <div className='col-10'>
+                <input
+                  required
+                  onChange={this.setZoomTopic}
+                  className='form-control m-input'
+                  type='text'
+                  value={this.state.zoomTopic}
+                  id='_zoom_topic'
+                />
                 {/* <div style={{color: 'red'}}>{'*Required'}</div> */}
               </div>
             </div>
 
-            <div style={{ paddingLeft: '0', paddingRight: '0' }} className="form-group m-form__group row">
-              <label for="_zoom_agenda" className="col-2 col-form-label">
+            <div
+              style={{ paddingLeft: '0', paddingRight: '0' }}
+              className='form-group m-form__group row'
+            >
+              <label for='_zoom_agenda' className='col-2 col-form-label'>
                 Agenda:
               </label>
-              <div className="col-10">
-                <input required onChange={this.setZoomAgenda} className="form-control m-input" type="text" value={this.state.zoomAgenda} id="_zoom_agenda" />
+              <div className='col-10'>
+                <input
+                  required
+                  onChange={this.setZoomAgenda}
+                  className='form-control m-input'
+                  type='text'
+                  value={this.state.zoomAgenda}
+                  id='_zoom_agenda'
+                />
                 {/* <div style={{color: 'red'}}>{'*Required'}</div> */}
               </div>
             </div>
 
-            <div style={{ paddingLeft: '0', paddingRight: '0' }} className="form-group m-form__group">
-              <label for="_zoom_invitation_message">
-                Invitation Message:
-              </label>
-              <textarea required onChange={this.setZoomInvitationMessage} className="form-control m-input" value={this.state.zoomInvitationMessage} id="_zoom_invitation_message" rows="3"></textarea>
+            <div
+              style={{ paddingLeft: '0', paddingRight: '0' }}
+              className='form-group m-form__group'
+            >
+              <label for='_zoom_invitation_message'>Invitation Message:</label>
+              <textarea
+                required
+                onChange={this.setZoomInvitationMessage}
+                className='form-control m-input'
+                value={this.state.zoomInvitationMessage}
+                id='_zoom_invitation_message'
+                rows='3'
+              ></textarea>
               {/* <div style={{color: 'red'}}>{'*Required'}</div> */}
             </div>
 
-            <div className='m-messenger__form-tools pull-right messengerTools' style={{ backgroundColor: '#F1F0F0', marginTop: '-40px', marginRight: '10px' }}>
+            <div
+              className='m-messenger__form-tools pull-right messengerTools'
+              style={{ backgroundColor: '#F1F0F0', marginTop: '-40px', marginRight: '10px' }}
+            >
               <div id='_appendInvitationUrl' style={{ display: 'inline-block', float: 'left' }}>
-                <i data-tip={this.state.zoomInvitationMessage.includes('invite_url') ? 'Invitation URL is already present' : 'Append invitation URL'} onClick={this.appendInvitationUrl} style={{
-                  height: '24px',
-                  width: '24px',
-                  position: 'relative',
-                  display: 'inline-block',
-                  cursor: 'pointer'
-                }}>
-                  <i className='greetingMessage fa fa-link' style={{
-                    fontSize: '20px',
-                    left: '0px',
-                    width: '100%',
-                    height: '2em',
-                    textAlign: 'center',
-                    color: 'rgb(120, 120, 120)'
-                  }} />
+                <i
+                  data-tip={
+                    this.state.zoomInvitationMessage.includes('invite_url')
+                      ? 'Invitation URL is already present'
+                      : 'Append invitation URL'
+                  }
+                  onClick={this.appendInvitationUrl}
+                  style={{
+                    height: '24px',
+                    width: '24px',
+                    position: 'relative',
+                    display: 'inline-block',
+                    cursor: 'pointer'
+                  }}
+                >
+                  <i
+                    className='greetingMessage fa fa-link'
+                    style={{
+                      fontSize: '20px',
+                      left: '0px',
+                      width: '100%',
+                      height: '2em',
+                      textAlign: 'center',
+                      color: 'rgb(120, 120, 120)'
+                    }}
+                  />
                 </i>
               </div>
             </div>
 
-            <div style={{
-              fontSize: '12px',
-              marginTop: '-10px',
-              fontStyle: 'italic'
-            }}>{'Note: [invite_url] will be replaced by the generated zoom meeting invitation link'}</div>
+            <div
+              style={{
+                fontSize: '12px',
+                marginTop: '-10px',
+                fontStyle: 'italic'
+              }}
+            >
+              {'Note: [invite_url] will be replaced by the generated zoom meeting invitation link'}
+            </div>
 
-            <div style={{ paddingBottom: '0', paddingRight: '0', paddingLeft: '0', float: 'right' }} className="m-form__actions">
-              <button disabled={this.state.zoomMeetingLoading} style={{ float: 'right', marginLeft: '30px' }} type='submit' className="btn btn-primary">
-                {
-                  this.state.zoomMeetingLoading ?
-                    <div>
-                      <div className="m-loader" style={{ height: '10px', width: "30px", display: "inline-block" }}></div>
-                      <span>Loading...</span>
-                    </div>
-                    : <span>Create and Invite</span>
-                }
+            <div
+              style={{ paddingBottom: '0', paddingRight: '0', paddingLeft: '0', float: 'right' }}
+              className='m-form__actions'
+            >
+              <button
+                disabled={this.state.zoomMeetingLoading}
+                style={{ float: 'right', marginLeft: '30px' }}
+                type='submit'
+                className='btn btn-primary'
+              >
+                {this.state.zoomMeetingLoading ? (
+                  <div>
+                    <div
+                      className='m-loader'
+                      style={{ height: '10px', width: '30px', display: 'inline-block' }}
+                    ></div>
+                    <span>Loading...</span>
+                  </div>
+                ) : (
+                  <span>Create and Invite</span>
+                )}
               </button>
-              {
-                this.state.zoomMeetingCreationError &&
-                <span style={{ color: 'red' }}>There was an error creating the meeting. Please try again.</span>
-              }
+              {this.state.zoomMeetingCreationError && (
+                <span style={{ color: 'red' }}>
+                  There was an error creating the meeting. Please try again.
+                </span>
+              )}
             </div>
           </div>
         </form>
@@ -630,8 +730,15 @@ class Footer extends React.Component {
       return (
         <div>
           <span>{`Zoom meeting has been successfully created and invitation has been sent to ${this.props.activeSession.firstName}. Redirecting you to Zoom Meetings in:`}</span>
-          <div style={{ display: 'flex', justifyContent: 'center', marginTop: '50px', marginBottom: '50px' }}>
-            <div className="numberCircle">{this.state.zoomCountdown}</div>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              marginTop: '50px',
+              marginBottom: '50px'
+            }}
+          >
+            <div className='numberCircle'>{this.state.zoomCountdown}</div>
           </div>
         </div>
       )
@@ -652,20 +759,23 @@ class Footer extends React.Component {
 
   handleMessageResponse(res, data, payload) {
     if (res.status === 'success') {
-        data.format = 'convos'
-        this.setState({
+      data.format = 'convos'
+      this.setState(
+        {
           attachment: {},
           componentType: '',
           uploadingFile: false,
           uploaded: false,
           loading: false,
           caption: ''
-        }, () => {
+        },
+        () => {
           // this.updateChatData(data, payload)
-        })
+        }
+      )
     } else {
-      this.setState({loading: false})
-      let msg = res.description || res.payload ||'Failed to send message'
+      this.setState({ loading: false })
+      let msg = res.description || res.payload || 'Failed to send message'
       if (msg.message) {
         this.props.alertMsg.error(JSON.stringify(msg.message))
       } else {
@@ -701,11 +811,19 @@ class Footer extends React.Component {
       const file = e.target.files[0]
       if (file.size > 25000000) {
         this.props.alertMsg.error('Attachment exceeds the limit of 25MB')
-      } else if ([
-        'application/zip', 'text/javascript', 'text/exe', 'application/x-ms-dos-executable',
-        'application/x-pem-file', 'application/x-x509-ca-cert'
-      ].includes(file.type)) {
-        this.props.alertMsg.error(`${file.type} files are not supported. Please select another file`)
+      } else if (
+        [
+          'application/zip',
+          'text/javascript',
+          'text/exe',
+          'application/x-ms-dos-executable',
+          'application/x-pem-file',
+          'application/x-x509-ca-cert'
+        ].includes(file.type)
+      ) {
+        this.props.alertMsg.error(
+          `${file.type} files are not supported. Please select another file`
+        )
       } else {
         const data = this.props.performAction('send attachments', this.props.activeSession)
         if (data.isAllowed) {
@@ -791,26 +909,29 @@ class Footer extends React.Component {
         } else {
           let text = this.state.text
           if (text.includes(selectCannMessage.responseCode)) {
-            text = text.replace(`/${selectCannMessage.responseCode}`, selectCannMessage.responseMessage)
+            text = text.replace(
+              `/${selectCannMessage.responseCode}`,
+              selectCannMessage.responseMessage
+            )
           } else {
             text = selectCannMessage.responseMessage
           }
-          this.setState({ showCannedMessages: false, text: text, selectedCannMessage: null }, () => {
-            this.sendMessage()
-          })
+          this.setState(
+            { showCannedMessages: false, text: text, selectedCannMessage: null },
+            () => {
+              this.sendMessage()
+            }
+          )
         }
-      }
-      else if (!this.state.selectedCannMessage && this.state.showCannedMessages) {
+      } else if (!this.state.selectedCannMessage && this.state.showCannedMessages) {
         if (this.state.cannedMessages.length > 0) {
           this.selectCannMessage(this.state.cannedMessages[this.state.selectedIndex])
         } else {
           this.setState({ showCannedMessages: false })
           this.sendMessage()
         }
-      }
-      else {
-        if (!this.state.showCannedMessages)
-          this.sendMessage()
+      } else {
+        if (!this.state.showCannedMessages) this.sendMessage()
       }
     }
   }
@@ -890,7 +1011,7 @@ class Footer extends React.Component {
     }
     if (type === 'contact_info') {
       popoverOptions.content = (
-        <GetContactInfo 
+        <GetContactInfo
           sendQuickReplyMessage={this.sendQuickReplyMessage}
           refreshPopover={this.props.refreshPopover}
           togglePopover={this.props.togglePopover}
@@ -908,8 +1029,8 @@ class Footer extends React.Component {
     this.props.getPicker(type, popoverOptions, otherOptions)
   }
 
-  sendQuickReplyMessage (text, quickReplies) {
-    this.setState({text}, () => {
+  sendQuickReplyMessage(text, quickReplies) {
+    this.setState({ text }, () => {
       this.sendMessage(quickReplies)
     })
   }
@@ -924,18 +1045,56 @@ class Footer extends React.Component {
     let data = this.state.cannedMessages.map((item, index) => {
       let responseMessage = item.responseMessage
       if (responseMessage.length > 37) {
-        responseMessage = responseMessage.trim().substring(0, 37) + "……"
+        responseMessage = responseMessage.trim().substring(0, 37) + '……'
       }
       if (this.state.selectedIndex === index) {
-        return <li className='m-nav__item' style={{ backgroundColor: 'rgba(0,0,0,.03)' }} key={index} id={`m-nav${index}`} onMouseOver={() => this.toggleHover(index)} onMouseLeave={() => this.onMouseLeave(`m-nav${index}`)}>
-          <p style={{ wordBreak: 'break-all', cursor: 'pointer', margin: 'auto' }} onClick={() => this.selectCannMessage(item)}>/{item.responseCode}</p>
-          <p style={{ wordBreak: 'break-all', cursor: 'pointer', color: 'grey' }} onClick={() => this.selectCannMessage(item)}>{responseMessage}</p>
-        </li>
+        return (
+          <li
+            className='m-nav__item'
+            style={{ backgroundColor: 'rgba(0,0,0,.03)' }}
+            key={index}
+            id={`m-nav${index}`}
+            onMouseOver={() => this.toggleHover(index)}
+            onMouseLeave={() => this.onMouseLeave(`m-nav${index}`)}
+          >
+            <p
+              style={{ wordBreak: 'break-all', cursor: 'pointer', margin: 'auto' }}
+              onClick={() => this.selectCannMessage(item)}
+            >
+              /{item.responseCode}
+            </p>
+            <p
+              style={{ wordBreak: 'break-all', cursor: 'pointer', color: 'grey' }}
+              onClick={() => this.selectCannMessage(item)}
+            >
+              {responseMessage}
+            </p>
+          </li>
+        )
       } else {
-        return <li className='m-nav__item' style={{ backgroundColor: 'white' }} key={index} id={`m-nav${index}`} onMouseOver={() => this.toggleHover(index)} onMouseLeave={() => this.onMouseLeave(`m-nav${index}`)}>
-          <p style={{ wordBreak: 'break-all', cursor: 'pointer', margin: 'auto' }} onClick={() => this.selectCannMessage(item)}>/{item.responseCode}</p>
-          <p style={{ wordBreak: 'break-all', cursor: 'pointer', color: 'grey' }} onClick={() => this.selectCannMessage(item)}>{responseMessage}</p>
-        </li>
+        return (
+          <li
+            className='m-nav__item'
+            style={{ backgroundColor: 'white' }}
+            key={index}
+            id={`m-nav${index}`}
+            onMouseOver={() => this.toggleHover(index)}
+            onMouseLeave={() => this.onMouseLeave(`m-nav${index}`)}
+          >
+            <p
+              style={{ wordBreak: 'break-all', cursor: 'pointer', margin: 'auto' }}
+              onClick={() => this.selectCannMessage(item)}
+            >
+              /{item.responseCode}
+            </p>
+            <p
+              style={{ wordBreak: 'break-all', cursor: 'pointer', color: 'grey' }}
+              onClick={() => this.selectCannMessage(item)}
+            >
+              {responseMessage}
+            </p>
+          </li>
+        )
       }
     })
     return data
@@ -958,7 +1117,9 @@ class Footer extends React.Component {
           id='_record_audio'
           title='Record Audio'
           content={this.getRecordAudioContent()}
-          onClose={() => { this.toggleAudioRecording(false) }}
+          onClose={() => {
+            this.toggleAudioRecording(false)
+          }}
         />
         <MODAL
           id='_zoom_integration'
@@ -966,171 +1127,234 @@ class Footer extends React.Component {
           content={this.getZoomIntegrationContent()}
           onClose={this.resetZoomValues}
         />
-        <a id='_zoomMeetingLink' style={{ display: 'none' }} href={this.state.zoomMeetingUrl} target='_blank' rel="noopener noreferrer"> </a>
+        <a
+          id='_zoomMeetingLink'
+          style={{ display: 'none' }}
+          href={this.state.zoomMeetingUrl}
+          target='_blank'
+          rel='noopener noreferrer'
+        >
+          {' '}
+        </a>
         <div className='m-messenger__form'>
           <div className='m-messenger__form-controls'>
-            {
-              this.state.uploadingFile
-                ? <div className='align-center'>
-                  <center>
-                    <div className="m-loader" style={{ width: "30px", display: "inline-block" }} />
-                    <span>Uploading...</span>
-                  </center>
-                </div>
-                : this.state.uploaded
-                  ? <div className='m-input-icon m-input-icon--right'>
-                    <input
-                      style={{ cursor: 'not-allowed' }}
-                      type='text'
-                      value={`Attachment: ${this.state.attachment.name.length > 20 ? this.state.attachment.name.substring(0, 20) + '...' : this.state.attachment.name}`}
-                      className='m-messenger__form-input'
-                      disabled
-                    />
-                    <span onClick={this.removeAttachment} style={{ cursor: 'pointer' }} className='m-input-icon__icon m-input-icon__icon--right'>
-                      <span>
-                        <i className='la la-trash' />
-                      </span>
-                    </span>
-                  </div> :
-                  <div> {this.state.showCannedMessages &&
-                    <div className='m-dropdown__wrapper'>
-                      <span className='m-dropdown__arrow m-dropdown__arrow--right m-dropdown__arrow--adjust' />
-                      <div className='m-dropdown__inner'>
-                        <div className='m-dropdown__body'>
-                          <div className='m-dropdown__content'>
-                            <div className='card'>
-                              <ul className='m-nav'>
-                                <li key={100} className='m-nav__item'>
-                                  <div className='card-header'>
-                                    <h4 className='mb-0'>
-                                      <div style={{ cursor: 'auto' }}
-                                        className='btn'
-                                        data-toggle='collapse'
-                                        aria-expanded='true'
-                                      >
-                                        {this.state.selectedCannMessage ? this.state.selectedCannMessage.responseCode : 'Canned responses'}
-                                      </div>
-                                    </h4>
-                                  </div>
-                                </li>
-                              </ul>
-                              <div className='card-body' id='cardBody' style={{ maxHeight: '230px', overflow: 'auto' }}>
-                                {!this.state.selectedCannMessage ? this.state.cannedMessages.length > 0 ?
-                                  <ul className='m-nav' >
-                                    {this.listDataDisplay()}
-                                  </ul>
-                                  : <ul className='m-nav'>
+            {this.state.uploadingFile ? (
+              <div className='align-center'>
+                <center>
+                  <div className='m-loader' style={{ width: '30px', display: 'inline-block' }} />
+                  <span>Uploading...</span>
+                </center>
+              </div>
+            ) : this.state.uploaded ? (
+              <div className='m-input-icon m-input-icon--right'>
+                <input
+                  style={{ cursor: 'not-allowed' }}
+                  type='text'
+                  value={`Attachment: ${
+                    this.state.attachment.name.length > 20
+                      ? this.state.attachment.name.substring(0, 20) + '...'
+                      : this.state.attachment.name
+                  }`}
+                  className='m-messenger__form-input'
+                  disabled
+                />
+                <span
+                  onClick={this.removeAttachment}
+                  style={{ cursor: 'pointer' }}
+                  className='m-input-icon__icon m-input-icon__icon--right'
+                >
+                  <span>
+                    <i className='la la-trash' />
+                  </span>
+                </span>
+              </div>
+            ) : (
+              <div>
+                {' '}
+                {this.state.showCannedMessages && (
+                  <div className='m-dropdown__wrapper'>
+                    <span className='m-dropdown__arrow m-dropdown__arrow--right m-dropdown__arrow--adjust' />
+                    <div className='m-dropdown__inner'>
+                      <div className='m-dropdown__body'>
+                        <div className='m-dropdown__content'>
+                          <div className='card'>
+                            <ul className='m-nav'>
+                              <li key={100} className='m-nav__item'>
+                                <div className='card-header'>
+                                  <h4 className='mb-0'>
+                                    <div
+                                      style={{ cursor: 'auto' }}
+                                      className='btn'
+                                      data-toggle='collapse'
+                                      aria-expanded='true'
+                                    >
+                                      {this.state.selectedCannMessage
+                                        ? this.state.selectedCannMessage.responseCode
+                                        : 'Canned responses'}
+                                    </div>
+                                  </h4>
+                                </div>
+                              </li>
+                            </ul>
+                            <div
+                              className='card-body'
+                              id='cardBody'
+                              style={{ maxHeight: '230px', overflow: 'auto' }}
+                            >
+                              {!this.state.selectedCannMessage ? (
+                                this.state.cannedMessages.length > 0 ? (
+                                  <ul className='m-nav'>{this.listDataDisplay()}</ul>
+                                ) : (
+                                  <ul className='m-nav'>
                                     <li key={0} className='m-nav__item'>
                                       <p style={{ wordBreak: 'break-all' }}>No Data to Display</p>
                                     </li>
                                   </ul>
-                                  : <ul className='m-nav'>
-                                    <li key={0} className='m-nav__item'>
-                                      <textarea value={this.state.selectedCannMessage.responseMessage} onChange={this.responseMessageHandleChange}
-                                        className='form-control m-input m-input--solid'
-                                        id='description' rows='3'
-                                        style={{ height: '100px', resize: 'none' }} maxlength='1000' required />
-                                    </li>
-                                  </ul>
-                                }
-                              </div>
+                                )
+                              ) : (
+                                <ul className='m-nav'>
+                                  <li key={0} className='m-nav__item'>
+                                    <textarea
+                                      value={this.state.selectedCannMessage.responseMessage}
+                                      onChange={this.responseMessageHandleChange}
+                                      className='form-control m-input m-input--solid'
+                                      id='description'
+                                      rows='3'
+                                      style={{ height: '100px', resize: 'none' }}
+                                      maxlength='1000'
+                                      required
+                                    />
+                                  </li>
+                                </ul>
+                              )}
                             </div>
                           </div>
                         </div>
                       </div>
                     </div>
-                  }
-                    <div className='m-input-icon m-input-icon--right'>
-                      <input
-                        autoFocus
-                        type='text'
-                        placeholder='Type here...'
-                        onChange={this.onInputChange}
-                        value={this.state.text}
-                        onKeyPress={this.onEnter}
-                        className='m-messenger__form-input'
-                      />
-                      {
-                        !this.props.isMobile &&
-                        <span onClick={() => this.openPicker('emoji')} style={{ cursor: 'pointer' }} className='m-input-icon__icon m-input-icon__icon--right'>
-                          <span>
-                            {
-                              this.props.showEmoji &&
-                              <i
-                                style={{
-                                  cursor: this.state.uploaded ? 'not-allowed' : 'pointer',
-                                  fontSize: '20px',
-                                  margin: '0px 5px',
-                                  pointerEvents: this.state.uploaded && 'none',
-                                  opacity: this.state.uploaded && '0.5'
-                                }}
-                                data-tip='Emoticons'
-                                className='fa fa-smile-o'
-                                id='_emoji_picker'
-                              />
-                            }
-                          </span>
-                        </span>
-                      }
-                    </div>
                   </div>
-            }
+                )}
+                <div className='m-input-icon m-input-icon--right'>
+                  <input
+                    autoFocus
+                    type='text'
+                    placeholder='Type here...'
+                    onChange={this.onInputChange}
+                    value={this.state.text}
+                    onKeyPress={this.onEnter}
+                    className='m-messenger__form-input'
+                  />
+                  {!this.props.isMobile && (
+                    <span
+                      onClick={() => this.openPicker('emoji')}
+                      style={{ cursor: 'pointer' }}
+                      className='m-input-icon__icon m-input-icon__icon--right'
+                    >
+                      <span>
+                        {this.props.showEmoji && (
+                          <i
+                            style={{
+                              cursor: this.state.uploaded ? 'not-allowed' : 'pointer',
+                              fontSize: '20px',
+                              margin: '0px 5px',
+                              pointerEvents: this.state.uploaded && 'none',
+                              opacity: this.state.uploaded && '0.5'
+                            }}
+                            data-tip='Emoticons'
+                            className='fa fa-smile-o'
+                            id='_emoji_picker'
+                          />
+                        )}
+                      </span>
+                    </span>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
           <div className='m-messenger__form-tools' style={{ verticalAlign: 'bottom' }}>
-            <a href={this.state.downLink} download='record-audio.webm' style={{ border: '1px solid #36a3f7' }} className='m-messenger__form-attachment' disabled={this.state.uploadingFile}>
-              {
-                this.state.loading
-                  ? <div className="m-loader" style={{ width: "30px" }} />
-                  : this.state.uploaded
-                    ? <i style={{ color: '#36a3f7' }} onClick={this.sendAttachment} className='flaticon-paper-plane' />
-                    :
-                    (
-                      this.props.showThumbsUp ?
-                        <i style={{ color: '#36a3f7' }} onClick={this.sendThumbsUp} className='la la-thumbs-o-up' />
-                        :
-                        <i style={{ color: '#36a3f7' }} onClick={this.sendMessage} className='flaticon-paper-plane' />
-                    )
-              }
+            <a
+              href={this.state.downLink}
+              download='record-audio.webm'
+              style={{ border: '1px solid #36a3f7' }}
+              className='m-messenger__form-attachment'
+              disabled={this.state.uploadingFile}
+            >
+              {this.state.loading ? (
+                <div className='m-loader' style={{ width: '30px' }} />
+              ) : this.state.uploaded ? (
+                <i
+                  style={{ color: '#36a3f7' }}
+                  onClick={this.sendAttachment}
+                  className='flaticon-paper-plane'
+                />
+              ) : this.props.showThumbsUp ? (
+                <i
+                  style={{ color: '#36a3f7' }}
+                  onClick={this.sendThumbsUp}
+                  className='la la-thumbs-o-up'
+                />
+              ) : (
+                <i
+                  style={{ color: '#36a3f7' }}
+                  onClick={this.sendMessage}
+                  className='flaticon-paper-plane'
+                />
+              )}
             </a>
           </div>
         </div>
-        {this.props.showCaption && this.state.uploaded && (this.state.componentType === 'image' || this.state.componentType === 'video') &&
-          <div className='m-messenger__form'>
-            <div className='m-input-icon m-input-icon--right'>
-              <input
-                autoFocus
-                type='text'
-                placeholder='Enter Caption...'
-                onChange={this.onCaptionChange}
-                value={this.state.caption}
-                style={{ outline: '0', borderWidth: '0 0 2px', borderColor: '#f4f5f8', color: '#575961', width: '300px', height: '30px' }}
-              />
-              <span onClick={() => this.openPicker('caption_emoji')} style={{ cursor: 'pointer' }} className='m-input-icon__icon m-input-icon__icon--right'>
-                <span>
-                  <i
-                    style={{
-                      cursor: 'pointer',
-                      fontSize: '20px',
-                      margin: '0px 5px'
-                    }}
-                    data-tip='Emoticons'
-                    className='fa fa-smile-o'
-                    id='_caption_emoji_picker'
-                  />
+        {this.props.showCaption &&
+          this.state.uploaded &&
+          (this.state.componentType === 'image' || this.state.componentType === 'video') && (
+            <div className='m-messenger__form'>
+              <div className='m-input-icon m-input-icon--right'>
+                <input
+                  autoFocus
+                  type='text'
+                  placeholder='Enter Caption...'
+                  onChange={this.onCaptionChange}
+                  value={this.state.caption}
+                  style={{
+                    outline: '0',
+                    borderWidth: '0 0 2px',
+                    borderColor: '#f4f5f8',
+                    color: '#575961',
+                    width: '300px',
+                    height: '30px'
+                  }}
+                />
+                <span
+                  onClick={() => this.openPicker('caption_emoji')}
+                  style={{ cursor: 'pointer' }}
+                  className='m-input-icon__icon m-input-icon__icon--right'
+                >
+                  <span>
+                    <i
+                      style={{
+                        cursor: 'pointer',
+                        fontSize: '20px',
+                        margin: '0px 5px'
+                      }}
+                      data-tip='Emoticons'
+                      className='fa fa-smile-o'
+                      id='_caption_emoji_picker'
+                    />
+                  </span>
                 </span>
-              </span>
+              </div>
             </div>
+          )}
+        {this.state.loadingUrlMeta ? (
+          <div style={{ marginBottom: '10px' }} className='align-center'>
+            <center>
+              <div className='m-loader' style={{ width: '30px', display: 'inline-block' }} />
+              <span>Fetching url meta...</span>
+            </center>
           </div>
-        }
-        {
-          this.state.loadingUrlMeta
-            ? <div style={{ marginBottom: '10px' }} className='align-center'>
-              <center>
-                <div className="m-loader" style={{ width: "30px", display: "inline-block" }} />
-                <span>Fetching url meta...</span>
-              </center>
-            </div>
-            : this.state.urlmeta.constructor === Object && Object.keys(this.state.urlmeta).length > 0 &&
+        ) : (
+          this.state.urlmeta.constructor === Object &&
+          Object.keys(this.state.urlmeta).length > 0 && (
             <div
               style={{
                 borderRadius: '15px',
@@ -1143,17 +1367,21 @@ class Footer extends React.Component {
                 marginBottom: '10px'
               }}
             >
-              <i style={{ float: 'right', cursor: 'pointer' }} className='fa fa-times' onClick={this.removeUrlMeta} />
+              <i
+                style={{ float: 'right', cursor: 'pointer' }}
+                className='fa fa-times'
+                onClick={this.removeUrlMeta}
+              />
               <CARD
                 title={this.state.urlmeta.ogTitle}
                 description={this.state.urlmeta.ogDescription}
                 image={this.state.urlmeta.ogImage && this.state.urlmeta.ogImage.url}
               />
             </div>
-        }
+          )
+        )}
         <div style={{ color: '#575962' }}>
-          {
-            this.props.showUploadAttachment &&
+          {this.props.showUploadAttachment && (
             <div style={{ display: 'inline' }}>
               <input
                 ref='_upload_attachment'
@@ -1161,7 +1389,9 @@ class Footer extends React.Component {
                 type='file'
                 accept={this.props.filesAccepted}
                 onChange={this.onFileChange}
-                onClick={(e) => { e.target.value = '' }}
+                onClick={(e) => {
+                  e.target.value = ''
+                }}
               />
               <i
                 style={{ cursor: 'pointer', fontSize: '20px', margin: '0px 5px' }}
@@ -1170,22 +1400,22 @@ class Footer extends React.Component {
                 onClick={() => this.refs._upload_attachment.click()}
               />
             </div>
-          }
-          {
-            this.props.showRecordAudio &&
+          )}
+          {this.props.showRecordAudio && (
             <i
               style={{ cursor: 'pointer', fontSize: '20px', margin: '0px 5px' }}
               data-tip='Record Audio'
               className='fa fa-microphone'
               data-target='#_record_audio'
-              data-backdrop="static"
-              data-keyboard="false"
+              data-backdrop='static'
+              data-keyboard='false'
               data-toggle='modal'
-              onClick={() => { this.toggleAudioRecording(true) }}
+              onClick={() => {
+                this.toggleAudioRecording(true)
+              }}
             />
-          }
-          {
-            this.props.showSticker &&
+          )}
+          {this.props.showSticker && (
             <i
               style={{ cursor: 'pointer', fontSize: '20px', margin: '0px 5px' }}
               data-tip='Stickers'
@@ -1193,9 +1423,8 @@ class Footer extends React.Component {
               id='_sticker_picker'
               onClick={() => this.openPicker('sticker')}
             />
-          }
-          {
-            this.props.showGif &&
+          )}
+          {this.props.showGif && (
             <img
               style={{ cursor: 'pointer', height: '20px', margin: '-5px 5px 0px 5px' }}
               data-tip='Gifs'
@@ -1204,18 +1433,21 @@ class Footer extends React.Component {
               id='_gif_picker'
               onClick={() => this.openPicker('gif')}
             />
-          }
-          {
+          )}
+          {this.props.showGetContactInfo && (
             <i
-            style={{ cursor: 'pointer', fontSize: '20px', margin: '0px 5px' }}
-            data-tip={this.state.showingSuggestion ? "Consider using this to get subscriber's email or phone number": 'Get Email or Phone Number'}
-            className='fa fa-id-card-o'
-            id='_contact_info_picker'
-            onClick={() => this.openPicker('contact_info')}
-          />
-          }
-          {
-            this.props.showZoom &&
+              style={{ cursor: 'pointer', fontSize: '20px', margin: '0px 5px' }}
+              data-tip={
+                this.state.showingSuggestion
+                  ? "Consider using this to get subscriber's email or phone number"
+                  : 'Get Email or Phone Number'
+              }
+              className='fa fa-id-card-o'
+              id='_contact_info_picker'
+              onClick={() => this.openPicker('contact_info')}
+            />
+          )}
+          {this.props.showZoom && (
             <img
               style={{ cursor: 'pointer', height: '30px', margin: '-5px 5px 0px 5px' }}
               alt='Zoom'
@@ -1223,11 +1455,11 @@ class Footer extends React.Component {
               id='_zoom_integration'
               className='fa fa-video-camera'
               data-target='#_zoom_integration'
-              data-backdrop="static"
-              data-keyboard="false"
+              data-backdrop='static'
+              data-keyboard='false'
               data-toggle='modal'
             />
-          }
+          )}
         </div>
       </div>
     )
@@ -1235,31 +1467,31 @@ class Footer extends React.Component {
 }
 
 Footer.propTypes = {
-  'cannedResponses': PropTypes.array.isRequired,
-  'performAction': PropTypes.func.isRequired,
-  'activeSession': PropTypes.object.isRequired,
-  'user': PropTypes.object.isRequired,
-  'sendChatMessage': PropTypes.func.isRequired,
-  'updateState': PropTypes.func.isRequired,
-  'userChat': PropTypes.array.isRequired,
-  'sessions': PropTypes.array.isRequired,
-  'uploadAttachment': PropTypes.func,
-  'sendAttachment': PropTypes.func,
-  'uploadRecording': PropTypes.func,
-  'getPicker': PropTypes.func.isRequired,
-  'togglePopover': PropTypes.func.isRequired,
-  'updateNewMessage': PropTypes.func.isRequired,
-  'deletefile': PropTypes.func,
-  'updateChatAreaHeight': PropTypes.func.isRequired,
-  'showUploadAttachment': PropTypes.bool.isRequired,
-  'showRecordAudio': PropTypes.bool.isRequired,
-  'showSticker': PropTypes.bool.isRequired,
-  'showEmoji': PropTypes.bool.isRequired,
-  'showGif': PropTypes.bool.isRequired,
-  'showThumbsUp': PropTypes.bool.isRequired,
-  'filesAccepted': PropTypes.string,
-  'showCaption': PropTypes.bool,
-  'isMobile': PropTypes.bool.isRequired
+  cannedResponses: PropTypes.array.isRequired,
+  performAction: PropTypes.func.isRequired,
+  activeSession: PropTypes.object.isRequired,
+  user: PropTypes.object.isRequired,
+  sendChatMessage: PropTypes.func.isRequired,
+  updateState: PropTypes.func.isRequired,
+  userChat: PropTypes.array.isRequired,
+  sessions: PropTypes.array.isRequired,
+  uploadAttachment: PropTypes.func,
+  sendAttachment: PropTypes.func,
+  uploadRecording: PropTypes.func,
+  getPicker: PropTypes.func.isRequired,
+  togglePopover: PropTypes.func.isRequired,
+  updateNewMessage: PropTypes.func.isRequired,
+  deletefile: PropTypes.func,
+  updateChatAreaHeight: PropTypes.func.isRequired,
+  showUploadAttachment: PropTypes.bool.isRequired,
+  showRecordAudio: PropTypes.bool.isRequired,
+  showSticker: PropTypes.bool.isRequired,
+  showEmoji: PropTypes.bool.isRequired,
+  showGif: PropTypes.bool.isRequired,
+  showThumbsUp: PropTypes.bool.isRequired,
+  filesAccepted: PropTypes.string,
+  showCaption: PropTypes.bool,
+  isMobile: PropTypes.bool.isRequired
 }
 
 export default Footer
