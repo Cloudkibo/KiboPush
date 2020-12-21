@@ -72,8 +72,6 @@ class ViewResponses extends React.Component {
             "purpose": "subscriber_responses",
             "number_of_records": 10,
             "first_page": "first",
-            "requested_page": 0,
-            "current_page": 1,
             "last_id": "none"
         }
         if ((this.props.smsAnalytics.responses[row]._id).trim().toLowerCase() === 'others') {
