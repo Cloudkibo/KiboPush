@@ -32,7 +32,7 @@ class ViewResponses extends React.Component {
 
     handlePageClick(data, currentPage, response, senders) {
         var payload = {
-            "purspose": "subscriber_responses",
+            "purpose": "subscriber_responses",
             "responses": [response._id],
             "operator": "in",
             "number_of_records": 10,
@@ -69,7 +69,7 @@ class ViewResponses extends React.Component {
           document.getElementById(`icon-${row}`).className = 'la la-angle-up'
         }
         var payload = {
-            "purspose": "subscriber_responses",
+            "purpose": "subscriber_responses",
             "number_of_records": 10,
             "first_page": "first",
             "requested_page": 0,
