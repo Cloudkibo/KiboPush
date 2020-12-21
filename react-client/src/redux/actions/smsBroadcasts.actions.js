@@ -143,9 +143,9 @@ export function sendFollowupBroadcast (payload, msg, setToDefault) {
          msg.success('Follow-up broadcat sent successfully')
          if (setToDefault) {
           setToDefault()
-         } else {
-          msg.success(`Unable to send broadcast. ${res.description}`)
          }
+        } else {
+          msg.error(`Unable to send broadcast. ${res.description}`)
         }
       })
   }

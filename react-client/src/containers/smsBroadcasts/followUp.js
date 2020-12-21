@@ -146,13 +146,19 @@ class FollowUpBroadcast extends React.Component {
 
   sendBroadcast () {
     var payload = {
-      "responses": this.state.selectedResponses.map((r)=>{ return r.value}),
-      "operator": "in",
       "keywords": this.state.keywordValue,
       "message": [{"componentType": "text", "text": this.state.message}],
       "broadcasts": this.props.smsBroadcast ? [this.props.smsBroadcast._id] : [],
       "phoneNumber": this.props.smsBroadcast ? this.props.smsBroadcast.phoneNumber : '',
       "title": this.state.title
+    }
+    var isOthers = this.state.selectedResponses.filter((r)=>{ return r.value.trim().toLowerCase() === 'others'})
+    if (isOthers.length > 0) {
+      payload["responses"] = this.props.smsAnalytics.responses.filter((res) => {return res._id.trim().toLowerCase() !== 'others' }).map((response) => { return response._id})
+      payload["operator"] =  "nin"
+    } else {
+      payload["responses"] = this.state.selectedResponses.map((r)=>{ return r.value})
+      payload["operator"] =  "in"
     }
     this.props.sendFollowupBroadcast(payload, this.msg, this.setToDefault)
   }
