@@ -50,6 +50,7 @@ class FollowUpBroadcast extends React.Component {
     this.goBack = this.goBack.bind(this)
     this.validateBroadcast = this.validateBroadcast.bind(this)
     this.setToDefault = this.setToDefault.bind(this)
+    this.mapResponsesforNotInOperator = this.mapResponsesforNotInOperator.bind(this)
   }
 
   setToDefault () {
@@ -65,15 +66,15 @@ class FollowUpBroadcast extends React.Component {
     })
   }
 
-  validateBroadcast (broadcasts, responses, title, message) {
+  validateBroadcast (broadcasts, title, message) {
     if (!this.props.smsBroadcast) {
-      if (broadcasts && broadcasts.length > 0 && responses && responses.length > 0 && title !== '' && message !== '') {
+      if (broadcasts && broadcasts.length > 0 && title !== '' && message !== '') {
         this.setState({
           enableSend: true
         })
       }
     } else {
-      if (responses && responses.length > 0 && title !== '' && message !== '') {
+      if (title !== '' && message !== '') {
         this.setState({
           enableSend: true
         })
@@ -93,17 +94,17 @@ class FollowUpBroadcast extends React.Component {
 
   onTitleChange (e) {
     this.setState({title: e.target.value})
-    this.validateBroadcast(this.state.selectedBroadcast, this.state.selectedResponses, e.target.value, this.state.message)
+    this.validateBroadcast(this.state.selectedBroadcast, e.target.value, this.state.message)
   }
   
   handleSelectBroadcast (selectedBroadcast) {
     this.setState({selectedBroadcast, selectedResponse: null})
     this.props.fetchSmsAnalytics(selectedBroadcast.value)
-    this.validateBroadcast(selectedBroadcast, this.state.selectedResponses, this.state.title, this.state.message)
+    this.validateBroadcast(selectedBroadcast, this.state.title, this.state.message)
   }
   handleResponseChange (selectedResponses) {
     this.setState({selectedResponses})
-    this.validateBroadcast(this.state.selectedBroadcast, selectedResponses, this.state.title, this.state.message)
+    this.validateBroadcast(this.state.selectedBroadcast, this.state.title, this.state.message)
   }
   onKeywordChange(value, actionMeta) {
     if (!value) {
@@ -137,7 +138,7 @@ class FollowUpBroadcast extends React.Component {
 
   onMessageChange (e) {
     this.setState({message: e.target.value})
-    this.validateBroadcast(this.state.selectedBroadcast, this.state.selectedResponses, this.state.title, e.target.value)
+    this.validateBroadcast(this.state.selectedBroadcast, this.state.title, e.target.value)
   }
 
   toggleEmojiPicker () {
@@ -146,7 +147,7 @@ class FollowUpBroadcast extends React.Component {
 
   sendBroadcast () {
     var payload = {
-      "keywords": this.state.keywordValue,
+      "keywords": this.state.keywordValue.map((k) => {return k.value}),
       "message": [{"componentType": "text", "text": this.state.message}],
       "broadcasts": this.props.smsBroadcast ? [this.props.smsBroadcast._id] : [],
       "phoneNumber": this.props.smsBroadcast ? this.props.smsBroadcast.phoneNumber : '',
@@ -154,7 +155,7 @@ class FollowUpBroadcast extends React.Component {
     }
     var isOthers = this.state.selectedResponses.filter((r)=>{ return r.value.trim().toLowerCase() === 'others'})
     if (isOthers.length > 0) {
-      payload["responses"] = this.props.smsAnalytics.responses.filter((res) => {return res._id.trim().toLowerCase() !== 'others' }).map((response) => { return response._id})
+      payload["responses"] = this.mapResponsesforNotInOperator()
       payload["operator"] =  "nin"
     } else {
       payload["responses"] = this.state.selectedResponses.map((r)=>{ return r.value})
@@ -162,6 +163,23 @@ class FollowUpBroadcast extends React.Component {
     }
     this.props.sendFollowupBroadcast(payload, this.msg, this.setToDefault)
   }
+  mapResponsesforNotInOperator () {
+    var includeResponses = []
+    for (var i = 0; i < this.props.smsAnalytics.responses.length ; i++) {
+      var includeResponse = true
+      for (var j = 0; j < this.state.selectedResponses.length; j++) {
+        if (this.props.smsAnalytics.responses[i]._id === this.state.selectedResponses[j].value) {
+          includeResponse = false
+          break
+        }
+      }
+      if (includeResponse) {
+        includeResponses.push(this.props.smsAnalytics.responses[i]._id)
+      }
+    }
+    return includeResponses
+   }
+
   componentDidMount () {
     if(this.props.broadcasts && this.props.broadcasts.length > 0) {
       let broadcastOptions = this.props.broadcasts.map((broadcast) => { return {label: broadcast.title, value: broadcast._id}})
@@ -250,6 +268,7 @@ class FollowUpBroadcast extends React.Component {
                           <label className='col-form-label' style={{width:'140px'}}>Responses:</label>
                           <div style={{width:'100%'}}>
                             <Select
+                                placeholder='All (default)'
                                 defaultValue={this.state.selectedResponses}
                                 isMulti
                                 name="broadcasts"
