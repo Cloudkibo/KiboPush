@@ -239,36 +239,41 @@ class EditTeam extends React.Component {
     } else if (this.props.user.platform === 'messenger' && this.state.pageIds.length === 0) {
       this.msg.error('Please select one page atleast')
     } else {
-      let pageIds = []
-      let pageNames = []
-      if (this.state.removedPages.length > 0) {
-      this.props.removePage({ pageId: this.state.removedPages, teamId: this.state.teamId })
-      }
-      if (this.state.removedAgents.length > 0) {
-      this.props.removeAgent({ agentId: this.state.removedAgents, teamId: this.state.teamId })
-      }
-      for (var i = 0; i < this.state.agentIds.length; i++) {
-        this.props.addAgent({ teamId: this.state.teamId, agentId: this.state.agentIds[i]._id })
-      }
-      for (var j = 0; j < this.state.pageIds.length; j++) {
-        this.props.addPage({ teamId:  this.state.teamId, pageId: this.state.pageIds[j]._id })
-        pageIds.push(this.state.pageIds[j]._id)
-        pageNames.push(this.state.pageIds[j].pageName)
-      }
+      let pageIds = this.state.pageIds.map(p => p._id)
+      let pageNames = this.state.pageIds.map(p => p.pageName)
       let updatePayload = {_id:  this.state.teamId, name: this.state.name, description: this.state.description}
       if (this.props.user.platform === 'messenger') {
         updatePayload.teamPages = pageNames
         updatePayload.teamPagesIds = pageIds
       }
-      this.props.update(updatePayload, this.msg)
+      this.props.update(updatePayload, this.msg, () => {
+        if (this.state.removedPages.length > 0) {
+        this.props.removePage({ pageId: this.state.removedPages, teamId: this.state.teamId })
+        }
+        if (this.state.removedAgents.length > 0) {
+        this.props.removeAgent({ agentId: this.state.removedAgents, teamId: this.state.teamId })
+        }
+        for (var i = 0; i < this.state.agentIds.length; i++) {
+          this.props.addAgent({ teamId: this.state.teamId, agentId: this.state.agentIds[i]._id })
+        }
+        for (var j = 0; j < this.state.pageIds.length; j++) {
+          this.props.addPage({ teamId:  this.state.teamId, pageId: this.state.pageIds[j]._id })
+        }
+      })
       this.setState({inCancel: false})
     }
   }
   updateDescription (e) {
-    this.setState({description: e.target.value})
+    const str = e.target.value
+    if (str.length <= 150) {
+      this.setState({description: e.target.value})
+    }
   }
   updateName (e) {
-    this.setState({name: e.target.value})
+    const str = e.target.value
+    if (str.length <= 30) {
+      this.setState({name: e.target.value})
+    }
   }
   scrollToTop () {
     this.top.scrollIntoView({behavior: 'instant'})
