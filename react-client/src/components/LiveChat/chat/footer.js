@@ -453,7 +453,7 @@ class Footer extends React.Component {
     console.log('recordedBlob object', recordedBlob)
     const file = new File([recordedBlob.blob], 'recorded-audio.mp3', { type: recordedBlob.blob.type, lastModified: new Date() })
     if (file) {
-      if (this.state.attachment) {
+      if (this.state.attachment && this.state.attachment.id) {
         this.props.deletefile(this.state.attachment.id)
       }
       this.setState({
@@ -890,7 +890,7 @@ class Footer extends React.Component {
     }
     if (type === 'contact_info') {
       popoverOptions.content = (
-        <GetContactInfo 
+        <GetContactInfo
           sendQuickReplyMessage={this.sendQuickReplyMessage}
           refreshPopover={this.props.refreshPopover}
           togglePopover={this.props.togglePopover}
