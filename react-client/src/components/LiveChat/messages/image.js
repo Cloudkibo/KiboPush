@@ -9,11 +9,15 @@ class Image extends React.Component {
 
   render() {
     return (
-      <a href={this.props.image.fileurl.url || this.props.image.fileurl} target='_blank' rel='noopener noreferrer'>
+      <a
+        href={this.props.image.fileurl.url || this.props.image.fileurl}
+        target='_blank'
+        rel='noopener noreferrer'
+      >
         <img
           alt=''
           src={this.props.image.fileurl.url || this.props.image.fileurl}
-          style={{width: '100%', maxHeight: '85px'}}
+          style={{ maxWidth: '250px', maxHeight: '200px' }}
         />
       </a>
     )
@@ -21,7 +25,7 @@ class Image extends React.Component {
 }
 
 Image.propTypes = {
-  'image': PropTypes.object.isRequired
+  image: PropTypes.object.isRequired
 }
 
 export default Image

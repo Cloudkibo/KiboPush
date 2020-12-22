@@ -51,7 +51,11 @@ class Body extends React.Component {
           <img
             style={{ height: '18px', float: 'right' }}
             alt='double-ticks'
-            src={message.seen ? 'https://cdn.cloudkibo.com/public/img/double-ticks-blue.png' : 'https://cdn.cloudkibo.com/public/img/double-ticks-white.png'}
+            src={
+              message.seen
+                ? 'https://cdn.cloudkibo.com/public/img/double-ticks-blue.png'
+                : 'https://cdn.cloudkibo.com/public/img/double-ticks-white.png'
+            }
           />
         </div>
       )
@@ -78,13 +82,17 @@ class Body extends React.Component {
   }
 
   updateScrollTop() {
-    if (this.previousScrollHeight && this.refs.chatScroll && this.previousScrollHeight !== this.refs.chatScroll.scrollHeight) {
+    if (
+      this.previousScrollHeight &&
+      this.refs.chatScroll &&
+      this.previousScrollHeight !== this.refs.chatScroll.scrollHeight
+    ) {
       this.refs.chatScroll.scrollTop = this.refs.chatScroll.scrollHeight - this.previousScrollHeight
     }
   }
 
   shoudLoadMore() {
-    return (this.props.userChat.length > 0 && this.props.chatCount > this.props.userChat.length)
+    return this.props.userChat.length > 0 && this.props.chatCount > this.props.userChat.length
   }
 
   markRead() {
@@ -103,7 +111,7 @@ class Body extends React.Component {
           this.loadMoreMessage()
         }
       } else if (
-        (element.scrollHeight - element.scrollTop - 100) <= element.clientHeight &&
+        element.scrollHeight - element.scrollTop - 100 <= element.clientHeight &&
         this.props.activeSession.unreadCount > 0
       ) {
         console.log('scrolled')
@@ -123,7 +131,8 @@ class Body extends React.Component {
     setTimeout(() => {
       if (this.refs.chatScroll && this.previousScrollHeight) {
         if (this.refs.chatScroll.scrollHeight > this.previousScrollHeight) {
-          this.refs.chatScroll.scrollTop += this.refs.chatScroll.scrollHeight - this.previousScrollHeight
+          this.refs.chatScroll.scrollTop +=
+            this.refs.chatScroll.scrollHeight - this.previousScrollHeight
           this.previousScrollHeight = this.refs.chatScroll.scrollHeight
         }
       }
@@ -141,7 +150,9 @@ class Body extends React.Component {
         this.scrollToBottom(this.props.userChat)
         this.props.updateNewMessage(false)
       } else {
-        setTimeout(() => { this.updateScrollTop() }, 100)
+        setTimeout(() => {
+          this.updateScrollTop()
+        }, 100)
       }
     }
     if (
@@ -150,7 +161,9 @@ class Body extends React.Component {
       this.props.userChat.length > 0 &&
       this.state.shouldScrollToBottom
     ) {
-      this.setState({ shouldScrollToBottom: false }, () => { this.scrollToBottom(this.props.userChat) })
+      this.setState({ shouldScrollToBottom: false }, () => {
+        this.scrollToBottom(this.props.userChat)
+      })
     }
     if (this.props.activeSession._id !== prevProps.activeSession._id) {
       this.setState({ shouldScrollToBottom: true })
@@ -159,65 +172,114 @@ class Body extends React.Component {
 
   render() {
     return (
-      <div ref='chatScroll' style={{ padding: this.props.isMobile ? '0rem 0rem 0rem 2.2rem' : '2.2rem 0rem 0rem 2.2rem', flex: '1 1 auto', overflowY: 'scroll' }} className='m-portlet__body'>
+      <div
+        ref='chatScroll'
+        style={{
+          padding: this.props.isMobile ? '0rem 0rem 0rem 2.2rem' : '2.2rem 0rem 0rem 2.2rem',
+          flex: '1 1 auto',
+          overflowY: 'scroll',
+          overflowX: 'hidden'
+        }}
+        className='m-portlet__body'
+      >
         <div className='tab-content'>
           <div className='tab-pane active m-scrollable' role='tabpanel'>
             <div className='m-messenger m-messenger--message-arrow m-messenger--skin-light'>
-              {
-                this.props.loadingChat
-                  ? <div style={{ height: this.props.chatAreaHieght, display: 'flex', justifyContent: 'center', alignItems: 'center' }} className='m-messenger__messages'>
-                    <div>
-                      <div className="m-loader" style={{ width: "30px", display: "inline-block" }} />
-                      <span>Loading Chat...</span>
+              {this.props.loadingChat ? (
+                <div
+                  style={{
+                    height: this.props.chatAreaHieght,
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center'
+                  }}
+                  className='m-messenger__messages'
+                >
+                  <div>
+                    <div className='m-loader' style={{ width: '30px', display: 'inline-block' }} />
+                    <span>Loading Chat...</span>
+                  </div>
+                </div>
+              ) : this.props.userChat.length > 0 ? (
+                <div
+                  style={{ position: 'relative', touchAction: 'pinch-zoom' }}
+                  className='m-messenger__messages'
+                >
+                  <div
+                    id='chat-container'
+                    style={{
+                      position: 'relative',
+                      height: '100%',
+                      maxWidth: '100%',
+                      maxHeight: 'none',
+                      outline: 0,
+                      direction: 'ltr'
+                    }}
+                  >
+                    <div
+                      style={{
+                        position: 'relative',
+                        top: 0,
+                        left: 0,
+                        width: 'auto',
+                        height: 'auto'
+                      }}
+                    >
+                      {!this.props.loadingChat && this.shoudLoadMore() && (
+                        <div style={{ textAlign: 'center' }}>
+                          <div
+                            className='m-loader'
+                            style={{ width: '30px', display: 'inline-block' }}
+                          />
+                          <span>Loading Chat...</span>
+                        </div>
+                      )}
+                      {this.props.userChat.map((chat, index) =>
+                        chat.format === 'convos' ? (
+                          <RIGHTCHATITEM
+                            key={index}
+                            message={chat}
+                            index={index}
+                            showDate={this.props.showDate}
+                            displayDate={this.props.displayDate}
+                            activeSession={this.props.activeSession}
+                            previousMessage={this.props.userChat[index - 1]}
+                            user={this.props.user}
+                            seenElement={this.getSeen(chat, index)}
+                          />
+                        ) : (
+                          this.allowedType(chat) && (
+                            <LEFTCHATITEM
+                              key={index}
+                              message={chat}
+                              index={index}
+                              showDate={this.props.showDate}
+                              displayDate={this.props.displayDate}
+                              activeSession={this.props.activeSession}
+                              showSubscriberNameOnMessage={this.props.showSubscriberNameOnMessage}
+                              previousMessage={this.props.userChat[index - 1]}
+                            />
+                          )
+                        )
+                      )}
                     </div>
                   </div>
-                  : this.props.userChat.length > 0
-                    ? <div style={{ position: 'relative', touchAction: 'pinch-zoom' }} className='m-messenger__messages'>
-                      <div id='chat-container' style={{ position: 'relative', height: '100%', maxWidth: '100%', maxHeight: 'none', outline: 0, direction: 'ltr' }}>
-                        <div style={{ position: 'relative', top: 0, left: 0, width: 'auto', height: 'auto' }} >
-                          {
-                            !this.props.loadingChat && this.shoudLoadMore() &&
-                            <div style={{ textAlign: 'center' }}>
-                              <div className="m-loader" style={{ width: "30px", display: "inline-block" }} />
-                              <span>Loading Chat...</span>
-                            </div>
-                          }
-                          {
-                            this.props.userChat.map((chat, index) => (
-                              chat.format === 'convos'
-                                ? <RIGHTCHATITEM
-                                  key={index}
-                                  message={chat}
-                                  index={index}
-                                  showDate={this.props.showDate}
-                                  displayDate={this.props.displayDate}
-                                  activeSession={this.props.activeSession}
-                                  previousMessage={this.props.userChat[index - 1]}
-                                  user={this.props.user}
-                                  seenElement={this.getSeen(chat, index)}
-                                />
-                                : this.allowedType(chat) &&
-                                <LEFTCHATITEM
-                                  key={index}
-                                  message={chat}
-                                  index={index}
-                                  showDate={this.props.showDate}
-                                  displayDate={this.props.displayDate}
-                                  activeSession={this.props.activeSession}
-                                  showSubscriberNameOnMessage={this.props.showSubscriberNameOnMessage}
-                                  previousMessage={this.props.userChat[index - 1]}
-                                />
-                            ))
-                          }
-                        </div>
-                      </div>
-                    </div>
-                    : <div style={{ height: '55vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }} className='m-messenger__messages'>
-                      <div>
-                        <span>No chat history found</span>
-                      </div>
-                    </div>
-              }
+                </div>
+              ) : (
+                <div
+                  style={{
+                    height: '55vh',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center'
+                  }}
+                  className='m-messenger__messages'
+                >
+                  <div>
+                    <span>No chat history found</span>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -227,21 +289,21 @@ class Body extends React.Component {
 }
 
 Body.propTypes = {
-  'chatAreaHieght': PropTypes.string.isRequired,
-  'userChat': PropTypes.array.isRequired,
-  'chatCount': PropTypes.number,
-  'showDate': PropTypes.func.isRequired,
-  'displayDate': PropTypes.func.isRequired,
-  'activeSession': PropTypes.object.isRequired,
-  'loadingChat': PropTypes.bool.isRequired,
-  'user': PropTypes.object.isRequired,
-  'fetchUserChats': PropTypes.func.isRequired,
-  'markRead': PropTypes.func.isRequired,
-  'updateState': PropTypes.func.isRequired,
-  'newMessage': PropTypes.bool.isRequired,
-  'updateNewMessage': PropTypes.func.isRequired,
-  'showSubscriberNameOnMessage': PropTypes.bool.isRequired,
-  'isMobile': PropTypes.bool.isRequired
+  chatAreaHieght: PropTypes.string.isRequired,
+  userChat: PropTypes.array.isRequired,
+  chatCount: PropTypes.number,
+  showDate: PropTypes.func.isRequired,
+  displayDate: PropTypes.func.isRequired,
+  activeSession: PropTypes.object.isRequired,
+  loadingChat: PropTypes.bool.isRequired,
+  user: PropTypes.object.isRequired,
+  fetchUserChats: PropTypes.func.isRequired,
+  markRead: PropTypes.func.isRequired,
+  updateState: PropTypes.func.isRequired,
+  newMessage: PropTypes.bool.isRequired,
+  updateNewMessage: PropTypes.func.isRequired,
+  showSubscriberNameOnMessage: PropTypes.bool.isRequired,
+  isMobile: PropTypes.bool.isRequired
 }
 
 export default Body
