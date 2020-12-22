@@ -126,7 +126,7 @@ class CreateTeam extends React.Component {
   }
   updateDescription (e) {
     const str = e.target.value
-    if (str.length <= 30) {
+    if (str.length <= 150) {
       this.setState({description: e.target.value})
     }
   }
