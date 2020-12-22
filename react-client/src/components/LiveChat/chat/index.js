@@ -190,8 +190,7 @@ class Chat extends React.Component {
                 />
               </div>
             </div>
-          </div>
-        }
+          )}
           <HEADER
             activeSession={this.props.activeSession}
             openSearch={this.props.showSearch}
