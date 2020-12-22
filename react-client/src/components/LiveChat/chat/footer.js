@@ -483,7 +483,7 @@ class Footer extends React.Component {
       lastModified: new Date()
     })
     if (file) {
-      if (this.state.attachment) {
+      if (this.state.attachment && this.state.attachment.id) {
         this.props.deletefile(this.state.attachment.id)
       }
       this.setState({
