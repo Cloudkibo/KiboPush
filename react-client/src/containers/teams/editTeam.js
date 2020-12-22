@@ -264,10 +264,16 @@ class EditTeam extends React.Component {
     }
   }
   updateDescription (e) {
-    this.setState({description: e.target.value})
+    const str = e.target.value
+    if (str.length <= 150) {
+      this.setState({description: e.target.value})
+    }
   }
   updateName (e) {
-    this.setState({name: e.target.value})
+    const str = e.target.value
+    if (str.length <= 30) {
+      this.setState({name: e.target.value})
+    }
   }
   scrollToTop () {
     this.top.scrollIntoView({behavior: 'instant'})
