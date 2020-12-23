@@ -38,12 +38,13 @@ export function createTeam (data, cb) {
   }
 }
 
-export function update (data, msg) {
+export function update (data, msg, cb) {
   console.log('update team data', data)
   return (dispatch) => {
     callApi('teams/update', 'post', data)
       .then(res => {
         if (res.status === 'success') {
+          if (cb) cb()
           msg.success('Changes save successfully')
           dispatch(loadTeamsList())
         } else {
