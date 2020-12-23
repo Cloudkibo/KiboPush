@@ -16,20 +16,12 @@ export function setBrowserName(data) {
   }
 }
 
-export function fetchPlan(data) {
-  return {
-    type: ActionTypes.FETCH_PLAN,
-    data
-  }
-}
-
 export function saveEnvironment (data) {
   return {
     type: ActionTypes.CURRENT_ENVIRONMENT,
     data
   }
 }
-
 
 export function showuserdetails(data) {
   // NOTE: don't remove following auth method call
@@ -40,13 +32,19 @@ export function showuserdetails(data) {
   }
 }
 
-
 export function showDetailUser(data) {
   return {
     type: ActionTypes.SHOW_USER_DETAIL_AUTOMATE_OPTION,
     data
   }
 }
+
+export function updateTrialPeriod () {
+  return {
+    type: ActionTypes.UPDATE_TRIAL_PERIOD
+  }
+}
+
 
 export function showAutomatedOptions(data) {
   console.log(data)
@@ -147,7 +145,14 @@ export function getAutomatedOptions() {
   }
 }
 
-export function getFbAppId() {
+export function switchToBasicPlan () {
+  return (dispatch) => {
+    callApi('company/switchToBasicPlan')
+      .then(res => dispatch(updateTrialPeriod()))
+  }
+}
+
+export function getFbAppId () {
   return (dispatch) => {
     callApi('users/fbAppId').then(res => dispatch(storeFbAppId(res.payload)))
   }
@@ -191,7 +196,6 @@ export function updatePlan(data, msg) {
       console.log('response from updatePlan', res)
       if (res.status === 'success') {
         msg.success('Plan updated successfully')
-        dispatch(fetchPlan('success'))
         dispatch(getuserdetails())
       } else {
         msg.error(res.description || 'Failed to update plan')
@@ -200,13 +204,14 @@ export function updatePlan(data, msg) {
   }
 }
 
-export function updateCard(data, msg) {
+export function updateCard (data, msg, callback) {
   console.log('data for updateMode', data)
   return (dispatch) => {
     callApi('company/setCard', 'post', data).then(res => {
       console.log('response from updatePlan', res)
       if (res.status === 'success') {
         msg.success('Card added successfully')
+        callback()
         dispatch(getuserdetails())
       } else {
         msg.error(res.description)
@@ -288,7 +293,7 @@ export function logout(cb) {
   return (dispatch) => {
     console.log('called logout')
     callApi('users/logout').then(res => {
-      if (res.status === 'success') {
+        if (res.status === 'success') {
         console.log('send logout successfully', res)
         cb()
       } else {
