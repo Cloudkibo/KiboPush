@@ -1,11 +1,20 @@
 import * as ActionTypes from '../constants/constants'
 
-export function smsBroadcastsInfo (state = [], action) {
+let initState = {
+  searchBroadcastResult: []
+}
+export function smsBroadcastsInfo (state = initState, action) {
   switch (action.type) {
     case ActionTypes.LOAD_SMS_BROADCASTS_LIST:
       return Object.assign({}, state, {
         broadcasts: action.broadcasts,
         count: action.count
+      })
+    case ActionTypes.LOAD_SEARCH_BROADCASTS_LIST:
+      return Object.assign({}, state, {
+        //searchBroadcastResult: state.searchBroadcastResult && state.searchBroadcastResult.length > 0 && action.broadcasts ? [...state.searchBroadcastResult, ...action.broadcasts] : action.broadcasts,
+        searchBroadcastResult: action.append ? [...state.searchBroadcastResult, ...action.broadcasts] : action.broadcasts ,
+        searchCount: action.count
       })
     case ActionTypes.LOAD_TWILIO_NUMBERS:
       return Object.assign({}, state, {

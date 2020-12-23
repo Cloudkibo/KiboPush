@@ -4,7 +4,7 @@
 
 import React from 'react'
 import { connect } from 'react-redux'
-import { loadBroadcastsList, sendFollowupBroadcast, fetchSmsAnalytics } from '../../redux/actions/smsBroadcasts.actions'
+import { searchBroadcastList, sendFollowupBroadcast, fetchResponseDetails, setSearchBroadcastResult, loadBroadcastsList} from '../../redux/actions/smsBroadcasts.actions'
 import { bindActionCreators } from 'redux'
 import { Popover, PopoverBody } from 'reactstrap'
 import { Picker } from 'emoji-mart'
@@ -34,8 +34,13 @@ class FollowUpBroadcast extends React.Component {
       responseOptions: [],
       selectedResponses: null,
       title: '',
-      enableSend: false
-
+      enableSend: false,
+      selectLoading: false,
+      typingInterval: 1000,
+      searchTitle: '',
+      broadcastResponses: {},
+      selectedPhone: '',
+      twilioOptions: null
     }
     this.onMessageChange = this.onMessageChange.bind(this)
     this.toggleEmojiPicker = this.toggleEmojiPicker.bind(this)
@@ -51,8 +56,60 @@ class FollowUpBroadcast extends React.Component {
     this.validateBroadcast = this.validateBroadcast.bind(this)
     this.setToDefault = this.setToDefault.bind(this)
     this.mapResponsesforNotInOperator = this.mapResponsesforNotInOperator.bind(this)
+    this.filterBroadcast = this.filterBroadcast.bind(this)
+    this.initBroadcastSelect = this.initBroadcastSelect.bind(this)
+    this.removeResponses = this.removeResponses.bind(this)
+    this.setResponse = this.setResponse.bind(this)
+    this.handleResponses = this.handleResponses.bind(this)
+    this.handlePhoneNumber = this.handlePhoneNumber.bind(this)
+    props.setSearchBroadcastResult(null)
+    props.loadBroadcastsList({last_id: 'none', number_of_records: 10, first_page: 'first'})
+  }
+  handlePhoneNumber (value) {
+    this.setState({selectedPhone: value})
+    this.validateBroadcast(this.state.selectedBroadcast, this.state.title, this.state.message, value.value)
+  }
+  handleResponses (id, responses) {
+    let masterBroadcastList = this.state.broadcastResponses
+    masterBroadcastList[id] = responses
+    let responseOptions = []
+    for (const [key, value] of Object.entries(masterBroadcastList)) {
+      let mapResponses = value.map((v) => { return {label: v, value: v}})
+      responseOptions =[...responseOptions, ...mapResponses] 
+    }
+    const uniqueResponses = [...new Set(responseOptions.map(item => item.value))].map((v) => { return {label: v, value: v}})
+    this.setState({responseOptions: uniqueResponses , broadcastResponses: masterBroadcastList})
   }
 
+  setResponse (broadcastId) {
+    let responseOptions = this.state.responseOptions
+    for (const [key, value] of Object.entries(this.state.broadcastResponses)) {
+      if (key === broadcastId) {
+        let mapResponses = value.map((v) => { return {label: v, value: v}})
+        responseOptions = [...responseOptions, ...mapResponses] 
+      }
+    }
+    const uniqueResponses = [...new Set(responseOptions.map(item => item.value))].map((v) => { return {label: v, value: v}})
+    this.setState({responseOptions: uniqueResponses})
+  }
+
+  filterBroadcast({ label, value, data }, string) {
+    if (data && !data.searchable) {
+      return true
+    }
+    return true
+  }
+  removeResponses (broadcastId) {
+    let responseOptions = []
+    for (const [key, value] of Object.entries(this.state.broadcastResponses)) {
+      if (key !== broadcastId) {
+        let mapResponses = value.map((v) => { return {label: v, value: v}})
+        responseOptions =[...responseOptions, ...mapResponses] 
+      }
+    }
+    const uniqueResponses = [...new Set(responseOptions.map(item => item.value))].map((v) => { return {label: v, value: v}})
+    this.setState({responseOptions: uniqueResponses})
+  }
   setToDefault () {
     this.setState({
       showEmojiPicker: false,
@@ -65,10 +122,17 @@ class FollowUpBroadcast extends React.Component {
       enableSend: false
     })
   }
+  initBroadcastSelect() {
+    this.props.setSearchBroadcastResult(null)
+    if(this.props.broadcasts && this.props.broadcasts.length > 0) {
+      let broadcastOptions = this.props.broadcasts.map((broadcast) => { return {label: broadcast.title, value: broadcast._id}})
+      this.setState({broadcastOptions})
+    }
+  }
 
-  validateBroadcast (broadcasts, title, message) {
+  validateBroadcast (broadcasts, title, message, phoneNumber) {
     if (!this.props.smsBroadcast) {
-      if (broadcasts && broadcasts.length > 0 && title !== '' && message !== '') {
+      if (broadcasts && broadcasts.length > 0 && title !== '' && message !== '' && phoneNumber) {
         this.setState({
           enableSend: true
         })
@@ -94,17 +158,56 @@ class FollowUpBroadcast extends React.Component {
 
   onTitleChange (e) {
     this.setState({title: e.target.value})
-    this.validateBroadcast(this.state.selectedBroadcast, e.target.value, this.state.message)
+    this.validateBroadcast(this.state.selectedBroadcast, e.target.value, this.state.message, this.state.selectedPhone.value)
   }
   
   handleSelectBroadcast (selectedBroadcast) {
-    this.setState({selectedBroadcast, selectedResponse: null})
-    this.props.fetchSmsAnalytics(selectedBroadcast.value)
-    this.validateBroadcast(selectedBroadcast, this.state.title, this.state.message)
+    if (selectedBroadcast && selectedBroadcast.length > 0) {
+      if ( !this.state.selectedBroadcast || ( this.state.selectedBroadcast && this.state.selectedBroadcast.length < selectedBroadcast.length)) {
+        let selectedItem
+        if (this.state.selectedBroadcast) {
+          selectedItem = selectedBroadcast.filter(broadcast => !this.state.selectedBroadcast.includes(broadcast))[0]
+        } else {
+          selectedItem = selectedBroadcast[0]
+        }
+        if (selectedItem.value === 'load_more') {
+          this.props.searchBroadcastList({
+            title: this.state.searchTitle,
+            last_id: this.props.searchBroadcastResult && this.props.searchBroadcastResult.length > 0 ?  this.props.searchBroadcastResult[this.props.searchBroadcastResult.length - 1]._id : 'none',
+            number_of_records: 3,
+            first_page: 'next'
+          })
+        } else {
+          this.setState({selectedBroadcast, selectedResponse: null})
+          if (!this.state.broadcastResponses[selectedItem.value]) {
+            this.props.fetchResponseDetails(selectedItem.value, null, {"purpose": "unique_responses"}, this.handleResponses)
+          } else {
+            this.setResponse(selectedItem.value)
+          }
+          if(this.props.broadcasts && this.props.broadcasts.length > 0) {
+            let isRecentBroadcast = this.props.broadcasts.filter((b) => { return b._id === selectedItem.value})
+            let broadcastOptions = this.props.broadcasts.map((broadcast) => { return {label: broadcast.title, value: broadcast._id}})
+            if (isRecentBroadcast.length < 1) {
+              broadcastOptions.push({label: selectedItem.label, value: selectedItem.value})
+            }
+            this.setState({broadcastOptions})
+          }
+          this.props.setSearchBroadcastResult(null)
+          this.validateBroadcast(selectedBroadcast, this.state.title, this.state.message, this.state.selectedPhone.value)
+        }
+      } else {
+        this.setState({selectedBroadcast, selectLoading: false})
+        let removedItem = this.state.selectedBroadcast.filter((b) => {return !selectedBroadcast.includes(b)})[0]
+        this.removeResponses(removedItem.value)
+      }
+    } else {
+      this.setState({selectedBroadcast: [], selectLoading: false, responseOptions: []})
+      this.props.setSearchBroadcastResult(null)
+    }
   }
   handleResponseChange (selectedResponses) {
     this.setState({selectedResponses})
-    this.validateBroadcast(this.state.selectedBroadcast, this.state.title, this.state.message)
+    this.validateBroadcast(this.state.selectedBroadcast, this.state.title, this.state.message, this.state.selectedPhone.value)
   }
   onKeywordChange(value, actionMeta) {
     if (!value) {
@@ -138,7 +241,7 @@ class FollowUpBroadcast extends React.Component {
 
   onMessageChange (e) {
     this.setState({message: e.target.value})
-    this.validateBroadcast(this.state.selectedBroadcast, this.state.title, e.target.value)
+    this.validateBroadcast(this.state.selectedBroadcast, this.state.title, e.target.value, this.state.selectedPhone.value)
   }
 
   toggleEmojiPicker () {
@@ -146,19 +249,35 @@ class FollowUpBroadcast extends React.Component {
   }
 
   sendBroadcast () {
-    var payload = {
+    let payload = {}
+    if (this.props.smsBroadcast) {
+      payload = {
+        "keywords": this.state.keywordValue.map((k) => {return k.value}),
+        "message": [{"componentType": "text", "text": this.state.message}],
+        "broadcasts": this.props.smsBroadcast ? [this.props.smsBroadcast._id] : [],
+        "phoneNumber": this.props.smsBroadcast ? this.props.smsBroadcast.phoneNumber : '',
+        "title": this.state.title
+      }
+   } else {
+    payload = {
       "keywords": this.state.keywordValue.map((k) => {return k.value}),
       "message": [{"componentType": "text", "text": this.state.message}],
-      "broadcasts": this.props.smsBroadcast ? [this.props.smsBroadcast._id] : [],
-      "phoneNumber": this.props.smsBroadcast ? this.props.smsBroadcast.phoneNumber : '',
+      "broadcasts": this.state.selectedBroadcast.map((b) => {return b.value}),
+      "phoneNumber": this.state.selectedPhone.value,
       "title": this.state.title
     }
-    var isOthers = this.state.selectedResponses.filter((r)=>{ return r.value.trim().toLowerCase() === 'others'})
-    if (isOthers.length > 0) {
-      payload["responses"] = this.mapResponsesforNotInOperator()
-      payload["operator"] =  "nin"
+   }
+   if (this.state.selectedResponses && this.state.selectedResponses.length > 0) {
+      var isOthers = this.state.selectedResponses.filter((r)=>{ return r.value.trim().toLowerCase() === 'others'})
+      if (isOthers.length > 0) {
+        payload["responses"] = this.mapResponsesforNotInOperator()
+        payload["operator"] =  "nin"
+      } else {
+        payload["responses"] = this.state.selectedResponses.map((r)=>{ return r.value})
+        payload["operator"] =  "in"
+      }
     } else {
-      payload["responses"] = this.state.selectedResponses.map((r)=>{ return r.value})
+      payload["responses"] = []
       payload["operator"] =  "in"
     }
     this.props.sendFollowupBroadcast(payload, this.msg, this.setToDefault)
@@ -181,20 +300,50 @@ class FollowUpBroadcast extends React.Component {
    }
 
   componentDidMount () {
-    if(this.props.broadcasts && this.props.broadcasts.length > 0) {
-      let broadcastOptions = this.props.broadcasts.map((broadcast) => { return {label: broadcast.title, value: broadcast._id}})
-      this.setState({broadcastOptions})
-    }
+    this.initBroadcastSelect()
     if (this.props.smsAnalytics && this.props.smsAnalytics.responses && this.props.smsAnalytics.responses.length > 0) {
       let responseOptions = this.props.smsAnalytics.responses.map((response) => { return {label: response._id, value: response._id}})
       this.setState({responseOptions})
     }
+    if (this.props.twilioNumbers && this.props.twilioNumbers.length > 0) {
+      let twilioOptions = this.props.twilioNumbers.map((number) => { return {label: number, value: number}})
+      this.setState({twilioOptions})
+    }
+
+    let typingTimer
+    let doneTypingInterval = this.state.typingInterval
+    let input = document.getElementById(`_select_broadcast`)
+    if(input) {
+      input.addEventListener('keyup', (e) => {
+        clearTimeout(typingTimer)
+        typingTimer = setTimeout(() => {
+          if (e.target.value && e.target.value !== '') {
+            this.setState({
+              selectLoading: true,
+              searchTitle: e.target.value
+            })
+            this.props.searchBroadcastList({last_id: 'none', number_of_records: 3, first_page: 'first', title: e.target.value})
+          } else {
+            this.props.setSearchBroadcastResult(null)
+            this.initBroadcastSelect()
+            this.setState({
+              selectLoading: false
+            })
+          }
+        }, doneTypingInterval)
+      })
+      input.addEventListener('keydown', () => {clearTimeout(typingTimer)})
+    }
   }
 
   UNSAFE_componentWillReceiveProps (nextProps) {
-    if (nextProps.smsAnalytics.responses && nextProps.smsAnalytics.responses.length > 0) {
-      let responseOptions = nextProps.smsAnalytics.responses.map((response) => { return {label: response._id, value: response._id}})
-      this.setState({responseOptions})
+    if (nextProps.searchBroadcastResult) { 
+      let broadcastOptions = []
+      broadcastOptions = nextProps.searchBroadcastResult.map((broadcast) => { return {label: broadcast.title, value: broadcast._id}})
+      if (nextProps.searchCount && nextProps.searchCount > nextProps.searchBroadcastResult.length && nextProps.searchCount > 3) {
+        broadcastOptions.push({label: 'See More..', value: 'load_more', searchable: false})
+      }
+      this.setState({broadcastOptions: broadcastOptions, selectLoading: false})
     }
   }
   render () {
@@ -242,20 +391,46 @@ class FollowUpBroadcast extends React.Component {
                         <div className='col-2'></div>
                       </div>
                       { !this.props.smsBroadcast &&
+                      <div className='row'  style={{marginTop: '20px'}}>
+                        <div className='col-2'></div>
+                        <div className='col-8' style={{ display:'flex'}}>
+                          <label className='col-form-label' style={{width:'140px'}}>PhoneNumber:</label>
+                          <div style={{width:'100%'}}>
+                            <Select
+                                placeholder='Message will be sent from selected phone number'
+                                defaultValue={this.state.selectedPhone}
+                                name="twilioNumbers"
+                                onChange={this.handlePhoneNumber}
+                                options={this.state.twilioOptions}
+                                className="basic-single-select"
+                                classNamePrefix="select"
+                                value={this.state.selectedPhone}
+                              />
+                          </div>
+                        </div>
+                        <div className='col-2'></div>
+                      </div>
+                      }
+                      { !this.props.smsBroadcast &&
                       <div className='row' style={{marginTop: '20px'}}>
                         <div className='col-2'></div>
                         <div className='col-8' style={{ display:'flex'}}>
                           <label className='col-form-label' style={{width:'140px'}}>Broadcasts:</label>
                           <div style={{width:'100%'}}>
                               <Select
+                                id='_select_broadcast'
                                 defaultValue={this.state.selectedBroadcast}
+                                closeMenuOnSelect={false}
                                 isMulti
+                                filterOption={this.filterBroadcast}
                                 name="broadcasts"
                                 onChange={this.handleSelectBroadcast}
                                 options={this.state.broadcastOptions}
                                 className="basic-multi-select"
                                 classNamePrefix="select"
                                 value={this.state.selectedBroadcast}
+                                isLoading={this.state.selectLoading}
+                                onBlur={this.initBroadcastSelect}
                               />
                           </div>
                         </div>
@@ -364,17 +539,22 @@ class FollowUpBroadcast extends React.Component {
 function mapStateToProps (state) {
   return {
     broadcasts: (state.smsBroadcastsInfo.broadcasts),
+    searchBroadcastResult: (state.smsBroadcastsInfo.searchBroadcastResult),
+    searchCount: (state.smsBroadcastsInfo.searchCount),
     smsBroadcast: (state.smsBroadcastsInfo.smsBroadcast),
     count: (state.smsBroadcastsInfo.count),
-    smsAnalytics: (state.smsBroadcastsInfo.smsAnalytics)
+    smsAnalytics: (state.smsBroadcastsInfo.smsAnalytics),
+    twilioNumbers: (state.smsBroadcastsInfo.twilioNumbers)
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
+    setSearchBroadcastResult,
     loadBroadcastsList,
+    searchBroadcastList,
     sendFollowupBroadcast,
-    fetchSmsAnalytics
+    fetchResponseDetails
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(FollowUpBroadcast)

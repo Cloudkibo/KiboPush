@@ -9,6 +9,15 @@ export function showBroadcasts (data) {
   }
 }
 
+export function setSearchBroadcastResult (data, append) {
+  return {
+    type: ActionTypes.LOAD_SEARCH_BROADCASTS_LIST,
+    broadcasts: data ? data.broadcasts : null,
+    count: data ? data.count : null,
+    append
+  }
+}
+
 export function showTwilioNumbers (data) {
   console.log('data in showTwilioNumbers', data)
   return {
@@ -68,6 +77,18 @@ export function loadBroadcastsList (data) {
   }
 }
 
+export function searchBroadcastList (data) {
+  console.log('data for searchBroadcastList', data)
+  const append = data.first_page === 'next'
+  return (dispatch) => {
+    callApi('smsBroadcasts', 'post', data)
+      .then(res => {
+        console.log('response from searchBroadcastList', res)
+        dispatch(setSearchBroadcastResult(res.payload, append))
+      })
+  }
+}
+
 export function loadTwilioNumbers () {
   return (dispatch) => {
     callApi('smsBroadcasts/getTwilioNumbers')
@@ -120,14 +141,20 @@ export function fetchSmsAnalytics (id) {
   }
 }
 
-export function fetchResponseDetails (id, responseId, payload) {
+export function fetchResponseDetails (id, responseId, payload, handleResponses) {
   console.log('data for fetchResponseDetails', payload)
   return (dispatch) => {
     callApi(`smsBroadcasts/${id}/responses`, 'post', payload)
       .then(res => {
         console.log('response from fetchResponseDetails', res.payload)
         if (res.status === 'success') {
-          dispatch(showSenderInfo(responseId, res.payload))
+          if (responseId) {
+            dispatch(showSenderInfo(responseId, res.payload))
+          } else {
+            if (handleResponses) {
+              handleResponses(id, res.payload)
+            }
+          }
         }
       })
   }
