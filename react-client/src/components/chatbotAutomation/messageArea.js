@@ -340,6 +340,37 @@ class MessageArea extends React.Component {
             skipAllowed: additionalActions.skipAllowed,
             blockId: uniqueId
           }
+          if (!additionalActions.skipAllowed.blockId) {
+            const skipId = '' + new Date().getTime() + 100
+            const newSkipBlock = {
+              title: additionalActions.skipAllowed.messageBlockTitle,
+              payload: [],
+              uniqueId: skipId,
+              triggers: [additionalActions.skipAllowed.messageBlockTitle.toLowerCase()]
+            }
+            const newSkipSidebarItem = {
+              title: additionalActions.skipAllowed.messageBlockTitle,
+              isParent: false,
+              id: skipId,
+              parentId: this.props.block.uniqueId
+            }
+            const currentBlock = this.props.block
+            const sidebarItems = this.props.sidebarItems
+            const index = sidebarItems.findIndex(
+              (item) => item.id.toString() === this.props.block.uniqueId.toString()
+            )
+            sidebarItems[index].isParent = true
+            const blocks = [...this.props.blocks, newSkipBlock]
+            const completed = blocks.filter((item) => item.payload.length > 0).length
+            const progress = Math.floor((completed / blocks.length) * 100)
+            this.props.updateParentState({
+              blocks,
+              currentBlock,
+              progress,
+              sidebarItems: [...sidebarItems, newSkipSidebarItem],
+              unsavedChanges: true
+            })
+          }
         } else {
           option.payload = JSON.stringify([{action: '_chatbot', blockUniqueId: uniqueId, parentBlockTitle: this.props.block.title}])
         }
@@ -347,11 +378,31 @@ class MessageArea extends React.Component {
       } else if (action === 'create') {
         const id = new Date().getTime()
         const newBlock = {title, payload: [], uniqueId: id, triggers: [title.toLowerCase()]}
+        const newSidebarItem = { title, isParent: false, id, parentId: this.props.block.uniqueId }
+        let newSkipBlock = null
+        let newSkipSidebarItem = null
+        if (additionalActions && !additionalActions.skipAllowed.blockId) {
+          const skipId = '' + new Date().getTime() + 100
+          newSkipBlock = {
+            title: additionalActions.skipAllowed.messageBlockTitle,
+            payload: [],
+            uniqueId: skipId,
+            triggers: [additionalActions.skipAllowed.messageBlockTitle.toLowerCase()]
+          }
+          newSkipSidebarItem = {
+            title: additionalActions.skipAllowed.messageBlockTitle,
+            isParent: false,
+            id: skipId,
+            parentId: this.props.block.uniqueId
+          }
+        }
         const sidebarItems = this.props.sidebarItems
         const index = sidebarItems.findIndex((item) => item.id.toString() === this.props.block.uniqueId.toString())
         sidebarItems[index].isParent = true
-        const newSidebarItem = {title, isParent: false, id, parentId: this.props.block.uniqueId}
         const blocks = [...this.props.blocks, newBlock]
+        if (newSkipBlock) {
+          blocks.push(newSkipBlock)
+        }
         const completed = blocks.filter((item) => item.payload.length > 0).length
         const progress = Math.floor((completed / blocks.length) * 100)
         if (additionalActions) {
@@ -359,7 +410,7 @@ class MessageArea extends React.Component {
             title,
             query: additionalActions.query,
             keyboardInputAllowed: additionalActions.keyboardInputAllowed,
-            skipAllowed: additionalActions.skipAllowed,
+            skipAllowed: { ...additionalActions.skipAllowed, blockId: newSkipBlock.uniqueId },
             blockId: id
           }
         } else {
@@ -372,11 +423,15 @@ class MessageArea extends React.Component {
         } else {
           currentBlock.payload.push({quickReplies: options})
         }
+        const newSidebarItems = [...sidebarItems, newSidebarItem]
+        if (newSkipSidebarItem) {
+          newSidebarItems.push(newSkipSidebarItem)
+        }
         this.props.updateParentState({
           blocks,
           currentBlock,
           progress,
-          sidebarItems: [...sidebarItems, newSidebarItem],
+          sidebarItems: newSidebarItems,
           unsavedChanges: true
         })
       }
