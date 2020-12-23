@@ -67,9 +67,9 @@ class AddOption extends React.Component {
 
   checkDisabled () {
     if (!this.state.title || 
-        (this.state.selectedRadioSkip === 'create' && !this.state.additionalActions.skipAllowed.messageBlockTitle) ||
-        (this.state.selectedRadioSkip === 'link' && !this.state.additionalActions.skipAllowed.blockId)
-      ) {
+      (this.state.selectedRadioSkip === 'create' && !this.state.additionalActions.skipAllowed.messageBlockTitle) ||
+      (this.state.selectedRadioSkip === 'link' && !this.state.additionalActions.skipAllowed.blockId)
+    ) {
       return true
     }
   }
