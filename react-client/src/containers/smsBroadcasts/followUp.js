@@ -185,10 +185,6 @@ class FollowUpBroadcast extends React.Component {
         return
       }
       if ( !this.state.selectedBroadcast || ( this.state.selectedBroadcast && this.state.selectedBroadcast.length < selectedBroadcast.length)) {
-        if (this.state.selectedBroadcast && this.state.selectedBroadcast.length === 10) {
-          this.msg.error('You cannot select more than 10 broadcasts')
-          return
-        }
         let selectedItem
         if (this.state.selectedBroadcast) {
           selectedItem = selectedBroadcast.filter(broadcast => !this.state.selectedBroadcast.includes(broadcast))[0]
@@ -212,6 +208,10 @@ class FollowUpBroadcast extends React.Component {
             }, true)
           }
         } else {
+          if (this.state.selectedBroadcast && this.state.selectedBroadcast.length === 10) {
+            this.msg.error('You cannot select more than 10 broadcasts')
+            return
+          }
           this.setState({selectedBroadcast})
           if (!this.state.broadcastResponses[selectedItem.value]) {
             this.props.fetchResponseDetails(selectedItem.value, null, {"purpose": "unique_responses"}, this.handleResponses)
