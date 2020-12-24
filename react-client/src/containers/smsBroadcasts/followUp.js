@@ -63,7 +63,7 @@ class FollowUpBroadcast extends React.Component {
     this.handleResponses = this.handleResponses.bind(this)
     this.handlePhoneNumber = this.handlePhoneNumber.bind(this)
     props.setSearchBroadcastResult(null)
-    props.loadBroadcastsList({last_id: 'none', number_of_records: 3, first_page: 'first'}, true)
+    props.loadBroadcastsList({last_id: 'none', number_of_records: 10, first_page: 'first'}, true)
   }
   handlePhoneNumber (value) {
     this.setState({selectedPhone: value})
@@ -132,7 +132,7 @@ class FollowUpBroadcast extends React.Component {
           broadcastOptions.push({label: selectedItem.label, value: selectedItem.value})
         }
       }
-      if (this.props.count && this.props.count > this.props.broadcasts.length && this.props.count > 3) {
+      if (this.props.count && this.props.count > this.props.broadcasts.length && this.props.count > 10) {
         broadcastOptions.push({label: 'See More..', value: 'load_more', searchable: false})
       }
       this.setState({broadcastOptions})
@@ -196,14 +196,14 @@ class FollowUpBroadcast extends React.Component {
             this.props.searchBroadcastList({
               title: this.state.searchTitle,
               last_id: this.props.searchBroadcastResult && this.props.searchBroadcastResult.length > 0 ?  this.props.searchBroadcastResult[this.props.searchBroadcastResult.length - 1]._id : 'none',
-              number_of_records: 3,
+              number_of_records: 10,
               first_page: 'next'
             })
           } else {
             this.props.loadBroadcastsList({
               title: '',
               last_id: this.props.broadcasts && this.props.broadcasts.length > 0 ?  this.props.broadcasts[this.props.broadcasts.length - 1]._id : 'none',
-              number_of_records: 3,
+              number_of_records: 10,
               first_page: 'next'
             }, true)
           }
@@ -355,7 +355,7 @@ class FollowUpBroadcast extends React.Component {
               selectLoading: true,
               searchTitle: e.target.value
             })
-            this.props.searchBroadcastList({last_id: 'none', number_of_records: 3, first_page: 'first', title: e.target.value})
+            this.props.searchBroadcastList({last_id: 'none', number_of_records: 10, first_page: 'first', title: e.target.value})
           } else {
             this.props.setSearchBroadcastResult(null)
             this.initBroadcastSelect()
@@ -373,7 +373,7 @@ class FollowUpBroadcast extends React.Component {
     if (nextProps.searchBroadcastResult) { 
       let broadcastOptions = []
       broadcastOptions = nextProps.searchBroadcastResult.map((broadcast) => { return {label: broadcast.title, value: broadcast._id}})
-      if (nextProps.searchCount && nextProps.searchCount > nextProps.searchBroadcastResult.length && nextProps.searchCount > 3) {
+      if (nextProps.searchCount && nextProps.searchCount > nextProps.searchBroadcastResult.length && nextProps.searchCount > 10) {
         broadcastOptions.push({label: 'See More..', value: 'load_more', searchable: false})
       }
       this.setState({broadcastOptions: broadcastOptions, selectLoading: false})
@@ -381,7 +381,7 @@ class FollowUpBroadcast extends React.Component {
     if (nextProps.broadcasts && !nextProps.searchBroadcastResult) { 
       let broadcastOptions = []
       broadcastOptions = nextProps.broadcasts.map((broadcast) => { return {label: broadcast.title, value: broadcast._id}})
-      if (nextProps.count && nextProps.count > nextProps.broadcasts.length && nextProps.count > 3) {
+      if (nextProps.count && nextProps.count > nextProps.broadcasts.length && nextProps.count > 10) {
         broadcastOptions.push({label: 'See More..', value: 'load_more', searchable: false})
       }
       this.setState({broadcastOptions: broadcastOptions, selectLoading: false})
