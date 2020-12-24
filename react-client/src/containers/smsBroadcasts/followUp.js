@@ -180,10 +180,6 @@ class FollowUpBroadcast extends React.Component {
   
   handleSelectBroadcast (selectedBroadcast) {
     if (selectedBroadcast && selectedBroadcast.length > 0) {
-      if (this.state.selectedBroadcast && this.state.selectedBroadcast.length === 10) {
-        this.msg.error('You cannot select more than 10 broadcasts')
-        return
-      }
       if ( !this.state.selectedBroadcast || ( this.state.selectedBroadcast && this.state.selectedBroadcast.length < selectedBroadcast.length)) {
         let selectedItem
         if (this.state.selectedBroadcast) {
