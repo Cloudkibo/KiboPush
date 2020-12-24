@@ -726,7 +726,7 @@ class Dashboard extends React.Component {
                   </div>
                 )}
               {this.props.user &&
-                this.props.user.permissions['sla_dashboard'] &&
+                // this.props.user.permissions['sla_dashboard'] &&
                 !this.props.isMobile &&
                 (url.includes('kibochat.cloudkibo.com') || url.includes('localhost')) && (
                   <div className='row'>
