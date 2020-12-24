@@ -1,13 +1,14 @@
 import * as ActionTypes from '../constants/constants'
 
 let initState = {
-  searchBroadcastResult: []
+  searchBroadcastResult: [],
+  broadcasts: []
 }
 export function smsBroadcastsInfo (state = initState, action) {
   switch (action.type) {
     case ActionTypes.LOAD_SMS_BROADCASTS_LIST:
       return Object.assign({}, state, {
-        broadcasts: action.broadcasts,
+        broadcasts:  action.append ? [...state.broadcasts, ...action.broadcasts] : action.broadcasts,
         count: action.count
       })
     case ActionTypes.LOAD_SEARCH_BROADCASTS_LIST:

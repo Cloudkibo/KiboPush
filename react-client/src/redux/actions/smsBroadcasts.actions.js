@@ -1,11 +1,12 @@
 import callApi from '../../utility/api.caller.service'
 import * as ActionTypes from '../constants/constants'
 
-export function showBroadcasts (data) {
+export function showBroadcasts (data, append) {
   return {
     type: ActionTypes.LOAD_SMS_BROADCASTS_LIST,
     broadcasts: data.broadcasts,
-    count: data.count
+    count: data.count,
+    append: append
   }
 }
 
@@ -66,13 +67,14 @@ export function saveCurrentSmsBroadcast (broadcast) {
   }
 }
 
-export function loadBroadcastsList (data) {
+export function loadBroadcastsList (data, isSelect) {
   console.log('data for loadBroadcastsList', data)
+  const append = data.first_page === 'next' && isSelect
   return (dispatch) => {
     callApi('smsBroadcasts', 'post', data)
       .then(res => {
         console.log('response from loadBroadcastsList', res)
-        dispatch(showBroadcasts(res.payload))
+        dispatch(showBroadcasts(res.payload, append))
       })
   }
 }
