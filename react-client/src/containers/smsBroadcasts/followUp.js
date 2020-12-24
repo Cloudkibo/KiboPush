@@ -11,6 +11,7 @@ import { Picker } from 'emoji-mart'
 import AlertContainer from 'react-alert'
 import Select from 'react-select'
 import CreatableSelect from 'react-select/creatable'
+import { cloneDeep } from 'lodash'
 
 const createOption = (label) => ({
   label,
@@ -70,7 +71,7 @@ class FollowUpBroadcast extends React.Component {
     this.validateBroadcast(this.state.title, this.state.message, value.value)
   }
   handleResponses (id, responses) {
-    let masterBroadcastList = this.state.broadcastResponses
+    let masterBroadcastList = cloneDeep(this.state.broadcastResponses)
     masterBroadcastList[id] = responses
     let responseOptions = []
     for (const [,value] of Object.entries(masterBroadcastList)) {
@@ -82,7 +83,7 @@ class FollowUpBroadcast extends React.Component {
   }
 
   setResponse (broadcastId) {
-    let responseOptions = this.state.responseOptions
+    let responseOptions = cloneDeep(this.state.responseOptions)
     for (const [key, value] of Object.entries(this.state.broadcastResponses)) {
       if (key === broadcastId) {
         let mapResponses = value.map((v) => { return {label: v, value: v}})
@@ -104,7 +105,7 @@ class FollowUpBroadcast extends React.Component {
     for (const [key, value] of Object.entries(this.state.broadcastResponses)) {
       if (key !== broadcastId) {
         let mapResponses = value.map((v) => { return {label: v, value: v}})
-        responseOptions =[...responseOptions, ...mapResponses] 
+        responseOptions = [...responseOptions, ...mapResponses] 
       }
     }
     const uniqueResponses = [...new Set(responseOptions.map(item => item.value))].map((v) => { return {label: v, value: v}})
