@@ -81,68 +81,68 @@ export function loadSLADashboardData(data) {
       dispatch({
         type: ActionTypes.FETCHING_SLA_DASHBOARD
       })
-      // const response = await callApi('dashboard/sla', 'post', data)
-      // dispatch(updateSLADashboard(response.payload))
-      setTimeout(() => {
-        dispatch(
-          updateSLADashboard({
-            sessions: {
-              total: 999,
-              resolved: 99,
-              pending: 99,
-              open: 99
-            },
-            messages: {
-              received: 999,
-              sent: 999
-            },
-            responseTime: 120,
-            resolveTime: 1000,
-            graphData: [
-              {
-                responseTime: 30,
-                resolveTime: 100,
-                date: '2020-12-08'
-              },
-              {
-                responseTime: 40,
-                resolveTime: 120,
-                date: '2020-12-09'
-              },
-              {
-                responseTime: 50,
-                resolveTime: 150,
-                date: '2020-12-10'
-              },
-              {
-                responseTime: 60,
-                resolveTime: 190,
-                date: '2020-12-11'
-              },
-              {
-                responseTime: 20,
-                resolveTime: 110,
-                date: '2020-12-12'
-              },
-              {
-                responseTime: 80,
-                resolveTime: 200,
-                date: '2020-12-13'
-              },
-              {
-                responseTime: 90,
-                resolveTime: 250,
-                date: '2020-12-14'
-              },
-              {
-                responseTime: 30,
-                resolveTime: 100,
-                date: '2020-12-15'
-              }
-            ]
-          })
-        )
-      }, 1000)
+      const response = await callApi('dashboard/sla', 'post', data)
+      dispatch(updateSLADashboard(response.payload))
+      // setTimeout(() => {
+      //   dispatch(
+      //     updateSLADashboard({
+      //       sessions: {
+      //         total: 999,
+      //         resolved: 99,
+      //         pending: 99,
+      //         open: 99
+      //       },
+      //       messages: {
+      //         received: 999,
+      //         sent: 999
+      //       },
+      //       responseTime: 120,
+      //       resolveTime: 1000,
+      //       graphData: [
+      //         {
+      //           responseTime: 30,
+      //           resolveTime: 100,
+      //           date: '2020-12-08'
+      //         },
+      //         {
+      //           responseTime: 40,
+      //           resolveTime: 120,
+      //           date: '2020-12-09'
+      //         },
+      //         {
+      //           responseTime: 50,
+      //           resolveTime: 150,
+      //           date: '2020-12-10'
+      //         },
+      //         {
+      //           responseTime: 60,
+      //           resolveTime: 190,
+      //           date: '2020-12-11'
+      //         },
+      //         {
+      //           responseTime: 20,
+      //           resolveTime: 110,
+      //           date: '2020-12-12'
+      //         },
+      //         {
+      //           responseTime: 80,
+      //           resolveTime: 200,
+      //           date: '2020-12-13'
+      //         },
+      //         {
+      //           responseTime: 90,
+      //           resolveTime: 250,
+      //           date: '2020-12-14'
+      //         },
+      //         {
+      //           responseTime: 30,
+      //           resolveTime: 100,
+      //           date: '2020-12-15'
+      //         }
+      //       ]
+      //     })
+      //   )
+      // }, 1000)
     } catch (err) {
       dispatch(
         updateSLADashboard(null, err && err.message ? err.message : 'Error Fetching Data. Try Refreshing the Page.')
