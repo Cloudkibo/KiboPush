@@ -77,10 +77,11 @@ class AddOption extends React.Component {
   updateAdditonalActions (updated) {
     this.setState({
       additionalActions: {
-        ...this.state.additionalActions, 
-        ...updated,
+        ...this.state.additionalActions,
+        ...updated
       },
-      selectedRadioSkip: updated.skipAllowed && updated.skipAllowed.isSkip ? this.state.selectedRadioSkip : ''
+      selectedRadioSkip:
+        updated.skipAllowed && !updated.skipAllowed.isSkip ? '' : this.state.selectedRadioSkip
     })
   }
 
