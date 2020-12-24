@@ -164,6 +164,10 @@ class FollowUpBroadcast extends React.Component {
   handleSelectBroadcast (selectedBroadcast) {
     if (selectedBroadcast && selectedBroadcast.length > 0) {
       if ( !this.state.selectedBroadcast || ( this.state.selectedBroadcast && this.state.selectedBroadcast.length < selectedBroadcast.length)) {
+        if (this.state.selectedBroadcast && this.state.selectedBroadcast.length === 10) {
+          this.msg.error('You cannot select more than 10 broadcasts')
+          return
+        }
         let selectedItem
         if (this.state.selectedBroadcast) {
           selectedItem = selectedBroadcast.filter(broadcast => !this.state.selectedBroadcast.includes(broadcast))[0]
@@ -206,6 +210,13 @@ class FollowUpBroadcast extends React.Component {
     }
   }
   handleResponseChange (selectedResponses) {
+<<<<<<< Updated upstream
+=======
+    if (this.state.selectedResponses && this.state.selectedResponses.length === 10) {
+      this.msg.error('You cannot select more than 10 responses')
+      return
+    }
+>>>>>>> Stashed changes
     this.setState({selectedResponses})
     this.validateBroadcast(this.state.selectedBroadcast, this.state.title, this.state.message, this.state.selectedPhone.value)
   }
@@ -222,10 +233,18 @@ class FollowUpBroadcast extends React.Component {
     switch (event.key) {
       case 'Enter':
       case 'Tab':
-        this.setState({
-          keywordInputValue: '',
-          keywordValue: [...keywordValue, createOption(keywordInputValue)],
-        });
+        if (keywordValue.map((item) => item.value).includes(keywordInputValue.toLowerCase())) {
+          this.msg.error('Cannot add the same keyword twice.')
+          this.setState({keywordInputValue: ''})
+        } else if (this.state.keywordValue.length === 10) {
+          this.msg.error('You cannot add more than 10 keywords')
+          this.setState({keywordInputValue: ''})
+        } else {
+          this.setState({
+            keywordInputValue: '',
+            keywordValue: [...keywordValue, createOption(keywordInputValue)],
+          })
+        }
         event.preventDefault()
         break
       default:
