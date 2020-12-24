@@ -510,10 +510,17 @@ class Dashboard extends React.Component {
                 </button>
               </div>
               <div style={{ color: 'black' }} className='modal-body'>
-                <p>This feature is not available in free account. Kindly updrade your account to use this feature.</p>
+                <p>
+                  This feature is not available in free account. Kindly updrade your account to use
+                  this feature.
+                </p>
                 <div style={{ width: '100%', textAlign: 'center' }}>
                   <div style={{ display: 'inline-block', padding: '5px' }}>
-                    <button className='btn btn-primary' onClick={() => this.goToSettings()} data-dismiss='modal'>
+                    <button
+                      className='btn btn-primary'
+                      onClick={() => this.goToSettings()}
+                      data-dismiss='modal'
+                    >
                       Upgrade to Pro
                     </button>
                   </div>
@@ -542,7 +549,11 @@ class Dashboard extends React.Component {
           aria-labelledby='exampleModalLabel'
           aria-hidden='true'
         >
-          <div style={{ transform: 'translate(0, 0)' }} className='modal-dialog modal-lg' role='document'>
+          <div
+            style={{ transform: 'translate(0, 0)' }}
+            className='modal-dialog modal-lg'
+            role='document'
+          >
             <div className='modal-content' style={{ width: '687px', top: '100' }}>
               <div style={{ display: 'block' }} className='modal-header'>
                 <h5 className='modal-title' id='exampleModalLabel'>
@@ -603,7 +614,8 @@ class Dashboard extends React.Component {
                 </div>
                 <div className='m-alert__text'>
                   <strong>0 Pages Connected!&nbsp;</strong>
-                  You have no pages connected. Please connect your facebook pages to get started.&nbsp;{' '}
+                  You have no pages connected. Please connect your facebook pages to get
+                  started.&nbsp;{' '}
                   <Link style={{ cursor: 'pointer' }} to='/addPages'>
                     Connect Page
                   </Link>
@@ -630,10 +642,12 @@ class Dashboard extends React.Component {
             </div>
           </div>
           {this.props.user &&
-          (((this.props.user.currentPlan === 'plan_A' || this.props.user.currentPlan === 'plan_ B') &&
+          (((this.props.user.currentPlan === 'plan_A' ||
+            this.props.user.currentPlan === 'plan_ B') &&
             !this.props.user.facebookInfo) ||
             (this.props.user.emailVerified === false &&
-              (this.props.user.currentPlan === 'plan_C' || this.props.user.currentPlan === 'plan_D'))) ? null : (
+              (this.props.user.currentPlan === 'plan_C' ||
+                this.props.user.currentPlan === 'plan_D'))) ? null : (
             <div>
               {/* this.props.user && (this.props.user.role === 'admin' || this.props.user.role === 'buyer') && !this.props.user.wizardSeen &&
               <GettingStarted pages={this.props.pages} /> */}
@@ -647,7 +661,9 @@ class Dashboard extends React.Component {
             </div>
           ) : (
             <div>
-              <div className='row'>{this.props.dashboard && <CardBoxesContainer data={this.props.dashboard} />}</div>
+              <div className='row'>
+                {this.props.dashboard && <CardBoxesContainer data={this.props.dashboard} />}
+              </div>
               {!this.props.isMobile &&
                 (url.includes('kibochat.cloudkibo.com') ||
                   url.includes('localhost') ||
@@ -657,9 +673,12 @@ class Dashboard extends React.Component {
                   </div>
                 )}
               {!this.props.isMobile &&
-                (url.includes('kibochat.cloudkibo.com') || url.includes('kiboengage.cloudkibo.com')) && (
+                (url.includes('kibochat.cloudkibo.com') ||
+                  url.includes('kiboengage.cloudkibo.com')) && (
                   <div className='row'>
-                    {this.props.pages && this.props.sentseendata && url.includes('kiboengage.cloudkibo.com') ? (
+                    {this.props.pages &&
+                    this.props.sentseendata &&
+                    url.includes('kiboengage.cloudkibo.com') ? (
                       <ProgressBoxKiboEngage
                         lineChartData={this.state.chartData}
                         pages={this.props.pages}
@@ -686,11 +705,12 @@ class Dashboard extends React.Component {
                     )}
                   </div>
                 )}
-              {!this.props.isMobile && (url.includes('kiboengage.cloudkibo.com') || url.includes('localhost')) && (
-                <div className='row'>
-                  <AutopostingSummary />
-                </div>
-              )}
+              {!this.props.isMobile &&
+                (url.includes('kiboengage.cloudkibo.com') || url.includes('localhost')) && (
+                  <div className='row'>
+                    <AutopostingSummary />
+                  </div>
+                )}
               {!this.props.isMobile &&
                 (url.includes('kiboengage.cloudkibo.com') || url.includes('localhost')) &&
                 this.state.newsPages.length > 0 && (
@@ -705,11 +725,14 @@ class Dashboard extends React.Component {
                     <IntegrationsSummary />
                   </div>
                 )}
-              {!this.props.isMobile && (url.includes('kibochat.cloudkibo.com') || url.includes('localhost')) && (
-                <div className='row'>
-                  <SLADashboard />
-                </div>
-              )}
+              {this.props.user &&
+                this.props.user.permissions['sla_dashboard'] &&
+                !this.props.isMobile &&
+                (url.includes('kibochat.cloudkibo.com') || url.includes('localhost')) && (
+                  <div className='row'>
+                    <SLADashboard />
+                  </div>
+                )}
               <div className='row'>
                 {!this.props.isMobile && (
                   <div className='m-form m-form--label-align-right m--margin-bottom-30 col-12'>

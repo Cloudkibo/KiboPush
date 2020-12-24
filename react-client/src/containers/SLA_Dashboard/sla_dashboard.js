@@ -216,7 +216,10 @@ class SLADashboard extends React.Component {
               </div>
               {this.props.fetchingSLAData && (
                 <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                  <div className='m-loader m-loader--brand' style={{ width: '50px', height: '50px' }}></div>
+                  <div
+                    className='m-loader m-loader--brand'
+                    style={{ width: '50px', height: '50px' }}
+                  ></div>
                   <span className='m--font-brand'>Loading...Please wait</span>
                 </div>
               )}
@@ -232,7 +235,7 @@ class SLADashboard extends React.Component {
               {!this.props.fetchingSLAData && !this.state.error && this.props.slaDashboard && (
                 <>
                   <SLAStats
-                    totalSessions={this.props.slaDashboard.sessions.total}
+                    newSessions={this.props.slaDashboard.sessions.new}
                     resolvedSessions={this.props.slaDashboard.sessions.resolved}
                     pendingSessions={this.props.slaDashboard.sessions.pending}
                     openSessions={this.props.slaDashboard.sessions.open}
