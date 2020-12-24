@@ -63,6 +63,7 @@ class Footer extends React.Component {
     this.updateChatData = this.updateChatData.bind(this)
     this.handleUrlMeta = this.handleUrlMeta.bind(this)
     this.removeUrlMeta = this.removeUrlMeta.bind(this)
+    this.sendChatMessage = this.sendChatMessage.bind(this)
     this.sendMessage = this.sendMessage.bind(this)
     this.toggleAudioRecording = this.toggleAudioRecording.bind(this)
     this.getZoomIntegrationContent = this.getZoomIntegrationContent.bind(this)
@@ -936,6 +937,10 @@ class Footer extends React.Component {
     }
   }
 
+  sendChatMessage() {
+    this.sendMessage()
+  }
+
   sendMessage(quickReplies) {
     console.log('this.state.urlMeta', this.state.urlmeta)
     const data = this.props.performAction('send messages', this.props.activeSession)
@@ -1297,7 +1302,7 @@ class Footer extends React.Component {
               ) : (
                 <i
                   style={{ color: '#36a3f7' }}
-                  onClick={this.sendMessage}
+                  onClick={this.sendChatMessage}
                   className='flaticon-paper-plane'
                 />
               )}
