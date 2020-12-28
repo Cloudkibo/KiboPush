@@ -143,7 +143,7 @@ export function fetchSmsAnalytics (id) {
   }
 }
 
-export function fetchResponseDetails (id, responseId, payload, handleResponses) {
+export function fetchResponseDetails (id, responseId, payload, handleResponses, removeLoader) {
   console.log('data for fetchResponseDetails', payload)
   return (dispatch) => {
     callApi(`smsBroadcasts/${id}/responses`, 'post', payload)
@@ -157,6 +157,9 @@ export function fetchResponseDetails (id, responseId, payload, handleResponses) 
               handleResponses(id, res.payload)
             }
           }
+        }
+        if(removeLoader) {
+          removeLoader()
         }
       })
   }
