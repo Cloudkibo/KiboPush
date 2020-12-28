@@ -82,12 +82,16 @@ export function loadSLADashboardData(data) {
         type: ActionTypes.FETCHING_SLA_DASHBOARD
       })
       const response = await callApi('dashboard/sla', 'post', data)
-      dispatch(updateSLADashboard(response.payload))
+      if (!response.payload || response.payload.length === 0) {
+        dispatch(updateSLADashboard(null, 'No data currently available'))
+      } else {
+        dispatch(updateSLADashboard(response.payload))
+      }
       // setTimeout(() => {
       //   dispatch(
       //     updateSLADashboard({
       //       sessions: {
-      //         total: 999,
+      //         new: 999,
       //         resolved: 99,
       //         pending: 99,
       //         open: 99
@@ -96,47 +100,56 @@ export function loadSLADashboardData(data) {
       //         received: 999,
       //         sent: 999
       //       },
-      //       responseTime: 120,
-      //       resolveTime: 1000,
+      //       maxResponseTime: 500,
+      //       avgResponseTime: 120,
+      //       avgResolveTime: 1000,
       //       graphData: [
       //         {
-      //           responseTime: 30,
-      //           resolveTime: 100,
+      //           avgResponseTime: 30,
+      //           avgResolveTime: 100,
+      //           maxResponseTime: 300,
       //           date: '2020-12-08'
       //         },
       //         {
-      //           responseTime: 40,
-      //           resolveTime: 120,
+      //           avgResponseTime: 40,
+      //           avgResolveTime: 120,
+      //           maxResponseTime: 350,
       //           date: '2020-12-09'
       //         },
       //         {
-      //           responseTime: 50,
-      //           resolveTime: 150,
+      //           avgResponseTime: 50,
+      //           avgResolveTime: 150,
+      //           maxResponseTime: 400,
       //           date: '2020-12-10'
       //         },
       //         {
-      //           responseTime: 60,
-      //           resolveTime: 190,
+      //           avgResponseTime: 60,
+      //           avgResolveTime: 190,
+      //           maxResponseTime: 450,
       //           date: '2020-12-11'
       //         },
       //         {
-      //           responseTime: 20,
-      //           resolveTime: 110,
+      //           avgResponseTime: 20,
+      //           avgResolveTime: 110,
+      //           maxResponseTime: 300,
       //           date: '2020-12-12'
       //         },
       //         {
-      //           responseTime: 80,
-      //           resolveTime: 200,
+      //           avgResponseTime: 80,
+      //           avgResolveTime: 200,
+      //           maxResponseTime: 380,
       //           date: '2020-12-13'
       //         },
       //         {
-      //           responseTime: 90,
-      //           resolveTime: 250,
+      //           avgResponseTime: 90,
+      //           avgResolveTime: 250,
+      //           maxResponseTime: 390,
       //           date: '2020-12-14'
       //         },
       //         {
-      //           responseTime: 30,
-      //           resolveTime: 100,
+      //           avgResponseTime: 30,
+      //           avgResolveTime: 100,
+      //           maxResponseTime: 600,
       //           date: '2020-12-15'
       //         }
       //       ]

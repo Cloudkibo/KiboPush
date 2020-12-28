@@ -216,10 +216,7 @@ class SLADashboard extends React.Component {
               </div>
               {this.props.fetchingSLAData && (
                 <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                  <div
-                    className='m-loader m-loader--brand'
-                    style={{ width: '50px', height: '50px' }}
-                  ></div>
+                  <div className='m-loader m-loader--brand' style={{ width: '50px', height: '50px' }}></div>
                   <span className='m--font-brand'>Loading...Please wait</span>
                 </div>
               )}
@@ -245,8 +242,9 @@ class SLADashboard extends React.Component {
 
                   <SLAGraph
                     graphData={this.props.slaDashboard.graphData}
-                    resolveTime={this.props.slaDashboard.resolveTime}
-                    responseTime={this.props.slaDashboard.responseTime}
+                    avgResolveTime={this.props.slaDashboard.avgResolveTime}
+                    avgResponseTime={this.props.slaDashboard.avgResponseTime}
+                    maxResponseTime={this.props.slaDashboard.maxResponseTime}
                   />
                 </>
               )}

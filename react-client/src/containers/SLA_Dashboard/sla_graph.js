@@ -3,9 +3,9 @@ import React from 'react'
 import { XAxis, YAxis, CartesianGrid, Tooltip, Legend, Line, LineChart } from 'recharts'
 import moment from 'moment'
 
-const responseTimeColor = '#8884d8'
-
-const resolveTimeColor = '#82ca9d'
+const avgResponseTimeColor = '#8884d8'
+const avgResolveTimeColor = '#82ca9d'
+const maxResponseTimeColor = '#d9534f'
 
 class SLAGraph extends React.Component {
   render() {
@@ -21,8 +21,8 @@ class SLAGraph extends React.Component {
                       <h3 className='m-widget1__title'>Avg. Response Time</h3>
                     </div>
                     <div className='col m--align-right'>
-                      <span style={{ fontSize: '1.2rem', fontWeight: '500', color: responseTimeColor }}>
-                        {moment.duration(this.props.responseTime, 'seconds').locale('en').humanize()}
+                      <span style={{ fontSize: '1.2rem', fontWeight: '500', color: avgResponseTimeColor }}>
+                        {moment.duration(this.props.avgResponseTime, 'seconds').locale('en').humanize()}
                       </span>
                     </div>
                   </div>
@@ -33,8 +33,20 @@ class SLAGraph extends React.Component {
                       <h3 className='m-widget1__title'>Avg. Resolve Time</h3>
                     </div>
                     <div className='col m--align-right'>
-                      <span style={{ fontSize: '1.2rem', fontWeight: '500', color: resolveTimeColor }}>
-                        {moment.duration(this.props.resolveTime, 'seconds').locale('en').humanize()}
+                      <span style={{ fontSize: '1.2rem', fontWeight: '500', color: avgResolveTimeColor }}>
+                        {moment.duration(this.props.avgResolveTime, 'seconds').locale('en').humanize()}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <div className='m-widget1__item'>
+                  <div className='row m-row--no-padding align-items-center'>
+                    <div className='col'>
+                      <h3 className='m-widget1__title'>Max Response Time</h3>
+                    </div>
+                    <div className='col m--align-right'>
+                      <span style={{ fontSize: '1.2rem', fontWeight: '500', color: maxResponseTimeColor }}>
+                        {moment.duration(this.props.maxResponseTime, 'seconds').locale('en').humanize()}
                       </span>
                     </div>
                   </div>
@@ -51,16 +63,23 @@ class SLAGraph extends React.Component {
                 <Legend />
                 <Line
                   type='monotone'
-                  dataKey='responseTime'
+                  dataKey='avgResponseTime'
                   name='Avg. Response Time'
-                  stroke={responseTimeColor}
+                  stroke={avgResponseTimeColor}
                   activeDot={{ r: 8 }}
                 />
                 <Line
                   type='monotone'
-                  dataKey='resolveTime'
+                  dataKey='avgResolveTime'
                   name='Avg. Resolve Time'
-                  stroke={resolveTimeColor}
+                  stroke={avgResolveTimeColor}
+                  activeDot={{ r: 8 }}
+                />
+                <Line
+                  type='monotone'
+                  dataKey='maxResponseTime'
+                  name='Max Response Time'
+                  stroke={maxResponseTimeColor}
                   activeDot={{ r: 8 }}
                 />
               </LineChart>
