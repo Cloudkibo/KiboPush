@@ -9,7 +9,7 @@ import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
 import { Link } from 'react-router-dom'
 import { loadContactsList } from '../../redux/actions/uploadContacts.actions'
-import { Popover, PopoverBody} from 'reactstrap'
+import { RingLoader } from 'halogenium'
 
 class SmsBroadcast extends React.Component {
   constructor (props) {
@@ -20,11 +20,8 @@ class SmsBroadcast extends React.Component {
       pageNumber: 0,
       isShowingModal: false,
       numberValue: '',
-      popoverOptions: {
-        placement: 'left-start',
-        target: 'createBroadcastButton'
-      },
-      showPopover: false
+      showPopover: false,
+      loading: true
     }
 
     props.loadContactsList({last_id: 'none', number_of_records: 10, first_page: 'first'})
@@ -34,7 +31,7 @@ class SmsBroadcast extends React.Component {
     props.clearSmsAnalytics()
 
     this.displayData = this.displayData.bind(this)
-    this.togglePopover = this.togglePopover.bind(this)
+    this.showPopover = this.showPopover.bind(this)
     this.showDialog = this.showDialog.bind(this)
     this.closeDialog = this.closeDialog.bind(this)
     this.gotoCreate = this.gotoCreate.bind(this)
@@ -44,8 +41,8 @@ class SmsBroadcast extends React.Component {
     this.createFollowUp = this.createFollowUp.bind(this)
   }
 
-  togglePopover () {
-    this.setState({showPopover: !this.state.showPopover})
+  showPopover () {
+    this.setState({showPopover: true})
   }
   onNumberChange (e) {
     this.setState({numberValue: e.target.value})
@@ -134,9 +131,9 @@ class SmsBroadcast extends React.Component {
     console.log('in UNSAFE_componentWillReceiveProps of smsBroadcasts', nextProps)
     if (nextProps.broadcasts && nextProps.count) {
       this.displayData(0, nextProps.broadcasts)
-      this.setState({ totalLength: nextProps.count })
+      this.setState({ totalLength: nextProps.count, loading: false })
     } else {
-      this.setState({ broadcastsData: [], totalLength: 0 })
+      this.setState({ broadcastsData: [], totalLength: 0, loading: false })
     }
     if (nextProps.twilioNumbers && nextProps.twilioNumbers.length > 0) {
       console.log('inside', nextProps.twilioNumbers[0])
@@ -147,6 +144,7 @@ class SmsBroadcast extends React.Component {
   render () {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+        
         <div className='m-subheader '>
           {
             this.props.contacts && this.props.contacts.length === 0 &&
@@ -214,7 +212,9 @@ class SmsBroadcast extends React.Component {
             </div>
           </div>
           <div className='row'>
-            <div
+           { this.state.loading
+            ? <div className='align-center col-12'><center><RingLoader color='#FF5E3A' /></center></div>
+            : <div
               className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
               <div className='m-portlet m-portlet--mobile'>
                 <div>
@@ -227,13 +227,46 @@ class SmsBroadcast extends React.Component {
                       </div>
                     </div>
                     <div className='m-portlet__head-tools'>
-                      <button id="createBroadcastButton" className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'  onClick={() => {this.setState({showPopover: true})}} disabled={this.props.contacts && this.props.contacts.length === 0}>
-                        <span>
-                          <i className='la la-plus' />
-                          <span>Create New</span>
-                        </span>
-                      </button>
-
+                      <div className='m-dropdown m-dropdown--inline m-dropdown--arrow' data-dropdown-toggle='click' aria-expanded='true' onClick={() => {this.setState({showPopover: true})}} disabled={this.props.contacts && this.props.contacts.length === 0}>
+                        <a href='#/' className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill m-dropdown__toggle btn btn-primary dropdown-toggle'>
+                        Create New
+                        </a>
+                        {
+                            this.state.showPopover &&
+                            <div className='m-dropdown__wrapper' style={{width: '200px'}}>
+                              <span className='m-dropdown__arrow m-dropdown__arrow--left m-dropdown__arrow--adjust' />
+                              <div className='m-dropdown__inner'>
+                                <div className='m-dropdown__body'>
+                                  <div className='m-dropdown__content'>
+                                    <ul className='m-nav'>
+                                      <li className='m-nav__item'>
+                                        <a href='#/' data-toggle="modal" data-target="#create" onClick={this.showDialog} className='m-nav__link' style={{cursor: 'pointer'}}>
+                                          <span className='m-nav__link-text'>
+                                            New Broadcast
+                                          </span>
+                                        </a>
+                                      </li>
+                                      { this.state.broadcastsData && this.state.broadcastsData.length > 0  
+                                      ? <li className='m-nav__item'>
+                                        <a href='#/' onClick={this.createFollowUp} className='m-nav__link' style={{cursor: 'pointer'}}>
+                                          <span className='m-nav__link-text'>
+                                            Follow-up Broadcast
+                                          </span>
+                                        </a>
+                                      </li>
+                                      : <li className='m-nav__item'>
+                                          <span className='m-nav__link-text'>
+                                            Follow-up Broadcast
+                                          </span>
+                                      </li>
+                                      }
+                                    </ul>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                        }
+                      </div>
                     </div>
                   </div>
                   <div className='m-portlet__body'>
@@ -315,50 +348,8 @@ class SmsBroadcast extends React.Component {
                 </div>
               </div>
             </div>
-
+          }
           </div>
-          <Popover
-            placement={this.state.popoverOptions.placement}
-            isOpen={this.state.showPopover}
-            className='chatPopover _popover_max_width_400'
-            target={this.state.popoverOptions.target}
-            toggle={this.togglePopover}
-          >
-            <PopoverBody>
-            <div data-toggle="modal" data-target="#create"
-              onClick={this.showDialog}
-              className="ui-block hoverborder"
-              style={{
-                minHeight: "30px",
-                width: "100%",
-                marginLeft: "0px",
-                marginBottom: "15px",
-                paddingLeft: "10px",
-                paddingRight: "10px"
-              }}
-            >
-            <div className="align-center">
-              <h6> New Broadcast </h6>
-            </div>
-          </div>
-          <div
-            onClick={this.createFollowUp}
-            className="ui-block hoverborder"
-            style={{
-              minHeight: "30px",
-              width: "100%",
-              marginLeft: "0px",
-              marginBottom: "15px",
-              paddingLeft: "10px",
-              paddingRight: "10px"
-            }}
-          >
-            <div className="align-center">
-              <h6> Follow-up Broadcast </h6>
-            </div>
-          </div>
-            </PopoverBody>
-          </Popover>
         </div>
       </div>
     )
