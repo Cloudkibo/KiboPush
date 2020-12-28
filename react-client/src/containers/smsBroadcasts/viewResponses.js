@@ -7,13 +7,12 @@ import { connect } from 'react-redux'
 import { fetchResponseDetails } from '../../redux/actions/smsBroadcasts.actions'
 import { bindActionCreators } from 'redux'
 import ResponseDetails from './responseDetails'
-import { RingLoader } from 'halogenium'
 
 class ViewResponses extends React.Component {
     constructor (props) {
         super(props)
         this.state = {
-            loading: false
+            loading: null
         }
         this.goBack = this.goBack.bind(this)
         this.expandRowToggle = this.expandRowToggle.bind(this)
@@ -28,7 +27,7 @@ class ViewResponses extends React.Component {
     }
     removeLoader () {
         this.setState({
-            loading: false
+            loading: null
         })
     }
     goToCreateFollowUp () {
@@ -63,7 +62,7 @@ class ViewResponses extends React.Component {
         } else {
             payload["first_page"] = "previous"
         }
-        this.setState({loading: true})
+        this.setState({loading: {response: response._id}})
         this.props.fetchResponseDetails(this.props.smsBroadcast._id, response._id, payload, null, this.removeLoader)
     }
 
@@ -89,7 +88,7 @@ class ViewResponses extends React.Component {
             payload["operator"] =  "in"
         }
         if (!this.props.senders || ( this.props.senders && !this.props.senders[this.props.smsAnalytics.responses[row]._id])) {
-            this.setState({loading: true})
+            this.setState({loading: {response: this.props.smsAnalytics.responses[row]._id}})
             this.props.fetchResponseDetails(this.props.smsBroadcast._id, this.props.smsAnalytics.responses[row]._id, payload, null, this.removeLoader)
         }
       }
@@ -155,8 +154,8 @@ class ViewResponses extends React.Component {
                                                 <div id={`collapse_${i}`} className='collapse' aria-labelledby={`heading${i}`} data-parent="#accordion">
                                                     <div className='card-body'>
                                                         <div className='row'>
-                                                        { this.state.loading
-                                                            ? <div className='align-center col-12'><center><RingLoader color='#FF5E3A' /></center></div>
+                                                        { this.state.loading && this.state.loading.response === response._id
+                                                            ? <div className='align-center col-12'><h6> Loading subscribers... </h6></div>
                                                             : <ResponseDetails senders={this.props.senders ? this.props.senders[response._id] : []} totalLength={response.count} response={response} handlePageClick={this.handlePageClick} /> 
                                                         }
                                                         </div>
