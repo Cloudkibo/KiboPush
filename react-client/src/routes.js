@@ -143,7 +143,10 @@ import ChatWidget from './containers/chatWidget/chatWidget'
 import Checkbox from './containers/GrowthTools/checkbox'
 import SmsSubscribers from './containers/uploadContacts/contacts'
 import SmsBroadcasts from './containers/smsBroadcasts/smsBroadcasts'
+import ViewBroadcast from './containers/smsBroadcasts/viewBroadcast'
+import ViewResponses from './containers/smsBroadcasts/viewResponses'
 import CreatesmsBroadcast from './containers/smsBroadcasts/create'
+import FollowUpBroadcast from './containers/smsBroadcasts/followUp'
 import SmsChat from './containers/smsChat/smsChat'
 import WhatsAppBroadcasts from './containers/whatsAppBroadcasts/whatsAppBroadcasts'
 import createWhatsAppBroadcast from './containers/whatsAppBroadcasts/create'
@@ -384,7 +387,10 @@ const Routes = () => (
     <Route path='/uploadContacts' component={UploadContacts} onEnter={requireAuth} />
     <Route path='/smsSubscribers' component={SmsSubscribers} onEnter={requireAuth} />
     <Route path='/smsBroadcasts' component={SmsBroadcasts} onEnter={requireAuth} />
+    <Route path='/viewBroadcast' component={ViewBroadcast} onEnter={requireAuth} />
+    <Route path='/viewResponses' component={ViewResponses} onEnter={requireAuth} />
     <Route path='/createsmsBroadcast' component={CreatesmsBroadcast} onEnter={requireAuth} />
+    <Route path='/createFollowupBroadcast' component={FollowUpBroadcast} onEnter={requireAuth} />
     <Route path='/smsChat' component={SmsChat} onEnter={requireAuth} />
     <Route path='/whatsAppChat' component={WhatsAppChat} onEnter={requireAuth} />
     <Route path='/integrations/zoom' component={IntegrateZoom} onEnter={requireAuth} />

@@ -68,7 +68,7 @@
             <div className='row'>
               <div className='col-12'>
                 <div className='pull-right'>
-                  <button className='btn btn-primary' style={{marginRight: '20px'}} onClick={this.goBack}>
+                  <button className='btn btn-primary' style={{marginRight: '20px'}} onClick={this.gotoBack}>
                     Back
                   </button>
                   <button className='btn btn-primary' disabled={(this.state.broadcast.length === 0)} onClick={this.saveMessage}>

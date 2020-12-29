@@ -4,11 +4,12 @@
 
 import React from 'react'
 import { connect } from 'react-redux'
-import { loadBroadcastsList, loadTwilioNumbers } from '../../redux/actions/smsBroadcasts.actions'
+import { loadBroadcastsList, loadTwilioNumbers, saveCurrentSmsBroadcast, clearSmsAnalytics } from '../../redux/actions/smsBroadcasts.actions'
 import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
 import { Link } from 'react-router-dom'
 import { loadContactsList } from '../../redux/actions/uploadContacts.actions'
+import { RingLoader } from 'halogenium'
 
 class SmsBroadcast extends React.Component {
   constructor (props) {
@@ -18,23 +19,38 @@ class SmsBroadcast extends React.Component {
       totalLength: 0,
       pageNumber: 0,
       isShowingModal: false,
-      numberValue: ''
+      numberValue: '',
+      showPopover: false,
+      loading: true
     }
 
     props.loadContactsList({last_id: 'none', number_of_records: 10, first_page: 'first'})
     props.loadBroadcastsList({last_id: 'none', number_of_records: 10, first_page: 'first'})
     props.loadTwilioNumbers()
+    props.saveCurrentSmsBroadcast(null)
+    props.clearSmsAnalytics()
 
     this.displayData = this.displayData.bind(this)
+    this.showPopover = this.showPopover.bind(this)
     this.showDialog = this.showDialog.bind(this)
     this.closeDialog = this.closeDialog.bind(this)
     this.gotoCreate = this.gotoCreate.bind(this)
     this.onNumberChange = this.onNumberChange.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
+    this.gotoView = this.gotoView.bind(this)
+    this.createFollowUp = this.createFollowUp.bind(this)
   }
 
+  showPopover () {
+    this.setState({showPopover: true})
+  }
   onNumberChange (e) {
     this.setState({numberValue: e.target.value})
+  }
+  createFollowUp () {
+    this.props.history.push({
+      pathname: `/createFollowupBroadcast`
+    })
   }
 
   gotoCreate (broadcast) {
@@ -43,9 +59,16 @@ class SmsBroadcast extends React.Component {
       state: {number: this.state.numberValue}
     })
   }
+  
+  gotoView (broadcast) {
+    this.props.saveCurrentSmsBroadcast(broadcast)
+    this.props.history.push({
+      pathname: `/viewBroadcast`,
+    })
+  }
 
   showDialog () {
-    this.setState({isShowingModal: true})
+    this.setState({isShowingModal: true, showPopover: false})
   }
 
   closeDialog () {
@@ -108,9 +131,9 @@ class SmsBroadcast extends React.Component {
     console.log('in UNSAFE_componentWillReceiveProps of smsBroadcasts', nextProps)
     if (nextProps.broadcasts && nextProps.count) {
       this.displayData(0, nextProps.broadcasts)
-      this.setState({ totalLength: nextProps.count })
+      this.setState({ totalLength: nextProps.count, loading: false })
     } else {
-      this.setState({ broadcastsData: [], totalLength: 0 })
+      this.setState({ broadcastsData: [], totalLength: 0, loading: false })
     }
     if (nextProps.twilioNumbers && nextProps.twilioNumbers.length > 0) {
       console.log('inside', nextProps.twilioNumbers[0])
@@ -121,6 +144,7 @@ class SmsBroadcast extends React.Component {
   render () {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+        
         <div className='m-subheader '>
           {
             this.props.contacts && this.props.contacts.length === 0 &&
@@ -141,7 +165,7 @@ class SmsBroadcast extends React.Component {
             <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
               <div className="modal-content">
                 <div style={{ display: 'block' }} className="modal-header">
-                  <h5 className="modal-title" id="exampleModalLabel">
+                  <h5 className="modal-title">
                   Create Broadcast
 									</h5>
                   <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
@@ -188,7 +212,9 @@ class SmsBroadcast extends React.Component {
             </div>
           </div>
           <div className='row'>
-            <div
+           { this.state.loading
+            ? <div className='align-center col-12'><center><RingLoader color='#FF5E3A' /></center></div>
+            : <div
               className='col-xl-12 col-lg-12  col-md-12 col-sm-12 col-xs-12'>
               <div className='m-portlet m-portlet--mobile'>
                 <div>
@@ -201,13 +227,46 @@ class SmsBroadcast extends React.Component {
                       </div>
                     </div>
                     <div className='m-portlet__head-tools'>
-                      <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' data-toggle="modal" data-target="#create" onClick={this.showDialog} disabled={this.props.contacts && this.props.contacts.length === 0}>
-                        <span>
-                          <i className='la la-plus' />
-                          <span>Create New</span>
-                        </span>
-                      </button>
-
+                      <div className='m-dropdown m-dropdown--inline m-dropdown--arrow' data-dropdown-toggle='click' aria-expanded='true' onClick={() => {this.setState({showPopover: true})}} disabled={this.props.contacts && this.props.contacts.length === 0}>
+                        <a href='#/' className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill m-dropdown__toggle btn btn-primary dropdown-toggle'>
+                        Create New
+                        </a>
+                        {
+                            this.state.showPopover &&
+                            <div className='m-dropdown__wrapper' style={{width: '200px'}}>
+                              <span className='m-dropdown__arrow m-dropdown__arrow--left m-dropdown__arrow--adjust' />
+                              <div className='m-dropdown__inner'>
+                                <div className='m-dropdown__body'>
+                                  <div className='m-dropdown__content'>
+                                    <ul className='m-nav'>
+                                      <li className='m-nav__item'>
+                                        <a href='#/' data-toggle="modal" data-target="#create" onClick={this.showDialog} className='m-nav__link' style={{cursor: 'pointer'}}>
+                                          <span className='m-nav__link-text'>
+                                            New Broadcast
+                                          </span>
+                                        </a>
+                                      </li>
+                                      { this.state.broadcastsData && this.state.broadcastsData.length > 0  
+                                      ? <li className='m-nav__item'>
+                                        <a href='#/' onClick={this.createFollowUp} className='m-nav__link' style={{cursor: 'pointer'}}>
+                                          <span className='m-nav__link-text'>
+                                            Follow-up Broadcast
+                                          </span>
+                                        </a>
+                                      </li>
+                                      : <li className='m-nav__item'>
+                                          <span className='m-nav__link-text'>
+                                            Follow-up Broadcast
+                                          </span>
+                                      </li>
+                                      }
+                                    </ul>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                        }
+                      </div>
                     </div>
                   </div>
                   <div className='m-portlet__body'>
@@ -237,6 +296,14 @@ class SmsBroadcast extends React.Component {
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
                             <span style={{width: '100px'}}>Delivered</span>
                           </th>
+                          <th data-field='delivered'
+                            className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                            <span style={{width: '100px'}}>Is Follow Up</span>
+                          </th>
+                          <th data-field='delivered'
+                            className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                            <span style={{width: '100px'}}>Action</span>
+                          </th>
                         </tr>
                       </thead>
                       <tbody className='m-datatable__body'>
@@ -249,6 +316,8 @@ class SmsBroadcast extends React.Component {
                             <td data-field='createAt' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{broadcast.datetime}</span></td>
                             <td data-field='sent' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{broadcast.phoneNumber}</span></td>
                             <td data-field='delivered' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{broadcast.sent}</span></td>
+                            <td data-field='isFollowUp' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{broadcast.followUp ? "Yes" : "No"}</span></td>
+                            <td data-field='action' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}><button style={{width: '60px'}} className='btn btn-primary btn-sm m-btn--pill' onClick={() => {this.gotoView(broadcast)}}>View</button></span></td>
                           </tr>
                         ))
                       }
@@ -279,7 +348,7 @@ class SmsBroadcast extends React.Component {
                 </div>
               </div>
             </div>
-
+          }
           </div>
         </div>
       </div>
@@ -300,7 +369,9 @@ function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     loadBroadcastsList,
     loadTwilioNumbers,
-    loadContactsList
+    loadContactsList,
+    saveCurrentSmsBroadcast,
+    clearSmsAnalytics
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(SmsBroadcast)
