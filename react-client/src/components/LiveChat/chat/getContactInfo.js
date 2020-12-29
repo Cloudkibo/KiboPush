@@ -151,7 +151,7 @@ class GetContactInfo extends React.Component {
               style={{position: 'relative', top: '2px', marginRight: "5px"}}
               type="checkbox"
               checked={this.state.skipAllowed.isSkip}
-              onChange={(e) => this.setState({skipAllowed: {isSkip e.target.checked }})}
+              onChange={(e) => this.setState({skipAllowed: {isSkip: e.target.checked }})}
             />
             Allow Skip
           </label>
