@@ -62,7 +62,7 @@ class ViewResponses extends React.Component {
         } else {
             payload["first_page"] = "previous"
         }
-        this.setState({loading: {response:  response._id}})
+        this.setState({loading: {response: response._id}})
         this.props.fetchResponseDetails(this.props.smsBroadcast._id, response._id, payload, null, this.removeLoader)
     }
 
