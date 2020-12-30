@@ -74,24 +74,24 @@ class FollowUpBroadcast extends React.Component {
     let masterBroadcastList = cloneDeep(this.state.broadcastResponses)
     masterBroadcastList[id] = responses
     let responseOptions = []
-    for (const [,value] of Object.entries(masterBroadcastList)) {
-      let mapResponses = value.map((v) => { return {label: v, value: v}})
-      responseOptions =[...responseOptions, ...mapResponses] 
+    for (const [key ,value] of Object.entries(masterBroadcastList)) {
+      if ((key === id) || (this.state.selectedBroadcast && this.state.selectedBroadcast.find(sb => sb.value === key))) {
+        let mapResponses = value.map((v) => { return {label: v, value: v + '-' + key}})
+        responseOptions = [...responseOptions, ...mapResponses] 
+      }
     }
-    const uniqueResponses = [...new Set(responseOptions.map(item => item.value))].map((v) => { return {label: v, value: v}})
-    this.setState({responseOptions: uniqueResponses , broadcastResponses: masterBroadcastList})
+    this.setState({responseOptions: responseOptions , broadcastResponses: masterBroadcastList})
   }
 
   setResponse (broadcastId) {
     let responseOptions = cloneDeep(this.state.responseOptions)
     for (const [key, value] of Object.entries(this.state.broadcastResponses)) {
       if (key === broadcastId) {
-        let mapResponses = value.map((v) => { return {label: v, value: v}})
+        let mapResponses = value.map((v) => { return {label: v, value: v + '-' + key}})
         responseOptions = [...responseOptions, ...mapResponses] 
       }
     }
-    const uniqueResponses = [...new Set(responseOptions.map(item => item.value))].map((v) => { return {label: v, value: v}})
-    this.setState({responseOptions: uniqueResponses})
+    this.setState({responseOptions: responseOptions})
   }
 
   filterBroadcast({ label, value, data }, string) {
@@ -102,14 +102,25 @@ class FollowUpBroadcast extends React.Component {
   }
   removeResponses (broadcastId) {
     let responseOptions = []
+    let selectedBroadcast = this.state.selectedBroadcast.filter((br) => {return br.value !== broadcastId})
+    let newSelectedResponses = []
+
     for (const [key, value] of Object.entries(this.state.broadcastResponses)) {
-      if (key !== broadcastId) {
-        let mapResponses = value.map((v) => { return {label: v, value: v}})
-        responseOptions = [...responseOptions, ...mapResponses] 
+        if (selectedBroadcast.find(sb => sb.value === key)) {
+          let mapResponses = value.map((v) => { return {label: v, value: v + '-' + key}})
+          responseOptions = [...responseOptions, ...mapResponses] 
+        }
+    }
+    if (this.state.selectedResponses) {
+      for (var i = 0; i < this.state.selectedResponses.length; i++) {
+        let broadId = this.state.selectedResponses[i].value.split('-')[1]
+        if (broadId !== broadcastId) {
+          newSelectedResponses.push(this.state.selectedResponses[i])
+        }
       }
     }
-    const uniqueResponses = [...new Set(responseOptions.map(item => item.value))].map((v) => { return {label: v, value: v}})
-    this.setState({responseOptions: uniqueResponses})
+    //const uniqueResponses = [...new Set(responseOptions.map(item => item.label))].map((v) => { return {label: v, value: v + '-' + broadcastId}})
+    this.setState({responseOptions: responseOptions, selectedResponses: newSelectedResponses})
   }
   setToDefault () {
     this.setState({
@@ -224,7 +235,7 @@ class FollowUpBroadcast extends React.Component {
         this.removeResponses(removedItem.value)
       }
     } else {
-      this.setState({selectedBroadcast: [], selectLoading: false, responseOptions: []})
+      this.setState({selectedBroadcast: [], selectLoading: false, responseOptions: [], selectedResponses: []})
       this.props.setSearchBroadcastResult(null)
     }
   }
@@ -304,12 +315,12 @@ class FollowUpBroadcast extends React.Component {
     }
    }
    if (this.state.selectedResponses && this.state.selectedResponses.length > 0) {
-      var isOthers = this.state.selectedResponses.filter((r)=>{ return r.value.trim().toLowerCase() === 'others'})
+      var isOthers = this.state.selectedResponses.filter((r)=>{ return r.label.trim().toLowerCase() === 'others'})
       if (isOthers.length > 0) {
         payload["responses"] = this.mapResponsesforNotInOperator()
         payload["operator"] =  "nin"
       } else {
-        payload["responses"] = this.state.selectedResponses.map((r)=>{ return r.value})
+        payload["responses"] = this.state.selectedResponses.map((r)=>{ return r.label})
         payload["operator"] =  "in"
       }
     } else {
@@ -323,13 +334,13 @@ class FollowUpBroadcast extends React.Component {
     for (var i = 0; i < this.state.responseOptions.length ; i++) {
       var includeResponse = true
       for (var j = 0; j < this.state.selectedResponses.length; j++) {
-        if (this.state.responseOptions[i].value === this.state.selectedResponses[j].value) {
+        if (this.state.responseOptions[i].label === this.state.selectedResponses[j].label) {
           includeResponse = false
           break
         }
       }
       if (includeResponse) {
-        includeResponses.push(this.state.responseOptions[i].value)
+        includeResponses.push(this.state.responseOptions[i].label)
       }
     }
     return includeResponses
