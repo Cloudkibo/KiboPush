@@ -88,7 +88,7 @@ class ViewResponses extends React.Component {
             payload["operator"] =  "in"
         }
         if (!this.props.senders || ( this.props.senders && !this.props.senders[this.props.smsAnalytics.responses[row]._id])) {
-            this.setState({loading: {response: this.props.smsAnalytics.responses[row]._id}})
+            this.setState({loading: {response:  this.props.smsAnalytics.responses[row]._id}})
             this.props.fetchResponseDetails(this.props.smsBroadcast._id, this.props.smsAnalytics.responses[row]._id, payload, null, this.removeLoader)
         }
       }
@@ -155,7 +155,7 @@ class ViewResponses extends React.Component {
                                                     <div className='card-body'>
                                                         <div className='row'>
                                                         { this.state.loading && this.state.loading.response === response._id
-                                                            ? <div className='align-center col-12'><h6> Loading subscribers... </h6></div>
+                                                            ? <div className='align-center col-12'><h6> Loading Details... </h6></div>
                                                             : <ResponseDetails senders={this.props.senders ? this.props.senders[response._id] : []} totalLength={response.count} response={response} handlePageClick={this.handlePageClick} /> 
                                                         }
                                                         </div>
