@@ -255,7 +255,7 @@ class SmsBroadcast extends React.Component {
                                         </a>
                                       </li>
                                       : <li className='m-nav__item'>
-                                          <span className='m-nav__link-text'>
+                                          <span className='m-nav__link-text' style={{color: 'lightgrey', cursor: 'not-allowed'}}>
                                             Follow-up Broadcast
                                           </span>
                                       </li>
