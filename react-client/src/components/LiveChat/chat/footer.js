@@ -83,6 +83,7 @@ class Footer extends React.Component {
     this.listDataDisplay = this.listDataDisplay.bind(this)
     this.onCaptionChange = this.onCaptionChange.bind(this)
     this.sendQuickReplyMessage = this.sendQuickReplyMessage.bind(this)
+    this.sendTextMessage = this.sendTextMessage.bind(this)
   }
 
   componentDidMount() {
@@ -899,46 +900,49 @@ class Footer extends React.Component {
     return payload
   }
 
+  sendTextMessage () {
+    if (this.state.selectedCannMessage) {
+      let selectCannMessage = this.state.selectedCannMessage
+      if (selectCannMessage.responseMessage === '') {
+        this.props.alertMsg.error('Canned Message response cannot be empty')
+      } else {
+        let text = this.state.text
+        if (text.includes(selectCannMessage.responseCode)) {
+          text = text.replace(
+            `/${selectCannMessage.responseCode}`,
+            selectCannMessage.responseMessage
+          )
+        } else {
+          text = selectCannMessage.responseMessage
+        }
+        this.setState(
+          { showCannedMessages: false, text: text, selectedCannMessage: null },
+          () => {
+            this.sendMessage()
+          }
+        )
+      }
+    } else if (!this.state.selectedCannMessage && this.state.showCannedMessages) {
+      if (this.state.cannedMessages.length > 0) {
+        this.selectCannMessage(this.state.cannedMessages[this.state.selectedIndex])
+      } else {
+        this.setState({ showCannedMessages: false })
+        this.sendMessage()
+      }
+    } else {
+      if (!this.state.showCannedMessages) this.sendMessage()
+    }
+  }
+
   onEnter(e) {
     if (e.which === 13) {
       e.preventDefault()
-      console.log('this.state.selectedCannMessage', this.state.selectedCannMessage)
-      if (this.state.selectedCannMessage) {
-        let selectCannMessage = this.state.selectedCannMessage
-        if (selectCannMessage.responseMessage === '') {
-          this.props.alertMsg.error('Canned Message response cannot be empty')
-        } else {
-          let text = this.state.text
-          if (text.includes(selectCannMessage.responseCode)) {
-            text = text.replace(
-              `/${selectCannMessage.responseCode}`,
-              selectCannMessage.responseMessage
-            )
-          } else {
-            text = selectCannMessage.responseMessage
-          }
-          this.setState(
-            { showCannedMessages: false, text: text, selectedCannMessage: null },
-            () => {
-              this.sendMessage()
-            }
-          )
-        }
-      } else if (!this.state.selectedCannMessage && this.state.showCannedMessages) {
-        if (this.state.cannedMessages.length > 0) {
-          this.selectCannMessage(this.state.cannedMessages[this.state.selectedIndex])
-        } else {
-          this.setState({ showCannedMessages: false })
-          this.sendMessage()
-        }
-      } else {
-        if (!this.state.showCannedMessages) this.sendMessage()
-      }
+      this.sendTextMessage()
     }
   }
 
   sendChatMessage() {
-    this.sendMessage()
+    this.sendTextMessage()
   }
 
   sendMessage(quickReplies) {
