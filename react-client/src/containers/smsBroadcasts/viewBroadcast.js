@@ -6,6 +6,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { fetchSmsAnalytics, clearSendersInfo  } from '../../redux/actions/smsBroadcasts.actions'
 import { bindActionCreators } from 'redux'
+import BACKBUTTON from '../../components/extras/backButton'
 
 class ViewBroadcast extends React.Component {
     constructor (props) {
@@ -33,7 +34,7 @@ class ViewBroadcast extends React.Component {
         if (nextProps.smsAnalytics) {
             var counts = []
             var values = []
-            var colors = ['#46b963','#53ac69', '#609f70', '#6c9376', '#738c79']
+            var colors = ['#ffb822','#aed7f7', '#cb4b4b', '#4da74d', '#9440ed']
             var backcolors = []
             if (nextProps.smsAnalytics.responses) {
                 for (var i =0; i < nextProps.smsAnalytics.responses.length; i++) {
@@ -86,7 +87,7 @@ class ViewBroadcast extends React.Component {
                             </div>
                         </div>
                         <div className='m-portlet__body'>
-                            <div className='row'>
+                            <div className='row' style={{height: '300px'}}>
                                 <div className='col-md-6 col-lg-7 col-sm-4'>
                                     <div className='m-widget1' style={{paddingTop: '1.2rem'}}>
                                         <div className='m-widget1__item'>
@@ -140,15 +141,9 @@ class ViewBroadcast extends React.Component {
                                         id='txtAreaBroadcastMessage' rows='8'
                                         value={this.props.smsBroadcast.payload && this.props.smsBroadcast.payload.length > 0 ? this.props.smsBroadcast.payload[0].text : ''} />
                                 </div>
-                            </div>
-                            <div className='row'>
-                                <div className='col-12'>
-                                    <div className='pull-right'>
-                                        <button className='btn btn-primary' style={{marginTop: '10px'}} onClick={this.goBack}>
-                                            Back
-                                        </button>
-                                    </div>
-                                </div>
+                                <BACKBUTTON
+                                    onBack={this.goBack}
+                                />
                             </div>
                         </div>
                     </div>
