@@ -38,7 +38,7 @@ class Footer extends React.Component {
       cannedMessages: [],
       dataForSearch: [],
       showCannedMessages: this.props.showCannedMessage,
-      selectedCannMessage: false,
+      selectedCannMessage: null,
       selectedIndex: 0,
       caption: '',
       showingSuggestion: false,
@@ -902,7 +902,7 @@ class Footer extends React.Component {
 
   sendTextMessage () {
     if (this.state.selectedCannMessage) {
-      let selectCannMessage = this.state.selectedCannMessage
+      let selectCannMessage = JSON.parse(JSON.stringify(this.state.selectedCannMessage))
       if (selectCannMessage.responseMessage === '') {
         this.props.alertMsg.error('Canned Message response cannot be empty')
       } else {
