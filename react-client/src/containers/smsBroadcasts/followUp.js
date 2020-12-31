@@ -12,6 +12,7 @@ import AlertContainer from 'react-alert'
 import Select from 'react-select'
 import CreatableSelect from 'react-select/creatable'
 import { cloneDeep } from 'lodash'
+import BACKBUTTON from '../../components/extras/backButton'
 
 const createOption = (label) => ({
   label,
@@ -76,22 +77,24 @@ class FollowUpBroadcast extends React.Component {
     let responseOptions = []
     for (const [key ,value] of Object.entries(masterBroadcastList)) {
       if ((key === id) || (this.state.selectedBroadcast && this.state.selectedBroadcast.find(sb => sb.value === key))) {
-        let mapResponses = value.map((v) => { return {label: v, value: v + '-' + key}})
+        let mapResponses = value.map((v) => { return {label: v, value: v}})
         responseOptions = [...responseOptions, ...mapResponses] 
       }
     }
-    this.setState({responseOptions: responseOptions , broadcastResponses: masterBroadcastList})
+    const uniqueResponses = [...new Set(responseOptions.map(item => item.value))].map((v) => { return {label: v, value: v}})
+    this.setState({responseOptions: uniqueResponses , broadcastResponses: masterBroadcastList})
   }
 
   setResponse (broadcastId) {
     let responseOptions = cloneDeep(this.state.responseOptions)
     for (const [key, value] of Object.entries(this.state.broadcastResponses)) {
       if (key === broadcastId) {
-        let mapResponses = value.map((v) => { return {label: v, value: v + '-' + key}})
+        let mapResponses = value.map((v) => { return {label: v, value: v}})
         responseOptions = [...responseOptions, ...mapResponses] 
       }
     }
-    this.setState({responseOptions: responseOptions})
+    const uniqueResponses = [...new Set(responseOptions.map(item => item.value))].map((v) => { return {label: v, value: v}})
+    this.setState({responseOptions: uniqueResponses})
   }
 
   filterBroadcast({ label, value, data }, string) {
@@ -103,24 +106,23 @@ class FollowUpBroadcast extends React.Component {
   removeResponses (broadcastId) {
     let responseOptions = []
     let selectedBroadcast = this.state.selectedBroadcast.filter((br) => {return br.value !== broadcastId})
-    let newSelectedResponses = []
+    let selectedResponseArray = this.state.selectedResponses.map((sr) => { return sr.label})
+    let selectedBroadcastResponses = this.state.broadcastResponses[broadcastId]
+    let newSelectedResponses =[]
 
     for (const [key, value] of Object.entries(this.state.broadcastResponses)) {
         if (selectedBroadcast.find(sb => sb.value === key)) {
-          let mapResponses = value.map((v) => { return {label: v, value: v + '-' + key}})
-          responseOptions = [...responseOptions, ...mapResponses] 
+          let mapResponses = value.map((v) => { return {label: v, value: v}})
+          responseOptions = [...responseOptions, ...mapResponses]
         }
     }
-    if (this.state.selectedResponses) {
-      for (var i = 0; i < this.state.selectedResponses.length; i++) {
-        let broadId = this.state.selectedResponses[i].value.split('-')[1]
-        if (broadId !== broadcastId) {
-          newSelectedResponses.push(this.state.selectedResponses[i])
-        }
+    for (var i = 0; i < selectedResponseArray.length; i++) {
+      if (!selectedBroadcastResponses.find(sb => sb === selectedResponseArray[i])) {
+        newSelectedResponses.push({label: selectedResponseArray[i], value: selectedResponseArray[i]})
       }
     }
-    //const uniqueResponses = [...new Set(responseOptions.map(item => item.label))].map((v) => { return {label: v, value: v + '-' + broadcastId}})
-    this.setState({responseOptions: responseOptions, selectedResponses: newSelectedResponses})
+    const uniqueResponses = [...new Set(responseOptions.map(item => item.value))].map((v) => { return {label: v, value: v}})
+    this.setState({responseOptions: uniqueResponses, selectedResponses: newSelectedResponses})
   }
   setToDefault () {
     this.setState({
@@ -315,12 +317,12 @@ class FollowUpBroadcast extends React.Component {
     }
    }
    if (this.state.selectedResponses && this.state.selectedResponses.length > 0) {
-      var isOthers = this.state.selectedResponses.filter((r)=>{ return r.label.trim().toLowerCase() === 'others'})
+      var isOthers = this.state.selectedResponses.filter((r)=>{ return r.value.trim().toLowerCase() === 'others'})
       if (isOthers.length > 0) {
         payload["responses"] = this.mapResponsesforNotInOperator()
         payload["operator"] =  "nin"
       } else {
-        payload["responses"] = this.state.selectedResponses.map((r)=>{ return r.label})
+        payload["responses"] = this.state.selectedResponses.map((r)=>{ return r.value})
         payload["operator"] =  "in"
       }
     } else {
@@ -334,13 +336,13 @@ class FollowUpBroadcast extends React.Component {
     for (var i = 0; i < this.state.responseOptions.length ; i++) {
       var includeResponse = true
       for (var j = 0; j < this.state.selectedResponses.length; j++) {
-        if (this.state.responseOptions[i].label === this.state.selectedResponses[j].label) {
+        if (this.state.responseOptions[i].value === this.state.selectedResponses[j].value) {
           includeResponse = false
           break
         }
       }
       if (includeResponse) {
-        includeResponses.push(this.state.responseOptions[i].label)
+        includeResponses.push(this.state.responseOptions[i].value)
       }
     }
     return includeResponses
@@ -540,7 +542,7 @@ class FollowUpBroadcast extends React.Component {
                           <div className='m-input-icon m-input-icon--right m-messenger__form-controls' style={{backgroundColor: '#f4f5f8', width: '100%'}}>
                             <textarea
                               className='form-control m-input'
-                              id='postTextArea' rows='3'
+                              id='postTextArea' rows='5'
                               placeholder='Enter your message here...'
                               value={this.state.message}
                               onChange={this.onMessageChange} />
@@ -571,13 +573,9 @@ class FollowUpBroadcast extends React.Component {
                       </div>
                       { this.props.smsBroadcast &&
                       <div className='row'>
-                          <div className='col-12'>
-                              <div className='pull-right'>
-                                  <button className='btn btn-primary' style={{marginTop: '10px'}} onClick={this.goBack}>
-                                      Back
-                                  </button>
-                              </div>
-                          </div>
+                          <BACKBUTTON
+                            onBack={this.goBack}
+                          />
                       </div>
                       }
                     </div>
