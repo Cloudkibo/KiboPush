@@ -24,7 +24,9 @@ class AddOption extends React.Component {
     this.state = {
       title: '',
       skipTitle: '',
-      selectedRadioSkip, 
+      selectedRadio: '',
+      selectedBlock: '',
+      selectedRadioSkip,
       additionalActions: this.props.additionalActions ? this.props.additionalActions : this.initialAdditionalActions,
       existingBlocks
     }
@@ -66,10 +68,7 @@ class AddOption extends React.Component {
   }
 
   checkDisabled () {
-    if (!this.state.title || 
-      (this.state.selectedRadioSkip === 'create' && !this.state.additionalActions.skipAllowed.messageBlockTitle) ||
-      (this.state.selectedRadioSkip === 'link' && !this.state.additionalActions.skipAllowed.blockId)
-    ) {
+    if (!this.state.title || (this.state.selectedRadio === 'link' && !this.state.selectedBlock)) {
       return true
     }
   }
@@ -88,7 +87,7 @@ class AddOption extends React.Component {
   updateSkipAdditonalActions (updated) {
     this.setState({
       additionalActions: {
-        ...this.state.additionalActions, 
+        ...this.state.additionalActions,
         skipAllowed: {
           ...this.state.additionalActions.skipAllowed,
           ...updated,
@@ -138,7 +137,7 @@ class AddOption extends React.Component {
       this.props.onSave(
         this.state.title,
         this.state.selectedRadio,
-        this.state.selectedBlock.value,
+        this.state.selectedBlock ? this.state.selectedBlock.value : this.state.selectedBlock,
         this.state.additionalActions.query ? this.state.additionalActions : null
       )
       this.props.onCancel()
@@ -179,7 +178,7 @@ class AddOption extends React.Component {
         ...this.state.additionalActions,
         blockId: null,
         messageBlockTitle: ''
-      },  
+      },
       selectedRadioSkip
     })
   }
@@ -214,9 +213,11 @@ class AddOption extends React.Component {
           <div className='m--space-10' />
           <div className='form-group m-form__group'>
             <label>{this.props.showRemove ? 'Linked to block:' : 'Action:'}</label>
-            {!this.props.showRemove && (
+            {
+              !this.props.showRemove && (
               <div className='m-radio-list'>
-                {this.props.isCreatable && (
+                {
+                  this.props.isCreatable && (
                   <label className='m-radio m-radio--bold m-radio--state-brand'>
                     <input
                       type='radio'
@@ -387,7 +388,7 @@ class AddOption extends React.Component {
                           value={this.state.existingBlocks.find(o => o.value === this.state.additionalActions.skipAllowed.blockId)}
                           onChange={
                             (value) => this.updateSkipAdditonalActions({
-                              blockId: value ? value.value : null, 
+                              blockId: value ? value.value : null,
                               messageBlockTitle: value ? value.label : ''
                             })
                           }
