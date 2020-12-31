@@ -7,6 +7,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { getNGP, enableNGP, disableNGP, saveNGP } from '../../redux/actions/settings.actions'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
+import {fetchMessageAlerts } from '../../redux/actions/messageAlerts.actions'
 import AccountSettings from './accountSettings'
 import GreetingMessage from './greetingMessage'
 import WelcomeMessage from './welcomeMessage'
@@ -25,7 +26,7 @@ import Integrations from './integrations'
 import AdvancedSetting from './advancedSettings'
 import CannedResponses from './cannedResponses/cannedResponses'
 import ZoomIntegration from './zoomIntegration'
-import Notifications from './notifications'
+import MESSAGEALERTS from '../messageAlerts'
 import CommerceIntegration from './commerceIntegration'
 import NotificationSettings from './notificationSettings'
 
@@ -86,7 +87,7 @@ class Settings extends React.Component {
     this.goToSettings = this.goToSettings.bind(this)
     this.setUploadCustomerFile = this.setUploadCustomerFile.bind(this)
     this.setCannedResponses = this.setCannedResponses.bind(this)
-    this.setNotification = this.setNotification.bind(this)
+    this.setMessageAlerts = this.setMessageAlerts.bind(this)
     this.setNotificationSettings = this.setNotificationSettings.bind(this)
 
     props.loadMyPagesList()
@@ -177,9 +178,9 @@ class Settings extends React.Component {
     })
   }
 
-  setNotification() {
+  setMessageAlerts() {
     this.setState({
-      openTab: 'notifications'
+      openTab: 'message_alerts'
     })
   }
 
@@ -599,7 +600,7 @@ class Settings extends React.Component {
                     }
                     {(url.includes('localhost') || url.includes('kibochat.cloudkibo.com')) && (this.props.user.role === 'buyer' || this.props.user.role === 'admin') && (this.props.user.currentPlan.unique_ID === 'plan_C' || this.props.user.currentPlan.unique_ID === 'plan_D') &&
                       <li className='m-nav__item'>
-                        <a href='#/' className='m-nav__link' onClick={this.setNotification} style={{ cursor: 'pointer' }} >
+                        <a href='#/' className='m-nav__link' onClick={this.setMessageAlerts} style={{ cursor: 'pointer' }} >
                           <i className='m-nav__link-icon flaticon-bell' />
                           <span className='m-nav__link-text'>Message Alerts</span>
                         </a>
@@ -825,8 +826,12 @@ class Settings extends React.Component {
             {this.state.openTab === 'integrations' &&
               <Integrations history={this.props.history} />
             }
-            {this.state.openTab === 'notifications' &&
-              <Notifications history={this.props.history} />
+            {
+              this.state.openTab === 'message_alerts' &&
+              <MESSAGEALERTS
+                history={this.props.history}
+                fetchMessageAlerts={this.props.fetchMessageAlerts}
+              />
             }
             {this.state.openTab === 'notificationSettings' &&
               <NotificationSettings history={this.props.history} />
@@ -868,7 +873,8 @@ function mapDispatchToProps(dispatch) {
     enableNGP: enableNGP,
     disableNGP: disableNGP,
     saveNGP: saveNGP,
-    loadMyPagesList: loadMyPagesList
+    loadMyPagesList: loadMyPagesList,
+    fetchMessageAlerts
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Settings)
