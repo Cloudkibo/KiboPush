@@ -137,7 +137,7 @@ class AddOption extends React.Component {
       this.props.onSave(
         this.state.title,
         this.state.selectedRadio,
-        this.state.selectedBlock.value,
+        this.state.selectedBlock ? this.state.selectedBlock.value : this.state.selectedBlock,
         this.state.additionalActions.query ? this.state.additionalActions : null
       )
       this.props.onCancel()
