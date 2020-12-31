@@ -1,110 +1,112 @@
 import React from 'react'
-import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
-import AlertContainer from 'react-alert'
-import HELPWIDGET from '../../components/extras/helpWidget'
-import { fetchNotifications, updateNotificationSettings } from '../../redux/actions/settings.actions'
+import PropTypes from 'prop-types'
 
-class Notifications extends React.Component {
+import HELPWIDGET from '../../components/extras/helpWidget'
+import DEFAULT from './defaultData'
+
+class MessageAlerts extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      notifications: []
+      alerts: []
     }
-    props.fetchNotifications()
-    this.expandRowToggle = this.expandRowToggle.bind(this)
-    this.updateNotificationSettings = this.updateNotificationSettings.bind(this)
-    this.getAlertTitle = this.getAlertTitle.bind(this)
-    this.getAlertDescription = this.getAlertDescription.bind(this)
-    this.saveNotificationSettings = this.saveNotificationSettings.bind(this)
-  }
-  getAlertTitle(type) {
-    if (type === 'unresolveSessionAlert') {
-      return 'Unresolved Session Alert'
-    } else if (type === 'pendingSessionAlert') {
-      return 'Pending Session Alert'
-    }
-  }
-  getAlertDescription(type) {
-    if (type === 'unresolveSessionAlert') {
-      return 'This alert will let the assigned team members know that a livechat session is unresolved for the last `n` minutes'
-    } else if (type === 'pendingSessionAlert') {
-      return 'This alert will let the assigned team members know that a new livechat session has been pending response for the last `n` minutes'
-    }
-  }
-  saveNotificationSettings () {
-    var payload = {}
-    for (let alert of this.state.notifications) {
-      payload[alert._id]= {
-        enabled: alert.enabled,
-        notification_interval: alert.notification_interval,
-        interval_unit: alert.interval_unit,
-        assignedMembers: alert.assignedMembers
-      }
-    }
-    this.props.updateNotificationSettings(payload, this.msg)
-  }
-  updateNotificationSettings (notification, field, value) {
-    if (field === 'notification_interval' && (!value || value === 0)) {
-      value = 1
-    }
-    var notifications = []
-    for (let alert of this.state.notifications) 
-    { if (alert._id === notification._id) {
-        alert[field] = value
-      }
-      notifications.push(alert)
-    }
-    this.setState({
-      notifications
-    })
 
+    this.setAlertsDetails = this.setAlertsDetails.bind(this)
+
+    props.fetchMessageAlerts(props.user.platform, this.setAlertsDetails)
+    // this.expandRowToggle = this.expandRowToggle.bind(this)
+    // this.updateNotificationSettings = this.updateNotificationSettings.bind(this)
+    // this.getAlertTitle = this.getAlertTitle.bind(this)
+    // this.getAlertDescription = this.getAlertDescription.bind(this)
+    // this.saveNotificationSettings = this.saveNotificationSettings.bind(this)
   }
-  expandRowToggle (row) {
-    let className = document.getElementById(`icon-${row}`).className
-    console.log('className', className)
-    if (className === 'la la-angle-up collapsed') {
-      document.getElementById(`icon-${row}`).className = 'la la-angle-down'
+
+  setAlertsDetails (res) {
+    if (res.status === 'success' && res.payload.length > 0) {
+      this.setState({alerts: res.payload})
     } else {
-      document.getElementById(`icon-${row}`).className = 'la la-angle-up'
+      this.setState({alerts: DEFAULT})
     }
   }
-  UNSAFE_componentWillReceiveProps (nextProps) {
-    if (nextProps.adminAlerts) {
-      var adminAlerts = nextProps.adminAlerts
-      var notifications = []
-      for (let alert in adminAlerts) {
-        var notification = {
-          '_id': alert,
-          'enabled': adminAlerts[alert].enabled,
-          'notification_interval': adminAlerts[alert].notification_interval,
-          'interval_unit': adminAlerts[alert].interval_unit,
-          'assignedMembers': adminAlerts[alert].assignedMembers
-
-        }
-       notifications.push(notification)
-     }
-     this.setState({
-       notifications
-     })
-    }
-  }
+  // getAlertTitle(type) {
+  //   if (type === 'unresolveSessionAlert') {
+  //     return 'Unresolved Session Alert'
+  //   } else if (type === 'pendingSessionAlert') {
+  //     return 'Pending Session Alert'
+  //   }
+  // }
+  // getAlertDescription(type) {
+  //   if (type === 'unresolveSessionAlert') {
+  //     return 'This alert will let the assigned team members know that a livechat session is unresolved for the last `n` minutes'
+  //   } else if (type === 'pendingSessionAlert') {
+  //     return 'This alert will let the assigned team members know that a new livechat session has been pending response for the last `n` minutes'
+  //   }
+  // }
+  // saveNotificationSettings () {
+  //   var payload = {}
+  //   for (let alert of this.state.notifications) {
+  //     payload[alert._id]= {
+  //       enabled: alert.enabled,
+  //       notification_interval: alert.notification_interval,
+  //       interval_unit: alert.interval_unit,
+  //       assignedMembers: alert.assignedMembers
+  //     }
+  //   }
+  //   this.props.updateNotificationSettings(payload, this.msg)
+  // }
+  // updateNotificationSettings (notification, field, value) {
+  //   if (field === 'notification_interval' && (!value || value === 0)) {
+  //     value = 1
+  //   }
+  //   var notifications = []
+  //   for (let alert of this.state.notifications)
+  //   { if (alert._id === notification._id) {
+  //       alert[field] = value
+  //     }
+  //     notifications.push(alert)
+  //   }
+  //   this.setState({
+  //     notifications
+  //   })
+  //
+  // }
+  // expandRowToggle (row) {
+  //   let className = document.getElementById(`icon-${row}`).className
+  //   console.log('className', className)
+  //   if (className === 'la la-angle-up collapsed') {
+  //     document.getElementById(`icon-${row}`).className = 'la la-angle-down'
+  //   } else {
+  //     document.getElementById(`icon-${row}`).className = 'la la-angle-up'
+  //   }
+  // }
+  // UNSAFE_componentWillReceiveProps (nextProps) {
+  //   if (nextProps.adminAlerts) {
+  //     var adminAlerts = nextProps.adminAlerts
+  //     var notifications = []
+  //     for (let alert in adminAlerts) {
+  //       var notification = {
+  //         '_id': alert,
+  //         'enabled': adminAlerts[alert].enabled,
+  //         'notification_interval': adminAlerts[alert].notification_interval,
+  //         'interval_unit': adminAlerts[alert].interval_unit,
+  //         'assignedMembers': adminAlerts[alert].assignedMembers
+  //
+  //       }
+  //      notifications.push(notification)
+  //    }
+  //    this.setState({
+  //      notifications
+  //    })
+  //   }
+  // }
 
   render () {
-    var alertOptions = {
-      offset: 14,
-      position: 'top right',
-      theme: 'dark',
-      time: 5000,
-      transition: 'scale'
-    }
     return (
       <div id='target' className='col-lg-8 col-md-8 col-sm-8 col-xs-12' style={{minHeight: '900px'}}>
         <HELPWIDGET
           documentation={{visibility: true, link: 'https://kibopush.com/messageAlerts/'}}
           videoTutorial={{visibility: true, videoId: 'M3k3zV_INTM'}}
         />
-        <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <div className='m-portlet m-portlet--full-height m-portlet--tabs'>
           <div className='m-portlet__head'>
             <div className='m-portlet__head-tools'>
@@ -112,17 +114,18 @@ class Notifications extends React.Component {
                 <li className='nav-item m-tabs__item'>
                   <span className='nav-link m-tabs__link active'>
                     <i className='flaticon-share m--hide' />
-                    Message Alerts Settings
+                    Message Alerts
                   </span>
                 </li>
               </ul>
             </div>
           </div>
           <div className='tab-content'>
-            <div className='m-content'>
-              <div style={{overflow: 'auto' }}>
+            <div style={{overflow: 'auto'}} className='m-content'>
+              {/*
+
                 {
-                  this.state.notifications && this.state.notifications.length > 0 &&  this.state.notifications.map((notification, i) => 
+                  this.state.notifications && this.state.notifications.length > 0 &&  this.state.notifications.map((notification, i) =>
                     <div key={notification._id} className='accordion' id={`accordion${notification._id}`} style={{ marginTop: '15px' }}>
                       <div className='card'>
                         <div className='card-header' id={`heading${notification._id}`}>
@@ -202,27 +205,20 @@ class Notifications extends React.Component {
                     </div>
                   )
                 }
-            </div>
-            <div className='col-12 input-group pull-right' style={{marginTop: '20px'}}>
-              <button className='btn btn-primary pull-right'onClick={this.saveNotificationSettings}>Save</button>
+              <div className='col-12 input-group pull-right' style={{marginTop: '20px'}}>
+                <button className='btn btn-primary pull-right'onClick={this.saveNotificationSettings}>Save</button>
+              </div>
+              */}
             </div>
           </div>
-        </div>
       </div>
     </div>
     )
   }
 }
 
-function mapStateToProps (state) {
-  return {
-    adminAlerts: state.settingsInfo.adminAlerts
-  }
+MessageAlerts.propTypes = {
+  'fetchMessageAlerts': PropTypes.func.isRequired
 }
-function mapDispatchToProps (dispatch) {
-  return bindActionCreators({
-    fetchNotifications: fetchNotifications,
-    updateNotificationSettings: updateNotificationSettings
-  }, dispatch)
-}
-export default connect(mapStateToProps, mapDispatchToProps)(Notifications)
+
+export default MessageAlerts

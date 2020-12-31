@@ -40,13 +40,6 @@ export function showIntegrations(data) {
   }
 }
 
-export function showAdminAlerts (data) {
-  return {
-    type: ActionTypes.SHOW_ADMINALERTS,
-    data
-  }
-}
-
 export function showWhiteListDomains (data) {
   return {
     type: ActionTypes.SHOW_WHITELIST_DOMAINS,
