@@ -40,13 +40,6 @@ export function showIntegrations(data) {
   }
 }
 
-export function showAdminAlerts (data) {
-  return {
-    type: ActionTypes.SHOW_ADMINALERTS,
-    data
-  }
-}
-
 export function showWhiteListDomains (data) {
   return {
     type: ActionTypes.SHOW_WHITELIST_DOMAINS,
@@ -157,32 +150,6 @@ export function getUserPermissions() {
         if (res.status === 'success') {
           console.log('permissions', res.payload)
           dispatch(showUserPermissions(res.payload))
-        }
-      })
-  }
-}
-
-
-export function fetchNotifications () {
-  return (dispatch) => {
-    callApi('adminAlerts/')
-      .then(res => {
-        if (res.status === 'success') {
-          dispatch(showAdminAlerts(res.payload))
-        }
-      })
-  }
-}
-export function updateNotificationSettings (data, msg) {
-  return (dispatch) => {
-    callApi('adminAlerts/update', 'post', data)
-      .then(res => {
-        if (res.status === 'success') {
-          dispatch(fetchNotifications())
-          msg.success('Notification settings updated successfully')
-        } else {
-          msg.error(res.description || 'Unable to update notification settings')
-          console.log(res.description)
         }
       })
   }

@@ -22,17 +22,12 @@ export function settingsInfo (state = initialState, action) {
       return Object.assign({}, state, {
         permissions: oldPermissions
       })
-    
+
     case ActionTypes.GET_ADVANCED_SETTINGS:
       return Object.assign({}, state, {
         advanced_settings: action.data
       })
 
-    case ActionTypes.SHOW_ADMINALERTS:
-      return Object.assign({}, state, {
-        adminAlerts: action.data
-      })
-  
 case ActionTypes.SHOW_USER_PERMISSIONS:
   return Object.assign({}, state, {
     userPermissions: action.data
@@ -59,7 +54,7 @@ let cannedResponsesIndex = cannedResponses.findIndex(cannedResponse => cannedRes
     cannedResponses: [...cannedResponses]
   })
 }
-  
+
     case ActionTypes.ENABLE_SUCCESS_NGP:
       return Object.assign({}, state, {
         apiEnableNGP: action.data,
