@@ -116,7 +116,7 @@ class FollowUpBroadcast extends React.Component {
           responseOptions = [...responseOptions, ...mapResponses]
         }
     }
-    for (var i = 0; i < selectedResponseArray.length; i++) {
+    for (let i = 0; i < selectedResponseArray.length; i++) {
       if (!selectedBroadcastResponses.find(sb => sb === selectedResponseArray[i])) {
         newSelectedResponses.push({label: selectedResponseArray[i], value: selectedResponseArray[i]})
       }
