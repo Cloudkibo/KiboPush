@@ -10,6 +10,7 @@ class AudioModal extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
+      edited: false,
       disabled: false,
       file: this.props.file ? this.props.file : null,
       initialFile: this.props.file ? this.props.file.fileurl.id : null
@@ -52,11 +53,12 @@ class AudioModal extends React.Component {
       componentType: 'audio',
       componentName: 'audio',
       file: this.state.file ? this.state.file : null}, this.props.edit)
+      this.setState({edited:false})
   }
 
-  updateFile (file) {
+  updateFile (file, isEditFile) {
     this.props.setTempFiles([file.fileurl.id])
-    this.setState({file, edited: true}, () => {
+    this.setState({file, edited: isEditFile}, () => {
       this.refs.audio.pause();
       this.refs.audio.load();
       this.refs.audio.play();
