@@ -146,7 +146,7 @@ class File extends React.Component {
                 className='files-dropzone'
                 onChange={this.onFilesChange}
                 onError={this.onFilesError}
-                accepts= {this.props.module && this.props.module === 'whatsapp' ? ['.pdf']: ['image/*', 'text/*', 'audio/*', 'video/*', 'application/*'] }
+                accepts= {this.props.module && this.props.module === 'whatsapp' ? ['.pdf']: ['image/*', 'text/*', 'video/*', 'application/*'] }
                 maxFileSize={this.props.module && this.props.module === 'whatsapp' ? 5000000 : 10000000}
                 minFileSize={0}
                 clickable>
