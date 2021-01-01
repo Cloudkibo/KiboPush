@@ -25,6 +25,8 @@ class File extends React.Component {
     this.onFilesError = this.onFilesError.bind(this)
     this.setLoading = this.setLoading.bind(this)
     this.handleFile = this.handleFile.bind(this)
+    this.getComponentType = this.getComponentType.bind(this)
+
   }
 
   componentDidMount () {
@@ -65,6 +67,17 @@ class File extends React.Component {
     this.setState({loading: false})
   }
 
+  getComponentType(type) {
+    if (type.match('image.*')) {
+      return 'image'
+    } else if (type.match('audio.*')) {
+      return 'audio'
+    } else if (type.match('video.*')) {
+      return 'video'
+    } else if (type.match('application.*') || type.match('text.*')) {
+      return 'file'
+    }
+  }
   onFilesChange (files) {
     if (files.length > 0) {
       if (this.state.file && this.state.file.id) {
@@ -96,15 +109,16 @@ class File extends React.Component {
       } else {
         // this.props.closeGSModal()
         var fileData = new FormData()
+        const type = this.getComponentType(file.type)
         fileData.append('file', file)
         fileData.append('filename', file.name)
         fileData.append('filetype', file.type)
         fileData.append('filesize', file.size)
         fileData.append('pages', JSON.stringify(this.props.pages))
-        fileData.append('componentType', 'file')
+        fileData.append('componentType', type)
         var fileInfo = {
           id: this.props.id,
-          componentType: 'file',
+          componentType: type,
           componentName: 'file',
           fileName: file.name,
           type: file.type,
@@ -146,7 +160,7 @@ class File extends React.Component {
                 className='files-dropzone'
                 onChange={this.onFilesChange}
                 onError={this.onFilesError}
-                accepts= {this.props.module && this.props.module === 'whatsapp' ? ['.pdf']: ['image/*', 'text/*', 'video/*', 'application/*'] }
+                accepts= {this.props.module && this.props.module === 'whatsapp' ? ['.pdf']: ['image/*', 'text/*', 'audio/*', 'video/*', 'application/*'] }
                 maxFileSize={this.props.module && this.props.module === 'whatsapp' ? 5000000 : 10000000}
                 minFileSize={0}
                 clickable>
