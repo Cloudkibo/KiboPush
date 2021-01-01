@@ -7,7 +7,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { getNGP, enableNGP, disableNGP, saveNGP } from '../../redux/actions/settings.actions'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
-import {fetchMessageAlerts } from '../../redux/actions/messageAlerts.actions'
+import { fetchMessageAlerts, saveAlert } from '../../redux/actions/messageAlerts.actions'
 import AccountSettings from './accountSettings'
 import GreetingMessage from './greetingMessage'
 import WelcomeMessage from './welcomeMessage'
@@ -837,8 +837,10 @@ class Settings extends React.Component {
             {
               this.state.openTab === 'message_alerts' &&
               <MESSAGEALERTS
-                history={this.props.history}
                 fetchMessageAlerts={this.props.fetchMessageAlerts}
+                user={this.props.user}
+                saveAlert={this.props.saveAlert}
+                alertMsg={this.msg}
               />
             }
             {this.state.openTab === 'notificationSettings' &&
@@ -879,7 +881,8 @@ function mapDispatchToProps(dispatch) {
     disableNGP: disableNGP,
     saveNGP: saveNGP,
     loadMyPagesList: loadMyPagesList,
-    fetchMessageAlerts
+    fetchMessageAlerts,
+    saveAlert
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Settings)
