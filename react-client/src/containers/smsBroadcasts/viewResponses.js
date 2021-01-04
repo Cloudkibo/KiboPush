@@ -7,6 +7,7 @@ import { connect } from 'react-redux'
 import { fetchResponseDetails } from '../../redux/actions/smsBroadcasts.actions'
 import { bindActionCreators } from 'redux'
 import ResponseDetails from './responseDetails'
+import BACKBUTTON from '../../components/extras/backButton'
 
 class ViewResponses extends React.Component {
     constructor (props) {
@@ -62,7 +63,7 @@ class ViewResponses extends React.Component {
         } else {
             payload["first_page"] = "previous"
         }
-        this.setState({loading: {response:  response._id}})
+        this.setState({loading: {response: response._id}})
         this.props.fetchResponseDetails(this.props.smsBroadcast._id, response._id, payload, null, this.removeLoader)
     }
 
@@ -165,15 +166,9 @@ class ViewResponses extends React.Component {
                                         </div>
                                     )
                                 }
-                            </div>
-                        </div>
-                        <div className='row'>
-                            <div className='col-12'>
-                                <div className='pull-right'>
-                                    <button className='btn btn-primary' style={{marginTop: '10px'}} onClick={this.goBack}>
-                                        Back
-                                    </button>
-                                </div>
+                            <BACKBUTTON
+                                onBack={this.goBack}
+                            />
                             </div>
                         </div>
                     </div>

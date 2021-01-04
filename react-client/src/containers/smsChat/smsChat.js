@@ -31,7 +31,7 @@ import { loadMembersList } from '../../redux/actions/members.actions'
 import { urlMetaData } from '../../redux/actions/convos.actions'
 import { handleSocketEventSms } from './socket'
 import { clearSocketDataSms } from '../../redux/actions/socket.actions'
-import { getZoomIntegrations, createZoomMeeting } from '../../redux/actions/settings.actions'
+import { getZoomIntegrations, createZoomMeeting, loadcannedResponses } from '../../redux/actions/settings.actions'
 
 // components
 import HELPWIDGET from '../../components/extras/helpWidget'
@@ -51,6 +51,7 @@ class SmsChat extends React.Component {
     super(props, context)
     this.state = {
       loading: true,
+      redirected: this.props.location.state && this.props.location.state.module === 'notifications',
       fetchingChat: false,
       loadingChat: true,
       sessionsLoading: false,
@@ -66,6 +67,7 @@ class SmsChat extends React.Component {
       activeSession: {},
       teamAgents: [],
       userChat: [],
+      cannedResponses: [],
       showSearch: false,
       customFieldOptions: [],
       showingCustomFieldPopover: false,
@@ -96,7 +98,7 @@ class SmsChat extends React.Component {
     this.clearSearchResults = this.clearSearchResults.bind(this)
     this.setMessageData = this.setMessageData.bind(this)
     this.backToSessions = this.backToSessions.bind(this)
-
+    this.props.loadcannedResponses()
     props.loadTwilioNumbers()
     props.loadMembersList()
     this.fetchSessions(true, 'none', true)
@@ -397,7 +399,9 @@ class SmsChat extends React.Component {
   UNSAFE_componentWillReceiveProps (nextProps) {
     console.log('UNSAFE_componentWillMount called in live chat', nextProps)
     let state = {}
-
+    if (nextProps.cannedResponses !== this.props.cannedResponses) {
+      this.setState({ cannedResponses: nextProps.cannedResponses })
+    }
     if (nextProps.openSessions || nextProps.closeSessions) {
       state.loading = false
       state.sessionsLoading = false
@@ -413,6 +417,7 @@ class SmsChat extends React.Component {
       state.sessions = sessions
       state.sessionsCount = this.state.tabValue === 'open' ? nextProps.openCount : nextProps.closeCount
     }
+    
     if (nextProps.redirectToSession && nextProps.redirectToSession.sessionId) {
       if (nextProps.openSessions && nextProps.closeSessions) {
         nextProps.saveNotificationSessionId({sessionId: null})
@@ -546,6 +551,7 @@ class SmsChat extends React.Component {
                 {
                   this.state.showChat && this.state.activeSession.constructor === Object && Object.keys(this.state.activeSession).length > 0 &&
                   <CHAT
+                    cannedResponses={this.state.cannedResponses}
                     userChat={this.state.userChat}
                     chatCount={this.props.chatCount}
                     sessions={this.state.sessions}
@@ -658,7 +664,8 @@ function mapStateToProps(state) {
     socketData: (state.socketInfo.socketDataSms),
     twilioNumbers: (state.smsBroadcastsInfo.twilioNumbers),
     zoomIntegrations: (state.settingsInfo.zoomIntegrations),
-    redirectToSession: state.liveChat.redirectToSession
+    redirectToSession: state.liveChat.redirectToSession,
+    cannedResponses: (state.settingsInfo.cannedResponses),
   }
 }
 
@@ -686,7 +693,9 @@ function mapDispatchToProps(dispatch) {
     loadTwilioNumbers,
     getZoomIntegrations,
     createZoomMeeting,
-    saveNotificationSessionId
+    saveNotificationSessionId,
+    loadcannedResponses
+
   }, dispatch)
 }
 

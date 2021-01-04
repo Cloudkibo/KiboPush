@@ -211,95 +211,139 @@ class SmsBroadcast extends React.Component {
                   </div>
                   <div className='m-portlet__body'>
                     <div className='form-group m-form__group'>
-                    <span style={{marginLeft: '20px'}}>
-                      <i className='flaticon-exclamation m--font-brand' />
-                      <p style={{display: 'inline', fontSize: '1.1em'}}> {`This broadcast will be sent to ${this.state.subscribersCount} ${this.state.subscribersCount === 1 ? 'subscriber' : 'subscribers'}`}</p>
-                      </span>
-                      <div className='col-3'>
-                        <label className='col-form-label'>Push Message:</label>
-                      </div>
-                      <div className='col-12'>
-                        <input value={this.state.title} placeholder={'Enter the title of the broadcast here...'}
-                          className='form-control m-input' onChange={this.onTitleChange} />
-                        <br />
-                        <div className='m-input-icon m-input-icon--right m-messenger__form-controls' style={{backgroundColor: '#f4f5f8'}}>
-                          <textarea
-                            className='form-control m-input'
-                            id='postTextArea' rows='3'
-                            placeholder='Enter your message here...'
-                            value={this.state.message}
-                            onChange={this.onMessageChange} />
-                          <span id='emogiPicker' className='m-input-icon__icon m-input-icon__icon--right'>
-                            <span>
-                              <i className='fa fa-smile-o' style={{cursor: 'pointer'}} onClick={this.toggleEmojiPicker} />
-                            </span>
-                          </span>
-                          <Popover placement='left' isOpen={this.state.showEmojiPicker} className='facebooPostPopover' target='emogiPicker' toggle={this.toggleEmojiPicker}>
-                            <PopoverBody>
-                              <div>
-                                <Picker
-                                  emojiSize={24}
-                                  perLine={6}
-                                  skin={1}
-                                  set='facebook'
-                                  custom={[]}
-                                  autoFocus={false}
-                                  showPreview={false}
-                                  onClick={(emoji, event) => this.setEmoji(emoji)}
-                                />
-                              </div>
-                            </PopoverBody>
-                          </Popover>
+                      <div className='row'>
+                        <div className='col-2'></div>
+                        <div className='col-8' style={{ display:'flex'}}>
+                          <div style={{width:'100%'}}>
+                            <i className='flaticon-exclamation m--font-brand' />
+                            <p style={{display: 'inline', fontSize: '1.1em'}}> {`This broadcast will be sent to ${this.state.subscribersCount} ${this.state.subscribersCount === 1 ? 'subscriber' : 'subscribers'}`}</p>
+                          </div>
                         </div>
+                        <div className='col-2'></div>
                       </div>
-                    </div>
-                    <div className='form-group m-form__group'>
-                      <div className='col-3'>
-                        <label className='col-form-label'>Select Segmentation:</label>
+                      <div className='row' style={{marginTop: '20px'}}>
+                        <div className='col-2'></div>
+                        <div className='col-8' style={{ display:'flex'}}>
+                          <label className='col-form-label' style={{width:'140px'}}>Title</label>
+                          <div style={{width:'100%'}}>
+                          <input value={this.state.title} placeholder={'Enter the title of the broadcast here...'}
+                          className='form-control m-input' onChange={this.onTitleChange} />
+                          </div>
+                        </div>
+                        <div className='col-2'></div>
                       </div>
-                      <div className='radio' style={{marginLeft: '35px'}}>
-                        <input 
-                          id='basicSegmentation'
-                          type='radio'
-                          value='basicSegmentation'
-                          name='basicSegmentation'
-                          onChange={this.handleSegmentationType}
-                          checked={this.state.segmentationType === 'basicSegmentation'} />
-                        <label>Apply Basic Segmentation</label>
+                      <div className='row' style={{marginTop: '20px'}}>
+                        <div className='col-2'></div>
+                        <div className='col-8' style={{ display:'flex'}}>
+                          <label className='col-form-label' style={{width:'140px'}}>Message</label>
+                          <div className='m-input-icon m-input-icon--right m-messenger__form-controls' style={{backgroundColor: '#f4f5f8', width:'100%'}}>
+                            <textarea
+                              className='form-control m-input'
+                              id='postTextArea' rows='3'
+                              placeholder='Enter your message here...'
+                              value={this.state.message}
+                              onChange={this.onMessageChange} />
+                            <span id='emogiPicker' className='m-input-icon__icon m-input-icon__icon--right'>
+                              <span>
+                                <i className='fa fa-smile-o' style={{cursor: 'pointer'}} onClick={this.toggleEmojiPicker} />
+                              </span>
+                            </span>
+                            <Popover placement='left' isOpen={this.state.showEmojiPicker} className='facebooPostPopover' target='emogiPicker' toggle={this.toggleEmojiPicker}>
+                              <PopoverBody>
+                                <div>
+                                  <Picker
+                                    emojiSize={24}
+                                    perLine={6}
+                                    skin={1}
+                                    set='facebook'
+                                    custom={[]}
+                                    autoFocus={false}
+                                    showPreview={false}
+                                    onClick={(emoji, event) => this.setEmoji(emoji)}
+                                  />
+                                </div>
+                              </PopoverBody>
+                            </Popover>
+                          </div>
+                        </div>
+                        <div className='col-2'></div>
+                      </div>
+                      <div className='row'>
+                        <div className='col-2'></div>
+                        <div className='col-8' style={{ display:'flex'}}>
+                          <div style={{width:'100%'}}>
+                            <label className='col-form-label'>Select Segmentation</label>
+                          </div>
+                        </div>
+                        <div className='col-2'></div>
+                      </div>
+                      <div className='row'>
+                        <div className='col-2'></div>
+                        <div className='col-8' style={{ display:'flex'}}>
+                          <div style={{width:'100%'}}>
+                            <div className='radio' style={{marginLeft: '35px'}}>
+                              <input 
+                                id='basicSegmentation'
+                                type='radio'
+                                value='basicSegmentation'
+                                name='basicSegmentation'
+                                onChange={this.handleSegmentationType}
+                                checked={this.state.segmentationType === 'basicSegmentation'} />
+                              <label>Apply Basic Segmentation</label>
+                            </div>
+                          </div>
+                        </div>
+                        <div className='col-2'></div>
                       </div>
                       {
                         this.state.segmentationType === 'basicSegmentation' &&
-                          <TargetCustomers 
-                            msg = {this.msg} 
-                            fileColumns={this.state.fileColumns} 
-                            updateConditions={this.updateConditions} 
-                            debounce={this.debounce} 
-                            segmentationErrors={this.state.segmentationErrors} 
-                            resetErrors={() => { this.setState({segmentationErrors: []}) }} 
-                          />
+                        <div className='row'>
+                          <div className='col-12'>
+                            <TargetCustomers 
+                              msg = {this.msg} 
+                              fileColumns={this.state.fileColumns} 
+                              updateConditions={this.updateConditions} 
+                              debounce={this.debounce} 
+                              segmentationErrors={this.state.segmentationErrors} 
+                              resetErrors={() => { this.setState({segmentationErrors: []}) }} 
+                            />
+                          </div>
+                        </div>
                       }
-                      <div className='radio' style={{marginLeft: '35px'}}>
-                        <input 
-                          id='listSegmentation'
-                          type='radio'
-                          value='listSegmentation'
-                          name='listSegmentation'
-                          onChange={this.handleSegmentationType}
-                          checked={this.state.segmentationType === 'listSegmentation'} />
-                        <label>Use Subscriber Lists</label>
+                      <div className='row'>
+                        <div className='col-2'></div>
+                        <div className='col-8' style={{ display:'flex'}}>
+                          <div style={{width:'100%'}}>
+                            <div className='radio' style={{marginLeft: '35px'}}>
+                              <input 
+                                id='listSegmentation'
+                                type='radio'
+                                value='listSegmentation'
+                                name='listSegmentation'
+                                onChange={this.handleSegmentationType}
+                                checked={this.state.segmentationType === 'listSegmentation'} />
+                              <label>Use Subscriber Lists</label>
+                            </div>
+                          </div>
+                        </div>
+                        <div className='col-2'></div>
                       </div>
                       {
                         this.state.segmentationType === 'listSegmentation' &&
-                        <div style={{marginLeft: '1px'}} className='form-group m-form__group row'>
-                          <div className='col-lg-8'>
-                            <Select
-                              isMulti
-                              options={this.props.contactLists ? this.props.contactLists.map(list => { return {value: list._id, label: list.name} }).filter(x => x.value !== 'master') : []}
-                              onChange={this.handleListSelect}
-                              value={this.state.lists}
-                              placeholder='Select List'
-                            />
+                        <div className='row'>
+                          <div className='col-2'></div>
+                          <div className='col-8' style={{ display:'flex'}}>
+                            <div style={{width:'100%'}}>
+                              <Select
+                                isMulti
+                                options={this.props.contactLists ? this.props.contactLists.map(list => { return {value: list._id, label: list.name} }).filter(x => x.value !== 'master') : []}
+                                onChange={this.handleListSelect}
+                                value={this.state.lists}
+                                placeholder='Select List'
+                              />
+                            </div>
                           </div>
+                          <div className='col-2' />
                         </div>
                       }
                     </div>

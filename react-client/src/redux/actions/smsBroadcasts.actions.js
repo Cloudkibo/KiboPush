@@ -112,7 +112,7 @@ export function sendBroadcast (data, clearFields, msg) {
         } else {
           msg.error(res.description)
         }
-        dispatch(clearFields())
+        clearFields()
       })
   }
 }

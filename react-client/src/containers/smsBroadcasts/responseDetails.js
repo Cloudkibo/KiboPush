@@ -36,6 +36,12 @@ class ResponseDetails extends React.Component {
                         className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
                         <span style={{width: '150px'}}>Phone Number</span>
                         </th>
+                        { this.props.response._id === 'others' &&
+                            <th data-field='response'
+                            className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                            <span style={{width: '150px'}}>Response</span>
+                            </th>
+                        }
                         <th data-field='dateTime'
                         className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
                         <span style={{width: '100px'}}>Responded At</span>
@@ -49,6 +55,7 @@ class ResponseDetails extends React.Component {
                         <td data-field='profilePic' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}><img src={sender.profilePic ? sender.profilePic : 'https://cdn.cloudkibo.com/public/icons/users.jpg'} className='m--img-rounded m--marginless m--img-centered' alt='' /></span></td>
                         <td data-field='name' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '150px'}}>{sender.name}</span></td>
                         <td data-field='phoneNumber' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '150px'}}>{sender.number}</span></td>
+                        { this.props.response._id === 'others' && <td data-field='response' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '150px'}}>{sender.text}</span></td> }
                         <td data-field='dateTime' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{handleDate(sender.datetime)}</span></td>
                         </tr>
                     ))
@@ -83,7 +90,4 @@ class ResponseDetails extends React.Component {
     }
 }
 
-ResponseDetails.propTypes = {
-}
-  
 export default ResponseDetails

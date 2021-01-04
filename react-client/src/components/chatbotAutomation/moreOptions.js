@@ -172,6 +172,7 @@ class MoreOptions extends React.Component {
                   alertMsg={this.props.alertMsg}
                   isCreatable={this.props.isCreatable}
                   additionalActions={this.state.selectedOption.additionalActions}
+                  showAdditionalActions={!this.props.additionalActions}
                   type='quickReply'
                 />
               }
