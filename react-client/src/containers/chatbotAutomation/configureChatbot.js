@@ -367,7 +367,7 @@ class ConfigureChatbot extends React.Component {
           appId={this.props.fbAppId}
           pageId={this.state.chatbot.pageFbId}
           size='large'
-          passthroughParams='_chatbot'
+          passthroughParams='notify-me'
         />
       )
     } else {

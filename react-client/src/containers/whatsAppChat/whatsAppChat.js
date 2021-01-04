@@ -154,15 +154,19 @@ class WhatsAppChat extends React.Component {
   }
 
   handleAgents(teamAgents) {
+    console.log('this.state.activeSession', this.state.activeSession)
     let agentIds = []
     for (let i = 0; i < teamAgents.length; i++) {
       if (teamAgents[i].agentId !== this.props.user._id) {
-        agentIds.push(teamAgents[i].agentId)
+        agentIds.push(teamAgents[i].agentId._id)
       }
     }
     if (agentIds.length > 0) {
+      let {firstName, lastName} = this.state.activeSession
+      lastName = lastName ? ` ${lastName}` : ''
+      let name = `${firstName}${lastName}`
       let notificationsData = {
-        message: `Session of subscriber ${this.state.activeSession.firstName + ' ' + this.state.activeSession.lastName} has been assigned to your team.`,
+        message: `Session of subscriber ${name} has been assigned to your team.`,
         category: { type: 'chat_session', id: this.state.activeSession._id },
         agentIds: agentIds,
         companyId: this.state.activeSession.companyId
@@ -453,7 +457,7 @@ class WhatsAppChat extends React.Component {
         }
       }
     }
-    
+
     if (nextProps.customFields && nextProps.customFieldValues) {
       let fieldOptions = []
       for (let a = 0; a < nextProps.customFields.length; a++) {
