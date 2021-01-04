@@ -154,7 +154,6 @@ class WhatsAppChat extends React.Component {
   }
 
   handleAgents(teamAgents) {
-    console.log('this.state.activeSession', this.state.activeSession)
     let agentIds = []
     for (let i = 0; i < teamAgents.length; i++) {
       if (teamAgents[i].agentId !== this.props.user._id) {
