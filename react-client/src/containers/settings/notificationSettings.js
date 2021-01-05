@@ -73,7 +73,7 @@ class NotificationSettings extends React.Component {
     return (
       <div id='target' className='col-lg-8 col-md-8 col-sm-8 col-xs-12' style={{minHeight: '900px'}}>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        <div className='m-portlet m-portlet--full-height m-portlet--tabs'>
+        <div style={{height: '85vh'}} className='m-portlet m-portlet--full-height m-portlet--tabs'>
           <div className='m-portlet__head'>
             <div className='m-portlet__head-tools'>
               <ul className='nav nav-tabs m-tabs m-tabs-line   m-tabs-line--left m-tabs-line--primary' role='tablist'>
@@ -90,7 +90,7 @@ class NotificationSettings extends React.Component {
             <div className='m-content'>
             <div className= 'row'>
                 <div className='col-6'>
-                   Mute notifications for selected pages 
+                   Mute notifications for selected pages
                 </div>
                 <div className='col-6'>
                   <Select
