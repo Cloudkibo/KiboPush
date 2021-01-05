@@ -19,7 +19,7 @@ class FacebookIntegration extends React.Component {
       twilio: {
         provider: 'twilio',
         accessToken: '',
-        businessNumber: '+14155238886',
+        businessNumber: '',
         accountSID: '',
         sandBoxCode: ''
       },
