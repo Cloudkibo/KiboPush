@@ -16,8 +16,7 @@ class Configuration extends React.Component {
       twilio: {
         provider: 'twilio',
         accessToken: '',
-        businessNumber: '',
-        accountSID: ''
+        businessNumber: ''
       },
       flockSend: {
         provider: 'flockSend',
