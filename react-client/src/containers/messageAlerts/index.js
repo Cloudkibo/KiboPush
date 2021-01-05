@@ -3,34 +3,72 @@ import PropTypes from 'prop-types'
 
 import HELPWIDGET from '../../components/extras/helpWidget'
 import COLLAPSE from '../../components/extras/collapse'
-import DEFAULT from './defaultData'
+import MODAL from '../../components/extras/modal'
+import ALERTSUBSCRIPTIONS from './alertSubscriptions'
+import DEFAULTDATA from './defaultData'
 
 class MessageAlerts extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      alerts: []
+      alerts: [],
+      channels: {},
+      subscriptions: [],
+      showModal: false,
+      modalTitle: '',
+      modalContent: (<div />)
     }
 
     this.setAlertsDetails = this.setAlertsDetails.bind(this)
+    this.setAlertSubscriptions = this.setAlertSubscriptions.bind(this)
     this.getTitle = this.getTitle.bind(this)
     this.getBodyContent = this.getBodyContent.bind(this)
     this.getAlertDescription = this.getAlertDescription.bind(this)
     this.updateAlertConfiguration = this.updateAlertConfiguration.bind(this)
     this.saveAlert = this.saveAlert.bind(this)
+    this.openModal = this.openModal.bind(this)
+    this.closeModal = this.closeModal.bind(this)
 
     props.fetchMessageAlerts(props.user.platform, this.setAlertsDetails)
+    props.fetchAlertSubscriptions(props.user.platform, this.setAlertSubscriptions)
+    props.fetchMembers()
   }
 
   setAlertsDetails (res) {
-    if (res.status === 'success' && res.payload.length > 0) {
+    if (res.status === 'success' && res.payload && res.payload.length > 0) {
       const alerts = res.payload
-      const talkToAgent = alerts.find((item) => item.type === 'talk_to_agent') || DEFAULT[0]
-      const pendingSession = alerts.find((item) => item.type === 'pending_session') || DEFAULT[1]
-      const unresolvedSession = alerts.find((item) => item.type === 'unresolved_session') || DEFAULT[2]
+      const talkToAgent = alerts.find((item) => item.type === 'talk_to_agent') || DEFAULTDATA.alerts[0]
+      const pendingSession = alerts.find((item) => item.type === 'pending_session') || DEFAULTDATA.alerts[1]
+      const unresolvedSession = alerts.find((item) => item.type === 'unresolved_session') || DEFAULTDATA.alerts[2]
       this.setState({alerts: [talkToAgent, pendingSession, unresolvedSession]})
     } else {
-      this.setState({alerts: DEFAULT})
+      this.setState({alerts: DEFAULTDATA.alerts})
+    }
+  }
+
+  setAlertSubscriptions (res) {
+    let channels = DEFAULTDATA.channels
+    if (this.props.user.platform === 'messenger') {
+      delete channels['whatsapp']
+    } else {
+      delete channels['messenger']
+    }
+    if (res.status === 'success' && res.payload && res.payload.length > 0) {
+      let subscriptions = res.payload
+
+      const notificationSubscriptions = subscriptions.filter((item) => item.alertChannel === 'notification')
+      const messengerSubscriptions = subscriptions.filter((item) => item.alertChannel === 'messenger')
+      const whatsappSubscriptions = subscriptions.filter((item) => item.alertChannel === 'whatsapp')
+      const emailSubscriptions = subscriptions.filter((item) => item.alertChannel === 'email')
+
+      if (notificationSubscriptions.length > 0) channels['notification'].enabled = true
+      if (messengerSubscriptions.length > 0) channels['messenger'].enabled = true
+      if (whatsappSubscriptions.length > 0) channels['whatsapp'].enabled = true
+      if (emailSubscriptions.length > 0) channels['email'].enabled = true
+
+      this.setState({channels, subscriptions})
+    } else {
+      this.setState({channels})
     }
   }
 
@@ -82,6 +120,34 @@ class MessageAlerts extends React.Component {
         this.props.alertMsg.error(res.description)
       }
     })
+  }
+
+  openModal (channel) {
+    const subscriptions = this.state.subscriptions.filter((item) => item.alertChannel === channel)
+    let modalContent = (<div />)
+    let modalTitle = ''
+    switch (channel) {
+      case 'notification':
+        modalTitle = 'Subscriptions - In-app Notifications'
+        modalContent = (
+          <ALERTSUBSCRIPTIONS
+            channel={channel}
+            subscriptions={subscriptions}
+            members={this.props.members}
+          />
+        )
+        break;
+      default:
+        modalTitle = ''
+        modalContent = (<div />)
+    }
+    this.setState({showModal: true, modalContent, modalTitle}, () => {
+      this.refs._ma_subscriptions.click()
+    })
+  }
+
+  closeModal () {
+    this.setState({showModal: false})
   }
 
   getBodyContent (alert) {
@@ -178,8 +244,16 @@ class MessageAlerts extends React.Component {
           documentation={{visibility: true, link: 'https://kibopush.com/messageAlerts/'}}
           videoTutorial={{visibility: true, videoId: 'M3k3zV_INTM'}}
         />
-        <div className='m-portlet m-portlet--full-height m-portlet--tabs'>
-          <div className='m-portlet__head'>
+
+        <button style={{display: 'none'}} ref='_ma_subscriptions' data-toggle='modal' data-target='#_ma_subscriptions' />
+        <MODAL
+          id='_ma_subscriptions'
+          title={this.state.modalTitle}
+          content={this.state.modalContent}
+        />
+
+        <div style={{height: '85vh', overflow: 'hidden', display: 'flex', flexDirection: 'column'}} className='m-portlet m-portlet--full-height m-portlet--tabs'>
+          <div style={{flex: '0 0 auto'}} className='m-portlet__head'>
             <div className='m-portlet__head-tools'>
               <ul className='nav nav-tabs m-tabs m-tabs-line   m-tabs-line--left m-tabs-line--primary' role='tablist'>
                 <li className='nav-item m-tabs__item'>
@@ -191,20 +265,51 @@ class MessageAlerts extends React.Component {
               </ul>
             </div>
           </div>
-          <div className='tab-content'>
-            <div style={{overflow: 'auto'}} className='m-content'>
+          <div style={{overflowY: 'scroll', flex: '1 1 auto'}} className='m-portlet__body'>
+            {
+              this.state.alerts.map((alert, i) => (
+                <COLLAPSE
+                  key={alert._id}
+                  id={alert._id}
+                  title={this.getTitle(alert.type)}
+                  body={this.getBodyContent(alert)}
+                  showBadge={true}
+                  badgeStyle={alert.enabled ? 'success' : 'danger'}
+                  badgeText={alert.enabled ? 'Enabled' : 'Disabled'}
+                />
+              ))
+            }
+          </div>
+          <div style={{ flex: '0 0 auto' }} className="m-portlet__foot">
+            <div className='form-group m-form__group row'>
+              <div className='col-lg-12 col-md-12 col-sm-12 m--font-bold'>
+                Send alerts via:
+              </div>
+            </div>
+            <div className='form-group m-form__group row'>
               {
-                this.state.alerts.map((alert, i) => (
-                  <COLLAPSE
-                    key={alert._id}
-                    id={alert._id}
-                    title={this.getTitle(alert.type)}
-                    body={this.getBodyContent(alert)}
-                    showBadge={true}
-                    badgeStyle={alert.enabled ? 'success' : 'danger'}
-                    badgeText={alert.enabled ? 'Enabled' : 'Disabled'}
-                  />
-                ))
+                Object.keys(this.state.channels).map((key, i) => {
+                  const channel = this.state.channels[key]
+                  const style = channel.enabled ? {borderColor: '#34bfa3'} : {borderColor: '#ebedf2', color: '#111'}
+                  return (
+                    <div key={i} onClick={() => this.openModal(key)} className='col-lg-4 col-md-4 col-sm-6'>
+                      <button
+                        style={{...{whiteSpace: 'break-spaces', textAlign: 'left'}, ...style}}
+                        className={`btn btn-outline-${channel.enabled ? 'success' : 'secondary'} btn-lg m-btn m-btn--icon`}
+                      >
+                        <span>
+                          <i
+                            style={{fontSize: '2rem'}}
+                            className={`la la-${channel.enabled ? 'check-circle' : 'circle'}`}
+                          />
+                          <span style={{fontSize: '13px'}}>
+                            {channel.title}
+                          </span>
+                        </span>
+                      </button>
+                    </div>
+                  )
+                })
               }
             </div>
           </div>
@@ -216,6 +321,9 @@ class MessageAlerts extends React.Component {
 
 MessageAlerts.propTypes = {
   'fetchMessageAlerts': PropTypes.func.isRequired,
+  'fetchAlertSubscriptions': PropTypes.func.isRequired,
+  'fetchMembers': PropTypes.func.isRequired,
+  'members': PropTypes.array,
   'user': PropTypes.object.isRequired,
   'saveAlert': PropTypes.func.isRequired
 }

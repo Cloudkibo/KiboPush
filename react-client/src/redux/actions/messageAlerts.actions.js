@@ -10,6 +10,15 @@ export function fetchMessageAlerts(platform, callback) {
   }
 }
 
+export function fetchAlertSubscriptions(platform, callback) {
+  return (dispatch) => {
+    callApi('messageAlerts/subscriptions', 'post', {platform})
+      .then(res => {
+        callback(res)
+      })
+  }
+}
+
 export function saveAlert(alert, callback) {
   return (dispatch) => {
     callApi('messageAlerts/saveAlert', 'post', alert)
