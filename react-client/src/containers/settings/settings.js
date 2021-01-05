@@ -7,7 +7,9 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { getNGP, enableNGP, disableNGP, saveNGP } from '../../redux/actions/settings.actions'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
-import { fetchMessageAlerts, saveAlert } from '../../redux/actions/messageAlerts.actions'
+import { fetchMessageAlerts, saveAlert, fetchAlertSubscriptions } from '../../redux/actions/messageAlerts.actions'
+import { loadMembersList } from '../../redux/actions/members.actions'
+
 import AccountSettings from './accountSettings'
 import GreetingMessage from './greetingMessage'
 import WelcomeMessage from './welcomeMessage'
@@ -301,10 +303,6 @@ class Settings extends React.Component {
     })
   }
 
-  scrollToTop() {
-    this.top.scrollIntoView({ behavior: 'instant' })
-  }
-
   componentDidMount() {
     const hostname = window.location.hostname
     let title = ''
@@ -317,7 +315,6 @@ class Settings extends React.Component {
     var addScript = document.createElement('script')
     addScript.setAttribute('src', 'https://js.stripe.com/v3/')
     document.body.appendChild(addScript)
-    this.scrollToTop()
 
     // this.initializeSwitchNGP(this.state.ngpButtonState)
 
@@ -490,10 +487,8 @@ class Settings extends React.Component {
     console.log('buttonState in render function', this.state.buttonState)
     const url = window.location.hostname
     return (
-      <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+      <div style={{marginBottom: '0px'}} className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        <div style={{ float: 'left', clear: 'both' }}
-          ref={(el) => { this.top = el }} />
         <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="upgrade" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
             <div className="modal-content">
@@ -520,18 +515,11 @@ class Settings extends React.Component {
             </div>
           </div>
         </div>
-        <div className='m-subheader '>
-          <div className='d-flex align-items-center'>
-            <div className='mr-auto'>
-              <h3 className='m-subheader__title'>Settings</h3>
-            </div>
-          </div>
-        </div>
-        <div className='m-content'>
+        <div style={{position: 'fixed', zIndex: 1050}} className='m-content'>
           <div className='row'>
             <div className='col-lg-4 col-md-4 col-sm-4 col-xs-12'>
-              <div className='m-portlet m-portlet--full-height'>
-                <div className='m-portlet__body'>
+              <div style={{height: '85vh', overflow: 'hidden', display: 'flex', flexDirection: 'column'}} className='m-portlet m-portlet--full-height'>
+                <div style={{height: 'auto', flex: '0 0 auto'}} className='m-portlet__head'>
                   <div className='m-card-profile'>
                     <div className='m-card-profile__title m--hide'>
                       Your Profile
@@ -553,8 +541,9 @@ class Settings extends React.Component {
                       </span>
                     </div>
                   </div>
+                </div>
+                <div style={{overflowY: 'scroll', flex: '1 1 auto'}} className='m-portlet__body'>
                   <ul className='m-nav m-nav--hover-bg m-portlet-fit--sides'>
-                    <li className='m-nav__separator m-nav__separator--fit' />
                     <li className='m-nav__section m--hide'>
                       <span className='m-nav__section-text'>Section</span>
                     </li>
@@ -607,7 +596,11 @@ class Settings extends React.Component {
                         </a>
                       </li>
                     }
-                    {(url.includes('localhost') || url.includes('kibochat.cloudkibo.com')) && (this.props.user.role === 'buyer' || this.props.user.role === 'admin') && (this.props.user.currentPlan.unique_ID === 'plan_C' || this.props.user.currentPlan.unique_ID === 'plan_D') &&
+                    {
+                      (url.includes('localhost') || url.includes('kibochat.cloudkibo.com')) &&
+                      (this.props.user.role === 'buyer' || this.props.user.role === 'admin') &&
+                      (['messenger', 'whatsApp'].includes(this.props.user.platform)) &&
+                      (this.props.user.currentPlan.unique_ID === 'plan_C' || this.props.user.currentPlan.unique_ID === 'plan_B') &&
                       <li className='m-nav__item'>
                         <a href='#/' className='m-nav__link' onClick={this.setMessageAlerts} style={{ cursor: 'pointer' }} >
                           <i className='m-nav__link-icon flaticon-bell' />
@@ -714,9 +707,10 @@ class Settings extends React.Component {
                 </div>
               </div>
             </div>
-            {this.state.openTab === 'showNGP' &&
+            {
+              this.state.openTab === 'showNGP' &&
               <div id='target' className='col-lg-8 col-md-8 col-sm-8 col-xs-12'>
-                <div className='m-portlet m-portlet--full-height m-portlet--tabs  '>
+                <div style={{height: '85vh'}} className='m-portlet m-portlet--full-height m-portlet--tabs  '>
                   <div className='m-portlet__head'>
                     <div className='m-portlet__head-tools'>
                       <ul className='nav nav-tabs m-tabs m-tabs-line   m-tabs-line--left m-tabs-line--primary' role='tablist'>
@@ -838,7 +832,10 @@ class Settings extends React.Component {
               this.state.openTab === 'message_alerts' &&
               <MESSAGEALERTS
                 fetchMessageAlerts={this.props.fetchMessageAlerts}
+                fetchAlertSubscriptions={this.props.fetchAlertSubscriptions}
+                fetchMembers={this.props.loadMembersList}
                 user={this.props.user}
+                members={this.props.members}
                 saveAlert={this.props.saveAlert}
                 alertMsg={this.msg}
               />
@@ -870,7 +867,8 @@ function mapStateToProps(state) {
     apiDisableNGP: (state.settingsInfo.apiDisableNGP),
     resetDataNGP: (state.settingsInfo.resetDataNGP),
     apiSuccessNGP: (state.settingsInfo.apiSuccessNGP),
-    apiFailureNGP: (state.settingsInfo.apiFailureNGP)
+    apiFailureNGP: (state.settingsInfo.apiFailureNGP),
+    members: state.membersInfo.members
   }
 }
 
@@ -882,7 +880,9 @@ function mapDispatchToProps(dispatch) {
     saveNGP: saveNGP,
     loadMyPagesList: loadMyPagesList,
     fetchMessageAlerts,
-    saveAlert
+    fetchAlertSubscriptions,
+    saveAlert,
+    loadMembersList
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Settings)

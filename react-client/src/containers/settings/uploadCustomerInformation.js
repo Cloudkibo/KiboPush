@@ -197,7 +197,7 @@ class UploadCustomerInfo extends React.Component {
             </div>
           </div>
         </div>
-        <div className='m-portlet m-portlet--full-height m-portlet--tabs  '>
+        <div style={{height: '85vh'}} className='m-portlet m-portlet--full-height m-portlet--tabs  '>
           <div className='m-portlet__head'>
             <div className='m-portlet__head-tools'>
               <ul className='nav nav-tabs m-tabs m-tabs-line   m-tabs-line--left m-tabs-line--primary' role='tablist'>
@@ -248,7 +248,7 @@ class UploadCustomerInfo extends React.Component {
                       style={{float: 'right'}}
                       className='btn btn-primary btn-sm'
                       disabled={this.state.file === ''}
-                      data-toggle="modal" 
+                      data-toggle="modal"
                       data-target="#uploadCustomerInfo"
                     >
                       Upload
