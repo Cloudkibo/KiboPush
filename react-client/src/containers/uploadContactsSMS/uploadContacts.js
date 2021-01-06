@@ -18,6 +18,7 @@ import PREVIEW from './preview'
 import MODAL from '../../components/extras/modal'
 import CONFIRMATIONMODAL from '../../components/extras/confirmationModal'
 import FULLSCREENLOADER from '../../components/extras/fullScreenLoader'
+import { validatePhoneNumber } from '../../utility/utils'
 
 class UploadContacts extends React.Component {
   constructor (props, context) {
@@ -78,7 +79,7 @@ class UploadContacts extends React.Component {
   }
 
   onNumberChange (e) {
-    if (e.target.value.length > 15) {
+    if (e.target.value.length > 16) {
       this.setState({number: e.target.value, numberError: true})
     } else {
       this.setState({number: e.target.value, numberError: false})
@@ -118,9 +119,7 @@ class UploadContacts extends React.Component {
   }
 
   onAdd () {
-    // eslint-disable-next-line
-    const regexp = /\+(9[976]\d|8[987530]\d|6[987]\d|5[90]\d|42\d|3[875]\d|2[98654321]\d|9[8543210]|8[6421]|6[6543210]|5[87654321]|4[987654310]|3[9643210]|2[70]|7|1)\W*\d\W*\d\W*\d\W*\d\W*\d\W*\d\W*\d\W*\d\W*(\d{1,14})$/g
-    if (regexp.test(this.state.number)) {
+    if (validatePhoneNumber(this.state.number)) {
       this.setState({manualLoading: true})
       this.props.addContactManually(this.state.name, this.state.number, this.handleOnAdd)
     } else {
@@ -355,9 +354,7 @@ class UploadContacts extends React.Component {
     let nameIndex = this.state.allColumns.findIndex((item) => item.value === this.state.nameColumn.value)
     let numberIndex = this.state.allColumns.findIndex((item) => item.value === this.state.phoneColumn.value)
     for (let i = 1; i < data.length; i++) {
-      // eslint-disable-next-line
-      const regexp = /\+(9[976]\d|8[987530]\d|6[987]\d|5[90]\d|42\d|3[875]\d|2[98654321]\d|9[8543210]|8[6421]|6[6543210]|5[87654321]|4[987654310]|3[9643210]|2[70]|7|1)\W*\d\W*\d\W*\d\W*\d\W*\d\W*\d\W*\d\W*\d\W*(\d{1,14})$/g
-      if (regexp.test(data[i][numberIndex])) {
+      if (validatePhoneNumber(data[i][numberIndex])) {
         contacts.push({
           name: data[i][nameIndex],
           number: data[i][numberIndex],
