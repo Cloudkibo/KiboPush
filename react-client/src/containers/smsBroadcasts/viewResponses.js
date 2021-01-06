@@ -4,10 +4,11 @@
 
 import React from 'react'
 import { connect } from 'react-redux'
-import { fetchResponseDetails } from '../../redux/actions/smsBroadcasts.actions'
+import { fetchResponseDetails, smsResponseEvent,  updateSmsAnalytics, updateSendersInfo} from '../../redux/actions/smsBroadcasts.actions'
 import { bindActionCreators } from 'redux'
 import ResponseDetails from './responseDetails'
 import BACKBUTTON from '../../components/extras/backButton'
+import { cloneDeep } from 'lodash'
 
 class ViewResponses extends React.Component {
     constructor (props) {
@@ -20,6 +21,18 @@ class ViewResponses extends React.Component {
         this.handlePageClick = this.handlePageClick.bind(this)
         this.goToCreateFollowUp = this.goToCreateFollowUp.bind(this)
         this.removeLoader = this.removeLoader.bind(this)
+        this.updateSendersInfo = this.updateSendersInfo.bind(this)
+    }
+    updateSendersInfo () {
+        let socketResponse = this.props.smsResponseInfo.response
+        let currentSendersInfo = cloneDeep(this.props.senders)
+        if (socketResponse.response) {
+            if (currentSendersInfo[socketResponse.response.text]) {
+                currentSendersInfo[socketResponse.response.text] = [...[this.props.smsResponseInfo.subscriber], ... currentSendersInfo[socketResponse.response.text]]
+            }
+        }
+        this.props.updateSendersInfo(currentSendersInfo)
+        this.props.smsResponseEvent(null)
     }
     goBack () {
         this.props.history.push({
@@ -95,6 +108,38 @@ class ViewResponses extends React.Component {
       }
 
     UNSAFE_componentWillReceiveProps (nextProps) {
+        if (nextProps.smsResponseInfo && nextProps.smsResponseInfo.response) {
+            let socketResponse = nextProps.smsResponseInfo.response
+            let smsAnalyticsCurrent = cloneDeep(nextProps.smsAnalytics)
+            if (nextProps.smsResponseInfo.response.broadcastId === nextProps.smsBroadcast._id) {
+                if (smsAnalyticsCurrent.responded > 0) {                   
+                    let responseObject = smsAnalyticsCurrent.responses.find(re => re._id === socketResponse.response.text)
+                    if (responseObject) {
+                        smsAnalyticsCurrent.responded = smsAnalyticsCurrent.responded + 1
+                        responseObject.count =  responseObject.count + 1
+                    } else {
+                        let othersObject = smsAnalyticsCurrent.responses.find(re => re._id === 'others')
+                        if (othersObject) {
+                            smsAnalyticsCurrent.responded = smsAnalyticsCurrent.responded + 1
+                            othersObject.count = othersObject.count + 1
+                        } else {
+                            let responseObj = nextProps.smsResponseInfo.response
+                            if (responseObj.response && responseObj.response.text) {
+                                smsAnalyticsCurrent.responded = smsAnalyticsCurrent.responded + 1
+                                smsAnalyticsCurrent.responses.push({_id: responseObj.response.text, count: 1})
+                            }
+                        }
+                    }
+                } else {
+                    if (socketResponse.response && socketResponse.response.text) {
+                        smsAnalyticsCurrent.responded = 1
+                        smsAnalyticsCurrent.responses.push({_id: socketResponse.response.text, count: 1})
+                    }
+                } 
+            }
+            nextProps.updateSmsAnalytics(smsAnalyticsCurrent)
+            //nextProps.smsResponseEvent(null)
+        }
     }
 
     render () {
@@ -157,7 +202,7 @@ class ViewResponses extends React.Component {
                                                         <div className='row'>
                                                         { this.state.loading && this.state.loading.response === response._id
                                                             ? <div className='align-center col-12'><h6> Loading Details... </h6></div>
-                                                            : <ResponseDetails senders={this.props.senders ? this.props.senders[response._id] : []} totalLength={response.count} response={response} handlePageClick={this.handlePageClick} /> 
+                                                            : <ResponseDetails senders={this.props.senders ? this.props.senders[response._id] : []} totalLength={response.count} response={response} handlePageClick={this.handlePageClick} updateSendersInfo={this.updateSendersInfo} /> 
                                                         }
                                                         </div>
                                                     </div>
@@ -183,13 +228,17 @@ function mapStateToProps (state) {
   return {
     smsBroadcast: (state.smsBroadcastsInfo.smsBroadcast),
     smsAnalytics: (state.smsBroadcastsInfo.smsAnalytics),
-    senders: (state.smsBroadcastsInfo.sendersInfo)
+    senders: (state.smsBroadcastsInfo.sendersInfo),
+    smsResponseInfo: (state.smsBroadcastsInfo.smsResponseInfo)
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-    fetchResponseDetails
+    fetchResponseDetails,
+    smsResponseEvent,
+    updateSmsAnalytics,
+    updateSendersInfo
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(ViewResponses)

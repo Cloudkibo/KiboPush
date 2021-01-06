@@ -4,7 +4,10 @@
 
 import React from 'react'
 import ReactPaginate from 'react-paginate'
+import { connect } from 'react-redux'
 import { handleDate } from '../../utility/utils'
+import { bindActionCreators } from 'redux'
+import { smsResponseEvent } from '../../redux/actions/smsBroadcasts.actions'
 class ResponseDetails extends React.Component {
     constructor (props) {
         super(props)
@@ -14,6 +17,13 @@ class ResponseDetails extends React.Component {
     }
    
     UNSAFE_componentWillReceiveProps (nextProps) {
+        if (nextProps.smsResponseInfo && nextProps.smsResponseInfo.response) {
+            if (this.state.pageNumber === 0) {
+                this.props.updateSendersInfo(nextProps.smsResponseInfo)
+            }
+            nextProps.smsResponseEvent(null)
+        }
+      
     }
 
     render () {
@@ -90,4 +100,16 @@ class ResponseDetails extends React.Component {
     }
 }
 
-export default ResponseDetails
+function mapStateToProps (state) {
+    return {
+        smsResponseInfo: (state.smsBroadcastsInfo.smsResponseInfo)
+    }
+  }
+
+function mapDispatchToProps (dispatch) {
+    return bindActionCreators({
+      smsResponseEvent
+    }, dispatch)
+  }
+
+  export default connect(mapStateToProps, mapDispatchToProps)(ResponseDetails)

@@ -21,6 +21,7 @@ import { addToSponsoredMessages, updateSponsoredMessagesListItemStatus } from '.
 import { removeZoomIntegration } from './../redux/actions/settings.actions'
 const whatsAppActions = require('./../redux/actions/whatsAppChat.actions')
 const smsActions = require('./../redux/actions/smsChat.actions')
+const smsBroadcasts = require('./../redux/actions/smsBroadcasts.actions')
 
 const socket = io('')
 let store
@@ -110,6 +111,12 @@ socket.on('message', (data) => {
   } else if (data.action === 'new_broadcast') {
     // store.dispatch(loadBroadcastsList())
     store.dispatch(sentVsSeen())
+  } else if (data.action === 'new_sms_broadcast') {
+    store.dispatch(smsBroadcasts.handleNewSmsBroadcastEvent(data.payload))
+  } else if (data.action === 'sms_broadcast_delivery') {
+    store.dispatch(smsBroadcasts.smsDeliveryEvent(data.payload))
+  } else if (data.action === 'sms_broadcast_response') {
+    store.dispatch(smsBroadcasts.smsResponseEvent(data.payload))
   } else if (data.action === 'poll_created') {
     store.dispatch(loadPollsListNew({ last_id: 'none', number_of_records: 10, first_page: true, days: '0' }))
     store.dispatch(sentVsSeen())
