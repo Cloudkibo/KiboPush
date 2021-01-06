@@ -15,7 +15,7 @@ export function handleNewSmsBroadcastEvent (data) {
   broadcast.sent = data.sent
   return {
     type: ActionTypes.NEW_SMS_BROADCAST_SOCKET,
-    newSmsBroadcast: broadcast
+    newSmsBroadcast: {broadcast, user: data.user_id}
   }
 }
 

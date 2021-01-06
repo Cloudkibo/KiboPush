@@ -22,20 +22,24 @@ class ResponseDetails extends React.Component {
             let socketResponse = nextProps.smsResponseInfo.response
             let currentSendersInfo = this.props.allSenders ? cloneDeep(this.props.allSenders) : {}
             if (socketResponse.response) {
+                //check to see if the current component is of reponse received
                 if (socketResponse.response.text.toLowerCase().trim() === this.props.response._id.toLowerCase().trim()) {
+                   // Update senders if its firts page
                     if ( this.state.pageNumber === 0) {
                         if (currentSendersInfo[socketResponse.response.text.toLowerCase().trim()]) {
-                            currentSendersInfo[socketResponse.response.text.toLowerCase().trim()] = [...[nextProps.smsResponseInfo.subscriber], ... currentSendersInfo[socketResponse.response.text.toLowerCase().trim()]]
+                            currentSendersInfo[socketResponse.response.text.toLowerCase().trim()] = [nextProps.smsResponseInfo.subscriber,... currentSendersInfo[socketResponse.response.text.toLowerCase().trim()]]
                         }
                         this.props.updateSendersInfo(currentSendersInfo)
                     }
                     this.props.smsResponseEvent(null)
                 }
                 if (this.props.response._id === 'others') {
+                    // if the current component is others and the response event doesnot belong to any other unique response
+                    // Update others senders info if first page is active
                     let responseObject = this.props.smsAnalytics.responses.find(re => re._id.toLowerCase().trim() === socketResponse.response.text.toLowerCase().trim())
-                    if (!responseObject && currentSendersInfo['others']) {
+                    if (!responseObject && currentSendersInfo['others'] && this.state.pageNumber === 0) {
                         this.props.smsResponseInfo.subscriber = socketResponse.response.text
-                        currentSendersInfo['others'] = [...[nextProps.smsResponseInfo.subscriber], ... currentSendersInfo['others']]
+                        currentSendersInfo['others'] = [nextProps.smsResponseInfo.subscriber,... currentSendersInfo['others']]
                         this.props.updateSendersInfo(currentSendersInfo)
                         this.props.smsResponseEvent(null)
                     }

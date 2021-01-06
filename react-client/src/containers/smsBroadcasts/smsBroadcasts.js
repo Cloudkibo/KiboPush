@@ -173,8 +173,8 @@ class SmsBroadcast extends React.Component {
       console.log('inside', nextProps.twilioNumbers[0])
       this.setState({numberValue: nextProps.twilioNumbers[0]})
     }
-    if (nextProps.newSmsBroadcast && this.state.pageNumber === 0 && !this.isFilterApplied()) {
-     nextProps.updateSmsBroadcasts(nextProps.newSmsBroadcast)
+    if (nextProps.newSmsBroadcast && this.state.pageNumber === 0 && !this.isFilterApplied() && nextProps.newSmsBroadcast.user !== this.props.user._id) {
+     nextProps.updateSmsBroadcasts(nextProps.newSmsBroadcast.broadcast)
     }
   }
 
@@ -417,7 +417,8 @@ function mapStateToProps (state) {
     count: (state.smsBroadcastsInfo.count),
     twilioNumbers: (state.smsBroadcastsInfo.twilioNumbers),
     contacts: (state.contactsInfo.contacts),
-    newSmsBroadcast: (state.smsBroadcastsInfo.newSmsBroadcast)
+    newSmsBroadcast: (state.smsBroadcastsInfo.newSmsBroadcast),
+    user: (state.basicInfo.user),
   }
 }
 

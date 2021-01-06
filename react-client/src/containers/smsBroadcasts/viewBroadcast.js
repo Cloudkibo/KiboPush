@@ -8,6 +8,7 @@ import { fetchSmsAnalytics, clearSendersInfo, smsDeliveryEvent, saveCurrentSmsBr
 import { bindActionCreators } from 'redux'
 import BACKBUTTON from '../../components/extras/backButton'
 import { cloneDeep } from 'lodash'
+import { handleResponseEvent } from './logic.js'
 
 class ViewBroadcast extends React.Component {
     constructor (props) {
@@ -16,7 +17,6 @@ class ViewBroadcast extends React.Component {
             }
         this.goBack = this.goBack.bind(this)
         this.goToResponses = this.goToResponses.bind(this)
-        this.handleSmsResponseEvent = this.handleSmsResponseEvent.bind(this)
         props.clearSendersInfo()
         props.fetchSmsAnalytics(props.smsBroadcast._id)
     }
@@ -29,44 +29,6 @@ class ViewBroadcast extends React.Component {
         this.props.history.push({
             pathname: `/viewResponses`,
         })
-    }
-
-    handleSmsResponseEvent(nextProps) {
-        let socketResponse = nextProps.smsResponseInfo.response
-        let smsAnalyticsCurrent = cloneDeep(nextProps.smsAnalytics)
-        if (nextProps.smsResponseInfo.response.broadcastId === nextProps.smsBroadcast._id) {
-            if (smsAnalyticsCurrent.responded > 0) {                   
-                let responseObject = smsAnalyticsCurrent.responses.find(re => re._id.toLowerCase().trim() === socketResponse.response.text.toLowerCase().trim())
-                if (responseObject) {
-                    smsAnalyticsCurrent.responded = smsAnalyticsCurrent.responded + 1
-                    responseObject.count =  responseObject.count + 1
-                } else {
-                    let othersObject = smsAnalyticsCurrent.responses.find(re => re._id === 'others')
-                    if (othersObject) {
-                        smsAnalyticsCurrent.responded = smsAnalyticsCurrent.responded + 1
-                        othersObject.count = othersObject.count + 1
-                    } else {
-                        if (smsAnalyticsCurrent.responses.length < 5) {
-                            let socketResponse = nextProps.smsResponseInfo.response
-                            if (socketResponse.response && socketResponse.response.text) {
-                                smsAnalyticsCurrent.responded = smsAnalyticsCurrent.responded + 1
-                                smsAnalyticsCurrent.responses.push({_id: socketResponse.response.text.toLowerCase().trim(), count: 1})
-                            }
-                        } else {
-                            smsAnalyticsCurrent.responded = smsAnalyticsCurrent.responded + 1
-                            smsAnalyticsCurrent.responses.push({_id: 'others', count: 1})
-                        }
-                    }
-                }
-            } else {
-                if (socketResponse.response && socketResponse.response.text) {
-                    smsAnalyticsCurrent.responded = 1
-                    smsAnalyticsCurrent.responses.push({_id: socketResponse.response.text.toLowerCase().trim(), count: 1})
-                }
-            }
-            nextProps.updateSmsAnalytics(smsAnalyticsCurrent)
-        }
-        nextProps.smsResponseEvent(null)
     }
 
     UNSAFE_componentWillReceiveProps (nextProps) {
@@ -113,7 +75,12 @@ class ViewBroadcast extends React.Component {
         }
 
         if (nextProps.smsResponseInfo && nextProps.smsResponseInfo.response) {
-          this.handleSmsResponseEvent(nextProps)
+            let smsAnalyticsCurrent = cloneDeep(nextProps.smsAnalytics)
+            if (nextProps.smsResponseInfo.response.broadcastId === nextProps.smsBroadcast._id) {
+                smsAnalyticsCurrent = handleResponseEvent(smsAnalyticsCurrent, nextProps.smsResponseInfo)
+                nextProps.updateSmsAnalytics(smsAnalyticsCurrent)
+            }
+            nextProps.smsResponseEvent(null)
         }
     }
 
