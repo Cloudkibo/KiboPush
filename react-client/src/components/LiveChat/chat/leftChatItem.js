@@ -46,6 +46,11 @@ class LeftChatItem extends React.Component {
       }
       return (
         <div>
+          {message.text && (
+            <div style={{  marginBottom: '10px'  }}>
+              <TEXT text={message} urlMeta={this.props.message.url_meta} />
+            </div>
+          )}
           <VIDEO
             video={video}
           />
@@ -74,17 +79,17 @@ class LeftChatItem extends React.Component {
       }
       return (
         <div>
-          <IMAGE
-            image={image}
-          />
-          {
-            message.caption &&
-            <div style={{marginTop: '10px'}}>
-              <TEXT
-                text={{text: message.caption}}
-              />
+          {message.text && (
+            <div style={{  marginBottom: '10px'  }}>
+              <TEXT text={message} urlMeta={this.props.message.url_meta} />
             </div>
-          }
+          )}
+          <IMAGE image={image} />
+          {message.caption && (
+            <div style={{ marginTop: '10px' }}>
+              <TEXT text={{ text: message.caption }} />
+            </div>
+          )}
         </div>
       )
     } else if (type === 'file') {
