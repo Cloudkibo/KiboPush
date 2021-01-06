@@ -7,7 +7,8 @@ import ReactPaginate from 'react-paginate'
 import { connect } from 'react-redux'
 import { handleDate } from '../../utility/utils'
 import { bindActionCreators } from 'redux'
-import { smsResponseEvent } from '../../redux/actions/smsBroadcasts.actions'
+import { smsResponseEvent, updateSendersInfo } from '../../redux/actions/smsBroadcasts.actions'
+import { cloneDeep } from 'lodash'
 class ResponseDetails extends React.Component {
     constructor (props) {
         super(props)
@@ -16,14 +17,31 @@ class ResponseDetails extends React.Component {
         }
     }
    
-    UNSAFE_componentWillReceiveProps (nextProps) {
-        if (nextProps.smsResponseInfo && nextProps.smsResponseInfo.response) {
-            if (this.state.pageNumber === 0) {
-                this.props.updateSendersInfo(nextProps.smsResponseInfo)
-            }
-            nextProps.smsResponseEvent(null)
+    UNSAFE_componentWillReceiveProps (nextProps) {  
+        if (nextProps.smsResponseInfo) {
+            let socketResponse = nextProps.smsResponseInfo.response
+            let currentSendersInfo = this.props.allSenders ? cloneDeep(this.props.allSenders) : {}
+            if (socketResponse.response) {
+                if (socketResponse.response.text.toLowerCase().trim() === this.props.response._id.toLowerCase().trim()) {
+                    if ( this.state.pageNumber === 0) {
+                        if (currentSendersInfo[socketResponse.response.text.toLowerCase().trim()]) {
+                            currentSendersInfo[socketResponse.response.text.toLowerCase().trim()] = [...[nextProps.smsResponseInfo.subscriber], ... currentSendersInfo[socketResponse.response.text.toLowerCase().trim()]]
+                        }
+                        this.props.updateSendersInfo(currentSendersInfo)
+                    }
+                    this.props.smsResponseEvent(null)
+                }
+                if (this.props.response._id === 'others') {
+                    let responseObject = this.props.smsAnalytics.responses.find(re => re._id.toLowerCase().trim() === socketResponse.response.text.toLowerCase().trim())
+                    if (!responseObject && currentSendersInfo['others']) {
+                        this.props.smsResponseInfo.subscriber = socketResponse.response.text
+                        currentSendersInfo['others'] = [...[nextProps.smsResponseInfo.subscriber], ... currentSendersInfo['others']]
+                        this.props.updateSendersInfo(currentSendersInfo)
+                        this.props.smsResponseEvent(null)
+                    }
+                }
+            } 
         }
-      
     }
 
     render () {
@@ -108,7 +126,8 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
     return bindActionCreators({
-      smsResponseEvent
+      smsResponseEvent,
+      updateSendersInfo
     }, dispatch)
   }
 

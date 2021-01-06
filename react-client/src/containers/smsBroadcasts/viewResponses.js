@@ -20,20 +20,10 @@ class ViewResponses extends React.Component {
         this.expandRowToggle = this.expandRowToggle.bind(this)
         this.handlePageClick = this.handlePageClick.bind(this)
         this.goToCreateFollowUp = this.goToCreateFollowUp.bind(this)
+        this.handleSmsResponseEvent = this.handleSmsResponseEvent.bind(this)
         this.removeLoader = this.removeLoader.bind(this)
-        this.updateSendersInfo = this.updateSendersInfo.bind(this)
     }
-    updateSendersInfo () {
-        let socketResponse = this.props.smsResponseInfo.response
-        let currentSendersInfo = cloneDeep(this.props.senders)
-        if (socketResponse.response) {
-            if (currentSendersInfo[socketResponse.response.text]) {
-                currentSendersInfo[socketResponse.response.text] = [...[this.props.smsResponseInfo.subscriber], ... currentSendersInfo[socketResponse.response.text]]
-            }
-        }
-        this.props.updateSendersInfo(currentSendersInfo)
-        this.props.smsResponseEvent(null)
-    }
+
     goBack () {
         this.props.history.push({
             pathname: `/viewBroadcast`,
@@ -106,39 +96,50 @@ class ViewResponses extends React.Component {
             this.props.fetchResponseDetails(this.props.smsBroadcast._id, this.props.smsAnalytics.responses[row]._id, payload, null, this.removeLoader)
         }
       }
+    
+    handleSmsResponseEvent (nextProps) {
+        let socketResponse = nextProps.smsResponseInfo.response
+        let smsAnalyticsCurrent = cloneDeep(nextProps.smsAnalytics)
+        if (nextProps.smsResponseInfo.response.broadcastId === nextProps.smsBroadcast._id) {
+            if (smsAnalyticsCurrent.responded > 0) {                   
+                let responseObject = smsAnalyticsCurrent.responses.find(re => re._id === socketResponse.response.text)
+                if (responseObject) {
+                    smsAnalyticsCurrent.responded = smsAnalyticsCurrent.responded + 1
+                    responseObject.count =  responseObject.count + 1
+                } else {
+                    let othersObject = smsAnalyticsCurrent.responses.find(re => re._id === 'others')
+                    if (othersObject) {
+                        smsAnalyticsCurrent.responded = smsAnalyticsCurrent.responded + 1
+                        othersObject.count = othersObject.count + 1
+                    } else {
+                        if (smsAnalyticsCurrent.responses.length < 5) {
+                            let socketResponse = nextProps.smsResponseInfo.response
+                            if (socketResponse.response && socketResponse.response.text) {
+                                smsAnalyticsCurrent.responded = smsAnalyticsCurrent.responded + 1
+                                smsAnalyticsCurrent.responses.push({_id: socketResponse.response.text.toLowerCase().trim(), count: 1})
+                                let currentSendersInfo = nextProps.senders ? cloneDeep(nextProps.senders) : {}
+                                currentSendersInfo[socketResponse.response.text.toLowerCase().trim()] = [nextProps.smsResponseInfo.subscriber]
+                                this.props.smsResponseEvent(null)
+                                this.props.updateSendersInfo(currentSendersInfo)
+                            }
+                        } else {
+                            smsAnalyticsCurrent.responded = smsAnalyticsCurrent.responded + 1
+                            smsAnalyticsCurrent.responses.push({_id: 'others', count: 1})
+                            let currentSendersInfo = nextProps.senders ? cloneDeep(nextProps.senders) : {}
+                            currentSendersInfo['others'] = [nextProps.smsResponseInfo.subscriber]
+                            this.props.smsResponseEvent(null)
+                            this.props.updateSendersInfo(currentSendersInfo)
+                        }
+                    }
+                }
+            }
+            nextProps.updateSmsAnalytics(smsAnalyticsCurrent)
+        }
+    }
 
     UNSAFE_componentWillReceiveProps (nextProps) {
         if (nextProps.smsResponseInfo && nextProps.smsResponseInfo.response) {
-            let socketResponse = nextProps.smsResponseInfo.response
-            let smsAnalyticsCurrent = cloneDeep(nextProps.smsAnalytics)
-            if (nextProps.smsResponseInfo.response.broadcastId === nextProps.smsBroadcast._id) {
-                if (smsAnalyticsCurrent.responded > 0) {                   
-                    let responseObject = smsAnalyticsCurrent.responses.find(re => re._id === socketResponse.response.text)
-                    if (responseObject) {
-                        smsAnalyticsCurrent.responded = smsAnalyticsCurrent.responded + 1
-                        responseObject.count =  responseObject.count + 1
-                    } else {
-                        let othersObject = smsAnalyticsCurrent.responses.find(re => re._id === 'others')
-                        if (othersObject) {
-                            smsAnalyticsCurrent.responded = smsAnalyticsCurrent.responded + 1
-                            othersObject.count = othersObject.count + 1
-                        } else {
-                            let responseObj = nextProps.smsResponseInfo.response
-                            if (responseObj.response && responseObj.response.text) {
-                                smsAnalyticsCurrent.responded = smsAnalyticsCurrent.responded + 1
-                                smsAnalyticsCurrent.responses.push({_id: responseObj.response.text, count: 1})
-                            }
-                        }
-                    }
-                } else {
-                    if (socketResponse.response && socketResponse.response.text) {
-                        smsAnalyticsCurrent.responded = 1
-                        smsAnalyticsCurrent.responses.push({_id: socketResponse.response.text, count: 1})
-                    }
-                } 
-            }
-            nextProps.updateSmsAnalytics(smsAnalyticsCurrent)
-            //nextProps.smsResponseEvent(null)
+           this.handleSmsResponseEvent(nextProps)
         }
     }
 
@@ -202,7 +203,7 @@ class ViewResponses extends React.Component {
                                                         <div className='row'>
                                                         { this.state.loading && this.state.loading.response === response._id
                                                             ? <div className='align-center col-12'><h6> Loading Details... </h6></div>
-                                                            : <ResponseDetails senders={this.props.senders ? this.props.senders[response._id] : []} totalLength={response.count} response={response} handlePageClick={this.handlePageClick} updateSendersInfo={this.updateSendersInfo} /> 
+                                                            : <ResponseDetails senders={this.props.senders ? this.props.senders[response._id] : []} totalLength={response.count} response={response} handlePageClick={this.handlePageClick} allSenders= {this.props.senders} smsAnalytics={this.props.smsAnalytics} /> 
                                                         }
                                                         </div>
                                                     </div>

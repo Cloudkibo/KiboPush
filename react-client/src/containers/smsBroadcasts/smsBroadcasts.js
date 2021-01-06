@@ -173,7 +173,7 @@ class SmsBroadcast extends React.Component {
       console.log('inside', nextProps.twilioNumbers[0])
       this.setState({numberValue: nextProps.twilioNumbers[0]})
     }
-    if (nextProps.newSmsBroadcast && this.state.pageNumber === 0 && this.state.searchValue === '' && !this.isFilterApplied()) {
+    if (nextProps.newSmsBroadcast && this.state.pageNumber === 0 && !this.isFilterApplied()) {
      nextProps.updateSmsBroadcasts(nextProps.newSmsBroadcast)
     }
   }

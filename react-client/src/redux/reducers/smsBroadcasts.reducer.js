@@ -18,7 +18,7 @@ export function smsBroadcastsInfo (state = initState, action) {
         })
     case ActionTypes.UPDATE_SMS_BROADCAST:
       return Object.assign({}, state, {
-        broadcasts: [...[action.broadcast], ...state.broadcasts],
+        broadcasts: [action.broadcast, ...state.broadcasts],
         count: state.count + 1,
         newSmsBroadcast: null
       })
