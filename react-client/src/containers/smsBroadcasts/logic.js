@@ -10,7 +10,7 @@ export function handleResponseEvent(smsAnalyticsCurrent, smsResponseInfo, sender
             responseObject.count =  responseObject.count + 1
         } else {
             //check to see if the responses are less than 5  
-            if (smsAnalyticsCurrent.responses.length < 2) {
+            if (smsAnalyticsCurrent.responses.length < 5) {
                 // since response doesnot exist create a new one and update its senders info
                 if (socketResponse.response && socketResponse.response.text) {
                     smsAnalyticsCurrent.responded = smsAnalyticsCurrent.responded + 1
