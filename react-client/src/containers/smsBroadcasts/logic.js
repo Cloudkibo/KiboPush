@@ -31,12 +31,12 @@ export function handleResponseEvent(smsAnalyticsCurrent, smsResponseInfo, sender
                   // remove last response senders info.
                     smsAnalyticsCurrent.responded = smsAnalyticsCurrent.responded + 1
                     let responseArray = []
-                    for (var i=0; i < smsAnalyticsCurrent.responses.length - 2; i++) {
+                    for (var i=0; i < smsAnalyticsCurrent.responses.length - 1; i++) {
                         responseArray.push(smsAnalyticsCurrent.responses[i])
                     }
                     responseArray.push({_id: 'others', count:  smsAnalyticsCurrent.responses[smsAnalyticsCurrent.responses.length - 1].count + 1})
                     smsAnalyticsCurrent.responses = responseArray
-                    if (senders[smsAnalyticsCurrent.responses[smsAnalyticsCurrent.responses.length - 1]._id]) {
+                    if (senders && senders[smsAnalyticsCurrent.responses[smsAnalyticsCurrent.responses.length - 1]._id]) {
                         delete senders[smsAnalyticsCurrent.responses[smsAnalyticsCurrent.responses.length - 1]._id]
                     }
                     if (smsResponseEvent) {

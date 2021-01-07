@@ -27,7 +27,7 @@ class ResponseDetails extends React.Component {
                    // Update senders if its firts page
                     if ( this.state.pageNumber === 0) {
                         if (currentSendersInfo[socketResponse.response.text.toLowerCase().trim()]) {
-                            currentSendersInfo[socketResponse.response.text.toLowerCase().trim()] = [nextProps.smsResponseInfo.subscriber,... currentSendersInfo[socketResponse.response.text.toLowerCase().trim()]]
+                            currentSendersInfo[socketResponse.response.text.toLowerCase().trim()] = [nextProps.smsResponseInfo.subscriber,...currentSendersInfo[socketResponse.response.text.toLowerCase().trim()]]
                         }
                         this.props.updateSendersInfo(currentSendersInfo)
                     }
@@ -35,11 +35,11 @@ class ResponseDetails extends React.Component {
                 }
                 if (this.props.response._id === 'others') {
                     // if the current component is others and the response event doesnot belong to any other unique response
-                    // Update others senders info if first page is active
+                    // Update 'others' senders info if first page is active
                     let responseObject = this.props.smsAnalytics.responses.find(re => re._id.toLowerCase().trim() === socketResponse.response.text.toLowerCase().trim())
                     if (!responseObject && currentSendersInfo['others'] && this.state.pageNumber === 0) {
-                        this.props.smsResponseInfo.subscriber = socketResponse.response.text
-                        currentSendersInfo['others'] = [nextProps.smsResponseInfo.subscriber,... currentSendersInfo['others']]
+                        nextProps.smsResponseInfo.subscriber.text = socketResponse.response.text
+                        currentSendersInfo['others'] = [nextProps.smsResponseInfo.subscriber,...currentSendersInfo['others']]
                         this.props.updateSendersInfo(currentSendersInfo)
                         this.props.smsResponseEvent(null)
                     }
