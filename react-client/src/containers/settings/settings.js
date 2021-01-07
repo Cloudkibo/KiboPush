@@ -7,7 +7,13 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { getNGP, enableNGP, disableNGP, saveNGP } from '../../redux/actions/settings.actions'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
-import { fetchMessageAlerts, saveAlert, fetchAlertSubscriptions } from '../../redux/actions/messageAlerts.actions'
+import {
+  fetchMessageAlerts,
+  saveAlert,
+  fetchAlertSubscriptions,
+  addSubscription,
+  removeSubscription
+} from '../../redux/actions/messageAlerts.actions'
 import { loadMembersList } from '../../redux/actions/members.actions'
 
 import AccountSettings from './accountSettings'
@@ -515,10 +521,10 @@ class Settings extends React.Component {
             </div>
           </div>
         </div>
-        <div style={{position: 'fixed', zIndex: 1050}} className='m-content'>
+        <div style={{padding: '30px 30px 0px 30px'}} className='m-content'>
           <div className='row'>
             <div className='col-lg-4 col-md-4 col-sm-4 col-xs-12'>
-              <div style={{height: '85vh', overflow: 'hidden', display: 'flex', flexDirection: 'column'}} className='m-portlet m-portlet--full-height'>
+              <div style={{height: '82vh', overflow: 'hidden', display: 'flex', flexDirection: 'column'}} className='m-portlet'>
                 <div style={{height: 'auto', flex: '0 0 auto'}} className='m-portlet__head'>
                   <div className='m-card-profile'>
                     <div className='m-card-profile__title m--hide'>
@@ -710,7 +716,7 @@ class Settings extends React.Component {
             {
               this.state.openTab === 'showNGP' &&
               <div id='target' className='col-lg-8 col-md-8 col-sm-8 col-xs-12'>
-                <div style={{height: '85vh'}} className='m-portlet m-portlet--full-height m-portlet--tabs  '>
+                <div style={{height: '85vh'}} className='m-portlet m-portlet--tabs  '>
                   <div className='m-portlet__head'>
                     <div className='m-portlet__head-tools'>
                       <ul className='nav nav-tabs m-tabs m-tabs-line   m-tabs-line--left m-tabs-line--primary' role='tablist'>
@@ -834,6 +840,8 @@ class Settings extends React.Component {
                 fetchMessageAlerts={this.props.fetchMessageAlerts}
                 fetchAlertSubscriptions={this.props.fetchAlertSubscriptions}
                 fetchMembers={this.props.loadMembersList}
+                addSubscription={this.props.addSubscription}
+                removeSubscription={this.props.removeSubscription}
                 user={this.props.user}
                 members={this.props.members}
                 saveAlert={this.props.saveAlert}
@@ -874,15 +882,17 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators({
-    getNGP: getNGP,
-    enableNGP: enableNGP,
-    disableNGP: disableNGP,
-    saveNGP: saveNGP,
-    loadMyPagesList: loadMyPagesList,
+    getNGP,
+    enableNGP,
+    disableNGP,
+    saveNGP,
+    loadMyPagesList,
     fetchMessageAlerts,
     fetchAlertSubscriptions,
     saveAlert,
-    loadMembersList
+    loadMembersList,
+    addSubscription,
+    removeSubscription
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Settings)

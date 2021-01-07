@@ -27,3 +27,21 @@ export function saveAlert(alert, callback) {
       })
   }
 }
+
+export function addSubscription(data, callback) {
+  return (dispatch) => {
+    callApi('messageAlerts/subscribe', 'post', data)
+      .then(res => {
+        callback(res)
+      })
+  }
+}
+
+export function removeSubscription(id, callback) {
+  return (dispatch) => {
+    callApi(`messageAlerts/unsubscribe/${id}`)
+      .then(res => {
+        callback(res)
+      })
+  }
+}
