@@ -4,7 +4,7 @@
 
 import React from 'react'
 import { connect } from 'react-redux'
-import { loadBroadcastsList, loadTwilioNumbers, saveCurrentSmsBroadcast, clearSmsAnalytics } from '../../redux/actions/smsBroadcasts.actions'
+import { loadBroadcastsList, loadTwilioNumbers, saveCurrentSmsBroadcast, clearSmsAnalytics, updateSmsBroadcasts} from '../../redux/actions/smsBroadcasts.actions'
 import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
 import { Link } from 'react-router-dom'
@@ -43,6 +43,7 @@ class SmsBroadcast extends React.Component {
     this.createFollowUp = this.createFollowUp.bind(this)
     this.searchBroadcast = this.searchBroadcast.bind(this)
     this.isFollowupFilter = this.isFollowupFilter.bind(this)
+    this.isFilterApplied = this.isFilterApplied.bind(this)
   }
 
   showPopover () {
@@ -153,7 +154,13 @@ class SmsBroadcast extends React.Component {
     }
     document.title = `${title} | Broadcasts`
   }
-
+  isFilterApplied () {
+    let isFilter = false
+    if (this.state.searchValue !== '' || (this.state.isFollowupFilter !== '' && this.state.isFollowupFilter !== 'all')) {
+      isFilter = true
+    }
+    return isFilter
+  }
   UNSAFE_componentWillReceiveProps (nextProps) {
     console.log('in UNSAFE_componentWillReceiveProps of smsBroadcasts', nextProps)
     if (nextProps.broadcasts && nextProps.count) {
@@ -165,6 +172,9 @@ class SmsBroadcast extends React.Component {
     if (nextProps.twilioNumbers && nextProps.twilioNumbers.length > 0) {
       console.log('inside', nextProps.twilioNumbers[0])
       this.setState({numberValue: nextProps.twilioNumbers[0]})
+    }
+    if (nextProps.newSmsBroadcast && this.state.pageNumber === 0 && !this.isFilterApplied() && nextProps.newSmsBroadcast.user !== this.props.user._id) {
+     nextProps.updateSmsBroadcasts(nextProps.newSmsBroadcast.broadcast)
     }
   }
 
@@ -333,19 +343,19 @@ class SmsBroadcast extends React.Component {
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
                             <span style={{width: '100px'}}>Created At</span>
                           </th>
-                          <th data-field='sent'
+                          <th data-field='sentFrom'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
                             <span style={{width: '100px'}}>Sent From</span>
                           </th>
-                          <th data-field='delivered'
+                          <th data-field='sent'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                            <span style={{width: '100px'}}>Delivered</span>
+                            <span style={{width: '100px'}}>Sent</span>
                           </th>
-                          <th data-field='delivered'
+                          <th data-field='isFollowUp'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
                             <span style={{width: '100px'}}>Is Follow Up</span>
                           </th>
-                          <th data-field='delivered'
+                          <th data-field='action'
                             className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
                             <span style={{width: '100px'}}>Action</span>
                           </th>
@@ -359,8 +369,8 @@ class SmsBroadcast extends React.Component {
                             <td data-field='platform' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{broadcast.platform}</span></td>
                             <td data-field='title' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{broadcast.title}</span></td>
                             <td data-field='createAt' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{broadcast.datetime}</span></td>
-                            <td data-field='sent' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{broadcast.phoneNumber}</span></td>
-                            <td data-field='delivered' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{broadcast.sent}</span></td>
+                            <td data-field='sentFrom' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{broadcast.phoneNumber}</span></td>
+                            <td data-field='sent' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{broadcast.sent}</span></td>
                             <td data-field='isFollowUp' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}>{broadcast.followUp ? "Yes" : "No"}</span></td>
                             <td data-field='action' className='m-datatable__cell--center m-datatable__cell'><span style={{width: '100px'}}><button style={{width: '60px'}} className='btn btn-primary btn-sm m-btn--pill' onClick={() => {this.gotoView(broadcast)}}>View</button></span></td>
                           </tr>
@@ -406,7 +416,9 @@ function mapStateToProps (state) {
     broadcasts: (state.smsBroadcastsInfo.broadcasts),
     count: (state.smsBroadcastsInfo.count),
     twilioNumbers: (state.smsBroadcastsInfo.twilioNumbers),
-    contacts: (state.contactsInfo.contacts)
+    contacts: (state.contactsInfo.contacts),
+    newSmsBroadcast: (state.smsBroadcastsInfo.newSmsBroadcast),
+    user: (state.basicInfo.user),
   }
 }
 
@@ -416,7 +428,8 @@ function mapDispatchToProps (dispatch) {
     loadTwilioNumbers,
     loadContactsList,
     saveCurrentSmsBroadcast,
-    clearSmsAnalytics
+    clearSmsAnalytics,
+    updateSmsBroadcasts
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(SmsBroadcast)

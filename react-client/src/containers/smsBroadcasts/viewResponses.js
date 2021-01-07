@@ -4,10 +4,12 @@
 
 import React from 'react'
 import { connect } from 'react-redux'
-import { fetchResponseDetails } from '../../redux/actions/smsBroadcasts.actions'
+import { fetchResponseDetails,  updateSmsAnalytics, smsResponseEvent} from '../../redux/actions/smsBroadcasts.actions'
 import { bindActionCreators } from 'redux'
 import ResponseDetails from './responseDetails'
 import BACKBUTTON from '../../components/extras/backButton'
+import { cloneDeep } from 'lodash'
+import { handleResponseEvent } from './logic.js'
 
 class ViewResponses extends React.Component {
     constructor (props) {
@@ -21,6 +23,7 @@ class ViewResponses extends React.Component {
         this.goToCreateFollowUp = this.goToCreateFollowUp.bind(this)
         this.removeLoader = this.removeLoader.bind(this)
     }
+
     goBack () {
         this.props.history.push({
             pathname: `/viewBroadcast`,
@@ -93,8 +96,15 @@ class ViewResponses extends React.Component {
             this.props.fetchResponseDetails(this.props.smsBroadcast._id, this.props.smsAnalytics.responses[row]._id, payload, null, this.removeLoader)
         }
       }
-
+    
     UNSAFE_componentWillReceiveProps (nextProps) {
+        if (nextProps.smsResponseInfo && nextProps.smsResponseInfo.response) {
+            let smsAnalyticsCurrent = cloneDeep(nextProps.smsAnalytics)
+            if (nextProps.smsResponseInfo.response.broadcastId === nextProps.smsBroadcast._id) {
+                handleResponseEvent(smsAnalyticsCurrent, nextProps.smsResponseInfo, nextProps.senders, nextProps.smsResponseEvent)
+                smsAnalyticsCurrent = nextProps.updateSmsAnalytics(smsAnalyticsCurrent)
+            }
+        }
     }
 
     render () {
@@ -157,7 +167,7 @@ class ViewResponses extends React.Component {
                                                         <div className='row'>
                                                         { this.state.loading && this.state.loading.response === response._id
                                                             ? <div className='align-center col-12'><h6> Loading Details... </h6></div>
-                                                            : <ResponseDetails senders={this.props.senders ? this.props.senders[response._id] : []} totalLength={response.count} response={response} handlePageClick={this.handlePageClick} /> 
+                                                            : <ResponseDetails senders={this.props.senders ? this.props.senders[response._id] : []} totalLength={response.count} response={response} handlePageClick={this.handlePageClick} allSenders= {this.props.senders} smsAnalytics={this.props.smsAnalytics} /> 
                                                         }
                                                         </div>
                                                     </div>
@@ -183,13 +193,16 @@ function mapStateToProps (state) {
   return {
     smsBroadcast: (state.smsBroadcastsInfo.smsBroadcast),
     smsAnalytics: (state.smsBroadcastsInfo.smsAnalytics),
-    senders: (state.smsBroadcastsInfo.sendersInfo)
+    senders: (state.smsBroadcastsInfo.sendersInfo),
+    smsResponseInfo: (state.smsBroadcastsInfo.smsResponseInfo)
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-    fetchResponseDetails
+    fetchResponseDetails,
+    smsResponseEvent,
+    updateSmsAnalytics
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(ViewResponses)
