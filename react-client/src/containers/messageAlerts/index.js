@@ -16,7 +16,7 @@ class MessageAlerts extends React.Component {
       subscriptions: [],
       showModal: false,
       modalTitle: '',
-      modalContent: (<div />)
+      selectedChannel: ''
     }
 
     this.setAlertsDetails = this.setAlertsDetails.bind(this)
@@ -27,7 +27,11 @@ class MessageAlerts extends React.Component {
     this.updateAlertConfiguration = this.updateAlertConfiguration.bind(this)
     this.saveAlert = this.saveAlert.bind(this)
     this.openModal = this.openModal.bind(this)
+    this.getModalContent = this.getModalContent.bind(this)
     this.closeModal = this.closeModal.bind(this)
+    this.addSubscription = this.addSubscription.bind(this)
+    this.removeSubscription = this.removeSubscription.bind(this)
+    this.updateState = this.updateState.bind(this)
 
     props.fetchMessageAlerts(props.user.platform, this.setAlertsDetails)
     props.fetchAlertSubscriptions(props.user.platform, this.setAlertSubscriptions)
@@ -123,31 +127,96 @@ class MessageAlerts extends React.Component {
   }
 
   openModal (channel) {
-    const subscriptions = this.state.subscriptions.filter((item) => item.alertChannel === channel)
-    let modalContent = (<div />)
     let modalTitle = ''
     switch (channel) {
       case 'notification':
-        modalTitle = 'Subscriptions - In-app Notifications'
-        modalContent = (
-          <ALERTSUBSCRIPTIONS
-            channel={channel}
-            subscriptions={subscriptions}
-            members={this.props.members}
-          />
-        )
+        modalTitle = 'Subscriptions: In-app Notifications'
         break;
       default:
-        modalTitle = ''
-        modalContent = (<div />)
+        modalTitle = 'Subscriptions'
     }
-    this.setState({showModal: true, modalContent, modalTitle}, () => {
+    this.setState({showModal: true, modalTitle, selectedChannel: channel}, () => {
       this.refs._ma_subscriptions.click()
     })
   }
 
+  getModalContent () {
+    const channel = this.state.selectedChannel
+    const subscriptions = this.state.subscriptions.filter((item) => item.alertChannel === channel)
+    switch (channel) {
+      case 'notification':
+        return (
+          <ALERTSUBSCRIPTIONS
+            channel={channel}
+            subscriptions={subscriptions}
+            members={this.props.members}
+            addSubscription={this.addSubscription}
+            removeSubscription={this.removeSubscription}
+            updateMainState={this.updateState}
+          />
+        )
+      case 'whatsapp':
+        return (
+          <ALERTSUBSCRIPTIONS
+            channel={channel}
+            subscriptions={subscriptions}
+            members={this.props.members}
+            addSubscription={this.addSubscription}
+            removeSubscription={this.removeSubscription}
+            updateMainState={this.updateState}
+          />
+        )
+      default:
+        return (<div />)
+    }
+  }
+
   closeModal () {
     this.setState({showModal: false})
+  }
+
+  addSubscription (data, cb) {
+    const payload = {
+      platform: this.props.user.platform,
+      ...data
+    }
+    this.props.addSubscription(payload, (res) => {
+      if (res.status === 'success') {
+        cb()
+        let channels = JSON.parse(JSON.stringify(this.state.channels))
+        let subscriptions = JSON.parse(JSON.stringify(this.state.subscriptions))
+        subscriptions.push(res.payload)
+        channels[this.state.selectedChannel].enabled = true
+        this.setState({subscriptions, channels})
+        this.props.alertMsg.success('Subscription has been added successfully!')
+      } else {
+        this.props.alertMsg.error(res.description)
+      }
+    })
+  }
+
+  removeSubscription (id) {
+    this.props.removeSubscription(id, (res) => {
+      if (res.status === 'success') {
+        let channels = JSON.parse(JSON.stringify(this.state.channels))
+        let subscriptions = JSON.parse(JSON.stringify(this.state.subscriptions))
+        const index = subscriptions.findIndex((item) => item._id === id)
+        if (index >= 0) {
+          subscriptions.splice(index, 1)
+        }
+        if (subscriptions.length === 0) {
+          channels[this.state.selectedChannel].enabled = false
+        }
+        this.setState({subscriptions, channels})
+        this.props.alertMsg.success('Subscription has been removed successfully!')
+      } else {
+        this.props.alertMsg.error(res.description)
+      }
+    })
+  }
+
+  updateState (state) {
+    this.setState(state)
   }
 
   getBodyContent (alert) {
@@ -239,7 +308,7 @@ class MessageAlerts extends React.Component {
 
   render () {
     return (
-      <div id='target' className='col-lg-8 col-md-8 col-sm-8 col-xs-12' style={{minHeight: '900px'}}>
+      <div id='target' className='col-lg-8 col-md-8 col-sm-8 col-xs-12'>
         <HELPWIDGET
           documentation={{visibility: true, link: 'https://kibopush.com/messageAlerts/'}}
           videoTutorial={{visibility: true, videoId: 'M3k3zV_INTM'}}
@@ -249,10 +318,10 @@ class MessageAlerts extends React.Component {
         <MODAL
           id='_ma_subscriptions'
           title={this.state.modalTitle}
-          content={this.state.modalContent}
+          content={this.getModalContent()}
         />
 
-        <div style={{height: '85vh', overflow: 'hidden', display: 'flex', flexDirection: 'column'}} className='m-portlet m-portlet--full-height m-portlet--tabs'>
+        <div style={{height: '82vh', overflow: 'hidden', display: 'flex', flexDirection: 'column'}} className='m-portlet m-portlet--tabs'>
           <div style={{flex: '0 0 auto'}} className='m-portlet__head'>
             <div className='m-portlet__head-tools'>
               <ul className='nav nav-tabs m-tabs m-tabs-line   m-tabs-line--left m-tabs-line--primary' role='tablist'>
@@ -294,7 +363,7 @@ class MessageAlerts extends React.Component {
                   return (
                     <div key={i} onClick={() => this.openModal(key)} className='col-lg-4 col-md-4 col-sm-6'>
                       <button
-                        style={{...{whiteSpace: 'break-spaces', textAlign: 'left'}, ...style}}
+                        style={{...{whiteSpace: 'break-spaces', textAlign: 'left', height: '55px'}, ...style}}
                         className={`btn btn-outline-${channel.enabled ? 'success' : 'secondary'} btn-lg m-btn m-btn--icon`}
                       >
                         <span>
@@ -323,6 +392,8 @@ MessageAlerts.propTypes = {
   'fetchMessageAlerts': PropTypes.func.isRequired,
   'fetchAlertSubscriptions': PropTypes.func.isRequired,
   'fetchMembers': PropTypes.func.isRequired,
+  'addSubscription': PropTypes.func.isRequired,
+  'removeSubscription': PropTypes.func.isRequired,
   'members': PropTypes.array,
   'user': PropTypes.object.isRequired,
   'saveAlert': PropTypes.func.isRequired
