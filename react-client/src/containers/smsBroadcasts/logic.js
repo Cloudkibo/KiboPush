@@ -1,6 +1,6 @@
 
 //handles sms response event
-export function handleResponseEvent(smsAnalyticsCurrent, smsResponseInfo, senders, smsResponseEvent) {
+export function handleResponseEvent(smsAnalyticsCurrent, smsResponseInfo, senders, smsResponseEvent, document) {
     let socketResponse = smsResponseInfo.response
     if (smsAnalyticsCurrent.responded > 0) {
         //check to see if the response exist, then increment count                   
@@ -35,9 +35,16 @@ export function handleResponseEvent(smsAnalyticsCurrent, smsResponseInfo, sender
                         responseArray.push(smsAnalyticsCurrent.responses[i])
                     }
                     responseArray.push({_id: 'others', count:  smsAnalyticsCurrent.responses[smsAnalyticsCurrent.responses.length - 1].count + 1})
-                    smsAnalyticsCurrent.responses = responseArray
                     if (senders && senders[smsAnalyticsCurrent.responses[smsAnalyticsCurrent.responses.length - 1]._id]) {
                         delete senders[smsAnalyticsCurrent.responses[smsAnalyticsCurrent.responses.length - 1]._id]
+                    }
+                    smsAnalyticsCurrent.responses = responseArray
+                    if (document) {
+                        let lastRow = smsAnalyticsCurrent.responses.length - 1
+                        let className = document.getElementById(`icon-${lastRow}`).className
+                        if (className === 'la la-angle-up') {
+                            document.getElementById(`div-${lastRow}`).click()
+                        }
                     }
                     if (smsResponseEvent) {
                         smsResponseEvent(null)

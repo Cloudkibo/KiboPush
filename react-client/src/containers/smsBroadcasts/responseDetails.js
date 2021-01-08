@@ -39,6 +39,7 @@ class ResponseDetails extends React.Component {
                     let responseObject = this.props.smsAnalytics.responses.find(re => re._id.toLowerCase().trim() === socketResponse.response.text.toLowerCase().trim())
                     if (!responseObject && currentSendersInfo['others'] && this.state.pageNumber === 0) {
                         nextProps.smsResponseInfo.subscriber.text = socketResponse.response.text
+                        nextProps.smsResponseInfo.subscriber.datetime =  new Date()
                         currentSendersInfo['others'] = [nextProps.smsResponseInfo.subscriber,...currentSendersInfo['others']]
                         this.props.updateSendersInfo(currentSendersInfo)
                         this.props.smsResponseEvent(null)
