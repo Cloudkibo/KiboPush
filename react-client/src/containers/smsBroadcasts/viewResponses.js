@@ -4,7 +4,7 @@
 
 import React from 'react'
 import { connect } from 'react-redux'
-import { fetchResponseDetails,  updateSmsAnalytics, smsResponseEvent, updateSendersInfo} from '../../redux/actions/smsBroadcasts.actions'
+import { fetchResponseDetails,  updateSmsAnalytics, smsResponseEvent } from '../../redux/actions/smsBroadcasts.actions'
 import { bindActionCreators } from 'redux'
 import ResponseDetails from './responseDetails'
 import BACKBUTTON from '../../components/extras/backButton'
@@ -203,8 +203,7 @@ function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     fetchResponseDetails,
     smsResponseEvent,
-    updateSmsAnalytics,
-    updateSendersInfo
+    updateSmsAnalytics
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(ViewResponses)
