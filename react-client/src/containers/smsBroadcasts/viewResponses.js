@@ -72,7 +72,6 @@ class ViewResponses extends React.Component {
 
     expandRowToggle (row) {
         let className = document.getElementById(`icon-${row}`).className
-        console.log('className', className)
         if (className === 'la la-angle-up collapsed') {
           document.getElementById(`icon-${row}`).className = 'la la-angle-down'
         } else {
