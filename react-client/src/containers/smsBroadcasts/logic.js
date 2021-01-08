@@ -1,6 +1,6 @@
 
 //handles sms response event
-export function handleResponseEvent(smsAnalyticsCurrent, smsResponseInfo, senders, smsResponseEvent, lastTab) {
+export function handleResponseEvent(smsAnalyticsCurrent, smsResponseInfo, senders, smsResponseEvent, document) {
     let socketResponse = smsResponseInfo.response
     if (smsAnalyticsCurrent.responded > 0) {
         //check to see if the response exist, then increment count                   
