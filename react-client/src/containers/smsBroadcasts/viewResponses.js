@@ -4,7 +4,7 @@
 
 import React from 'react'
 import { connect } from 'react-redux'
-import { fetchResponseDetails,  updateSmsAnalytics, smsResponseEvent} from '../../redux/actions/smsBroadcasts.actions'
+import { fetchResponseDetails,  updateSmsAnalytics, smsResponseEvent, updateSendersInfo} from '../../redux/actions/smsBroadcasts.actions'
 import { bindActionCreators } from 'redux'
 import ResponseDetails from './responseDetails'
 import BACKBUTTON from '../../components/extras/backButton'
@@ -101,7 +101,7 @@ class ViewResponses extends React.Component {
         if (nextProps.smsResponseInfo && nextProps.smsResponseInfo.response) {
             let smsAnalyticsCurrent = cloneDeep(nextProps.smsAnalytics)
             if (nextProps.smsResponseInfo.response.broadcastId === nextProps.smsBroadcast._id) {
-                handleResponseEvent(smsAnalyticsCurrent, nextProps.smsResponseInfo, nextProps.senders, nextProps.smsResponseEvent)
+                handleResponseEvent(smsAnalyticsCurrent, nextProps.smsResponseInfo, nextProps.senders, nextProps.smsResponseEvent, document)
                 smsAnalyticsCurrent = nextProps.updateSmsAnalytics(smsAnalyticsCurrent)
             }
         }
@@ -142,6 +142,7 @@ class ViewResponses extends React.Component {
                                                         data-target={`#collapse_${i}`}
                                                         aria-expanded='true'
                                                         aria-controls={`#collapse_${i}`}
+                                                        id={`div-${i}`}
                                                         >
                                                         {response._id}
                                                         <span style={{marginLeft: '10px'}} className="m-menu__link-badge">
@@ -202,7 +203,8 @@ function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     fetchResponseDetails,
     smsResponseEvent,
-    updateSmsAnalytics
+    updateSmsAnalytics,
+    updateSendersInfo
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(ViewResponses)
