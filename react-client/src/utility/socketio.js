@@ -21,6 +21,7 @@ import { addToSponsoredMessages, updateSponsoredMessagesListItemStatus } from '.
 import { removeZoomIntegration } from './../redux/actions/settings.actions'
 const whatsAppActions = require('./../redux/actions/whatsAppChat.actions')
 const smsActions = require('./../redux/actions/smsChat.actions')
+const { setSocketData } = require('./../redux/actions/messageAlerts.actions')
 
 const socket = io('')
 let store
@@ -77,6 +78,9 @@ socket.on('new_chat', (data) => {
 
 socket.on('message', (data) => {
   console.log('socket called', data)
+  if (['whatsApp_messageAlert_subscription', 'messenger_messageAlert_subscription'].includes(data.action)) {
+    store.dispatch(setSocketData(data))
+  }
   if (['new_chat', 'agent_replied', 'session_pending_response', 'unsubscribe'].includes(data.action)) {
     if (data.action === 'new_chat' && data.payload && data.payload.message && data.payload.message.format === 'facebook') data.showNotification = true
     store.dispatch(handleSocketEvent(data))
@@ -183,8 +187,7 @@ socket.on('message', (data) => {
     store.dispatch(updateSponsoredMessagesListItemStatus(data.payload))
   } else if (data.action === 'zoom_uninstall') {
     store.dispatch(removeZoomIntegration(data.payload))
-  }
-  else if (data.action === 'logout') {
+  } else if (data.action === 'logout') {
     auth.logout()
   }
   if (callbacks[data.action]) {

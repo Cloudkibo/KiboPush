@@ -12,9 +12,11 @@ import {
   saveAlert,
   fetchAlertSubscriptions,
   addSubscription,
-  removeSubscription
+  removeSubscription,
+  setSocketData
 } from '../../redux/actions/messageAlerts.actions'
 import { loadMembersList } from '../../redux/actions/members.actions'
+import { getFbAppId } from '../../redux/actions/basicinfo.actions'
 
 import AccountSettings from './accountSettings'
 import GreetingMessage from './greetingMessage'
@@ -834,8 +836,13 @@ class Settings extends React.Component {
                 fetchMembers={this.props.loadMembersList}
                 addSubscription={this.props.addSubscription}
                 removeSubscription={this.props.removeSubscription}
+                setSocketData={this.props.setSocketData}
+                getFbAppId={this.props.getFbAppId}
                 user={this.props.user}
+                fbAppId={this.props.fbAppId}
+                automatedOptions={this.props.automatedOptions}
                 members={this.props.members}
+                socketData={this.props.socketData}
                 saveAlert={this.props.saveAlert}
                 alertMsg={this.msg}
               />
@@ -866,12 +873,15 @@ class Settings extends React.Component {
 function mapStateToProps(state) {
   return {
     user: (state.basicInfo.user),
+    automatedOptions: (state.basicInfo.automated_options),
     apiEnableNGP: (state.settingsInfo.apiEnableNGP),
     apiDisableNGP: (state.settingsInfo.apiDisableNGP),
     resetDataNGP: (state.settingsInfo.resetDataNGP),
     apiSuccessNGP: (state.settingsInfo.apiSuccessNGP),
     apiFailureNGP: (state.settingsInfo.apiFailureNGP),
-    members: state.membersInfo.members
+    members: (state.membersInfo.members),
+    socketData: (state.messageAlertsInfo.socketData),
+    fbAppId: (state.basicInfo.fbAppId)
   }
 }
 
@@ -887,7 +897,9 @@ function mapDispatchToProps(dispatch) {
     saveAlert,
     loadMembersList,
     addSubscription,
-    removeSubscription
+    removeSubscription,
+    setSocketData,
+    getFbAppId
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Settings)
