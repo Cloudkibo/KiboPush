@@ -27,6 +27,7 @@ class ResponseDetails extends React.Component {
                    // Update senders if its firts page
                     if ( this.state.pageNumber === 0) {
                         if (currentSendersInfo[socketResponse.response.text.toLowerCase().trim()]) {
+                            nextProps.smsResponseInfo.subscriber.datetime =  new Date()
                             currentSendersInfo[socketResponse.response.text.toLowerCase().trim()] = [nextProps.smsResponseInfo.subscriber,...currentSendersInfo[socketResponse.response.text.toLowerCase().trim()]]
                         }
                         this.props.updateSendersInfo(currentSendersInfo)
