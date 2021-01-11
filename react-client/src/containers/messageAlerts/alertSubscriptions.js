@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import Select from 'react-select'
+import { validateEmail } from '../../utility/utils'
 
 import SUBSCRIPTIONITEM from './subscriptionItem'
 
@@ -11,13 +12,19 @@ class AlertSubscriptions extends React.Component {
     super(props, context)
     this.state = {
       agents: [],
-      selectedAgent: ''
+      selectedAgent: '',
+      name: '',
+      email: '',
+      emailError: false
     }
 
     this.setAgents = this.setAgents.bind(this)
     this.onAgentChange = this.onAgentChange.bind(this)
+    this.onNameChange = this.onNameChange.bind(this)
+    this.onEmailChange = this.onEmailChange.bind(this)
     this.onAddAgent = this.onAddAgent.bind(this)
     this.onRemoveAgent = this.onRemoveAgent.bind(this)
+    this.onAddEmail = this.onAddEmail.bind(this)
   }
 
   componentDidMount () {
@@ -46,6 +53,35 @@ class AlertSubscriptions extends React.Component {
 
   onAgentChange (value, others) {
     this.setState({selectedAgent: value})
+  }
+
+  onNameChange (e) {
+    if (e.target.value.length <= 30) {
+      this.setState({name: e.target.value})
+    }
+  }
+
+  onEmailChange (e) {
+    if (e.target.value.length <= 30) {
+      this.setState({email: e.target.value, emailError: false})
+    }
+  }
+
+  onAddEmail () {
+    const { email, name } = this.state
+    if (validateEmail(email)) {
+      const data = {
+        name,
+        profilePic: 'http://cdn.cloudkibo.com/public/img/default/default-user.jpg',
+        channelId: email,
+        channel: this.props.channel
+      }
+      this.props.addSubscription(data, () => {
+        this.setState({name: '', email: '', emailError: false})
+      })
+    } else {
+      this.setState({emailError: true})
+    }
   }
 
   onAddAgent () {
@@ -80,7 +116,7 @@ class AlertSubscriptions extends React.Component {
           <>
             <div className='form-group m-form__group row'>
               <div className='col-lg-2 col-md-2 col-sm-12' />
-              <div className='col-lg-6 col-md-16 col-sm-12'>
+              <div className='col-lg-6 col-md-6 col-sm-12'>
                 <Select
                   className='basic-single'
                   classNamePrefix='select'
@@ -147,6 +183,48 @@ class AlertSubscriptions extends React.Component {
                 />
               </div>
               <div className='col-lg-4 col-md-4 col-sm-4' />
+            </div>
+            <div className='m--space-30' />
+          </>
+        }
+        {
+          this.props.channel === 'email' &&
+          <>
+            <div className='form-group m-form__group row'>
+              <div className='col-lg-5 col-md-5 col-sm-12'>
+                <input
+                  type="text"
+                  className="form-control m-input m-input--air"
+                  placeholder="Enter name..."
+                  value={this.state.name}
+                  onChange={this.onNameChange}
+                />
+              </div>
+              <div className='col-lg-5 col-md-5 col-sm-12'>
+                <input
+                  type="email"
+                  className="form-control m-input m-input--air"
+                  placeholder="Enter email..."
+                  value={this.state.email}
+                  onChange={this.onEmailChange}
+                />
+                {
+                  this.state.emailError &&
+                  <span className="m-form__help m--font-danger">
+                    Enter a valid email address
+  								</span>
+                }
+              </div>
+              <div className='col-lg-2 col-md-2 col-sm-12'>
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={this.onAddEmail}
+                  disabled={!(this.state.name && this.state.email)}
+                >
+                  Add
+                </button>
+              </div>
             </div>
             <div className='m--space-30' />
           </>
