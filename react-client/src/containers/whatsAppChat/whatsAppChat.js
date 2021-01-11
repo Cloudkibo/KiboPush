@@ -315,6 +315,7 @@ class WhatsAppChat extends React.Component {
       _id : new Date().getTime(),
       senderNumber: this.props.automated_options.whatsApp.number,
       recipientNumber: this.state.activeSession.number,
+      whatsAppId: this.state.activeSession.whatsAppId,
       contactId: session._id,
       payload,
       datetime: new Date().toString(),

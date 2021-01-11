@@ -28,6 +28,12 @@ class FacebookIntegration extends React.Component {
         accessToken: '',
         businessNumber: ''
       },
+      cequens: {
+        provider: 'cequens',
+        accessToken: '',
+        businessNumber: '',
+        clientName: ''
+      },
       twilioFree: {
         provider: 'twilioFree',
         accessToken: '',
@@ -371,6 +377,7 @@ class FacebookIntegration extends React.Component {
                           <option value='' selected disabled>Select a WhatsApp Provider...</option>
                           <option value='flockSend'>FlockSend</option>
                           <option value='twilio'>Twilio</option>
+                          <option value='cequens'>Cequens</option>
                             {this.props.user && this.props.user.isSuperUser &&
                               <option value='twilioFree'>Twilio (Free)</option>
                             }
@@ -391,6 +398,26 @@ class FacebookIntegration extends React.Component {
                             type="tel"
                             className='form-control'
                             value={this.state.whatsappData.flockSend.businessNumber}
+                            onChange={(e) => this.updateWhatsAppData(e, { businessNumber: e.target.value })} />
+                        </div>
+                      </div>
+
+                      <div style={{ display: this.state.whatsappProvider === 'cequens' ? 'initial' : 'none' }} >
+                        <div id='_cequens_client_name' className='form-group m-form__group'>
+                          <label className='control-label'>Client Name:</label>
+                          <input required={this.state.whatsappProvider === 'cequens'} className='form-control' value={this.state.whatsappData.cequens.clientName} onChange={(e) => this.updateWhatsAppData(e, { clientName: e.target.value })} />
+                        </div>
+                        <div id='_cequens_access_token' className='form-group m-form__group'>
+                          <label className='control-label'>API Token:</label>
+                          <input required={this.state.whatsappProvider === 'cequens'} className='form-control' value={this.state.whatsappData.cequens.accessToken} onChange={(e) => this.updateWhatsAppData(e, { accessToken: e.target.value })} />
+                        </div>
+                        <div id='_cequens_whatsapp_number' className='form-group m-form__group'>
+                          <label className='control-label'>WhatsApp Number:</label>
+                          <input
+                            required={this.state.whatsappProvider === 'cequens'}
+                            type="tel"
+                            className='form-control'
+                            value={this.state.whatsappData.cequens.businessNumber}
                             onChange={(e) => this.updateWhatsAppData(e, { businessNumber: e.target.value })} />
                         </div>
                       </div>
