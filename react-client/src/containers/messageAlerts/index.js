@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { handleSocketEvent } from './socket'
 
 import HELPWIDGET from '../../components/extras/helpWidget'
 import COLLAPSE from '../../components/extras/collapse'
@@ -36,6 +37,7 @@ class MessageAlerts extends React.Component {
     props.fetchMessageAlerts(props.user.platform, this.setAlertsDetails)
     props.fetchAlertSubscriptions(props.user.platform, this.setAlertSubscriptions)
     props.fetchMembers()
+    props.getFbAppId()
   }
 
   setAlertsDetails (res) {
@@ -51,7 +53,7 @@ class MessageAlerts extends React.Component {
   }
 
   setAlertSubscriptions (res) {
-    let channels = DEFAULTDATA.channels
+    let channels = JSON.parse(JSON.stringify(DEFAULTDATA.channels))
     if (this.props.user.platform === 'messenger') {
       delete channels['whatsapp']
     } else {
@@ -142,7 +144,7 @@ class MessageAlerts extends React.Component {
 
   getModalContent () {
     const channel = this.state.selectedChannel
-    const subscriptions = this.state.subscriptions.filter((item) => item.alertChannel === channel)
+    const subscriptions = this.state.subscriptions.filter((item) => item.alertChannel.toLowerCase() === channel)
     switch (channel) {
       case 'notification':
         return (
@@ -160,10 +162,21 @@ class MessageAlerts extends React.Component {
           <ALERTSUBSCRIPTIONS
             channel={channel}
             subscriptions={subscriptions}
-            members={this.props.members}
-            addSubscription={this.addSubscription}
             removeSubscription={this.removeSubscription}
             updateMainState={this.updateState}
+            whatsAppInfo={this.props.automatedOptions.whatsApp}
+          />
+        )
+      case 'messenger':
+        return (
+          <ALERTSUBSCRIPTIONS
+            channel={channel}
+            subscriptions={subscriptions}
+            removeSubscription={this.removeSubscription}
+            updateMainState={this.updateState}
+            facebookInfo={this.props.automatedOptions.facebook}
+            fbAppId={this.props.fbAppId}
+            user={this.props.user}
           />
         )
       default:
@@ -217,6 +230,12 @@ class MessageAlerts extends React.Component {
 
   updateState (state) {
     this.setState(state)
+  }
+
+  UNSAFE_componentWillReceiveProps (nextProps) {
+    if (nextProps.socketData) {
+      handleSocketEvent(nextProps.socketData.payload, this.state, this.props, this.updateState)
+    }
   }
 
   getBodyContent (alert) {
@@ -394,8 +413,11 @@ MessageAlerts.propTypes = {
   'fetchMembers': PropTypes.func.isRequired,
   'addSubscription': PropTypes.func.isRequired,
   'removeSubscription': PropTypes.func.isRequired,
+  'setSocketData': PropTypes.func.isRequired,
   'members': PropTypes.array,
   'user': PropTypes.object.isRequired,
+  'fbAppId': PropTypes.string,
+  'automatedOptions': PropTypes.object.isRequired,
   'saveAlert': PropTypes.func.isRequired
 }
 
