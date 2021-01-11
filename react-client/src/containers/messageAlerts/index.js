@@ -133,7 +133,16 @@ class MessageAlerts extends React.Component {
     switch (channel) {
       case 'notification':
         modalTitle = 'Subscriptions: In-app Notifications'
-        break;
+        break
+      case 'whatsapp':
+        modalTitle = 'Subscriptions: WhatsApp Messenger'
+        break
+      case 'messenger':
+        modalTitle = 'Subscriptions: Facebook Messenger'
+        break
+      case 'email':
+        modalTitle = 'Subscriptions: Email'
+        break
       default:
         modalTitle = 'Subscriptions'
     }
@@ -177,6 +186,17 @@ class MessageAlerts extends React.Component {
             facebookInfo={this.props.automatedOptions.facebook}
             fbAppId={this.props.fbAppId}
             user={this.props.user}
+          />
+        )
+      case 'email':
+        return (
+          <ALERTSUBSCRIPTIONS
+            channel={channel}
+            subscriptions={subscriptions}
+            members={this.props.members}
+            addSubscription={this.addSubscription}
+            removeSubscription={this.removeSubscription}
+            updateMainState={this.updateState}
           />
         )
       default:
