@@ -4,6 +4,8 @@ import Select from 'react-select'
 
 import SUBSCRIPTIONITEM from './subscriptionItem'
 
+const MessengerPlugin = require('react-messenger-plugin').default
+
 class AlertSubscriptions extends React.Component {
   constructor (props, context) {
     super(props, context)
@@ -19,7 +21,8 @@ class AlertSubscriptions extends React.Component {
   }
 
   componentDidMount () {
-    if (this.props.members && this.props.members.length > 0) {
+    if (this.props.channel === 'notification' &&
+        this.props.members && this.props.members.length > 0) {
       this.setAgents(this.props)
     }
   }
@@ -63,7 +66,8 @@ class AlertSubscriptions extends React.Component {
   }
 
   UNSAFE_componentWillReceiveProps (nextProps) {
-    if (nextProps.members && nextProps.members.length > 0) {
+    if (this.props.channel === 'notification' &&
+        nextProps.members && nextProps.members.length > 0) {
       this.setAgents(nextProps)
     }
   }
@@ -103,6 +107,51 @@ class AlertSubscriptions extends React.Component {
           </>
         }
         {
+          this.props.channel === 'whatsapp' &&
+          <>
+            <div className='form-group m-form__group row'>
+              <div className="alert m-alert m-alert--icon m-alert--default" role="alert">
+                <div className='m-alert__icon'>
+                  <i className='la la-info-circle' />
+                </div>
+                <div className='m-alert__text'>
+                  To receive alerts via WhatsApp, please send <span className='m--font-boldest'>notify-me</span> on WhatsApp Business number <span className='m--font-boldest'>{this.props.whatsAppInfo.businessNumber}</span>
+                </div>
+              </div>
+            </div>
+            <div className='m--space-30' />
+          </>
+        }
+        {
+          this.props.channel === 'messenger' &&
+          <>
+            <div className='form-group m-form__group row'>
+              <div className="alert m-alert m-alert--icon m-alert--default" role="alert">
+                <div className='m-alert__icon'>
+                  <i className='la la-info-circle' />
+                </div>
+                <div className='m-alert__text'>
+                  To receive alerts via messenger, please subscribe by clicking the button below:
+                </div>
+              </div>
+            </div>
+            <div className='form-group m-form__group row'>
+              <div className='col-lg-4 col-md-4 col-sm-4' />
+              <div className='col-lg-4 col-md-4 col-sm-4'>
+                <MessengerPlugin
+                  appId={this.props.fbAppId}
+                  pageId='321030461961407' // 151990922046256
+                  size='large'
+                  version='v6.0'
+                  passthroughParams={`notify-me_${this.props.user.companyId}`}
+                />
+              </div>
+              <div className='col-lg-4 col-md-4 col-sm-4' />
+            </div>
+            <div className='m--space-30' />
+          </>
+        }
+        {
           this.props.subscriptions.length > 0 &&
           <>
             <div className='form-group m-form__group row'>
@@ -133,9 +182,13 @@ AlertSubscriptions.propTypes = {
   'channel': PropTypes.string.isRequired,
   'subscriptions': PropTypes.array.isRequired,
   'members': PropTypes.array,
-  'addSubscription': PropTypes.func.isRequired,
+  'user': PropTypes.object,
+  'addSubscription': PropTypes.func,
   'removeSubscription': PropTypes.func.isRequired,
-  'updateMainState': PropTypes.func.isRequired
+  'updateMainState': PropTypes.func.isRequired,
+  'whatsAppInfo': PropTypes.object,
+  'facebookInfo': PropTypes.object,
+  'fbAppId': PropTypes.string
 }
 
 export default AlertSubscriptions

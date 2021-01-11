@@ -1,5 +1,12 @@
-// import * as ActionTypes from '../constants/constants'
+import * as ActionTypes from '../constants/constants'
 import callApi from '../../utility/api.caller.service'
+
+export function setSocketData (data) {
+  return {
+    type: ActionTypes.SET_MESSAGE_ALERT_SOCKET_DATA,
+    data
+  }
+}
 
 export function fetchMessageAlerts(platform, callback) {
   return (dispatch) => {

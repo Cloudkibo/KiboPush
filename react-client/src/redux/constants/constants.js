@@ -295,6 +295,9 @@ export const CLEAR_SUBSCRIBER_TAGS = 'CLEAR_SUBSCRIBER_TAGS'
 export const SHOW_NOTIFICATIONS = 'SHOW_NOTIFICATIONS'
 export const SHOW_MESSAGE_ALERT = 'SHOW_MESSAGE_ALERT'
 
+// constants for message alerts
+export const SET_MESSAGE_ALERT_SOCKET_DATA = 'SET_MESSAGE_ALERT_SOCKET_DATA'
+
 // constants for bots
 export const SHOW_BOTS = 'SHOW_BOTS'
 export const SHOW_ANALYTICS = 'SHOW_ANALYTICS'

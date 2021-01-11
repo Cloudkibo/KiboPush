@@ -33,7 +33,7 @@ class SubscriptionItem extends React.Component {
           </span>
           <div style={{padding: '10px'}} className="m-card-user">
             <div className="m-card-user__pic">
-              <img style={{width: '30px'}} src={this.props.profilePic} className="m--img-rounded m--marginless" alt="" />
+              <img style={{width: '30px'}} src={this.props.profilePic || 'http://cdn.cloudkibo.com/public/img/default/default-user.jpg'} className="m--img-rounded m--marginless" alt="" />
             </div>
             <div style={{paddingLeft: '5px'}} class="m-card-user__details">
               <span style={{fontSize: '10px'}} className="m-card-user__name m--font-weight-500">
@@ -48,7 +48,7 @@ class SubscriptionItem extends React.Component {
 }
 
 SubscriptionItem.propTypes = {
-  'profilePic': PropTypes.string.isRequired,
+  'profilePic': PropTypes.string,
   'name': PropTypes.string.isRequired,
   'onRemove': PropTypes.func.isRequired
 }
