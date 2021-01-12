@@ -33,6 +33,7 @@ class MessageTemplate extends React.Component {
   }
 
   UNSAFE_componentWillReceiveProps (nextProps) {
+    console.log('nextProps.templates', nextProps.templates)
     if (nextProps.templateMessage) {
       this.setState({
         templateMessage: nextProps.templateMessage,
@@ -203,6 +204,8 @@ class MessageTemplate extends React.Component {
       text: this.state.templateMessage,
       buttons: this.props.templates[this.state.selectedIndex].buttons,
       templateName: this.props.templates[this.state.selectedIndex].name,
+      templateNameSpace: this.props.templates[this.state.selectedIndex].namespace,
+      templateCode: this.props.templates[this.state.selectedIndex].code,
       templateArguments: this.state.templateArguments,
       selectedIndex: this.state.selectedIndex
     }, this.props.edit)
