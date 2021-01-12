@@ -268,7 +268,7 @@ class SmsBroadcast extends React.Component {
                         </div>
                         <div className='col-2'></div>
                       </div>
-                      <div className='row'>
+                      <div className='row' style={{marginTop: '20px'}}>
                         <div className='col-2'></div>
                         <div className='col-8' style={{ display:'flex'}}>
                           <div style={{width:'100%'}}>
