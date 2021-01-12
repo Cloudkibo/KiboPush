@@ -1,5 +1,6 @@
 import * as ActionTypes from '../constants/constants'
 import callApi from '../../utility/api.caller.service'
+import { showAutomatedOptions } from './basicinfo.actions'
 
 export function setSocketData (data) {
   return {
@@ -49,6 +50,16 @@ export function removeSubscription(id, callback) {
     callApi(`messageAlerts/unsubscribe/${id}`)
       .then(res => {
         callback(res)
+      })
+  }
+}
+
+export function setBusinessHours(data, automatedOptions, callback) {
+  return (dispatch) => {
+    callApi('company/setBusinessHours', 'post', data)
+      .then(res => {
+        callback(res)
+        dispatch(showAutomatedOptions(automatedOptions))
       })
   }
 }

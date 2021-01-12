@@ -40,6 +40,18 @@ class MessageAlerts extends React.Component {
     props.getFbAppId()
   }
 
+  componentDidMount () {
+    const hostname = window.location.hostname
+    let title = 'KiboPush'
+    if (hostname.includes('kiboengage.cloudkibo.com')) {
+      title = 'KiboEngage'
+    } else if (hostname.includes('kibochat.cloudkibo.com')) {
+      title = 'KiboChat'
+    }
+    document.title = `${title} | Alerts Configuration`
+    this.props.setSocketData(null)
+  }
+
   setAlertsDetails (res) {
     if (res.status === 'success' && res.payload && res.payload.length > 0) {
       const alerts = res.payload
@@ -62,10 +74,10 @@ class MessageAlerts extends React.Component {
     if (res.status === 'success' && res.payload && res.payload.length > 0) {
       let subscriptions = res.payload
 
-      const notificationSubscriptions = subscriptions.filter((item) => item.alertChannel === 'notification')
-      const messengerSubscriptions = subscriptions.filter((item) => item.alertChannel === 'messenger')
-      const whatsappSubscriptions = subscriptions.filter((item) => item.alertChannel === 'whatsapp')
-      const emailSubscriptions = subscriptions.filter((item) => item.alertChannel === 'email')
+      const notificationSubscriptions = subscriptions.filter((item) => item.alertChannel.toLowerCase() === 'notification')
+      const messengerSubscriptions = subscriptions.filter((item) => item.alertChannel.toLowerCase() === 'messenger')
+      const whatsappSubscriptions = subscriptions.filter((item) => item.alertChannel.toLowerCase() === 'whatsapp')
+      const emailSubscriptions = subscriptions.filter((item) => item.alertChannel.toLowerCase() === 'email')
 
       if (notificationSubscriptions.length > 0) channels['notification'].enabled = true
       if (messengerSubscriptions.length > 0) channels['messenger'].enabled = true

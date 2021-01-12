@@ -13,7 +13,8 @@ import {
   fetchAlertSubscriptions,
   addSubscription,
   removeSubscription,
-  setSocketData
+  setSocketData,
+  setBusinessHours
 } from '../../redux/actions/messageAlerts.actions'
 import { loadMembersList } from '../../redux/actions/members.actions'
 import { getFbAppId } from '../../redux/actions/basicinfo.actions'
@@ -37,6 +38,7 @@ import AdvancedSetting from './advancedSettings'
 import CannedResponses from './cannedResponses/cannedResponses'
 import ZoomIntegration from './zoomIntegration'
 import MESSAGEALERTS from '../messageAlerts'
+import BUSINESSHOURS from '../businessHours'
 import CommerceIntegration from './commerceIntegration'
 import NotificationSettings from './notificationSettings'
 
@@ -98,6 +100,7 @@ class Settings extends React.Component {
     this.setUploadCustomerFile = this.setUploadCustomerFile.bind(this)
     this.setCannedResponses = this.setCannedResponses.bind(this)
     this.setMessageAlerts = this.setMessageAlerts.bind(this)
+    this.setBusinessHours = this.setBusinessHours.bind(this)
     this.setNotificationSettings = this.setNotificationSettings.bind(this)
 
     props.loadMyPagesList()
@@ -191,6 +194,12 @@ class Settings extends React.Component {
   setMessageAlerts() {
     this.setState({
       openTab: 'message_alerts'
+    })
+  }
+
+  setBusinessHours () {
+    this.setState({
+      openTab: 'business_hours'
     })
   }
 
@@ -607,6 +616,17 @@ class Settings extends React.Component {
                         </a>
                       </li>
                     }
+                    {
+                      (url.includes('localhost') || url.includes('kibochat.cloudkibo.com')) &&
+                      (this.props.user.role === 'buyer' || this.props.user.role === 'admin') &&
+                      (['messenger', 'whatsApp'].includes(this.props.user.platform)) &&
+                      <li className='m-nav__item'>
+                        <a href='#/' className='m-nav__link' onClick={this.setBusinessHours} style={{ cursor: 'pointer' }} >
+                          <i className='m-nav__link-icon flaticon-clock-1' />
+                          <span className='m-nav__link-text'>Business Hours</span>
+                        </a>
+                      </li>
+                    }
                     {this.props.user && !(this.props.user.role === 'admin' || this.props.user.role === 'agent') &&
                       <li className='m-nav__item'>
                         <a href='#/' className='m-nav__link' onClick={this.setNGP} style={{ cursor: 'pointer' }}>
@@ -847,6 +867,14 @@ class Settings extends React.Component {
                 alertMsg={this.msg}
               />
             }
+            {
+              this.state.openTab === 'business_hours' &&
+              <BUSINESSHOURS
+                setBusinessHours={this.props.setBusinessHours}
+                alertMsg={this.msg}
+                automatedOptions={this.props.automatedOptions}
+              />
+            }
             {this.state.openTab === 'notificationSettings' &&
               <NotificationSettings history={this.props.history} />
             }
@@ -899,7 +927,8 @@ function mapDispatchToProps(dispatch) {
     addSubscription,
     removeSubscription,
     setSocketData,
-    getFbAppId
+    getFbAppId,
+    setBusinessHours
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Settings)
