@@ -15,7 +15,7 @@ const styles = {
 }
 
 class SessionItem extends React.Component {
-  constructor (props, context) {
+  constructor(props, context) {
     super(props, context)
     this.state = {
       showingQuickAction: false,
@@ -30,37 +30,37 @@ class SessionItem extends React.Component {
     this.hideCheckbox = this.hideCheckbox.bind(this)
   }
 
-  componentWillReceiveProps (nextProps) {
+  componentWillReceiveProps(nextProps) {
     if (nextProps.showingBulkActions) {
-      this.setState({showingQuickAction: false})
+      this.setState({ showingQuickAction: false })
     }
     if (nextProps.checked) {
-      this.setState({checked: true})
-    } 
-  }
-
-  hideCheckbox (e) {
-    this.setState({showingCheckbox: false})
-  }
-
-  showCheckbox (e) {
-    this.setState({showingCheckbox: true})
-  }
-
-  showQuickAction (e) {
-    if (this.props.showBulkActions) {
-      this.setState({showingQuickAction: true}) 
+      this.setState({ checked: true })
     }
   }
 
-  hideQuickAction (e) {
-    if (this.props.showBulkActions) {
-      this.setState({showingQuickAction: false})
-    }
+  hideCheckbox(e) {
+    this.setState({ showingCheckbox: false })
   }
 
-  getChatPreview () {
-    const chatPreview = this.props.getChatPreview(this.props.session.lastPayload, this.props.session.lastRepliedBy, this.props.session.firstName)
+  showCheckbox(e) {
+    this.setState({ showingCheckbox: true })
+  }
+
+  showQuickAction(e) {
+    this.setState({ showingQuickAction: true })
+  }
+
+  hideQuickAction(e) {
+    this.setState({ showingQuickAction: false })
+  }
+
+  getChatPreview() {
+    const chatPreview = this.props.getChatPreview(
+      this.props.session.lastPayload,
+      this.props.session.lastRepliedBy,
+      this.props.session.firstName
+    )
     if (chatPreview.length > 25) {
       return `${chatPreview.substring(0, 25)}...`
     } else {
@@ -68,117 +68,172 @@ class SessionItem extends React.Component {
     }
   }
 
-  render () {
+  render() {
     return (
       <div key={this.props.session._id}>
         <div
-          style={(this.props.session._id === this.props.activeSession._id) ? styles.activeSessionStyle : styles.sessionStyle}
+          style={
+            this.props.session._id === this.props.activeSession._id
+              ? styles.activeSessionStyle
+              : styles.sessionStyle
+          }
           onMouseEnter={this.showQuickAction}
           onMouseLeave={this.hideQuickAction}
           onClick={(e) => this.props.changeActiveSession(this.props.session, e)}
           className='m-widget4__item'
         >
-          <div 
+          <div
             style={{
-              minWidth: '50px', 
-              minHeight: '50px', 
-              width: '50px', 
-              height: '50px', 
+              minWidth: '50px',
+              minHeight: '50px',
+              width: '50px',
+              height: '50px',
               textAlign: 'center'
             }}
             onMouseEnter={this.props.showBulkActions ? this.showCheckbox : null}
             onMouseLeave={this.props.showBulkActions ? this.hideCheckbox : null}
-            className='m-widget4__img m-widget4__img--pic'>
-              {
-                !this.state.showingCheckbox && !this.props.showingBulkActions ? 
-                <img 
-                style={{width: 'inherit', height: 'inherit'}} onError={(e) => this.props.profilePicError(e, this.props.session)} src={this.props.session.profilePic} alt='' />
-                : <input checked={this.props.session.selected} onChange={(e) => this.props.addToBulkAction(e, this.props.session)} type='checkbox' />
-              }
+            className='m-widget4__img m-widget4__img--pic'
+          >
+            {!this.state.showingCheckbox && !this.props.showingBulkActions ? (
+              <img
+                style={{ width: 'inherit', height: 'inherit' }}
+                onError={(e) => this.props.profilePicError(e, this.props.session)}
+                src={this.props.session.profilePic}
+                alt=''
+              />
+            ) : (
+              <input
+                checked={this.props.session.selected}
+                onChange={(e) => this.props.addToBulkAction(e, this.props.session)}
+                type='checkbox'
+              />
+            )}
           </div>
           <div className='m-widget4__info'>
-            <div style={{marginBottom: '-10px'}} className='row'>
+            <div style={{ marginBottom: '-10px' }} className='row'>
               <div
-                style={{textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap'}}
+                style={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}
                 className={this.state.showingQuickAction ? 'col-10' : 'col-9'}
               >
                 <span className='m-widget4__title'>
-                  <span style={{marginRight: '5px'}}>
-                    {this.props.session.name}
-                  </span>
+                  <span style={{ marginRight: '5px' }}>{this.props.session.name}</span>
                 </span>
               </div>
-              {
-                this.state.showingQuickAction
-                ? <div className='col-2'>
-                  <span title={this.props.session.status === 'new' ? 'Mark as resolved' : 'Reopen session'}>
-                  {
-                    this.props.session.status === 'new'
-                    ? <i
-                      id={'resolve_session'+this.props.session._id}
-                      style={{marginRight: '10px', cursor: 'pointer', color: '#34bfa3', fontSize: '20px', fontWeight: 'bold'}}
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        this.props.changeStatus('resolved', this.props.session)
-                      }}
-                      data-tip='Mark as done'
-                      className='la la-check'
-                    />
-                    : <i
-                      id={'reopen_session'+this.props.session._id}
-                      style={{ marginLeft: '10px', cursor: 'pointer', color: '#34bfa3', fontSize: '20px', fontWeight: 'bold' }}
-                      data-tip='Reopen'
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        this.props.changeStatus('new', this.props.session)
-                      }}
-                      className='fa fa-envelope-open-o'
-                    />
-                  }
+              {this.state.showingQuickAction ? (
+                <div className='col-2'>
+                  <span
+                    title={
+                      this.props.session.status === 'new' ? 'Mark as resolved' : 'Reopen session'
+                    }
+                  >
+                    {this.props.session.status === 'new' ? (
+                      <i
+                        id={'resolve_session' + this.props.session._id}
+                        style={{
+                          marginRight: '10px',
+                          cursor: 'pointer',
+                          color: '#34bfa3',
+                          fontSize: '20px',
+                          fontWeight: 'bold'
+                        }}
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          this.props.changeStatus('resolved', this.props.session)
+                        }}
+                        data-tip='Mark as done'
+                        className='la la-check'
+                      />
+                    ) : (
+                      <i
+                        id={'reopen_session' + this.props.session._id}
+                        style={{
+                          marginLeft: '10px',
+                          cursor: 'pointer',
+                          color: '#34bfa3',
+                          fontSize: '20px',
+                          fontWeight: 'bold'
+                        }}
+                        data-tip='Reopen'
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          this.props.changeStatus('new', this.props.session)
+                        }}
+                        className='fa fa-envelope-open-o'
+                      />
+                    )}
                   </span>
                 </div>
-                : <div style={{paddingLeft: '0px'}} className='col-3'>
-                  {
-                    (this.props.session.unreadCount && this.props.session.unreadCount > 0)
-                    ? <a href='#/' style={{backgroundColor: '#d9534f', color: '#fff', fontSize: '0.7em', marginRight: '2px', pointerEvents: 'none'}} className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-danger'>
+              ) : (
+                <div style={{ paddingLeft: '0px' }} className='col-3'>
+                  {this.props.session.unreadCount && this.props.session.unreadCount > 0 ? (
+                    <a
+                      href='#/'
+                      style={{
+                        backgroundColor: '#d9534f',
+                        color: '#fff',
+                        fontSize: '0.7em',
+                        marginRight: '2px',
+                        pointerEvents: 'none'
+                      }}
+                      className='m-btn m-btn--pill m-btn--hover-brand btn btn-sm btn-danger'
+                    >
                       {this.props.session.unreadCount}
                     </a>
-                    : this.props.session.pendingResponse &&  this.props.session.status === 'new' && 
-                    <span className='m-badge m-badge--metal m-badge--wide'>
-                      pending
-                    </span>
-                  }
+                  ) : (
+                    this.props.session.pendingResponse &&
+                    this.props.session.status === 'new' && (
+                      <span className='m-badge m-badge--metal m-badge--wide'>pending</span>
+                    )
+                  )}
                 </div>
-              }
+              )}
             </div>
             <br />
-            <span className={`m-widget4__sub ${(this.props.session.unreadCount && this.props.session.unreadCount > 0) && 'm--font-boldest'}`}>
-              {
-                this.props.session.lastPayload
+            <span
+              className={`m-widget4__sub ${
+                this.props.session.unreadCount &&
+                this.props.session.unreadCount > 0 &&
+                'm--font-boldest'
+              }`}
+            >
+              {this.props.session.lastPayload
                 ? this.getChatPreview()
-                : 'No chat preview is available'
-              }
+                : 'No chat preview is available'}
             </span>
             <br />
-            {
-              this.props.showPageInfo ?
-              <span className={`m-widget4__sub ${(this.props.session.unreadCount && this.props.session.unreadCount > 0) && 'm--font-boldest'}`}>
-                <i className='fa fa-facebook-square' />&nbsp;&nbsp;
-                {(this.props.session.pageId.pageName.length > 10) ? this.props.session.pageId.pageName.slice(0, 10) + '...' : this.props.session.pageId.pageName}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <i className='fa fa-calendar' />&nbsp;&nbsp;
-                {
-                  this.props.session.last_activity_time &&
-                  moment(this.props.session.last_activity_time).fromNow()
-                }
+            {this.props.showPageInfo ? (
+              <span
+                className={`m-widget4__sub ${
+                  this.props.session.unreadCount &&
+                  this.props.session.unreadCount > 0 &&
+                  'm--font-boldest'
+                }`}
+              >
+                <i className='fa fa-facebook-square' />
+                &nbsp;&nbsp;
+                {this.props.session.pageId.pageName.length > 10
+                  ? this.props.session.pageId.pageName.slice(0, 10) + '...'
+                  : this.props.session.pageId.pageName}
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <i className='fa fa-calendar' />
+                &nbsp;&nbsp;
+                {this.props.session.last_activity_time &&
+                  moment(this.props.session.last_activity_time).fromNow()}
               </span>
-              : <span className={`m-widget4__sub ${(this.props.session.unreadCount && this.props.session.unreadCount > 0) && 'm--font-boldest'}`}>
-                <i className='fa fa-calendar' />&nbsp;&nbsp;
-                {
-                  this.props.session.last_activity_time &&
-                  moment(this.props.session.last_activity_time).fromNow()
-                }
+            ) : (
+              <span
+                className={`m-widget4__sub ${
+                  this.props.session.unreadCount &&
+                  this.props.session.unreadCount > 0 &&
+                  'm--font-boldest'
+                }`}
+              >
+                <i className='fa fa-calendar' />
+                &nbsp;&nbsp;
+                {this.props.session.last_activity_time &&
+                  moment(this.props.session.last_activity_time).fromNow()}
               </span>
-            }
+            )}
             <br />
           </div>
         </div>
@@ -188,12 +243,12 @@ class SessionItem extends React.Component {
 }
 
 SessionItem.propTypes = {
-  'session': PropTypes.object.isRequired,
-  'activeSession': PropTypes.object.isRequired,
-  'changeActiveSession': PropTypes.func.isRequired,
-  'profilePicError': PropTypes.func.isRequired,
-  'changeStatus': PropTypes.func.isRequired,
-  'showPageInfo': PropTypes.bool.isRequired
+  session: PropTypes.object.isRequired,
+  activeSession: PropTypes.object.isRequired,
+  changeActiveSession: PropTypes.func.isRequired,
+  profilePicError: PropTypes.func.isRequired,
+  changeStatus: PropTypes.func.isRequired,
+  showPageInfo: PropTypes.bool.isRequired
 }
 
 export default SessionItem

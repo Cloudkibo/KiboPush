@@ -5,10 +5,10 @@ class GetContactInfo extends React.Component {
   constructor(props, context) {
     super(props, context)
     this.state = {
-      query: '',
-      message: '',
-      keyboardInputAllowed: false,
-      skipAllowed: false
+        query: '',
+        message: '',
+        keyboardInputAllowed: false,
+        skipAllowed: {isSkip: false},
     }
     this.getCorrespondingCustomField = this.getCorrespondingCustomField.bind(this)
     this.updateQuery = this.updateQuery.bind(this)
@@ -33,10 +33,10 @@ class GetContactInfo extends React.Component {
     }
   }
 
-  getQuickReply() {
-    const quickReplies = [{ title: this.getQuickReplyTitle() }]
-    if (this.state.skipAllowed) {
-      quickReplies.push({ title: 'skip' })
+  getQuickReply () {
+    const quickReplies = [{title: this.getQuickReplyTitle()}]
+    if (this.state.skipAllowed && this.state.skipAllowed.isSkip) {
+      quickReplies.push({title: 'skip'})
     }
     return quickReplies
   }
@@ -60,7 +60,7 @@ class GetContactInfo extends React.Component {
     if (!query) {
       updatedState.message = ''
       updatedState.keyboardInputAllowed = false
-      updatedState.skipAllowed = false
+      updatedState.skipAllowed = {isSkip: false}
     } else {
       if (query === 'email') {
         updatedState.message = 'Please provide your email'
@@ -136,7 +136,6 @@ class GetContactInfo extends React.Component {
               rows='3'
               maxLength={150}
             />
-
             <label
               style={{ fontSize: '13px', marginLeft: '5px', color: '#575962', marginTop: '10px', display: 'block' }}
               className='m--font-bolder'
@@ -156,8 +155,8 @@ class GetContactInfo extends React.Component {
               <input
                 style={{ position: 'relative', top: '2px', marginRight: '5px' }}
                 type='checkbox'
-                checked={this.state.skipAllowed}
-                onChange={(e) => this.setState({ skipAllowed: e.target.checked })}
+                checked={this.state.skipAllowed.isSkip}
+                onChange={(e) => this.setState({skipAllowed: {isSkip: e.target.checked }})}
               />
               Allow Skip
             </label>

@@ -9,13 +9,26 @@ class AddOption extends React.Component {
       showing: false,
       query: '',
       keyboardInputAllowed: false,
-      skipAllowed: false
+      skipAllowed: { isSkip: false }
     }
+    let selectedRadioSkip = 'create'
+    if (this.props.additionalActions && this.props.additionalActions.skipAllowed && this.props.additionalActions.skipAllowed.blockId) {
+      selectedRadioSkip = 'link'
+    }
+    const existingBlocks = props.blocks.map((item) => {
+      return {
+        label: item.title,
+        value: item.uniqueId
+      }
+    })
     this.state = {
       title: '',
-      selectedBlock: '',
+      skipTitle: '',
       selectedRadio: '',
-      additionalActions: this.props.additionalActions ? this.props.additionalActions : this.initialAdditionalActions
+      selectedBlock: '',
+      selectedRadioSkip,
+      additionalActions: this.props.additionalActions ? this.props.additionalActions : this.initialAdditionalActions,
+      existingBlocks
     }
     this.additionalOptions = [
       {
@@ -36,14 +49,50 @@ class AddOption extends React.Component {
     this.getSelectOptions = this.getSelectOptions.bind(this)
     this.updateAdditonalActions = this.updateAdditonalActions.bind(this)
     this.getCorrespondingCustomField = this.getCorrespondingCustomField.bind(this)
+    this.checkDisabled = this.checkDisabled.bind(this)
+    this.updateSkipRadio = this.updateSkipRadio.bind(this)
+    this.updateSkipAdditonalActions = this.updateSkipAdditonalActions.bind(this)
+  }
+
+  static getDerivedStateFromProps(nextProps, prevState) {
+    if (nextProps.blocks) {
+      const existingBlocks = nextProps.blocks.map((item) => {
+        return {
+          label: item.title,
+          value: item.uniqueId
+        }
+      })
+      return ({ existingBlocks })
+    }
+    return null
+  }
+
+  checkDisabled () {
+    if (!this.state.title || (this.state.selectedRadio === 'link' && !this.state.selectedBlock)) {
+      return true
+    }
   }
 
   updateAdditonalActions (updated) {
     this.setState({
       additionalActions: {
-        ...this.state.additionalActions, 
+        ...this.state.additionalActions,
         ...updated
-      }
+      },
+      selectedRadioSkip:
+        updated.skipAllowed && !updated.skipAllowed.isSkip ? '' : this.state.selectedRadioSkip
+    })
+  }
+
+  updateSkipAdditonalActions (updated) {
+    this.setState({
+      additionalActions: {
+        ...this.state.additionalActions,
+        skipAllowed: {
+          ...this.state.additionalActions.skipAllowed,
+          ...updated,
+        }
+      },
     })
   }
 
@@ -88,7 +137,7 @@ class AddOption extends React.Component {
       this.props.onSave(
         this.state.title,
         this.state.selectedRadio,
-        this.state.selectedBlock.value,
+        this.state.selectedBlock ? this.state.selectedBlock.value : this.state.selectedBlock,
         this.state.additionalActions.query ? this.state.additionalActions : null
       )
       this.props.onCancel()
@@ -123,6 +172,17 @@ class AddOption extends React.Component {
     return options
   }
 
+  updateSkipRadio (selectedRadioSkip) {
+    this.setState({
+      additionalActions: {
+        ...this.state.additionalActions,
+        blockId: null,
+        messageBlockTitle: ''
+      },
+      selectedRadioSkip
+    })
+  }
+
   getCorrespondingCustomField () {
     if (this.state.additionalActions.query === 'email') {
       return "Email"
@@ -134,69 +194,73 @@ class AddOption extends React.Component {
   render () {
     return (
       <div>
-        <i onClick={this.props.onCancel} style={{cursor: 'pointer'}} className='la la-close pull-right' />
-        <div style={{paddingTop: '10px'}}>
-          <div className="form-group m-form__group">
+        <i
+          onClick={this.props.onCancel}
+          style={{ cursor: 'pointer' }}
+          className='la la-close pull-right'
+        />
+        <div style={{ paddingTop: '10px' }}>
+          <div className='form-group m-form__group'>
             <label>Title:</label>
-  					<input
-              type="text"
-              className="form-control m-input"
-              placeholder="Enter title..."
+            <input
+              type='text'
+              className='form-control m-input'
+              placeholder='Enter title...'
               value={this.state.title}
               onChange={this.onTitleChange}
             />
           </div>
           <div className='m--space-10' />
-          <div className="form-group m-form__group">
+          <div className='form-group m-form__group'>
             <label>{this.props.showRemove ? 'Linked to block:' : 'Action:'}</label>
             {
-              !this.props.showRemove &&
-              <div className="m-radio-list">
+              !this.props.showRemove && (
+              <div className='m-radio-list'>
                 {
-                  this.props.isCreatable &&
-                  <label className="m-radio m-radio--bold m-radio--state-brand">
+                  this.props.isCreatable && (
+                  <label className='m-radio m-radio--bold m-radio--state-brand'>
                     <input
-                      type="radio"
+                      type='radio'
                       onClick={this.onRadioClick}
                       onChange={() => {}}
                       value='create'
                       checked={this.state.selectedRadio === 'create'}
                     />
-                      Create new block
+                    Create new block
                     <span />
                   </label>
-                }
-                <label className="m-radio m-radio--bold m-radio--state-brand">
+                )}
+                <label className='m-radio m-radio--bold m-radio--state-brand'>
                   <input
-                    type="radio"
+                    type='radio'
                     onClick={this.onRadioClick}
                     onChange={() => {}}
                     value='link'
                     checked={this.state.selectedRadio === 'link'}
                   />
-                    Link existing block
+                  Link existing block
                   <span />
                 </label>
               </div>
-            }
-            {
-              this.state.selectedRadio === 'link' &&
+            )}
+            {this.state.selectedRadio === 'link' && (
               <Select
-                className="basic-single"
-                classNamePrefix="select"
+                className='basic-single'
+                classNamePrefix='select'
                 isClearable={true}
                 isSearchable={true}
-                options={this.getSelectOptions()}
+                options={this.state.existingBlocks}
                 value={this.state.selectedBlock}
                 onChange={this.onBlockChange}
               />
-            }
+            )}
           </div>
           {
-            <div style={{    
-                marginBottom: "10px",
-                marginLeft: "5px",
-                cursor: "pointer",
+            <div
+              style={{
+                marginBottom: '10px',
+                marginLeft: '5px',
+                cursor: 'pointer',
                 fontWeight: 500,
                 color: "#575962",
               }}>
@@ -213,62 +277,141 @@ class AddOption extends React.Component {
                 }
            </div>
           }
-          {
-            this.state.additionalActions.showing &&
-            <div style={{maxWidth: '220px'}}>
+          {this.state.additionalActions.showing && (
+            <div style={{ maxWidth: '220px' }}>
               <Select
-                className="basic-single"
-                classNamePrefix="select"
+                className='basic-single'
+                classNamePrefix='select'
                 isClearable={true}
                 options={this.additionalOptions}
-                value={this.additionalOptions.find(o => o.value === this.state.additionalActions.query)}
-                onChange={(value) => this.updateAdditonalActions({query: value ? value.value : ""})}
+                value={this.additionalOptions.find(
+                  (o) => o.value === this.state.additionalActions.query
+                )}
+                onChange={(value) =>
+                  this.updateAdditonalActions({ query: value ? value.value : '' })
+                }
               />
-              {
-                this.state.additionalActions.query &&
+              {this.state.additionalActions.query && (
                 <>
-                  <div style={{marginTop: '5px', marginLeft: '3px', fontSize: '12px'}}>
-                    Note: Subscriber's {this.getCorrespondingCustomField()} will be stored in the {this.getCorrespondingCustomField()} custom field once this is selected.
+                  <div style={{ marginTop: '5px', marginLeft: '3px', fontSize: '12px' }}>
+                    Note: Subscriber's {this.getCorrespondingCustomField()} will be stored in the{' '}
+                    {this.getCorrespondingCustomField()} custom field once this is selected.
                   </div>
-                  <label style={{fontSize: '13px', marginLeft: '5px', color: "#575962", marginTop: "10px"}} className="m--font-bolder">
+                  <label
+                    style={{
+                      fontSize: '13px',
+                      marginLeft: '5px',
+                      color: '#575962',
+                      marginTop: '10px'
+                    }}
+                    className='m--font-bolder'
+                  >
                     <input
-                      style={{position: 'relative', top: '2px', marginRight: "5px"}}
-                      type="checkbox"
+                      style={{ position: 'relative', top: '2px', marginRight: '5px' }}
+                      type='checkbox'
                       checked={this.state.additionalActions.keyboardInputAllowed}
-                      onChange={(e) => this.updateAdditonalActions({keyboardInputAllowed: e.target.checked})}
+                      onChange={(e) =>
+                        this.updateAdditonalActions({ keyboardInputAllowed: e.target.checked })
+                      }
                     />
                     Allow Keyboard Input
                   </label>
-                  <label style={{fontSize: '13px', marginLeft: '5px', color: "#575962", marginTop: "5px"}} className="m--font-bolder">
+                  <label
+                    style={{
+                      fontSize: '13px',
+                      marginLeft: '5px',
+                      color: '#575962',
+                      marginTop: '5px'
+                    }}
+                    className='m--font-bolder'
+                  >
                     <input
-                      style={{position: 'relative', top: '2px', marginRight: "5px"}}
-                      type="checkbox"
-                      checked={this.state.additionalActions.skipAllowed}
-                      onChange={(e) => this.updateAdditonalActions({skipAllowed: e.target.checked})}
+                      style={{ position: 'relative', top: '2px', marginRight: '5px' }}
+                      type='checkbox'
+                      checked={this.state.additionalActions.skipAllowed.isSkip}
+                      onChange={(e) =>
+                        this.updateAdditonalActions({ skipAllowed: { isSkip: e.target.checked } })
+                      }
                     />
                     Allow Skip
                   </label>
+
+                  {this.state.additionalActions.skipAllowed.isSkip && (
+                    <div style={{marginTop: '10px', marginLeft: '3px'}} className='m-radio-list'>
+                      {!this.props.additionalActions && (
+                        <label className='m-radio m-radio--bold m-radio--state-brand'>
+                          <input
+                            type='radio'
+                            onClick={() => this.updateSkipRadio('create')}
+                            onChange={() => {}}
+                            value='create'
+                            checked={this.state.selectedRadioSkip === 'create'}
+                          />
+                          Create new block for skip
+                          <span />
+                        </label>
+                      )}
+                      {
+                        this.state.selectedRadioSkip === 'create' &&
+                        <input
+                          type="text"
+                          className="form-control m-input"
+                          placeholder="Enter block title for skip..."
+                          value={this.state.additionalActions.skipAllowed.messageBlockTitle}
+                          onChange={(e) => this.updateSkipAdditonalActions({messageBlockTitle: e.target.value})}
+                          style={{marginBottom: '10px'}}
+                        />
+                      }
+                      <label className='m-radio m-radio--bold m-radio--state-brand'>
+                        <input
+                          type='radio'
+                          onClick={() => this.updateSkipRadio('link')}
+                          onChange={() => {}}
+                          value='link'
+                          checked={this.state.selectedRadioSkip === 'link'}
+                        />
+                        Link existing block for skip
+                        <span />
+                      </label>
+                      {
+                        this.state.selectedRadioSkip === 'link' &&
+                        <Select
+                          className='basic-single'
+                          classNamePrefix='select'
+                          isClearable={true}
+                          isSearchable={true}
+                          options={this.state.existingBlocks}
+                          value={this.state.existingBlocks.find(o => o.value === this.state.additionalActions.skipAllowed.blockId)}
+                          onChange={
+                            (value) => this.updateSkipAdditonalActions({
+                              blockId: value ? value.value : null,
+                              messageBlockTitle: value ? value.label : ''
+                            })
+                          }
+                        />
+                      }
+                    </div>
+                  )}
                 </>
-              }
+              )}
             </div>
-          }
-          {
-            this.props.showRemove &&
+          )}
+          {this.props.showRemove && (
             <button
               type='button'
-              style={{marginTop: '20px', marginBottom: '10px'}}
+              style={{ marginTop: '20px', marginBottom: '10px' }}
               className='btn btn-danger btn-sm pull-left'
               onClick={this.onRemove}
             >
               Remove
             </button>
-          }
+          )}
           <button
             type='button'
-            style={{marginTop: '20px', marginBottom: '10px'}}
+            style={{ marginTop: '20px', marginBottom: '10px' }}
             className='btn btn-primary btn-sm pull-right'
             onClick={this.props.showRemove ? this.onUpdate : this.onSave}
-            disabled={!(this.state.title)}
+            disabled={this.checkDisabled()}
           >
             Save
           </button>
