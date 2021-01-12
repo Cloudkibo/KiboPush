@@ -91,8 +91,8 @@ class SLADashboard extends React.Component {
       newState.pageOptions = pageOptions
       newState.page = pageOptions[0]
       if (pageOptions[0]) {
-        nextProps.loadTeamsList({ pageId: pageOptions[0]._id })
-        nextProps.loadSLADashboardData({ pageId: pageOptions[0]._id, days: prevState.days })
+        nextProps.loadTeamsList({ pageId: pageOptions[0].value })
+        nextProps.loadSLADashboardData({ pageId: pageOptions[0].value, days: prevState.days })
       } else {
         newState.error = 'No pages are connected'
       }

@@ -81,10 +81,54 @@ export function loadSLADashboardData(data) {
       dispatch({
         type: ActionTypes.FETCHING_SLA_DASHBOARD
       })
+      console.log('loadSLADashboardData', data)
+      console.trace()
       const response = await callApi('dashboard/sla', 'post', data)
       if (!response.payload || response.payload.length === 0) {
         dispatch(updateSLADashboard(null, 'No data currently available'))
       } else {
+        const slaData = {
+          sessions: {
+            new: 0,
+            resolved: 0,
+            pending: 0,
+            open: 0
+          },
+          messages: {
+            received: 0,
+            sent: 0
+          },
+          maxResponseTime: 0,
+          avgResponseTime: 0,
+          avgResolveTime: 0,
+          graphData: []
+        }
+        let totalAvgResponseTime = 0
+        let totalAvgResolveTime = 0
+        for (let i = 0; i < response.payload.length; i++) {
+          const data = response.payload[i]
+          slaData.sessions.new += data.sessions.new
+          slaData.sessions.open += data.sessions.open
+          slaData.sessions.pending += data.sessions.pending
+          slaData.sessions.resolved += data.sessions.resolved
+
+          slaData.messages.received += data.messages.received
+          slaData.messages.sent += data.messages.sent
+
+          if (data.maxRespTime && data.maxRespTime > slaData.maxResponseTime) {
+            slaData.maxResponseTime = data.maxRespTime
+          }
+
+          totalAvgResponseTime += data.avgRespTime ? data.avgRespTime : 0
+          totalAvgResolveTime += data.avgResolveTime ? data.avgResolveTime : 0
+
+          slaData.graphData.push({
+            avgResponseTime: data.avgRespTime ? data.avgRespTime : 0,
+            avgResolveTime: data.avgResolveTime ? data.avgResolveTime : 0,
+            maxResponseTime: data.maxRespTime ? data.maxRespTime : 0,
+            date: data.createdAt.substring(0, 10)
+          })
+        }
         dispatch(updateSLADashboard(response.payload))
       }
       // setTimeout(() => {
