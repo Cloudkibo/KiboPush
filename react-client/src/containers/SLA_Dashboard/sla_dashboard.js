@@ -42,7 +42,7 @@ class SLADashboard extends React.Component {
 
   fetchData() {
     const query = {
-      pageId: this.state.page._id,
+      pageId: this.state.page.value,
       days: this.state.days
     }
     if (this.state.team) {
