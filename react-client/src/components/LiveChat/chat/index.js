@@ -219,11 +219,7 @@ class Chat extends React.Component {
             isMobile={this.props.isMobile}
           />
 
-          {!this.props.activeSession.lastMessagedAt ||
-          (!moment(this.props.activeSession.lastMessagedAt).isAfter(
-            moment().subtract(24, 'hours')
-          ) &&
-            !this.props.isSMPApproved) ? (
+        {false ? (
             <div
               className='m-messenger'
               style={{
