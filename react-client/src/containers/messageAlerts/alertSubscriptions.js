@@ -102,7 +102,7 @@ class AlertSubscriptions extends React.Component {
   }
 
   UNSAFE_componentWillReceiveProps (nextProps) {
-    if (this.props.channel === 'notification' &&
+    if (nextProps.channel === 'notification' &&
         nextProps.members && nextProps.members.length > 0) {
       this.setAgents(nextProps)
     }
@@ -243,6 +243,7 @@ class AlertSubscriptions extends React.Component {
                   <SUBSCRIPTIONITEM
                     key={i}
                     name={item.userName}
+                    description={ ['email', 'whatsapp'].includes(item.alertChannel.toLowerCase()) ? item.channelId : ''}
                     profilePic={item.profilePic}
                     onRemove={() => {this.onRemoveAgent(item._id)}}
                   />

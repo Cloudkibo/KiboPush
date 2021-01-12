@@ -9,10 +9,10 @@ class SubscriptionItem extends React.Component {
 
   render () {
     return (
-      <div className='col-lg-4 col-md-4 col-sm-4'>
+      <div className='col-lg-6 col-md-6 col-sm-6'>
         <div
           style={{
-            margin: '5px',
+            margin: '10px',
             border: '1px solid #ccc',
             borderRadius: '10px',
             position: 'relative',
@@ -31,14 +31,32 @@ class SubscriptionItem extends React.Component {
           >
             <i className='la la-times-circle' />
           </span>
-          <div style={{padding: '10px'}} className="m-card-user">
-            <div className="m-card-user__pic">
-              <img style={{width: '30px'}} src={this.props.profilePic || 'http://cdn.cloudkibo.com/public/img/default/default-user.jpg'} className="m--img-rounded m--marginless" alt="" />
-            </div>
-            <div style={{paddingLeft: '5px'}} class="m-card-user__details">
-              <span style={{fontSize: '10px'}} className="m-card-user__name m--font-weight-500">
-                {this.props.name}
-              </span>
+          <div className='m-widget4'>
+            <div style={{padding: '10px'}} className="m-widget4__item">
+              <div className="m-widget4__img m-widget4__img--logo">
+                <img src={this.props.profilePic || 'http://cdn.cloudkibo.com/public/img/default/default-user.jpg'} alt="" />
+              </div>
+              <div
+                className="m-widget4__info"
+                style={{
+                  overflow: 'hidden',
+                  width: '125px',
+                  whiteSpace: this.props.description ? 'nowrap' : 'break-spaces',
+                  textOverflow: 'ellipsis',
+                  display: this.props.description ? 'block' : 'table-cell'
+                }}
+              >
+                <span style={{fontSize: '12px'}} className="m-widget4__title">
+                  {this.props.name}
+                </span>
+                <br />
+                {
+                  this.props.description &&
+                  <span style={{fontSize: '10px'}} className="m-widget4__sub">
+                    {this.props.description}
+                  </span>
+                }
+              </div>
             </div>
           </div>
         </div>
@@ -50,7 +68,8 @@ class SubscriptionItem extends React.Component {
 SubscriptionItem.propTypes = {
   'profilePic': PropTypes.string,
   'name': PropTypes.string.isRequired,
-  'onRemove': PropTypes.func.isRequired
+  'onRemove': PropTypes.func.isRequired,
+  'description': PropTypes.string
 }
 
 export default SubscriptionItem
