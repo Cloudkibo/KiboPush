@@ -140,7 +140,9 @@ class MessageTemplate extends React.Component {
       text: this.state.templateMessage,
       buttons: this.props.templates[this.state.selectedIndex].buttons,
       templateArguments: this.state.templateArguments,
-      templateName: this.props.templates[this.state.selectedIndex].name
+      templateName: this.props.templates[this.state.selectedIndex].name,
+      templateNameSpace: this.props.templates[this.state.selectedIndex].namespace,
+      templateCode: this.props.templates[this.state.selectedIndex].code
     }
     let data = this.props.setMessageData(this.props.activeSession, payload)
     this.props.sendChatMessage(data, (res) => {
