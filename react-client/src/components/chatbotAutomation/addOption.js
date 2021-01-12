@@ -262,24 +262,20 @@ class AddOption extends React.Component {
                 marginLeft: '5px',
                 cursor: 'pointer',
                 fontWeight: 500,
-                color: '#575962'
-              }}
-            >
-              <span
-                data-toggle='collapse'
-                data-target='#customFields'
-                onClick={() =>
-                  this.updateAdditonalActions({ showing: !this.state.additionalActions.showing })
+                color: "#575962",
+              }}>
+                {
+                  (this.props.additionalActions || this.props.showAdditionalActions) &&
+                  <span data-toggle='collapse' data-target='#customFields'
+                    onClick={() => this.updateAdditonalActions({showing: !this.state.additionalActions.showing})}>
+                    Additional Actions{" "}
+                    {this.state.additionalActions.showing
+                      ? <i style={{ fontSize: '12px' }} className='la la-angle-up ' />
+                      : <i style={{ fontSize: '12px' }} className='la la-angle-down ' />
+                    }
+                  </span>
                 }
-              >
-                Additional Actions{' '}
-                {this.state.additionalActions.showing ? (
-                  <i style={{ fontSize: '12px' }} className='la la-angle-up ' />
-                ) : (
-                  <i style={{ fontSize: '12px' }} className='la la-angle-down ' />
-                )}
-              </span>
-            </div>
+           </div>
           }
           {this.state.additionalActions.showing && (
             <div style={{ maxWidth: '220px' }}>
