@@ -76,14 +76,14 @@ export function updateSLADashboard(data, error) {
 }
 
 export function loadSLADashboardData(data) {
+  let dataCopy = {...data}
   return async (dispatch) => {
+    console.log('loadSLADashboardData', dataCopy)
     try {
       dispatch({
         type: ActionTypes.FETCHING_SLA_DASHBOARD
       })
-      console.log('loadSLADashboardData', data)
-      console.trace()
-      const response = await callApi('dashboard/sla', 'post', data)
+      const response = await callApi('dashboard/sla', 'post', dataCopy)
       if (!response.payload || response.payload.length === 0) {
         dispatch(updateSLADashboard(null, 'No data currently available'))
       } else {
@@ -129,7 +129,8 @@ export function loadSLADashboardData(data) {
             date: data.createdAt.substring(0, 10)
           })
         }
-        dispatch(updateSLADashboard(response.payload))
+        console.log('slaData', slaData)
+        dispatch(updateSLADashboard(slaData))
       }
       // setTimeout(() => {
       //   dispatch(

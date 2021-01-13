@@ -46,15 +46,15 @@ class SLADashboard extends React.Component {
       days: this.state.days
     }
     if (this.state.team) {
-      query.teamId = this.state.team._id
+      query.teamId = this.state.team.value
     } else if (this.state.agent) {
-      query.agentId = this.state.agent._id
+      query.agentId = this.state.agent.value
     }
     this.props.loadSLADashboardData(query)
   }
 
   handleDaysChange(days) {
-    this.setState({ days }, () => {
+    this.setState({ days: Number(days) }, () => {
       clearTimeout(this.fetchTimer)
       this.fetchTimer = setTimeout(this.fetchData, 1000)
     })
@@ -79,12 +79,49 @@ class SLADashboard extends React.Component {
     })
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    if (!prevState.page && this.state.page) {
-      this.props.loadTeamsList({ pageId: this.state.page.value })
-      this.props.loadSLADashboardData({ pageId: this.state.page.value, days: this.state.days })
-    }
-  }
+  // UNSAFE_componentWillReceiveProps(nextProps) {
+  //   console.log('UNSAFE_componentWillReceiveProps sla_dashboard')
+  //   const newState = {}
+  //   if (!this.state.pageOptions && nextProps.pages) {
+  //     const pageOptions = nextProps.pages.map((page) => {
+  //       return {
+  //         label: page.pageName,
+  //         value: page._id
+  //       }
+  //     })
+  //     newState.pageOptions = pageOptions
+  //     newState.page = pageOptions[0]
+  //     if (pageOptions[0]) {
+  //       this.props.loadTeamsList({ pageId: pageOptions[0].value })
+  //       console.log('loadSLADashboardData', { pageId: pageOptions[0].value, days: this.state.days })
+  //       this.props.loadSLADashboardData({ pageId: pageOptions[0].value, days: this.state.days })
+  //     } else {
+  //       newState.error = 'No pages are connected'
+  //     }
+  //   }
+  //   if (nextProps.members) {
+  //     const agentOptions = nextProps.members.map((member) => {
+  //       return {
+  //         label: member.userId.name,
+  //         value: member._id
+  //       }
+  //     })
+  //     newState.agentOptions = agentOptions
+  //   }
+  //   if (nextProps.teams) {
+  //     const teamOptions = nextProps.teams.map((team) => {
+  //       return {
+  //         label: team.name,
+  //         value: team._id
+  //       }
+  //     })
+  //     newState.teamOptions = teamOptions
+  //   }
+  //   if (nextProps.slaDashboardError) {
+  //     newState.error = nextProps.slaDashboardError
+  //   }
+  //   this.setState(newState)
+  // }
 
   static getDerivedStateFromProps(nextProps, prevState) {
     const newState = {}
@@ -97,7 +134,11 @@ class SLADashboard extends React.Component {
       })
       newState.pageOptions = pageOptions
       newState.page = pageOptions[0]
-      if (!pageOptions[0]) {
+      if (pageOptions[0]) {
+        nextProps.loadTeamsList({ pageId: pageOptions[0].value })
+        console.log('loadSLADashboardData', { pageId: pageOptions[0].value, days: prevState.days })
+        nextProps.loadSLADashboardData({ pageId: pageOptions[0].value, days: prevState.days })
+      } else {
         newState.error = 'No pages are connected'
       }
     }
