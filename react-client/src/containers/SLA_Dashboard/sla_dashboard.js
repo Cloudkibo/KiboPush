@@ -42,7 +42,7 @@ class SLADashboard extends React.Component {
 
   fetchData() {
     const query = {
-      pageId: this.state.page._id,
+      pageId: this.state.page.value,
       days: this.state.days
     }
     if (this.state.team) {
@@ -79,6 +79,13 @@ class SLADashboard extends React.Component {
     })
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    if (!prevState.page && this.state.page) {
+      this.props.loadTeamsList({ pageId: this.state.page.value })
+      this.props.loadSLADashboardData({ pageId: this.state.page.value, days: this.state.days })
+    }
+  }
+
   static getDerivedStateFromProps(nextProps, prevState) {
     const newState = {}
     if (!prevState.page && nextProps.pages) {
@@ -90,10 +97,7 @@ class SLADashboard extends React.Component {
       })
       newState.pageOptions = pageOptions
       newState.page = pageOptions[0]
-      if (pageOptions[0]) {
-        nextProps.loadTeamsList({ pageId: pageOptions[0]._id })
-        nextProps.loadSLADashboardData({ pageId: pageOptions[0]._id, days: prevState.days })
-      } else {
+      if (!pageOptions[0]) {
         newState.error = 'No pages are connected'
       }
     }
