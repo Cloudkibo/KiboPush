@@ -64,7 +64,16 @@ class Configuration extends React.Component {
     this.logout = this.logout.bind(this)
     this.handleCheckbox = this.handleCheckbox.bind(this)
     this.updateData =this.updateData.bind(this)
+    this.getBusinessNumber =this.getBusinessNumber.bind(this)
     props.getAutomatedOptions()
+  }
+
+  getBusinessNumber () {
+    if (this.state.whatsappData && this.state.whatsappData.cequens && this.state.whatsappData.cequens.businessNumber) {
+      return this.state.whatsappData.cequens.businessNumber
+    } else {
+      return '{whatsApp-number}'
+    }
   }
 
   logout() {
@@ -387,7 +396,7 @@ class Configuration extends React.Component {
         </div>
         <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="connectWapp" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
-            <div className="modal-content">
+            <div className="modal-content" style={{width: '600px'}}>
               <div style={{ display: 'block' }} className="modal-header">
                 <h5 className="modal-title" id="exampleModalLabel">
                   Connect with WhatsApp
@@ -432,7 +441,7 @@ class Configuration extends React.Component {
               </div> */}
 
 
-              <div style={{ color: 'black', maxHeight: '500px', overflowY: 'auto' }} className="modal-body">
+              <div style={{ color: 'black' }} className="modal-body">
                 <form onSubmit={this.submitWapp}>
                   <div className='m-form'>
                     <div className='form-group m-form__group'>
@@ -484,6 +493,9 @@ class Configuration extends React.Component {
                             value={this.state.whatsappData.cequens.businessNumber}
                             onChange={(e) => this.updateWhatsAppData(e, { businessNumber: e.target.value })} />
                         </div>
+                        <span><b>Note:</b> Please add this webhook url </span>
+                        <span>"https://webhook.cloudkibo.com/webhooks/cequens/{this.getBusinessNumber()}"</span>
+                        <span> to your cequens WhatsApp configuration.</span>
                       </div>
 
                       <div style={{ display: this.state.whatsappProvider === 'twilio' ? 'initial' : 'none' }}>
