@@ -24,6 +24,12 @@ class Configuration extends React.Component {
         accessToken: '',
         businessNumber: ''
       },
+      cequens: {
+        provider: 'cequens',
+        accessToken: '',
+        businessNumber: '',
+        clientName: ''
+      },
       twilioFree: {
         provider: 'twilioFree',
         accessToken: '',
@@ -59,6 +65,7 @@ class Configuration extends React.Component {
     this.handleCheckbox = this.handleCheckbox.bind(this)
     this.logout = this.logout.bind(this)
     this.updateData =this.updateData.bind(this)
+    this.getBusinessNumber =this.getBusinessNumber.bind(this)
     props.getAutomatedOptions()
   }
   handleCheckbox (e) {
@@ -71,6 +78,14 @@ class Configuration extends React.Component {
     })
     this.props.updateShowIntegrations({ showIntegrations: true })
     // auth.logout()
+  }
+
+  getBusinessNumber () {
+    if (this.state.whatsappData && this.state.whatsappData.cequens && this.state.whatsappData.cequens.businessNumber) {
+      return this.state.whatsappData.cequens.businessNumber
+    } else {
+      return '{whatsApp-number}'
+    }
   }
 
   logout() {
@@ -394,7 +409,7 @@ class Configuration extends React.Component {
         </div>
         <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="connectWapp" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
-            <div className="modal-content">
+            <div className="modal-content" style={{width: '600px'}}>
               <div style={{ display: 'block' }} className="modal-header">
                 <h5 className="modal-title" id="exampleModalLabel">
                   Connect with WhatsApp
@@ -439,7 +454,7 @@ class Configuration extends React.Component {
               </div> */}
 
 
-              <div style={{ color: 'black', maxHeight: '500px', overflowY: 'auto' }} className="modal-body">
+              <div style={{ color: 'black' }} className="modal-body">
                 <form onSubmit={this.submitWapp}>
                   <div className='m-form'>
                     <div className='form-group m-form__group'>
@@ -449,6 +464,7 @@ class Configuration extends React.Component {
                           <option value='' selected disabled>Select a WhatsApp Provider...</option>
                           <option value='flockSend'>FlockSend</option>
                           <option value='twilio'>Twilio</option>
+                          <option value='cequens'>Cequens</option>
                           {this.props.user && this.props.user.isSuperUser &&
                             <option value='twilioFree'>Twilio (Free)</option>
                           }
@@ -470,6 +486,29 @@ class Configuration extends React.Component {
                             value={this.state.whatsappData.flockSend.businessNumber}
                             onChange={(e) => this.updateWhatsAppData(e, { businessNumber: e.target.value })} />
                         </div>
+                      </div>
+
+                      <div style={{ display: this.state.whatsappProvider === 'cequens' ? 'initial' : 'none' }} >
+                        <div id='_cequens_client_name' className='form-group m-form__group'>
+                          <label className='control-label'>Client Name:</label>
+                          <input required={this.state.whatsappProvider === 'cequens'} className='form-control' value={this.state.whatsappData.cequens.clientName} onChange={(e) => this.updateWhatsAppData(e, { clientName: e.target.value })} />
+                        </div>
+                        <div id='_cequens_access_token' className='form-group m-form__group'>
+                          <label className='control-label'>API Token:</label>
+                          <input required={this.state.whatsappProvider === 'cequens'} className='form-control' value={this.state.whatsappData.cequens.accessToken} onChange={(e) => this.updateWhatsAppData(e, { accessToken: e.target.value })} />
+                        </div>
+                        <div id='_cequens_whatsapp_number' className='form-group m-form__group'>
+                          <label className='control-label'>WhatsApp Number:</label>
+                          <input
+                            required={this.state.whatsappProvider === 'cequens'}
+                            type="tel"
+                            className='form-control'
+                            value={this.state.whatsappData.cequens.businessNumber}
+                            onChange={(e) => this.updateWhatsAppData(e, { businessNumber: e.target.value })} />
+                        </div>
+                        <span><b>Note:</b> Please add this webhook url </span>
+                        <span>"https://webhook.cloudkibo.com/webhooks/cequens/{this.getBusinessNumber()}"</span>
+                        <span> to your cequens WhatsApp configuration.</span>
                       </div>
 
                       <div style={{ display: this.state.whatsappProvider === 'twilio' ? 'initial' : 'none' }}>

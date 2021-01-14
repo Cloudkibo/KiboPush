@@ -354,7 +354,9 @@ class GenericMessage extends React.Component {
           componentName: obj.componentName,
           buttons: obj.buttons,
           templateName: obj.templateName,
-          templateArguments: obj.templateArguments
+          templateArguments: obj.templateArguments,
+          templateNameSpace: obj.templateNameSpace,
+          templateCode: obj.templateCode
         })
       } else if (obj.buttons.length > 0) {
         temp.push({id: obj.id, text: obj.text, componentType: 'text', componentName: obj.componentName ? obj.componentName : 'text', buttons: obj.buttons})
@@ -846,7 +848,9 @@ class GenericMessage extends React.Component {
             isEmailPhoneComponent: broadcast.isEmailPhoneComponent,
             componentName: broadcast.componentName,
             templateName: broadcast.templateName,
-            templateArguments: broadcast.templateArguments
+            templateArguments: broadcast.templateArguments,
+            templateNameSpace: broadcast.templateNameSpace,
+            templateCode: broadcast.templateCode,
           })
         }
       },
