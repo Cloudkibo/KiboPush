@@ -67,7 +67,9 @@ class Webhook extends React.Component {
     ? data = [{'name': 'New Subscriber', selected: false},
       {'name': 'Chat Message', selected: false},
       {'name': 'Chatbot Option Selected', selected: false},
-      {'name': 'Session Assignment', selected: false}]
+      {'name': 'Session Assignment', selected: false},
+      {'name': 'Notification Alerts', selected: false}
+    ]
     : data = [{'name': 'New Subscriber', selected: false},
       {'name': 'Checkbox Optin', selected: false}]
     this.setState({subscriptionsEdit: data, subscriptions: data})
@@ -98,6 +100,8 @@ class Webhook extends React.Component {
         subscriptionsEdit[i].selected = webhook.optIn.CHATBOT_OPTION_SELECTED
       } else if (subscriptionsEdit[i].name === 'Session Assignment') {
         subscriptionsEdit[i].selected = webhook.optIn.SESSION_ASSIGNED
+      } else if (subscriptionsEdit[i].name === 'Notification Alerts') {
+        subscriptionsEdit[i].selected = webhook.optIn.NOTIFICATION_ALERTS
       } else {
         subscriptionsEdit[i].selected = false
       }
@@ -243,6 +247,8 @@ class Webhook extends React.Component {
         } else if (this.state.subscriptions[i].name === 'Session Assignment') {
           optIn['SESSION_ASSIGNED'] = this.state.subscriptions[i].selected
           optIn['SESSION_UNASSIGNED'] = this.state.subscriptions[i].selected
+        } else if (this.state.subscriptions[i].name === 'Notification Alerts') {
+          optIn['NOTIFICATION_ALERTS'] = this.state.subscriptions[i].selected
         }
       }
       this.props.createEndpoint({pageId: this.state.pageSelected, webhook_url: this.state.url, token: this.state.token, optIn: optIn}, (res) => {
@@ -311,6 +317,8 @@ class Webhook extends React.Component {
         } else if (this.state.subscriptionsEdit[i].name === 'Session Assignment') {
           optIn['SESSION_ASSIGNED'] = this.state.subscriptionsEdit[i].selected
           optIn['SESSION_UNASSIGNED'] = this.state.subscriptionsEdit[i].selected
+        } else if (this.state.subscriptionsEdit[i].name === 'Notification Alerts') {
+          optIn['NOTIFICATION_ALERTS'] = this.state.subscriptionsEdit[i].selected
         }
       }
       if (getCurrentProduct() === 'KiboEngage') {
@@ -318,6 +326,7 @@ class Webhook extends React.Component {
         optIn['SESSION_UNASSIGNED'] = this.state.webhook.optIn ? this.state.webhook.optIn.SESSION_UNASSIGNED :false
         optIn['CHATBOT_OPTION_SELECTED'] = this.state.webhook.optIn ? this.state.webhook.optIn.CHATBOT_OPTION_SELECTED :false
         optIn['CHAT_MESSAGE'] = this.state.webhook.optIn ? this.state.webhook.optIn.CHAT_MESSAGE :false
+        optIn['NOTIFICATION_ALERTS'] = this.state.webhook.optIn ? this.state.webhook.optIn.NOTIFICATION_ALERTS :false
       }
       if (getCurrentProduct() === 'KiboChat' || getCurrentProduct() === 'localhost') {
         optIn['CHECKBOX_OPTIN'] = this.state.webhook.optIn ? this.state.webhook.optIn.CHECKBOX_OPTIN :false
