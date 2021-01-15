@@ -169,7 +169,7 @@ class ConfigureCommerceChatbot extends React.Component {
 
   onBack() {
     this.props.history.push({
-      pathname: '/chatbotAutomationNew'
+      pathname: '/chatbotAutomation'
     })
   }
 
