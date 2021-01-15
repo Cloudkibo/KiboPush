@@ -122,7 +122,7 @@ class ConfigureCommerceChatbot extends React.Component {
         }, (res) => {
           if (res.status === 'success') {
             let chatbot = this.state.chatbot
-            chatbot.published = true
+            chatbot.published = published
             this.setState({ chatbot })
             if (this.state.published) {
               this.msg.success('Commerce Chatbot Enabled')
