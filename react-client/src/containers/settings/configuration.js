@@ -88,6 +88,14 @@ class Configuration extends React.Component {
     }
   }
 
+  getBusinessNumber () {
+    if (this.state.whatsappData && this.state.whatsappData.cequens && this.state.whatsappData.cequens.businessNumber) {
+      return this.state.whatsappData.cequens.businessNumber
+    } else {
+      return '{whatsApp-number}'
+    }
+  }
+
   logout() {
     this.props.history.push({
       pathname: '/facebookIntegration'
