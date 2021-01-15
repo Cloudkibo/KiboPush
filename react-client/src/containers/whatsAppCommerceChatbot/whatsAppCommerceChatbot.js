@@ -7,6 +7,7 @@ import AlertContainer from 'react-alert'
 import MODAL from '../../components/extras/modal'
 import { validateCommaSeparatedPhoneNumbers } from "../../utility/utils"
 import { UncontrolledTooltip } from 'reactstrap'
+import HELPWIDGET from '../../components/extras/helpWidget'
 import { fetchBigCommerceStore, fetchShopifyStore } from '../../redux/actions/commerce.actions'
 
 class WhatsAppCommerceChatbot extends React.Component {
@@ -318,6 +319,10 @@ class WhatsAppCommerceChatbot extends React.Component {
     return (
       <div>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
+        <HELPWIDGET
+          documentation={{visibility: true, link: 'https://kibopush.com/whatsapp-commerce-chatbot/'}}
+          videoTutorial={{visibility: true, videoId: 'mO1aPJD-rlg'}}
+        />
         <MODAL
           id='_test_subscribers'
           title='Add Test Subscribers'
