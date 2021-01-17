@@ -34,10 +34,12 @@ class TriggerArea extends React.Component {
     console.log('actionMeta', actionMeta)
     if (this.props.allTriggers) {
       if ((actionMeta.action === 'remove-value' || actionMeta.action === 'pop-value')) {
-        let allTriggers = this.props.allTriggers
-        const removeIndex = allTriggers.indexOf(actionMeta.removedValue.value)
-        allTriggers.splice(removeIndex, 1)
-        this.props.updateGrandParentState({ allTriggers })
+        if (actionMeta.removedValue) {
+          let allTriggers = this.props.allTriggers
+          const removeIndex = allTriggers.indexOf(actionMeta.removedValue.value)
+          allTriggers.splice(removeIndex, 1)
+          this.props.updateGrandParentState({ allTriggers })
+        }
       } else if (actionMeta.action === 'clear') {
         let allTriggers = this.props.allTriggers
         const removedElements = this.state.value.map((item) => item.value)
