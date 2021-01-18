@@ -761,6 +761,7 @@ class GenericMessage extends React.Component {
         closeModal={this.closeAddComponentModal}
         showValidationModal= {this.showValidationModal}
         alertMsg={this.msg}
+        handleMedia={this.handleMedia}
         addComponent={this.addComponent} />),
       'video': (<VideoLinkModal
         buttons={[]}

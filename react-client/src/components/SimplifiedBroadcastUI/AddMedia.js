@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { RingLoader } from 'halogenium'
 import { uploadImage, uploadFile, uploadTemplate } from '../../redux/actions/convos.actions'
-import { deleteFile } from '../../utility/utils'
+
 class Media extends React.Component {
   constructor (props, context) {
     super(props, context)
