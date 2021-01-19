@@ -53,7 +53,7 @@ class Settings extends React.Component {
       saveStateNGP: null,
       planInfo: '',
       show: true,
-      openTab: 'configuration',
+      openTab: 'accountSettings',
       pro: false,
       isDisableInput: false,
       isDisableButton: false,
