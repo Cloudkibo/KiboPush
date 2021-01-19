@@ -32,6 +32,8 @@ import { urlMetaData } from '../../redux/actions/convos.actions'
 import { handleSocketEventSms } from './socket'
 import { clearSocketDataSms } from '../../redux/actions/socket.actions'
 import { getZoomIntegrations, createZoomMeeting, loadcannedResponses } from '../../redux/actions/settings.actions'
+import { setCompanyPreferences } from '../../redux/actions/settings.actions'
+import { cloneDeep } from 'lodash'
 
 // components
 import HELPWIDGET from '../../components/extras/helpWidget'
@@ -97,6 +99,7 @@ class SmsChat extends React.Component {
     this.clearSearchResults = this.clearSearchResults.bind(this)
     this.setMessageData = this.setMessageData.bind(this)
     this.backToSessions = this.backToSessions.bind(this)
+    this.updateDefaultZoom = this.updateDefaultZoom.bind(this)
     this.props.loadcannedResponses()
     props.loadTwilioNumbers()
     props.loadMembersList()
@@ -117,6 +120,12 @@ class SmsChat extends React.Component {
 
   showSearch () {
     this.setState({showSearch: !this.state.showSearch})
+  }
+
+  updateDefaultZoom (defaultZoom) {
+    let companyPreferences = cloneDeep(this.props.companyPreferences)
+    companyPreferences.defaultZoomConfiguration = defaultZoom
+    this.props.setCompanyPreferences(companyPreferences)
   }
 
   updatePendingStatus (res, value, sessionId) {
@@ -579,9 +588,11 @@ class SmsChat extends React.Component {
                     showZoom={this.props.user.isSuperUser ? (this.props.zoomIntegrations.length === 0 ? (this.props.user.role === 'admin' || this.props.user.role === 'buyer') ? true : false : true) : false}
                     history={this.props.history}
                     zoomIntegrations={this.props.zoomIntegrations}
+                    defaultZoom={this.props.companyPreferences ? this.props.companyPreferences.defaultZoomConfiguration : null }
                     createZoomMeeting={this.props.createZoomMeeting}
                     isMobile={this.props.isMobile}
                     backToSessions={this.backToSessions}
+                    updateDefaultZoom={this.updateDefaultZoom}
                   />
                 }
                 {
@@ -665,6 +676,7 @@ function mapStateToProps(state) {
     zoomIntegrations: (state.settingsInfo.zoomIntegrations),
     redirectToSession: state.liveChat.redirectToSession,
     cannedResponses: (state.settingsInfo.cannedResponses),
+    companyPreferences: (state.settingsInfo.companyPreferences)
   }
 }
 
@@ -693,7 +705,8 @@ function mapDispatchToProps(dispatch) {
     getZoomIntegrations,
     createZoomMeeting,
     saveNotificationSessionId,
-    loadcannedResponses
+    loadcannedResponses,
+    setCompanyPreferences
 
   }, dispatch)
 }

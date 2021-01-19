@@ -19,6 +19,7 @@ import HEADER from './components/header/header'
 import { getLandingPage } from './utility/utils'
 import { getHiddenHeaderRoutes, getWhiteHeaderRoutes } from './utility/utils'
 import { validateUserAccessToken, isFacebookConnected } from './redux/actions/basicinfo.actions'
+import { fetchCompanyPreferences } from './redux/actions/settings.actions'
 
 class SubApp extends Component {
   constructor (props) {
@@ -49,6 +50,7 @@ class SubApp extends Component {
     }, this.redirectToConnectPage)
     this.props.validateUserAccessToken(this.checkUserAccessToken)
     this.props.isFacebookConnected(this.checkFacebookConnected)
+    this.props.fetchCompanyPreferences()
 
     if (this.props.history.location.pathname.toLowerCase() === '/demossa') {
       this.handleDemoSSAPage()
@@ -299,7 +301,8 @@ function mapDispatchToProps (dispatch) {
       clearSocketData,
       loadMyPagesListNew,
       validateUserAccessToken,
-      isFacebookConnected
+      isFacebookConnected,
+      fetchCompanyPreferences
     }, dispatch)
 }
 

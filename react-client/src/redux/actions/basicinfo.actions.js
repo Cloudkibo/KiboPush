@@ -40,7 +40,6 @@ export function showuserdetails(data) {
   }
 }
 
-
 export function showDetailUser(data) {
   return {
     type: ActionTypes.SHOW_USER_DETAIL_AUTOMATE_OPTION,

@@ -54,6 +54,16 @@ export function showWhiteListDomains (data) {
   }
 }
 
+
+export function setCompanyPreferences(data) {
+  /*use this function to update any company preference values*/
+  return {
+    type: ActionTypes.SET_COMPANY_PREFERENCES,
+    data: data
+  }
+}
+
+
 export function showAdvancedSettings(data) {
   console.log(data)
   return {
@@ -848,3 +858,17 @@ export function verify2FAToken(data, msg) {
       })
   }
 }
+
+export function fetchCompanyPreferences() {
+  return (dispatch) => {
+    callApi('companyPreferences').then(res => {
+      console.log('Fetch company preference', res)
+      if (res.status === 'success') {
+        dispatch(setCompanyPreferences(res.payload))
+      } else {
+        console.log('Failed to fetch companyPreferences', res)
+      }
+    })
+  }
+}
+

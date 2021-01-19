@@ -27,12 +27,12 @@ class Footer extends React.Component {
       loadingUrlMeta: false,
       currentUrl: '',
       showAudioRecording: false,
-      zoomTopic: '',
-      zoomAgenda: '',
-      zoomInvitationMessage: this.initialZoomInvitationMessage,
+      zoomTopic: props.defaultZoom ? props.defaultZoom.topic : '',
+      zoomAgenda: props.defaultZoom ? props.defaultZoom.agenda : '',
+      zoomInvitationMessage: props.defaultZoom ? props.defaultZoom.invitationMessage : this.initialZoomInvitationMessage,
       zoomMeetingCreated: false,
       zoomCountdown: this.initialZoomCountdown,
-      zoomUserId: '',
+      zoomUserId: props.defaultZoom ? props.defaultZoom.account : '',
       zoomMeetingUrl: '',
       zoomMeetingCreationError: false,
       cannedMessages: [],
@@ -42,7 +42,8 @@ class Footer extends React.Component {
       selectedIndex: 0,
       caption: '',
       showingSuggestion: false,
-      suggestionShown: false
+      suggestionShown: false,
+      defaultCheck: false
     }
     this.onInputChange = this.onInputChange.bind(this)
     this.onEnter = this.onEnter.bind(this)
@@ -84,6 +85,7 @@ class Footer extends React.Component {
     this.onCaptionChange = this.onCaptionChange.bind(this)
     this.sendQuickReplyMessage = this.sendQuickReplyMessage.bind(this)
     this.sendTextMessage = this.sendTextMessage.bind(this)
+    this.handleDefaultCheck = this.handleDefaultCheck.bind(this)
   }
 
   componentDidMount() {
@@ -109,7 +111,11 @@ class Footer extends React.Component {
     selectedCannMessage.responseMessage = event.target.value
     this.setState({ selectedCannMessage: selectedCannMessage })
   }
-
+  handleDefaultCheck (e) {
+    this.setState({
+      defaultCheck: e.target.checked
+    })
+  }
   toggleHover(id) {
     // console.log('Hovver called', id)
     // document.getElementById(id).style.backgroundColor = 'lightgrey'
@@ -185,9 +191,10 @@ class Footer extends React.Component {
   resetZoomValues() {
     clearInterval(this.zoomCountdownTimer)
     this.setState({
-      zoomTopic: '',
-      zoomAgenda: '',
-      zoomInvitationMessage: this.initialZoomInvitationMessage,
+      zoomTopic: this.props.defaultZoom ? this.props.defaultZoom.topic: '',
+      zoomAgenda: this.props.defaultZoom ? this.props.defaultZoom.agenda: '',
+      zoomUserId: this.props.defaultZoom ? this.props.defaultZoom.account: '',
+      zoomInvitationMessage: this.props.defaultZoom ? this.props.defaultZoom.invitationMessage: this.initialZoomInvitationMessage,
       zoomMeetingCreated: false,
       zoomCountdown: this.initialZoomCountdown,
       zoomMeetingUrl: '',
@@ -236,9 +243,19 @@ class Footer extends React.Component {
             agenda: this.state.zoomAgenda,
             invitationMessage: this.state.zoomInvitationMessage,
             zoomUserId: this.state.zoomUserId,
-            platform: this.props.user.platform
+            platform: this.props.user.platform,
+            setDefaultValues: this.state.defaultCheck
           },
           (res) => {
+            if (this.state.defaultCheck) {
+              let defaultZoomConfiguration = {
+                account : this.state.zoomUserId,
+                topic : this.state.zoomTopic,
+                agenda : this.state.zoomAgenda,
+                invitationMessage : this.state.zoomInvitationMessage
+              }
+              this.props.updateDefaultZoom(defaultZoomConfiguration)
+            }
             if (res.status === 'success' && res.payload) {
               this.setState(
                 {
@@ -696,34 +713,50 @@ class Footer extends React.Component {
             >
               {'Note: [invite_url] will be replaced by the generated zoom meeting invitation link'}
             </div>
-
-            <div
-              style={{ paddingBottom: '0', paddingRight: '0', paddingLeft: '0', float: 'right' }}
-              className='m-form__actions'
-            >
-              <button
-                disabled={this.state.zoomMeetingLoading}
-                style={{ float: 'right', marginLeft: '30px' }}
-                type='submit'
-                className='btn btn-primary'
-              >
-                {this.state.zoomMeetingLoading ? (
-                  <div>
-                    <div
-                      className='m-loader'
-                      style={{ height: '10px', width: '30px', display: 'inline-block' }}
-                    ></div>
-                    <span>Loading...</span>
+              <div
+                style={{ paddingLeft: '0', paddingRight: '0', marginTop:'10px'}}
+                className='form-group m-form__group row'>
+                { this.props.user.role !== 'agent'
+                ? <div className='col-8'>
+                    <label style={{fontSize: '0.98rem', marginTop: '10px'}} className="m-checkbox m-checkbox--brand">
+                      <input
+                        type="checkbox"
+                        onChange={this.handleDefaultCheck}
+                        checked={this.state.defaultCheck}
+                      />
+                      Set above information as default
+                      <span />
+                    </label>
                   </div>
-                ) : (
-                  <span>Create and Invite</span>
-                )}
-              </button>
-              {this.state.zoomMeetingCreationError && (
-                <span style={{ color: 'red' }}>
-                  There was an error creating the meeting. Please try again.
-                </span>
-              )}
+                : <div className='col-8'/>
+                }
+                <div className='col-4'>
+                  <button
+                    disabled={this.state.zoomMeetingLoading}
+                    style={{ float: 'right', marginLeft: '30px' }}
+                    type='submit'
+                    className='btn btn-primary'
+                  >
+                    {this.state.zoomMeetingLoading ? (
+                      <div>
+                        <div
+                          className='m-loader'
+                          style={{ height: '10px', width: '30px', display: 'inline-block' }}
+                        ></div>
+                        <span>Loading...</span>
+                      </div>
+                    ) : (
+                      <span>Create and Invite</span>
+                    )}
+                  </button>
+                </div>
+              <div className='col-12' style={{marginTop: '10px'}}> 
+                {this.state.zoomMeetingCreationError && (
+                    <span style={{ color: 'red' }}>
+                      There was an error creating the meeting. Please try again.
+                    </span>
+                  )}
+              </div>
             </div>
           </div>
         </form>
