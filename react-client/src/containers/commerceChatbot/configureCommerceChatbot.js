@@ -9,6 +9,7 @@ import CONFIRMATIONMODAL from '../../components/extras/confirmationModal'
 import { getFbAppId } from '../../redux/actions/basicinfo.actions'
 import { registerAction } from '../../utility/socketio'
 import TRIGGERAREA from '../../components/chatbotAutomation/triggerArea'
+import HELPWIDGET from '../../components/extras/helpWidget'
 
 const MessengerPlugin = require('react-messenger-plugin').default
 
@@ -201,6 +202,10 @@ class ConfigureCommerceChatbot extends React.Component {
     return (
       <div>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
+        <HELPWIDGET
+          documentation={{visibility: true, link: 'https://kibopush.com/messenger-commerce-chatbot/'}}
+          videoTutorial={{visibility: true, videoId: '_XdvspPwRpE'}}
+        />
         <button ref='_open_test_chatbot_modal' style={{ display: 'none' }} data-toggle='modal' data-target='#_test_chatbot' />
         <MODAL
           id='_test_chatbot'
