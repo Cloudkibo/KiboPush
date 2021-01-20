@@ -12,7 +12,7 @@ class MessageTemplate extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      templateMessage: this.props.edit ? this.props.templateMessage : this.props.templates && this.props.templates[0].text,
+      templateMessage: this.props.edit ? this.props.templateMessage : this.props.templates && this.props.templates.length > 0 && this.props.templates[0].text,
       isTemplateValid: true,
       templateArguments: this.props.templateArguments,
       number: '',
