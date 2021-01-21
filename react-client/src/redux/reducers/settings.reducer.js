@@ -58,6 +58,10 @@ export function settingsInfo (state = initialState, action) {
         cannedResponses: [...cannedResponses]
       })
     }
+    case ActionTypes.SET_COMPANY_PREFERENCES:
+      return Object.assign({}, state, {
+        companyPreferences: action.data
+      })
 
     case ActionTypes.ENABLE_SUCCESS_NGP:
       return Object.assign({}, state, {

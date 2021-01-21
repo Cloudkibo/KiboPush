@@ -8,6 +8,8 @@ import {
   createZoomMeeting,
   loadcannedResponses
 } from '../../redux/actions/settings.actions'
+import { setCompanyPreferences } from '../../redux/actions/settings.actions'
+import { cloneDeep } from 'lodash'
 
 // actions
 import {
@@ -133,6 +135,7 @@ class LiveChat extends React.Component {
     this.updateMessageStatus = this.updateMessageStatus.bind(this)
     this.setActiveSession = this.setActiveSession.bind(this)
     this.checkParams = this.checkParams.bind(this)
+    this.updateDefaultZoom = this.updateDefaultZoom.bind(this)
 
     this.props.loadcannedResponses()
     this.fetchSessions(true, 'none', true)
@@ -156,6 +159,12 @@ class LiveChat extends React.Component {
     }
 
     document.title = `${title} | Live Chat`
+  }
+
+  updateDefaultZoom (defaultZoom) {
+    let companyPreferences = cloneDeep(this.props.companyPreferences)
+    companyPreferences.defaultZoomConfiguration = defaultZoom
+    this.props.setCompanyPreferences(companyPreferences)
   }
 
   checkParams(props, sessions) {
@@ -913,11 +922,13 @@ class LiveChat extends React.Component {
                     showAgentName={this.props.showAgentName}
                     history={this.props.history}
                     zoomIntegrations={this.props.zoomIntegrations}
+                    defaultZoom={this.props.companyPreferences ? this.props.companyPreferences.defaultZoomConfiguration : null }
                     createZoomMeeting={this.props.createZoomMeeting}
                     showSubscriberNameOnMessage={true}
                     isMobile={this.props.isMobile}
                     backToSessions={this.backToSessions}
                     showGetContactInfo={true}
+                    updateDefaultZoom= {this.updateDefaultZoom}
                   />
                 )}
               {!this.props.isMobile &&
@@ -1023,7 +1034,8 @@ function mapStateToProps(state) {
     cannedResponses: state.settingsInfo.cannedResponses,
     superUser: state.basicInfo.superUser,
     redirectToSession: state.liveChat.redirectToSession,
-    socketMessageStatus: state.liveChat.socketMessageStatus
+    socketMessageStatus: state.liveChat.socketMessageStatus,
+    companyPreferences: (state.settingsInfo.companyPreferences)
   }
 }
 
@@ -1072,7 +1084,8 @@ function mapDispatchToProps(dispatch) {
       loadcannedResponses,
       saveNotificationSessionId,
       resetSocket,
-      fetchSingleSession
+      fetchSingleSession,
+      setCompanyPreferences
     },
     dispatch
   )

@@ -37,6 +37,8 @@ import { urlMetaData } from '../../redux/actions/convos.actions'
 import { handleSocketEventWhatsapp } from './socket'
 import { clearSocketDataWhatsapp } from '../../redux/actions/socket.actions'
 import { editSubscriberWhatsApp } from '../../redux/actions/uploadContacts.actions'
+import { setCompanyPreferences } from '../../redux/actions/settings.actions'
+import { cloneDeep } from 'lodash'
 
 // components
 import HELPWIDGET from '../../components/extras/helpWidget'
@@ -107,6 +109,8 @@ class WhatsAppChat extends React.Component {
     this.sendingToNewNumber = this.sendingToNewNumber.bind(this)
     this.backToSessions = this.backToSessions.bind(this)
     this.showMessageTemplateMobile = this.showMessageTemplateMobile.bind(this)
+    this.updateDefaultZoom = this.updateDefaultZoom.bind(this)
+    
     this.props.loadcannedResponses()
     this.fetchSessions(true, 'none', true)
     props.loadMembersList()
@@ -117,6 +121,12 @@ class WhatsAppChat extends React.Component {
     props.getWhatsAppMessageTemplates()
   }
 
+  updateDefaultZoom (defaultZoom) {
+    let companyPreferences = cloneDeep(this.props.companyPreferences)
+    companyPreferences.defaultZoomConfiguration = defaultZoom
+    this.props.setCompanyPreferences(companyPreferences)
+  }
+  
   sendingToNewNumber(sendingToNewNumber) {
     this.setState({ sendingToNewNumber })
   }
@@ -605,12 +615,14 @@ class WhatsAppChat extends React.Component {
                     showZoom={this.props.user.isSuperUser ? (this.props.zoomIntegrations.length === 0 ? (this.props.user.role === 'admin' || this.props.user.role === 'buyer') ? true : false : true) : false}
                     history={this.props.history}
                     zoomIntegrations={this.props.zoomIntegrations}
+                    defaultZoom={this.props.companyPreferences ? this.props.companyPreferences.defaultZoomConfiguration : null }
                     createZoomMeeting={this.props.createZoomMeeting}
                     showCaption={true}
                     showSubscriberNameOnMessage={false}
                     whatsAppMessageTemplates={this.props.whatsAppMessageTemplates}
                     isMobile={this.props.isMobile}
                     backToSessions={this.backToSessions}
+                    updateDefaultZoom= {this.updateDefaultZoom}
                   />
                 }
                 {
@@ -746,7 +758,8 @@ function mapStateToProps(state) {
     zoomIntegrations: (state.settingsInfo.zoomIntegrations),
     cannedResponses: (state.settingsInfo.cannedResponses),
     whatsAppMessageTemplates: (state.settingsInfo.whatsAppMessageTemplates),
-    redirectToSession: state.liveChat.redirectToSession
+    redirectToSession: state.liveChat.redirectToSession,
+    companyPreferences: (state.settingsInfo.companyPreferences)
   }
 }
 
@@ -780,7 +793,8 @@ function mapDispatchToProps(dispatch) {
     editSubscriberWhatsApp,
     loadcannedResponses,
     getWhatsAppMessageTemplates,
-    saveNotificationSessionId
+    saveNotificationSessionId,
+    setCompanyPreferences
   }, dispatch)
 }
 
