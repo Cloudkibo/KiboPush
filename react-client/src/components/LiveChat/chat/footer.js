@@ -201,7 +201,8 @@ class Footer extends React.Component {
       zoomMeetingCreationError: false,
       text: this.state.text === this.state.zoomInvitationMessage ? '' : this.state.text,
       zoomMeetingLoading: false,
-      showAppendInvitationUrl: false
+      showAppendInvitationUrl: false,
+      defaultCheck: false
     })
   }
 
