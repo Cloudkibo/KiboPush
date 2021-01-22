@@ -412,7 +412,7 @@ class MessageArea extends React.Component {
             title,
             query: additionalActions.query,
             keyboardInputAllowed: additionalActions.keyboardInputAllowed,
-            skipAllowed: { ...additionalActions.skipAllowed, blockId: newSkipBlock.uniqueId },
+            skipAllowed: newSkipBlock ? { ...additionalActions.skipAllowed, blockId: newSkipBlock.uniqueId } : additionalActions.skipAllowed,
             blockId: id
           }
         } else {
