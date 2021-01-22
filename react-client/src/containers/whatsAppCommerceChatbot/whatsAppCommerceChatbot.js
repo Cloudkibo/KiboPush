@@ -321,7 +321,7 @@ class WhatsAppCommerceChatbot extends React.Component {
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <HELPWIDGET
           documentation={{visibility: true, link: 'https://kibopush.com/whatsapp-commerce-chatbot/'}}
-          videoTutorial={{visibility: true, videoId: 'mO1aPJD-rlg'}}
+          videoTutorial={{visibility: true, videoId: 'uCEekZ7-FWI'}}
         />
         <MODAL
           id='_test_subscribers'
