@@ -204,7 +204,7 @@ class ConfigureCommerceChatbot extends React.Component {
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <HELPWIDGET
           documentation={{visibility: true, link: 'https://kibopush.com/messenger-commerce-chatbot/'}}
-          videoTutorial={{visibility: true, videoId: '_XdvspPwRpE'}}
+          videoTutorial={{visibility: true, videoId: 'bLCUt3qMohc'}}
         />
         <button ref='_open_test_chatbot_modal' style={{ display: 'none' }} data-toggle='modal' data-target='#_test_chatbot' />
         <MODAL
