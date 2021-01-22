@@ -99,14 +99,10 @@ class ConfigureCommerceChatbot extends React.Component {
     })
   }
 
-  setNumberOfProducts(event) {
-    let { value, min, max } = event.target;
-    value = Math.max(Number(min), Math.min(Number(max), Number(value)));
-
-    this.setState({ numberOfProducts: value });
-    // this.setState({
-    //   numberOfProducts: e.target.value
-    // })
+  setNumberOfProducts(value) {
+    this.setState({
+      numberOfProducts: value
+    })
   }
 
   setReturnPolicy(e) {
@@ -157,6 +153,7 @@ class ConfigureCommerceChatbot extends React.Component {
     } else {
       this.props.updateCommerceChatbot({
         chatbotId: this.state.chatbot._id,
+        numberOfProducts: this.state.numberOfProducts,
         botLinks: {
           paymentMethod: this.state.paymentMethod,
           returnPolicy: this.state.returnPolicy,
@@ -171,6 +168,7 @@ class ConfigureCommerceChatbot extends React.Component {
             returnPolicy: this.state.returnPolicy,
             faqs: this.state.faqs
           }
+          chatbot.numberOfProducts = this.state.numberOfProducts
           this.setState({ chatbot })
           this.msg.success(res.description)
         } else {
@@ -304,7 +302,12 @@ class ConfigureCommerceChatbot extends React.Component {
 
                           <div className="form-group m-form__group col-lg-8">
                             <span className='m--font-boldest'>Number of Products:</span>
-                            <input type="text" type='number' min='2' step='1' max='10' onChange={this.setNumberOfProducts} value={this.state.numberOfProducts} className="form-control m-input" id="_faqs_url" />
+                            <input
+                              type='number' min='2' step='1' max='9'
+                              value={this.state.numberOfProducts}
+                              onChange={(e) => { this.setNumberOfProducts(parseInt(e.target.value))}}
+                              onKeyDown={e => /[+\-.,\s]$/.test(e.key) && e.preventDefault()}
+                              className="form-control m-input" id="_faqs_url" />
                           </div>
 
                           <div class="form-group m-form__group m--margin-top-10">
