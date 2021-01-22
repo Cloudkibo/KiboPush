@@ -34,7 +34,7 @@ class FollowUpBroadcast extends React.Component {
       broadcastOptions: [],
       selectedBroadcast: null,
       responseOptions: [],
-      selectedResponses: null,
+      selectedResponses: [],
       title: '',
       enableSend: false,
       selectLoading: false,
@@ -194,6 +194,7 @@ class FollowUpBroadcast extends React.Component {
   
   handleSelectBroadcast (selectedBroadcast) {
     if (selectedBroadcast && selectedBroadcast.length > 0) {
+      console.log('selectedBroadcast', selectedBroadcast.length)
       if ( !this.state.selectedBroadcast || ( this.state.selectedBroadcast && this.state.selectedBroadcast.length < selectedBroadcast.length)) {
         let selectedItem
         if (this.state.selectedBroadcast) {
