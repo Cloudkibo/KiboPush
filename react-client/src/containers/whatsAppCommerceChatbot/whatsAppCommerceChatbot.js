@@ -18,6 +18,7 @@ class WhatsAppCommerceChatbot extends React.Component {
       paymentMethod: '',
       returnPolicy: '',
       faqs: '',
+      numberOfProducts: 9,
       published: false,
       testSubscribers: '',
       arePhoneNumbersValid: true
@@ -27,6 +28,7 @@ class WhatsAppCommerceChatbot extends React.Component {
     this.setPaymentMethod = this.setPaymentMethod.bind(this)
     this.setReturnPolicy = this.setReturnPolicy.bind(this)
     this.setFAQs = this.setFAQs.bind(this)
+    this.setNumberOfProducts = this.setNumberOfProducts.bind(this)
     this.saveChatbot = this.saveChatbot.bind(this)
     this.getTestChatbotContent = this.getTestChatbotContent.bind(this)
     this.setTestSubscribers = this.setTestSubscribers.bind(this)
@@ -48,11 +50,13 @@ class WhatsAppCommerceChatbot extends React.Component {
         returnPolicy: nextProps.chatbot.botLinks.returnPolicy,
         faqs: nextProps.chatbot.botLinks.faqs,
         published: nextProps.chatbot.published,
+        numberOfProducts: nextProps.chatbot.numberOfProducts,
         testSubscribers: nextProps.chatbot.testSubscribers ? nextProps.chatbot.testSubscribers.join(',') : []
       })
     } else if (nextProps.chatbot) {
       this.setState({
         published: nextProps.chatbot.published,
+        numberOfProducts: nextProps.chatbot.numberOfProducts,
         testSubscribers: nextProps.chatbot.testSubscribers ? nextProps.chatbot.testSubscribers.join(',') : []
       })
     }
@@ -71,6 +75,12 @@ class WhatsAppCommerceChatbot extends React.Component {
   setFAQs(e) {
     this.setState({
       faqs: e.target.value
+    })
+  }
+
+  setNumberOfProducts(value) {
+    this.setState({
+      numberOfProducts: value
     })
   }
 
@@ -144,7 +154,8 @@ class WhatsAppCommerceChatbot extends React.Component {
           },
           storeType: this.props.store.storeType,
           type: 'automated',
-          vertical: 'commerce'
+          vertical: 'commerce',
+          numberOfProducts: this.state.numberOfProducts
         }, (res) => {
           if (res.status === 'success') {
             this.msg.success(res.description)
@@ -164,7 +175,8 @@ class WhatsAppCommerceChatbot extends React.Component {
               paymentMethod: this.state.paymentMethod,
               returnPolicy: this.state.returnPolicy,
               faqs: this.state.faqs
-            }
+            },
+            numberOfProducts: this.state.numberOfProducts
           }
         }, (res) => {
           if (res.status === 'success') {
@@ -450,7 +462,15 @@ class WhatsAppCommerceChatbot extends React.Component {
                             <input type="text" onChange={this.setFAQs} value={this.state.faqs} className="form-control m-input" id="_faqs_url" placeholder="Enter FAQs URL..." />
                           </div>
 
-
+                          <div className="form-group m-form__group col-lg-8">
+                            <span className='m--font-boldest'>Number of Products:</span>
+                            <input
+                              type='number' min='2' step='1' max='9'
+                              value={this.state.numberOfProducts}
+                              onChange={(e) => { this.setNumberOfProducts(parseInt(e.target.value))}}
+                              onKeyDown={e => /[+\-.,\s]$/.test(e.key) && e.preventDefault()}
+                              className="form-control m-input" id="_faqs_url" />
+                          </div>
 
                           {/* <div class="form-group m-form__group m--margin-top-10">
                             <h6>Payment Methods (Optional)</h6>
