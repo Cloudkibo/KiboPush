@@ -296,18 +296,20 @@ class ConfigureCommerceChatbot extends React.Component {
                           </div>
 
                           <div className="form-group m-form__group col-lg-8">
-                            <span className='m--font-boldest'>FAQs URL (Optional):</span>
-                            <input type="text" onChange={this.setFAQs} value={this.state.faqs} className="form-control m-input" id="_faqs_url" placeholder="Enter FAQs URL..." />
-                          </div>
-
-                          <div className="form-group m-form__group col-lg-8">
                             <span className='m--font-boldest'>Number of Products:</span>
                             <input
                               type='number' min='2' step='1' max='9'
                               value={this.state.numberOfProducts}
+                              style={{marginBottom: '10px'}}
                               onChange={(e) => { this.setNumberOfProducts(parseInt(e.target.value))}}
                               onKeyDown={e => /[+\-.,\s]$/.test(e.key) && e.preventDefault()}
                               className="form-control m-input" id="_faqs_url" />
+                            <span>This refers to the maximum number of products shown in a message</span>
+                          </div>
+
+                          <div className="form-group m-form__group col-lg-8">
+                            <span className='m--font-boldest'>FAQs URL (Optional):</span>
+                            <input type="text" onChange={this.setFAQs} value={this.state.faqs} className="form-control m-input" id="_faqs_url" placeholder="Enter FAQs URL..." />
                           </div>
 
                           <div class="form-group m-form__group m--margin-top-10">
