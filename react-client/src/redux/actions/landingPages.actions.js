@@ -9,6 +9,14 @@ export function showAllLandingPages (data) {
   }
 }
 
+
+export function landingPageDelete (data) {
+  return {
+    type: ActionTypes.DELETE_LANDING_PAGE,
+    data
+  }
+}
+
 export function showUpdatedData (data) {
   return {
     type: ActionTypes.UPDATE_LANDING_PAGE,
