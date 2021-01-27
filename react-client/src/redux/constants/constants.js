@@ -384,6 +384,7 @@ export const SHOW_MESSENGER_CODES = 'SHOW_MESSENGER_CODES'
 // constants for Landing Page
 export const SHOW_LANDING_PAGES = 'SHOW_LANDING_PAGES'
 export const UPDATE_LANDING_PAGE = 'UPDATE_LANDING_PAGE'
+export const DELETE_LANDING_PAGE = 'DELETE_LANDING_PAGE'
 
 // constants for Messenger Ads
 export const SHOW_MESSENGER_ADS = 'SHOW_MESSENGER_ADS'

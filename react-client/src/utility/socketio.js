@@ -19,6 +19,7 @@ import { fetchNotifications, setMessageAlert } from './../redux/actions/notifica
 import { handleSocketEvent, handleSocketEventSms, handleSocketEventWhatsapp } from '../redux/actions/socket.actions'
 import { addToSponsoredMessages, updateSponsoredMessagesListItemStatus } from './../redux/actions/sponsoredMessaging.actions'
 import { removeZoomIntegration } from './../redux/actions/settings.actions'
+import {landingPageDelete} from './../redux/actions/landingPages.actions'
 const whatsAppActions = require('./../redux/actions/whatsAppChat.actions')
 const smsActions = require('./../redux/actions/smsChat.actions')
 const smsBroadcasts = require('./../redux/actions/smsBroadcasts.actions')
@@ -190,6 +191,10 @@ socket.on('message', (data) => {
     store.dispatch(updateSponsoredMessagesListItemStatus(data.payload))
   } else if (data.action === 'zoom_uninstall') {
     store.dispatch(removeZoomIntegration(data.payload))
+  }
+
+  else if (data.action === 'landingPage_delete') {
+    store.dispatch(landingPageDelete(data.payload))
   }
   else if (data.action === 'logout') {
     auth.logout()
