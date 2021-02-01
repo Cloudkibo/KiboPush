@@ -355,7 +355,7 @@ class GenericMessage extends React.Component {
           buttons: obj.buttons,
           templateName: obj.templateName,
           templateArguments: obj.templateArguments,
-          templateNameSpace: obj.templateNameSpace,
+          templateId: obj.templateId,
           templateCode: obj.templateCode
         })
       } else if (obj.buttons.length > 0) {
@@ -850,7 +850,7 @@ class GenericMessage extends React.Component {
             componentName: broadcast.componentName,
             templateName: broadcast.templateName,
             templateArguments: broadcast.templateArguments,
-            templateNameSpace: broadcast.templateNameSpace,
+            templateId: broadcast.templateId,
             templateCode: broadcast.templateCode,
           })
         }
