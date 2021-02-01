@@ -69,8 +69,8 @@ class Configuration extends React.Component {
     this.updateWhatsAppData = this.updateWhatsAppData.bind(this)
     this.logout = this.logout.bind(this)
     this.handleCheckbox = this.handleCheckbox.bind(this)
-    this.updateData =this.updateData.bind(this)
-    this.getBusinessNumber =this.getBusinessNumber.bind(this)
+    this.updateData = this.updateData.bind(this)
+    this.getBusinessNumber = this.getBusinessNumber.bind(this)
     props.getAutomatedOptions()
   }
 
