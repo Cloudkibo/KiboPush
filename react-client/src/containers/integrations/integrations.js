@@ -34,6 +34,12 @@ class FacebookIntegration extends React.Component {
         businessNumber: '',
         clientName: ''
       },
+      gupshup: {
+        provider: 'gupshup',
+        accessToken: '',
+        businessNumber: '',
+        appName: ''
+      },
       twilioFree: {
         provider: 'twilioFree',
         accessToken: '',
@@ -387,6 +393,7 @@ class FacebookIntegration extends React.Component {
                           <option value='flockSend'>FlockSend</option>
                           <option value='twilio'>Twilio</option>
                           <option value='cequens'>Cequens</option>
+                          <option value='gupshup'>Gupshup</option>
                             {this.props.user && this.props.user.isSuperUser &&
                               <option value='twilioFree'>Twilio (Free)</option>
                             }
@@ -432,6 +439,29 @@ class FacebookIntegration extends React.Component {
                         <span><b>Note:</b> Please add this webhook url </span>
                         <span>"https://webhook.cloudkibo.com/webhooks/cequens/{this.getBusinessNumber()}"</span>
                         <span> to your cequens WhatsApp configuration.</span>
+                      </div>
+
+                      <div style={{ display: this.state.whatsappProvider === 'gupshup' ? 'initial' : 'none' }} >
+                        <div id='_cequens_client_name' className='form-group m-form__group'>
+                          <label className='control-label'>App Name:</label>
+                          <input required={this.state.whatsappProvider === 'gupshup'} className='form-control' value={this.state.whatsappData.gupshup.appName} onChange={(e) => this.updateWhatsAppData(e, { appName: e.target.value })} />
+                        </div>
+                        <div id='_cequens_access_token' className='form-group m-form__group'>
+                          <label className='control-label'>API Key:</label>
+                          <input required={this.state.whatsappProvider === 'gupshup'} className='form-control' value={this.state.whatsappData.gupshup.accessToken} onChange={(e) => this.updateWhatsAppData(e, { accessToken: e.target.value })} />
+                        </div>
+                        <div id='_cequens_whatsapp_number' className='form-group m-form__group'>
+                          <label className='control-label'>WhatsApp Number:</label>
+                          <input
+                            required={this.state.whatsappProvider === 'gupshup'}
+                            type="tel"
+                            className='form-control'
+                            value={this.state.whatsappData.gupshup.businessNumber}
+                            onChange={(e) => this.updateWhatsAppData(e, { businessNumber: e.target.value })} />
+                        </div>
+                        <span><b>Note:</b> Please add this webhook url </span>
+                        <span>"https://webhook.cloudkibo.com/webhooks/gupshup"</span>
+                        <span> as callback URL in gupshup settings.</span>
                       </div>
 
                       <div style={{ display: this.state.whatsappProvider === 'twilio' ? 'initial' : 'none' }}>
