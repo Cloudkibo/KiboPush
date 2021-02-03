@@ -8,6 +8,7 @@ import { loadTags } from '../../redux/actions/tags.actions'
 import { fetchAllSequence } from '../../redux/actions/sequence.action'
 import { loadCustomFields } from '../../redux/actions/customFields.actions'
 import { getWhatsAppMessageTemplates } from '../../redux/actions/settings.actions'
+import { uploadFile } from '../../redux/actions/convos.actions'
 
 // import Image from './PreviewComponents/Image'
 import Audio from './PreviewComponents/Audio'
@@ -805,6 +806,7 @@ class GenericMessage extends React.Component {
         closeModal={this.closeAddComponentModal}
         edit={this.state.editData ? true : false}
         {...this.state.editData}
+        uploadFile={this.props.uploadFile}
       />)
     }
     return modals[this.state.componentType]
@@ -1399,7 +1401,8 @@ function mapDispatchToProps (dispatch) {
       loadCustomFields,
       fetchAllSequence,
       loadTags,
-      getWhatsAppMessageTemplates
+      getWhatsAppMessageTemplates,
+      uploadFile
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps, null, { withRef: true })(GenericMessage)

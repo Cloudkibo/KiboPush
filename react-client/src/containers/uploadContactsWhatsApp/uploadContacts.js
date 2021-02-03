@@ -22,6 +22,7 @@ import CONFIRMATIONMODAL from '../../components/extras/confirmationModal'
 import FULLSCREENLOADER from '../../components/extras/fullScreenLoader'
 import MESSAGETEMPLATE from '../../components/WhatsApp/messageTemplate'
 import { getWhatsAppMessageTemplates } from '../../redux/actions/settings.actions'
+import { uploadFile } from '../../redux/actions/convos.actions'
 import { validatePhoneNumber } from '../../utility/utils'
 
 class UploadContacts extends React.Component {
@@ -436,6 +437,7 @@ class UploadContacts extends React.Component {
               heading={'Send Template Message'}
               showDescription={false}
               templates={this.props.whatsAppMessageTemplates}
+              uploadFile={this.props.uploadFile}
             />
           </div>
         </div>
@@ -566,7 +568,8 @@ function mapDispatchToProps(dispatch) {
     deleteAllContacts,
     getDuplicateSubscribers,
     sendMessage,
-    getWhatsAppMessageTemplates
+    getWhatsAppMessageTemplates,
+    uploadFile
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(UploadContacts)
