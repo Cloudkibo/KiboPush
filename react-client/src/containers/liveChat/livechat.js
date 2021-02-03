@@ -77,6 +77,7 @@ class LiveChat extends React.Component {
     super(props, context)
     this.state = {
       loading: true,
+      redirected: this.props.location.state && this.props.location.state.module === 'notifications',
       fetchingChat: false,
       loadingChat: true,
       sessionsLoading: false,
@@ -959,7 +960,11 @@ class LiveChat extends React.Component {
                     setCustomFieldValue={this.saveCustomField}
                     showTags={true}
                     showCustomFields={true}
-                    showUnsubscribe={true}
+                    showUnsubscribe={
+                      this.props.user &&
+                      this.props.user.plan['unsubscribe_subscribers'] &&
+                      this.props.user.permissions['unsubsubscribe_subscribers']
+                    }
                   />
                 )}
               {!this.props.isMobile &&

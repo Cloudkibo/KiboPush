@@ -24,16 +24,17 @@ class GenericMessage extends React.Component {
                         addComponent={this.props.showAddComponentModal}
                         addedComponents={this.props.list.length}
                         module={this.props.module}
+                        user={this.props.user}
                         componentLimit = {3}
                       />
                     </div>
                     <div className='col-lg-6 col-md-6 col-sm-12 col-xs-12'>
                       <div className='iphone-x' style={{
-                          height: !this.props.noDefaultHeight ? 90 + 'vh' : null, 
-                          marginTop: '-30px', 
-                          paddingRight: '10%', 
-                          paddingLeft: '10%', 
-                          paddingTop: '100px', 
+                          height: !this.props.noDefaultHeight ? 90 + 'vh' : null,
+                          marginTop: '-30px',
+                          paddingRight: '10%',
+                          paddingLeft: '10%',
+                          paddingTop: '100px',
                           transform: 'scale(0.9) translate(20px)'
                         }}>
                         <DragSortableList
