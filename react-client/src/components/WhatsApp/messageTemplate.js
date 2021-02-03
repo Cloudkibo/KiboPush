@@ -9,6 +9,7 @@ import PropTypes from 'prop-types'
 import {validatePhoneNumber} from '../../utility/utils'
 import Files from 'react-files'
 import { RingLoader } from 'halogenium'
+import { cloneDeep } from 'lodash'
 
 class MessageTemplate extends React.Component {
   constructor (props, context) {
@@ -318,8 +319,7 @@ class MessageTemplate extends React.Component {
   }
 
   handleFile (fileInfo) {
-    console.log('fileInfo', fileInfo)
-    let attachment = this.state.attachment
+    let attachment = cloneDeep(this.state.attachment)
     attachment.id = fileInfo.fileurl.id
     attachment.url = fileInfo.fileurl.url
     attachment.name = fileInfo.fileurl.name
