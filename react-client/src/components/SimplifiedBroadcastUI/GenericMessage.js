@@ -357,7 +357,8 @@ class GenericMessage extends React.Component {
           templateName: obj.templateName,
           templateArguments: obj.templateArguments,
           templateId: obj.templateId,
-          templateCode: obj.templateCode
+          templateCode: obj.templateCode,
+          templateType: obj.templateType
         })
       } else if (obj.buttons.length > 0) {
         temp.push({id: obj.id, text: obj.text, componentType: 'text', componentName: obj.componentName ? obj.componentName : 'text', buttons: obj.buttons})
@@ -854,6 +855,7 @@ class GenericMessage extends React.Component {
             templateArguments: broadcast.templateArguments,
             templateId: broadcast.templateId,
             templateCode: broadcast.templateCode,
+            templateType: broadcast.templateType
           })
         }
       },
@@ -1104,7 +1106,13 @@ class GenericMessage extends React.Component {
             size: broadcast.size,
             type: broadcast.type,
             mediaType: broadcast.mediaType,
-            buttons: broadcast.buttons ? broadcast.buttons : []})
+            buttons: broadcast.buttons ? broadcast.buttons : [],
+            templateName: broadcast.templateName,
+            templateArguments: broadcast.templateArguments,
+            templateId: broadcast.templateId,
+            templateCode: broadcast.templateCode,
+            templateType: broadcast.templateType
+          })
         }
       }
     }

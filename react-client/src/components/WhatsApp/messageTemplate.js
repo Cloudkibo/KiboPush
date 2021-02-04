@@ -77,10 +77,14 @@ class MessageTemplate extends React.Component {
   }
 
   getComponentType (type) {
-    if (type === 'DOCUMENT') {
-      return 'file'
+    if (type) {
+      if (type === 'DOCUMENT') {
+          return 'file'
+        } else {
+          return type.toLowerCase()
+        }
     } else {
-      return type.toLowerCase()
+      return 'text'
     }
   }
 
@@ -255,7 +259,8 @@ class MessageTemplate extends React.Component {
     payload.id = this.props.id >= 0 ? this.props.id : null
     payload.componentName = 'template'
     payload.selectedIndex = this.state.selectedIndex
-    payload.componentType = 'text'
+    payload.componentType = payload.componentType === 'image' || payload.componentType === 'video' ? 'media' : payload.componentType
+    payload.mediaType = payload.componentType,
     this.props.addComponent(payload, this.props.edit)
   }
 
