@@ -68,17 +68,6 @@ export function updateSentVsSeen (data) {
 }
 
 export function loadDashboardData () {
-  console.log('loadDashboardData')
-  fetch(`https://www.kroger.com/rx/api/anonymous/stores?address=80152`)
-      .then(status)
-      .then(response => response.json())
-      .then(response => {
-        // look for stores that have mondayOpen set
-        console.log('response', response)
-        // setTimeout(() => { rxrun() }, fastInterval)
-      })
-      .catch(error => {
-        console.log('err', error) })
   // here we will fetch list of subscribers from endpoint
   return (dispatch) => {
     callApi('dashboard/stats')

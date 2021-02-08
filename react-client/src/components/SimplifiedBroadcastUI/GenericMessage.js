@@ -528,6 +528,7 @@ class GenericMessage extends React.Component {
   }
 
   handleFile (obj) {
+    console.log('obj', obj)
     var temp = this.state.broadcast
     var isPresent = false
     for (let a = 0; a < temp.length; a++) {
@@ -824,6 +825,9 @@ class GenericMessage extends React.Component {
           selectedIndex={broadcast.selectedIndex}
           templateName={broadcast.templateName}
           templateArguments={broadcast.templateArguments}
+          templateId={broadcast.templateId}
+          templateCode={broadcast.templateCode}
+          templateType={broadcast.templateType}
           videoId={broadcast.videoId}
           videoTitle={broadcast.videoTitle}
           videoDescription={broadcast.videoDescription}
@@ -1005,13 +1009,27 @@ class GenericMessage extends React.Component {
           onRemove={this.removeComponent}
           buttonActions={this.props.buttonActions}
           alertMsg={this.msg}
+          templateName={broadcast.templateName}
+          templateArguments={broadcast.templateArguments}
+          templateId={broadcast.templateId}
+          templateCode={broadcast.templateCode}
+          templateType={broadcast.templateType}
+          caption={broadcast.caption}
+          selectedIndex={broadcast.selectedIndex}
           replyWithMessage={this.props.replyWithMessage} />),
         handler: () => {
           this.handleFile({id: componentId,
             fileurl: broadcast.file ? broadcast.file.fileurl : '',
             componentType: 'file',
             componentName: 'file',
-            file: broadcast.file ? broadcast.file : ''
+            file: broadcast.file ? broadcast.file : '',
+            templateName: broadcast.templateName,
+            templateArguments: broadcast.templateArguments,
+            templateId: broadcast.templateId,
+            templateCode: broadcast.templateCode,
+            templateType: broadcast.templateType,
+            caption: broadcast.caption,
+            selectedIndex: broadcast.selectedIndex
           })
         }
       },
@@ -1085,6 +1103,7 @@ class GenericMessage extends React.Component {
           youtubeLink={broadcast.youtubeLink && broadcast.youtubeLink}
           videoLink={broadcast.videoLink && broadcast.videoLink}
           media={broadcast}
+          selectedIndex={broadcast.selectedIndex}
           mediaType={broadcast.mediaType}
           handleMedia={this.handleMedia}
           onRemove={this.removeComponent}
@@ -1111,7 +1130,9 @@ class GenericMessage extends React.Component {
             templateArguments: broadcast.templateArguments,
             templateId: broadcast.templateId,
             templateCode: broadcast.templateCode,
-            templateType: broadcast.templateType
+            templateType: broadcast.templateType,
+            caption: broadcast.caption,
+            selectedIndex: broadcast.selectedIndex
           })
         }
       }
