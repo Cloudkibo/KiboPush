@@ -56,7 +56,11 @@ class Text extends React.Component {
         templateArguments: this.props.templateArguments,
         selectedIndex: this.props.selectedIndex,
         templateMessage: this.state.text,
-        id:this.props.id
+        id:this.props.id,
+        templateId: this.props.templateId,
+        templateCode: this.props.templateCode,
+        templateType: this.props.templateType,
+        componentType: 'text'
       })
     } else {
       this.props.editComponent('text', {
@@ -141,12 +145,12 @@ class Text extends React.Component {
           </div>
           }
           {
-            !this.state.videoId && 
+            !this.state.videoId &&
             <div style={{
-              maxWidth: '100%', 
-              fontSize: '16px', 
-              textAlign: 'left', 
-              whiteSpace: 'pre-wrap', 
+              maxWidth: '100%',
+              fontSize: '16px',
+              textAlign: 'left',
+              whiteSpace: 'pre-wrap',
               wordBreak: 'break-word'
             }} className='bubble recipient broadcastContent'>{this.state.text}</div>
           }

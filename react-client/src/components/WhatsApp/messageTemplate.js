@@ -24,9 +24,9 @@ class MessageTemplate extends React.Component {
       isPhoneNumberValid: false,
       edited: true,
       uploadingAttachment: false,
-      attachment: {},
+      attachment: this.props.edit ? this.props.fileurl : {},
       errorMsg: false,
-      componentType: 'text'
+      componentType: this.props.edit ? this.props.componentType : 'text'
     }
     this.resetTemplate = this.resetTemplate.bind(this)
     this.onTextChange = this.onTextChange.bind(this)
@@ -46,6 +46,7 @@ class MessageTemplate extends React.Component {
     this.onFilesError = this.onFilesError.bind(this)
     this.getAcceptedFiles = this.getAcceptedFiles.bind(this)
     this.getAttachmentPreview = this.getAttachmentPreview.bind(this)
+    this.setDataPayloadForBroadcast = this.setDataPayloadForBroadcast.bind(this)
   }
 
   UNSAFE_componentWillReceiveProps (nextProps) {
@@ -57,7 +58,8 @@ class MessageTemplate extends React.Component {
         templateArguments: nextProps.templateArguments,
         edited: false,
         isTemplateValid: true,
-        componentType: nextProps.componentType
+        componentType: nextProps.componentType,
+        attachment: nextProps.fileurl
       })
     } else if (nextProps.templates.length > 0) {
       this.setState({
@@ -77,10 +79,14 @@ class MessageTemplate extends React.Component {
   }
 
   getComponentType (type) {
-    if (type === 'DOCUMENT') {
-      return 'file'
+    if (type) {
+      if (type === 'DOCUMENT') {
+          return 'file'
+        } else {
+          return type.toLowerCase()
+        }
     } else {
-      return type.toLowerCase()
+      return 'text'
     }
   }
 
@@ -250,12 +256,53 @@ class MessageTemplate extends React.Component {
     })
   }
 
+  setDataPayloadForBroadcast(component) {
+    let payload = {
+      buttons: this.props.templates[this.state.selectedIndex].buttons,
+      templateArguments: this.state.templateArguments,
+      templateName: this.props.templates[this.state.selectedIndex].name,
+      templateId: this.props.templates[this.state.selectedIndex].namespace || this.props.templates[this.state.selectedIndex].id,
+      templateCode: this.props.templates[this.state.selectedIndex].code,
+      templateType: this.props.templates[this.state.selectedIndex].type,
+      selectedIndex: this.state.selectedIndex,
+      id: this.props.id >= 0 ? this.props.id : null,
+      componentName: 'template'
+    }
+    if (component === 'text') {
+      payload.componentType = 'text'
+      payload.text = this.state.templateMessage
+    } else if (component === 'image' || component === 'video') {
+      payload.componentType = 'media'
+      payload.mediaType = this.state.componentType
+      payload.fileName = this.state.attachment.name
+      payload.size = this.state.attachment.size
+      payload.type = this.state.attachment.type
+      payload.fileurl = {
+        id: this.state.attachment.id,
+        name: this.state.attachment.name,
+        url: this.state.attachment.url
+      }
+      if (component === 'image') payload.image_url = this.state.attachment.url
+      payload.caption = this.state.templateMessage
+    } else if (component === 'file') {
+      payload.componentType = 'file'
+      payload.file = {
+        fileName:  this.state.attachment.name,
+        size: this.state.attachment.size,
+        type: this.state.attachment.type,
+        fileurl: {
+          id: this.state.attachment.id,
+          name: this.state.attachment.name,
+          url: this.state.attachment.url
+        }
+      }
+      payload.caption = this.state.templateMessage
+    }
+    return payload
+  }
+
   addComponent() {
-    let payload = this.setDataPayload(this.state.componentType)
-    payload.id = this.props.id >= 0 ? this.props.id : null
-    payload.componentName = 'template'
-    payload.selectedIndex = this.state.selectedIndex
-    payload.componentType = 'text'
+    let payload = this.setDataPayloadForBroadcast(this.state.componentType)
     this.props.addComponent(payload, this.props.edit)
   }
 
@@ -556,7 +603,7 @@ class MessageTemplate extends React.Component {
                 }
                 {
                   this.props.addComponent &&
-                  <button disabled={!this.state.isTemplateValid} className='btn btn-primary' onClick={this.addComponent}>
+                  <button disabled={!this.state.isTemplateValid || this.state.errorMsg} className='btn btn-primary' onClick={this.addComponent}>
                     {this.props.edit ? 'Edit' : 'Next'}
                   </button>
                 }
