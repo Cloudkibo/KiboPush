@@ -528,7 +528,6 @@ class GenericMessage extends React.Component {
   }
 
   handleFile (obj) {
-    console.log('obj', obj)
     var temp = this.state.broadcast
     var isPresent = false
     for (let a = 0; a < temp.length; a++) {

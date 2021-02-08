@@ -132,7 +132,6 @@ class Media extends React.Component {
   }
 
   render () {
-    console.log('in render', this.props)
     return (
       <div className='broadcast-component' style={{marginBottom: '50px'}}>
         {

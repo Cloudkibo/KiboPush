@@ -60,7 +60,6 @@ class File extends React.Component {
   }
 
   render () {
-    console.log('this.props in file', this.props)
     return (
       <div className='broadcast-component' style={{marginBottom: '50px', display: 'inline-block'}}>
         <div onClick={() => { this.props.onRemove({id: this.props.id}) }} style={{float: 'right', height: 20 + 'px', marginTop: '-20px', marginRight: '-15px'}}>
