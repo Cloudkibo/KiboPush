@@ -8,6 +8,7 @@ import { loadTags } from '../../redux/actions/tags.actions'
 import { fetchAllSequence } from '../../redux/actions/sequence.action'
 import { loadCustomFields } from '../../redux/actions/customFields.actions'
 import { getWhatsAppMessageTemplates } from '../../redux/actions/settings.actions'
+import { uploadFile } from '../../redux/actions/convos.actions'
 
 // import Image from './PreviewComponents/Image'
 import Audio from './PreviewComponents/Audio'
@@ -356,7 +357,8 @@ class GenericMessage extends React.Component {
           templateName: obj.templateName,
           templateArguments: obj.templateArguments,
           templateId: obj.templateId,
-          templateCode: obj.templateCode
+          templateCode: obj.templateCode,
+          templateType: obj.templateType
         })
       } else if (obj.buttons.length > 0) {
         temp.push({id: obj.id, text: obj.text, componentType: 'text', componentName: obj.componentName ? obj.componentName : 'text', buttons: obj.buttons})
@@ -805,6 +807,7 @@ class GenericMessage extends React.Component {
         closeModal={this.closeAddComponentModal}
         edit={this.state.editData ? true : false}
         {...this.state.editData}
+        uploadFile={this.props.uploadFile}
       />)
     }
     return modals[this.state.componentType]
@@ -821,6 +824,9 @@ class GenericMessage extends React.Component {
           selectedIndex={broadcast.selectedIndex}
           templateName={broadcast.templateName}
           templateArguments={broadcast.templateArguments}
+          templateId={broadcast.templateId}
+          templateCode={broadcast.templateCode}
+          templateType={broadcast.templateType}
           videoId={broadcast.videoId}
           videoTitle={broadcast.videoTitle}
           videoDescription={broadcast.videoDescription}
@@ -852,6 +858,7 @@ class GenericMessage extends React.Component {
             templateArguments: broadcast.templateArguments,
             templateId: broadcast.templateId,
             templateCode: broadcast.templateCode,
+            templateType: broadcast.templateType
           })
         }
       },
@@ -1001,13 +1008,27 @@ class GenericMessage extends React.Component {
           onRemove={this.removeComponent}
           buttonActions={this.props.buttonActions}
           alertMsg={this.msg}
+          templateName={broadcast.templateName}
+          templateArguments={broadcast.templateArguments}
+          templateId={broadcast.templateId}
+          templateCode={broadcast.templateCode}
+          templateType={broadcast.templateType}
+          caption={broadcast.caption}
+          selectedIndex={broadcast.selectedIndex}
           replyWithMessage={this.props.replyWithMessage} />),
         handler: () => {
           this.handleFile({id: componentId,
             fileurl: broadcast.file ? broadcast.file.fileurl : '',
             componentType: 'file',
             componentName: 'file',
-            file: broadcast.file ? broadcast.file : ''
+            file: broadcast.file ? broadcast.file : '',
+            templateName: broadcast.templateName,
+            templateArguments: broadcast.templateArguments,
+            templateId: broadcast.templateId,
+            templateCode: broadcast.templateCode,
+            templateType: broadcast.templateType,
+            caption: broadcast.caption,
+            selectedIndex: broadcast.selectedIndex
           })
         }
       },
@@ -1081,6 +1102,7 @@ class GenericMessage extends React.Component {
           youtubeLink={broadcast.youtubeLink && broadcast.youtubeLink}
           videoLink={broadcast.videoLink && broadcast.videoLink}
           media={broadcast}
+          selectedIndex={broadcast.selectedIndex}
           mediaType={broadcast.mediaType}
           handleMedia={this.handleMedia}
           onRemove={this.removeComponent}
@@ -1102,7 +1124,15 @@ class GenericMessage extends React.Component {
             size: broadcast.size,
             type: broadcast.type,
             mediaType: broadcast.mediaType,
-            buttons: broadcast.buttons ? broadcast.buttons : []})
+            buttons: broadcast.buttons ? broadcast.buttons : [],
+            templateName: broadcast.templateName,
+            templateArguments: broadcast.templateArguments,
+            templateId: broadcast.templateId,
+            templateCode: broadcast.templateCode,
+            templateType: broadcast.templateType,
+            caption: broadcast.caption,
+            selectedIndex: broadcast.selectedIndex
+          })
         }
       }
     }
@@ -1399,7 +1429,8 @@ function mapDispatchToProps (dispatch) {
       loadCustomFields,
       fetchAllSequence,
       loadTags,
-      getWhatsAppMessageTemplates
+      getWhatsAppMessageTemplates,
+      uploadFile
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps, null, { withRef: true })(GenericMessage)

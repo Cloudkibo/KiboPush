@@ -187,6 +187,7 @@ class Chat extends React.Component {
                   alertMsg={this.props.alertMsg}
                   id='messageTemplate'
                   templates={this.props.whatsAppMessageTemplates}
+                  uploadFile={this.props.uploadFile}
                 />
               </div>
             </div>

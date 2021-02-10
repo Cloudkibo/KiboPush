@@ -33,11 +33,12 @@ import { saveNotificationSessionId } from '../../redux/actions/livechat.actions'
 import { updatePicture } from '../../redux/actions/subscribers.actions'
 import { loadTeamsList } from '../../redux/actions/teams.actions'
 import { loadMembersList } from '../../redux/actions/members.actions'
-import { urlMetaData } from '../../redux/actions/convos.actions'
+import { urlMetaData, uploadFile } from '../../redux/actions/convos.actions'
 import { handleSocketEventWhatsapp } from './socket'
 import { clearSocketDataWhatsapp } from '../../redux/actions/socket.actions'
 import { editSubscriberWhatsApp } from '../../redux/actions/uploadContacts.actions'
 import { setCompanyPreferences } from '../../redux/actions/settings.actions'
+
 import { cloneDeep } from 'lodash'
 
 // components
@@ -109,7 +110,7 @@ class WhatsAppChat extends React.Component {
     this.backToSessions = this.backToSessions.bind(this)
     this.showMessageTemplateMobile = this.showMessageTemplateMobile.bind(this)
     this.updateDefaultZoom = this.updateDefaultZoom.bind(this)
-    
+
     this.props.loadcannedResponses()
     this.fetchSessions(true, 'none', true)
     props.loadMembersList()
@@ -125,7 +126,7 @@ class WhatsAppChat extends React.Component {
     companyPreferences.defaultZoomConfiguration = defaultZoom
     this.props.setCompanyPreferences(companyPreferences)
   }
-  
+
   sendingToNewNumber(sendingToNewNumber) {
     this.setState({ sendingToNewNumber })
   }
@@ -622,6 +623,7 @@ class WhatsAppChat extends React.Component {
                     isMobile={this.props.isMobile}
                     backToSessions={this.backToSessions}
                     updateDefaultZoom= {this.updateDefaultZoom}
+                    uploadFile={this.props.uploadFile}
                   />
                 }
                 {
@@ -715,6 +717,7 @@ class WhatsAppChat extends React.Component {
                 createNewContact={this.props.createNewContact}
                 changeActiveSession={this.changeActiveSession}
                 templates={this.props.whatsAppMessageTemplates}
+                uploadFile={this.props.uploadFile}
               />
             </div>
           </div>
@@ -793,7 +796,8 @@ function mapDispatchToProps(dispatch) {
     loadcannedResponses,
     getWhatsAppMessageTemplates,
     saveNotificationSessionId,
-    setCompanyPreferences
+    setCompanyPreferences,
+    uploadFile
   }, dispatch)
 }
 
