@@ -172,6 +172,15 @@ export function getUserPermissions() {
   }
 }
 
+export function installShopify (data) {
+  return (dispatch) => {
+    callApi('shopify', 'post', data)
+      .then(res => {
+        console.log('FROM shopify')
+        console.log(res.body)
+      })
+  }
+}
 
 export function fetchNotifications () {
   return (dispatch) => {
