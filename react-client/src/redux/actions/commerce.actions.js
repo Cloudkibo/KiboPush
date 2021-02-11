@@ -32,3 +32,12 @@ export function fetchBigCommerceStore() {
       })
   }
 }
+
+export function installShopify (data) {
+  return (dispatch) => {
+    callApi('shopify', 'post', data)
+      .then(res => {
+        window.location.replace(res.installUrl)
+      })
+  }
+}
