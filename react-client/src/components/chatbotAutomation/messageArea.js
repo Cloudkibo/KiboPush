@@ -46,11 +46,75 @@ class MessageArea extends React.Component {
     this.getRemoveModalContent = this.getRemoveModalContent.bind(this)
     this.updateCarouselCards = this.updateCarouselCards.bind(this)
     this.canDeleteBlock = this.canDeleteBlock.bind(this)
+    this.showTalkToAgentButton = this.showTalkToAgentButton.bind(this)
+    this.linkBlock = this.linkBlock.bind(this)
+    this.removeLink = this.removeLink.bind(this)
   }
 
   componentDidMount () {
     if (this.props.block) {
       this.setStateData(this.props.block)
+    }
+  }
+
+  showTalkToAgentButton () {
+    const parentId = this.props.sidebarItems.find((item) => item.id.toString() === this.props.block.uniqueId.toString()).parentId
+    if (parentId) {
+      return false
+    } else {
+      return true
+    }
+  }
+
+  linkBlock (title) {
+    if (['talk_to_agent'].includes(title)) {
+      let quickReplies = this.state.quickReplies
+      if (title === 'talk_to_agent') {
+        quickReplies.push({
+          content_type: 'text',
+          title: 'Talk to agent',
+          payload: JSON.stringify([{
+            action: '_chatbot',
+            payloadAction: 'talk_to_agent',
+            chatbotId: this.props.chatbot._id,
+            parentBlockTitle: this.props.block.title
+          }])
+        })
+      }
+
+      const currentBlock = this.props.block
+
+      if (currentBlock.payload.length > 0) {
+        currentBlock.payload[currentBlock.payload.length - 1].quickReplies = quickReplies
+      } else {
+        currentBlock.payload.push({quickReplies})
+      }
+
+      this.setState({quickReplies}, () => {
+        this.props.updateParentState({currentBlock, unsavedChanges: true})
+      })
+    }
+  }
+
+  removeLink (title) {
+    if (['talk_to_agent'].includes(title)) {
+      let quickReplies = this.state.quickReplies
+      let index = quickReplies.findIndex((item) => item.title === title)
+      if (title === 'talk_to_agent') {
+        index = quickReplies.findIndex((item) => JSON.parse(item.payload)[0].payloadAction === 'talk_to_agent')
+      }
+      quickReplies.splice(index, 1)
+
+      const currentBlock = this.props.block
+      if (currentBlock.payload.length > 0) {
+        currentBlock.payload[currentBlock.payload.length - 1].quickReplies = quickReplies
+      } else {
+        currentBlock.payload.push({quickReplies})
+      }
+
+      this.setState({quickReplies}, () => {
+        this.props.updateParentState({currentBlock, unsavedChanges: true})
+      })
     }
   }
 
@@ -446,8 +510,8 @@ class MessageArea extends React.Component {
     for (let i = 0; i < cards.length; i++) {
       if (!cards[i].buttonOption) {
         carouselCards[i].buttons = []
-        continue  
-      } 
+        continue
+      }
       const buttonTitle = cards[i].buttonOption.buttonTitle
       const blockTitle = cards[i].buttonOption.blockTitle
       const action = cards[i].buttonOption.action
@@ -457,7 +521,7 @@ class MessageArea extends React.Component {
       if (this.state.carouselCards) {
         for (let j = 0; j < this.state.carouselCards.length; j++) {
           if (this.state.carouselCards[j].buttons[0]) {
-            const buttonPayload = JSON.parse(this.state.carouselCards[j].buttons[0].payload) 
+            const buttonPayload = JSON.parse(this.state.carouselCards[j].buttons[0].payload)
             if ('' + buttonPayload[0].blockUniqueId === ''+uniqueId) {
               addingNew = false
               break
@@ -472,7 +536,7 @@ class MessageArea extends React.Component {
       if (addingNew) {
         if (action === 'link') {
           button.payload = JSON.stringify([{action: '_chatbot', blockUniqueId: uniqueId, parentBlockTitle: this.props.block.title}])
-          carouselCards[i].buttons = [button]  
+          carouselCards[i].buttons = [button]
         } else if (action === 'create') {
           const id = new Date().getTime() + i
           const newBlock = {title: blockTitle, payload: [], uniqueId: id, triggers: [blockTitle.toLowerCase()]}
@@ -483,10 +547,10 @@ class MessageArea extends React.Component {
           blocks.push(newBlock)
           button.payload = JSON.stringify([{action: '_chatbot', blockUniqueId: id, payloadAction: 'create', parentBlockTitle: this.props.block.title}])
           carouselCards[i].buttons = [button]
-        } 
+        }
       } else {
         button.payload = JSON.stringify([{action: '_chatbot', blockUniqueId: uniqueId, parentBlockTitle: this.props.block.title}])
-        carouselCards[i].buttons = [button]           
+        carouselCards[i].buttons = [button]
       }
     }
     const completed = blocks.filter((item) => item.payload.length > 0).length
@@ -746,7 +810,7 @@ class MessageArea extends React.Component {
           <CAROUSELMODAL
             id = '_carousel_modal'
             title = 'Edit Carousel'
-            chatbot={this.props.chatbot} 
+            chatbot={this.props.chatbot}
             uploadAttachment={this.props.uploadAttachment}
             updateParentState={this.updateState}
             cards={this.state.carouselCards}
@@ -759,7 +823,7 @@ class MessageArea extends React.Component {
           <LinkCarouselModal
             id = '_link_carousel_modal'
             title = 'Edit Link Carousel'
-            chatbot={this.props.chatbot} 
+            chatbot={this.props.chatbot}
             uploadAttachment={this.props.uploadAttachment}
             updateParentState={this.updateState}
             cards={this.state.carouselCards}
@@ -776,6 +840,10 @@ class MessageArea extends React.Component {
             disableNext={this.state.disableNext}
             onPrevious={() => {}}
             emptyBlocks={this.checkEmptyBlock()}
+            showTalkToAgentButton={this.showTalkToAgentButton()}
+            currentBlock={this.props.block}
+            linkBlock={this.linkBlock}
+            removeLink={this.removeLink}
           />
           <button style={{display: 'none'}} ref={(el) => this.removeComponentTrigger = el} data-toggle='modal' data-target='#_remove_component' />
           <CONFIRMATIONMODAL

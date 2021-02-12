@@ -161,6 +161,14 @@ class ConfigureChatbot extends React.Component {
         isParent: false
       }]
     }
+    console.log({
+      blocks,
+      sidebarItems,
+      currentBlock: blocks[0],
+      loading: false,
+      progress,
+      allTriggers
+    })
     this.setState({
       blocks,
       sidebarItems,
@@ -222,11 +230,11 @@ class ConfigureChatbot extends React.Component {
             let blockId = ""
             if (quickReplies[j].payload) {
               let payload = JSON.parse(quickReplies[j].payload)
-              blockId = payload[0].blockUniqueId.toString()
+              blockId = payload[0].blockUniqueId ? payload[0].blockUniqueId.toString() : ''
             } else {
               blockId = quickReplies[j].blockId.toString()
             }
-            if (!uniqueIds.includes(blockId)) {
+            if (!uniqueIds.includes(blockId) && blockId) {
               blocks.push({
                 title: quickReplies[j].title,
                 payload: [],

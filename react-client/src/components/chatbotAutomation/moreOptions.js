@@ -18,6 +18,7 @@ class MoreOptions extends React.Component {
     this.showPopover = this.showPopover.bind(this)
     this.togglePopover = this.togglePopover.bind(this)
     this.setOptions = this.setOptions.bind(this)
+    this.checkTalkToAgent = this.checkTalkToAgent.bind(this)
   }
 
   componentDidMount () {
@@ -27,7 +28,7 @@ class MoreOptions extends React.Component {
 
     document.getElementById('_chatbot_message_area').addEventListener("scroll", () => {
       if (this.state.showingSuggestion) {
-        ReactTooltip.show(document.getElementById('_more_options_chatbot_add')) 
+        ReactTooltip.show(document.getElementById('_more_options_chatbot_add'))
       }
     });
   }
@@ -40,13 +41,13 @@ class MoreOptions extends React.Component {
       showRemove: true,
       action: 'link',
       payloadAction: data.payloadAction,
-      additionalActions: data.query ? 
+      additionalActions: data.query ?
       {
         query: data.query,
         skipAllowed: data.skipAllowed,
         keyboardInputAllowed: data.keyboardInputAllowed,
         showing: true,
-      } : 
+      } :
       {
         query: '',
         skipAllowed: false,
@@ -82,6 +83,14 @@ class MoreOptions extends React.Component {
       }
     })
     this.setState({options})
+  }
+
+  checkTalkToAgent (option) {
+    if (JSON.parse(option.payload)[0].payloadAction === 'talk_to_agent') {
+      return true
+    } else {
+      return false
+    }
   }
 
   UNSAFE_componentWillReceiveProps (nextProps) {
@@ -126,6 +135,7 @@ class MoreOptions extends React.Component {
                     style={{border: '1px solid #36a3f7', marginRight: '10px', marginBottom: '10px'}}
                     className="btn m-btn--pill btn-outline-info btn-sm"
                     onClick={() => this.showPopover(option, i)}
+                    disabled={this.checkTalkToAgent(option)}
                   >
       							{option.title}
       						</button>
