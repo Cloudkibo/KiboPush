@@ -21,7 +21,11 @@ class WhatsAppCommerceChatbot extends React.Component {
       numberOfProducts: 9,
       published: false,
       testSubscribers: '',
-      arePhoneNumbersValid: true
+      arePhoneNumbersValid: true,
+      returnOrder: true,
+      returnOrderMessage: 'Dear Valuable Customer,\n\nThank you for contacting us. We have received the ‘Return’ request of your order #{{orderId}}. You are requested to please allow us some time, one of our representative will contact you for further details and confirmation',
+      cancelOrder: true,
+      cancelOrderMessage: 'Dear Valuable Customer,\n\nThank you for contacting us. We have received the cancellation ‘Request’ of your order #{{orderId}}. One of our representatives will contact you shortly for further details and confirmation'
     }
     this.selectStore = this.selectStore.bind(this)
     this.setPublished = this.setPublished.bind(this)
@@ -37,6 +41,9 @@ class WhatsAppCommerceChatbot extends React.Component {
     this.clearTestSubscribers = this.clearTestSubscribers.bind(this)
     this.goToCommerceSettings = this.goToCommerceSettings.bind(this)
     this.getConnectEcommerceContent = this.getConnectEcommerceContent.bind(this)
+    this.handleCancelOrder=this.handleCancelOrder.bind(this)
+    this.handleReturnOrder=this.handleReturnOrder.bind(this)
+    this.updateState = this.updateState.bind(this)
 
     props.fetchChatbot({companyId: this.props.user.companyId, vertical: 'commerce'})
     props.fetchBigCommerceStore()
@@ -51,15 +58,36 @@ class WhatsAppCommerceChatbot extends React.Component {
         faqs: nextProps.chatbot.botLinks.faqs,
         published: nextProps.chatbot.published,
         numberOfProducts: nextProps.chatbot.numberOfProducts,
-        testSubscribers: nextProps.chatbot.testSubscribers ? nextProps.chatbot.testSubscribers.join(',') : []
+        testSubscribers: nextProps.chatbot.testSubscribers ? nextProps.chatbot.testSubscribers.join(',') : [],
+        returnOrder: nextProps.chatbot.returnOrder,
+        returnOrderMessage: nextProps.chatbot.returnOrderMessage,
+        cancelOrder: nextProps.chatbot.cancelOrder,
+        cancelOrderMessage: nextProps.chatbot.cancelOrderMessage
       })
     } else if (nextProps.chatbot) {
       this.setState({
+        returnOrder: nextProps.chatbot.returnOrder,
+        returnOrderMessage: nextProps.chatbot.returnOrderMessage,
+        cancelOrder: nextProps.chatbot.cancelOrder,
+        cancelOrderMessage: nextProps.chatbot.cancelOrderMessage,
         published: nextProps.chatbot.published,
         numberOfProducts: nextProps.chatbot.numberOfProducts,
         testSubscribers: nextProps.chatbot.testSubscribers ? nextProps.chatbot.testSubscribers.join(',') : []
       })
     }
+  }
+
+  handleReturnOrder (e) {
+    this.setState({returnOrder: e.target.checked})
+  }
+
+  handleCancelOrder (e) {
+    console.log('handleCancelOrder')
+    this.setState({cancelOrder: e.target.checked})
+  }
+
+  updateState(state) {
+    this.setState(state)
   }
 
   componentDidMount() {
@@ -144,6 +172,10 @@ class WhatsAppCommerceChatbot extends React.Component {
       if (commerceConnectModal) {
         commerceConnectModal.click()
       }
+    } else if (this.state.cancelOrder && !this.state.cancelOrderMessage) {
+      this.msg.error('Please enter a cancel order message')
+    } else if (this.state.returnOrder && !this.state.returnOrderMessage) {
+      this.msg.error('Please enter a return order message')
     } else {
       if (!this.props.chatbot) {
         this.props.createChatbot({
@@ -155,7 +187,11 @@ class WhatsAppCommerceChatbot extends React.Component {
           storeType: this.props.store.storeType,
           type: 'automated',
           vertical: 'commerce',
-          numberOfProducts: this.state.numberOfProducts
+          numberOfProducts: this.state.numberOfProducts,
+          cancelOrder: this.state.cancelOrder,
+          cancelOrderMessage: this.state.cancelOrderMessage,
+          returnOrder: this.state.returnOrder,
+          returnOrderMessage: this.state.returnOrderMessage
         }, (res) => {
           if (res.status === 'success') {
             this.msg.success(res.description)
@@ -176,7 +212,11 @@ class WhatsAppCommerceChatbot extends React.Component {
               returnPolicy: this.state.returnPolicy,
               faqs: this.state.faqs
             },
-            numberOfProducts: this.state.numberOfProducts
+            numberOfProducts: this.state.numberOfProducts,
+            cancelOrder: this.state.cancelOrder,
+            cancelOrderMessage: this.state.cancelOrderMessage,
+            returnOrder: this.state.returnOrder,
+            returnOrderMessage: this.state.returnOrderMessage
           }
         }, (res) => {
           if (res.status === 'success') {
@@ -212,7 +252,12 @@ class WhatsAppCommerceChatbot extends React.Component {
         },
         testSubscribers: this.state.testSubscribers.split(",").map(number => number.replace(/ /g, '')),
         type: 'automated',
-        vertical: 'commerce'
+        vertical: 'commerce',
+        numberOfProducts: this.state.numberOfProducts,
+        cancelOrder: this.state.cancelOrder,
+        cancelOrderMessage: this.state.cancelOrderMessage,
+        returnOrder: this.state.returnOrder,
+        returnOrderMessage: this.state.returnOrderMessage
       }, (res) => {
         if (res.status === 'success') {
           this.msg.success(res.description)
@@ -483,6 +528,52 @@ class WhatsAppCommerceChatbot extends React.Component {
                             </span>
                           </div> */}
 
+
+                          <div className="row form-group m-form__group col-lg-12">
+                          <div className="col-md-6">
+                            <label className="m-checkbox m--font-boldest" style={{fontWeight: '600'}}>
+                              <input
+                                type="checkbox"
+                                onChange={this.handleCancelOrder}
+                                onClick={this.handleCancelOrder}
+                                checked={this.state.cancelOrder}
+                              />
+                            Allow cancel order
+                              <span></span>
+                            </label>
+                            {this.state.cancelOrder &&
+                              <div style={{marginTop: '10px'}}>
+                                <span className='m--font-boldest'>Cancel Order Message:</span>
+                                <textarea
+                                  rows='6'
+                                  value={this.state.cancelOrderMessage}
+                                  onChange={(e) => { this.updateState({cancelOrderMessage: e.target.value})}}
+                                  className="form-control m-input" />
+                              </div>
+                          }
+                          </div>
+                          <div className="col-md-6">
+                            <label className="m-checkbox m--font-boldest" style={{fontWeight: '600'}}>
+                              <input
+                                type="checkbox"
+                                onChange={this.handleReturnOrder}
+                                checked={this.state.returnOrder}
+                              />
+                            Allow return order
+                              <span></span>
+                            </label>
+                            {this.state.returnOrder &&
+                              <div style={{marginTop: '10px'}}>
+                                <span className='m--font-boldest'>Return Order Message:</span>
+                                <textarea
+                                  rows='6'
+                                  value={this.state.returnOrderMessage}
+                                  onChange={(e) => { this.updateState({returnOrderMessage: e.target.value})}}
+                                  className="form-control m-input" />
+                              </div>
+                          }
+                          </div>
+                        </div>
 
                           <div class="form-group m-form__group m--margin-top-10">
                             <span>
