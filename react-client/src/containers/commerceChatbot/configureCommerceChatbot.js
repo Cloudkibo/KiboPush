@@ -29,7 +29,12 @@ class ConfigureCommerceChatbot extends React.Component {
       published: props.location.state.chatbot.published,
       testSubscribers: '',
       arePhoneNumbersValid: true,
+      returnOrder: props.location.state.chatbot.returnOrder,
+      returnOrderMessage: props.location.state.chatbot.returnOrderMessage,
+      cancelOrder: props.location.state.chatbot.cancelOrder,
+      cancelOrderMessage: props.location.state.chatbot.cancelOrderMessage
     }
+
     this.selectStore = this.selectStore.bind(this)
     this.setPublished = this.setPublished.bind(this)
     this.setPaymentMethod = this.setPaymentMethod.bind(this)
@@ -42,11 +47,22 @@ class ConfigureCommerceChatbot extends React.Component {
     this.getTestModalContent = this.getTestModalContent.bind(this)
     this.disableManualChatbot = this.disableManualChatbot.bind(this)
     this.updateState = this.updateState.bind(this)
+    this.handleCancelOrder=this.handleCancelOrder.bind(this)
+    this.handleReturnOrder=this.handleReturnOrder.bind(this)
 
     props.getFbAppId()
     props.getCommerceChatbotTriggers(this.state.chatbot._id, (res) => {
       this.setState({ triggers: res.payload })
     })
+  }
+
+  handleReturnOrder (e) {
+    this.setState({returnOrder: e.target.checked})
+  }
+
+  handleCancelOrder (e) {
+    console.log('handleCancelOrder')
+    this.setState({cancelOrder: e.target.checked})
   }
 
   updateState(state) {
@@ -150,10 +166,18 @@ class ConfigureCommerceChatbot extends React.Component {
     e.preventDefault()
     if (this.state.triggers.length === 0) {
       this.msg.error('At least one trigger is required')
+    } else if (this.state.cancelOrder && !this.state.cancelOrderMessage) {
+      this.msg.error('Please enter a cancel order message')
+    } else if (this.state.returnOrder && !this.state.returnOrderMessage) {
+      this.msg.error('Please enter a return order message')
     } else {
       this.props.updateCommerceChatbot({
         chatbotId: this.state.chatbot._id,
         numberOfProducts: this.state.numberOfProducts,
+        cancelOrder: this.state.cancelOrder,
+        cancelOrderMessage: this.state.cancelOrderMessage,
+        returnOrder: this.state.returnOrder,
+        returnOrderMessage: this.state.returnOrderMessage,
         botLinks: {
           paymentMethod: this.state.paymentMethod,
           returnPolicy: this.state.returnPolicy,
@@ -303,7 +327,7 @@ class ConfigureCommerceChatbot extends React.Component {
                               style={{marginBottom: '10px'}}
                               onChange={(e) => { this.setNumberOfProducts(parseInt(e.target.value))}}
                               onKeyDown={e => /[+\-.,\s]$/.test(e.key) && e.preventDefault()}
-                              className="form-control m-input" id="_faqs_url" />
+                              className="form-control m-input" />
                             <span>This refers to the maximum number of products shown in a message</span>
                           </div>
 
@@ -312,7 +336,53 @@ class ConfigureCommerceChatbot extends React.Component {
                             <input type="text" onChange={this.setFAQs} value={this.state.faqs} className="form-control m-input" id="_faqs_url" placeholder="Enter FAQs URL..." />
                           </div>
 
-                          <div class="form-group m-form__group m--margin-top-10">
+                          <div className="row form-group m-form__group col-lg-12">
+                          <div className="col-md-6">
+                            <label className="m-checkbox m--font-boldest" style={{fontWeight: '600'}}>
+                              <input
+                                type="checkbox"
+                                onChange={this.handleCancelOrder}
+                                onClick={this.handleCancelOrder}
+                                checked={this.state.cancelOrder}
+                              />
+                            Allow cancel order
+                              <span></span>
+                            </label>
+                            {this.state.cancelOrder &&
+                              <div style={{marginTop: '10px'}}>
+                                <span className='m--font-boldest'>Cancel Order Message:</span>
+                                <textarea
+                                  rows='6'
+                                  value={this.state.cancelOrderMessage}
+                                  onChange={(e) => { this.updateState({cancelOrderMessage: e.target.value})}}
+                                  className="form-control m-input" />
+                              </div>
+                          }
+                          </div>
+                          <div className="col-md-6">
+                            <label className="m-checkbox m--font-boldest" style={{fontWeight: '600'}}>
+                              <input
+                                type="checkbox"
+                                onChange={this.handleReturnOrder}
+                                checked={this.state.returnOrder}
+                              />
+                            Allow return order
+                              <span></span>
+                            </label>
+                            {this.state.returnOrder &&
+                              <div style={{marginTop: '10px'}}>
+                                <span className='m--font-boldest'>Return Order Message:</span>
+                                <textarea
+                                  rows='6'
+                                  value={this.state.returnOrderMessage}
+                                  onChange={(e) => { this.updateState({returnOrderMessage: e.target.value})}}
+                                  className="form-control m-input" />
+                              </div>
+                          }
+                          </div>
+                        </div>
+
+                          <div className="form-group m-form__group m--margin-top-10">
                             <span>
                               <strong>Note: </strong>
                               We recommend first testing the chatbot before enabling it for your customers.
