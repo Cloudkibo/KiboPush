@@ -351,23 +351,35 @@ class MessageArea extends React.Component {
   }
 
   linkBlock (title) {
-    if (['Back', 'Home'].includes(title)) {
+    if (['Back', 'Home', 'talk_to_agent'].includes(title)) {
       let uniqueId = ''
       if (title === 'Back') {
         const parentId = this.props.sidebarItems.find((item) => item.id.toString() === this.props.block.uniqueId.toString()).parentId
         if(parentId) {
          uniqueId = this.props.blocks.find((item) => item.uniqueId.toString() === parentId.toString()).uniqueId
         }
-      } else {
+      } else if (title !== 'talk_to_agent') {
         uniqueId = this.props.blocks.find((item) => item._id === this.props.chatbot.startingBlockId).uniqueId
       }
-      console.log('uniqueId', uniqueId)
       let quickReplies = this.state.quickReplies
-      quickReplies.push({
-        content_type: 'text',
-        title,
-        payload: JSON.stringify([{action: '_chatbot', blockUniqueId: uniqueId, parentBlockTitle: this.props.block.title}])
-      })
+      if (title === 'talk_to_agent') {
+        quickReplies.push({
+          content_type: 'text',
+          title: 'Talk to agent',
+          payload: JSON.stringify([{
+            action: '_chatbot',
+            payloadAction: 'talk_to_agent',
+            chatbotId: this.props.chatbot._id,
+            parentBlockTitle: this.props.block.title
+          }])
+        })
+      } else {
+        quickReplies.push({
+          content_type: 'text',
+          title,
+          payload: JSON.stringify([{action: '_chatbot', blockUniqueId: uniqueId, parentBlockTitle: this.props.block.title}])
+        })
+      }
 
       const currentBlock = this.props.block
 
@@ -384,9 +396,12 @@ class MessageArea extends React.Component {
   }
 
   removeLink (title) {
-    if (['Back', 'Home'].includes(title)) {
+    if (['Back', 'Home', 'talk_to_agent'].includes(title)) {
       let quickReplies = this.state.quickReplies
-      const index = quickReplies.findIndex((item) => item.title === title)
+      let index = quickReplies.findIndex((item) => item.title === title)
+      if (title === 'talk_to_agent') {
+        index = quickReplies.findIndex((item) => JSON.parse(item.payload)[0].payloadAction === 'talk_to_agent')
+      }
       quickReplies.splice(index, 1)
 
       const currentBlock = this.props.block
