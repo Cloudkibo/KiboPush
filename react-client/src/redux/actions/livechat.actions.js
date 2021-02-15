@@ -566,3 +566,15 @@ export function appendSubscriber(data, session, msg) {
       })
   }
 }
+
+export function updatePauseChatbot (payload, handleResponse) {
+  console.log('data for updatePauseChatbot', payload)
+  return (dispatch) => {
+    callApi('sessions/updatePauseChatbot', 'post', payload).then(res => {
+        handleResponse(res)
+        if (res.status === 'success') {
+          dispatch(updateSessions(payload))
+        }
+    })
+  }
+}

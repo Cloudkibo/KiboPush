@@ -5,6 +5,7 @@ import Header from './header'
 import AssignTag from './assignTag'
 import AssignChat from './assignChat'
 import CustomFields from './customFields'
+import PAUSECHATBOT from './chatbotPause'
 
 class Profile extends React.Component {
 
@@ -29,6 +30,13 @@ class Profile extends React.Component {
                         teams={this.props.teams}
                         editSubscriberWhatsApp={this.props.editSubscriberWhatsApp}
                     />
+                
+                    { this.props.connectedPageChatbot && 
+                        <PAUSECHATBOT 
+                            activeSession={this.props.activeSession }
+                            pauseChatbot={this.props.pauseChatbot}
+                        />
+                    }
                   {
                       (this.props.user.currentPlan.unique_ID === 'plan_C' || this.props.user.currentPlan.unique_ID === 'plan_D') &&
                       <AssignChat
