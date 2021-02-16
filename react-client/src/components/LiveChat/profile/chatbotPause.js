@@ -5,14 +5,14 @@ class PauseChatbot extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      chatbotPaused: this.props.activeSession.chatbotPaused
+
     }
-    this.pauseChatbot = this.pauseChatbot.bind(this)
+    this.unPauseChatbot = this.unPauseChatbot.bind(this)
   }
-  pauseChatbot (e) {
+  unPauseChatbot (e) {
     let payload = {
       subscriberId: this.props.activeSession._id,
-      chatbotPaused: e.target.checked
+      chatbotPaused: false
     }
     this.props.pauseChatbot(payload, (res) => {
       if (res.status === 'success') {
@@ -25,21 +25,13 @@ class PauseChatbot extends React.Component {
   render () {
     return (
       <div className='row'>
-      <span className='col-12'>
-          <div className='m-form__group form-group row'>
-          <span className='col-7 col-form-label'>
-             Pause Chatbot
-          </span>
-          <div className='col-3'>
-              <span className='m-switch m-switch--outline m-switch--icon m-switch--success'>
-              <label>
-                  <input type='checkbox' data-switch='true' checked={this.props.activeSession.chatbotPaused} onChange={this.pauseChatbot} />
-                  <span></span>
-              </label>
-              </span>
-          </div>
-          </div>
-      </span>
+        <span className='col-12' style={{textAlign: 'center'}}> 
+          { this.props.activeSession.chatbotPaused &&
+          <button type="button" class="btn m-btn--pill m-btn--air btn-outline-danger" onClick={this.unPauseChatbot}>
+            <span className='la la-power-off' /> Unpause Chatbot 
+          </button>
+          }
+        </span>
   `</div>
     )
   }
