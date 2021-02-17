@@ -97,7 +97,7 @@ class ConfigureCommerceChatbot extends React.Component {
     registerAction({
       event: 'chatbot.test.message',
       action: function (data) {
-        comp.msg.success('Sent successfully on messenger')
+        comp.msg.success('Sent successfully on messenger. Test session is activated on unpublished bot for next 1 hour.')
         comp.refs._open_test_chatbot_modal.click()
       }
     })
