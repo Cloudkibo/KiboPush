@@ -17,7 +17,7 @@ class MessageTemplate extends React.Component {
     this.state = {
       templateMessage: this.props.edit ? this.props.templateMessage : this.props.templates && this.props.templates.length > 0 && this.props.templates[0].text,
       isTemplateValid: true,
-      templateArguments: this.props.templateArguments,
+      templateArguments: this.props.templateArguments ? this.props.templateArguments : this.props.templates && this.props.templates.length > 0 && this.props.templates[0].templateArguments,
       number: '',
       sendingTemplate: false,
       selectedIndex: this.props.selectedIndex ? this.props.selectedIndex : 0,
@@ -26,7 +26,7 @@ class MessageTemplate extends React.Component {
       uploadingAttachment: false,
       attachment: this.props.edit ? this.props.fileurl : {},
       errorMsg: false,
-      componentType: this.props.edit ? this.props.componentType : 'text'
+      componentType: this.props.edit ? this.props.componentType : this.props.templates && this.props.templates.length > 0 ? this.getComponentType(this.props.templates[0].type) : 'text'
     }
     this.resetTemplate = this.resetTemplate.bind(this)
     this.onTextChange = this.onTextChange.bind(this)
@@ -326,7 +326,6 @@ class MessageTemplate extends React.Component {
   onFilesChange (files) {
     if (files.length > 0) {
       var file = files[files.length - 1]
-      console.log('file', file)
       this.setState({file: file})
       if (file.size > 25000000) {
         this.setState({errorMsg: '*Attachment exceeds the limit of 25MB'})
