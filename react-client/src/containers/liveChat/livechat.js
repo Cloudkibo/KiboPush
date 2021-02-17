@@ -931,6 +931,7 @@ class LiveChat extends React.Component {
                     backToSessions={this.backToSessions}
                     showGetContactInfo={true}
                     updateDefaultZoom= {this.updateDefaultZoom}
+                    sessions={this.state.sessions}
                   />
                 )}
               {!this.props.isMobile &&
@@ -966,6 +967,7 @@ class LiveChat extends React.Component {
                     pauseChatbot = {this.props.updatePauseChatbot}
                     chatbots = {this.props.chatbots}
                     connectedPageChatbot = { this.props.chatbots.find((chatbot) => { return chatbot.published && chatbot.pageId._id === this.state.activeSession.pageId._id}) ? true : false}
+                    sessions = {this.state.sessions}
                   />
                 )}
               {!this.props.isMobile &&

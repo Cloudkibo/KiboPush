@@ -325,6 +325,9 @@ class Footer extends React.Component {
     session.lastRepliedBy = data.replied_by
     session.pendingResponse = false
     session.last_activity_time = new Date()
+    if (session.chatbotPaused !== null && !session.chatbotPaused) {
+      session.chatbotPaused = true
+    }
     this.props.updateNewMessage(true)
     this.props.updateState({
       reducer: true,
@@ -1363,7 +1366,13 @@ class Footer extends React.Component {
               ) : this.props.showThumbsUp ? (
                 <i
                   style={{ color: '#36a3f7' }}
-                  onClick={this.sendThumbsUp}
+                  onClick={() => {
+                    if (this.props.activeSession.chatbotPaused !== null && !this.props.activeSession.chatbotPaused) {
+                      this.refs.pauseChatbotWarning.click()
+                    } else {
+                      this.sendThumbsUp()
+                    }
+                  }}
                   className='la la-thumbs-o-up'
                 />
               ) : (

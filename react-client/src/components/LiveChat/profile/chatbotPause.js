@@ -16,7 +16,16 @@ class PauseChatbot extends React.Component {
     }
     this.props.pauseChatbot(payload, (res) => {
       if (res.status === 'success') {
-        console.log('updated chatbot paused')
+        if (this.props.sessions && this.props.updateState) {
+          let sessions = this.props.sessions
+          let session = this.props.activeSession
+          let index = sessions.findIndex((s) => s._id === session._id)
+          sessions.splice(index, 1)
+          this.props.updateState({
+            reducer: true,
+            sessions: [session, ...sessions]
+          })
+        }
       } else {
         console.log('unable to update chatbot paused')
       }

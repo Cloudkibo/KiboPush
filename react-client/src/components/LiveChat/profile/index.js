@@ -35,6 +35,8 @@ class Profile extends React.Component {
                         <PAUSECHATBOT 
                             activeSession={this.props.activeSession }
                             pauseChatbot={this.props.pauseChatbot}
+                            sessions={this.props.sessions}
+                            updateState={this.props.updateState}
                         />
                     }
                   {
