@@ -521,18 +521,6 @@ class MessageTemplate extends React.Component {
                   })
                 }
               </div>
-              <div style={{textAlign: 'center', display: 'flex'}}>
-                <textarea disabled={this.state.sendingTemplate} rows='5' id='templateText' onChange={this.onTextChange} value={this.state.templateMessage}  className='form-control m-messenger__form-input' style={{resize: 'none', width: '95%', marginTop: '10px', borderRadius: '5px'}} maxLength='200' />
-                { !this.state.isTemplateValid &&
-                <div style={{marginTop: '25px', marginLeft: '5px'}}>
-                  <UncontrolledTooltip style={{minWidth: '100px', opacity: '1.0'}} target='templateWarning'>
-                    <span>Message template format cannot be changed</span>
-                  </UncontrolledTooltip>
-                  <i id='templateWarning' className='flaticon-exclamation m--font-danger'/>
-                </div>
-                }
-              </div>
-              <p style={{fontSize: '12px', marginTop: '5px'}}>{'Each variable "{{x}}" can be replaced with text that contains letters, digits, special characters or spaces.'}</p>
             </div>
           </div>
           <div className='col-1'>
@@ -550,7 +538,17 @@ class MessageTemplate extends React.Component {
                   }
                 </div>
               }
-                <div style={{ maxWidth: '100%', fontSize: '15px', textAlign: 'justify', whiteSpace: 'pre-wrap', wordBreak: 'break-word' }} className='bubble recipient'>{this.state.templateMessage}</div>
+              <div style={{textAlign: 'center', display: 'flex'}}>
+                <textarea disabled={this.state.sendingTemplate} rows='5' id='templateText' onChange={this.onTextChange} value={this.state.templateMessage}  className='form-control m-messenger__form-input' style={{resize: 'none'}} maxLength='200' />
+                { !this.state.isTemplateValid &&
+                <div style={{marginTop: '25px', marginLeft: '5px'}}>
+                  <UncontrolledTooltip style={{minWidth: '100px', opacity: '1.0'}} target='templateWarning'>
+                    <span>Message template format cannot be changed</span>
+                  </UncontrolledTooltip>
+                  <i id='templateWarning' className='flaticon-exclamation m--font-danger'/>
+                </div>
+                }
+              </div>
                 {
                   this.props.templates[this.state.selectedIndex].buttons.map((button, index) => (
                     (
@@ -569,6 +567,7 @@ class MessageTemplate extends React.Component {
                     )
                   ))
                 }
+                <p style={{fontSize: '12px', marginTop: '5px'}}>{'Each variable "{{x}}" can be replaced with text that contains letters, digits, special characters or spaces.'}</p>
               </div>
             </div>
           </div>
