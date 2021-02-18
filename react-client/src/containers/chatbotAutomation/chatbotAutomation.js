@@ -21,6 +21,11 @@ class ChatbotAutomation extends React.Component {
         selectedPage: '',
         loading: false
       },
+      shopChatbot: {
+        selectedRadio: 'modify',
+        selectedPage: '',
+        loading: false
+      }
     }
 
     this.onRadioClick = this.onRadioClick.bind(this)
@@ -65,6 +70,11 @@ class ChatbotAutomation extends React.Component {
       chatbotState.loading = true;
       this.setState({ [type]: chatbotState })
       this.props.createCommerceChatbot({ pageId: this.state[type].selectedPage, storeType: this.props.store.storeType }, (res) => this.handleOnCreate(res, pageFbId, type))
+    } else if (type === 'shopChatbot') {
+      let chatbotState = { ...this.state[type] }
+      chatbotState.loading = true;
+      this.setState({ [type]: chatbotState })
+      this.props.createCommerceChatbot({ pageId: this.state[type].selectedPage, storeType: 'shops' }, (res) => this.handleOnCreate(res, pageFbId, type))
     }
   }
 
@@ -79,6 +89,11 @@ class ChatbotAutomation extends React.Component {
         state: { chatbot, page, existingChatbot }
       })
     } else if (type === 'commerceChatbot') {
+      this.props.history.push({
+        pathname: '/configureCommerceChatbot',
+        state: { chatbot, page, store: this.props.store, existingChatbot }
+      })
+    } else if (type === 'shopChatbot') {
       this.props.history.push({
         pathname: '/configureCommerceChatbot',
         state: { chatbot, page, store: this.props.store, existingChatbot }
@@ -100,6 +115,13 @@ class ChatbotAutomation extends React.Component {
           state: { chatbot, page, existingChatbot }
         })
       } else if (type === 'commerceChatbot') {
+        const manualChatbots = this.props.chatbots && this.props.chatbots.filter(chatbot => chatbot.type === 'manual')
+        const existingChatbot = manualChatbots.find(c => c.pageId._id === chatbot.pageId._id)
+        this.props.history.push({
+          pathname: '/configureCommerceChatbot',
+          state: { chatbot, page, store: this.props.store, existingChatbot }
+        })
+      }  else if (type === 'shopChatbot') {
         const manualChatbots = this.props.chatbots && this.props.chatbots.filter(chatbot => chatbot.type === 'manual')
         const existingChatbot = manualChatbots.find(c => c.pageId._id === chatbot.pageId._id)
         this.props.history.push({
@@ -149,10 +171,13 @@ class ChatbotAutomation extends React.Component {
       transition: 'scale'
     }
     let manualChatbots = this.props.chatbots && this.props.chatbots.filter(chatbot => chatbot.type === 'manual')
-    let commerceChatbots = this.props.chatbots && this.props.chatbots.filter(chatbot => chatbot.type === 'automated' && chatbot.vertical === 'commerce')
+    let commerceChatbots = this.props.chatbots && this.props.chatbots.filter(chatbot => chatbot.type === 'automated' && chatbot.vertical === 'commerce' && chatbot.storeType !== 'shops')
+    let shopChatbots = this.props.chatbots && this.props.chatbots.filter(chatbot => chatbot.type === 'automated' && chatbot.vertical === 'commerce' && chatbot.storeType === 'shops')
 
     let manualChatbotPages = this.getPages(manualChatbots)
     let commerceChatbotPages = this.getPages(commerceChatbots)
+    let shopChatbotPages = this.getPages(shopChatbots)
+
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
@@ -401,6 +426,116 @@ class ChatbotAutomation extends React.Component {
                       </div>
                     </div>
                   }
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className='row'>
+            <div className='col-xl-12'>
+              <div className='m-portlet m-portlet-mobile'>
+                <div className='m-portlet__head'>
+                  <div className='m-portlet__head-caption'>
+                    <div className='m-portlet__head-title'>
+                      <h3 className='m-portlet__head-text'>
+                        Facebook Shops Chatbot
+                      </h3>
+                    </div>
+                  </div>
+                </div>
+                <div className='m-portlet__body'>
+                    <div className="m-form__group form-group">
+                      <div className="m-radio-list">
+                        <label className="m-radio m-radio--bold m-radio--state-brand">
+                          <input
+                            type="radio"
+                            onClick={(e) => this.onRadioClick(e, 'shopChatbot')}
+                            onChange={() => { }}
+                            value='modify'
+                            checked={this.state.shopChatbot.selectedRadio === 'modify'}
+                          />
+                          Modify Existing Chatbot
+                        <span />
+                        </label>
+                        {
+                          this.state.shopChatbot.selectedRadio === 'modify' &&
+                          <div style={{ marginLeft: '50px' }} className='row'>
+                            {
+                              shopChatbots && shopChatbots.length > 0
+                                ? shopChatbots.map((chatbot) => (
+                                  <CHATBOT
+                                    key={chatbot._id}
+                                    profilePic={chatbot.pageId.pagePic}
+                                    name={chatbot.pageId.pageName}
+                                    onItemClick={() => this.modifyChatbot(chatbot, 'shopChatbot', shopChatbots.find((c) => c.pageId._id === chatbot.pageId._id))}
+                                  />
+                                ))
+                                : (!shopChatbots) ?
+                                  <p>Loading chatbots...</p>
+                                  : <p>No data to display</p>
+                            }
+                          </div>
+                        }
+                        <label className="m-radio m-radio--bold m-radio--state-brand">
+                          <input
+                            type="radio"
+                            onClick={(e) => this.onRadioClick(e, 'shopChatbot')}
+                            onChange={() => { }}
+                            value='create'
+                            checked={this.state.shopChatbot.selectedRadio === 'create'}
+                          />
+                          Create New Chatbot
+                        <span />
+                        </label>
+                        {
+                          this.state.shopChatbot.selectedRadio === 'create' &&
+                          <div style={{ marginLeft: '50px' }} className='row'>
+                            {
+                              this.props.pages && this.props.pages.length > 0
+                                ? shopChatbotPages.length > 0
+                                  ? <div style={{ width: '100%' }} className='row'>
+                                    <div className='col-md-6'>
+                                      <div className="form-group m-form__group">
+                                        <select
+                                          className="form-control m-input"
+                                          value={this.state.shopChatbot.selectedPage}
+                                          onChange={(e) => this.onPageChange(e, 'shopChatbot')}
+                                        >
+                                          <option value='' disabled>Select a page...</option>
+                                          {
+                                            shopChatbotPages.map((page) => (
+                                              <option key={page._id} value={page._id}>{page.pageName}</option>
+                                            ))
+                                          }
+                                        </select>
+                                      </div>
+                                    </div>
+                                    <div className='col-md-3'>
+                                      <button
+                                        type='button'
+                                        style={{ border: '1px solid' }}
+                                        className={`btn btn-primary ${this.state.shopChatbot.loading && 'm-loader m-loader--light m-loader--left'}`}
+                                        onClick={(e) => this.onCreate("shopChatbot")}
+                                        disabled={!this.state.shopChatbot.selectedPage}
+                                      >
+                                        Create
+                                  </button>
+                                    </div>
+                                  </div>
+                                  : <div>
+                                    You have created the chatbot for all your connected pages.
+                              </div>
+                                :
+                                <div>
+                                  Please connect a Facebook page to continue
+                                <Link to='/addPages' style={{ border: '1px solid', marginLeft: '10px' }} className="btn btn-outline-success">
+                                    Connect
+                                </Link>
+                                </div>
+                            }
+                          </div>
+                        }
+                      </div>
+                    </div>
                 </div>
               </div>
             </div>
