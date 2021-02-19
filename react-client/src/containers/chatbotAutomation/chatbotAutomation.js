@@ -5,7 +5,7 @@ import { fetchChatbots, createChatbot, createCommerceChatbot } from '../../redux
 import AlertContainer from 'react-alert'
 import { Link } from 'react-router-dom'
 import CHATBOT from '../../components/chatbotAutomation/chatbot'
-import { fetchShopifyStore, fetchBigCommerceStore } from '../../redux/actions/commerce.actions'
+import { fetchShopifyStore, fetchBigCommerceStore, checkShopPermissions } from '../../redux/actions/commerce.actions'
 
 class ChatbotAutomation extends React.Component {
   constructor(props, context) {
@@ -40,6 +40,7 @@ class ChatbotAutomation extends React.Component {
     props.fetchChatbots()
     props.fetchShopifyStore()
     props.fetchBigCommerceStore()
+    props.checkShopPermissions()
   }
 
   componentDidMount() {
@@ -562,7 +563,8 @@ function mapDispatchToProps(dispatch) {
     fetchChatbots,
     createChatbot,
     fetchBigCommerceStore,
-    fetchShopifyStore
+    fetchShopifyStore,
+    checkShopPermissions
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(ChatbotAutomation)

@@ -33,6 +33,17 @@ export function fetchBigCommerceStore() {
   }
 }
 
+export function checkShopPermissions(callback) {
+  return (dispatch) => {
+    callApi('fbshops/checkFacebookPermissions')
+      .then(res => {
+        if (res.status === 'success') {
+          callback(res)
+        }
+      })
+  }
+}
+
 export function installShopify (data) {
   return (dispatch) => {
     callApi('shopify', 'post', data)
