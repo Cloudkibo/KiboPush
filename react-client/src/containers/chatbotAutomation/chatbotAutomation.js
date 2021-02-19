@@ -46,7 +46,7 @@ class ChatbotAutomation extends React.Component {
     props.checkShopPermissions(this.handleShopPermissions)
   }
 
-  onBusinessAccountChang/Users/cloudkibo/Desktop/KiboChat/node_modules/shopify-api-node/node_modules/got/dist/source/core/index.jse (e) {
+  onBusinessAccountChange (e) {
     this.setState({businessAccount: e.target.value})
   }
 
