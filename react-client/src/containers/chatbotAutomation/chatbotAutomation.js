@@ -250,20 +250,17 @@ class ChatbotAutomation extends React.Component {
                           }
                         </div>
                       }
-                      {
-                        this.props.user.permissions['create_chatbot_automation'] &&
-                        <label className="m-radio m-radio--bold m-radio--state-brand">
-                          <input
-                            type="radio"
-                            onClick={(e) => this.onRadioClick(e, 'manualChatbot')}
-                            onChange={() => {}}
-                            value='create'
-                            checked={this.state.manualChatbot.selectedRadio === 'create'}
-                          />
-                            Create New Chatbot
-                          <span />
-                        </label>
-                      }
+                      <label className="m-radio m-radio--bold m-radio--state-brand">
+                        <input
+                          type="radio"
+                          onClick={(e) => this.onRadioClick(e, 'manualChatbot')}
+                          onChange={() => { }}
+                          value='create'
+                          checked={this.state.manualChatbot.selectedRadio === 'create'}
+                        />
+                          Create New Chatbot
+                        <span />
+                      </label>
                       {
                         this.state.manualChatbot.selectedRadio === 'create' &&
                         <div style={{ marginLeft: '50px' }} className='row'>
@@ -462,8 +459,8 @@ class ChatbotAutomation extends React.Component {
                 </div>
                 <div className='m-portlet__body'>
                   {
-                    !this.props.shopPermissions &&
-                    <div>
+                    !this.props.shopPermissions
+                    ? <div>
                       <h6 style={{ textAlign: 'center' }}>
                         You do not have facebook permissions for marketing api and commerce manager. Please click on the button below to get permissions.
                       </h6>
@@ -473,9 +470,7 @@ class ChatbotAutomation extends React.Component {
                       </a>
                       </div>
                     </div>
-                  }
-                  {
-                    this.props.shopPermissions && this.props.businessAccounts && this.props.businessAccounts.length > 0
+                    : this.props.shopPermissions && this.props.businessAccounts && this.props.businessAccounts.length > 0
                     ? <div>
                     <div className="m-form__group form-group row">
                     <label className='col-3 col-form-label'>Select a Business Account:</label>
