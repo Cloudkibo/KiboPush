@@ -459,8 +459,8 @@ class ChatbotAutomation extends React.Component {
                 </div>
                 <div className='m-portlet__body'>
                   {
-                    !this.props.shopPermissions &&
-                    <div>
+                    !this.props.shopPermissions
+                    ? <div>
                       <h6 style={{ textAlign: 'center' }}>
                         You do not have facebook permissions for marketing api and commerce manager. Please click on the button below to get permissions.
                       </h6>
@@ -470,9 +470,7 @@ class ChatbotAutomation extends React.Component {
                       </a>
                       </div>
                     </div>
-                  }
-                  {
-                    this.props.shopPermissions && this.props.businessAccounts && this.props.businessAccounts.length > 0
+                    : this.props.shopPermissions && this.props.businessAccounts && this.props.businessAccounts.length > 0
                     ? <div>
                     <div className="m-form__group form-group row">
                     <label className='col-3 col-form-label'>Select a Business Account:</label>
