@@ -17,7 +17,7 @@ class MessageTemplate extends React.Component {
     this.state = {
       templateMessage: this.props.edit ? this.props.templateMessage : this.props.templates && this.props.templates.length > 0 && this.props.templates[0].text,
       isTemplateValid: true,
-      templateArguments: this.props.templateArguments,
+      templateArguments: this.props.templateArguments ? this.props.templateArguments : this.props.templates && this.props.templates.length > 0 && this.props.templates[0].templateArguments,
       number: '',
       sendingTemplate: false,
       selectedIndex: this.props.selectedIndex ? this.props.selectedIndex : 0,
@@ -26,7 +26,7 @@ class MessageTemplate extends React.Component {
       uploadingAttachment: false,
       attachment: this.props.edit ? this.props.fileurl : {},
       errorMsg: false,
-      componentType: this.props.edit ? this.props.componentType : 'text'
+      componentType: this.props.edit ? this.props.componentType : this.props.templates && this.props.templates.length > 0 ? this.getComponentType(this.props.templates[0].type) : 'text'
     }
     this.resetTemplate = this.resetTemplate.bind(this)
     this.onTextChange = this.onTextChange.bind(this)
@@ -326,7 +326,6 @@ class MessageTemplate extends React.Component {
   onFilesChange (files) {
     if (files.length > 0) {
       var file = files[files.length - 1]
-      console.log('file', file)
       this.setState({file: file})
       if (file.size > 25000000) {
         this.setState({errorMsg: '*Attachment exceeds the limit of 25MB'})
@@ -521,18 +520,6 @@ class MessageTemplate extends React.Component {
                   })
                 }
               </div>
-              <div style={{textAlign: 'center', display: 'flex'}}>
-                <textarea disabled={this.state.sendingTemplate} rows='5' id='templateText' onChange={this.onTextChange} value={this.state.templateMessage}  className='form-control m-messenger__form-input' style={{resize: 'none', width: '95%', marginTop: '10px', borderRadius: '5px'}} maxLength='200' />
-                { !this.state.isTemplateValid &&
-                <div style={{marginTop: '25px', marginLeft: '5px'}}>
-                  <UncontrolledTooltip style={{minWidth: '100px', opacity: '1.0'}} target='templateWarning'>
-                    <span>Message template format cannot be changed</span>
-                  </UncontrolledTooltip>
-                  <i id='templateWarning' className='flaticon-exclamation m--font-danger'/>
-                </div>
-                }
-              </div>
-              <p style={{fontSize: '12px', marginTop: '5px'}}>{'Each variable "{{x}}" can be replaced with text that contains letters, digits, special characters or spaces.'}</p>
             </div>
           </div>
           <div className='col-1'>
@@ -550,7 +537,17 @@ class MessageTemplate extends React.Component {
                   }
                 </div>
               }
-                <div style={{ maxWidth: '100%', fontSize: '15px', textAlign: 'justify', whiteSpace: 'pre-wrap', wordBreak: 'break-word' }} className='bubble recipient'>{this.state.templateMessage}</div>
+              <div style={{textAlign: 'center', display: 'flex'}}>
+                <textarea disabled={this.state.sendingTemplate} rows='5' id='templateText' onChange={this.onTextChange} value={this.state.templateMessage}  className='form-control m-messenger__form-input' style={{resize: 'none'}} maxLength='200' />
+                { !this.state.isTemplateValid &&
+                <div style={{marginTop: '25px', marginLeft: '5px'}}>
+                  <UncontrolledTooltip style={{minWidth: '100px', opacity: '1.0'}} target='templateWarning'>
+                    <span>Message template format cannot be changed</span>
+                  </UncontrolledTooltip>
+                  <i id='templateWarning' className='flaticon-exclamation m--font-danger'/>
+                </div>
+                }
+              </div>
                 {
                   this.props.templates[this.state.selectedIndex].buttons.map((button, index) => (
                     (
@@ -569,6 +566,7 @@ class MessageTemplate extends React.Component {
                     )
                   ))
                 }
+                <p style={{fontSize: '12px', marginTop: '5px'}}>{'Each variable "{{x}}" can be replaced with text that contains letters, digits, special characters or spaces.'}</p>
               </div>
             </div>
           </div>
