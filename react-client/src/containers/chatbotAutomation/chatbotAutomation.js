@@ -5,7 +5,7 @@ import { fetchChatbots, createChatbot, createCommerceChatbot } from '../../redux
 import AlertContainer from 'react-alert'
 import { Link } from 'react-router-dom'
 import CHATBOT from '../../components/chatbotAutomation/chatbot'
-import { fetchShopifyStore, fetchBigCommerceStore } from '../../redux/actions/commerce.actions'
+import { fetchShopifyStore, fetchBigCommerceStore, checkShopPermissions, fetchBusinessAccounts } from '../../redux/actions/commerce.actions'
 
 class ChatbotAutomation extends React.Component {
   constructor(props, context) {
@@ -25,7 +25,8 @@ class ChatbotAutomation extends React.Component {
         selectedRadio: 'modify',
         selectedPage: '',
         loading: false
-      }
+      },
+      businessAccount: ''
     }
 
     this.onRadioClick = this.onRadioClick.bind(this)
@@ -36,10 +37,23 @@ class ChatbotAutomation extends React.Component {
     this.getPages = this.getPages.bind(this)
     this.onSettingsClick = this.onSettingsClick.bind(this)
     this.goToCommerceSettings = this.goToCommerceSettings.bind(this)
+    this.handleShopPermissions = this.handleShopPermissions.bind(this)
+    this.onBusinessAccountChange = this.onBusinessAccountChange.bind(this)
 
     props.fetchChatbots()
     props.fetchShopifyStore()
     props.fetchBigCommerceStore()
+    props.checkShopPermissions(this.handleShopPermissions)
+  }
+
+  onBusinessAccountChange (e) {
+    this.setState({businessAccount: e.target.value})
+  }
+
+  handleShopPermissions (res) {
+    if (res.payload.permissionsGiven) {
+      this.props.fetchBusinessAccounts()
+    }
   }
 
   componentDidMount() {
@@ -101,6 +115,12 @@ class ChatbotAutomation extends React.Component {
     }
   }
 
+  UNSAFE_componentWillReceiveProps(nextprops) {
+    if (nextprops.businessAccounts && nextprops.businessAccounts.length > 0) {
+      this.setState({businessAccount: nextprops.businessAccounts[0].id})
+    }
+  }
+
   handleOnCreate(res, pageFbId, type) {
     if (res.status === 'success') {
       const chatbot = res.payload
@@ -122,12 +142,7 @@ class ChatbotAutomation extends React.Component {
           state: { chatbot, page, store: this.props.store, existingChatbot }
         })
       }  else if (type === 'shopChatbot') {
-        const manualChatbots = this.props.chatbots && this.props.chatbots.filter(chatbot => chatbot.type === 'manual')
-        const existingChatbot = manualChatbots.find(c => c.pageId._id === chatbot.pageId._id)
-        this.props.history.push({
-          pathname: '/configureCommerceChatbot',
-          state: { chatbot, page, store: this.props.store, existingChatbot }
-        })
+        this.msg.success('Chatbot created successfully')
       }
     } else {
       this.msg.error(res.description)
@@ -446,8 +461,43 @@ class ChatbotAutomation extends React.Component {
                   </div>
                 </div>
                 <div className='m-portlet__body'>
-                    <div className="m-form__group form-group">
-                      <div className="m-radio-list">
+                  {
+                    !this.props.shopPermissions &&
+                    <div>
+                      <h6 style={{ textAlign: 'center' }}>
+                        You do not have facebook permissions for marketing api and commerce manager. Please click on the button below to get permissions.
+                      </h6>
+                      <div style={{ marginTop: '25px', textAlign: 'center' }}>
+                        <a href='/auth/facebook/reauth/shops' className='btn btn-primary'>
+                          Get Permissions
+                      </a>
+                      </div>
+                    </div>
+                  }
+                  {
+                    this.props.shopPermissions && this.props.businessAccounts && this.props.businessAccounts.length > 0
+                    ? <div>
+                    <div className="m-form__group form-group row">
+                    <label className='col-3 col-form-label'>Select a Business Account:</label>
+                      <div className='col-md-8'>
+                          <select
+                          style={{width: '50%'}}
+                          className="form-control m-input"
+                          value={this.state.businessAccount}
+                          onChange={this.onBusinessAccountChange}
+                        >
+                          <option value='' disabled>Select a Business Account...</option>
+                          {
+                            this.props.businessAccounts.map((businessAccount) => (
+                              <option key={businessAccount.id} value={businessAccount.id}>{businessAccount.name}</option>
+                            ))
+                          }
+                        </select>
+                      </div>
+                      </div>
+                      <br />
+                      <div className="m-form__group form-group">
+                        <div className="m-radio-list">
                         <label className="m-radio m-radio--bold m-radio--state-brand">
                           <input
                             type="radio"
@@ -539,6 +589,13 @@ class ChatbotAutomation extends React.Component {
                         }
                       </div>
                     </div>
+                  </div>
+                    : <div>
+                      <h6 style={{ textAlign: 'center' }}>
+                        You do not have any Business Account. Please create a Business Account and then try to create a chatbot.
+                      </h6>
+                    </div>
+                  }
                 </div>
               </div>
             </div>
@@ -555,7 +612,9 @@ function mapStateToProps(state) {
     chatbots: (state.chatbotAutomationInfo.chatbots),
     pages: (state.pagesInfo.pages),
     user: (state.basicInfo.user),
-    store: (state.commerceInfo.store)
+    store: (state.commerceInfo.store),
+    shopPermissions: (state.commerceInfo.shopPermissions),
+    businessAccounts: (state.commerceInfo.businessAccounts)
   }
 }
 
@@ -565,7 +624,9 @@ function mapDispatchToProps(dispatch) {
     fetchChatbots,
     createChatbot,
     fetchBigCommerceStore,
-    fetchShopifyStore
+    fetchShopifyStore,
+    checkShopPermissions,
+    fetchBusinessAccounts
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(ChatbotAutomation)
