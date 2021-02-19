@@ -14,6 +14,14 @@ export function commerceInfo(state = initialState, action) {
       return Object.assign({}, state, {
         store: action.data
       })
+    case ActionTypes.CHECK_SHOP_PERMISSIONS:
+      return Object.assign({}, state, {
+        shopPermissions: action.data
+      })
+    case ActionTypes.FETCH_BUSINESS_ACCOUNTS:
+      return Object.assign({}, state, {
+        businessAccounts: action.data
+      })
     default:
       return state
   }
