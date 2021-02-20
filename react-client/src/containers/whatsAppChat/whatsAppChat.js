@@ -27,7 +27,8 @@ import {
   uploadAttachment,
   sendAttachment,
   deletefile,
-  createNewContact
+  createNewContact,
+  updatePauseChatbot
 } from '../../redux/actions/whatsAppChat.actions'
 import { saveNotificationSessionId } from '../../redux/actions/livechat.actions'
 import { updatePicture } from '../../redux/actions/subscribers.actions'
@@ -121,6 +122,7 @@ class WhatsAppChat extends React.Component {
     }
     props.getWhatsAppMessageTemplates()
   }
+
 
   updateDefaultZoom (defaultZoom) {
     let companyPreferences = cloneDeep(this.props.companyPreferences)
@@ -649,6 +651,10 @@ class WhatsAppChat extends React.Component {
                     showCustomFields={false}
                     showUnsubscribe={false}
                     editSubscriberWhatsApp={this.props.editSubscriberWhatsApp}
+                    connectedPageChatbot = {this.props.automated_options.whatsApp && this.props.automated_options.whatsApp.activeWhatsappBot && this.props.automated_options.whatsApp.activeWhatsappBot !== ''}
+                    pauseChatbot = {this.props.updatePauseChatbot}
+                    sessions = {this.props.sessions}
+                    updateState = {this.updateState}
                   />
                 }
                 {
@@ -768,6 +774,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators({
+    
     fetchOpenSessions,
     fetchCloseSessions,
     updatePicture,
@@ -798,7 +805,8 @@ function mapDispatchToProps(dispatch) {
     getWhatsAppMessageTemplates,
     saveNotificationSessionId,
     setCompanyPreferences,
-    uploadFile
+    uploadFile,
+    updatePauseChatbot
   }, dispatch)
 }
 

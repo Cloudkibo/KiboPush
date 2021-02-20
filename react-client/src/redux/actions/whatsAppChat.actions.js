@@ -315,6 +315,7 @@ export function updateSessions (data) {
     data
   }
 }
+
 export function setCustomFieldValue (body, handleResponse) {
   return () => {
     callApi('whatsAppChat/set_custom_field_value', 'post', body)
@@ -361,6 +362,18 @@ export function uploadAttachment (fileData, handleUpload) {
     }).then((res) => res.json()).then((res) => res).then(res => {
       console.log('respone', res)
       handleUpload(res)
+    })
+  }
+}
+
+export function updatePauseChatbot (payload, handleResponse) {
+  console.log('data for updatePauseChatbot', payload)
+  return (dispatch) => {
+    callApi('whatsAppSessions/updatePauseChatbot', 'post', payload).then(res => {
+        handleResponse(res)
+        if (res.status === 'success') {
+          dispatch(updateSessions(payload))
+        }
     })
   }
 }

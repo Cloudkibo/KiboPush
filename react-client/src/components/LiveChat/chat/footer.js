@@ -57,6 +57,7 @@ class Footer extends React.Component {
     this.removeAttachment = this.removeAttachment.bind(this)
     this.handleMessageResponse = this.handleMessageResponse.bind(this)
     this.getRecordAudioContent = this.getRecordAudioContent.bind(this)
+    this.getPauseWarningContent = this.getPauseWarningContent.bind(this)
     this.onDoneRecording = this.onDoneRecording.bind(this)
     this.setEmoji = this.setEmoji.bind(this)
     this.sendSticker = this.sendSticker.bind(this)
@@ -324,6 +325,9 @@ class Footer extends React.Component {
     session.lastRepliedBy = data.replied_by
     session.pendingResponse = false
     session.last_activity_time = new Date()
+    if (session.chatbotPaused !== null && !session.chatbotPaused) {
+      session.chatbotPaused = true
+    }
     this.props.updateNewMessage(true)
     this.props.updateState({
       reducer: true,
@@ -528,7 +532,23 @@ class Footer extends React.Component {
       return <div />
     }
   }
-
+  getPauseWarningContent () {
+    let content = <div><p>If you send a message to this subscriber, the active chatbot will be paused for them. Are you sure you want to continue ?</p>
+      <button style={{ float: 'right', marginLeft: '10px' }}
+        className='btn btn-primary btn-sm'
+        onClick={() => {
+          this.sendChatMessage()
+        }} data-dismiss='modal'>Yes
+      </button>
+      <button style={{ float: 'right' }}
+        className='btn btn-primary btn-sm'
+        onClick={() => {
+          
+        }} data-dismiss='modal'>Cancel
+      </button>
+    </div>
+    return content
+  }
   setZoomTopic(e) {
     if (e.target.value.length > 80) {
       e.target.setCustomValidity('Topic must be 80 characters or less.')
@@ -1164,6 +1184,12 @@ class Footer extends React.Component {
             this.toggleAudioRecording(false)
           }}
         />
+        <a href='#/' style={{ display: 'none' }} ref='pauseChatbotWarning' data-toggle='modal' data-target='#_PauseChatbotWarning'>_PauseChatbotWarning</a>
+        <MODAL 
+           id='_PauseChatbotWarning'
+           title='Warning'
+           content={this.getPauseWarningContent()}
+        />
         <MODAL
           id='_zoom_integration'
           title={this.props.zoomIntegration ? 'Zoom Meeting' : 'Zoom Integration'}
@@ -1328,19 +1354,37 @@ class Footer extends React.Component {
               ) : this.state.uploaded ? (
                 <i
                   style={{ color: '#36a3f7' }}
-                  onClick={this.sendAttachment}
+                  onClick={() => {
+                    if (this.props.activeSession.chatbotPaused !== null && !this.props.activeSession.chatbotPaused) {
+                      this.refs.pauseChatbotWarning.click()
+                    } else {
+                      this.sendChatMessage()
+                    }
+                  }}
                   className='flaticon-paper-plane'
                 />
               ) : this.props.showThumbsUp ? (
                 <i
                   style={{ color: '#36a3f7' }}
-                  onClick={this.sendThumbsUp}
+                  onClick={() => {
+                    if (this.props.activeSession.chatbotPaused !== null && !this.props.activeSession.chatbotPaused) {
+                      this.refs.pauseChatbotWarning.click()
+                    } else {
+                      this.sendThumbsUp()
+                    }
+                  }}
                   className='la la-thumbs-o-up'
                 />
               ) : (
                 <i
                   style={{ color: '#36a3f7' }}
-                  onClick={this.sendChatMessage}
+                  onClick={() => {
+                    if (this.props.activeSession.chatbotPaused !== null && !this.props.activeSession.chatbotPaused) {
+                      this.refs.pauseChatbotWarning.click()
+                    } else {
+                      this.sendChatMessage()
+                    }
+                  }}
                   className='flaticon-paper-plane'
                 />
               )}
