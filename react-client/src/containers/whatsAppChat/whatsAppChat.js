@@ -653,7 +653,6 @@ class WhatsAppChat extends React.Component {
                     connectedPageChatbot = {this.props.automated_options.whatsApp && this.props.automated_options.whatsApp.activeWhatsappBot && this.props.automated_options.whatsApp.activeWhatsappBot !== ''}
                     pauseChatbot = {this.props.updatePauseChatbot}
                     sessions = {this.props.sessions}
-                    updateState = {this.updateState}
                   />
                 }
                 {

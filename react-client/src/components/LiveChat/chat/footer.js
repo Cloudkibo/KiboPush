@@ -43,7 +43,8 @@ class Footer extends React.Component {
       caption: '',
       showingSuggestion: false,
       suggestionShown: false,
-      defaultCheck: false
+      defaultCheck: false,
+      sendChatFunction: null
     }
     this.onInputChange = this.onInputChange.bind(this)
     this.onEnter = this.onEnter.bind(this)
@@ -87,6 +88,17 @@ class Footer extends React.Component {
     this.sendQuickReplyMessage = this.sendQuickReplyMessage.bind(this)
     this.sendTextMessage = this.sendTextMessage.bind(this)
     this.handleDefaultCheck = this.handleDefaultCheck.bind(this)
+    this.checkSendingLogic = this.checkSendingLogic.bind(this)
+  }
+  checkSendingLogic (sendFunc) {
+      if (this.props.activeSession.chatbotPaused !== null && !this.props.activeSession.chatbotPaused) {
+        this.refs.pauseChatbotWarning.click()
+        this.setState({
+          sendChatFunction: sendFunc
+        })
+      } else {
+        sendFunc()
+      }
   }
 
   componentDidMount() {
@@ -233,7 +245,7 @@ class Footer extends React.Component {
     }
   }
 
-  createZoomMeeting(event) {
+  createZoomMeeting(event) { 
     event.preventDefault()
     const data = this.props.performAction('create a zoom meeting', this.props.activeSession)
     if (data.isAllowed) {
@@ -537,7 +549,9 @@ class Footer extends React.Component {
       <button style={{ float: 'right', marginLeft: '10px' }}
         className='btn btn-primary btn-sm'
         onClick={() => {
-          this.sendChatMessage()
+          if (this.state.sendChatFunction) {
+            this.state.sendChatFunction()
+          }
         }} data-dismiss='modal'>Yes
       </button>
       <button style={{ float: 'right' }}
@@ -991,12 +1005,12 @@ class Footer extends React.Component {
   onEnter(e) {
     if (e.which === 13) {
       e.preventDefault()
-      this.sendTextMessage()
+      this.checkSendingLogic(this.sendTextMessage)
     }
   }
 
   sendChatMessage() {
-    this.sendTextMessage()
+    this.checkSendingLogic(this.sendTextMessage)
   }
 
   sendMessage(quickReplies) {
@@ -1075,6 +1089,7 @@ class Footer extends React.Component {
     if (type === 'contact_info') {
       popoverOptions.content = (
         <GetContactInfo
+          checkSendingLogic={this.checkSendingLogic}
           sendQuickReplyMessage={this.sendQuickReplyMessage}
           refreshPopover={this.props.refreshPopover}
           togglePopover={this.props.togglePopover}
@@ -1083,8 +1098,8 @@ class Footer extends React.Component {
     }
     const otherOptions = {
       setEmoji: (emoji) => this.setEmoji(emoji),
-      sendSticker: (sticker) => this.sendSticker(sticker),
-      sendGif: (gif) => this.sendGif(gif)
+      sendSticker: (sticker) => { this.checkSendingLogic(() => {this.sendSticker(sticker)}) },
+      sendGif: (gif) => { this.checkSendingLogic(() => {this.sendGif(gif)}) },
     }
     if (type === 'caption_emoji') {
       type = 'emoji'
@@ -1190,6 +1205,10 @@ class Footer extends React.Component {
            title='Warning'
            content={this.getPauseWarningContent()}
         />
+         <a href='#/' style={{ display: 'none' }} ref='zoomIntegrationDialog' data-target='#_zoom_integration'
+              data-backdrop='static'
+              data-keyboard='false'
+              data-toggle='modal'>zoomIntegrationDialog</a>
         <MODAL
           id='_zoom_integration'
           title={this.props.zoomIntegration ? 'Zoom Meeting' : 'Zoom Integration'}
@@ -1354,37 +1373,19 @@ class Footer extends React.Component {
               ) : this.state.uploaded ? (
                 <i
                   style={{ color: '#36a3f7' }}
-                  onClick={() => {
-                    if (this.props.activeSession.chatbotPaused !== null && !this.props.activeSession.chatbotPaused) {
-                      this.refs.pauseChatbotWarning.click()
-                    } else {
-                      this.sendChatMessage()
-                    }
-                  }}
+                  onClick={() => { this.checkSendingLogic(this.sendAttachment)}}
                   className='flaticon-paper-plane'
                 />
               ) : this.props.showThumbsUp ? (
                 <i
                   style={{ color: '#36a3f7' }}
-                  onClick={() => {
-                    if (this.props.activeSession.chatbotPaused !== null && !this.props.activeSession.chatbotPaused) {
-                      this.refs.pauseChatbotWarning.click()
-                    } else {
-                      this.sendThumbsUp()
-                    }
-                  }}
+                  onClick={() => { this.checkSendingLogic(this.sendThumbsUp)}}
                   className='la la-thumbs-o-up'
                 />
               ) : (
                 <i
                   style={{ color: '#36a3f7' }}
-                  onClick={() => {
-                    if (this.props.activeSession.chatbotPaused !== null && !this.props.activeSession.chatbotPaused) {
-                      this.refs.pauseChatbotWarning.click()
-                    } else {
-                      this.sendChatMessage()
-                    }
-                  }}
+                  onClick={() => { this.checkSendingLogic(this.sendChatMessage)}}
                   className='flaticon-paper-plane'
                 />
               )}
@@ -1541,10 +1542,7 @@ class Footer extends React.Component {
               src='https://cdn.cloudkibo.com/public/img/zoom.png'
               id='_zoom_integration'
               className='fa fa-video-camera'
-              data-target='#_zoom_integration'
-              data-backdrop='static'
-              data-keyboard='false'
-              data-toggle='modal'
+              onClick={() => { this.checkSendingLogic(() => {this.refs.zoomIntegrationDialog.click()})}}
             />
           )}
         </div>
