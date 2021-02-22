@@ -113,7 +113,7 @@ class GetContactInfo extends React.Component {
           </>
         )}
         {this.state.query && (
-          <form onSubmit={this.sendMessage}>
+          <form onSubmit={(e) => {this.props.checkSendingLogic(() => { this.sendMessage(e) })}} >
             <h5>Ask for Subscriber's {this.getCorrespondingCustomField()}</h5>
             <p>
               This will enable you to retrieve subscriber's {this.getCorrespondingCustomField().toLowerCase()} and store

@@ -932,7 +932,6 @@ class LiveChat extends React.Component {
                     backToSessions={this.backToSessions}
                     showGetContactInfo={true}
                     updateDefaultZoom= {this.updateDefaultZoom}
-                    sessions={this.state.sessions}
                   />
                 )}
               {!this.props.isMobile &&
