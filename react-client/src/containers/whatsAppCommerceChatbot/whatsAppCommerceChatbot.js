@@ -9,6 +9,7 @@ import { validateCommaSeparatedPhoneNumbers } from "../../utility/utils"
 import { UncontrolledTooltip } from 'reactstrap'
 import HELPWIDGET from '../../components/extras/helpWidget'
 import { fetchBigCommerceStore, fetchShopifyStore } from '../../redux/actions/commerce.actions'
+import TRIGGERAREA from '../../components/chatbotAutomation/triggerArea'
 
 class WhatsAppCommerceChatbot extends React.Component {
   constructor(props, context) {
@@ -25,6 +26,7 @@ class WhatsAppCommerceChatbot extends React.Component {
       returnOrder: true,
       returnOrderMessage: 'Dear Valuable Customer,\n\nThank you for contacting us. We have received the ‘Return’ request of your order #{{orderId}}. You are requested to please allow us some time, one of our representative will contact you for further details and confirmation',
       cancelOrder: true,
+      triggers: [],
       cancelOrderMessage: 'Dear Valuable Customer,\n\nThank you for contacting us. We have received the cancellation ‘Request’ of your order #{{orderId}}. One of our representatives will contact you shortly for further details and confirmation'
     }
     this.selectStore = this.selectStore.bind(this)
@@ -62,7 +64,8 @@ class WhatsAppCommerceChatbot extends React.Component {
         returnOrder: nextProps.chatbot.returnOrder,
         returnOrderMessage: nextProps.chatbot.returnOrderMessage,
         cancelOrder: nextProps.chatbot.cancelOrder,
-        cancelOrderMessage: nextProps.chatbot.cancelOrderMessage
+        cancelOrderMessage: nextProps.chatbot.cancelOrderMessage,
+        triggers: nextProps.chatbot.triggers
       })
     } else if (nextProps.chatbot) {
       this.setState({
@@ -72,6 +75,7 @@ class WhatsAppCommerceChatbot extends React.Component {
         cancelOrderMessage: nextProps.chatbot.cancelOrderMessage,
         published: nextProps.chatbot.published,
         numberOfProducts: nextProps.chatbot.numberOfProducts,
+        triggers: nextProps.chatbot.triggers,
         testSubscribers: nextProps.chatbot.testSubscribers ? nextProps.chatbot.testSubscribers.join(',') : []
       })
     }
@@ -172,6 +176,8 @@ class WhatsAppCommerceChatbot extends React.Component {
       if (commerceConnectModal) {
         commerceConnectModal.click()
       }
+    } else if (this.state.triggers.length === 0) {
+      this.msg.error('At least one trigger is required')
     } else if (this.state.cancelOrder && !this.state.cancelOrderMessage) {
       this.msg.error('Please enter a cancel order message')
     } else if (this.state.returnOrder && !this.state.returnOrderMessage) {
@@ -191,7 +197,8 @@ class WhatsAppCommerceChatbot extends React.Component {
           cancelOrder: this.state.cancelOrder,
           cancelOrderMessage: this.state.cancelOrderMessage,
           returnOrder: this.state.returnOrder,
-          returnOrderMessage: this.state.returnOrderMessage
+          returnOrderMessage: this.state.returnOrderMessage,
+          triggers: this.state.triggers
         }, (res) => {
           if (res.status === 'success') {
             this.msg.success(res.description)
@@ -216,7 +223,8 @@ class WhatsAppCommerceChatbot extends React.Component {
             cancelOrder: this.state.cancelOrder,
             cancelOrderMessage: this.state.cancelOrderMessage,
             returnOrder: this.state.returnOrder,
-            returnOrderMessage: this.state.returnOrderMessage
+            returnOrderMessage: this.state.returnOrderMessage,
+            triggers: this.state.triggers
           }
         }, (res) => {
           if (res.status === 'success') {
@@ -480,6 +488,15 @@ class WhatsAppCommerceChatbot extends React.Component {
                               <img alt="bigcommerce-logo" style={{ width: '100px', marginTop: '25px' }} src='https://s3.amazonaws.com/www1.bigcommerce.com/assets/mediakit/downloads/BigCommerce-logo-dark.png' />
                             </div>
                           }
+
+                          
+                          <div className="form-group m-form__group col-lg-8">
+                            <TRIGGERAREA
+                              triggers={this.state.triggers}
+                              updateParentState={this.updateState}
+                              alertMsg={this.msg}
+                            />
+                          </div>
 
                           {/* <div className="form-group m-form__group col-lg-8">
                             <h6>
