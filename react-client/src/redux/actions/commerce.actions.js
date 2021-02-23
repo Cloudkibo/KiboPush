@@ -33,6 +33,40 @@ export function fetchBigCommerceStore() {
   }
 }
 
+export function checkShopPermissions(callback) {
+  return (dispatch) => {
+    callApi('fbshops/checkFacebookPermissions')
+      .then(res => {
+        if (res.status === 'success') {
+          // res.payload.permissionsGiven = true
+          callback(res)
+          dispatch({
+            type: ActionTypes.CHECK_SHOP_PERMISSIONS,
+            data: res.payload.permissionsGiven
+          })
+        }
+      })
+  }
+}
+
+export function fetchBusinessAccounts(callback) {
+  return (dispatch) => {
+    callApi('fbshops/fetchBusinessAccounts')
+      .then(res => {
+        // res.payload = [
+        //   {id: '123', name: 'Anisha 1'},
+        //   {id: '234', name: 'Anisha 2'}
+        // ]
+        if (res.status === 'success') {
+          dispatch({
+            type: ActionTypes.FETCH_BUSINESS_ACCOUNTS,
+            data: res.payload
+          })
+        }
+      })
+  }
+}
+
 export function installShopify (data) {
   return (dispatch) => {
     callApi('shopify', 'post', data)

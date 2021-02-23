@@ -5,7 +5,7 @@ import { fetchChatbots, createChatbot, createCommerceChatbot } from '../../redux
 import AlertContainer from 'react-alert'
 import { Link } from 'react-router-dom'
 import CHATBOT from '../../components/chatbotAutomation/chatbot'
-import { fetchShopifyStore, fetchBigCommerceStore } from '../../redux/actions/commerce.actions'
+import { fetchShopifyStore, fetchBigCommerceStore, checkShopPermissions, fetchBusinessAccounts } from '../../redux/actions/commerce.actions'
 
 class ChatbotAutomation extends React.Component {
   constructor(props, context) {
@@ -21,6 +21,12 @@ class ChatbotAutomation extends React.Component {
         selectedPage: '',
         loading: false
       },
+      shopChatbot: {
+        selectedRadio: 'modify',
+        selectedPage: '',
+        loading: false
+      },
+      businessAccount: ''
     }
 
     this.onRadioClick = this.onRadioClick.bind(this)
@@ -31,10 +37,23 @@ class ChatbotAutomation extends React.Component {
     this.getPages = this.getPages.bind(this)
     this.onSettingsClick = this.onSettingsClick.bind(this)
     this.goToCommerceSettings = this.goToCommerceSettings.bind(this)
+    this.handleShopPermissions = this.handleShopPermissions.bind(this)
+    this.onBusinessAccountChange = this.onBusinessAccountChange.bind(this)
 
     props.fetchChatbots()
     props.fetchShopifyStore()
     props.fetchBigCommerceStore()
+    props.checkShopPermissions(this.handleShopPermissions)
+  }
+
+  onBusinessAccountChange (e) {
+    this.setState({businessAccount: e.target.value})
+  }
+
+  handleShopPermissions (res) {
+    if (res.payload.permissionsGiven) {
+      this.props.fetchBusinessAccounts()
+    }
   }
 
   componentDidMount() {
@@ -65,6 +84,11 @@ class ChatbotAutomation extends React.Component {
       chatbotState.loading = true;
       this.setState({ [type]: chatbotState })
       this.props.createCommerceChatbot({ pageId: this.state[type].selectedPage, storeType: this.props.store.storeType }, (res) => this.handleOnCreate(res, pageFbId, type))
+    } else if (type === 'shopChatbot') {
+      let chatbotState = { ...this.state[type] }
+      chatbotState.loading = true;
+      this.setState({ [type]: chatbotState })
+      this.props.createCommerceChatbot({ pageId: this.state[type].selectedPage, storeType: 'shops' }, (res) => this.handleOnCreate(res, pageFbId, type))
     }
   }
 
@@ -83,6 +107,17 @@ class ChatbotAutomation extends React.Component {
         pathname: '/configureCommerceChatbot',
         state: { chatbot, page, store: this.props.store, existingChatbot }
       })
+    } else if (type === 'shopChatbot') {
+      this.props.history.push({
+        pathname: '/configureCommerceChatbot',
+        state: { chatbot, page, store: this.props.store, existingChatbot }
+      })
+    }
+  }
+
+  UNSAFE_componentWillReceiveProps(nextprops) {
+    if (nextprops.businessAccounts && nextprops.businessAccounts.length > 0) {
+      this.setState({businessAccount: nextprops.businessAccounts[0].id})
     }
   }
 
@@ -106,6 +141,8 @@ class ChatbotAutomation extends React.Component {
           pathname: '/configureCommerceChatbot',
           state: { chatbot, page, store: this.props.store, existingChatbot }
         })
+      }  else if (type === 'shopChatbot') {
+        this.msg.success('Chatbot created successfully')
       }
     } else {
       this.msg.error(res.description)
@@ -149,10 +186,13 @@ class ChatbotAutomation extends React.Component {
       transition: 'scale'
     }
     let manualChatbots = this.props.chatbots && this.props.chatbots.filter(chatbot => chatbot.type === 'manual')
-    let commerceChatbots = this.props.chatbots && this.props.chatbots.filter(chatbot => chatbot.type === 'automated' && chatbot.vertical === 'commerce')
+    let commerceChatbots = this.props.chatbots && this.props.chatbots.filter(chatbot => chatbot.type === 'automated' && chatbot.vertical === 'commerce' && chatbot.storeType !== 'shops')
+    let shopChatbots = this.props.chatbots && this.props.chatbots.filter(chatbot => chatbot.type === 'automated' && chatbot.vertical === 'commerce' && chatbot.storeType === 'shops')
 
     let manualChatbotPages = this.getPages(manualChatbots)
     let commerceChatbotPages = this.getPages(commerceChatbots)
+    let shopChatbotPages = this.getPages(shopChatbots)
+
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
@@ -405,6 +445,156 @@ class ChatbotAutomation extends React.Component {
               </div>
             </div>
           </div>
+          <div className='row'>
+            <div className='col-xl-12'>
+              <div className='m-portlet m-portlet-mobile'>
+                <div className='m-portlet__head'>
+                  <div className='m-portlet__head-caption'>
+                    <div className='m-portlet__head-title'>
+                      <h3 className='m-portlet__head-text'>
+                        Facebook Shops Chatbot
+                      </h3>
+                    </div>
+                  </div>
+                </div>
+                <div className='m-portlet__body'>
+                  {
+                    !this.props.shopPermissions
+                    ? <div>
+                      <h6 style={{ textAlign: 'center' }}>
+                        You do not have facebook permissions for marketing api and commerce manager. Please click on the button below to get permissions.
+                      </h6>
+                      <div style={{ marginTop: '25px', textAlign: 'center' }}>
+                        <a href='/auth/facebook/reauth/shops' className='btn btn-primary'>
+                          Get Permissions
+                      </a>
+                      </div>
+                    </div>
+                    : this.props.shopPermissions && this.props.businessAccounts && this.props.businessAccounts.length > 0
+                    ? <div>
+                    <div className="m-form__group form-group row">
+                    <label className='col-3 col-form-label'>Select a Business Account:</label>
+                      <div className='col-md-8'>
+                          <select
+                          style={{width: '50%'}}
+                          className="form-control m-input"
+                          value={this.state.businessAccount}
+                          onChange={this.onBusinessAccountChange}
+                        >
+                          <option value='' disabled>Select a Business Account...</option>
+                          {
+                            this.props.businessAccounts.map((businessAccount) => (
+                              <option key={businessAccount.id} value={businessAccount.id}>{businessAccount.name}</option>
+                            ))
+                          }
+                        </select>
+                      </div>
+                      </div>
+                      <br />
+                      <div className="m-form__group form-group">
+                        <div className="m-radio-list">
+                        <label className="m-radio m-radio--bold m-radio--state-brand">
+                          <input
+                            type="radio"
+                            onClick={(e) => this.onRadioClick(e, 'shopChatbot')}
+                            onChange={() => { }}
+                            value='modify'
+                            checked={this.state.shopChatbot.selectedRadio === 'modify'}
+                          />
+                          Modify Existing Chatbot
+                        <span />
+                        </label>
+                        {
+                          this.state.shopChatbot.selectedRadio === 'modify' &&
+                          <div style={{ marginLeft: '50px' }} className='row'>
+                            {
+                              shopChatbots && shopChatbots.length > 0
+                                ? shopChatbots.map((chatbot) => (
+                                  <CHATBOT
+                                    key={chatbot._id}
+                                    profilePic={chatbot.pageId.pagePic}
+                                    name={chatbot.pageId.pageName}
+                                    onItemClick={() => this.modifyChatbot(chatbot, 'shopChatbot', shopChatbots.find((c) => c.pageId._id === chatbot.pageId._id))}
+                                  />
+                                ))
+                                : (!shopChatbots) ?
+                                  <p>Loading chatbots...</p>
+                                  : <p>No data to display</p>
+                            }
+                          </div>
+                        }
+                        <label className="m-radio m-radio--bold m-radio--state-brand">
+                          <input
+                            type="radio"
+                            onClick={(e) => this.onRadioClick(e, 'shopChatbot')}
+                            onChange={() => { }}
+                            value='create'
+                            checked={this.state.shopChatbot.selectedRadio === 'create'}
+                          />
+                          Create New Chatbot
+                        <span />
+                        </label>
+                        {
+                          this.state.shopChatbot.selectedRadio === 'create' &&
+                          <div style={{ marginLeft: '50px' }} className='row'>
+                            {
+                              this.props.pages && this.props.pages.length > 0
+                                ? shopChatbotPages.length > 0
+                                  ? <div style={{ width: '100%' }} className='row'>
+                                    <div className='col-md-6'>
+                                      <div className="form-group m-form__group">
+                                        <select
+                                          className="form-control m-input"
+                                          value={this.state.shopChatbot.selectedPage}
+                                          onChange={(e) => this.onPageChange(e, 'shopChatbot')}
+                                        >
+                                          <option value='' disabled>Select a page...</option>
+                                          {
+                                            shopChatbotPages.map((page) => (
+                                              <option key={page._id} value={page._id}>{page.pageName}</option>
+                                            ))
+                                          }
+                                        </select>
+                                      </div>
+                                    </div>
+                                    <div className='col-md-3'>
+                                      <button
+                                        type='button'
+                                        style={{ border: '1px solid' }}
+                                        className={`btn btn-primary ${this.state.shopChatbot.loading && 'm-loader m-loader--light m-loader--left'}`}
+                                        onClick={(e) => this.onCreate("shopChatbot")}
+                                        disabled={!this.state.shopChatbot.selectedPage}
+                                      >
+                                        Create
+                                  </button>
+                                    </div>
+                                  </div>
+                                  : <div>
+                                    You have created the chatbot for all your connected pages.
+                              </div>
+                                :
+                                <div>
+                                  Please connect a Facebook page to continue
+                                <Link to='/addPages' style={{ border: '1px solid', marginLeft: '10px' }} className="btn btn-outline-success">
+                                    Connect
+                                </Link>
+                                </div>
+                            }
+                          </div>
+                        }
+                      </div>
+                    </div>
+                  </div>
+                    : <div>
+                      <h6 style={{ textAlign: 'center' }}>
+                        You do not have any Business Account. Please create a Business Account and then try to create a chatbot.
+                      </h6>
+                    </div>
+                  }
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
       </div>
@@ -417,7 +607,9 @@ function mapStateToProps(state) {
     chatbots: (state.chatbotAutomationInfo.chatbots),
     pages: (state.pagesInfo.pages),
     user: (state.basicInfo.user),
-    store: (state.commerceInfo.store)
+    store: (state.commerceInfo.store),
+    shopPermissions: (state.commerceInfo.shopPermissions),
+    businessAccounts: (state.commerceInfo.businessAccounts)
   }
 }
 
@@ -427,7 +619,9 @@ function mapDispatchToProps(dispatch) {
     fetchChatbots,
     createChatbot,
     fetchBigCommerceStore,
-    fetchShopifyStore
+    fetchShopifyStore,
+    checkShopPermissions,
+    fetchBusinessAccounts
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(ChatbotAutomation)
