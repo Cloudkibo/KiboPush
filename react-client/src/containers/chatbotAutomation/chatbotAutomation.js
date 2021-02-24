@@ -5,7 +5,7 @@ import { fetchChatbots, createChatbot, createCommerceChatbot } from '../../redux
 import AlertContainer from 'react-alert'
 import { Link } from 'react-router-dom'
 import CHATBOT from '../../components/chatbotAutomation/chatbot'
-import { fetchShopifyStore, fetchBigCommerceStore, checkShopPermissions, fetchBusinessAccounts } from '../../redux/actions/commerce.actions'
+import { fetchShopifyStore, fetchBigCommerceStore, checkShopPermissions, fetchBusinessAccounts,  fetchCatalogs } from '../../redux/actions/commerce.actions'
 
 class ChatbotAutomation extends React.Component {
   constructor(props, context) {
@@ -26,7 +26,10 @@ class ChatbotAutomation extends React.Component {
         selectedPage: '',
         loading: false
       },
-      businessAccount: ''
+      businessAccount: '',
+      selectedCatalog: '',
+      catalogs: []
+
     }
 
     this.onRadioClick = this.onRadioClick.bind(this)
@@ -39,6 +42,8 @@ class ChatbotAutomation extends React.Component {
     this.goToCommerceSettings = this.goToCommerceSettings.bind(this)
     this.handleShopPermissions = this.handleShopPermissions.bind(this)
     this.onBusinessAccountChange = this.onBusinessAccountChange.bind(this)
+    this.handleCatalogs = this.handleCatalogs.bind(this)
+    this.onCatalogChange = this.onCatalogChange.bind(this)
 
     props.fetchChatbots()
     props.fetchShopifyStore()
@@ -48,8 +53,19 @@ class ChatbotAutomation extends React.Component {
 
   onBusinessAccountChange (e) {
     this.setState({businessAccount: e.target.value})
+    this.prop.fetchCatalogs(e.target.value, this.handleCatalogs)
   }
-
+  onCatalogChange (e) {
+    this.setState({selectedCatalog: e.target.value})
+  }
+  handleCatalogs (res) {
+    if (res.status === 'success') {
+      let catalogs = res.payload
+      this.setState({catalogs: catalogs})
+    } else {
+      console.log('Unable to fetch catalogs', res)
+    }
+  }
   handleShopPermissions (res) {
     if (res.payload.permissionsGiven) {
       this.props.fetchBusinessAccounts()
@@ -74,6 +90,7 @@ class ChatbotAutomation extends React.Component {
 
   onCreate(type) {
     const pageFbId = this.props.pages.find((item) => item._id === this.state[type].selectedPage).pageId
+    let selectedCatalog = this.state.catalogs.find(c => c.id === this.state.selectedCatalog)
     if (type === 'manualChatbot') {
       let chatbotState = { ...this.state[type] }
       chatbotState.loading = true;
@@ -88,7 +105,7 @@ class ChatbotAutomation extends React.Component {
       let chatbotState = { ...this.state[type] }
       chatbotState.loading = true;
       this.setState({ [type]: chatbotState })
-      this.props.createCommerceChatbot({ pageId: this.state[type].selectedPage, storeType: 'shops' }, (res) => this.handleOnCreate(res, pageFbId, type))
+      this.props.createCommerceChatbot({ pageId: this.state[type].selectedPage, businessId: this.state.businessAccount, catalogId: this.state.selectedCatalog, storeName: selectedCatalog.name, storeType: 'shops' }, (res) => this.handleOnCreate(res, pageFbId, type))
     }
   }
 
@@ -110,7 +127,7 @@ class ChatbotAutomation extends React.Component {
     } else if (type === 'shopChatbot') {
       this.props.history.push({
         pathname: '/configureCommerceChatbot',
-        state: { chatbot, page, store: this.props.store, existingChatbot }
+        state: { chatbot, page, store: {name: chatbot.storeName, storeType: 'shops'}, existingChatbot }
       })
     }
   }
@@ -118,6 +135,7 @@ class ChatbotAutomation extends React.Component {
   UNSAFE_componentWillReceiveProps(nextprops) {
     if (nextprops.businessAccounts && nextprops.businessAccounts.length > 0) {
       this.setState({businessAccount: nextprops.businessAccounts[0].id})
+      this.props.fetchCatalogs(nextprops.businessAccounts[0].id, this.handleCatalogs)
     }
   }
 
@@ -142,7 +160,13 @@ class ChatbotAutomation extends React.Component {
           state: { chatbot, page, store: this.props.store, existingChatbot }
         })
       }  else if (type === 'shopChatbot') {
-        this.msg.success('Chatbot created successfully')
+        const manualChatbots = this.props.chatbots && this.props.chatbots.filter(chatbot => chatbot.type === 'manual')
+        const existingChatbot = manualChatbots.find(c => c.pageId._id === chatbot.pageId._id)
+        let selectedCatalog = this.state.catalogs.find(c => c.id === this.state.selectedCatalog)
+        this.props.history.push({
+          pathname: '/configureCommerceChatbot',
+          state: { chatbot, page, store: {name: selectedCatalog.name, storeType: 'shops'}, existingChatbot }
+        })
       }
     } else {
       this.msg.error(res.description)
@@ -472,25 +496,6 @@ class ChatbotAutomation extends React.Component {
                     </div>
                     : this.props.shopPermissions && this.props.businessAccounts && this.props.businessAccounts.length > 0
                     ? <div>
-                    <div className="m-form__group form-group row">
-                    <label className='col-3 col-form-label'>Select a Business Account:</label>
-                      <div className='col-md-8'>
-                          <select
-                          style={{width: '50%'}}
-                          className="form-control m-input"
-                          value={this.state.businessAccount}
-                          onChange={this.onBusinessAccountChange}
-                        >
-                          <option value='' disabled>Select a Business Account...</option>
-                          {
-                            this.props.businessAccounts.map((businessAccount) => (
-                              <option key={businessAccount.id} value={businessAccount.id}>{businessAccount.name}</option>
-                            ))
-                          }
-                        </select>
-                      </div>
-                      </div>
-                      <br />
                       <div className="m-form__group form-group">
                         <div className="m-radio-list">
                         <label className="m-radio m-radio--bold m-radio--state-brand">
@@ -536,12 +541,49 @@ class ChatbotAutomation extends React.Component {
                         </label>
                         {
                           this.state.shopChatbot.selectedRadio === 'create' &&
-                          <div style={{ marginLeft: '50px' }} className='row'>
+                          <div style={{ marginLeft: '50px' }}>
+                            <div style={{width: '100%'}} className="row">
+                              <label className='col-3 col-form-label'>Select a Business Account:</label>
+                                <div className='col-md-8'>
+                                    <select
+                                    className="form-control m-input"
+                                    value={this.state.businessAccount}
+                                    onChange={this.onBusinessAccountChange}
+                                  >
+                                    <option value='' disabled>Select a Business Account...</option>
+                                    {
+                                      this.props.businessAccounts.map((businessAccount) => (
+                                        <option key={businessAccount.id} value={businessAccount.id}>{businessAccount.name}</option>
+                                      ))
+                                    }
+                                  </select>
+                                </div>
+                              </div>
+                              <br />
+                              <div style={{ width: '100%' }}className="row">
+                                <label className='col-3 col-form-label'>Select a Catalog:</label>
+                                <div className='col-md-8'>
+                                    <select
+                                    className="form-control m-input"
+                                    value={this.state.selectedCatalog}
+                                    onChange={this.onCatalogChange}
+                                  >
+                                    <option value='' disabled>Select a Catalog...</option>
+                                    {
+                                      this.state.catalogs.map((catalog) => (
+                                        <option key={catalog.id} value={catalog.id}>{catalog.name}</option>
+                                      ))
+                                    }
+                                  </select>
+                                </div>
+                              </div>
+                              <br />
                             {
                               this.props.pages && this.props.pages.length > 0
                                 ? shopChatbotPages.length > 0
                                   ? <div style={{ width: '100%' }} className='row'>
-                                    <div className='col-md-6'>
+                                    <label className='col-3 col-form-label'>Select a Page:</label>
+                                    <div className='col-md-8'>
                                       <div className="form-group m-form__group">
                                         <select
                                           className="form-control m-input"
@@ -557,14 +599,13 @@ class ChatbotAutomation extends React.Component {
                                         </select>
                                       </div>
                                     </div>
-                                    <div className='col-md-3'>
+                                    <div className='col-md-12' style={{textAlign: 'right', right: '80px'}}>
                                       <button
                                         type='button'
                                         style={{ border: '1px solid' }}
                                         className={`btn btn-primary ${this.state.shopChatbot.loading && 'm-loader m-loader--light m-loader--left'}`}
                                         onClick={(e) => this.onCreate("shopChatbot")}
-                                        disabled={!this.state.shopChatbot.selectedPage}
-                                      >
+                                        disabled={!this.state.shopChatbot.selectedPage || !this.state.businessAccount || !this.state.selectedCatalog}                                      >
                                         Create
                                   </button>
                                     </div>
@@ -621,7 +662,8 @@ function mapDispatchToProps(dispatch) {
     fetchBigCommerceStore,
     fetchShopifyStore,
     checkShopPermissions,
-    fetchBusinessAccounts
+    fetchBusinessAccounts,
+    fetchCatalogs
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(ChatbotAutomation)
