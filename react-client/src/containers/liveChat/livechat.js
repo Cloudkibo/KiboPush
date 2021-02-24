@@ -39,8 +39,10 @@ import {
   setUserChat,
   saveNotificationSessionId,
   resetSocket,
-  fetchSingleSession
+  fetchSingleSession,
+  updatePauseChatbot
 } from '../../redux/actions/livechat.actions'
+import { fetchChatbots } from '../../redux/actions/chatbotAutomation.actions'
 import { updatePicture } from '../../redux/actions/subscribers.actions'
 import { loadTeamsList } from '../../redux/actions/teams.actions'
 import { loadMembersList } from '../../redux/actions/members.actions'
@@ -143,6 +145,7 @@ class LiveChat extends React.Component {
     props.loadTags()
     props.loadCustomFields()
     props.getZoomIntegrations()
+    props.fetchChatbots()
     if (props.socketData) {
       props.clearSocketData()
     }
@@ -960,6 +963,10 @@ class LiveChat extends React.Component {
                     showTags={true}
                     showCustomFields={true}
                     showUnsubscribe={true}
+                    pauseChatbot = {this.props.updatePauseChatbot}
+                    chatbots = {this.props.chatbots}
+                    connectedPageChatbot = { this.props.chatbots.find((chatbot) => { return chatbot.published && chatbot.pageId._id === this.state.activeSession.pageId._id}) ? true : false}
+                    sessions = {this.state.sessions}
                   />
                 )}
               {!this.props.isMobile &&
@@ -1030,7 +1037,8 @@ function mapStateToProps(state) {
     superUser: state.basicInfo.superUser,
     redirectToSession: state.liveChat.redirectToSession,
     socketMessageStatus: state.liveChat.socketMessageStatus,
-    companyPreferences: (state.settingsInfo.companyPreferences)
+    companyPreferences: (state.settingsInfo.companyPreferences),
+    chatbots: (state.chatbotAutomationInfo.chatbots)
   }
 }
 
@@ -1080,7 +1088,9 @@ function mapDispatchToProps(dispatch) {
       saveNotificationSessionId,
       resetSocket,
       fetchSingleSession,
-      setCompanyPreferences
+      setCompanyPreferences,
+      updatePauseChatbot,
+      fetchChatbots
     },
     dispatch
   )
