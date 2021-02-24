@@ -1385,7 +1385,7 @@ class Footer extends React.Component {
               ) : (
                 <i
                   style={{ color: '#36a3f7' }}
-                  onClick={() => { this.checkSendingLogic(this.sendChatMessage)}}
+                  onClick={() => { this.checkSendingLogic(this.sendTextMessage)}}
                   className='flaticon-paper-plane'
                 />
               )}
