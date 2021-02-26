@@ -10,6 +10,10 @@ import { UncontrolledTooltip } from 'reactstrap'
 import HELPWIDGET from '../../components/extras/helpWidget'
 import { fetchBigCommerceStore, fetchShopifyStore } from '../../redux/actions/commerce.actions'
 import TRIGGERAREA from '../../components/chatbotAutomation/triggerArea'
+import { uploadFile } from '../../redux/actions/convos.actions'
+import Files from 'react-files'
+import { RingLoader } from 'halogenium'
+import { cloneDeep } from 'lodash'
 
 class WhatsAppCommerceChatbot extends React.Component {
   constructor(props, context) {
@@ -27,9 +31,10 @@ class WhatsAppCommerceChatbot extends React.Component {
       returnOrderMessage: 'Dear Valuable Customer,\n\nThank you for contacting us. We have received the ‘Return’ request of your order #{{orderId}}. You are requested to please allow us some time, one of our representative will contact you for further details and confirmation',
       cancelOrder: true,
       triggers: [],
-      cancelOrderMessage: 'Dear Valuable Customer,\n\nThank you for contacting us. We have received the cancellation ‘Request’ of your order #{{orderId}}. One of our representatives will contact you shortly for further details and confirmation'
+      cancelOrderMessage: 'Dear Valuable Customer,\n\nThank you for contacting us. We have received the cancellation ‘Request’ of your order #{{orderId}}. One of our representatives will contact you shortly for further details and confirmation',
+      catalog: {},
+      uploadingAttachment: false
     }
-    this.selectStore = this.selectStore.bind(this)
     this.setPublished = this.setPublished.bind(this)
     this.setPaymentMethod = this.setPaymentMethod.bind(this)
     this.setReturnPolicy = this.setReturnPolicy.bind(this)
@@ -46,10 +51,55 @@ class WhatsAppCommerceChatbot extends React.Component {
     this.handleCancelOrder=this.handleCancelOrder.bind(this)
     this.handleReturnOrder=this.handleReturnOrder.bind(this)
     this.updateState = this.updateState.bind(this)
+    this.onFilesChange = this.onFilesChange.bind(this)
+    this.handleFile = this.handleFile.bind(this)
+    this.onFilesError = this.onFilesError.bind(this)
+    this.removeCatalog = this.removeCatalog.bind(this)
 
     props.fetchChatbot({companyId: this.props.user.companyId, vertical: 'commerce'})
     props.fetchBigCommerceStore()
     props.fetchShopifyStore()
+  }
+
+  onFilesError (error, file) {
+    this.props.alertMsg.error('Attachment exceeds the limit of 25MB')
+  }
+
+  onFilesChange (files) {
+    if (files.length > 0) {
+      var file = files[files.length - 1]
+      this.setState({file: file})
+      if (file.size > 25000000) {
+        this.msg.error('Attachment exceeds the limit of 25MB')
+      } else {
+        var fileData = new FormData()
+        const type = 'file'
+        fileData.append('file', file)
+        fileData.append('filename', file.name)
+        fileData.append('filetype', file.type)
+        fileData.append('filesize', file.size)
+        fileData.append('componentType', type)
+        var fileInfo = {
+          componentType: type,
+          componentName: 'file',
+          fileName: file.name,
+          type: file.type,
+          size: file.size
+        }
+        this.setState({uploadingAttachment: true})
+        this.props.uploadFile(fileData, fileInfo, this.handleFile)
+      }
+    }
+  }
+
+  handleFile (fileInfo) {
+    let attachment = cloneDeep(this.state.catalog)
+    attachment.url = fileInfo.fileurl.url
+    attachment.name = fileInfo.fileurl.name
+    this.setState({
+      catalog: attachment,
+      uploadingAttachment: false
+    })
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
@@ -65,10 +115,12 @@ class WhatsAppCommerceChatbot extends React.Component {
         returnOrderMessage: nextProps.chatbot.returnOrderMessage,
         cancelOrder: nextProps.chatbot.cancelOrder,
         cancelOrderMessage: nextProps.chatbot.cancelOrderMessage,
-        triggers: nextProps.chatbot.triggers
+        triggers: nextProps.chatbot.triggers,
+        catalog: nextProps.chatbot.catalog ? nextProps.chatbot.catalog : {}
       })
     } else if (nextProps.chatbot) {
       this.setState({
+        catalog: nextProps.chatbot.catalog ? nextProps.chatbot.catalog : {},
         returnOrder: nextProps.chatbot.returnOrder,
         returnOrderMessage: nextProps.chatbot.returnOrderMessage,
         cancelOrder: nextProps.chatbot.cancelOrder,
@@ -86,7 +138,6 @@ class WhatsAppCommerceChatbot extends React.Component {
   }
 
   handleCancelOrder (e) {
-    console.log('handleCancelOrder')
     this.setState({cancelOrder: e.target.checked})
   }
 
@@ -122,14 +173,7 @@ class WhatsAppCommerceChatbot extends React.Component {
     })
   }
 
-  selectStore(e) {
-    this.setState({
-      store: e.target.value
-    })
-  }
-
   setPublished(e) {
-    console.log('setPublished', e.target.checked)
     this.setState({
       published: e.target.checked
     })
@@ -198,7 +242,8 @@ class WhatsAppCommerceChatbot extends React.Component {
           cancelOrderMessage: this.state.cancelOrderMessage,
           returnOrder: this.state.returnOrder,
           returnOrderMessage: this.state.returnOrderMessage,
-          triggers: this.state.triggers
+          triggers: this.state.triggers,
+          catalog: this.state.catalog
         }, (res) => {
           if (res.status === 'success') {
             this.msg.success(res.description)
@@ -224,7 +269,8 @@ class WhatsAppCommerceChatbot extends React.Component {
             cancelOrderMessage: this.state.cancelOrderMessage,
             returnOrder: this.state.returnOrder,
             returnOrderMessage: this.state.returnOrderMessage,
-            triggers: this.state.triggers
+            triggers: this.state.triggers,
+            catalog: this.state.catalog
           }
         }, (res) => {
           if (res.status === 'success') {
@@ -373,6 +419,10 @@ class WhatsAppCommerceChatbot extends React.Component {
     )
   }
 
+  removeCatalog () {
+    this.setState({catalog: {}})
+  }
+
   render() {
     var alertOptions = {
       offset: 75,
@@ -419,77 +469,67 @@ class WhatsAppCommerceChatbot extends React.Component {
           style={{ display: 'none' }}>
           Commerce Integration Modal
         </button>
-
-
         <div className='m-subheader'>
           <h3 className='m-subheader__title'>WhatsApp Commerce Chatbot</h3>
-
-
-          <span style={{ float: 'right' }} className={"m-switch m-switch--lg m-switch--icon " + (this.state.published ? "m-switch--success" : "m-switch--danger")}>
-            <label>
-              <input disabled={!this.props.chatbot ? true : null} checked={this.state.published} onChange={this.setPublished} type="checkbox" />
-              <span />
-            </label>
-          </span>
-          {
-            this.props.chatbot &&
-            <Link to='/whatsAppCommerceChatbotAnalytics' >
-              <button
-                id='_chatbot_message_area_header_analytics'
-                style={{ marginRight: '20px', marginTop: '5px' }}
-                type='button'
-                className='btn btn-brand pull-right m-btn m-btn--icon'
-              >
-                <span>
-                  <i className='fa flaticon-analytics' />
-                  <span>Analytics</span>
-                </span>
-              </button>
-            </Link>
-          }
-
         </div>
         <div className='m-content'>
           <div className='row'>
             <div className='col-xl-12'>
               <div className='m-portlet'>
-
-                {/* <div className='m-portlet__head'>
+                <div className='m-portlet__head'>
                   <div className='m-portlet__head-caption'>
                     <div className='m-portlet__head-title'>
-                      <p className='m-portlet__head-text'>
-                        People fill the form below to generate a WhatsApp Chatbot
-                      </p>
+                      <span className='m-portlet__head-icon'>
+                        {
+                          this.props.store && this.props.store.storeType === 'bigcommerce' &&
+                            <img alt="bigcommerce-logo" style={{ width: '100px', marginBottom: '6px'}} src='https://s3.amazonaws.com/www1.bigcommerce.com/assets/mediakit/downloads/BigCommerce-logo-dark.png' />
+                        }
+                        {
+                          this.props.store && this.props.store.storeType === 'shopify' &&
+                        <img alt="shopify-logo" style={{ width: '100px', marginLeft: '-20px', marginRight: '-20px' }} src='https://i.pcmag.com/imagery/reviews/02lLbDwVdtIQN2uDFnHeN41-11..v_1569480019.jpg' />
+                        }
+                      </span>
+                      <h3 className='m-portlet__head-text'>
+                        {this.props.store ? this.props.store.name : ''}
+                      </h3>
                     </div>
                   </div>
-                </div> */}
+                  <div className='m-portlet__head-tools'>
+                    <ul className='m-portlet__nav'>
+                      {this.props.chatbot &&
+                      <li className='m-portlet__nav-item'>
+                        <Link to='/whatsAppCommerceChatbotAnalytics' >
+                          <button
+                            id='_chatbot_message_area_header_analytics'
+                            type='button'
+                            className='btn btn-brand pull-right m-btn m-btn--icon'>
+                            <span>
+                              <i className='fa flaticon-analytics' />
+                              <span>Analytics</span>
+                            </span>
+                          </button>
+                        </Link>
+                      </li>
+                      }
+                      <li className='m-portlet__nav-item'>
+                        <span
+                          style={{marginTop: '10px', marginLeft: '15px'}}
+                          className={"m-switch m-switch--lg m-switch--icon " + (this.state.published ? "m-switch--success" : "m-switch--danger")}>
+                          <label>
+                            <input disabled={!this.props.chatbot ? true : null} checked={this.state.published} onChange={this.setPublished} type="checkbox" />
+                            <span />
+                          </label>
+                        </span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
 
                 <div className='m-portlet__body'>
                   <div className='row'>
                     <div className='col-12'>
                       <form onSubmit={this.saveChatbot}>
-
                         <div className="m-form m-form--fit row">
-
-                          <div className="form-group m-form__group col-lg-8">
-                            <h6>Store:</h6>
-                            <input required type="text" disabled value={this.props.store ? this.props.store.name : ''} className="form-control m-input" id="_commerce_store" />
-                          </div>
-
-                          {
-                            this.state.store && this.state.store.storeType === 'shopify' &&
-                            <div className="col-lg-4">
-                              <img alt="shopify-logo" style={{ width: '100px', marginTop: '15px' }} src='https://i.pcmag.com/imagery/reviews/02lLbDwVdtIQN2uDFnHeN41-11..v_1569480019.jpg' />
-                            </div>
-                          }
-                          {
-                            this.state.store && this.state.store.storeType === 'bigcommerce' &&
-                            <div className="col-lg-4">
-                              <img alt="bigcommerce-logo" style={{ width: '100px', marginTop: '25px' }} src='https://s3.amazonaws.com/www1.bigcommerce.com/assets/mediakit/downloads/BigCommerce-logo-dark.png' />
-                            </div>
-                          }
-
-                          
                           <div className="form-group m-form__group col-lg-8">
                             <TRIGGERAREA
                               triggers={this.state.triggers}
@@ -497,7 +537,34 @@ class WhatsAppCommerceChatbot extends React.Component {
                               alertMsg={this.msg}
                             />
                           </div>
-
+                          <div className="form-group m-form__group col-lg-8">
+                            <span className="m--font-boldest">Catalog:</span>
+                              {this.state.catalog && this.state.catalog.name &&
+                                <div style={{float: 'right', marginRight: '-10px', marginTop: '16px'}} onClick={this.removeCatalog}>
+                                <span className="fa-stack" style={{cursor: 'pointer'}}>
+                                  <i className="fa fa-times fa-stack-2x" />
+                                  </span>
+                                </div>
+                              }
+                            <div className='ui-block hoverborder' style={{padding: 25}}>
+                              <Files
+                                className='files-dropzone'
+                                onChange={this.onFilesChange}
+                                onError={this.onFilesError}
+                                accepts={['application/pdf']}
+                                maxFileSize={25000000}
+                                minFileSize={0}
+                                clickable>
+                                {this.state.uploadingAttachment
+                                  ? <div className='align-center'><center><RingLoader color='#FF5E3A' /></center></div>
+                                  : <div className='align-center' style={{padding: '5px'}}>
+                                    <img src='https://cdn.cloudkibo.com/public/icons/file.png' alt='Text' style={{pointerEvents: 'none', zIndex: -1, maxHeight: 40}} />
+                                    <h4 style={{pointerEvents: 'none', zIndex: -1, marginLeft: '10px', display: 'inline', wordBreak: 'break-all'}}>{this.state.catalog && this.state.catalog.name ? this.state.catalog.name : 'Upload Catalog'}</h4>
+                                  </div>
+                                }
+                              </Files>
+                            </div>
+                          </div>
                           {/* <div className="form-group m-form__group col-lg-8">
                             <h6>
                               Payment Methods (Optional):
@@ -516,9 +583,8 @@ class WhatsAppCommerceChatbot extends React.Component {
                             </h6>
                             <input type="text" onChange={this.setReturnPolicy} value={this.state.returnPolicy} className="form-control m-input" id="_refund_policy_url" placeholder="Enter refund policy URL..." />
                           </div> */}
-
                           <div className="form-group m-form__group col-lg-8">
-                            <h6>Number of Products:</h6>
+                            <span className="m--font-boldest">Number of Products:</span>
                             <input
                               type='number' min='2' step='1' max='9'
                               value={this.state.numberOfProducts}
@@ -530,24 +596,13 @@ class WhatsAppCommerceChatbot extends React.Component {
                           </div>
 
                           <div className="form-group m-form__group col-lg-8">
-                            <h6>
+                            <span className="m--font-boldest">
                               FAQs URL (Optional):
-                            </h6>
+                            </span>
                             <input type="text" onChange={this.setFAQs} value={this.state.faqs} className="form-control m-input" id="_faqs_url" placeholder="Enter FAQs URL..." />
                           </div>
 
-                          {/* <div class="form-group m-form__group m--margin-top-10">
-                            <h6>Payment Methods (Optional)</h6>
-                            <span>
-                              By default, chatbot is configured with "Cash on delivery" payment method.
-                              If you wish to provide other payment methods as well then please provide a link to other payment methods.
-                              If you leave this empty, then only "Cash on delivery" option will be shown as a payment method to your subscribers.
-                            </span>
-                          </div> */}
-
-
-                          <div className="row form-group m-form__group col-lg-12">
-                          <div className="col-md-6">
+                          <div className="form-group m-form__group col-lg-8">
                             <label className="m-checkbox m--font-boldest" style={{fontWeight: '600'}}>
                               <input
                                 type="checkbox"
@@ -569,7 +624,7 @@ class WhatsAppCommerceChatbot extends React.Component {
                               </div>
                           }
                           </div>
-                          <div className="col-md-6">
+                          <div className="form-group m-form__group col-lg-8">
                             <label className="m-checkbox m--font-boldest" style={{fontWeight: '600'}}>
                               <input
                                 type="checkbox"
@@ -590,9 +645,8 @@ class WhatsAppCommerceChatbot extends React.Component {
                               </div>
                           }
                           </div>
-                        </div>
 
-                          <div class="form-group m-form__group m--margin-top-10">
+                          <div className="form-group m-form__group m--margin-top-10">
                             <span>
                               <strong>Note: </strong>
                               We recommend first testing the chatbot before enabling it for your customers.
@@ -657,7 +711,8 @@ function mapDispatchToProps(dispatch) {
     createChatbot,
     fetchChatbot,
     fetchShopifyStore,
-    fetchBigCommerceStore
+    fetchBigCommerceStore,
+    uploadFile
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(WhatsAppCommerceChatbot)
