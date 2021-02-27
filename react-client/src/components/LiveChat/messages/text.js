@@ -84,7 +84,7 @@ class Text extends React.Component {
           ))
         }
         {
-          this.props.urlMeta && this.props.urlMeta.constructor === Object && Object.keys(this.props.urlMeta).length > 0 &&
+          this.props.urlMeta && (this.props.urlMeta.title || this.props.urlMeta.ogTitle) &&
           <CARD
             card={this.getCardProps()}
             color='#575962'
