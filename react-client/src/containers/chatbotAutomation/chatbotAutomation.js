@@ -135,7 +135,7 @@ class ChatbotAutomation extends React.Component {
   UNSAFE_componentWillReceiveProps(nextprops) {
     if (nextprops.businessAccounts && nextprops.businessAccounts.length > 0) {
       this.setState({businessAccount: nextprops.businessAccounts[0].id})
-      this.props.fetchCatalogs(nextprops.businessAccounts[0].id, this.handleCatalogs)
+      nextprops.fetchCatalogs(nextprops.businessAccounts[0].id, this.handleCatalogs)
     }
   }
 
