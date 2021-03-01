@@ -53,7 +53,7 @@ class ChatbotAutomation extends React.Component {
 
   onBusinessAccountChange (e) {
     this.setState({businessAccount: e.target.value})
-    this.prop.fetchCatalogs(e.target.value, this.handleCatalogs)
+    this.props.fetchCatalogs(e.target.value, this.handleCatalogs)
   }
   onCatalogChange (e) {
     this.setState({selectedCatalog: e.target.value})
