@@ -67,6 +67,15 @@ export function fetchBusinessAccounts(callback) {
   }
 }
 
+export function fetchCatalogs(businessAccount, cb) {
+  return (dispatch) => {
+    callApi(`fbshops/fetchCatalogs/${businessAccount}`)
+      .then(res => {
+        cb(res)
+      })
+  }
+}
+
 export function installShopify (data) {
   return (dispatch) => {
     callApi('shopify', 'post', data)
