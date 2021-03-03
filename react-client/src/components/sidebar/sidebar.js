@@ -411,6 +411,84 @@ class Sidebar extends Component {
     }
   }
 
+  showCommerceSubMenuItems (type) {
+    return (
+      <ul className='m-menu__subnav'>
+        <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
+          <Link to='/abandonedCart' className='m-menu__link m-menu__toggle'>
+            <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
+               <span></span>
+            </i>
+            <span className='m-menu__link-text'>Abandoned Cart</span>
+          </Link>
+          <Link to='/ordersCRM' className='m-menu__link m-menu__toggle'>
+            <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
+               <span></span>
+            </i>
+            <span className='m-menu__link-text'>Orders CRM</span>
+          </Link>
+          {type === 'automated' &&
+            <Link to='/cashOnDelivery' className='m-menu__link m-menu__toggle'>
+              <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
+                 <span></span>
+              </i>
+              <span className='m-menu__link-text'>Cash on Delivery</span>
+            </Link>
+          }
+        </li>
+      </ul>
+    )
+  }
+
+  showCommerceItem() {
+    if (!this.state.isKiboLite && this.props.user && this.props.user.platform === 'whatsApp' && (this.state.isKiboChat || this.state.isLocalhost)) {
+      return (
+        <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
+          <span className='m-menu__link m-menu__toggle'>
+            <i className='m-menu__link-icon flaticon-cart' title='Subscriptions' />
+            <span className='m-menu__link-text'>Commerce</span>
+            <i className='m-menu__ver-arrow la la-angle-right' />
+          </span>
+          <div className='m-menu__submenu'>
+            <span className='m-menu__arrow' />
+            <ul className='m-menu__subnav'>
+              <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
+                <span className='m-menu__link m-menu__toggle'>
+                  <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
+					           <span></span>
+									</i>
+                  <span className='m-menu__link-text'>Automated Messages</span>
+                  <i className='m-menu__ver-arrow la la-angle-right' />
+                </span>
+                <div className='m-menu__submenu'>
+                  <span className='m-menu__arrow' />
+                  {this.showCommerceSubMenuItems('automated')}
+                </div>
+              </li>
+              <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
+                <span className='m-menu__link m-menu__toggle'>
+                  <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
+					           <span></span>
+									</i>
+                  <span className='m-menu__link-text'>Manual Messages</span>
+                  <i className='m-menu__ver-arrow la la-angle-right' />
+                </span>
+                <div className='m-menu__submenu'>
+                  <span className='m-menu__arrow' />
+                  {this.showCommerceSubMenuItems('manual')}
+                </div>
+              </li>
+            </ul>
+          </div>
+        </li>
+      )
+    } else {
+      return (
+        <div />
+      )
+    }
+  }
+
   showSubscriptionsItem() {
     if (!this.state.isKiboLite && this.props.user && this.props.user.platform === 'messenger') {
       return (
@@ -1375,6 +1453,7 @@ class Sidebar extends Component {
                     {this.inviteSubscribers()}
                     {this.showLiveChatItem()}
                     {this.showAutomationItems()}
+                    {this.showCommerceItem()}
                     {this.showGrowthToolsItems()}
                     {this.showManagePagesItems()}
                     {this.showOrganizationItems()}

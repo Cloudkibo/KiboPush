@@ -173,6 +173,9 @@ import ChatbotSettings from './containers/chatbotAutomation/chatbotSettings'
 import IntegrateZoom from './containers/zoomIntegration/integrateZoom'
 import WhatsAppCommerceChatbot from './containers/whatsAppCommerceChatbot/whatsAppCommerceChatbot'
 import WhatsAppAirlinesChatbot from './containers/whatsAppAirlinesChatbot/whatsAppAirlinesChatbot'
+import AbandonedCart from './containers/superNumber/automated/abandonedCart'
+import OrdersCRM from './containers/superNumber/automated/ordersCRM'
+import CashOnDelivery from './containers/superNumber/automated/cashOnDelivery'
 
 const Subscriber = asyncComponent(() => import("./containers/subscriber/subscriber"))
 const OperationalDashboard = asyncComponent(() => import("./containers/operationalDashboard/operationalDashboard"))
@@ -426,6 +429,9 @@ const Routes = () => (
     <Route path='/WhatsAppAirlinesChatbot' component={WhatsAppAirlinesChatbot} onEnter={requireAuth} />
     <Route path='/WhatsAppAirlinesChatbotAnalytics' component={WhatsAppAirlinesChatbotAnalytics} onEnter={requireAuth} />
     <Route path='/commerceChatbotAnalytics' component={CommerceChatbotAnalytics} onEnter={requireAuth} />
+    <Route path='/cashOnDelivery' component={CashOnDelivery} onEnter={requireAuth} />
+    <Route path='/abandonedCart' component={AbandonedCart} onEnter={requireAuth} />
+    <Route path='/ordersCRM' component={OrdersCRM} onEnter={requireAuth} />
     <Route path='*' render={() => <Redirect to='/' />} />
   </Switch>
 
