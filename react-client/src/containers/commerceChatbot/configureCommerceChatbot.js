@@ -71,7 +71,7 @@ class ConfigureCommerceChatbot extends React.Component {
   }
 
   onFilesError (error, file) {
-    this.props.alertMsg.error('Attachment exceeds the limit of 25MB')
+    this.msg.error('Attachment exceeds the limit of 25MB')
   }
 
   onFilesChange (files) {
@@ -327,6 +327,10 @@ class ConfigureCommerceChatbot extends React.Component {
                           this.state.store && this.state.store.storeType === 'shopify' &&
                         <img alt="shopify-logo" style={{ width: '100px', marginLeft: '-20px', marginRight: '-20px' }} src='https://i.pcmag.com/imagery/reviews/02lLbDwVdtIQN2uDFnHeN41-11..v_1569480019.jpg' />
                         }
+                        {
+                           this.state.store && this.state.store.storeType === 'shops' &&
+                           <img alt="shops-logo" style={{ width: '100px', marginLeft: '-20px', marginRight: '-20px' }} src='https://cdn.cloudkibo.com/public/img/facebook-shop-page.png' />
+                        }
                       </span>
                       <h3 className='m-portlet__head-text'>
                         {this.state.store ? this.state.store.name : ''}
@@ -422,50 +426,53 @@ class ConfigureCommerceChatbot extends React.Component {
                             <span className='m--font-boldest'>FAQs URL (Optional):</span>
                             <input type="text" onChange={this.setFAQs} value={this.state.faqs} className="form-control m-input" id="_faqs_url" placeholder="Enter FAQs URL..." />
                           </div>
-
-                          <div className="form-group m-form__group col-lg-8">
-                            <label className="m-checkbox m--font-boldest" style={{fontWeight: '600'}}>
-                              <input
-                                type="checkbox"
-                                onChange={this.handleCancelOrder}
-                                onClick={this.handleCancelOrder}
-                                checked={this.state.cancelOrder}
-                              />
-                            Allow cancel order
-                              <span></span>
-                            </label>
-                            {this.state.cancelOrder &&
-                              <div style={{marginTop: '10px'}}>
-                                <span className='m--font-boldest'>Cancel Order Message:</span>
-                                <textarea
-                                  rows='6'
-                                  value={this.state.cancelOrderMessage}
-                                  onChange={(e) => { this.updateState({cancelOrderMessage: e.target.value})}}
-                                  className="form-control m-input" />
-                              </div>
+                          {this.state.store && this.state.store.storeType !== 'shops' &&
+                            <div className="form-group m-form__group col-lg-8">
+                              <label className="m-checkbox m--font-boldest" style={{fontWeight: '600'}}>
+                                <input
+                                  type="checkbox"
+                                  onChange={this.handleCancelOrder}
+                                  onClick={this.handleCancelOrder}
+                                  checked={this.state.cancelOrder}
+                                />
+                              Allow cancel order
+                                <span></span>
+                              </label>
+                              {this.state.cancelOrder &&
+                                <div style={{marginTop: '10px'}}>
+                                  <span className='m--font-boldest'>Cancel Order Message:</span>
+                                  <textarea
+                                    rows='6'
+                                    value={this.state.cancelOrderMessage}
+                                    onChange={(e) => { this.updateState({cancelOrderMessage: e.target.value})}}
+                                    className="form-control m-input" />
+                                </div>
+                            }
+                            </div>
                           }
+                          {this.state.store && this.state.store.storeType !== 'shops' &&
+                            <div className="form-group m-form__group col-lg-8">
+                              <label className="m-checkbox m--font-boldest" style={{fontWeight: '600'}}>
+                                <input
+                                  type="checkbox"
+                                  onChange={this.handleReturnOrder}
+                                  checked={this.state.returnOrder}
+                                />
+                              Allow return order
+                                <span></span>
+                              </label>
+                              {this.state.returnOrder &&
+                                <div style={{marginTop: '10px'}}>
+                                  <span className='m--font-boldest'>Return Order Message:</span>
+                                  <textarea
+                                    rows='6'
+                                    value={this.state.returnOrderMessage}
+                                    onChange={(e) => { this.updateState({returnOrderMessage: e.target.value})}}
+                                    className="form-control m-input" />
+                                </div>
+                            }
                           </div>
-                          <div className="form-group m-form__group col-lg-8">
-                            <label className="m-checkbox m--font-boldest" style={{fontWeight: '600'}}>
-                              <input
-                                type="checkbox"
-                                onChange={this.handleReturnOrder}
-                                checked={this.state.returnOrder}
-                              />
-                            Allow return order
-                              <span></span>
-                            </label>
-                            {this.state.returnOrder &&
-                              <div style={{marginTop: '10px'}}>
-                                <span className='m--font-boldest'>Return Order Message:</span>
-                                <textarea
-                                  rows='6'
-                                  value={this.state.returnOrderMessage}
-                                  onChange={(e) => { this.updateState({returnOrderMessage: e.target.value})}}
-                                  className="form-control m-input" />
-                              </div>
-                          }
-                        </div>
+                            }
 
                           <div className="form-group m-form__group m--margin-top-10">
                             <span>
