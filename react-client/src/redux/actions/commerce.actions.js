@@ -84,3 +84,16 @@ export function installShopify (data) {
       })
   }
 }
+
+export function updateShopifyIntegration(id, data, msg) {
+  return (dispatch) => {
+    callApi(`shopify/update/${id}`, 'post', data)
+      .then(res => {
+        if (res.status === 'success') {
+          msg.success('Changes saved successfully')
+        } else {
+          msg.error(res.description || res.payload || 'Failed to save changes')
+        }
+      })
+  }
+}
