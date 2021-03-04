@@ -1,7 +1,7 @@
 import React from "react"
 import PropTypes from 'prop-types'
 
-class ActionsArea extends React.Component {
+class Template extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
@@ -95,7 +95,7 @@ class ActionsArea extends React.Component {
   }
 }
 
-ActionsArea.propTypes = {
+Template.propTypes = {
   'previewUrl': PropTypes.string.isRequired,
   'enabled': PropTypes.bool.isRequired,
   'text': PropTypes.string.isRequired,
@@ -105,4 +105,4 @@ ActionsArea.propTypes = {
   'language': PropTypes.string.isRequired
 }
 
-export default ActionsArea
+export default Template
