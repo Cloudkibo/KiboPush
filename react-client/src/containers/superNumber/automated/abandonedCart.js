@@ -5,7 +5,7 @@ import AlertContainer from 'react-alert'
 import INFO from './info'
 import WHATSAPPCONFIGURAION from './whatsAppConfiguration'
 import TEMPLATE from './template'
-import { fetchShopifyStore, updateShopifyIntegration } from '../../../redux/actions/commerce.actions'
+import { fetchShopifyStore } from '../../../redux/actions/commerce.actions'
 import { fetchTemplates } from '../../../redux/actions/superNumber.actions'
 import { validatePhoneNumber } from '../../../utility/utils'
 
@@ -31,13 +31,7 @@ class AbandonedCart extends React.Component {
     } else if (!validatePhoneNumber(this.state.supportNumber)) {
       this.msg.error('Please enter a valid WhatsApp number')
     } else {
-      this.props.updateShopifyIntegration(this.props.store._id, {
-        abandonedCart: {
-          language: this.state.language,
-          enabled: this.state.enabled,
-          supportNumber: this.state.supportNumber
-        }
-      }, this.msg)
+      // updateSuperNumberPreferences
     }
   }
 
@@ -158,8 +152,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return bindActionCreators({
     fetchShopifyStore,
-    fetchTemplates,
-    updateShopifyIntegration
+    fetchTemplates
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(AbandonedCart)

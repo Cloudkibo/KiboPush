@@ -6,6 +6,10 @@ export function superNumberInfo (state = {}, action) {
       return Object.assign({}, state, {
         templates: action.data
       })
+      case ActionTypes.SAVE_SUPERNUMBER_PRFERENCES:
+        return Object.assign({}, state, {
+          superNumberPreferences: action.data
+        })
     default:
       return state
   }

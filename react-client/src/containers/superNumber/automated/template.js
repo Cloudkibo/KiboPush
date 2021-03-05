@@ -11,11 +11,11 @@ class Template extends React.Component {
   }
 
   expendRowToggle () {
-    let className = document.getElementById(`icon-whatsAppConfiguration`).className
+    let className = document.getElementById(`icon-${this.props.id}`).className
     if (className === 'la la-angle-up collapsed') {
-      document.getElementById(`icon-whatsAppConfiguration`).className = 'la la-angle-down'
+      document.getElementById(`icon-${this.props.id}`).className = 'la la-angle-down'
     } else {
-      document.getElementById(`icon-whatsAppConfiguration`).className = 'la la-angle-up'
+      document.getElementById(`icon-${this.props.id}`).className = 'la la-angle-up'
     }
   }
 
@@ -56,9 +56,12 @@ class Template extends React.Component {
                 <div className='form-group m-form__group col-lg-12'>
                   <div className='row'>
                     <div className='col-md-2'>
-                  <label style={{fontWeight: 'normal'}}>Status:</label>
+                  <label style={{fontWeight: 'normal'}}>Template Status:</label>
                   </div>
-                  <div className='col-md-10'>
+                  <div className='col-md-4' style={{display: 'flex'}}>
+                    <div style = {{width: '70px'}}>
+                      <label>{this.props.enabled ? 'Enabled' : 'Disabled'}</label>
+                    </div>
                     <span
                       style={{marginTop: '-5px'}}
                       className={"m-switch m-switch--icon " + (this.props.enabled ? "m-switch--success" : "m-switch--danger")}>
