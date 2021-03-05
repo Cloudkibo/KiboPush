@@ -46,7 +46,6 @@ class MessageArea extends React.Component {
     this.getRemoveModalContent = this.getRemoveModalContent.bind(this)
     this.updateCarouselCards = this.updateCarouselCards.bind(this)
     this.canDeleteBlock = this.canDeleteBlock.bind(this)
-    this.showTalkToAgentButton = this.showTalkToAgentButton.bind(this)
     this.linkBlock = this.linkBlock.bind(this)
     this.removeLink = this.removeLink.bind(this)
   }
@@ -63,58 +62,6 @@ class MessageArea extends React.Component {
       return false
     } else {
       return true
-    }
-  }
-
-  linkBlock (title) {
-    if (['talk_to_agent'].includes(title)) {
-      let quickReplies = this.state.quickReplies
-      if (title === 'talk_to_agent') {
-        quickReplies.push({
-          content_type: 'text',
-          title: 'Talk to agent',
-          payload: JSON.stringify([{
-            action: '_chatbot',
-            payloadAction: 'talk_to_agent',
-            chatbotId: this.props.chatbot._id,
-            parentBlockTitle: this.props.block.title
-          }])
-        })
-      }
-
-      const currentBlock = this.props.block
-
-      if (currentBlock.payload.length > 0) {
-        currentBlock.payload[currentBlock.payload.length - 1].quickReplies = quickReplies
-      } else {
-        currentBlock.payload.push({quickReplies})
-      }
-
-      this.setState({quickReplies}, () => {
-        this.props.updateParentState({currentBlock, unsavedChanges: true})
-      })
-    }
-  }
-
-  removeLink (title) {
-    if (['talk_to_agent'].includes(title)) {
-      let quickReplies = this.state.quickReplies
-      let index = quickReplies.findIndex((item) => item.title === title)
-      if (title === 'talk_to_agent') {
-        index = quickReplies.findIndex((item) => JSON.parse(item.payload)[0].payloadAction === 'talk_to_agent')
-      }
-      quickReplies.splice(index, 1)
-
-      const currentBlock = this.props.block
-      if (currentBlock.payload.length > 0) {
-        currentBlock.payload[currentBlock.payload.length - 1].quickReplies = quickReplies
-      } else {
-        currentBlock.payload.push({quickReplies})
-      }
-
-      this.setState({quickReplies}, () => {
-        this.props.updateParentState({currentBlock, unsavedChanges: true})
-      })
     }
   }
 
@@ -655,6 +602,51 @@ class MessageArea extends React.Component {
     }
   }
 
+  linkBlock (title) {
+    if (['talk_to_agent'].includes(title)) {
+      let quickReplies = this.state.quickReplies
+      quickReplies.push({
+        content_type: 'text',
+        title: 'Talk to Agent',
+        payload: JSON.stringify([{action: '_chatbot', payloadAction: 'talk_to_agent', chatbotId: this.props.chatbot._id, parentBlockTitle: this.props.block.title}])
+      })
+
+      const currentBlock = this.props.block
+
+      if (currentBlock.payload.length > 0) {
+        currentBlock.payload[currentBlock.payload.length - 1].quickReplies = quickReplies
+      } else {
+        currentBlock.payload.push({quickReplies})
+      }
+
+      this.setState({quickReplies}, () => {
+        this.props.updateParentState({currentBlock, unsavedChanges: true})
+      })
+    }
+  }
+
+  removeLink (title) {
+    let quickReplies = this.state.quickReplies
+    let index = -1
+    if (title === 'talk_to_agent') {
+      index = quickReplies.findIndex((item) => JSON.parse(item.payload) && JSON.parse(item.payload)[0].payloadAction === 'talk_to_agent')
+    }
+
+    if (index > -1) {
+      quickReplies.splice(index, 1)
+      const currentBlock = this.props.block
+      if (currentBlock.payload.length > 0) {
+        currentBlock.payload[currentBlock.payload.length - 1].quickReplies = quickReplies
+      } else {
+        currentBlock.payload.push({quickReplies})
+      }
+
+      this.setState({quickReplies}, () => {
+        this.props.updateParentState({currentBlock, unsavedChanges: true})
+      })
+    }
+  }
+
   UNSAFE_componentWillReceiveProps (nextProps) {
     if (nextProps.block) {
       this.setStateData(nextProps.block)
@@ -840,10 +832,9 @@ class MessageArea extends React.Component {
             disableNext={this.state.disableNext}
             onPrevious={() => {}}
             emptyBlocks={this.checkEmptyBlock()}
-            showTalkToAgentButton={this.showTalkToAgentButton()}
-            currentBlock={this.props.block}
             linkBlock={this.linkBlock}
             removeLink={this.removeLink}
+            currentBlock={this.props.block}
           />
           <button style={{display: 'none'}} ref={(el) => this.removeComponentTrigger = el} data-toggle='modal' data-target='#_remove_component' />
           <CONFIRMATIONMODAL
