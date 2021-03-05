@@ -5,8 +5,8 @@ import AlertContainer from 'react-alert'
 import INFO from './info'
 import WHATSAPPCONFIGURAION from './whatsAppConfiguration'
 import TEMPLATE from './template'
-import { fetchShopifyStore, updateShopifyIntegration } from '../../../redux/actions/commerce.actions'
-import { fetchTemplates } from '../../../redux/actions/superNumber.actions'
+import { fetchShopifyStore } from '../../../redux/actions/commerce.actions'
+import { fetchTemplates, fetchSuperNumberPreferences, updateSuperNumberPreferences, createSuperNumberPreferences } from '../../../redux/actions/superNumber.actions'
 import { validatePhoneNumber } from '../../../utility/utils'
 
 class OrdersCRM extends React.Component {
@@ -24,6 +24,7 @@ class OrdersCRM extends React.Component {
     this.onSave = this.onSave.bind(this)
 
     props.fetchShopifyStore()
+    props.fetchSuperNumberPreferences(this.msg)
     props.fetchTemplates()
   }
 
@@ -33,18 +34,19 @@ class OrdersCRM extends React.Component {
     } else if (!validatePhoneNumber(this.state.supportNumber)) {
       this.msg.error('Please enter a valid WhatsApp number')
     } else {
-      this.props.updateShopifyIntegration(this.props.store._id, {
-        orderShipment: {
+      let payload = {
+        orderCRM: {
           language: this.state.language,
-          enabled: this.state.enabledShipment,
-          supportNumber: this.state.supportNumber
-        },
-        orderConfirmation: {
-          language: this.state.language,
-          enabled: this.state.enabledConfirmation,
-          supportNumber: this.state.supportNumber
+          shipmentEnabled: this.state.enabledShipment,
+          supportNumber: this.state.supportNumber,
+          confirmationEnabled: this.state.enabledConfirmation
         }
-      }, this.msg)
+      }
+      if (!this.props.superNumberPreferences) {
+        this.props.createSuperNumberPreferences(payload, this.msg)
+      } else {
+        this.props.updateSuperNumberPreferences(payload, this.msg)
+      }
     }
   }
 
@@ -61,15 +63,16 @@ class OrdersCRM extends React.Component {
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
-    if (nextProps.store && nextProps.store.orderConfirmation) {
+    if (nextProps.superNumberPreferences && nextProps.superNumberPreferences.orderCRM) {
       this.setState({
-        language: nextProps.store.orderConfirmation.language,
-        supportNumber: nextProps.store.orderConfirmation.supportNumber,
-        enabledConfirmation: nextProps.store.orderConfirmation.enabled,
-        enabledShipment: nextProps.store.orderShipment.enabled
+        language: nextProps.superNumberPreferences.orderCRM.language,
+        supportNumber: nextProps.superNumberPreferences.orderCRM.supportNumber,
+        enabled: nextProps.superNumberPreferences.orderCRM.enabled,
+        enabledConfirmation: nextProps.superNumberPreferences.orderCRM.confirmationEnabled,
+        enabledShipment: nextProps.superNumberPreferences.orderCRM.shipmentEnabled
       })
     }
-    if (nextProps.templates) {
+    if (nextProps.templates && nextProps.templates['ORDER_CONFIRMATION']) {
       let orderConfirmationTemplates = nextProps.templates['ORDER_CONFIRMATION']
       let orderShipmentTemplates = nextProps.templates['ORDER_SHIPMENT']
       this.setState({
@@ -187,7 +190,8 @@ class OrdersCRM extends React.Component {
 function mapStateToProps(state) {
   return {
     store: (state.commerceInfo.store),
-    templates: (state.superNumberInfo.templates)
+    templates: (state.superNumberInfo.templates),
+    superNumberPreferences: (state.superNumberInfo.superNumberPreferences)
   }
 }
 
@@ -195,7 +199,9 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators({
     fetchShopifyStore,
     fetchTemplates,
-    updateShopifyIntegration
+    fetchSuperNumberPreferences,
+    updateSuperNumberPreferences,
+    createSuperNumberPreferences
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(OrdersCRM)
