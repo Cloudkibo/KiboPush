@@ -8,9 +8,9 @@ class Info extends React.Component {
           <i className='flaticon-technology m--font-accent' />
         </div>
         <div className='m-alert__text'>
-          Automated WhatsApp Messages are sent from our official WhatsApp Business API approved phone number using message templates approved by WhatsApp.
+          Manual WhatsApp Messages are sent from our official WhatsApp Business API approved phone number using message templates approved by WhatsApp.
           <br /><br />
-          We include your business name and WhatsApp support number in every automated message. Your customers can recognize you and contact you easily if they need help.
+          We include your business name and WhatsApp support number in every message. Your customers can recognize you and contact you easily if they need help.
         </div>
       </div>
     )

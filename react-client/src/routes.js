@@ -175,6 +175,8 @@ import WhatsAppCommerceChatbot from './containers/whatsAppCommerceChatbot/whatsA
 import WhatsAppAirlinesChatbot from './containers/whatsAppAirlinesChatbot/whatsAppAirlinesChatbot'
 import AbandonedCart from './containers/superNumber/automated/abandonedCart'
 import OrdersCRM from './containers/superNumber/automated/ordersCRM'
+import AbandonedCartManual from './containers/superNumber/manual/abandonedCart'
+import OrdersCRMManual from './containers/superNumber/manual/ordersCRM'
 import CashOnDelivery from './containers/superNumber/automated/cashOnDelivery'
 
 const Subscriber = asyncComponent(() => import("./containers/subscriber/subscriber"))
@@ -432,6 +434,8 @@ const Routes = () => (
     <Route path='/cashOnDelivery' component={CashOnDelivery} onEnter={requireAuth} />
     <Route path='/abandonedCart' component={AbandonedCart} onEnter={requireAuth} />
     <Route path='/ordersCRM' component={OrdersCRM} onEnter={requireAuth} />
+    <Route path='/abandonedCartManual' component={AbandonedCartManual} onEnter={requireAuth} />
+    <Route path='/ordersCRMManual' component={OrdersCRMManual} onEnter={requireAuth} />
     <Route path='*' render={() => <Redirect to='/' />} />
   </Switch>
 

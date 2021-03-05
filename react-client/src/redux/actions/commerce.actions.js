@@ -85,9 +85,26 @@ export function installShopify (data) {
   }
 }
 
-export function updateShopifyIntegration(id, data, msg) {
+export function createSuperNumberPreferences (data, msg) {
   return (dispatch) => {
-    callApi(`shopify/update/${id}`, 'post', data)
+    callApi(`supernumber`, 'post', data)
+      .then(res => {
+        if (res.status === 'success') {
+          dispatch({
+            type: ActionTypes.SAVE_SUPERNUMBER_PRFERENCES,
+            data: res.payload
+          })
+        } else {
+          msg.error(res.description || res.payload || 'Failed to save changes')
+        }
+      })
+  }
+}
+
+
+export function updateSuperNumberPreferences(data, msg) {
+  return (dispatch) => {
+    callApi(`supernumber/update`, 'post', data)
       .then(res => {
         if (res.status === 'success') {
           msg.success('Changes saved successfully')
@@ -97,3 +114,20 @@ export function updateShopifyIntegration(id, data, msg) {
       })
   }
 }
+
+export function fetchSuperNumberPreferences(msg) {
+  return (dispatch) => {
+    callApi(`supernumber`, 'get')
+      .then(res => {
+        if (res.status === 'success') {
+          dispatch({
+            type: ActionTypes.SAVE_SUPERNUMBER_PRFERENCES,
+            data: res.payload
+          })
+        } else {
+          msg.error(res.description || res.payload || 'Failed to save changes')
+        }
+      })
+  }
+}
+
