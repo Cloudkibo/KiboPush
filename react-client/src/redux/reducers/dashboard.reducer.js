@@ -1,6 +1,9 @@
 import * as ActionTypes from '../constants/constants'
 
 const initialState = {
+  slaDashboard: null,
+  slaDashboardError: '',
+  fetchingSLADashboard: false,
   dashboard: {
     pages: 0,
     subscribers: 0,
@@ -21,17 +24,29 @@ const initialState = {
     sessionsgraphdata: []
   },
   sentseendata: {
-    broadcast: {broadcastSentCount: 0, broadcastSeenCount: 0},
-    poll: {pollSentCount: 0, pollSeenCount: 0, pollResponseCount: 0},
-    survey: {surveySentCount: 0, surveySeenCount: 0, surveyResponseCount: 0},
-    sessions: {count: 0, resolved: 0},
-    bots: {count: 0, responded: 0}
+    broadcast: { broadcastSentCount: 0, broadcastSeenCount: 0 },
+    poll: { pollSentCount: 0, pollSeenCount: 0, pollResponseCount: 0 },
+    survey: { surveySentCount: 0, surveySeenCount: 0, surveyResponseCount: 0 },
+    sessions: { count: 0, resolved: 0 },
+    bots: { count: 0, responded: 0 }
   },
   topPages: []
 }
 
-export function dashboardInfo (state = initialState, action) {
+export function dashboardInfo(state = initialState, action) {
   switch (action.type) {
+    case ActionTypes.FETCHING_SLA_DASHBOARD: {
+      return Object.assign({}, state, { fetchingSLADashboard: true })
+    }
+    case ActionTypes.UPDATE_SLA_DASHBOARD: {
+      const updatedState = { slaDashboardError: '', fetchingSLADashboard: false }
+      if (action.data) {
+        updatedState.slaDashboard = action.data
+      } else if (action.error) {
+        updatedState.slaDashboardError = action.error
+      }
+      return Object.assign({}, state, updatedState)
+    }
     case ActionTypes.UPDATE_DASHBOARD:
       return Object.assign({}, state, {
         dashboard: action.data
