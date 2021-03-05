@@ -11,10 +11,11 @@ class Footer extends React.Component {
     this.onNext = this.onNext.bind(this)
     this.afterNext = this.afterNext.bind(this)
     this.handleTalkToAgentCheckbox = this.handleTalkToAgentCheckbox.bind(this)
-    this.setTalkToAgentButton = this.setTalkToAgentButton.bind(this)
+    this.setFooterCheckboxes = this.setFooterCheckboxes.bind(this)
   }
+
   componentDidMount () {
-    this.setTalkToAgentButton(this.props.currentBlock)
+    this.setFooterCheckboxes(this.props.currentBlock)
   }
 
   onNext () {
@@ -36,11 +37,11 @@ class Footer extends React.Component {
     })
   }
 
-  setTalkToAgentButton (currentBlock) {
+  setFooterCheckboxes (currentBlock) {
     if (currentBlock.payload.length > 0) {
       const quickReplies = currentBlock.payload[currentBlock.payload.length - 1].quickReplies
-      const tta = quickReplies.find((item) => JSON.parse(item.payload)[0].payloadAction === 'talk_to_agent')
-      const talkToAgentButton = tta ? true : false
+      const talkToAgent = quickReplies.find((item) => JSON.parse(item.payload) && JSON.parse(item.payload)[0].payloadAction === 'talk_to_agent')
+      const talkToAgentButton = talkToAgent ? true : false
       this.setState({talkToAgentButton})
     } else {
       this.setState({talkToAgentButton: false})
@@ -49,7 +50,7 @@ class Footer extends React.Component {
 
   UNSAFE_componentWillReceiveProps (nextProps) {
     if (nextProps.currentBlock) {
-      this.setTalkToAgentButton(nextProps.currentBlock)
+      this.setFooterCheckboxes(nextProps.currentBlock)
     }
   }
 
@@ -57,7 +58,18 @@ class Footer extends React.Component {
     return (
       <div id='_cb_ma_footer' style={{ flex: '0 0 auto', width: '100%', padding: '1.1rem'}} className="m-portlet__foot">
         <div className='row'>
-          <div className='col-md-6'>
+          <div className='col-md-8'>
+            <div className="m-checkbox-inline">
+              <label className="m-checkbox m--font-boldest">
+                <input
+                  type="checkbox"
+                  onChange={this.handleTalkToAgentCheckbox}
+                  checked={this.state.talkToAgentButton}
+                />
+                  Talk to agent button
+                <span></span>
+              </label>
+            </div>
             {
               this.props.showTalkToAgentButton &&
               <div className="m-checkbox-inline">
@@ -73,7 +85,7 @@ class Footer extends React.Component {
               </div>
             }
           </div>
-          <div className='col-md-6'>
+          <div className='col-md-4'>
             {
               this.props.showNext &&
               <button
@@ -106,10 +118,9 @@ Footer.propTypes = {
   'onPrevious': PropTypes.func.isRequired,
   'disableNext': PropTypes.bool.isRequired,
   'emptyBlocks': PropTypes.bool.isRequired,
-  'showTalkToAgentButton': PropTypes.bool.isRequired,
-  'currentBlock': PropTypes.object.isRequired,
   'linkBlock': PropTypes.func.isRequired,
-  'removeLink': PropTypes.func.isRequired
+  'removeLink': PropTypes.func.isRequired,
+  'currentBlock': PropTypes.object.isRequired
 }
 
 export default Footer
