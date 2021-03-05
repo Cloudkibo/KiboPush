@@ -6,6 +6,10 @@ export function superNumberInfo (state = {}, action) {
       return Object.assign({}, state, {
         templates: action.data
       })
+    case ActionTypes.SHOW_ORDERS:
+      return Object.assign({}, state, {
+        orders: action.data
+      })
     default:
       return state
   }

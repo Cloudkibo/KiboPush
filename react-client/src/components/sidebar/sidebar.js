@@ -415,13 +415,13 @@ class Sidebar extends Component {
     return (
       <ul className='m-menu__subnav'>
         <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-          <Link to='/abandonedCart' className='m-menu__link m-menu__toggle'>
+          <Link to={type === 'automated' ? '/abandonedCart' : 'abandonedCartManual'} className='m-menu__link m-menu__toggle'>
             <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
                <span></span>
             </i>
             <span className='m-menu__link-text'>Abandoned Cart</span>
           </Link>
-          <Link to='/ordersCRM' className='m-menu__link m-menu__toggle'>
+          <Link to={type === 'automated' ? '/ordersCRM' : 'ordersCRMManual'} className='m-menu__link m-menu__toggle'>
             <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
                <span></span>
             </i>

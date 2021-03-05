@@ -14,3 +14,25 @@ export function fetchTemplates (body) {
     })
   }
 }
+
+export function fetchOrders (body) {
+  return (dispatch) => {
+    callApi('shopify/fetchOrders', 'post', body).then(res => {
+      console.log('response from fetchOrders', res)
+      if (res.status === 'success') {
+        dispatch({
+          type: ActionTypes.SHOW_ORDERS,
+          data: res.payload
+        })
+      }
+    })
+  }
+}
+export function sendManualMessage (body, cb) {
+  return (dispatch) => {
+    callApi('supernumber/sendManualMessage', 'post', body).then(res => {
+      console.log('response from sendManualMessage', res)
+      if (cb) cb(res)
+    })
+  }
+}
