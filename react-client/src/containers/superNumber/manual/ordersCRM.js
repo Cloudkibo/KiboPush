@@ -18,16 +18,13 @@ class OrdersCRM extends React.Component {
     super(props)
     this.state = {
       orders: [],
-      allOrders: [],
       count: 0,
       pageNumber: 0,
-      limit: 5,
+      limit: 10,
       selectedOrder: '',
       selectedTemplateName: '',
       selectedTemplate: '',
-      supportNumber: '',
-      maxPageReached: 0,
-      currentIndex: 0
+      supportNumber: ''
     }
     this.handlePageClick = this.handlePageClick.bind(this)
     this.getStatus = this.getStatus.bind(this)
@@ -37,29 +34,35 @@ class OrdersCRM extends React.Component {
     this.sendMessage = this.sendMessage.bind(this)
     this.handleSendMessage = this.handleSendMessage.bind(this)
     this.updateState = this.updateState.bind(this)
+    this.handleFetchOrders = this.handleFetchOrders.bind(this)
   }
 
   UNSAFE_componentWillMount() {
-    this.props.fetchOrders({limit: this.state.limit})
+    this.props.fetchOrders({limit: this.state.limit}, this.handleFetchOrders)
     this.props.fetchTemplates()
   }
 
+  handleFetchOrders (payload) {
+    if (payload.orders && payload.orders.length) {
+      this.setState({orders: payload.orders})
+    }
+  }
+
   handlePageClick(data) {
-    console.log('data.selected', data)
     if (data.selected === 0) {
-      this.setState({orders: this.state.allOrders.slice(0, this.state.limit), currentIndex: 0})
+      this.setState({orders: this.props.orders.slice(0, this.state.limit)})
     } else if (this.state.pageNumber < data.selected) {
-      if (this.state.pageNumber < this.state.maxPageReached) {
-        let currentIndex = this.state.currentIndex
-        let orders = JSON.parse(JSON.stringify(this.state.allOrders.slice(currentIndex + 1, this.state.limit)))
-        currentIndex = currentIndex + this.state.limit
-        this.setState({orders: orders, currentIndex: currentIndex})
+      let nextOrders = this.props.orders.filter(o => new Date(o.createdAt) < new Date(this.state.orders[this.state.orders.length - 1].createdAt))
+      if (nextOrders.length > 0) {
+        nextOrders = nextOrders.slice(0, this.state.limit)
+        this.setState({orders: nextOrders})
       } else {
-        this.props.fetchOrders({nextPageParameters: this.props.orders.nextPageParameters})
-        this.setState({maxPageReached: this.state.maxPageReached + 1, currentIndex: this.state.currentIndex + this.state.limit})
+        this.props.fetchOrders({nextPageParameters: this.props.nextPageParameters}, this.handleFetchOrders)
       }
     } else {
-      this.setState({orders: this.state.allOrders.slice(0, this.state.limit), currentIndex: this.state.currentIndex - this.state.limit})
+      let prevOrders = this.props.orders.filter(o => new Date(o.createdAt) > new Date(this.state.orders[0].createdAt))
+      prevOrders = prevOrders.slice(Math.max(prevOrders.length - this.state.limit, 0))
+      this.setState({orders: prevOrders})
     }
     this.setState({ pageNumber: data.selected })
   }
@@ -77,14 +80,8 @@ class OrdersCRM extends React.Component {
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
-    if (nextProps.orders) {
-      this.setState({count: nextProps.orders.count})
-      if (nextProps.orders.orders &&  nextProps.orders.orders.length > 0) {
-        let allOrders = this.state.allOrders
-        allOrders = allOrders.concat(nextProps.orders.orders)
-        console.log('all', allOrders)
-        this.setState({orders: nextProps.orders.orders, allOrders})
-      }
+    if (nextProps.count) {
+      this.setState({count: nextProps.count})
     }
     if (nextProps.templates) {
       this.setState({
@@ -186,7 +183,6 @@ class OrdersCRM extends React.Component {
   }
 
   render() {
-    console.log('this.state.allOrders', this.state.allOrders)
     var alertOptions = {
       offset: 14,
       position: 'bottom right',
@@ -335,8 +331,8 @@ class OrdersCRM extends React.Component {
                             breakLabel={<a href='#/'>...</a>}
                             breakClassName={'break-me'}
                             pageCount={Math.ceil(this.state.count / this.state.limit)}
-                            marginPagesDisplayed={2}
-                            pageRangeDisplayed={3}
+                            marginPagesDisplayed={0}
+                            pageRangeDisplayed={0}
                             onPageChange={this.handlePageClick}
                             containerClassName={'pagination'}
                             subContainerClassName={'pages pagination'}
@@ -362,6 +358,8 @@ class OrdersCRM extends React.Component {
 function mapStateToProps(state) {
   return {
     orders: (state.superNumberInfo.orders),
+    count: (state.superNumberInfo.count),
+    nextPageParameters: (state.superNumberInfo.nextPageParameters),
     templates: (state.superNumberInfo.templates)
   }
 }

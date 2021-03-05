@@ -5,8 +5,8 @@ import AlertContainer from 'react-alert'
 import INFO from './info'
 import WHATSAPPCONFIGURAION from './whatsAppConfiguration'
 import TEMPLATE from './template'
-import { fetchShopifyStore, updateShopifyIntegration } from '../../../redux/actions/commerce.actions'
-import { fetchTemplates } from '../../../redux/actions/superNumber.actions'
+import { fetchShopifyStore } from '../../../redux/actions/commerce.actions'
+import { fetchTemplates, fetchSuperNumberPreferences, updateSuperNumberPreferences, createSuperNumberPreferences } from '../../../redux/actions/superNumber.actions'
 import { validatePhoneNumber } from '../../../utility/utils'
 
 class AbandonedCart extends React.Component {
@@ -22,6 +22,7 @@ class AbandonedCart extends React.Component {
     this.onSave = this.onSave.bind(this)
 
     props.fetchShopifyStore()
+    props.fetchSuperNumberPreferences(this.msg)
     props.fetchTemplates({type: 'ABANDONED_CART_RECOVERY'})
   }
 
@@ -31,13 +32,16 @@ class AbandonedCart extends React.Component {
     } else if (!validatePhoneNumber(this.state.supportNumber)) {
       this.msg.error('Please enter a valid WhatsApp number')
     } else {
-      this.props.updateShopifyIntegration(this.props.store._id, {
-        abandonedCart: {
-          language: this.state.language,
-          enabled: this.state.enabled,
-          supportNumber: this.state.supportNumber
-        }
-      }, this.msg)
+      let payload =  { abandonedCart: {
+        language: this.state.language,
+        enabled: this.state.enabled,
+        supportNumber: this.state.supportNumber
+      }}
+      if (!this.props.superNumberPreferences) {
+        this.props.createSuperNumberPreferences(payload, this.msg)
+      } else {
+        this.props.updateSuperNumberPreferences(payload, this.msg)
+      }
     }
   }
 
@@ -54,14 +58,14 @@ class AbandonedCart extends React.Component {
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
-    if (nextProps.store && nextProps.store.abandonedCart) {
+    if (nextProps.superNumberPreferences && nextProps.superNumberPreferences.abandonedCart) {
       this.setState({
-        language: nextProps.store.abandonedCart.language,
-        supportNumber: nextProps.store.abandonedCart.supportNumber,
-        enabled: nextProps.store.abandonedCart.enabled
+        language: nextProps.superNumberPreferences.abandonedCart.language,
+        supportNumber: nextProps.superNumberPreferences.abandonedCart.supportNumber,
+        enabled: nextProps.superNumberPreferences.abandonedCart.enabled
       })
     }
-    if (nextProps.templates) {
+    if (nextProps.templates && nextProps.templates[this.state.language]) {
       this.setState({text: nextProps.templates[this.state.language].text})
     }
   }
@@ -151,7 +155,8 @@ class AbandonedCart extends React.Component {
 function mapStateToProps(state) {
   return {
     store: (state.commerceInfo.store),
-    templates: (state.superNumberInfo.templates)
+    templates: (state.superNumberInfo.templates),
+    superNumberPreferences: (state.superNumberInfo.superNumberPreferences)
   }
 }
 
@@ -159,7 +164,9 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators({
     fetchShopifyStore,
     fetchTemplates,
-    updateShopifyIntegration
+    fetchSuperNumberPreferences,
+    updateSuperNumberPreferences,
+    createSuperNumberPreferences
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(AbandonedCart)
