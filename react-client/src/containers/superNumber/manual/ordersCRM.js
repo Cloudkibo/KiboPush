@@ -328,7 +328,7 @@ class OrdersCRM extends React.Component {
                           <ReactPaginate
                             previousLabel={'previous'}
                             nextLabel={'next'}
-                            breakLabel={<a>...</a>}
+                            breakLabel={<a href={() => false}>...</a>}
                             breakClassName={'break-me'}
                             pageCount={Math.ceil(this.state.count / this.state.limit)}
                             marginPagesDisplayed={0}
