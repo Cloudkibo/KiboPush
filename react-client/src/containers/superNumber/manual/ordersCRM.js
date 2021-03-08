@@ -292,7 +292,7 @@ class OrdersCRM extends React.Component {
                                       <a href={order.orderAdminUrl} target='_blank' rel='noopener noreferrer'>#{order.orderNumber}</a>
                                     </span>
                                   </td>
-                                  <td data-field='customer' className='m-datatable__cell--center m-datatable__cell'><span style={{ width: '100px' }}>{order.customerName}</span></td>
+                                  <td data-field='customer' className='m-datatable__cell--center m-datatable__cell'><span style={{ width: '100px' }}>{order.customerName ? order.customerName : ''}</span></td>
                                   <td data-field='createdAt' className='m-datatable__cell--center m-datatable__cell'><span style={{ width: '100px' }}>{handleDate(order.createdAt)}</span></td>
                                   <td data-field='amount' className='m-datatable__cell--center m-datatable__cell'><span style={{ width: '100px' }}>{`${order.currency} ${order.totalPrice}`}</span></td>
                                   <td data-field='status' className='m-datatable__cell--center m-datatable__cell'>
@@ -328,7 +328,7 @@ class OrdersCRM extends React.Component {
                           <ReactPaginate
                             previousLabel={'previous'}
                             nextLabel={'next'}
-                            breakLabel={<a href='#/'>...</a>}
+                            breakLabel={<a>...</a>}
                             breakClassName={'break-me'}
                             pageCount={Math.ceil(this.state.count / this.state.limit)}
                             marginPagesDisplayed={0}
