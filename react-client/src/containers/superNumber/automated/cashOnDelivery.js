@@ -75,7 +75,7 @@ class CashOnDelivery extends React.Component {
         codTags: nextProps.superNumberPreferences.cashOnDelivery.cod_tags
       })
     }
-    if (nextProps.templates) {
+    if (nextProps.templates && nextProps.templates[this.state.language]) {
       this.setState({text: nextProps.templates[this.state.language].text})
     }
   }
@@ -153,7 +153,7 @@ class CashOnDelivery extends React.Component {
                           <div className='col-lg-6 m--align-left'>
                           </div>
                           <div className='col-lg-6 m--align-right'>
-                            <button onClick={this.onSave} class="btn btn-primary">Save</button>
+                            <button onClick={this.onSave} className="btn btn-primary">Save</button>
                         </div>
                       </div>
                   </div>

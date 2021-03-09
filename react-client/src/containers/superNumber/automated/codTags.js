@@ -1,7 +1,7 @@
 import React from "react"
 import PropTypes from 'prop-types'
 
-class ActionsArea extends React.Component {
+class CodTags extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
@@ -95,11 +95,9 @@ class ActionsArea extends React.Component {
   }
 }
 
-ActionsArea.propTypes = {
-  'language': PropTypes.string.isRequired,
-  'supportNumber': PropTypes.string.isRequired,
+CodTags.propTypes = {
   'updateState': PropTypes.func.isRequired
 
 }
 
-export default ActionsArea
+export default CodTags
