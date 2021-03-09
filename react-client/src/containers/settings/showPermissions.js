@@ -124,7 +124,7 @@ class ShowPermissions extends React.Component {
     return (
       <div className='col-xl-8'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        <div className='m-portlet m-portlet--full-height'>
+        <div style={{height: '82vh'}} className='m-portlet'>
           <div className='m-portlet__head'>
             <div className='m-portlet__head-caption'>
               <div className='m-portlet__head-title'>
