@@ -77,7 +77,7 @@ class Template extends React.Component {
                   <label style={{fontWeight: 'normal'}}>Template Message:</label>
                   <textarea
                     style={{direction: this.props.language !== 'english' ? 'rtl' : 'inherit', resize: 'none'}}
-                    readonly rows='6' value={this.props.text} className='form-control m-input m-input--solid' />
+                    readOnly rows='6' value={this.props.text} className='form-control m-input m-input--solid' />
                 </div>
                 <div className='form-group m-form__group col-lg-12'>
                   <a href={this.props.previewUrl} target='_blank' rel='noopener noreferrer' className='m-btn--icon'>
