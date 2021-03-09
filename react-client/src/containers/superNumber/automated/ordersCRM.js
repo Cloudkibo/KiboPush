@@ -172,7 +172,7 @@ class OrdersCRM extends React.Component {
                           <div className='col-lg-6 m--align-left'>
                           </div>
                           <div className='col-lg-6 m--align-right'>
-                            <button onClick={this.onSave} class="btn btn-primary">Save</button>
+                            <button onClick={this.onSave} className="btn btn-primary">Save</button>
                         </div>
                       </div>
                   </div>
