@@ -26,11 +26,6 @@ export function settingsInfo (state = initialState, action) {
       return Object.assign({}, state, {
         advanced_settings: action.data
       })
-
-    case ActionTypes.SHOW_ADMINALERTS:
-      return Object.assign({}, state, {
-        adminAlerts: action.data
-      })
     
     case ActionTypes.SHOW_USER_PERMISSIONS:
       return Object.assign({}, state, {

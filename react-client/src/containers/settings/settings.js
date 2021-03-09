@@ -852,9 +852,6 @@ class Settings extends React.Component {
             }
             { this.state.openTab === 'cannedResponses' &&
               <CannedResponses history= {this.props.history}/>
-            }
-            { this.state.openTab === 'notifications' &&
-              <Notifications history= {this.props.history}/>
             }  
             {
               this.state.openTab === 'message_alerts' &&
