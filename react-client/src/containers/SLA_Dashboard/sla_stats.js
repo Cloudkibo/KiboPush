@@ -60,19 +60,22 @@ class SLAStats extends React.Component {
               iconWidth='50px'
             />
           </div>
-          <div className='col-md-4'>
-            <IconStack
-              icon='la la-comment'
-              title={this.props.messagesReceived}
-              subtitle='Messages Received'
-              iconStyle='info'
-              id='triggers'
-              iconFontSize='1.8rem'
-              titleFontSize='20px'
-              iconHeight='50px'
-              iconWidth='50px'
-            />
-          </div>
+          {
+            this.props.showMessagesReceived &&
+            <div className='col-md-4'>
+              <IconStack
+                icon='la la-comment'
+                title={this.props.messagesReceived}
+                subtitle='Messages Received'
+                iconStyle='info'
+                id='triggers'
+                iconFontSize='1.8rem'
+                titleFontSize='20px'
+                iconHeight='50px'
+                iconWidth='50px'
+              />
+            </div>
+          }
           <div className='col-md-4'>
             <IconStack
               icon='la la-send-o'

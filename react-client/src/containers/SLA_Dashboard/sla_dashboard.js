@@ -37,13 +37,16 @@ class SLADashboard extends React.Component {
     if (!props.members) {
       props.loadMembersList()
     }
+    this.fetchData()
     this.fetchTimer = null
   }
 
   fetchData() {
     const query = {
-      pageId: this.state.page.value,
       days: this.state.days
+    }
+    if (this.state.page) {
+      query.pageId = this.state.page.value
     }
     if (this.state.team) {
       query.teamId = this.state.team.value
@@ -56,7 +59,7 @@ class SLADashboard extends React.Component {
   handleDaysChange(days) {
     this.setState({ days: Number(days) }, () => {
       clearTimeout(this.fetchTimer)
-      this.fetchTimer = setTimeout(this.fetchData, 1000)
+      this.fetchTimer = setTimeout(this.fetchData, 100)
     })
   }
 
@@ -79,66 +82,20 @@ class SLADashboard extends React.Component {
     })
   }
 
-  // UNSAFE_componentWillReceiveProps(nextProps) {
-  //   console.log('UNSAFE_componentWillReceiveProps sla_dashboard')
-  //   const newState = {}
-  //   if (!this.state.pageOptions && nextProps.pages) {
-  //     const pageOptions = nextProps.pages.map((page) => {
-  //       return {
-  //         label: page.pageName,
-  //         value: page._id
-  //       }
-  //     })
-  //     newState.pageOptions = pageOptions
-  //     newState.page = pageOptions[0]
-  //     if (pageOptions[0]) {
-  //       this.props.loadTeamsList({ pageId: pageOptions[0].value })
-  //       console.log('loadSLADashboardData', { pageId: pageOptions[0].value, days: this.state.days })
-  //       this.props.loadSLADashboardData({ pageId: pageOptions[0].value, days: this.state.days })
-  //     } else {
-  //       newState.error = 'No pages are connected'
-  //     }
-  //   }
-  //   if (nextProps.members) {
-  //     const agentOptions = nextProps.members.map((member) => {
-  //       return {
-  //         label: member.userId.name,
-  //         value: member._id
-  //       }
-  //     })
-  //     newState.agentOptions = agentOptions
-  //   }
-  //   if (nextProps.teams) {
-  //     const teamOptions = nextProps.teams.map((team) => {
-  //       return {
-  //         label: team.name,
-  //         value: team._id
-  //       }
-  //     })
-  //     newState.teamOptions = teamOptions
-  //   }
-  //   if (nextProps.slaDashboardError) {
-  //     newState.error = nextProps.slaDashboardError
-  //   }
-  //   this.setState(newState)
-  // }
-
   static getDerivedStateFromProps(nextProps, prevState) {
     const newState = {}
     if (!prevState.page && nextProps.pages) {
+      const allPages = { label: 'All', value: '' }
       const pageOptions = nextProps.pages.map((page) => {
         return {
           label: page.pageName,
           value: page._id
         }
       })
+      pageOptions.unshift(allPages)
       newState.pageOptions = pageOptions
-      newState.page = pageOptions[0]
-      if (pageOptions[0]) {
-        nextProps.loadTeamsList({ pageId: pageOptions[0].value })
-        console.log('loadSLADashboardData', { pageId: pageOptions[0].value, days: prevState.days })
-        nextProps.loadSLADashboardData({ pageId: pageOptions[0].value, days: prevState.days })
-      } else {
+      newState.page = allPages
+      if (pageOptions.length === 0) {
         newState.error = 'No pages are connected'
       }
     }
@@ -162,6 +119,8 @@ class SLADashboard extends React.Component {
     }
     if (nextProps.slaDashboardError) {
       newState.error = nextProps.slaDashboardError
+    } else {
+      newState.error = ''
     }
     return newState
   }
@@ -197,7 +156,7 @@ class SLADashboard extends React.Component {
                   </span>
                   <div style={{ width: '100px' }}>
                     <input
-                      disabled={this.props.fetchingSLAData || this.state.error}
+                      disabled={this.props.fetchingSLAData}
                       placeholder='days'
                       type='number'
                       min='1'
@@ -226,7 +185,7 @@ class SLADashboard extends React.Component {
                 <div className='col-4'>
                   <h6>Select Page:</h6>
                   <Select
-                    isDisabled={this.props.fetchingSLAData || this.state.error}
+                    isDisabled={this.props.fetchingSLAData}
                     isSearchable
                     options={this.state.pageOptions}
                     onChange={this.handlePageChange}
@@ -237,7 +196,7 @@ class SLADashboard extends React.Component {
                 <div className='col-4'>
                   <h6>Select Agent:</h6>
                   <Select
-                    isDisabled={this.props.fetchingSLAData || this.state.error}
+                    isDisabled={this.props.fetchingSLAData}
                     isClearable
                     isSearchable
                     options={this.state.agentOptions}
@@ -249,7 +208,7 @@ class SLADashboard extends React.Component {
                 <div className='col-4'>
                   <h6>Select Team:</h6>
                   <Select
-                    isDisabled={this.props.fetchingSLAData || this.state.error}
+                    isDisabled={this.props.fetchingSLAData}
                     isClearable
                     isSearchable
                     options={this.state.teamOptions}
@@ -283,6 +242,7 @@ class SLADashboard extends React.Component {
                     openSessions={this.props.slaDashboard.sessions.open}
                     messagesReceived={this.props.slaDashboard.messages.received}
                     messagesSent={this.props.slaDashboard.messages.sent}
+                    showMessagesReceived={!(this.state.team || this.state.agent)}
                   />
 
                   <SLAGraph
