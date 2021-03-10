@@ -45,12 +45,12 @@ class SLADashboard extends React.Component {
     const query = {
       days: this.state.days
     }
-    if (this.state.page) {
+    if (this.state.page && this.state.page.value) {
       query.pageId = this.state.page.value
     }
-    if (this.state.team) {
+    if (this.state.team && this.state.team.value) {
       query.teamId = this.state.team.value
-    } else if (this.state.agent) {
+    } else if (this.state.agent && this.state.agent.value) {
       query.agentId = this.state.agent.value
     }
     this.props.loadSLADashboardData(query)
@@ -59,7 +59,7 @@ class SLADashboard extends React.Component {
   handleDaysChange(days) {
     this.setState({ days: Number(days) }, () => {
       clearTimeout(this.fetchTimer)
-      this.fetchTimer = setTimeout(this.fetchData, 100)
+      this.fetchTimer = setTimeout(this.fetchData, 1000)
     })
   }
 
