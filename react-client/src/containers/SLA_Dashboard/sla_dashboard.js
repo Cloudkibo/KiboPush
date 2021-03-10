@@ -64,10 +64,17 @@ class SLADashboard extends React.Component {
   }
 
   handlePageChange(page) {
-    this.props.loadTeamsList({ pageId: page.value })
-    this.setState({ page, team: null, teamOptions: [] }, () => {
-      this.fetchData()
-    })
+    if (page.value) {
+      this.props.loadTeamsList({ pageId: page.value })
+      this.setState({ page, team: null, teamOptions: [] }, () => {
+        this.fetchData()
+      })
+    } else {
+      this.props.loadMembersList()
+      this.setState({ page: null, team: null, teamOptions: [] }, () => {
+        this.fetchData()
+      })
+    }
   }
 
   handleAgentChange(agent) {
