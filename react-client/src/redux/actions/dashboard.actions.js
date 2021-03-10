@@ -83,6 +83,7 @@ export function loadSLADashboardData(data) {
       dispatch({
         type: ActionTypes.FETCHING_SLA_DASHBOARD
       })
+      
       const response = await callApi('dashboard/sla', 'post', dataCopy)
       if (!response.payload || response.payload.length === 0) {
         dispatch(updateSLADashboard(null, 'No data currently available'))
@@ -103,104 +104,39 @@ export function loadSLADashboardData(data) {
           avgResolveTime: 0,
           graphData: []
         }
-        let totalAvgResponseTime = 0
-        let totalAvgResolveTime = 0
+        let avgRespTime = 0
+        let responses = 0
+        let avgResolveTime = 0
         for (let i = 0; i < response.payload.length; i++) {
-          const data = response.payload[i]
-          slaData.sessions.new += data.sessions.new
-          slaData.sessions.open += data.sessions.open
-          slaData.sessions.pending += data.sessions.pending
-          slaData.sessions.resolved += data.sessions.resolved
+          const item = response.payload[i]
+          slaData.sessions.new += item.sessions.new
+          slaData.sessions.open += item.sessions.open
+          slaData.sessions.pending += item.sessions.pending
+          slaData.sessions.resolved += item.sessions.resolved
 
-          slaData.messages.received += data.messages.received
-          slaData.messages.sent += data.messages.sent
+          slaData.messages.received += item.messages.received
+          slaData.messages.sent += item.messages.sent
 
-          if (data.maxRespTime && data.maxRespTime > slaData.maxResponseTime) {
-            slaData.maxResponseTime = data.maxRespTime
+          if (item.maxRespTime && item.maxRespTime > slaData.maxResponseTime) {
+            slaData.maxResponseTime = item.maxRespTime
           }
 
-          totalAvgResponseTime += data.avgRespTime ? data.avgRespTime : 0
-          totalAvgResolveTime += data.avgResolveTime ? data.avgResolveTime : 0
+          avgRespTime += item.avgRespTime ? item.avgRespTime : 0
+          responses += item.responses ? item.responses : 0
+          avgResolveTime += item.avgResolveTime ? item.avgResolveTime : 0
 
           slaData.graphData.push({
-            avgResponseTime: data.avgRespTime ? data.avgRespTime : 0,
-            avgResolveTime: data.avgResolveTime ? data.avgResolveTime : 0,
-            maxResponseTime: data.maxRespTime ? data.maxRespTime : 0,
-            date: data.createdAt.substring(0, 10)
+            avgResponseTime: item.avgRespTime ? item.avgRespTime / (1000 * 60) : 0,
+            avgResolveTime: item.avgResolveTime ? item.avgResolveTime / (1000 * 60) : 0,
+            maxResponseTime: item.maxRespTime ? item.maxRespTime /(1000 * 60) : 0,
+            date: item.createdAt.substring(0, 10)
           })
         }
+        slaData.avgResponseTime = responses <= 0 ? 0 : avgRespTime / responses
+        slaData.avgResolveTime = slaData.sessions.resolved <= 0 ? 0 : avgResolveTime / slaData.sessions.resolved
         console.log('slaData', slaData)
         dispatch(updateSLADashboard(slaData))
       }
-      // setTimeout(() => {
-      //   dispatch(
-      //     updateSLADashboard({
-      //       sessions: {
-      //         new: 999,
-      //         resolved: 99,
-      //         pending: 99,
-      //         open: 99
-      //       },
-      //       messages: {
-      //         received: 999,
-      //         sent: 999
-      //       },
-      //       maxResponseTime: 500,
-      //       avgResponseTime: 120,
-      //       avgResolveTime: 1000,
-      //       graphData: [
-      //         {
-      //           avgResponseTime: 30,
-      //           avgResolveTime: 100,
-      //           maxResponseTime: 300,
-      //           date: '2020-12-08'
-      //         },
-      //         {
-      //           avgResponseTime: 40,
-      //           avgResolveTime: 120,
-      //           maxResponseTime: 350,
-      //           date: '2020-12-09'
-      //         },
-      //         {
-      //           avgResponseTime: 50,
-      //           avgResolveTime: 150,
-      //           maxResponseTime: 400,
-      //           date: '2020-12-10'
-      //         },
-      //         {
-      //           avgResponseTime: 60,
-      //           avgResolveTime: 190,
-      //           maxResponseTime: 450,
-      //           date: '2020-12-11'
-      //         },
-      //         {
-      //           avgResponseTime: 20,
-      //           avgResolveTime: 110,
-      //           maxResponseTime: 300,
-      //           date: '2020-12-12'
-      //         },
-      //         {
-      //           avgResponseTime: 80,
-      //           avgResolveTime: 200,
-      //           maxResponseTime: 380,
-      //           date: '2020-12-13'
-      //         },
-      //         {
-      //           avgResponseTime: 90,
-      //           avgResolveTime: 250,
-      //           maxResponseTime: 390,
-      //           date: '2020-12-14'
-      //         },
-      //         {
-      //           avgResponseTime: 30,
-      //           avgResolveTime: 100,
-      //           maxResponseTime: 600,
-      //           date: '2020-12-15'
-      //         }
-      //       ]
-      //     })
-      //   )
-      // }, 1000)
     } catch (err) {
       dispatch(
         updateSLADashboard(null, err && err.message ? err.message : 'Error Fetching Data. Try Refreshing the Page.')

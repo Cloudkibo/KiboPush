@@ -22,7 +22,7 @@ class SLAGraph extends React.Component {
                     </div>
                     <div className='col m--align-right'>
                       <span style={{ fontSize: '1.2rem', fontWeight: '500', color: avgResponseTimeColor }}>
-                        {this.props.avgResponseTime > 0 ? moment.duration(this.props.avgResponseTime, 'seconds').locale('en').humanize() : 'No Responses'}
+                        {this.props.avgResponseTime > 0 ? moment.duration(Math.floor(this.props.avgResponseTime)).locale('en').humanize() : 'No Responses'}
                       </span>
                     </div>
                   </div>
@@ -34,7 +34,7 @@ class SLAGraph extends React.Component {
                     </div>
                     <div className='col m--align-right'>
                       <span style={{ fontSize: '1.2rem', fontWeight: '500', color: avgResolveTimeColor }}>
-                        {this.props.avgResolveTime > 0 ? moment.duration(this.props.avgResolveTime, 'seconds').locale('en').humanize() : 'No Resolves'}
+                        {this.props.avgResolveTime > 0 ? moment.duration(Math.floor(this.props.avgResolveTime)).locale('en').humanize() : 'No Resolves'}
                       </span>
                     </div>
                   </div>
@@ -46,7 +46,7 @@ class SLAGraph extends React.Component {
                     </div>
                     <div className='col m--align-right'>
                       <span style={{ fontSize: '1.2rem', fontWeight: '500', color: maxResponseTimeColor }}>
-                        {this.props.maxResponseTime > 0 ? moment.duration(this.props.maxResponseTime, 'seconds').locale('en').humanize() : 'No Responses'}
+                        {this.props.maxResponseTime > 0 ? moment.duration(Math.floor(this.props.maxResponseTime)).locale('en').humanize() : 'No Responses'}
                       </span>
                     </div>
                   </div>
