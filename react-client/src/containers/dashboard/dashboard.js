@@ -725,14 +725,8 @@ class Dashboard extends React.Component {
                     <IntegrationsSummary />
                   </div>
                 )}
-              {/*
-                this.props.user && this.props.user.permissions['sla_dashboard'] && !this.props.isMobile &&
-                (url.includes('kibochat.cloudkibo.com') || url.includes('localhost')) &&
-                <div className='row'>
-                  <SLADashboard />
-                </div>
-              */}
               {
+                this.props.user && this.props.user.permissions['sla_dashboard'] && !this.props.isMobile &&
                 (url.includes('kibochat.cloudkibo.com') || url.includes('localhost')) &&
                 <div className='row'>
                   <SLADashboard />
