@@ -71,7 +71,7 @@ class SendMessageModal extends React.Component {
           <textarea
             style={{resize: 'none'}}
             readonly rows='6'
-            value={this.props.templates && this.props.templates[this.props.selectedTemplateName] && this.props.templates[this.props.selectedTemplateName]['english'].text}
+            value={this.props.templateMessage}
             className='form-control m-input m-input--solid' />
         </div>
         <div className='row' style={{paddingTop: '30px'}}>
@@ -89,6 +89,7 @@ class SendMessageModal extends React.Component {
 SendMessageModal.propTypes = {
   'showSelectTemplate': PropTypes.bool,
   'supportNumber': PropTypes.string.isRequired,
+  'templateMessage': PropTypes.string.isRequired,
   'selectedTemplateName': PropTypes.string.isRequired,
   'templates': PropTypes.object.isRequired,
   'updateState': PropTypes.func.isRequired,

@@ -218,6 +218,7 @@ class OrdersCRM extends React.Component {
                   templates={this.props.templates}
                   selectedTemplateName={this.state.selectedTemplateName}
                   sendMessage={this.sendMessage}
+                  templateMessage={this.state.selectedTemplate && this.state.selectedTemplate.text}
                   updateState={this.updateState}
                 />
               </div>
