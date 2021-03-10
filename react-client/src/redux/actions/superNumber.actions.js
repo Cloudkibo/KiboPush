@@ -1,6 +1,24 @@
 import * as ActionTypes from '../constants/constants'
 import callApi from '../../utility/api.caller.service'
 
+export function showCheckouts(body, data) {
+  if (body.nextPageParameters) {
+    return {
+      type: ActionTypes.SHOW_CHECKOUTS,
+      checkouts: data.checkouts,
+      count: data.count,
+      nextPageParameters: data.nextPageParameters
+    }
+  } else {
+    return {
+      type: ActionTypes.SHOW_CHECKOUTS_OVERWRITE,
+      checkouts: data.checkouts,
+      count: data.count,
+      nextPageParameters: data.nextPageParameters
+    }
+  }
+}
+
 export function showOrders(body, data) {
   if (body.nextPageParameters) {
     return {
@@ -44,6 +62,19 @@ export function fetchOrders (body, cb) {
     })
   }
 }
+
+export function fetchCheckouts (body, cb) {
+  return (dispatch) => {
+    callApi('shopify/fetchCheckouts', 'post', body).then(res => {
+      console.log('response from fetchCheckouts', res)
+      if (res.status === 'success') {
+        if (cb) cb(res.payload)
+        dispatch(showCheckouts(body, res.payload))
+      }
+    })
+  }
+}
+
 export function sendManualMessage (body, cb) {
   return (dispatch) => {
     callApi('supernumber/sendManualMessage', 'post', body).then(res => {

@@ -18,6 +18,18 @@ export function superNumberInfo (state = {}, action) {
         count: action.count,
         nextPageParameters: action.nextPageParameters
       })
+    case ActionTypes.SHOW_CHECKOUTS:
+      return Object.assign({}, state, {
+        checkouts: [...state.checkouts, ...action.checkouts],
+        checkoutCount: action.count,
+        checkoutNextPageParameters: action.nextPageParameters
+      })
+    case ActionTypes.SHOW_CHECKOUTS_OVERWRITE:
+      return Object.assign({}, state, {
+        checkouts: action.checkouts,
+        checkoutCount: action.count,
+        checkoutNextPageParameters: action.nextPageParameters
+      })
     case ActionTypes.SAVE_SUPERNUMBER_PRFERENCES:
       return Object.assign({}, state, {
         superNumberPreferences: action.data
