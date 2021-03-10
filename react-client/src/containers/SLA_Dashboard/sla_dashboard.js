@@ -51,7 +51,7 @@ class SLADashboard extends React.Component {
     if (this.state.team && this.state.team.value) {
       query.teamId = this.state.team.value
     } else if (this.state.agent && this.state.agent.value) {
-      query.agentId = this.state.agent.value
+      query.userId = this.state.agent.value
     }
     this.props.loadSLADashboardData(query)
   }
