@@ -85,7 +85,7 @@ class Integrations extends React.Component {
           url = '/api/hubspotIntegrations/auth'
           break
         case 'DIALOGFLOW':
-          url = 'https://kibochat.ngrok.io/auth/dialogflow'
+          url = '/auth/dialogflow'
           break
         default:
           url = '/api/sheetsIntegrations/auth'
