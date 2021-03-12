@@ -2,24 +2,57 @@
 import React from 'react'
 import {
   getIntegrations,
-  updateIntegration,
-  createIntegration
+  updateIntegration
 } from '../../redux/actions/settings.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import AlertContainer from 'react-alert'
-import { findIndex } from 'lodash'
 import YouTube from 'react-youtube'
 
+const isKiboChat = true || window.location.hostname.includes('kibochat.cloudkibo.com')
+const isKiboEngage = window.location.hostname.includes('kiboengage.cloudkibo.com')
 class Integrations extends React.Component {
   constructor (props, context) {
     super(props, context)
-    const url = window.location.hostname
-    console.log('url', url)
     this.state = {
       deleteIngerationId: '',
       openVideo: false,
-      integrations: [
+      integrations: []
+    }
+    this.disconnect = this.disconnect.bind(this)
+    this.saveIntegerationId = this.saveIntegerationId.bind(this)
+    this.connect = this.connect.bind(this)
+    this.openVideoTutorial = this.openVideoTutorial.bind(this)
+    this.initializeIntegrations = this.initializeIntegrations.bind(this)
+    this.connectIntegration = this.connectIntegration.bind(this)
+  }
+
+  componentDidMount() {
+    let title = ''
+    if (isKiboEngage) {
+      title = 'KiboEngage'
+    } else if (isKiboChat) {
+      title = 'KiboChat'
+    }
+    document.title = `${title} | Integrations`
+
+    this.initializeIntegrations()
+  }
+
+  initializeIntegrations () {
+    console.log('isKiboChat', isKiboChat)
+    let integrations = []
+    if (isKiboChat) {
+      integrations = [
+        {
+          name: 'DIALOGFLOW',
+          image: 'https://cdn.cloudkibo.com/public/assets/app/media/img/logos/dialogflow.png',
+          enabled: false,
+          description: 'This integration can help you link DialogFlow agent with your chatbot'
+        }
+      ]
+    } else if (isKiboEngage) {
+      integrations = [
         {
           name: 'Google Sheets',
           icon: 'fa fa-file-excel-o',
@@ -36,11 +69,26 @@ class Integrations extends React.Component {
         }
       ]
     }
-    props.getIntegrations()
-    this.disconnect = this.disconnect.bind(this)
-    this.saveIntegerationId = this.saveIntegerationId.bind(this)
-    this.connect = this.connect.bind(this)
-    this.openVideoTutorial = this.openVideoTutorial.bind(this)
+    this.setState({ integrations }, () => { this.props.getIntegrations() })
+  }
+
+  connectIntegration (type) {
+    if (this.props.superUser) {
+      this.msg.error('You are not allowed to perform this action')
+    } else {
+      let url = ''
+      switch (type) {
+        case 'Hubspot':
+          url = '/api/hubspotIntegrations/auth'
+          break
+        case 'DIALOGFLOW':
+          url = '/auth/dialogflow'
+          break
+        default:
+          url = '/api/sheetsIntegrations/auth'
+      }
+      window.location.replace(url)
+    }
   }
 
   openVideoTutorial () {
@@ -65,19 +113,18 @@ class Integrations extends React.Component {
       this.props.history.push({
         pathname: '/api/sheetsIntegrations/auth'
       })
-      // this.props.createIntegration()
     }
   }
 
   UNSAFE_componentWillReceiveProps (nextProps) {
-    console.log('nextProps in integrations', nextProps)
     if (nextProps.integrations && nextProps.integrations.length > 0) {
-      let index
       let integrations = this.state.integrations
       for (let i = 0; i < nextProps.integrations.length; i++) {
-        index = findIndex(this.state.integrations, function(o) { return o.name === nextProps.integrations[i].integrationName })
-        integrations[index].enabled = nextProps.integrations[i].enabled
-        integrations[index]._id = nextProps.integrations[i]._id
+        let index = this.state.integrations.findIndex((item) => item.name === nextProps.integrations[i].integrationName)
+        if (index >= 0) {
+          integrations[index].enabled = nextProps.integrations[i].enabled
+          integrations[index]._id = nextProps.integrations[i]._id
+        }
       }
       this.setState({integrations: integrations})
     }
@@ -175,54 +222,53 @@ class Integrations extends React.Component {
           </div>
           <div className='tab-content'>
             <div className='m-content'>
-               <div style={{textAlign: 'center', marginBottom: '0'}} className='alert m-alert m-alert--default' role='alert'>
-                Need help in understanding Zoom Integration? Here is the <a href='https://kibopush.com/livechat/#zoomIntegration' target='_blank' rel='noopener noreferrer'>documentation</a>.
-                Or check out this  <a href='#/' onClick={this.openVideoTutorial}>video tutorial</a> to understand this feature.
-                </div>
               <div className='row'>
                 <div className='col-xl-12 col-md-12 col-sm-12'>
-                  <div>
-              <div className='m-portlet__body'>
-                <div className='tab-content'>
-                  <div className='tab-pane active' id='m_widget4_tab1_content'>
-                    <div className='m-widget4'>
-                      {
-                      this.state.integrations.map((integration, i) => (
-                        <div className='m-widget4__item' key={i}>
-                          <div className='m-widget4__img m-widget4__img--logo'>
-                            <span className='btn btn-success m-btn m-btn--icon m-btn--icon-only m-btn--custom m-btn--pill' style={{backgroundColor: integration.color, borderColor: integration.color}}>
-                              <i className={integration.icon} style={{color: 'white', fontSize: 'large'}}></i>
-                            </span>
-                          </div>
-                          <div className='m-widget4__info' style={{width: '140px'}}>
-                            <span className='m-widget4__title'>
-                              {integration.name}
-                            </span>
-                          </div>
-                          <span className='m-widget4__ext' style={{width: '140px'}}>
-                            {integration.enabled
-                              ? <button className='m-btn m-btn--pill m-btn--hover-danger btn btn-danger' data-target="#deleteIntegeration" data-toggle="modal" style={{borderColor: '#f4516c', color: '#f4516c', marginRight: '10px'}} onClick={() => this.saveIntegerationId(integration._id)}>
-                                Disconnect
-                              </button>
-                              : <button onClick={() => {
-                                if (this.props.superUser) {
-                                  this.msg.error('You are not allowed to perform this action')
-                                } else {
-                                  let url = integration.name === 'Hubspot'? '/api/hubspotIntegrations/auth':'/api/sheetsIntegrations/auth'
-                                  window.location.replace(url)
-                                }
-                              }}
-                              className='m-btn m-btn--pill m-btn--hover-success btn btn-success' style={{borderColor: '#34bfa3', color: '#34bfa3', marginRight: '10px'}}>
-                              Connect
-                            </button>
+                  <div className='m-portlet__body'>
+                    <div className='tab-content'>
+                      <div className='tab-pane active' id='m_widget4_tab1_content'>
+                        <div className='m-widget4'>
+                        {
+                          this.state.integrations.map((integration, i) => (
+                          <div className='m-widget4__item' key={i}>
+                            {
+                              integration.image
+                              ? <div className='m-widget4__img m-widget4__img--pic'>
+                                <img src={integration.image} alt="" />
+                              </div>
+                              : <div className='m-widget4__img m-widget4__img--logo'>
+                                <span className='btn btn-success m-btn m-btn--icon m-btn--icon-only m-btn--custom m-btn--pill' style={{backgroundColor: integration.color, borderColor: integration.color}}>
+                                  <i className={integration.icon} style={{color: 'white', fontSize: 'large'}}></i>
+                                </span>
+                              </div>
                             }
-                          </span>
-                        <span className='m-widget4__ext'>
-                          {integration.description}
-                        </span>
+                            <div className='m-widget4__info' style={{width: '140px'}}>
+                              <span className='m-widget4__title'>
+                                {integration.name}
+                              </span>
+                            </div>
+                            <span className='m-widget4__ext' style={{width: '140px'}}>
+                              {
+                                integration.enabled
+                                ? <button className='m-btn m-btn--pill m-btn--hover-danger btn btn-danger' data-target="#deleteIntegeration" data-toggle="modal" style={{borderColor: '#f4516c', color: '#f4516c', marginRight: '10px'}} onClick={() => this.saveIntegerationId(integration._id)}>
+                                  Disconnect
+                                </button>
+                                : <button onClick={() => this.connectIntegration(integration.name)}
+                                  className='m-btn m-btn--pill m-btn--hover-success btn btn-success'
+                                  style={{borderColor: '#34bfa3', color: '#34bfa3', marginRight: '10px'}}
+                                  >
+                                  Connect
+                                </button>
+                              }
+                            </span>
+                            <span className='m-widget4__ext'>
+                              {integration.description}
+                            </span>
+                          </div>
+                          ))
+                        }
+                        </div>
                       </div>
-                      ))
-                    }
                     </div>
                   </div>
                 </div>
@@ -231,9 +277,6 @@ class Integrations extends React.Component {
           </div>
         </div>
       </div>
-    </div>
-  </div>
-</div>
     )
   }
 }
@@ -247,8 +290,7 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     getIntegrations,
-    updateIntegration,
-    createIntegration
+    updateIntegration
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Integrations)
