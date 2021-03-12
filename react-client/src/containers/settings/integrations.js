@@ -7,7 +7,6 @@ import {
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import AlertContainer from 'react-alert'
-import { findIndex } from 'lodash'
 import YouTube from 'react-youtube'
 
 const isKiboChat = true || window.location.hostname.includes('kibochat.cloudkibo.com')
@@ -119,12 +118,13 @@ class Integrations extends React.Component {
 
   UNSAFE_componentWillReceiveProps (nextProps) {
     if (nextProps.integrations && nextProps.integrations.length > 0) {
-      let index
       let integrations = this.state.integrations
       for (let i = 0; i < nextProps.integrations.length; i++) {
-        index = findIndex(this.state.integrations, function(o) { return o.name === nextProps.integrations[i].integrationName })
-        integrations[index].enabled = nextProps.integrations[i].enabled
-        integrations[index]._id = nextProps.integrations[i]._id
+        let index = this.state.integrations.findIndex((item) => item.name === nextProps.integrations[i].integrationName)
+        if (index >= 0) {
+          integrations[index].enabled = nextProps.integrations[i].enabled
+          integrations[index]._id = nextProps.integrations[i]._id
+        }
       }
       this.setState({integrations: integrations})
     }
