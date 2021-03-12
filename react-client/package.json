@@ -101,7 +101,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
-  "proxy": "http://localhost:3022",
+  "proxy": "https://kibochat.ngrok.io",
   "eslintConfig": {
     "extends": "react-app"
   },

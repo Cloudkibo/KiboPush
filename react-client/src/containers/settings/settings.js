@@ -595,15 +595,15 @@ class Settings extends React.Component {
                         </a>
                       </li>
                     }
-                    { url.includes('kiboengage.cloudkibo.com') && (this.props.user.role === 'admin' || this.props.user.role === 'buyer') &&
-                    (this.props.user.plan['hubspot_integration'] || this.props.user.plan['dialogflow_integration'] || this.props.user.plan['google_sheets_integration']) &&
-                    this.props.user.permissions['manage_integrations'] &&
-                    <li className='m-nav__item'>
-                      <a href='#/' className='m-nav__link' onClick={this.setIntegrations} style={{cursor: 'pointer'}} >
-                        <i className='m-nav__link-icon flaticon-network' />
-                        <span className='m-nav__link-text'>Integrations</span>
-                      </a>
-                    </li>
+                    {(this.props.user.role === 'admin' || this.props.user.role === 'buyer') &&
+                      (this.props.user.plan['hubspot_integration'] || this.props.user.plan['dialogflow_integration'] || this.props.user.plan['google_sheets_integration']) &&
+                      this.props.user.permissions['manage_integrations'] &&
+                      <li className='m-nav__item'>
+                        <a href='#/' className='m-nav__link' onClick={this.setIntegrations} style={{ cursor: 'pointer' }} >
+                          <i className='m-nav__link-icon flaticon-network' />
+                          <span className='m-nav__link-text'>Integrations</span>
+                        </a>
+                      </li>
                     }
                     {(url.includes('localhost') || url.includes('kibochat.cloudkibo.com')) && (this.props.user.role === 'admin' || this.props.user.role === 'buyer') &&
                       <li className='m-nav__item'>
