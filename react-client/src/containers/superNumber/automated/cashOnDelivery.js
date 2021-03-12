@@ -140,7 +140,7 @@ class CashOnDelivery extends React.Component {
                         text={this.state.text}
                         heading='Cash On Delivery'
                         id='cashOnDelivery'
-                        previewUrl='https://kibopush.com'
+                        previewUrl='https://cdn.cloudkibo.com/public/img/cod-order-confirmation.png'
                         language={this.state.language}
                       />
                       <br />
