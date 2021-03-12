@@ -41,6 +41,34 @@ class Integrations extends React.Component {
     this.saveIntegerationId = this.saveIntegerationId.bind(this)
     this.connect = this.connect.bind(this)
     this.openVideoTutorial = this.openVideoTutorial.bind(this)
+    this.setStateIntegrations = this.setStateIntegrations.bind(this)
+  }
+
+  componentDidMount () {
+    this.setStateIntegrations()
+  }
+
+  setStateIntegrations () {
+    let integrations = []
+    if (this.props.user.plan['hubspot_integration']) {
+      integrations.push({
+        name: 'Hubspot',
+        icon: 'fa fa-transgender-alt',
+        enabled: false,
+        description: 'This integration can help you save data from KiboPush to HubSpot or vice versa',
+        color: 'orangered'
+      })
+    }
+    if (this.props.user.plan['google_sheets_integration']) {
+      integrations.push({
+        name: 'Google Sheets',
+        icon: 'fa fa-file-excel-o',
+        enabled: false,
+        description: 'This integration can help you save data from KiboPush to Google Sheets or vice versa',
+        color: 'green'
+      })
+    }
+    this.setState({integrations})
   }
 
   openVideoTutorial () {
@@ -160,7 +188,7 @@ class Integrations extends React.Component {
             </div>
           </div>
         </div>
-        <div className='m-portlet m-portlet--full-height m-portlet--tabs  '>
+        <div style={{height: '82vh'}} className='m-portlet m-portlet--tabs  '>
           <div className='m-portlet__head'>
             <div className='m-portlet__head-tools'>
               <ul className='nav nav-tabs m-tabs m-tabs-line   m-tabs-line--left m-tabs-line--primary' role='tablist'>

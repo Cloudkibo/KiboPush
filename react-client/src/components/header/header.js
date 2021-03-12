@@ -23,11 +23,11 @@ import {
 import { fetchNotifications, markRead } from '../../redux/actions/notifications.actions'
 import AlertContainer from 'react-alert'
 import { getLandingPage } from '../../utility/utils'
+import cookie from 'react-cookie'
 
 // Components
 import HEADERMENU from './headerMenu'
 import HEADERTOPBAR from './headerTopbar'
-import cookie from 'react-cookie'
 
 // styles
 const darkSkinStyle = {
@@ -179,7 +179,6 @@ class Header extends React.Component {
   }
 
   redirectToDashboard (value) {
-    debugger
     if (value === 'sms') {
       this.props.history.push({
         pathname: getLandingPage(value),
