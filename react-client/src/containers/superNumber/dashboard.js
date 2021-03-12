@@ -44,20 +44,16 @@ class Dashboard extends React.Component {
     this.setState({
       rangeEnd: e.target.value,
     })
-    /* eslint-disable */
-    let {valid, dateRangeWarning} = validDateRange(this.state.startDate, e.target.value)
-    /* eslint-enable */
-    this.setState({dateRangeWarning: dateRangeWarning})
+    let {dateRangeWarning} = validDateRange(this.state.rangeStart, e.target.value)
+    this.setState({dateRangeWarning})
   }
 
   changeDateFrom (e) {
     this.setState({
       rangeStart: e.target.value
     })
-    /* eslint-disable */
-    let {valid, dateRangeWarning} = validDateRange(e.target.value, this.state.endDate)
-    /* eslint-enable */
-    this.setState({dateRangeWarning: dateRangeWarning})
+    let {dateRangeWarning} = validDateRange(e.target.value, this.state.rangeEnd)
+    this.setState({dateRangeWarning})
   }
 
   setAutomated (e) {
@@ -163,9 +159,6 @@ class Dashboard extends React.Component {
                         placeholder='Value'
                         max= {moment().format('YYYY-MM-DD')}
                         type='date'/>
-                      { this.state.dateRangeWarning !== '' &&<span style={{color: '#ffb822'}}className='m-form__help'>
-                        {this.state.dateRangeWarning}
-                      </span> }
                     </div>
                     <span style={{marginTop: '7px', marginLeft: '10px',marginRight: '10px'}}>To:</span>
                       <div className='col-md-5'>
@@ -176,12 +169,13 @@ class Dashboard extends React.Component {
                           placeholder='Value'
                           max= {moment().format('YYYY-MM-DD')}
                           type='date'/>
-                        { this.state.dateRangeWarning !== '' && <span style={{color: '#ffb822'}}className='m-form__help'>
-                          {this.state.dateRangeWarning}
-                        </span> }
                       </div>
                   </div>
                 </div>
+                <br/>
+                { this.state.dateRangeWarning !== '' && <span style={{color: '#ffb822'}}className='m-form__help'>
+                  {this.state.dateRangeWarning}
+                </span> }
               <div style={{textAlign: 'center', paddingTop: '30px'}}>
                   <button disabled={this.state.dateRangeWarning || !this.state.rangeEnd || !this.state.rangeStart} className='btn btn-primary' onClick={() => this.applyDateRange()}>
                     Apply
