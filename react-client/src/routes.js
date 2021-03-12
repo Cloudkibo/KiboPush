@@ -166,6 +166,7 @@ import AlreadyConnected from './containers/integerationScreen/alreadyConnected'
 import ErrorMessage from './containers/integerationScreen/ErrorMessage'
 import SmsDashboard from './containers/smsWhatsAppDashboard/smsDashboard'
 import WhatsAppDashboard from './containers/smsWhatsAppDashboard/whatsAppDashboard'
+import SuperNumberDashboard from './containers/superNumber/dashboard'
 import messengerDashboard from './containers/dashboard/dashboard'
 import Chatbots from './containers/chatbot/chatbot'
 import ChatbotAutomation from './containers/chatbotAutomation/chatbotAutomation'
@@ -235,6 +236,7 @@ const Routes = () => (
     <Route path='/dashboard' component={Home} onEnter={requireAuth} />
     <Route path='/SmsDashboard' component={SmsDashboard} onEnter={requireAuth} />
     <Route path='/WhatsAppDashboard' component={WhatsAppDashboard} onEnter={requireAuth} />
+    <Route path='/superNumberDashboard' component={SuperNumberDashboard} onEnter={requireAuth} />
     <Route path='/messengerDashboard' component={messengerDashboard} onEnter={requireAuth} />
     <Route path='/resendVerificationEmail' component={ResendVerificationEmail} />
     <Route path='/forgotPassword' component={ForgotPassword} />
