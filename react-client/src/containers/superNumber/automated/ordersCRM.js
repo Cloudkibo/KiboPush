@@ -155,7 +155,7 @@ class OrdersCRM extends React.Component {
                         text={this.state.textConfirmation}
                         heading='Order Confirmation Template'
                         id='orderConfirmation'
-                        previewUrl='https://kibopush.com'
+                        previewUrl='https://cdn.cloudkibo.com/public/img/order-confirmation.png'
                         language={this.state.language}
                       />
                       <br />
@@ -165,7 +165,7 @@ class OrdersCRM extends React.Component {
                         text={this.state.textShipment}
                         heading='Order Shipment Template'
                         id='orderShipment'
-                        previewUrl='https://kibopush.com'
+                        previewUrl='https://cdn.cloudkibo.com/public/img/shipment.png'
                         language={this.state.language}
                       />
                         <div className='row' style={{paddingTop: '30px'}}>

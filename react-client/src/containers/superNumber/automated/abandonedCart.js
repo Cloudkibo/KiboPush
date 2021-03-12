@@ -130,7 +130,7 @@ class AbandonedCart extends React.Component {
                         text={this.state.text}
                         heading='Abandoned Cart Template'
                         id='abandonedCart'
-                        previewUrl='https://kibopush.com'
+                        previewUrl='https://cdn.cloudkibo.com/public/img/abandoned-cart.png'
                         language={this.state.language}
                       />
                         <div className='row' style={{paddingTop: '30px'}}>
