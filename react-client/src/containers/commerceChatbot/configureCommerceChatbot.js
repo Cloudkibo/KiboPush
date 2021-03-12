@@ -473,7 +473,6 @@ class ConfigureCommerceChatbot extends React.Component {
                             }
                           </div>
                             }
-
                           <div className="form-group m-form__group m--margin-top-10">
                             <span>
                               <strong>Note: </strong>

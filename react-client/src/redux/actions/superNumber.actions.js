@@ -129,3 +129,35 @@ export function fetchSuperNumberPreferences(msg) {
       })
   }
 }
+
+export function fetchSummarisedAnalytics(body, cb) {
+  return (dispatch) => {
+    callApi(`supernumber/fetchSummarisedAnalytics`, 'post', body)
+      .then(res => {
+        console.log('response from fetchSummarisedAnalytics', res)
+        if (res.status === 'success') {
+          dispatch({
+            type: ActionTypes.GET_SUMMARISED_ANALYTICS,
+            data: res.payload
+          })
+          if (cb) cb(res)
+        }
+      })
+  }
+}
+
+export function fetchDetailedAnalytics(body, cb) {
+  return (dispatch) => {
+    callApi(`supernumber/fetchDetailedAnalytics`, 'post', body)
+      .then(res => {
+        console.log('response from fetchDetailedAnalytics', res)
+        if (res.status === 'success') {
+          dispatch({
+            type: ActionTypes.GET_DETAILED_ANALYTICS,
+            data: res.payload
+          })
+          if (cb) cb(res)
+        }
+      })
+  }
+}

@@ -57,7 +57,6 @@ export function settingsInfo (state = initialState, action) {
       return Object.assign({}, state, {
         companyPreferences: action.data
       })
-
     case ActionTypes.ENABLE_SUCCESS_NGP:
       return Object.assign({}, state, {
         apiEnableNGP: action.data,

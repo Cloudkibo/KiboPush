@@ -34,6 +34,14 @@ export function superNumberInfo (state = {}, action) {
       return Object.assign({}, state, {
         superNumberPreferences: action.data
       })
+    case ActionTypes.GET_SUMMARISED_ANALYTICS:
+      return Object.assign({}, state, {
+        summarisedAnalytics: action.data
+      })
+    case ActionTypes.GET_DETAILED_ANALYTICS:
+      return Object.assign({}, state, {
+        detailedAnalytics: action.data
+      })
     default:
       return state
   }
