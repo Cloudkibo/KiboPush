@@ -150,7 +150,7 @@ class Sidebar extends Component {
         icon: 'fa fa-id-card-o'
       })
     }
-    if (platform === 'whatsApp') {
+    if (platform === 'whatsApp' && user.currentPlan.unique_ID !== 'plan_E') {
       menuItems.push({
         priority: 'f',
         name: 'Invite Subscribers',
@@ -158,7 +158,15 @@ class Sidebar extends Component {
         icon: 'flaticon-user-add'
       })
     }
-    if ((isKiboChat || isLocalhost) && user.plan['livechat'] && user.permissions['manage_livechat'] && ['MIX_CHAT', 'HUMAN_CHAT'].includes(automated_options.automated_options)) {
+    if ((isKiboChat || isLocalhost) && user.plan['livechat'] && user.permissions['manage_livechat'] && ['MIX_CHAT', 'HUMAN_CHAT'].includes(automated_options.automated_options) && ['messenger', 'sms'].includes(platform)) {
+      menuItems.push({
+        priority: 'g',
+        name: 'Live Chat',
+        route: platform === 'messenger' ? '/liveChat' : platform === 'sms' ? '/smsChat' : '/whatsAppChat',
+        icon: 'flaticon-chat-1'
+      })
+    }
+    if ((isKiboChat || isLocalhost) && user.plan['livechat'] && user.permissions['manage_livechat'] && ['MIX_CHAT', 'HUMAN_CHAT'].includes(automated_options.automated_options) && ['whatsApp'].includes(platform) && user.currentPlan.unique_ID !== 'plan_E') {
       menuItems.push({
         priority: 'g',
         name: 'Live Chat',
