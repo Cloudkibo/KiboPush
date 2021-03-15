@@ -232,7 +232,7 @@ class Sidebar extends Component {
 
   showSubscribersItem() {
     if (this.props.user) {
-      if (this.state.subscribers && this.props.user.permissions.subscriberPermission && this.props.user.plan.manage_subscribers) {
+      if (this.state.subscribers && this.props.user.permissions.subscriberPermission && this.props.user.plan.manage_subscribers && (this.state.isKiboChat && this.props.user.platform === 'whatsApp' && this.props.user.currentPlan.unique_ID !== 'plan_E')) {
         return (
           <li onClick={() => { document.getElementById('m_aside_left_close_btn').click() }} className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
             <Link to={this.props.user.platform === 'messenger' ? '/subscribers' : '/smsSubscribers'} className='m-menu__link m-menu__toggle'>
@@ -341,7 +341,7 @@ class Sidebar extends Component {
     if (this.props.user) {
       if (this.state.livechat && this.props.user.permissions.livechatPermission && this.props.user.plan.livechat && this.props.automated_options &&
         (this.props.automated_options.automated_options === 'MIX_CHAT' ||
-          this.props.automated_options.automated_options === 'HUMAN_CHAT')) {
+          this.props.automated_options.automated_options === 'HUMAN_CHAT') && (this.state.isKiboChat && this.props.user.platform === 'whatsApp' && this.props.user.currentPlan.unique_ID !== 'plan_E')) {
         return (
           <li onClick={() => { document.getElementById('m_aside_left_close_btn').click() }} className='m-menu__item  m-menu__item--submenu' aria-haspopup='true'>
             <Link to={this.props.user.platform === 'sms' ? 'smsChat' : this.props.user.platform === 'messenger' ? '/liveChat' : 'whatsAppChat'} className='m-menu__link m-menu__toggle'>
@@ -357,7 +357,7 @@ class Sidebar extends Component {
   }
 
   showAutomationItems() {
-    if (!this.props.isMobile && !this.state.isKiboLite && this.props.user) {
+    if (!this.props.isMobile && !this.state.isKiboLite && this.props.user && (this.state.isKiboChat && this.props.user.platform === 'whatsApp' && this.props.user.currentPlan.unique_ID !== 'plan_E')) {
       return (
         <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
           <span className='m-menu__link m-menu__toggle'>
@@ -1162,7 +1162,7 @@ class Sidebar extends Component {
 
   showInviteSubscribers() {
     // add paid plan check later
-    if (this.props.user && this.state.phoneNumber) {
+    if (this.props.user && this.state.phoneNumber && (this.state.isKiboChat && this.props.user.platform === 'whatsApp' && this.props.user.currentPlan.unique_ID !== 'plan_E')) {
       return (
         <li className='m-menu__item' aria-haspopup='true' >
           <Link to='/inviteSubscribers' className='m-menu__link'>
@@ -1406,7 +1406,7 @@ class Sidebar extends Component {
   }
 
   inviteSubscribers() {
-    if (this.props.user && this.props.user.platform === 'whatsApp') {
+    if (this.props.user && this.props.user.platform === 'whatsApp' && (this.state.isKiboChat && this.props.user.platform === 'whatsApp' && this.props.user.currentPlan.unique_ID !== 'plan_E')) {
       return (
         <li onClick={() => { document.getElementById('m_aside_left_close_btn').click() }} className='m-menu__item' aria-haspopup='true' >
           <Link to='/uploadContactsWhatsApp' className='m-menu__link'>
