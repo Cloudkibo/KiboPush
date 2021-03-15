@@ -565,7 +565,7 @@ class Settings extends React.Component {
                         <span className='m-nav__link-text'>Configuration</span>
                       </a>
                     </li>
-                    {(url.includes('localhost') || (url.includes('kibochat.cloudkibo.com'))) && (this.props.user.role === 'admin' || this.props.user.role === 'buyer') &&
+                    {(url.includes('localhost') || (url.includes('kibochat.cloudkibo.com'))) && (this.props.user.role === 'admin' || this.props.user.role === 'buyer') && (this.props.user.platform === 'whatsApp' && this.props.user.currentPlan.unique_ID !== 'plan_E') &&
                       <li className='m-nav__item'>
                         <a href='#/' className='m-nav__link' onClick={this.setZoomIntegration} style={{ cursor: 'pointer' }} >
                           <i className='m-nav__link-icon flaticon-network' />
@@ -581,7 +581,7 @@ class Settings extends React.Component {
                         </a>
                       </li>
                     }
-                    {(this.props.user.role === 'admin' || this.props.user.role === 'buyer') &&
+                    {(this.props.user.role === 'admin' || this.props.user.role === 'buyer') && (this.props.user.platform === 'whatsApp' && this.props.user.currentPlan.unique_ID !== 'plan_E') &&
                       <li className='m-nav__item'>
                         <a href='#/' className='m-nav__link' onClick={this.setIntegrations} style={{ cursor: 'pointer' }} >
                           <i className='m-nav__link-icon flaticon-network' />
@@ -589,7 +589,7 @@ class Settings extends React.Component {
                         </a>
                       </li>
                     }
-                    {(url.includes('localhost') || url.includes('kibochat.cloudkibo.com')) && (this.props.user.role === 'admin' || this.props.user.role === 'buyer') &&
+                    {(url.includes('localhost') || url.includes('kibochat.cloudkibo.com')) && (this.props.user.role === 'admin' || this.props.user.role === 'buyer') && (this.props.user.platform === 'whatsApp' && this.props.user.currentPlan.unique_ID !== 'plan_E') &&
                       <li className='m-nav__item'>
                         <a href='#/' className='m-nav__link' onClick={this.setCannedResponses} style={{ cursor: 'pointer' }} >
                           <i className='m-nav__link-icon flaticon-menu-button' />
@@ -605,7 +605,7 @@ class Settings extends React.Component {
                         </a>
                       </li>
                     }
-                    {this.props.user && !(this.props.user.role === 'admin' || this.props.user.role === 'agent') &&
+                    {this.props.user && !(this.props.user.role === 'admin' || this.props.user.role === 'agent') && (this.props.user.platform === 'whatsApp' && this.props.user.currentPlan.unique_ID !== 'plan_E') &&
                       <li className='m-nav__item'>
                         <a href='#/' className='m-nav__link' onClick={this.setNGP} style={{ cursor: 'pointer' }}>
                           <i className='m-nav__link-icon flaticon-share' />
@@ -695,18 +695,24 @@ class Settings extends React.Component {
                         </a>
                       </li>
                     }
-                    <li className='m-nav__item'>
-                      <a href='#/' className='m-nav__link' onClick={this.setWhiteListDomains} style={{ cursor: 'pointer' }}>
-                        <i className='m-nav__link-icon la la-list' />
-                        <span className='m-nav__link-text'>Whitelist Domains</span>
-                      </a>
-                    </li>
-                    <li className='m-nav__item'>
-                      <a href='#/' className='m-nav__link' onClick={this.setAdvancedSettings} style={{ cursor: 'pointer' }}>
-                        <i className='m-nav__link-icon fa flaticon-settings' />
-                        <span className='m-nav__link-text'>Advanced Settings</span>
-                      </a>
-                    </li>
+                    {
+                      (this.props.user.platform === 'whatsApp' && this.props.user.currentPlan.unique_ID !== 'plan_E') &&
+                        <li className='m-nav__item'>
+                          <a href='#/' className='m-nav__link' onClick={this.setWhiteListDomains} style={{ cursor: 'pointer' }}>
+                            <i className='m-nav__link-icon la la-list' />
+                            <span className='m-nav__link-text'>Whitelist Domains</span>
+                          </a>
+                        </li>
+                    }
+                    {
+                      (this.props.user.platform === 'whatsApp' && this.props.user.currentPlan.unique_ID !== 'plan_E') &&
+                        <li className='m-nav__item'>
+                          <a href='#/' className='m-nav__link' onClick={this.setAdvancedSettings} style={{ cursor: 'pointer' }}>
+                            <i className='m-nav__link-icon fa flaticon-settings' />
+                            <span className='m-nav__link-text'>Advanced Settings</span>
+                          </a>
+                        </li>
+                    }
                   </ul>
                 </div>
               </div>

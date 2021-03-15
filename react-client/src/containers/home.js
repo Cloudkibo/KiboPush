@@ -10,7 +10,8 @@ class Home extends Component {
   constructor (props, context) {
     super(props, context)
     this.state={
-      kiboLiteUrl: window.location.hostname.includes('kibolite')
+      kiboLiteUrl: window.location.hostname.includes('kibolite'),
+      kiboEngageUrl: window.location.hostname.includes('kiboengage')
     }
   }
 
@@ -19,6 +20,14 @@ class Home extends Component {
       this.props.history.push({
         pathname: '/facebookIntegration'
       })
+    }
+    if (this.state.kiboEngageUrl && nextProps.user.platform === 'whatsApp' && nextProps.user.currentPlan.unique_ID === 'plan_E') {
+      const isStaging = window.location.hostname.includes('skiboengage')
+      if (!isStaging) {
+        window.location.replace('https://kibochat.cloudkibo.com/')
+      } else {
+        window.location.replace('https://skibochat.cloudkibo.com/')
+      }
     }
   }
 
