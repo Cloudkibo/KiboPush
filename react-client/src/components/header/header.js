@@ -110,7 +110,11 @@ class Header extends React.Component {
         if (!this.props.automated_options.facebook) return false
         else return true
       case 'whatsApp':
-        if (!this.props.automated_options.whatsApp || this.props.automated_options.whatsApp.connected === false) return false
+        if (!this.props.user.plan.whatsappSuperNumber &&
+          (!this.props.automated_options.whatsApp || this.props.automated_options.whatsApp.connected === false)
+        ) {
+          return false
+        }
         else return true
       case 'sms':
         if (!this.props.automated_options.twilio) return false
@@ -186,7 +190,7 @@ class Header extends React.Component {
       })
     } else if (value === 'whatsApp') {
       this.props.history.push({
-        pathname: getLandingPage(value),
+        pathname: getLandingPage(value, this.props.user),
         state: 'whatsApp'
       })
     } else if (value === 'messenger') {

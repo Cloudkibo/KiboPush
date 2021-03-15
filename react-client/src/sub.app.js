@@ -147,7 +147,8 @@ class SubApp extends Component {
           pathname: '/integrations',
           state: 'sms'
         })
-      } else if (nextProps.user.platform === 'whatsApp' && nextProps.automated_options && !nextProps.automated_options.whatsApp && nextProps.user.role === 'buyer') {
+      } else if (nextProps.user.platform === 'whatsApp' && nextProps.automated_options &&
+      !nextProps.automated_options.whatsApp && nextProps.user.role === 'buyer' && !nextProps.user.plan.whatsappSuperNumber) {
         this.props.history.push({
           pathname: '/integrations',
           state: 'whatsApp'

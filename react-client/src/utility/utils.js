@@ -102,13 +102,15 @@ export function isWebURL(value) {
   return regexp.test(value)
 }
 
-export function getLandingPage (platform) {
+export function getLandingPage (platform, user) {
   var pathName = '/'
   if (getCurrentProduct() === 'KiboChat') {
     if (platform === 'sms') {
       pathName = 'smsChat'
     } else if (platform === 'whatsApp') {
-      pathName = 'whatsAppChat'
+      if (user && user.plan.whatsappSuperNumber) {
+        pathName = 'superNumberDashboard'
+      } else pathName = 'whatsAppChat'
     } else if (platform === 'messenger') {
       pathName = 'liveChat'
     }
