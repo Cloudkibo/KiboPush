@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux'
 import Dashboard from './dashboard/dashboard'
 import WhatsAppDashboard from './smsWhatsAppDashboard/whatsAppDashboard'
 import SmsDashboard from './smsWhatsAppDashboard/smsDashboard'
-// import SuperNumberDashboard from './superNumber/dashboard'
+import SuperNumberDashboard from './superNumber/dashboard'
 
 class Home extends Component {
   constructor (props, context) {
@@ -42,10 +42,15 @@ class Home extends Component {
         <SmsDashboard location={this.props.location} history={this.props.history} />
       )
     } else if (this.props.user && this.props.user.platform === 'whatsApp') {
-      return (
+      if (this.props.user.plan.whatsappSuperNumber) {
+        return (
+          <SuperNumberDashboard location={this.props.location} history={this.props.history} />
+        )
+      } else {
+        return (
         <WhatsAppDashboard location={this.props.location} history={this.props.history} />
-        // <SuperNumberDashboard location={this.props.location} history={this.props.history} />
-      )
+        )
+      }
     } else if (this.props.user && this.props.user.platform === 'messenger') {
       return (
         <Dashboard location={this.props.location} history={this.props.history} />

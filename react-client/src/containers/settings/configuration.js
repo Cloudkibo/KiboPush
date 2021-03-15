@@ -1,6 +1,6 @@
 /* eslint-disable no-useless-constructor */
 import React from 'react'
-import { updatePlatformSettings, updatePlatformWhatsApp, disconnect, deleteWhatsApp } from '../../redux/actions/settings.actions'
+import { updatePlatformSettings, updatePlatformWhatsApp, disconnect, deleteWhatsApp, setSuperNumber } from '../../redux/actions/settings.actions'
 import { getAutomatedOptions, disconnectFacebook, updateShowIntegrations } from '../../redux/actions/basicinfo.actions'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
@@ -42,7 +42,7 @@ class Configuration extends React.Component {
         businessNumber: '+14155238886',
         accountSID: '',
         sandBoxCode: ''
-      }
+      },
     }
     this.state = {
       SID: '',
@@ -51,7 +51,8 @@ class Configuration extends React.Component {
       deleteType: '',
       whatsappProvider: '',
       whatsappData: JSON.parse(JSON.stringify(this.initialWhatsappData)),
-      retainData: false
+      retainData: false,
+      usage: 'superNumber'
     }
     this.updateToken = this.updateToken.bind(this)
     this.updateSID = this.updateSID.bind(this)
@@ -71,7 +72,24 @@ class Configuration extends React.Component {
     this.handleCheckbox = this.handleCheckbox.bind(this)
     this.updateData = this.updateData.bind(this)
     this.getBusinessNumber = this.getBusinessNumber.bind(this)
+    this.handleUsage = this.handleUsage.bind(this)
+    this.getWhatsAppConnected = this.getWhatsAppConnected.bind(this)
     props.getAutomatedOptions()
+  }
+  handleCheckbox (e) {
+    console.log('e.target.value', e.target.checked)
+    this.setState({retainData : e.target.checked})
+  }
+  logout() {
+    this.props.history.push({
+      pathname: '/facebookIntegration'
+    })
+    this.props.updateShowIntegrations({ showIntegrations: true })
+    // auth.logout()
+  }
+
+  handleUsage (e) {
+    this.setState({usage: e.target.value})
   }
 
   getBusinessNumber () {
@@ -225,7 +243,10 @@ class Configuration extends React.Component {
 
   submitWapp(event) {
     event.preventDefault()
-    if(this.props.automated_options.whatsApp && this.props.automated_options.whatsApp.connected === false) {
+    if (this.state.usage === 'superNumber') {
+      this.props.setSuperNumber(this.msg)
+      this.refs.connectWapp.click()
+    } else if (this.props.automated_options.whatsApp && this.props.automated_options.whatsApp.connected === false) {
       let whatsappData = this.state.whatsappData[this.state.whatsappProvider]
       let businessNmber = whatsappData.businessNumber.replace(/[- )(]/g, '')
       if(businessNmber !== this.props.automated_options.whatsApp.businessNumber) {
@@ -243,6 +264,30 @@ class Configuration extends React.Component {
       this.setState({ SID: this.props.automated_options.twilio.accountSID, token: this.props.automated_options.twilio.authToken })
     } else {
       this.setState({ SID: '', token: '' })
+    }
+  }
+
+  getWhatsAppConnected () {
+    if (this.props.user && this.props.user.plan.whatsappSuperNumber) {
+      return (
+        <div className='m-widget4__ext'>
+          <button className='m-btn m-btn--pill m-btn--hover-secondary btn btn-secondary' disabled>
+            Connected
+          </button>
+        </div>
+      )
+    } else if (
+      this.props.automated_options && this.props.automated_options.whatsApp &&
+      (!(this.props.automated_options.whatsApp.connected === false))) {
+        return (<div className='m-widget4__ext'>
+          <button className='m-btn m-btn--pill m-btn--hover-danger btn btn-danger'
+            style={{ borderColor: '#d9534f', color: '#d9534f', marginRight: '10px' }}
+            onClick={() => this.setType('Disconnect')}>
+            Disconnect
+          </button>
+        </div>)
+    } else {
+      return null
     }
   }
 
@@ -300,7 +345,7 @@ class Configuration extends React.Component {
         <ConfirmationModal
           id = 'create_confirmation_modal'
           title = 'Are You Sure?'
-          description = {`you had previously connected different account from this number ${this.props.automated_options.whatsApp ? this.props.automated_options.whatsApp.businessNumber: 0}. If you choose to connect the new Number then all the old data will be deleted...` }
+          description = {`You had previously connected different account from this number ${(this.props.automated_options && this.props.automated_options.whatsApp) ? this.props.automated_options.whatsApp.businessNumber: 0}. If you choose to connect the new Number then all the old data will be deleted...` }
           onConfirm = {this.updateData}
           zIndex= {99991}
         />
@@ -394,6 +439,7 @@ class Configuration extends React.Component {
                       }
                     })
                     // this.logout()
+                    this.props.disconnectFacebook()
                   }} data-dismiss='modal'>Yes
                   </button>
               </div>
@@ -413,164 +459,155 @@ class Configuration extends React.Component {
 											</span>
                 </button>
               </div>
-              {/* <div style={{ color: 'black' }} className="modal-body">
-                <div className='m-form'>
-                  <span>Please enter your Twilio credentials here:</span>
-                  <div className='form-group m-form__group'>
-
-                    <div id='question' className='form-group m-form__group'>
-                      <label className='control-label'>Twilio Account SID</label>
-                      <input className='form-control' value={this.state.SIDWapp} onChange={(e) => this.updateSIDWapp(e)} />
-                    </div>
-                    <div id='question' className='form-group m-form__group'>
-                      <label className='control-label'>Twilio Auth Token:</label>
-                      <input className='form-control' value={this.state.tokenWapp} onChange={(e) => this.updateTokenWapp(e)} />
-                    </div>
-                    <div id='question' className='form-group m-form__group'>
-                      <label className='control-label'>WhatsApp Sandbox Number:</label>
-                      <input className='form-control' value={this.state.number} disabled />
-                    </div>
-                    <div id='question' className='form-group m-form__group'>
-                      <label className='control-label'>Sandbox Code:</label>
-                      <input className='form-control' value={this.state.code} onChange={(e) => this.updateCode(e)} />
-                    </div>
-                    <span><b>Note:</b> You can find your sandbox number and code <a href='https://www.twilio.com/console/sms/whatsapp/sandbox' target='_blank' rel='noopener noreferrer'>here</a></span>
-                  </div>
-                  <div className='m-portlet__foot m-portlet__foot--fit' style={{ 'overflow': 'auto' }}>
-                    <div className='m-form__actions' style={{ 'float': 'right' }}>
-                      <button className='btn btn-primary'
-                        onClick={this.submitWapp}> Submit
-                  </button>
-                    </div>
-                  </div>
-                </div>
-              </div> */}
-
-
               <div style={{ color: 'black' }} className="modal-body">
                 <form onSubmit={this.submitWapp}>
                   <div className='m-form'>
                     <div className='form-group m-form__group'>
-                      <div style={{ marginBottom: '15px' }} id='_whatsapp_provider' className='form-group m-form__group'>
-                        <label className='control-label'>WhatsApp Provider:</label>
-                        <select onChange={this.changeWhatsAppProvider} class="form-control m-input" value={this.state.whatsappProvider} id="_zoom_users" required>
-                          <option value='' selected disabled>Select a WhatsApp Provider...</option>
-                          <option value='flockSend'>FlockSend</option>
-                          <option value='twilio'>Twilio</option>
-                          <option value='cequens'>Cequens</option>
-                          <option value='gupshup'>Gupshup</option>
-                          {this.props.user && this.props.user.isSuperUser &&
-                            <option value='twilioFree'>Twilio (Free)</option>
-                          }
-                        </select>
+                      <label style={{fontWeight: 'normal'}}>Select Usage:</label>
+                        <div style={{marginTop: '5px'}}>
+                          <label className="m-radio" style={{fontWeight: 'lighter'}}>
+                            <input
+                              type='radio'
+                              value='superNumber'
+                              onChange={this.handleUsage}
+                              onClick={this.handleUsage}
+                              checked={this.state.usage === 'superNumber'}
+                             />
+                            Use WhatsApp Super Number for Commerce (shopify)
+                            <span></span>
+                          </label>
+                          <label className="m-radio" style={{fontWeight: 'lighter'}}>
+                            <input
+                              type='radio'
+                              value='businessAPI'
+                              onChange={this.handleUsage}
+                              onClick={this.handleUsage}
+                              checked={this.state.usage === 'businessAPI'}
+                            />
+                              Use Whatsapp Business API
+                            <span></span>
+                          </label>
                       </div>
-
-
-                      <div style={{ display: this.state.whatsappProvider === 'flockSend' ? 'initial' : 'none' }} >
-                        <div id='_flocksend_access_token' className='form-group m-form__group'>
-                          <label className='control-label'>FlockSend Access Token:</label>
-                          <input required={this.state.whatsappProvider === 'flockSend'} className='form-control' value={this.state.whatsappData.flockSend.accessToken} onChange={(e) => this.updateWhatsAppData(e, { accessToken: e.target.value })} />
+                      {this.state.usage === 'businessAPI' &&
+                        <div>
+                          <div style={{ marginBottom: '15px' }} id='_whatsapp_provider' className='form-group m-form__group'>
+                          <label className='control-label'>WhatsApp Provider:</label>
+                          <select onChange={this.changeWhatsAppProvider} class="form-control m-input" value={this.state.whatsappProvider} id="_zoom_users" required>
+                            <option value='' selected disabled>Select a WhatsApp Provider...</option>
+                            <option value='flockSend'>FlockSend</option>
+                            <option value='twilio'>Twilio</option>
+                            <option value='cequens'>Cequens</option>
+                            <option value='gupshup'>Gupshup</option>
+                            {this.props.user && this.props.user.isSuperUser &&
+                              <option value='twilioFree'>Twilio (Free)</option>
+                            }
+                          </select>
                         </div>
-                        <div id='_flocksend_whatsapp_number' className='form-group m-form__group'>
-                          <label className='control-label'>WhatsApp Number:</label>
-                          <input
-                            required={this.state.whatsappProvider === 'flockSend'}
-                            type="tel"
-                            className='form-control'
-                            value={this.state.whatsappData.flockSend.businessNumber}
-                            onChange={(e) => this.updateWhatsAppData(e, { businessNumber: e.target.value })} />
+
+
+                        <div style={{ display: this.state.whatsappProvider === 'flockSend' ? 'initial' : 'none' }} >
+                          <div id='_flocksend_access_token' className='form-group m-form__group'>
+                            <label className='control-label'>FlockSend Access Token:</label>
+                            <input required={this.state.whatsappProvider === 'flockSend'} className='form-control' value={this.state.whatsappData.flockSend.accessToken} onChange={(e) => this.updateWhatsAppData(e, { accessToken: e.target.value })} />
+                          </div>
+                          <div id='_flocksend_whatsapp_number' className='form-group m-form__group'>
+                            <label className='control-label'>WhatsApp Number:</label>
+                            <input
+                              required={this.state.whatsappProvider === 'flockSend'}
+                              type="tel"
+                              className='form-control'
+                              value={this.state.whatsappData.flockSend.businessNumber}
+                              onChange={(e) => this.updateWhatsAppData(e, { businessNumber: e.target.value })} />
+                          </div>
+                        </div>
+
+                        <div style={{ display: this.state.whatsappProvider === 'cequens' ? 'initial' : 'none' }} >
+                          <div id='_cequens_client_name' className='form-group m-form__group'>
+                            <label className='control-label'>Client Name:</label>
+                            <input required={this.state.whatsappProvider === 'cequens'} className='form-control' value={this.state.whatsappData.cequens.clientName} onChange={(e) => this.updateWhatsAppData(e, { clientName: e.target.value })} />
+                          </div>
+                          <div id='_cequens_access_token' className='form-group m-form__group'>
+                            <label className='control-label'>API Token:</label>
+                            <input required={this.state.whatsappProvider === 'cequens'} className='form-control' value={this.state.whatsappData.cequens.accessToken} onChange={(e) => this.updateWhatsAppData(e, { accessToken: e.target.value })} />
+                          </div>
+                          <div id='_cequens_whatsapp_number' className='form-group m-form__group'>
+                            <label className='control-label'>WhatsApp Number:</label>
+                            <input
+                              required={this.state.whatsappProvider === 'cequens'}
+                              type="tel"
+                              className='form-control'
+                              value={this.state.whatsappData.cequens.businessNumber}
+                              onChange={(e) => this.updateWhatsAppData(e, { businessNumber: e.target.value })} />
+                          </div>
+                          <span><b>Note:</b> Please add this webhook url </span>
+                          <span>"https://webhook.cloudkibo.com/webhooks/cequens/{this.getBusinessNumber()}"</span>
+                          <span> to your cequens WhatsApp configuration.</span>
+                        </div>
+
+                        <div style={{ display: this.state.whatsappProvider === 'gupshup' ? 'initial' : 'none' }} >
+                          <div id='_cequens_client_name' className='form-group m-form__group'>
+                            <label className='control-label'>App Name:</label>
+                            <input required={this.state.whatsappProvider === 'gupshup'} className='form-control' value={this.state.whatsappData.gupshup.appName} onChange={(e) => this.updateWhatsAppData(e, { appName: e.target.value })} />
+                          </div>
+                          <div id='_cequens_access_token' className='form-group m-form__group'>
+                            <label className='control-label'>API Key:</label>
+                            <input required={this.state.whatsappProvider === 'gupshup'} className='form-control' value={this.state.whatsappData.gupshup.accessToken} onChange={(e) => this.updateWhatsAppData(e, { accessToken: e.target.value })} />
+                          </div>
+                          <div id='_cequens_whatsapp_number' className='form-group m-form__group'>
+                            <label className='control-label'>WhatsApp Number:</label>
+                            <input
+                              required={this.state.whatsappProvider === 'gupshup'}
+                              type="tel"
+                              className='form-control'
+                              value={this.state.whatsappData.gupshup.businessNumber}
+                              onChange={(e) => this.updateWhatsAppData(e, { businessNumber: e.target.value })} />
+                          </div>
+                          <span><b>Note:</b> Please add this webhook url </span>
+                          <span>"https://webhook.cloudkibo.com/webhooks/gupshup"</span>
+                          <span> as callback URL in gupshup settings.</span>
+                        </div>
+
+                        <div style={{ display: this.state.whatsappProvider === 'twilio' ? 'initial' : 'none' }}>
+                          <div id='question' className='form-group m-form__group'>
+                            <label className='control-label'>Twilio Account SID</label>
+                            <input required={this.state.whatsappProvider === 'twilio'} className='form-control' value={this.state.whatsappData.twilio.accountSID} onChange={(e) => this.updateWhatsAppData(e, { accountSID: e.target.value })} />
+                          </div>
+                          <div id='question' className='form-group m-form__group'>
+                            <label className='control-label'>Twilio Auth Token:</label>
+                            <input required={this.state.whatsappProvider === 'twilio'} className='form-control' value={this.state.whatsappData.twilio.accessToken} onChange={(e) => this.updateWhatsAppData(e, { accessToken: e.target.value })} />
+                          </div>
+                          <div id='question' className='form-group m-form__group'>
+                            <label className='control-label'>WhatsApp Number:</label>
+                            <input required={this.state.whatsappProvider === 'twilio'} className='form-control' value={this.state.whatsappData.twilio.businessNumber} onChange={(e) => this.updateWhatsAppData(e, { businessNumber: e.target.value })} />
+                          </div>
+                        </div>
+
+                        <div style={{ display: this.state.whatsappProvider === 'twilioFree' ? 'initial' : 'none' }}>
+                          <div id='question' className='form-group m-form__group'>
+                            <label className='control-label'>Twilio Account SID</label>
+                            <input required={this.state.whatsappProvider === 'twilioFree'} className='form-control' value={this.state.whatsappData.twilioFree.accountSID} onChange={(e) => this.updateWhatsAppData(e, { accountSID: e.target.value })} />
+                          </div>
+                          <div id='question' className='form-group m-form__group'>
+                            <label className='control-label'>Twilio Auth Token:</label>
+                            <input required={this.state.whatsappProvider === 'twilioFree'} className='form-control' value={this.state.whatsappData.twilioFree.accessToken} onChange={(e) => this.updateWhatsAppData(e, { accessToken: e.target.value })} />
+                          </div>
+                          <div id='question' className='form-group m-form__group'>
+                            <label className='control-label'>WhatsApp Sandbox Number:</label>
+                            <input required={this.state.whatsappProvider === 'twilioFree'} className='form-control' value={this.state.whatsappData.twilioFree.businessNumber} disabled />
+                          </div>
+                          <div id='question' className='form-group m-form__group'>
+                            <label className='control-label'>Sandbox Code:</label>
+                            <input required={this.state.whatsappProvider === 'twilioFree'} className='form-control' value={this.state.whatsappData.twilioFree.sandBoxCode} onChange={(e) => this.updateWhatsAppData(e, { sandBoxCode: e.target.value })} />
+                          </div>
+                          <span><b>Note:</b> You can find your sandbox code <a href='https://www.twilio.com/console/sms/whatsapp/sandbox' target='_blank' rel='noopener noreferrer'>here</a></span>
                         </div>
                       </div>
-
-                      <div style={{ display: this.state.whatsappProvider === 'cequens' ? 'initial' : 'none' }} >
-                        <div id='_cequens_client_name' className='form-group m-form__group'>
-                          <label className='control-label'>Client Name:</label>
-                          <input required={this.state.whatsappProvider === 'cequens'} className='form-control' value={this.state.whatsappData.cequens.clientName} onChange={(e) => this.updateWhatsAppData(e, { clientName: e.target.value })} />
-                        </div>
-                        <div id='_cequens_access_token' className='form-group m-form__group'>
-                          <label className='control-label'>API Token:</label>
-                          <input required={this.state.whatsappProvider === 'cequens'} className='form-control' value={this.state.whatsappData.cequens.accessToken} onChange={(e) => this.updateWhatsAppData(e, { accessToken: e.target.value })} />
-                        </div>
-                        <div id='_cequens_whatsapp_number' className='form-group m-form__group'>
-                          <label className='control-label'>WhatsApp Number:</label>
-                          <input
-                            required={this.state.whatsappProvider === 'cequens'}
-                            type="tel"
-                            className='form-control'
-                            value={this.state.whatsappData.cequens.businessNumber}
-                            onChange={(e) => this.updateWhatsAppData(e, { businessNumber: e.target.value })} />
-                        </div>
-                        <span><b>Note:</b> Please add this webhook url </span>
-                        <span>"https://webhook.cloudkibo.com/webhooks/cequens/{this.getBusinessNumber()}"</span>
-                        <span> to your cequens WhatsApp configuration.</span>
-                      </div>
-
-                      <div style={{ display: this.state.whatsappProvider === 'gupshup' ? 'initial' : 'none' }} >
-                        <div id='_cequens_client_name' className='form-group m-form__group'>
-                          <label className='control-label'>App Name:</label>
-                          <input required={this.state.whatsappProvider === 'gupshup'} className='form-control' value={this.state.whatsappData.gupshup.appName} onChange={(e) => this.updateWhatsAppData(e, { appName: e.target.value })} />
-                        </div>
-                        <div id='_cequens_access_token' className='form-group m-form__group'>
-                          <label className='control-label'>API Key:</label>
-                          <input required={this.state.whatsappProvider === 'gupshup'} className='form-control' value={this.state.whatsappData.gupshup.accessToken} onChange={(e) => this.updateWhatsAppData(e, { accessToken: e.target.value })} />
-                        </div>
-                        <div id='_cequens_whatsapp_number' className='form-group m-form__group'>
-                          <label className='control-label'>WhatsApp Number:</label>
-                          <input
-                            required={this.state.whatsappProvider === 'gupshup'}
-                            type="tel"
-                            className='form-control'
-                            value={this.state.whatsappData.gupshup.businessNumber}
-                            onChange={(e) => this.updateWhatsAppData(e, { businessNumber: e.target.value })} />
-                        </div>
-                        <span><b>Note:</b> Please add this webhook url </span>
-                        <span>"https://webhook.cloudkibo.com/webhooks/gupshup"</span>
-                        <span> as callback URL in gupshup settings.</span>
-                      </div>
-
-                      <div style={{ display: this.state.whatsappProvider === 'twilio' ? 'initial' : 'none' }}>
-                        <div id='question' className='form-group m-form__group'>
-                          <label className='control-label'>Twilio Account SID</label>
-                          <input required={this.state.whatsappProvider === 'twilio'} className='form-control' value={this.state.whatsappData.twilio.accountSID} onChange={(e) => this.updateWhatsAppData(e, { accountSID: e.target.value })} />
-                        </div>
-                        <div id='question' className='form-group m-form__group'>
-                          <label className='control-label'>Twilio Auth Token:</label>
-                          <input required={this.state.whatsappProvider === 'twilio'} className='form-control' value={this.state.whatsappData.twilio.accessToken} onChange={(e) => this.updateWhatsAppData(e, { accessToken: e.target.value })} />
-                        </div>
-                        <div id='question' className='form-group m-form__group'>
-                          <label className='control-label'>WhatsApp Number:</label>
-                          <input required={this.state.whatsappProvider === 'twilio'} className='form-control' value={this.state.whatsappData.twilio.businessNumber} onChange={(e) => this.updateWhatsAppData(e, { businessNumber: e.target.value })} />
-                        </div>
-                      </div>
-
-                      <div style={{ display: this.state.whatsappProvider === 'twilioFree' ? 'initial' : 'none' }}>
-                        <div id='question' className='form-group m-form__group'>
-                          <label className='control-label'>Twilio Account SID</label>
-                          <input required={this.state.whatsappProvider === 'twilioFree'} className='form-control' value={this.state.whatsappData.twilioFree.accountSID} onChange={(e) => this.updateWhatsAppData(e, { accountSID: e.target.value })} />
-                        </div>
-                        <div id='question' className='form-group m-form__group'>
-                          <label className='control-label'>Twilio Auth Token:</label>
-                          <input required={this.state.whatsappProvider === 'twilioFree'} className='form-control' value={this.state.whatsappData.twilioFree.accessToken} onChange={(e) => this.updateWhatsAppData(e, { accessToken: e.target.value })} />
-                        </div>
-                        <div id='question' className='form-group m-form__group'>
-                          <label className='control-label'>WhatsApp Sandbox Number:</label>
-                          <input required={this.state.whatsappProvider === 'twilioFree'} className='form-control' value={this.state.whatsappData.twilioFree.businessNumber} disabled />
-                        </div>
-                        <div id='question' className='form-group m-form__group'>
-                          <label className='control-label'>Sandbox Code:</label>
-                          <input required={this.state.whatsappProvider === 'twilioFree'} className='form-control' value={this.state.whatsappData.twilioFree.sandBoxCode} onChange={(e) => this.updateWhatsAppData(e, { sandBoxCode: e.target.value })} />
-                        </div>
-                        <span><b>Note:</b> You can find your sandbox code <a href='https://www.twilio.com/console/sms/whatsapp/sandbox' target='_blank' rel='noopener noreferrer'>here</a></span>
-                      </div>
-                    </div>
-
-                    {
-                      this.state.whatsappProvider &&
+                    }
                       <div className='m-portlet__foot m-portlet__foot--fit' style={{ 'overflow': 'auto', marginTop: '15px', float: 'right' }}>
                         <button type='submit' className='btn btn-primary'> Submit
                       </button>
                       </div>
-                    }
+                    </div>
                   </div>
                 </form>
                 {/* <div className='row'>
@@ -588,7 +625,7 @@ class Configuration extends React.Component {
         </div>
         <div id='target' >
           <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-          <div className='m-portlet m-portlet--full-height m-portlet--tabs  '>
+          <div style={{height: '82vh'}} className='m-portlet m-portlet--tabs  '>
             <div className='m-portlet__head'>
               <div className='m-portlet__head-tools'>
                 <ul className='nav nav-tabs m-tabs m-tabs-line   m-tabs-line--left m-tabs-line--primary' role='tablist'>
@@ -628,8 +665,7 @@ class Configuration extends React.Component {
                                           </div>
                                           <div className='m-widget4__ext'>
                                             {this.props.user.facebookInfo && this.props.user.connectFacebook
-                                              ? <a href='#/' data-toggle="modal" data-target="#disconnectFacebookConfiguration" className='m-btn m-btn--pill m-btn--hover-danger btn btn-danger' style={{ borderColor: '#d9534f', color: '#d9534f', marginRight: '10px' }}>
-                                                Disconnect
+                                              ? <a href='#/' data-toggle="modal" data-target="#disconnectFacebookConfiguration" className='m-btn m-btn--pill m-btn--hover-danger btn btn-danger' style={{ borderColor: '#d9534f', color: '#d9534f', marginRight: '10px' }}>                                                Disconnect
                                             </a>
                                               : <a href='/auth/facebook' className='m-btn m-btn--pill m-btn--hover-success btn btn-success' style={{ borderColor: '#34bfa3', color: '#34bfa3', marginRight: '10px' }}>
                                                 Connect
@@ -674,22 +710,18 @@ class Configuration extends React.Component {
                                             </span>
                                             <br />
                                           </div>
-                                          <div className='m-widget4__ext'>
-                                            <button className='m-btn m-btn--pill m-btn--hover-success btn btn-success'
-                                              style={{ borderColor: '#34bfa3', color: '#34bfa3', marginRight: '10px' }}
-                                              onClick={() => this.setType('Change')}>
-                                              {this.props.automated_options && this.props.automated_options.whatsApp ? this.props.automated_options.whatsApp.connected === false ? 'Connect' : 'Edit' : 'Connect'}
-                                            </button>
-                                          </div>
-                                          {this.props.automated_options && this.props.automated_options.whatsApp && (!(this.props.automated_options.whatsApp.connected === false)) &&
+                                          {this.props.user && this.props.automated_options &&
+                                            (!this.props.automated_options.whatsApp || this.props.automated_options.whatsApp.connected === false) &&
+                                            !this.props.user.plan.whatsappSuperNumber &&
                                             <div className='m-widget4__ext'>
-                                              <button className='m-btn m-btn--pill m-btn--hover-danger btn btn-danger'
-                                                style={{ borderColor: '#d9534f', color: '#d9534f', marginRight: '10px' }}
-                                                onClick={() => this.setType('Disconnect')}>
-                                                Disconnect
-                                        </button>
+                                              <button className='m-btn m-btn--pill m-btn--hover-success btn btn-success'
+                                                style={{ borderColor: '#34bfa3', color: '#34bfa3', marginRight: '10px' }}
+                                                onClick={() => this.setType('Change')}>
+                                                Connect
+                                              </button>
                                             </div>
                                           }
+                                          {this.getWhatsAppConnected()}
                                         </div>
                                       }
                                     </div>
@@ -708,7 +740,7 @@ class Configuration extends React.Component {
             </div>
           </div>
         </div>
-      </div >
+      </div>
     )
   }
 }
@@ -726,7 +758,8 @@ function mapDispatchToProps(dispatch) {
     disconnect: disconnect,
     disconnectFacebook: disconnectFacebook,
     deleteWhatsApp: deleteWhatsApp,
-    updateShowIntegrations
+    updateShowIntegrations,
+    setSuperNumber
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Configuration)

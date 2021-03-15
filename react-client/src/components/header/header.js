@@ -23,11 +23,11 @@ import {
 import { fetchNotifications, markRead } from '../../redux/actions/notifications.actions'
 import AlertContainer from 'react-alert'
 import { getLandingPage } from '../../utility/utils'
+import cookie from 'react-cookie'
 
 // Components
 import HEADERMENU from './headerMenu'
 import HEADERTOPBAR from './headerTopbar'
-import cookie from 'react-cookie'
 
 // styles
 const darkSkinStyle = {
@@ -110,7 +110,11 @@ class Header extends React.Component {
         if (!this.props.automated_options.facebook) return false
         else return true
       case 'whatsApp':
-        if (!this.props.automated_options.whatsApp || this.props.automated_options.whatsApp.connected === false) return false
+        if (!this.props.user.plan.whatsappSuperNumber &&
+          (!this.props.automated_options.whatsApp || this.props.automated_options.whatsApp.connected === false)
+        ) {
+          return false
+        }
         else return true
       case 'sms':
         if (!this.props.automated_options.twilio) return false
@@ -179,7 +183,6 @@ class Header extends React.Component {
   }
 
   redirectToDashboard (value) {
-    debugger
     if (value === 'sms') {
       this.props.history.push({
         pathname: getLandingPage(value),
@@ -187,7 +190,7 @@ class Header extends React.Component {
       })
     } else if (value === 'whatsApp') {
       this.props.history.push({
-        pathname: getLandingPage(value),
+        pathname: getLandingPage(value, this.props.user),
         state: 'whatsApp'
       })
     } else if (value === 'messenger') {

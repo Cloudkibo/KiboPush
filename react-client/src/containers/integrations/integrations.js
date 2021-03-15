@@ -7,7 +7,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 // import auth from '../../utility/auth.service'
 import AlertContainer from 'react-alert'
-import { updatePlatformSettings, updatePlatformWhatsApp } from '../../redux/actions/settings.actions'
+import { updatePlatformSettings, updatePlatformWhatsApp, setSuperNumber } from '../../redux/actions/settings.actions'
 import { updatePlatform } from '../../redux/actions/basicinfo.actions'
 import { validatePhoneNumber } from '../../utility/utils'
 import ConfirmationModal from '../../components/extras/confirmationModal'
@@ -46,14 +46,15 @@ class FacebookIntegration extends React.Component {
         businessNumber: '+14155238886',
         accountSID: '',
         sandBoxCode: ''
-      }
+      },
     }
     this.state = {
       isShowingModal: false,
       isShowingModalWhatsApp: false,
       SID: '',
       token: '',
-      whatsappData: JSON.parse(JSON.stringify(this.initialWhatsappData))
+      whatsappData: JSON.parse(JSON.stringify(this.initialWhatsappData)),
+      usage: 'superNumber'
     }
     this.closeDialog = this.closeDialog.bind(this)
     this.showDialog = this.showDialog.bind(this)
@@ -71,6 +72,12 @@ class FacebookIntegration extends React.Component {
     this.handleResponse = this.handleResponse.bind(this)
     this.updateData =this.updateData.bind(this)
     this.getBusinessNumber =this.getBusinessNumber.bind(this)
+    this.handleUsage = this.handleUsage.bind(this)
+    this.isDisabled = this.isDisabled.bind(this)
+  }
+
+  handleUsage (e) {
+    this.setState({usage: e.target.value})
   }
 
   getBusinessNumber () {
@@ -166,7 +173,10 @@ class FacebookIntegration extends React.Component {
 
   submitWapp(event) {
     event.preventDefault()
-    if(this.props.automated_options.whatsApp && this.props.automated_options.whatsApp.connected === false) {
+    if (this.state.usage === 'superNumber') {
+      this.props.setSuperNumber(this.msg)
+      this.refs.connectWapp.click()
+    } else if(this.props.automated_options.whatsApp && this.props.automated_options.whatsApp.connected === false) {
       let whatsappData = this.state.whatsappData[this.state.whatsappProvider]
       let businessNmber = whatsappData.businessNumber.replace(/[- )(]/g, '')
       if(businessNmber !== this.props.automated_options.whatsApp.businessNumber) {
@@ -214,6 +224,24 @@ class FacebookIntegration extends React.Component {
     $('#sidebarDiv').addClass('hideSideBar')
     /* eslint-enable */
   }
+
+  isDisabled () {
+    if (this.props.user && this.props.automated_options) {
+      if (
+        (!this.props.user.connectFacebook && !this.props.automated_options.twilio && !this.props.automated_options.whatsApp && !this.props.user.plan.whatsappSuperNumber) ||
+        (this.props.location.state === 'sms' && !this.props.automated_options.twilio) ||
+        (this.props.location.state === 'messenger' && !this.props.user.facebookInfo) ||
+        (this.props.location.state === 'whatsApp' && !this.props.automated_options.whatsApp && !this.props.user.plan.whatsappSuperNumber)
+      ) {
+          return true
+      } else {
+        return false
+      }
+    } else {
+      return true
+    }
+  }
+
   render() {
     var alertOptions = {
       offset: 75,
@@ -291,7 +319,8 @@ class FacebookIntegration extends React.Component {
                 <br />
               </div>
               <div className='m-widget4__ext'>
-              {this.props.automated_options && (!this.props.automated_options.whatsApp || this.props.automated_options.whatsApp.connected === false)
+              {this.props.automated_options && this.props.user &&
+                ((!this.props.automated_options.whatsApp || this.props.automated_options.whatsApp.connected === false) && !this.props.user.plan.whatsappSuperNumber)
                 ? <button className='m-btn m-btn--pill m-btn--hover-success btn btn-success' style={{ borderColor: '#34bfa3', color: '#34bfa3' }} data-toggle="modal" data-target="#whatsapp" onClick={this.showDialogWhatsApp}>
                   Connect
                 </button>
@@ -305,7 +334,7 @@ class FacebookIntegration extends React.Component {
             <br /><br />
             {this.props.automated_options && this.props.user &&
               <center>
-                <button onClick={this.goToNext} className='btn btn-primary m-btn m-btn--custom m-btn--icon' data-wizard-action='next' disabled={(!this.props.user.connectFacebook && !this.props.automated_options.twilio && !this.props.automated_options.whatsApp) || (this.props.location.state === 'sms' && !this.props.automated_options.twilio) || (this.props.location.state === 'messenger' && !this.props.user.facebookInfo) || (this.props.location.state === 'whatsApp' && !this.props.automated_options.whatsApp)}>
+                <button onClick={this.goToNext} className='btn btn-primary m-btn m-btn--custom m-btn--icon' data-wizard-action='next' disabled={this.isDisabled()}>
                   <span>
                     <span>Continue</span>&nbsp;&nbsp;
                     <i className='la la-arrow-right' />
@@ -386,6 +415,33 @@ class FacebookIntegration extends React.Component {
                 <form onSubmit={this.submitWapp}>
                   <div className='m-form'>
                     <div className='form-group m-form__group'>
+                      <label style={{fontWeight: 'normal'}}>Select Usage:</label>
+                        <div style={{marginTop: '5px'}}>
+                          <label className="m-radio" style={{fontWeight: 'lighter'}}>
+                            <input
+                              type='radio'
+                              value='superNumber'
+                              onChange={this.handleUsage}
+                              onClick={this.handleUsage}
+                              checked={this.state.usage === 'superNumber'}
+                             />
+                            Use WhatsApp Super Number for Commerce (shopify)
+                            <span></span>
+                          </label>
+                          <label className="m-radio" style={{fontWeight: 'lighter'}}>
+                            <input
+                              type='radio'
+                              value='businessAPI'
+                              onChange={this.handleUsage}
+                              onClick={this.handleUsage}
+                              checked={this.state.usage === 'businessAPI'}
+                            />
+                              Use Whatsapp Business API
+                            <span></span>
+                          </label>
+                      </div>
+                      {this.state.usage === 'businessAPI' &&
+                        <div>
                       <div style={{ marginBottom: '15px' }} id='_whatsapp_provider' className='form-group m-form__group'>
                         <label className='control-label'>WhatsApp Provider:</label>
                         <select onChange={this.changeWhatsAppProvider} class="form-control m-input" value={this.state.whatsappProvider} id="_zoom_users" required>
@@ -399,8 +455,6 @@ class FacebookIntegration extends React.Component {
                             }
                         </select>
                       </div>
-
-
                       <div style={{ display: this.state.whatsappProvider === 'flockSend' ? 'initial' : 'none' }} >
                         <div id='_flocksend_access_token' className='form-group m-form__group'>
                           <label className='control-label'>FlockSend Access Token:</label>
@@ -417,7 +471,6 @@ class FacebookIntegration extends React.Component {
                             onChange={(e) => this.updateWhatsAppData(e, { businessNumber: e.target.value })} />
                         </div>
                       </div>
-
                       <div style={{ display: this.state.whatsappProvider === 'cequens' ? 'initial' : 'none' }} >
                         <div id='_cequens_client_name' className='form-group m-form__group'>
                           <label className='control-label'>Client Name:</label>
@@ -499,14 +552,12 @@ class FacebookIntegration extends React.Component {
                         <span><b>Note:</b> You can find your sandbox code <a href='https://www.twilio.com/console/sms/whatsapp/sandbox' target='_blank' rel='noopener noreferrer'>here</a></span>
                       </div>
                     </div>
-
-                    {
-                      this.state.whatsappProvider &&
+                  }
+                    </div>
                       <div className='m-portlet__foot m-portlet__foot--fit' style={{ 'overflow': 'auto', marginTop: '15px', float: 'right' }}>
                         <button type='submit' className='btn btn-primary'> Submit
                       </button>
                       </div>
-                    }
                   </div>
                 </form>
                 {/* <div className='row'>
@@ -538,7 +589,8 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators({
     updatePlatformSettings,
     updatePlatform,
-    updatePlatformWhatsApp
+    updatePlatformWhatsApp,
+    setSuperNumber
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(FacebookIntegration)
