@@ -199,7 +199,7 @@ class OrdersCRM extends React.Component {
   }
 
   getCustomerName (name) {
-    if (name === '' || name === ' ') {
+    if (!name || !name.trim()){
       return '-'
     } else {
       return name
