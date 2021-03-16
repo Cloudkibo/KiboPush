@@ -260,22 +260,25 @@ class CommerceIntegration extends React.Component {
                           </button>
                         </div>
 
-                        <div style={{ display: 'flex', justifyContent: 'center', marginTop: '25px' }}>
-                          <button
-                            onClick={() => {
-                              if (this.props.superUser) {
-                                this.msg.error('You are not allowed to perform this action')
-                              } else {
-                                window.location.replace('https://store-970gsssotw.mybigcommerce.com/manage/marketplace/apps/25642')
-                              }
-                            }}
-                            style={{ border: '1px dashed #36a3f7', cursor: 'pointer' }}
-                            type="button"
-                            className="btn m-btn--pill btn-outline-info m-btn m-btn--custom"
-                          >
-                            {'+ Connect BigCommerce'}
-                          </button>
-                        </div>
+                          {
+                            this.props.user.currentPlan.unique_ID !== 'plan_E' &&
+                              <div style={{ display: 'flex', justifyContent: 'center', marginTop: '25px' }}>
+                                <button
+                                  onClick={() => {
+                                    if (this.props.superUser) {
+                                      this.msg.error('You are not allowed to perform this action')
+                                    } else {
+                                      window.location.replace('https://store-970gsssotw.mybigcommerce.com/manage/marketplace/apps/25642')
+                                    }
+                                  }}
+                                  style={{ border: '1px dashed #36a3f7', cursor: 'pointer' }}
+                                  type="button"
+                                  className="btn m-btn--pill btn-outline-info m-btn m-btn--custom"
+                                >
+                                  {'+ Connect BigCommerce'}
+                                </button>
+                              </div>
+                          }
                       </div>
                     }
                   </div>
