@@ -168,7 +168,7 @@ class ConfigureChatbot extends React.Component {
       if (data[i].options.length > 0) {
         for (let j = 0; j < data[i].options.length; j++) {
           let uniqueIds = blocks.map((item) => item.uniqueId)
-          if (!uniqueIds.includes(data[i].options[j].blockId)) {
+          if (!uniqueIds.includes(data[i].options[j].blockId) && data[i].options[j].blockId !== 'talk_to_agent') {
             blocks.push({
               title: data[i].options[j].title,
               payload: [],
