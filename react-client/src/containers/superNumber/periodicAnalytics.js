@@ -263,7 +263,7 @@ class PeriodicAnalytics extends React.Component {
                 {this.state.chartData && this.state.chartData.length > 0
                 ? <LineChart width={600} height={300} data={this.state.chartData}>
                     <XAxis dataKey='date' />
-                    <YAxis />
+                    <YAxis allowDecimals={false} />
                     <CartesianGrid strokeDasharray='3 3' />
                     <Tooltip />
                     <Legend />

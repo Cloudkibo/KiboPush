@@ -20,10 +20,18 @@ class AbandonedCart extends React.Component {
     }
     this.updateState = this.updateState.bind(this)
     this.onSave = this.onSave.bind(this)
+    this.goToCommerceSettings = this.goToCommerceSettings.bind(this)
 
     props.fetchShopifyStore()
     props.fetchSuperNumberPreferences(this.msg)
     props.fetchTemplates({type: 'ABANDONED_CART_RECOVERY'})
+  }
+
+  goToCommerceSettings() {
+    this.props.history.push({
+      pathname: '/settings',
+      state: { tab: 'commerceIntegration' }
+    })
   }
 
   onSave () {
