@@ -92,10 +92,6 @@ class Configuration extends React.Component {
     this.setState({usage: e.target.value})
   }
 
-  handleUsage (e) {
-    this.setState({usage: e.target.value})
-  }
-
   getBusinessNumber () {
     if (this.state.whatsappData && this.state.whatsappData.cequens && this.state.whatsappData.cequens.businessNumber) {
       return this.state.whatsappData.cequens.businessNumber
