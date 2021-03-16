@@ -325,7 +325,7 @@ class OrdersCRM extends React.Component {
                               </th>
                               <th data-field='status'
                                 className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                <span style={{ width: '100px' }}>Status</span>
+                                <span style={{ width: '150px' }}>Status</span>
                               </th>
                               <th data-field='tags'
                                 className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
@@ -333,7 +333,7 @@ class OrdersCRM extends React.Component {
                               </th>
                               <th data-field='actions'
                                 className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                                <span style={{ width: '150px' }}>Actions</span>
+                                <span style={{ width: '110px' }}>Actions</span>
                               </th>
                             </tr>
                           </thead>
@@ -352,7 +352,7 @@ class OrdersCRM extends React.Component {
                                   <td data-field='createdAt' className='m-datatable__cell--center m-datatable__cell'><span style={{ width: '100px' }}>{handleDate(order.createdAt)}</span></td>
                                   <td data-field='amount' className='m-datatable__cell--center m-datatable__cell'><span style={{ width: '100px' }}>{`${order.currency} ${order.totalPrice}`}</span></td>
                                   <td data-field='status' className='m-datatable__cell--center m-datatable__cell'>
-                                    <span style={{ width: '100px' }}>
+                                    <span style={{ width: '150px' }}>
                                     <span className={`m-badge m-badge--wide m-badge--${this.getStatus(order.financialStatus).style}`}>
                                       {this.getStatus(order.financialStatus).text}
                                     </span>
@@ -366,7 +366,7 @@ class OrdersCRM extends React.Component {
                                     <span style={{ width: '180px' }}>{this.getTags(order.tags)}
                                     </span></td>
                                   <td data-field='actions' className='m-datatable__cell--center m-datatable__cell'>
-                                    <span style={{ width: '150px' }}>
+                                    <span style={{ width: '110px' }}>
                                     {order.customerNumber
                                     ? <button className='btn btn-primary btn-sm'
                                       onClick={() => this.toggleSendMessageModal(order)}>
