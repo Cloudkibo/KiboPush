@@ -1,10 +1,7 @@
-/**
- * Created by sojharo on 20/07/2017.
- */
-
 import React from 'react'
 import { connect } from 'react-redux'
 import { fetchOrders, fetchTemplates, sendManualMessage } from '../../../redux/actions/superNumber.actions'
+import { fetchShopifyStore } from '../../../redux/actions/commerce.actions'
 import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
 import AlertContainer from 'react-alert'
@@ -24,7 +21,9 @@ class OrdersCRM extends React.Component {
       selectedOrder: '',
       selectedTemplateName: '',
       selectedTemplate: '',
-      supportNumber: ''
+      supportNumber: '',
+      loadingIntegration: true,
+      loadingOrders: true
     }
     this.handlePageClick = this.handlePageClick.bind(this)
     this.getStatus = this.getStatus.bind(this)
@@ -35,6 +34,23 @@ class OrdersCRM extends React.Component {
     this.handleSendMessage = this.handleSendMessage.bind(this)
     this.updateState = this.updateState.bind(this)
     this.handleFetchOrders = this.handleFetchOrders.bind(this)
+    this.goToCommerceSettings = this.goToCommerceSettings.bind(this)
+    this.getCustomerName = this.getCustomerName.bind(this)
+    this.refresh = this.refresh.bind(this)
+    this.handleFetchStore = this.handleFetchStore.bind(this)
+
+    props.fetchShopifyStore(this.handleFetchStore)
+  }
+
+  handleFetchStore () {
+    this.setState({loadingIntegration: false})
+  }
+
+  goToCommerceSettings() {
+    this.props.history.push({
+      pathname: '/settings',
+      state: { tab: 'commerceIntegration' }
+    })
   }
 
   UNSAFE_componentWillMount() {
@@ -44,7 +60,7 @@ class OrdersCRM extends React.Component {
 
   handleFetchOrders (payload) {
     if (payload.orders && payload.orders.length) {
-      this.setState({orders: payload.orders})
+      this.setState({orders: payload.orders, loadingOrders: false})
     }
   }
 
@@ -83,7 +99,7 @@ class OrdersCRM extends React.Component {
     if (nextProps.count) {
       this.setState({count: nextProps.count})
     }
-    if (nextProps.templates) {
+    if (nextProps.templates && nextProps.templates['ORDER_CONFIRMATION']) {
       this.setState({
         selectedTemplateName: 'ORDER_CONFIRMATION',
         selectedTemplate: nextProps.templates['ORDER_CONFIRMATION']['english']
@@ -95,7 +111,7 @@ class OrdersCRM extends React.Component {
     if (status === 'paid') {
       return {text: 'Paid', style: 'success'}
     } else if (status === 'pending') {
-      return {text: 'Pending', style: 'secondary'}
+      return {text: 'Payment pending', style: 'secondary'}
     } else if (status === 'partially_paid') {
       return {text: 'Partially paid', style: 'info'}
     } else {
@@ -182,6 +198,19 @@ class OrdersCRM extends React.Component {
     this.setState({supportNumber: e.target.value})
   }
 
+  getCustomerName (name) {
+    if (name === '' || name === ' ') {
+      return '-'
+    } else {
+      return name
+    }
+  }
+
+  refresh () {
+    this.setState({pageNumber: 0, loadingOrders: true})
+    this.props.fetchOrders({limit: this.state.limit}, this.handleFetchOrders)
+  }
+
   render() {
     var alertOptions = {
       offset: 14,
@@ -220,6 +249,7 @@ class OrdersCRM extends React.Component {
                   sendMessage={this.sendMessage}
                   templateMessage={this.state.selectedTemplate && this.state.selectedTemplate.text}
                   updateState={this.updateState}
+                  showShipment={this.state.selectedOrder.trackingId && this.state.selectedOrder.trackingUrl}
                 />
               </div>
             </div>
@@ -244,9 +274,34 @@ class OrdersCRM extends React.Component {
                         </h3>
                       </div>
                     </div>
+                    <div className='m-portlet__head-tools'>
+                      {!this.state.loadingIntegration && !this.state.loadingOrders && this.props.store &&
+                        <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' onClick={this.refresh}>
+                        <span>
+                          <i className='la la-refresh' />
+                          <span>
+                            Refresh
+                          </span>
+                        </span>
+                      </button>
+                    }
+                    </div>
                   </div>
                   <div className='m-portlet__body'>
-                    {this.state.orders && this.state.orders.length > 0
+                    {
+                      !this.props.store && !this.state.loadingIntegration
+                      ? <div>
+                        <h6 style={{ textAlign: 'center' }}>
+                          You have not integrated an e-commerce provider with KiboPush. Please integrate an e-commerce provider to create a commerce chatbot.
+                        </h6>
+                        <div style={{ marginTop: '25px', textAlign: 'center' }}>
+                          <div onClick={this.goToCommerceSettings} className='btn btn-primary'>
+                            Integrate
+                        </div>
+                        </div>
+                      </div>
+                      : !this.state.loadingIntegration && !this.state.loadingOrders
+                      ? this.state.orders && this.state.orders.length > 0
                       ? <div className='m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
                         <table className='m-datatable__table' style={{ display: 'block', height: 'auto', overflowX: 'auto' }}>
                           <thead className='m-datatable__head'>
@@ -293,7 +348,7 @@ class OrdersCRM extends React.Component {
                                       <a href={order.orderAdminUrl} target='_blank' rel='noopener noreferrer'>#{order.orderNumber}</a>
                                     </span>
                                   </td>
-                                  <td data-field='customer' className='m-datatable__cell--center m-datatable__cell'><span style={{ width: '100px' }}>{order.customerName ? order.customerName : '-'}</span></td>
+                                  <td data-field='customer' className='m-datatable__cell--center m-datatable__cell'><span style={{ width: '100px' }}>{this.getCustomerName(order.customerName)}</span></td>
                                   <td data-field='createdAt' className='m-datatable__cell--center m-datatable__cell'><span style={{ width: '100px' }}>{handleDate(order.createdAt)}</span></td>
                                   <td data-field='amount' className='m-datatable__cell--center m-datatable__cell'><span style={{ width: '100px' }}>{`${order.currency} ${order.totalPrice}`}</span></td>
                                   <td data-field='status' className='m-datatable__cell--center m-datatable__cell'>
@@ -344,6 +399,9 @@ class OrdersCRM extends React.Component {
                       : <span>
                         <p> No data to display </p>
                       </span>
+                      : <span>
+                        <p> Loading... </p>
+                      </span>
                     }
                   </div>
               </div>
@@ -358,6 +416,7 @@ class OrdersCRM extends React.Component {
 
 function mapStateToProps(state) {
   return {
+    store: (state.commerceInfo.store),
     orders: (state.superNumberInfo.orders),
     count: (state.superNumberInfo.count),
     nextPageParameters: (state.superNumberInfo.nextPageParameters),
@@ -367,6 +426,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators({
+    fetchShopifyStore,
     fetchOrders,
     fetchTemplates,
     sendManualMessage

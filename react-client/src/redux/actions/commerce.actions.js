@@ -1,7 +1,7 @@
 import * as ActionTypes from '../constants/constants'
 import callApi from '../../utility/api.caller.service'
 
-export function fetchShopifyStore() {
+export function fetchShopifyStore(cb) {
   return (dispatch) => {
     callApi('shopify/fetchStore')
       .then(res => {
@@ -13,6 +13,7 @@ export function fetchShopifyStore() {
             data
           })
         }
+        if (cb) cb(res)
       })
   }
 }
@@ -130,4 +131,3 @@ export function fetchSuperNumberPreferences(msg) {
       })
   }
 }
-

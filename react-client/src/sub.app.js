@@ -64,7 +64,7 @@ class SubApp extends Component {
         getCurrentProduct() === 'KiboChat'
       ) {
         this.props.history.push({
-          pathname: getLandingPage(payload.user.platform),
+          pathname: getLandingPage(payload.user.platform, payload.user),
           state: {obj: {_id: 1}}
         })
       } else if (getCurrentProduct() === 'KiboEngage') {

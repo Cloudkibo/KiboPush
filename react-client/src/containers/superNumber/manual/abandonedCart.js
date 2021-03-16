@@ -1,6 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { fetchCheckouts, fetchTemplates, sendManualMessage } from '../../../redux/actions/superNumber.actions'
+import { fetchShopifyStore } from '../../../redux/actions/commerce.actions'
 import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
 import AlertContainer from 'react-alert'
@@ -20,7 +21,9 @@ class AbandonedCart extends React.Component {
       selectedTemplateName: 'ABANDONED_CART_RECOVERY',
       language: 'english',
       selectedTemplate: '',
-      supportNumber: ''
+      supportNumber: '',
+      loadingIntegration: true,
+      loadingCheckouts: true
     }
     this.handlePageClick = this.handlePageClick.bind(this)
     this.toggleSendMessageModal = this.toggleSendMessageModal.bind(this)
@@ -28,6 +31,28 @@ class AbandonedCart extends React.Component {
     this.handleSendMessage = this.handleSendMessage.bind(this)
     this.updateState = this.updateState.bind(this)
     this.handleFetchCheckouts = this.handleFetchCheckouts.bind(this)
+    this.goToCommerceSettings = this.goToCommerceSettings.bind(this)
+    this.getCustomerName = this.getCustomerName.bind(this)
+    this.refresh = this.refresh.bind(this)
+    this.handleFetchStore = this.handleFetchStore.bind(this)
+
+    props.fetchShopifyStore(this.handleFetchStore)
+  }
+
+  handleFetchStore () {
+    this.setState({loadingIntegration: false})
+  }
+
+  refresh () {
+    this.setState({pageNumber: 0, loadingCheckouts: true})
+    this.props.fetchCheckouts({limit: this.state.limit}, this.handleFetchCheckouts)
+  }
+
+  goToCommerceSettings() {
+    this.props.history.push({
+      pathname: '/settings',
+      state: { tab: 'commerceIntegration' }
+    })
   }
 
   UNSAFE_componentWillMount() {
@@ -37,7 +62,7 @@ class AbandonedCart extends React.Component {
 
   handleFetchCheckouts (payload) {
     if (payload.checkouts && payload.checkouts.length) {
-      this.setState({checkouts: payload.checkouts})
+      this.setState({checkouts: payload.checkouts, loadingCheckouts: false})
     }
   }
 
@@ -78,7 +103,7 @@ class AbandonedCart extends React.Component {
     if (nextProps.count) {
       this.setState({count: nextProps.count})
     }
-    if (nextProps.templates) {
+    if (nextProps.templates && nextProps.templates[this.state.language]) {
       this.setState({
         selectedTemplateName: 'ABANDONED_CART_RECOVERY',
         selectedTemplate: nextProps.templates[this.state.language]
@@ -132,6 +157,14 @@ class AbandonedCart extends React.Component {
 
   handleNumber (e) {
     this.setState({supportNumber: e.target.value})
+  }
+
+  getCustomerName (name) {
+    if (name === '' || name === ' ') {
+      return '-'
+    } else {
+      return name
+    }
   }
 
   render() {
@@ -195,9 +228,34 @@ class AbandonedCart extends React.Component {
                         </h3>
                       </div>
                     </div>
+                    <div className='m-portlet__head-tools'>
+                      {!this.state.loadingIntegration && !this.state.loadingCheckouts && this.props.store &&
+                        <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' onClick={this.refresh}>
+                        <span>
+                          <i className='la la-refresh' />
+                          <span>
+                            Refresh
+                          </span>
+                        </span>
+                      </button>
+                    }
+                    </div>
                   </div>
                   <div className='m-portlet__body'>
-                    {this.state.checkouts && this.state.checkouts.length > 0
+                    {
+                      !this.props.store && !this.state.loadingIntegration
+                      ? <div>
+                        <h6 style={{ textAlign: 'center' }}>
+                          You have not integrated an e-commerce provider with KiboPush. Please integrate an e-commerce provider to create a commerce chatbot.
+                        </h6>
+                        <div style={{ marginTop: '25px', textAlign: 'center' }}>
+                          <div onClick={this.goToCommerceSettings} className='btn btn-primary'>
+                            Integrate
+                        </div>
+                        </div>
+                      </div>
+                      : !this.state.loadingIntegration && !this.state.loadingCheckouts
+                      ? this.props.store && this.state.checkouts && this.state.checkouts.length > 0
                       ? <div className='m_datatable m-datatable m-datatable--default m-datatable--loaded' id='ajax_data'>
                         <table className='m-datatable__table' style={{ display: 'block', height: 'auto', overflowX: 'auto' }}>
                           <thead className='m-datatable__head'>
@@ -240,7 +298,7 @@ class AbandonedCart extends React.Component {
                                       <a href={checkout.checkout_admin_url} target='_blank' rel='noopener noreferrer'>#{checkout.checkoutId}</a>
                                     </span>
                                   </td>
-                                  <td data-field='customer' className='m-datatable__cell--center m-datatable__cell'><span style={{ width: '100px' }}>{checkout.customerName ? checkout.customerName : '-'}</span></td>
+                                  <td data-field='customer' className='m-datatable__cell--center m-datatable__cell'><span style={{ width: '100px' }}>{this.getCustomerName(checkout.customerName)}</span></td>
                                   <td data-field='createdAt' className='m-datatable__cell--center m-datatable__cell'><span style={{ width: '100px' }}>{handleDate(checkout.created_at)}</span></td>
                                   <td data-field='amount' className='m-datatable__cell--center m-datatable__cell'><span style={{ width: '100px' }}>{`${checkout.currency} ${checkout.totalPrice}`}</span></td>
                                   <td data-field='status' className='m-datatable__cell--center m-datatable__cell'>
@@ -283,6 +341,9 @@ class AbandonedCart extends React.Component {
                       : <span>
                         <p> No data to display </p>
                       </span>
+                      : <span>
+                        <p> Loading... </p>
+                      </span>
                     }
                   </div>
               </div>
@@ -297,6 +358,7 @@ class AbandonedCart extends React.Component {
 
 function mapStateToProps(state) {
   return {
+    store: (state.commerceInfo.store),
     checkouts: (state.superNumberInfo.checkouts),
     count: (state.superNumberInfo.checkoutCount),
     nextPageParameters: (state.superNumberInfo.checkoutNextPageParameters),
@@ -308,7 +370,8 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators({
     fetchCheckouts,
     fetchTemplates,
-    sendManualMessage
+    sendManualMessage,
+    fetchShopifyStore
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(AbandonedCart)
