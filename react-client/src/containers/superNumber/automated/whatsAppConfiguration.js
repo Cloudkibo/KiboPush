@@ -33,29 +33,19 @@ class WhatsAppConfiguration extends React.Component {
       <div key='whatsAppConfiguration' className='accordion' id='accordionWhatsAppConfiguraion'>
         <div className='card'>
           <div className='card-header' id='headingWhatsAppConfiguration'>
-            <h4 className='mb-0' onClick={() => this.expendRowToggle()}>
+            <h4 className='mb-0'>
               <div
                 style={{fontSize: 'medium', fontWeight: '500'}}
                 className='btn'
-                data-toggle='collapse'
                 data-target='#collapse_whatsAppConfiguraion'
                 aria-expanded='true'
                 aria-controls='#collapse_whatsAppConfiguraion'
               >
                 WhatsApp Configuration
               </div>
-              <span style={{float: 'right', marginRight: '12px', marginTop: '5px'}}>
-                <i
-                  id='icon-whatsAppConfiguration'
-                  style={{ fontSize: '20px', marginLeft: '30px', cursor: 'pointer' }}
-                  className='la la-angle-down'
-                  data-toggle='collapse'
-                  data-target='#collapse_whatsAppConfiguraion'
-                />
-              </span>
             </h4>
           </div>
-          <div id='collapse_whatsAppConfiguraion' className='collapse' aria-labelledby='headingWhatsAppConfiguration' data-parent="#accordion">
+          <div id='collapse_whatsAppConfiguraion' aria-labelledby='headingWhatsAppConfiguration' data-parent="#accordion">
             <div className='card-body'>
               <form>
                 <div className='form-group m-form__group col-lg-12'>

@@ -425,7 +425,7 @@ class FacebookIntegration extends React.Component {
                               onClick={this.handleUsage}
                               checked={this.state.usage === 'superNumber'}
                              />
-                            Use WhatsApp Super Number for Commerce (shopify)
+                            Use Cloudkibo’s WhatsApp number for Commerce (shopify)
                             <span></span>
                           </label>
                           <label className="m-radio" style={{fontWeight: 'lighter'}}>

@@ -1,6 +1,3 @@
-/**
- * Created by sojharo on 21/07/2017.
- */
 import * as ActionTypes from '../constants/constants'
 import callApi from '../../utility/api.caller.service'
 

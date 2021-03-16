@@ -237,7 +237,7 @@ class DeleteUserData extends React.Component {
           </div>
         </div>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        <div className='m-portlet m-portlet--full-height m-portlet--tabs  '>
+        <div style={{height: '82vh'}} className='m-portlet m-portlet--tabs  '>
           <div className='m-portlet__head'>
             <div className='m-portlet__head-tools'>
               <ul className='nav nav-tabs m-tabs m-tabs-line   m-tabs-line--left m-tabs-line--primary' role='tablist'>

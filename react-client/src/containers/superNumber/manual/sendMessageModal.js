@@ -50,19 +50,21 @@ class SendMessageModal extends React.Component {
                 <span></span>
               </label>
             </div>
-            <div className='col-md-6'>
-              <label className="m-radio" style={{fontWeight: 'lighter'}}>
-                <input
-                  type='radio'
-                  value='ORDER_SHIPMENT'
-                  onChange={this.handleTemplate}
-                  onClick={this.handleTemplate}
-                  checked={this.props.selectedTemplateName === 'ORDER_SHIPMENT'}
-                 />
-               Order Shipment
-                <span></span>
-              </label>
-            </div>
+            {this.props.showShipment &&
+              <div className='col-md-6'>
+                <label className="m-radio" style={{fontWeight: 'lighter'}}>
+                  <input
+                    type='radio'
+                    value='ORDER_SHIPMENT'
+                    onChange={this.handleTemplate}
+                    onClick={this.handleTemplate}
+                    checked={this.props.selectedTemplateName === 'ORDER_SHIPMENT'}
+                   />
+                 Order Shipment
+                  <span></span>
+                </label>
+              </div>
+            }
             </div>
         </div>
       }
@@ -93,7 +95,8 @@ SendMessageModal.propTypes = {
   'selectedTemplateName': PropTypes.string.isRequired,
   'templates': PropTypes.object.isRequired,
   'updateState': PropTypes.func.isRequired,
-  'sendMessage': PropTypes.func.isRequired
+  'sendMessage': PropTypes.func.isRequired,
+  'showShipment': PropTypes.string.isRequired,
 }
 
 export default SendMessageModal
