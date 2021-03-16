@@ -22,10 +22,18 @@ class OrdersCRM extends React.Component {
     }
     this.updateState = this.updateState.bind(this)
     this.onSave = this.onSave.bind(this)
+    this.goToCommerceSettings = this.goToCommerceSettings.bind(this)
 
     props.fetchShopifyStore()
     props.fetchSuperNumberPreferences(this.msg)
     props.fetchTemplates()
+  }
+
+  goToCommerceSettings() {
+    this.props.history.push({
+      pathname: '/settings',
+      state: { tab: 'commerceIntegration' }
+    })
   }
 
   onSave () {

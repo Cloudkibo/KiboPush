@@ -26,10 +26,18 @@ class CashOnDelivery extends React.Component {
     }
     this.updateState = this.updateState.bind(this)
     this.onSave = this.onSave.bind(this)
+    this.goToCommerceSettings = this.goToCommerceSettings.bind(this)
 
     props.fetchShopifyStore()
     props.fetchSuperNumberPreferences(this.msg)
     props.fetchTemplates({type: 'COD_ORDER_CONFIRMATION'})
+  }
+
+  goToCommerceSettings() {
+    this.props.history.push({
+      pathname: '/settings',
+      state: { tab: 'commerceIntegration' }
+    })
   }
 
   onSave () {

@@ -36,29 +36,19 @@ class CodTags extends React.Component {
       <div key='codTags' className='accordion' id='accordionCodTags'>
         <div className='card'>
           <div className='card-header' id='headingCodTags'>
-            <h4 className='mb-0' onClick={() => this.expendRowToggle()}>
+            <h4 className='mb-0'>
               <div
                 style={{fontSize: 'medium', fontWeight: '500'}}
                 className='btn'
-                data-toggle='collapse'
                 data-target='#collapse_codTags'
                 aria-expanded='true'
                 aria-controls='#collapse_codTags'
               >
                 Tags for COD Orders
               </div>
-              <span style={{float: 'right', marginRight: '12px', marginTop: '5px'}}>
-                <i
-                  id='icon-codTags'
-                  style={{ fontSize: '20px', marginLeft: '30px', cursor: 'pointer' }}
-                  className='la la-angle-down'
-                  data-toggle='collapse'
-                  data-target='#collapse_codTags'
-                />
-              </span>
             </h4>
           </div>
-          <div id='collapse_codTags' className='collapse' aria-labelledby='headingCodTags' data-parent="#accordion">
+          <div id='collapse_codTags' aria-labelledby='headingCodTags' data-parent="#accordion">
             <div className='card-body'>
               <form>
                 <p>Automatically add tags to your orders based on COD order status.</p>

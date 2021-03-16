@@ -6,17 +6,7 @@ class Template extends React.Component {
     super(props, context)
     this.state = {
     }
-    this.expendRowToggle = this.expendRowToggle.bind(this)
     this.handleSwitch = this.handleSwitch.bind(this)
-  }
-
-  expendRowToggle () {
-    let className = document.getElementById(`icon-${this.props.id}`).className
-    if (className === 'la la-angle-up collapsed') {
-      document.getElementById(`icon-${this.props.id}`).className = 'la la-angle-down'
-    } else {
-      document.getElementById(`icon-${this.props.id}`).className = 'la la-angle-up'
-    }
   }
 
   handleSwitch (e) {
@@ -28,29 +18,19 @@ class Template extends React.Component {
       <div key={this.props.id} className='accordion' id={`accordion${this.props.id}`}>
         <div className='card'>
           <div className='card-header' id={`heading${this.props.id}`}>
-            <h4 className='mb-0' onClick={() => this.expendRowToggle()}>
+            <h4 className='mb-0'>
               <div
                 style={{fontSize: 'medium', fontWeight: '500'}}
                 className='btn'
-                data-toggle='collapse'
                 data-target={`#collapse_${this.props.id}`}
                 aria-expanded='true'
                 aria-controls={`#collapse_${this.props.id}`}
               >
                 {this.props.heading}
               </div>
-              <span style={{float: 'right', marginRight: '12px', marginTop: '5px'}}>
-                <i
-                  id={`icon-${this.props.id}`}
-                  style={{ fontSize: '20px', marginLeft: '30px', cursor: 'pointer' }}
-                  className='la la-angle-down'
-                  data-toggle='collapse'
-                  data-target={`#collapse_${this.props.id}`}
-                />
-              </span>
             </h4>
           </div>
-          <div id={`collapse_${this.props.id}`} className='collapse' aria-labelledby={`heading${this.props.id}`} data-parent="#accordion">
+          <div id={`collapse_${this.props.id}`} aria-labelledby={`heading${this.props.id}`} data-parent="#accordion">
             <div className='card-body'>
               <form>
                 <div className='form-group m-form__group col-lg-12'>
