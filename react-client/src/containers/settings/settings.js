@@ -71,6 +71,7 @@ class Settings extends React.Component {
       isDisableInput: false,
       isDisableButton: false,
       isKiboChat: false,
+      showOptionsBasedOnPlan: true // this is for plan E until we figure out another plan
     }
     this.changeType = this.changeType.bind(this)
     this.initializeSwitchNGP = this.initializeSwitchNGP.bind(this)
@@ -102,8 +103,17 @@ class Settings extends React.Component {
     this.setMessageAlerts = this.setMessageAlerts.bind(this)
     this.setBusinessHours = this.setBusinessHours.bind(this)
     this.setNotificationSettings = this.setNotificationSettings.bind(this)
+    this.setShowOptionsBasedOnPlan = this.setShowOptionsBasedOnPlan.bind(this)
 
     props.loadMyPagesList()
+  }
+
+  setShowOptionsBasedOnPlan(user) {
+    let shouldShowOptions = true
+    if (user.currentPlan.unique_ID === 'plan_E' && user.platform === 'whatsApp') {
+      shouldShowOptions = false
+    }
+    this.setState({ showOptionsBasedOnPlan : shouldShowOptions })
   }
 
   UNSAFE_componentWillMount() {
@@ -332,6 +342,8 @@ class Settings extends React.Component {
     var addScript = document.createElement('script')
     addScript.setAttribute('src', 'https://js.stripe.com/v3/')
     document.body.appendChild(addScript)
+    this.scrollToTop()
+    this.setShowOptionsBasedOnPlan(this.props.user)
 
     // this.initializeSwitchNGP(this.state.ngpButtonState)
 
@@ -579,7 +591,7 @@ class Settings extends React.Component {
                         </a>
                       </li>
                     }
-                    {(url.includes('localhost') || (url.includes('kibochat.cloudkibo.com'))) && (this.props.user.role === 'admin' || this.props.user.role === 'buyer') && (this.props.user.platform === 'whatsApp' && this.props.user.currentPlan.unique_ID !== 'plan_E') &&
+                    {(url.includes('localhost') || (url.includes('kibochat.cloudkibo.com'))) && (this.props.user.role === 'admin' || this.props.user.role === 'buyer') && this.state.showOptionsBasedOnPlan &&
                     <li className='m-nav__item'>
                       <a href='#/' className='m-nav__link' onClick={this.setZoomIntegration} style={{cursor: 'pointer'}} >
                         <i className='m-nav__link-icon flaticon-network' />
@@ -597,7 +609,7 @@ class Settings extends React.Component {
                     }
                     {(this.props.user.role === 'admin' || this.props.user.role === 'buyer') &&
                       (this.props.user.plan['hubspot_integration'] || this.props.user.plan['dialogflow_integration'] || this.props.user.plan['google_sheets_integration']) &&
-                      this.props.user.permissions['manage_integrations'] && (this.props.user.currentPlan.unique_ID !== 'plan_E') &&
+                      this.props.user.permissions['manage_integrations'] && this.state.showOptionsBasedOnPlan &&
                       <li className='m-nav__item'>
                         <a href='#/' className='m-nav__link' onClick={this.setIntegrations} style={{ cursor: 'pointer' }} >
                           <i className='m-nav__link-icon flaticon-network' />
@@ -605,7 +617,7 @@ class Settings extends React.Component {
                         </a>
                       </li>
                     }
-                    {(url.includes('localhost') || url.includes('kibochat.cloudkibo.com')) && (this.props.user.role === 'admin' || this.props.user.role === 'buyer') && (this.props.user.platform === 'whatsApp' && this.props.user.currentPlan.unique_ID !== 'plan_E') &&
+                    {(url.includes('localhost') || url.includes('kibochat.cloudkibo.com')) && (this.props.user.role === 'admin' || this.props.user.role === 'buyer') && this.state.showOptionsBasedOnPlan &&
                       <li className='m-nav__item'>
                         <a href='#/' className='m-nav__link' onClick={this.setCannedResponses} style={{ cursor: 'pointer' }} >
                           <i className='m-nav__link-icon flaticon-menu-button' />
@@ -636,7 +648,7 @@ class Settings extends React.Component {
                         </a>
                       </li>
                     }
-                    {this.props.user && !(this.props.user.role === 'admin' || this.props.user.role === 'agent') && (this.props.user.currentPlan.unique_ID !== 'plan_E') &
+                    {this.props.user && !(this.props.user.role === 'admin' || this.props.user.role === 'agent') && this.state.showOptionsBasedOnPlan &
                       <li className='m-nav__item'>
                         <a href='#/' className='m-nav__link' onClick={this.setNGP} style={{ cursor: 'pointer' }}>
                           <i className='m-nav__link-icon flaticon-share' />
@@ -718,7 +730,7 @@ class Settings extends React.Component {
                     }
 
                     {
-                      (this.props.user.currentPlan.unique_ID !== 'plan_E') &&
+                      this.state.showOptionsBasedOnPlan &&
                         <li className='m-nav__item'>
                           <a href='#/' className='m-nav__link' onClick={this.setWhiteListDomains} style={{ cursor: 'pointer' }}>
                             <i className='m-nav__link-icon la la-list' />
@@ -727,7 +739,7 @@ class Settings extends React.Component {
                         </li>
                     }
                     {
-                      (this.props.user.currentPlan.unique_ID !== 'plan_E') &&
+                      this.state.showOptionsBasedOnPlan &&
                         <li className='m-nav__item'>
                           <a href='#/' className='m-nav__link' onClick={this.setAdvancedSettings} style={{ cursor: 'pointer' }}>
                             <i className='m-nav__link-icon fa flaticon-settings' />

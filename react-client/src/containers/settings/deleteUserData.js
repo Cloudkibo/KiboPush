@@ -16,7 +16,8 @@ class DeleteUserData extends React.Component {
       confirmationMessage: '',
       password: '',
       showEmailAlert: '',
-      cancelRequest: true
+      cancelRequest: true,
+      showOptionsBasedOnPlan: true // this is for plan E until we figure out another plan
     }
     this.handleRadioChange = this.handleRadioChange.bind(this)
     this.saveDeleteOption = this.saveDeleteOption.bind(this)
@@ -27,12 +28,22 @@ class DeleteUserData extends React.Component {
     this.handleAuthentication = this.handleAuthentication.bind(this)
     this.onCancel = this.onCancel.bind(this)
     this.handleSave = this.handleSave.bind(this)
+    this.setShowOptionsBasedOnPlan = this.setShowOptionsBasedOnPlan.bind(this)
   }
   componentDidMount () {
     this.updateDeleteOption(this.props.user)
+    this.setShowOptionsBasedOnPlan(this.props.user)
   }
   UNSAFE_componentWillReceiveProps (nextProps) {
     this.updateDeleteOption(nextProps.user)
+  }
+
+  setShowOptionsBasedOnPlan(user) {
+    let shouldShowOptions = true
+    if (user.currentPlan.unique_ID === 'plan_E' && user.platform === 'whatsApp') {
+      shouldShowOptions = false
+    }
+    this.setState({ showOptionsBasedOnPlan : shouldShowOptions })
   }
 
   changePassword (e) {
@@ -246,24 +257,30 @@ class DeleteUserData extends React.Component {
                 <span style={{marginLeft: '5px'}}> When you start the deletion process by selecting one of the options below, a request is sent to the admin to delete your desired information in 14 days time.</span>
               </div>
               <div className='radio-buttons' style={{marginLeft: '37px'}}>
-                <div className='radio'>
-                  <input id='delChat'
-                    type='radio'
-                    value='delChat'
-                    name='delChat'
-                    onChange={this.handleRadioChange}
-                    checked={this.state.selectedRadio === 'delChat'} />
-                  <p>Delete all live chat sessions</p>
-                </div>
-                <div className='radio'>
-                  <input id='delSubscribers'
-                    type='radio'
-                    value='delSubscribers'
-                    name='delSubscribers'
-                    onChange={this.handleRadioChange}
-                    checked={this.state.selectedRadio === 'delSubscribers'} />
-                  <p>Delete all subscribers</p>
-                </div>
+                {
+                  this.state.showOptionsBasedOnPlan &&
+                    <div className='radio'>
+                      <input id='delChat'
+                        type='radio'
+                        value='delChat'
+                        name='delChat'
+                        onChange={this.handleRadioChange}
+                        checked={this.state.selectedRadio === 'delChat'} />
+                      <p>Delete all live chat sessions</p>
+                    </div>
+                }
+                {
+                  this.state.showOptionsBasedOnPlan &&
+                    <div className='radio'>
+                      <input id='delSubscribers'
+                        type='radio'
+                        value='delSubscribers'
+                        name='delSubscribers'
+                        onChange={this.handleRadioChange}
+                        checked={this.state.selectedRadio === 'delSubscribers'} />
+                      <p>Delete all subscribers</p>
+                    </div>
+                }
                 <div className='radio'>
                   <input id='delAccount'
                     type='radio'
