@@ -450,7 +450,7 @@ class Sidebar extends Component {
   }
 
   showCommerceItem() {
-    if (!this.state.isKiboLite && this.props.user && this.props.user.platform === 'whatsApp' && (this.state.isKiboChat || this.state.isLocalhost)) {
+    if (!this.state.isKiboLite && this.props.user && this.props.user.platform === 'whatsApp' && (this.state.isKiboChat || this.state.isLocalhost) && !this.hideItemsBasedOnPlan(this.props.user)) {
       return (
         <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
           <span className='m-menu__link m-menu__toggle'>
