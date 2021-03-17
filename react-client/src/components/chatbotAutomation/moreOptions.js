@@ -27,7 +27,7 @@ class MoreOptions extends React.Component {
 
     document.getElementById('_chatbot_message_area').addEventListener("scroll", () => {
       if (this.state.showingSuggestion) {
-        ReactTooltip.show(document.getElementById('_more_options_chatbot_add')) 
+        ReactTooltip.show(document.getElementById('_more_options_chatbot_add'))
       }
     });
   }
@@ -40,13 +40,13 @@ class MoreOptions extends React.Component {
       showRemove: true,
       action: 'link',
       payloadAction: data.payloadAction,
-      additionalActions: data.query ? 
+      additionalActions: data.query ?
       {
         query: data.query,
         skipAllowed: data.skipAllowed,
         keyboardInputAllowed: data.keyboardInputAllowed,
         showing: true,
-      } : 
+      } :
       {
         query: '',
         skipAllowed: false,
@@ -118,7 +118,8 @@ class MoreOptions extends React.Component {
             }
             <div style={{padding: '10px'}} className='row'>
               {
-                this.state.options.map((option, i) => (
+                this.state.options
+                .map((option, i) => (
                   <button
                     key={i}
                     id={`_more_options_chatbot_${i}`}
@@ -126,6 +127,7 @@ class MoreOptions extends React.Component {
                     style={{border: '1px solid #36a3f7', marginRight: '10px', marginBottom: '10px'}}
                     className="btn m-btn--pill btn-outline-info btn-sm"
                     onClick={() => this.showPopover(option, i)}
+                    disabled={option.payloadAction === 'talk_to_agent'}
                   >
       							{option.title}
       						</button>
