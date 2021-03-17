@@ -1,7 +1,7 @@
 import React from 'react'
 import { XAxis, YAxis, CartesianGrid, Tooltip, Legend, Line, LineChart } from 'recharts'
 import PropTypes from 'prop-types'
-import IconStack from '../../components/Dashboard/IconStack'
+import IconStack from '../../../components/Dashboard/IconStack'
 import moment from 'moment'
 
 class PeriodicAnalytics extends React.Component {
