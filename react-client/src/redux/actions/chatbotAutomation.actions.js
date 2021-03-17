@@ -199,3 +199,15 @@ export function downloadAnalytics(data, callback) {
       })
   }
 }
+
+export function fetchDialogflowAgents (callback) {
+  return (dispatch) => {
+    callApi('dialogflow/agents')
+      .then(res => {
+        console.log('response from fetchDialogflowAgents', res)
+        if (callback) {
+          callback(res)
+        }
+      })
+  }
+}

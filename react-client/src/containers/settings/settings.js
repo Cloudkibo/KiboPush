@@ -374,10 +374,13 @@ class Settings extends React.Component {
         this.setCommerceIntegration()
       }
     }
+    if (this.props.location.state && this.props.location.state.tab) {
+      if (this.props.location.state.tab === 'integrations') {
+        this.setIntegrations()
+      }
+    }
   }
-  componentDidUpdate() {
-    console.log('in componentDidUpdate')
-  }
+
   changeType(e) {
     if (this.state.type === 'password') {
       this.setState({ type: 'text', buttonText: 'Hide' })
