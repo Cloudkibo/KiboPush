@@ -4,7 +4,7 @@
  */
 
 import React from 'react'
-import CardBox from '../../components/Dashboard/CardBox'
+import CardBox from '../../../components/Dashboard/CardBox'
 import { Link } from 'react-router-dom'
 import { UncontrolledTooltip } from 'reactstrap'
 import PropTypes from 'prop-types'

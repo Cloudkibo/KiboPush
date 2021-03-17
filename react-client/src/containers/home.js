@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux'
 import Dashboard from './dashboard/dashboard'
 import WhatsAppDashboard from './smsWhatsAppDashboard/whatsAppDashboard'
 import SmsDashboard from './smsWhatsAppDashboard/smsDashboard'
-import SuperNumberDashboard from './superNumber/dashboard'
+import SuperNumberDashboard from './superNumber/dashboard/dashboard'
 
 class Home extends Component {
   constructor (props, context) {

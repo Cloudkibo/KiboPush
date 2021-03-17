@@ -5,8 +5,15 @@ import AlertContainer from 'react-alert'
 import INFO from './info'
 import WHATSAPPCONFIGURAION from './whatsAppConfiguration'
 import TEMPLATE from './template'
+import TABS from './tabs'
+import MESSAGELOGS from './messageLogs'
 import { fetchShopifyStore } from '../../../redux/actions/commerce.actions'
-import { fetchTemplates, fetchSuperNumberPreferences, updateSuperNumberPreferences, createSuperNumberPreferences } from '../../../redux/actions/superNumber.actions'
+import { fetchTemplates,
+  fetchSuperNumberPreferences,
+  updateSuperNumberPreferences,
+  createSuperNumberPreferences,
+  fetchMessageLogs
+} from '../../../redux/actions/superNumber.actions'
 import { validatePhoneNumber } from '../../../utility/utils'
 
 class AbandonedCart extends React.Component {
@@ -16,15 +23,35 @@ class AbandonedCart extends React.Component {
       language: 'english',
       supportNumber: '',
       text: '',
-      enabled: false
+      enabled: false,
+      currentTab: 'settings',
+      loadingIntegration: true
     }
     this.updateState = this.updateState.bind(this)
     this.onSave = this.onSave.bind(this)
     this.goToCommerceSettings = this.goToCommerceSettings.bind(this)
+    this.handleFetchStore = this.handleFetchStore.bind(this)
+    this.fetchMessageLogs = this.fetchMessageLogs.bind(this)
 
-    props.fetchShopifyStore()
+    props.fetchShopifyStore(this.handleFetchStore)
     props.fetchSuperNumberPreferences(this.msg)
     props.fetchTemplates({type: 'ABANDONED_CART_RECOVERY'})
+  }
+
+  fetchMessageLogs (payload, cb) {
+    this.props.fetchMessageLogs({
+      last_id: payload.last_id,
+      number_of_records: payload.number_of_records,
+      first_page: payload.first_page,
+      automatedMessage: true,
+      messageType:'ABANDONED_CART_RECOVERY',
+      current_page: payload.current_page,
+      requested_page: payload.requested_page
+    }, cb)
+  }
+
+  handleFetchStore () {
+    this.setState({loadingIntegration: false})
   }
 
   goToCommerceSettings() {
@@ -96,36 +123,37 @@ class AbandonedCart extends React.Component {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        <div className='m-content'>
-          <INFO />
-          <div className='row'>
-            <div className='col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12'>
-              <div className='m-portlet m-portlet--mobile'>
-                <div className='m-portlet__head'>
-                  <div className='m-portlet__head-caption'>
-                    <div className='m-portlet__head-title'>
-                      <h3 className='m-portlet__head-text'>
-                        Abandoned Cart
-                      </h3>
-                    </div>
-                  </div>
-                </div>
+          <div className='m-subheader '>
+            <div className='d-flex align-items-center'>
+              <div className='mr-auto'>
+                <h3 className='m-subheader__title'>Abandoned Carts</h3>
+              </div>
+            </div>
+          </div>
+          <div className='m-content'>
+            <INFO />
+            <div className='row'>
+              <div className='col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12'>
+                <div className='m-portlet m-portlet--full-height m-portlet--tabs  '>
+                  <TABS currentTab={this.state.currentTab} updateState={this.updateState} />
                   <div className='m-portlet__body'>
-                    {
-                      !this.props.store &&
-                      <div>
-                        <h6 style={{ textAlign: 'center' }}>
-                          You have not integrated an e-commerce provider with KiboPush. Please integrate an e-commerce provider to create a commerce chatbot.
-                        </h6>
-                        <div style={{ marginTop: '25px', textAlign: 'center' }}>
-                          <div onClick={this.goToCommerceSettings} className='btn btn-primary'>
-                            Integrate
+                    { this.state.loadingIntegration
+                      ? <span>
+                          <p> Loading... </p>
+                        </span>
+                      : !this.props.store
+                      ? <div>
+                          <h6 style={{ textAlign: 'center' }}>
+                            You have not integrated an e-commerce provider with KiboPush. Please integrate an e-commerce provider to create a commerce chatbot.
+                          </h6>
+                          <div style={{ marginTop: '25px', textAlign: 'center' }}>
+                            <div onClick={this.goToCommerceSettings} className='btn btn-primary'>
+                              Integrate
+                          </div>
+                          </div>
                         </div>
-                        </div>
-                      </div>
-                    }
-                    {this.props.store &&
-                    <div>
+                    : this.state.currentTab === 'settings'
+                    ? <div>
                       <WHATSAPPCONFIGURAION
                         updateState={this.updateState}
                         language={this.state.language}
@@ -149,6 +177,11 @@ class AbandonedCart extends React.Component {
                         </div>
                       </div>
                   </div>
+                  : <MESSAGELOGS
+                      messageLogs={this.props.messageLogs}
+                      count={this.props.messageLogsCount}
+                      fetchMessageLogs={this.fetchMessageLogs}
+                    />
                   }
                 </div>
               </div>
@@ -164,7 +197,9 @@ function mapStateToProps(state) {
   return {
     store: (state.commerceInfo.store),
     templates: (state.superNumberInfo.templates),
-    superNumberPreferences: (state.superNumberInfo.superNumberPreferences)
+    superNumberPreferences: (state.superNumberInfo.superNumberPreferences),
+    messageLogs: (state.superNumberInfo.messageLogs),
+    messageLogsCount: (state.superNumberInfo.messageLogsCount),
   }
 }
 
@@ -174,7 +209,8 @@ function mapDispatchToProps(dispatch) {
     fetchTemplates,
     fetchSuperNumberPreferences,
     updateSuperNumberPreferences,
-    createSuperNumberPreferences
+    createSuperNumberPreferences,
+    fetchMessageLogs
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(AbandonedCart)
