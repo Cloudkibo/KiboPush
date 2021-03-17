@@ -21,7 +21,7 @@ class Home extends Component {
         pathname: '/facebookIntegration'
       })
     }
-    if (this.state.kiboEngageUrl && nextProps.user.platform === 'whatsApp' && nextProps.user.currentPlan.unique_ID === 'plan_E') {
+    if (this.state.kiboEngageUrl && nextProps.user && nextProps.user.platform === 'whatsApp' && nextProps.user.currentPlan.unique_ID === 'plan_E') {
       const isStaging = window.location.hostname.includes('skiboengage')
       if (!isStaging) {
         window.location.replace('https://kibochat.cloudkibo.com/')
