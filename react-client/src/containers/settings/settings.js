@@ -675,7 +675,7 @@ class Settings extends React.Component {
                         </a>
                       </li>
                     }
-                    { this.props.user && this.props.user.role === 'buyer' && this.state.isKiboChat && this.props.user.plan['livechat_response_methods'] &&
+                    { this.props.user && this.props.user.role === 'buyer' && this.state.isKiboChat && this.props.user.plan['livechat_response_methods'] && this.state.showOptionsBasedOnPlan &&
                     <li className='m-nav__item'>
                       <a href='#/' className='m-nav__link' onClick={this.setResponseMethods} style={{cursor: 'pointer'}}>
                         <i className='m-nav__link-icon flaticon-list-2' />

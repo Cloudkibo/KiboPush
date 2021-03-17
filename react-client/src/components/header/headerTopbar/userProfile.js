@@ -78,19 +78,22 @@ class UserProfile extends React.Component {
                       </Link>
                     </li>
                   }
-                  <li className='m-nav__item'>
-                    {
-                      window.location.hostname.toLowerCase().includes('kibochat')
-                      ? <Link to='/liveChat' className='m-nav__link'>
-                        <i className='m-nav__link-icon flaticon-chat-1' />
-                        <span className='m-nav__link-text'>Messages</span>
-                      </Link>
-                      : <a href={this.getLiveChatLink} target='_blank' rel='noopener noreferrer' className='m-nav__link'>
-                        <i className='m-nav__link-icon flaticon-chat-1' />
-                        <span className='m-nav__link-text'>Messages</span>
-                      </a>
-                    }
-                  </li>
+                  {
+                    this.props.showMessages &&
+                      <li className='m-nav__item'>
+                        {
+                          window.location.hostname.toLowerCase().includes('kibochat')
+                            ? <Link to='/liveChat' className='m-nav__link'>
+                              <i className='m-nav__link-icon flaticon-chat-1' />
+                              <span className='m-nav__link-text'>Messages</span>
+                            </Link>
+                            : <a href={this.getLiveChatLink} target='_blank' rel='noopener noreferrer' className='m-nav__link'>
+                              <i className='m-nav__link-icon flaticon-chat-1' />
+                              <span className='m-nav__link-text'>Messages</span>
+                            </a>
+                        }
+                      </li>
+                  }
                   {
                     this.props.showDisconnectFacebook &&
                     <li className='m-nav__item'>
@@ -100,7 +103,10 @@ class UserProfile extends React.Component {
                       </span>
                     </li>
                   }
-                  <li className='m-nav__separator m-nav__separator--fit' />
+                  {
+                    (this.props.showDisconnectFacebook || this.props.showMessages || this.props.showSetupUsingWizard) &&
+                      <li className='m-nav__separator m-nav__separator--fit' />
+                  }
                   <li className='m-nav__item'>
                     <a href='http://kibopush.com/faq/' target='_blank' rel='noopener noreferrer' className='m-nav__link'>
                       <i className='m-nav__link-icon flaticon-info' />
@@ -139,7 +145,8 @@ UserProfile.propTypes = {
   'user': PropTypes.object.isRequired,
   'showSetupUsingWizard': PropTypes.bool,
   'showDisconnectFacebook': PropTypes.bool,
-  'logout': PropTypes.func.isRequired
+  'logout': PropTypes.func.isRequired,
+  'showMessages': PropTypes.bool
 }
 
 export default UserProfile

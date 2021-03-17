@@ -15,10 +15,18 @@ class HeaderTopbar extends React.Component {
     this.state = {}
 
     this.logout = this.logout.bind(this)
+    this.shouldShowBasedOnPlan = this.shouldShowBasedOnPlan.bind(this)
   }
 
   logout () {
     this.props.logout(auth.logout)
+  }
+
+  shouldShowBasedOnPlan(user) {
+    if (user.currentPlan.unique_ID === 'plan_E' && user.platform === 'whatsApp') {
+      return false
+    }
+    return true
   }
 
   render() {
@@ -28,6 +36,7 @@ class HeaderTopbar extends React.Component {
       showAppChooser,
       showDocumentation
     } = this.props
+    console.log('INSIDE RENDER IN HEADER', this.props)
     return (
       <div id='m_header_topbar' className='m-topbar  m-stack m-stack--ver m-stack--general'>
         <div className='m-stack__item m-topbar__nav-wrapper'>
@@ -41,7 +50,7 @@ class HeaderTopbar extends React.Component {
               />
             }
             {
-              showNotifcations &&
+              showNotifcations && this.props.user && this.shouldShowBasedOnPlan(this.props.user) &&
               <NOTIFICATIONS
                 notifications={this.props.notifications}
                 totalNotifications={this.props.totalNotifications}
@@ -61,9 +70,10 @@ class HeaderTopbar extends React.Component {
               />
             }
             {
-              showAppChooser &&
+              showAppChooser && this.props.user && this.shouldShowBasedOnPlan(this.props.user) &&
               <APPCHOOSER
                 currentEnvironment={this.props.currentEnvironment}
+                user={this.props.user}
               />
             }
             <USERPROFILE
@@ -72,6 +82,7 @@ class HeaderTopbar extends React.Component {
               logout={this.logout}
               showDisconnectFacebook={this.props.user && this.props.user.role === 'buyer' && this.props.user.platform === 'messenger'}
               showSetupUsingWizard={this.props.user && this.props.user.role !== 'agent' && this.props.user.platform === 'messenger'}
+              showMessages={this.props.user && this.shouldShowBasedOnPlan(this.props.user)}
             />
             {
               showDocumentation &&
