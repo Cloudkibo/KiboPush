@@ -721,11 +721,12 @@ export function createZoomMeeting(data, callback) {
   }
 }
 
-export function getIntegrations() {
+export function getIntegrations(cb) {
   return (dispatch) => {
     callApi('integrations')
       .then(res => {
         dispatch(showIntegrations(res.payload))
+        if (cb) cb(res)
       })
   }
 }
