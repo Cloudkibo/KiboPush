@@ -602,7 +602,7 @@ class Sidebar extends Component {
   }
 
   showOrganizationItems() {
-    if (!this.props.isMobile && this.props.user && (this.props.user.currentPlan.unique_ID === 'plan_C' || this.props.user.currentPlan.unique_ID === 'plan_D')) {
+    if (!this.props.isMobile && this.props.user && (this.props.user.currentPlan.unique_ID === 'plan_C' || this.props.user.currentPlan.unique_ID === 'plan_D' || this.props.user.currentPlan.unique_ID === 'plan_E')) {
       return (
         <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
           <span className='m-menu__link m-menu__toggle'>
@@ -1415,7 +1415,7 @@ class Sidebar extends Component {
   }
 
   inviteSubscribers() {
-    if (this.props.user && this.hideItemsBasedOnPlan(this.props.user)) {
+    if (this.props.user && this.props.user.platform === 'whatsApp' && this.hideItemsBasedOnPlan(this.props.user)) {
       return (
         <li onClick={() => { document.getElementById('m_aside_left_close_btn').click() }} className='m-menu__item' aria-haspopup='true' >
           <Link to='/uploadContactsWhatsApp' className='m-menu__link'>
