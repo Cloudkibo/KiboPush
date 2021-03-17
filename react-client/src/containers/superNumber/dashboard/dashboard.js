@@ -1,12 +1,12 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { fetchSummarisedAnalytics, fetchDetailedAnalytics } from '../../redux/actions/superNumber.actions'
+import { fetchSummarisedAnalytics, fetchDetailedAnalytics } from '../../../redux/actions/superNumber.actions'
 import { bindActionCreators } from 'redux'
 import { RingLoader } from 'halogenium'
 import CardBoxes from './cardBoxes'
 import PeriodicAnalytics from './periodicAnalytics'
 import moment from 'moment'
-import { validDateRange } from '../../utility/utils'
+import { validDateRange } from '../../../utility/utils'
 
 class Dashboard extends React.Component {
   constructor(props, context) {
