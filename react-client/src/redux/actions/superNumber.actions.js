@@ -161,3 +161,20 @@ export function fetchDetailedAnalytics(body, cb) {
       })
   }
 }
+
+export function fetchMessageLogs(body, cb) {
+  return (dispatch) => {
+    callApi(`supernumber/fetchMessageLogs`, 'post', body)
+      .then(res => {
+        console.log('response from fetchMessageLogs', res)
+        if (res.status === 'success') {
+          dispatch({
+            type: ActionTypes.GET_MESSAGE_LOGS,
+            messageLogs: res.payload.messageLogs,
+            count: res.payload.count
+          })
+          if (cb) cb(res)
+        }
+      })
+  }
+}

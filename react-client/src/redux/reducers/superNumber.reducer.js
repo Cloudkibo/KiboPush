@@ -42,6 +42,11 @@ export function superNumberInfo (state = {}, action) {
       return Object.assign({}, state, {
         detailedAnalytics: action.data
       })
+    case ActionTypes.GET_MESSAGE_LOGS:
+      return Object.assign({}, state, {
+        messageLogs: action.messageLogs,
+        messageLogsCount: action.count
+      })
     default:
       return state
   }

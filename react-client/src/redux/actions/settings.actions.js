@@ -40,13 +40,6 @@ export function showIntegrations(data) {
   }
 }
 
-export function showAdminAlerts (data) {
-  return {
-    type: ActionTypes.SHOW_ADMINALERTS,
-    data
-  }
-}
-
 export function showWhiteListDomains (data) {
   return {
     type: ActionTypes.SHOW_WHITELIST_DOMAINS,
@@ -62,7 +55,6 @@ export function setCompanyPreferences(data) {
     data: data
   }
 }
-
 
 export function showAdvancedSettings(data) {
   console.log(data)
@@ -178,31 +170,6 @@ export function installShopify (data) {
       .then(res => {
         console.log('FROM shopify')
         console.log(res.body)
-      })
-  }
-}
-
-export function fetchNotifications () {
-  return (dispatch) => {
-    callApi('adminAlerts/')
-      .then(res => {
-        if (res.status === 'success') {
-          dispatch(showAdminAlerts(res.payload))
-        }
-      })
-  }
-}
-export function updateNotificationSettings (data, msg) {
-  return (dispatch) => {
-    callApi('adminAlerts/update', 'post', data)
-      .then(res => {
-        if (res.status === 'success') {
-          dispatch(fetchNotifications())
-          msg.success('Notification settings updated successfully')
-        } else {
-          msg.error(res.description || 'Unable to update notification settings')
-          console.log(res.description)
-        }
       })
   }
 }
@@ -721,11 +688,12 @@ export function createZoomMeeting(data, callback) {
   }
 }
 
-export function getIntegrations() {
+export function getIntegrations(cb) {
   return (dispatch) => {
     callApi('integrations')
       .then(res => {
         dispatch(showIntegrations(res.payload))
+        if (cb) cb(res)
       })
   }
 }
