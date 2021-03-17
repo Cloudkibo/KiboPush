@@ -640,7 +640,7 @@ class Settings extends React.Component {
                         </a>
                       </li>
                     }
-                    {this.props.user && this.props.user.role === 'buyer' && this.state.isKiboChat &&
+                    {this.props.user && this.props.user.role === 'buyer' && this.state.isKiboChat && this.state.showOptionsBasedOnPlan &&
                       <li className='m-nav__item'>
                         {/* this.props.user.currentPlan.unique_ID === 'plan_A' || this.props.user.currentPlan.unique_ID === 'plan_C' */}
                         <a href='#/' className='m-nav__link' onClick={this.setResponseMethods} style={{ cursor: 'pointer' }}>
