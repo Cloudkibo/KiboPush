@@ -107,6 +107,7 @@ export function updateSuperNumberPreferences(data, msg) {
       .then(res => {
         if (res.status === 'success') {
           msg.success('Changes saved successfully')
+          dispatch(fetchSuperNumberPreferences(msg))
         } else {
           msg.error(res.description || res.payload || 'Failed to save changes')
         }

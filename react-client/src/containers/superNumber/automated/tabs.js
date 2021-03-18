@@ -30,6 +30,16 @@ class Tabs extends React.Component {
             </span>
             </li>
           </ul>
+          {this.props.showSave &&
+            <ul className='nav nav-tabs m-tabs m-tabs-line m-tabs-line--right m-tabs-line--primary'>
+              <li className='nav-item m-tabs__item'>
+                <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'
+                style={{marginTop: '12px'}} onClick={this.props.onSave}>
+                    Save
+              </button>
+              </li>
+            </ul>
+          }
         </div>
       </div>
     )
@@ -38,7 +48,9 @@ class Tabs extends React.Component {
 
 Tabs.propTypes = {
   'currentTab': PropTypes.string.isRequired,
-  'updateState': PropTypes.func.isRequired
+  'updateState': PropTypes.func.isRequired,
+  'onSave': PropTypes.func.isRequired,
+  'showSave': PropTypes.bool.isRequired,
 }
 
 export default Tabs

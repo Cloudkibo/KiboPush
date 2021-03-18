@@ -7,6 +7,7 @@ import WHATSAPPCONFIGURAION from './whatsAppConfiguration'
 import TEMPLATE from './template'
 import TABS from './tabs'
 import MESSAGELOGS from './messageLogs'
+import OPTIN from './optin'
 import { fetchShopifyStore } from '../../../redux/actions/commerce.actions'
 import { fetchTemplates,
   fetchSuperNumberPreferences,
@@ -25,7 +26,18 @@ class AbandonedCart extends React.Component {
       text: '',
       enabled: false,
       currentTab: 'settings',
-      loadingIntegration: true
+      loadingIntegration: true,
+      optin_widget: {
+        language: 'english',
+        enabled: true,
+        settings: {
+          addToCartClicked: false,
+          buyNowClicked: true,
+          landingOnCartPage: false,
+          checkoutClicked: true,
+          thankYouPage: true
+        }
+      }
     }
     this.updateState = this.updateState.bind(this)
     this.onSave = this.onSave.bind(this)
@@ -67,11 +79,14 @@ class AbandonedCart extends React.Component {
     } else if (!validatePhoneNumber(this.state.supportNumber)) {
       this.msg.error('Please enter a valid WhatsApp number')
     } else {
-      let payload =  { abandonedCart: {
-        language: this.state.language,
-        enabled: this.state.enabled,
-        supportNumber: this.state.supportNumber
-      }}
+      let payload =  {
+        abandonedCart: {
+          language: this.state.language,
+          enabled: this.state.enabled,
+          supportNumber: this.state.supportNumber
+        },
+        optin_widget: this.state.optin_widget
+      }
       if (!this.props.superNumberPreferences) {
         this.props.createSuperNumberPreferences(payload, this.msg)
       } else {
@@ -99,6 +114,9 @@ class AbandonedCart extends React.Component {
         supportNumber: nextProps.superNumberPreferences.abandonedCart.supportNumber,
         enabled: nextProps.superNumberPreferences.abandonedCart.enabled
       })
+    }
+    if (nextProps.superNumberPreferences && nextProps.superNumberPreferences.optin_widget) {
+      this.setState({optin_widget: nextProps.superNumberPreferences.optin_widget})
     }
     if (nextProps.templates && nextProps.templates[this.state.language]) {
       this.setState({text: nextProps.templates[this.state.language].text})
@@ -134,8 +152,13 @@ class AbandonedCart extends React.Component {
             <INFO />
             <div className='row'>
               <div className='col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12'>
-                <div className='m-portlet m-portlet--full-height m-portlet--tabs  '>
-                  <TABS currentTab={this.state.currentTab} updateState={this.updateState} />
+                <div className='m-portlet m-portlet--full-height m-portlet--tabs'>
+                  <TABS
+                    currentTab={this.state.currentTab}
+                    updateState={this.updateState}
+                    onSave={this.onSave}
+                    showSave={this.state.currentTab === 'settings'}
+                  />
                   <div className='m-portlet__body'>
                     { this.state.loadingIntegration
                       ? <span>
@@ -169,13 +192,11 @@ class AbandonedCart extends React.Component {
                         previewUrl='https://cdn.cloudkibo.com/public/img/abandoned-cart.png'
                         language={this.state.language}
                       />
-                        <div className='row' style={{paddingTop: '30px'}}>
-                          <div className='col-lg-6 m--align-left'>
-                          </div>
-                          <div className='col-lg-6 m--align-right'>
-                            <button onClick={this.onSave} className="btn btn-primary">Save</button>
-                        </div>
-                      </div>
+                      <br />
+                      <OPTIN
+                        updateState={this.updateState}
+                        optinWidget={this.state.optin_widget}
+                      />
                   </div>
                   : <MESSAGELOGS
                       messageLogs={this.props.messageLogs}

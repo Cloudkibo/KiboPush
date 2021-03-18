@@ -8,6 +8,7 @@ import CODTAGS from './codTags'
 import TEMPLATE from './template'
 import MESSAGELOGS from './messageLogs'
 import TABS from './tabs'
+import OPTIN from './optin'
 import { fetchShopifyStore } from '../../../redux/actions/commerce.actions'
 import { fetchTemplates,
   fetchSuperNumberPreferences,
@@ -30,7 +31,18 @@ class CashOnDelivery extends React.Component {
         no_response_tag: 'CODNoResponse-KiboPush'
       },
       loadingIntegration: true,
-      currentTab: 'settings'
+      currentTab: 'settings',
+      optin_widget: {
+        language: 'english',
+        enabled: true,
+        settings: {
+          addToCartClicked: false,
+          buyNowClicked: true,
+          landingOnCartPage: false,
+          checkoutClicked: true,
+          thankYouPage: true
+        }
+      }
     }
     this.updateState = this.updateState.bind(this)
     this.onSave = this.onSave.bind(this)
@@ -74,12 +86,15 @@ class CashOnDelivery extends React.Component {
     } else if (this.state.codTags.cancelTag === '' || this.state.codTags.confirmTag === '' || this.state.codTags.noResponseTag === '') {
         this.msg.error('Please provide all tags for COD orders')
     } else {
-      let payload =  { cashOnDelivery: {
-        language: this.state.language,
-        enabled: this.state.enabled,
-        supportNumber: this.state.supportNumber,
-        cod_tags: this.state.codTags
-      }}
+      let payload =  {
+        cashOnDelivery: {
+          language: this.state.language,
+          enabled: this.state.enabled,
+          supportNumber: this.state.supportNumber,
+          cod_tags: this.state.codTags
+        },
+        optin_widget: this.state.optin_widget
+      }
       if (!this.props.superNumberPreferences) {
         this.props.createSuperNumberPreferences(payload, this.msg)
       } else {
@@ -108,6 +123,9 @@ class CashOnDelivery extends React.Component {
         enabled: nextProps.superNumberPreferences.cashOnDelivery.enabled,
         codTags: nextProps.superNumberPreferences.cashOnDelivery.cod_tags
       })
+    }
+    if (nextProps.superNumberPreferences && nextProps.superNumberPreferences.optin_widget) {
+      this.setState({optin_widget: nextProps.superNumberPreferences.optin_widget})
     }
     if (nextProps.templates && nextProps.templates[this.state.language]) {
       this.setState({text: nextProps.templates[this.state.language].text})
@@ -144,7 +162,11 @@ class CashOnDelivery extends React.Component {
           <div className='row'>
             <div className='col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12'>
             <div className='m-portlet m-portlet--full-height m-portlet--tabs  '>
-              <TABS currentTab={this.state.currentTab} updateState={this.updateState} />
+              <TABS
+                currentTab={this.state.currentTab}
+                updateState={this.updateState}
+                onSave={this.onSave}
+                showSave={this.state.currentTab === 'settings'}/>
               <div className='m-portlet__body'>
               { this.state.loadingIntegration
                   ? <span>
@@ -184,13 +206,12 @@ class CashOnDelivery extends React.Component {
                       language={this.state.language}
                       codTags={this.state.codTags}
                   />
-                    <div className='row' style={{paddingTop: '30px'}}>
-                      <div className='col-lg-6 m--align-left'>
-                      </div>
-                      <div className='col-lg-6 m--align-right'>
-                        <button onClick={this.onSave} className="btn btn-primary">Save</button>
-                    </div>
-                  </div>
+                  <br />
+                  <OPTIN
+                    updateState={this.updateState}
+                    optinWidget={this.state.optin_widget}
+                    showThankyou
+                  />
                 </div>
                 : <MESSAGELOGS
                   messageLogs={this.props.messageLogs}
