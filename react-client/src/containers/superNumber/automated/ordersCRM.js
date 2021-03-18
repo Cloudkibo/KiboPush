@@ -6,8 +6,10 @@ import INFO from './info'
 import WHATSAPPCONFIGURAION from './whatsAppConfiguration'
 import TEMPLATE from './template'
 import { fetchShopifyStore } from '../../../redux/actions/commerce.actions'
-import { fetchTemplates, fetchSuperNumberPreferences, updateSuperNumberPreferences, createSuperNumberPreferences } from '../../../redux/actions/superNumber.actions'
+import { fetchTemplates, fetchMessageLogs, fetchSuperNumberPreferences, updateSuperNumberPreferences, createSuperNumberPreferences } from '../../../redux/actions/superNumber.actions'
 import { validatePhoneNumber } from '../../../utility/utils'
+import TABS from './tabs'
+import MESSAGELOGS from './messageLogs'
 
 class OrdersCRM extends React.Component {
   constructor(props) {
@@ -18,7 +20,8 @@ class OrdersCRM extends React.Component {
       textShipment: '',
       textConfirmation: '',
       enabledShipment: false,
-      enabledConfirmation: false
+      enabledConfirmation: false,
+      currentTab: 'settings'
     }
     this.updateState = this.updateState.bind(this)
     this.onSave = this.onSave.bind(this)
@@ -27,6 +30,7 @@ class OrdersCRM extends React.Component {
     props.fetchShopifyStore()
     props.fetchSuperNumberPreferences(this.msg)
     props.fetchTemplates()
+    this.fetchMessageLogs = this.fetchMessageLogs.bind(this)
   }
 
   goToCommerceSettings() {
@@ -34,6 +38,18 @@ class OrdersCRM extends React.Component {
       pathname: '/settings',
       state: { tab: 'commerceIntegration' }
     })
+  }
+
+  fetchMessageLogs (payload, cb) {
+    this.props.fetchMessageLogs({
+      last_id: payload.last_id,
+      number_of_records: payload.number_of_records,
+      first_page: payload.first_page,
+      automatedMessage: true,
+      messageType: {"$or": [{"messageType": "ORDER_CONFIRMATION"}, {"messageType": "ORDER_SHIPMENT"}]},
+      current_page: payload.current_page,
+      requested_page: payload.requested_page
+    }, cb)
   }
 
   onSave () {
@@ -121,24 +137,26 @@ class OrdersCRM extends React.Component {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
+        <div className='m-subheader '>
+          <div className='d-flex align-items-center'>
+            <div className='mr-auto'>
+              <h3 className='m-subheader__title'>Orders CRM</h3>
+            </div>
+          </div>
+        </div>
         <div className='m-content'>
           <INFO />
           <div className='row'>
             <div className='col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12'>
-              <div className='m-portlet m-portlet--mobile'>
-                <div className='m-portlet__head'>
-                  <div className='m-portlet__head-caption'>
-                    <div className='m-portlet__head-title'>
-                      <h3 className='m-portlet__head-text'>
-                        Orders CRM
-                      </h3>
-                    </div>
-                  </div>
-                </div>
-                  <div className='m-portlet__body'>
-                    {
-                      !this.props.store &&
-                      <div>
+            <div className='m-portlet m-portlet--full-height m-portlet--tabs'> 
+                <TABS currentTab={this.state.currentTab} updateState={this.updateState} />
+                <div className='m-portlet__body'>
+                  { this.state.loadingIntegration
+                    ? <span>
+                        <p> Loading... </p>
+                      </span>
+                    : !this.props.store
+                    ? <div>
                         <h6 style={{ textAlign: 'center' }}>
                           You have not integrated an e-commerce provider with KiboPush. Please integrate an e-commerce provider to create a commerce chatbot.
                         </h6>
@@ -148,43 +166,48 @@ class OrdersCRM extends React.Component {
                         </div>
                         </div>
                       </div>
-                    }
-                    {this.props.store &&
-                    <div>
-                      <WHATSAPPCONFIGURAION
-                        updateState={this.updateState}
-                        language={this.state.language}
-                        supportNumber={this.state.supportNumber}
-                      />
-                      <br />
-                      <TEMPLATE
-                        updateState={this.updateState}
-                        enabled={this.state.enabledConfirmation}
-                        text={this.state.textConfirmation}
-                        heading='Order Confirmation Template'
-                        id='orderConfirmation'
-                        previewUrl='https://cdn.cloudkibo.com/public/img/order-confirmation.png'
-                        language={this.state.language}
-                      />
-                      <br />
-                      <TEMPLATE
-                        updateState={this.updateState}
-                        enabled={this.state.enabledShipment}
-                        text={this.state.textShipment}
-                        heading='Order Shipment Template'
-                        id='orderShipment'
-                        previewUrl='https://cdn.cloudkibo.com/public/img/shipment.png'
-                        language={this.state.language}
-                      />
-                        <div className='row' style={{paddingTop: '30px'}}>
-                          <div className='col-lg-6 m--align-left'>
-                          </div>
-                          <div className='col-lg-6 m--align-right'>
-                            <button onClick={this.onSave} className="btn btn-primary">Save</button>
+                  : this.state.currentTab === 'settings'
+                  ? <div>
+                    <WHATSAPPCONFIGURAION
+                      updateState={this.updateState}
+                      language={this.state.language}
+                      supportNumber={this.state.supportNumber}
+                    />
+                    <br />
+                    <TEMPLATE
+                      updateState={this.updateState}
+                      enabled={this.state.enabledConfirmation}
+                      text={this.state.textConfirmation}
+                      heading='Order Confirmation Template'
+                      id='orderConfirmation'
+                      previewUrl='https://cdn.cloudkibo.com/public/img/order-confirmation.png'
+                      language={this.state.language}
+                    />
+                    <br />
+                    <TEMPLATE
+                      updateState={this.updateState}
+                      enabled={this.state.enabledShipment}
+                      text={this.state.textShipment}
+                      heading='Order Shipment Template'
+                      id='orderShipment'
+                      previewUrl='https://cdn.cloudkibo.com/public/img/shipment.png'
+                      language={this.state.language}
+                    />
+                      <div className='row' style={{paddingTop: '30px'}}>
+                        <div className='col-lg-6 m--align-left'>
                         </div>
+                        <div className='col-lg-6 m--align-right'>
+                          <button onClick={this.onSave} className="btn btn-primary">Save</button>
                       </div>
-                  </div>
-                  }
+                    </div>
+                </div>
+                : <MESSAGELOGS
+                    type='orders'
+                    messageLogs={this.props.messageLogs}
+                    count={this.props.messageLogsCount}
+                    fetchMessageLogs={this.fetchMessageLogs}
+                  />
+                }
                 </div>
               </div>
             </div>
@@ -209,7 +232,8 @@ function mapDispatchToProps(dispatch) {
     fetchTemplates,
     fetchSuperNumberPreferences,
     updateSuperNumberPreferences,
-    createSuperNumberPreferences
+    createSuperNumberPreferences,
+    fetchMessageLogs
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(OrdersCRM)
