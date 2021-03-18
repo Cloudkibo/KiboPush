@@ -28,6 +28,7 @@ import { liveChat } from './livechat.reducer.js'
 import { loginInfo } from './login.reducer.js'
 import { membersInfo } from './members.reducer.js'
 import { menuInfo } from './menu.reducer.js'
+import { messageAlertsInfo } from './messageAlerts.reducer'
 import { messengerAdsInfo } from './messengerAds.reducer'
 import { messengerCodeInfo } from './messengerCode.reducer'
 import { messengerRefURLInfo } from './messengerRefURL.reducer'
@@ -86,6 +87,7 @@ const appReducer = combineReducers({
   loginInfo,
   membersInfo,
   menuInfo,
+  messageAlertsInfo,
   messengerAdsInfo,
   messengerCodeInfo,
   messengerRefURLInfo,
