@@ -9,24 +9,6 @@ class MenuItem extends React.Component {
     this.getMenuItem = this.getMenuItem.bind(this)
   }
 
-  getNestedItem (name, route, icon) {
-    return (<li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
-      {
-        route.route
-        ? <Link onClick={() => {document.getElementById('m_aside_left_close_btn').click()}} to={route.route} state={route.state} className='m-menu__link m-menu__toggle'>
-            <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
-              <span />
-            </i>
-          <span className='m-menu__link-text'>{name}</span>
-        </Link>
-        : <a href={route.link} target='_blank' rel='noopener noreferrer' className='m-menu__link m-menu__toggle'>
-          <span className='m-menu__link-text'>{name}</span>
-        </a>
-      }
-    </li>
-  )
-  }
-
   getMenuItem (name, route, icon, item) {
     if (item && item.nestedmenu) {
       return (
