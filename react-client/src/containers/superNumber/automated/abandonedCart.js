@@ -135,6 +135,16 @@ class AbandonedCart extends React.Component {
             <div className='row'>
               <div className='col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12'>
                 <div className='m-portlet m-portlet--full-height m-portlet--tabs  '>
+                <div className='m-portlet__head-tools'>
+                        <button className='btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill' onClick={this.refresh}>
+                        <span>
+                          <i className='la la-refresh' />
+                          <span>
+                            Refresh
+                          </span>
+                        </span>
+                      </button>
+                    </div>
                   <TABS currentTab={this.state.currentTab} updateState={this.updateState} />
                   <div className='m-portlet__body'>
                     { this.state.loadingIntegration
