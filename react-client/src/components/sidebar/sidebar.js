@@ -74,6 +74,52 @@ class Sidebar extends Component {
         icon: 'flaticon-users'
       })
     }
+    if ((isKiboChat || isLocalhost) && platform === 'whatsApp' && user.currentPlan.unique_ID === 'plan_E') {
+      let submenu = []
+        submenu.push({
+          priority: 'a',
+          name: 'Automated Messages',
+          nestedmenu: [
+            {
+              priority: 'b',
+              name: 'Abandoned Cart',
+              route: '/abandonedCart',
+            },
+            {
+              priority: 'b',
+              name: 'Orders CRM',
+              route: '/ordersCRM',
+            },
+            {
+              priority: 'b',
+              name: 'Cash on Delivery',
+              route: '/cashOnDelivery',
+            }
+          ]
+        })
+        submenu.push({
+          priority: 'b',
+          name: 'Manual Messages',
+          nestedmenu: [
+            {
+              priority: 'b',
+              name: 'Abandoned Cart',
+              route: '/abandonedCartManual',
+            },
+            {
+              priority: 'b',
+              name: 'Orders CRM',
+              route: '/ordersCRMManual',
+            }
+          ]
+        })
+      menuItems.push({
+        priority: 'c',
+        name: 'Commerce',
+        submenu,
+        icon: 'flaticon-cart'
+      })
+    }
     if (['sms', 'whatsApp'].includes(platform) && user.permissions['view_subscribers']) {
       menuItems.push({
         priority: 'c',
