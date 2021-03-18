@@ -199,7 +199,7 @@ function mapStateToProps(state) {
     templates: (state.superNumberInfo.templates),
     superNumberPreferences: (state.superNumberInfo.superNumberPreferences),
     messageLogs: (state.superNumberInfo.messageLogs),
-    messageLogsCount: (state.superNumberInfo.messageLogsCount),
+    messageLogsCount: (state.superNumberInfo.messageLogsCount)
   }
 }
 
