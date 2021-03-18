@@ -75,32 +75,43 @@ class Sidebar extends Component {
       })
     }
     if ((isKiboChat || isLocalhost) && platform === 'whatsApp' && user.currentPlan.unique_ID === 'plan_E') {
-      let nestedmenu = []
-      nestedmenu.push({
-        priority: 'b',
-        name: 'Abandoned Cart',
-        route: '/customFields',
-      })
-      nestedmenu.push({
-        priority: 'b',
-        name: 'Orders CRM',
-        route: '/customFields',
-      })
-      nestedmenu.push({
-        priority: 'b',
-        name: 'Cash on Delivery',
-        route: '/customFields',
-      })
       let submenu = []
         submenu.push({
           priority: 'a',
           name: 'Automated Messages',
-          nestedmenu
+          nestedmenu: [
+            {
+              priority: 'b',
+              name: 'Abandoned Cart',
+              route: '/abandonedCart',
+            },
+            {
+              priority: 'b',
+              name: 'Orders CRM',
+              route: '/ordersCRM',
+            },
+            {
+              priority: 'b',
+              name: 'Cash on Delivery',
+              route: '/cashOnDelivery',
+            }
+          ]
         })
         submenu.push({
           priority: 'b',
           name: 'Manual Messages',
-          nestedmenu
+          nestedmenu: [
+            {
+              priority: 'b',
+              name: 'Abandoned Cart',
+              route: '/abandonedCartManual',
+            },
+            {
+              priority: 'b',
+              name: 'Orders CRM',
+              route: '/ordersCRMManual',
+            }
+          ]
         })
       menuItems.push({
         priority: 'c',

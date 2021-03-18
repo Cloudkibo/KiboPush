@@ -28,7 +28,6 @@ class MenuItem extends React.Component {
   }
 
   getMenuItem (name, route, icon, item) {
-    console.log('name', name)
     if (item && item.nestedmenu) {
       return (
         <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
