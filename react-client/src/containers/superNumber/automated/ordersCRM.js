@@ -5,6 +5,9 @@ import AlertContainer from 'react-alert'
 import INFO from './info'
 import WHATSAPPCONFIGURAION from './whatsAppConfiguration'
 import TEMPLATE from './template'
+import OPTIN from './optin'
+import TABS from './tabs'
+import MESSAGELOGS from './messageLogs'
 import { fetchShopifyStore } from '../../../redux/actions/commerce.actions'
 import { fetchTemplates, fetchSuperNumberPreferences, updateSuperNumberPreferences, createSuperNumberPreferences } from '../../../redux/actions/superNumber.actions'
 import { validatePhoneNumber } from '../../../utility/utils'
@@ -18,15 +21,33 @@ class OrdersCRM extends React.Component {
       textShipment: '',
       textConfirmation: '',
       enabledShipment: false,
-      enabledConfirmation: false
+      enabledConfirmation: false,
+      loadingIntegration: true,
+      currentTab: 'settings',
+      optin_widget: {
+        language: 'english',
+        enabled: true,
+        settings: {
+          addToCartClicked: false,
+          buyNowClicked: true,
+          landingOnCartPage: false,
+          checkoutClicked: true,
+          thankYouPage: true
+        }
+      }
     }
     this.updateState = this.updateState.bind(this)
     this.onSave = this.onSave.bind(this)
     this.goToCommerceSettings = this.goToCommerceSettings.bind(this)
+    this.handleFetchStore = this.handleFetchStore.bind(this)
 
-    props.fetchShopifyStore()
+    props.fetchShopifyStore(this.handleFetchStore)
     props.fetchSuperNumberPreferences(this.msg)
     props.fetchTemplates()
+  }
+
+  handleFetchStore () {
+    this.setState({loadingIntegration: false})
   }
 
   goToCommerceSettings() {
@@ -48,7 +69,8 @@ class OrdersCRM extends React.Component {
           shipmentEnabled: this.state.enabledShipment,
           supportNumber: this.state.supportNumber,
           confirmationEnabled: this.state.enabledConfirmation
-        }
+        },
+        optin_widget: this.state.optin_widget
       }
       if (!this.props.superNumberPreferences) {
         this.props.createSuperNumberPreferences(payload, this.msg)
@@ -79,6 +101,9 @@ class OrdersCRM extends React.Component {
         enabledConfirmation: nextProps.superNumberPreferences.orderCRM.confirmationEnabled,
         enabledShipment: nextProps.superNumberPreferences.orderCRM.shipmentEnabled
       })
+    }
+    if (nextProps.superNumberPreferences && nextProps.superNumberPreferences.optin_widget) {
+      this.setState({optin_widget: nextProps.superNumberPreferences.optin_widget})
     }
     if (nextProps.templates && nextProps.templates['ORDER_CONFIRMATION']) {
       let orderConfirmationTemplates = nextProps.templates['ORDER_CONFIRMATION']
@@ -121,24 +146,31 @@ class OrdersCRM extends React.Component {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
+        <div className='m-subheader '>
+          <div className='d-flex align-items-center'>
+            <div className='mr-auto'>
+              <h3 className='m-subheader__title'>Abandoned Carts</h3>
+            </div>
+          </div>
+        </div>
         <div className='m-content'>
           <INFO />
           <div className='row'>
             <div className='col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12'>
-              <div className='m-portlet m-portlet--mobile'>
-                <div className='m-portlet__head'>
-                  <div className='m-portlet__head-caption'>
-                    <div className='m-portlet__head-title'>
-                      <h3 className='m-portlet__head-text'>
-                        Orders CRM
-                      </h3>
-                    </div>
-                  </div>
-                </div>
+              <div className='m-portlet m-portlet--full-height m-portlet--tabs'>
+                <TABS
+                  currentTab={this.state.currentTab}
+                  updateState={this.updateState}
+                  onSave={this.onSave}
+                  showSave={this.state.currentTab === 'settings'}
+                />
                   <div className='m-portlet__body'>
-                    {
-                      !this.props.store &&
-                      <div>
+                    { this.state.loadingIntegration
+                      ? <span>
+                          <p> Loading... </p>
+                        </span>
+                      : !this.props.store
+                      ? <div>
                         <h6 style={{ textAlign: 'center' }}>
                           You have not integrated an e-commerce provider with KiboPush. Please integrate an e-commerce provider to create a commerce chatbot.
                         </h6>
@@ -148,9 +180,8 @@ class OrdersCRM extends React.Component {
                         </div>
                         </div>
                       </div>
-                    }
-                    {this.props.store &&
-                    <div>
+                      : this.state.currentTab === 'settings'
+                      ? <div>
                       <WHATSAPPCONFIGURAION
                         updateState={this.updateState}
                         language={this.state.language}
@@ -176,14 +207,18 @@ class OrdersCRM extends React.Component {
                         previewUrl='https://cdn.cloudkibo.com/public/img/shipment.png'
                         language={this.state.language}
                       />
-                        <div className='row' style={{paddingTop: '30px'}}>
-                          <div className='col-lg-6 m--align-left'>
-                          </div>
-                          <div className='col-lg-6 m--align-right'>
-                            <button onClick={this.onSave} className="btn btn-primary">Save</button>
-                        </div>
-                      </div>
+                      <br />
+                      <OPTIN
+                        updateState={this.updateState}
+                        optinWidget={this.state.optin_widget}
+                        showThankyou
+                      />
                   </div>
+                  : <MESSAGELOGS
+                      messageLogs={this.props.messageLogs}
+                      count={this.props.messageLogsCount}
+                      fetchMessageLogs={this.fetchMessageLogs}
+                    />
                   }
                 </div>
               </div>
