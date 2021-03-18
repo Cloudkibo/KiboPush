@@ -174,10 +174,10 @@ class Optin extends React.Component {
                   <a href='https://kibopush.com' target='_blank' rel='noopener noreferrer' className='m-btn--icon'>
                     <span>
                       <i className="fa fa-external-link"></i>
-											<span>
-												Preview storefront opt-in widget
-											</span>
-										</span>
+    									<span>
+    										Preview storefront opt-in widget
+    									</span>
+    								</span>
                   </a>
               </div>
               {this.props.showThankyou &&
