@@ -222,7 +222,9 @@ function mapStateToProps(state) {
   return {
     store: (state.commerceInfo.store),
     templates: (state.superNumberInfo.templates),
-    superNumberPreferences: (state.superNumberInfo.superNumberPreferences)
+    superNumberPreferences: (state.superNumberInfo.superNumberPreferences),
+    messageLogs: (state.superNumberInfo.messageLogs),
+    messageLogsCount: (state.superNumberInfo.messageLogsCount)
   }
 }
 

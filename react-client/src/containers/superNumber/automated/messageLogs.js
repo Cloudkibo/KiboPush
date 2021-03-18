@@ -150,7 +150,7 @@ class MessageLogs extends React.Component {
                       }
                       { this.props.type === 'orders' &&
                       <td data-field='status' className='m-datatable__cell--center m-datatable__cell'>
-                      <span style={{ width: '150px' }}>
+                      <span>
                         {messageLog.messageType}
                       </span></td>
                       }
