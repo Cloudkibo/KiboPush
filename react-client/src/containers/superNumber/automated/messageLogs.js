@@ -113,10 +113,18 @@ class MessageLogs extends React.Component {
                     className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
                     <span style={{ width: '100px' }}>Amount</span>
                   </th>
+                  { this.props.type === 'orders' &&
+                  <th data-field='status'
+                    className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                    <span style={{ width: '150px' }}>Template</span>
+                  </th>
+                  }
+                  { this.props.type === 'abandonedCart' &&
                   <th data-field='status'
                     className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
                     <span style={{ width: '150px' }}>Status</span>
                   </th>
+                  }
                   <th data-field='tags'
                     className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
                     <span style={{ width: '100px' }}>Message</span>
@@ -137,12 +145,20 @@ class MessageLogs extends React.Component {
                       <td data-field='customer' className='m-datatable__cell--center m-datatable__cell'><span style={{ width: '100px' }}>{messageLog.customerName}</span></td>
                       <td data-field='createdAt' className='m-datatable__cell--center m-datatable__cell'><span style={{ width: '100px' }}>{handleDate(messageLog.datetime)}</span></td>
                       <td data-field='amount' className='m-datatable__cell--center m-datatable__cell'><span style={{ width: '100px' }}>{`${messageLog.currency} ${messageLog.amount}`}</span></td>
+                      { this.props.type === 'abandonedCart' &&
                       <td data-field='status' className='m-datatable__cell--center m-datatable__cell'>
                         <span style={{ width: '150px' }}>
                         {<span className={`m-badge m-badge--wide m-badge--${this.getStatus(messageLog.status).style}`}>
                           {this.getStatus(messageLog.status).text}
                         </span>}
                       </span></td>
+                      }
+                      { this.props.type === 'orders' &&
+                      <td data-field='status' className='m-datatable__cell--center m-datatable__cell'>
+                      <span>
+                        {messageLog.messageType}
+                      </span></td>
+                      }
                     <td data-field='amount' className='m-datatable__cell--center m-datatable__cell'><span style={{ width: '100px' }}>Sent</span></td>
                     </tr>
                   ))
