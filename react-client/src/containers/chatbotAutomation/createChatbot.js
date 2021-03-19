@@ -134,10 +134,10 @@ class CreateChatbot extends React.Component {
     let flag = false
     switch (this.props.channel) {
       case 'messenger':
-        flag = this.state.page ? true : false
+        flag = this.state.page ? false : true
         break
       default:
-        flag = this.state.title ? true : false
+        flag = this.state.title ? false : true
     }
     return flag
   }
@@ -230,7 +230,7 @@ class CreateChatbot extends React.Component {
               style={{ border: '1px solid' }}
               className={`btn btn-primary ${this.state.createLoading && 'm-loader m-loader--light m-loader--left'} pull-right`}
               onClick={this.onCreate}
-              disabled={this.disableCreate}
+              disabled={this.disableCreate()}
             >
               Create
           </button>
