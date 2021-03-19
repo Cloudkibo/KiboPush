@@ -312,6 +312,7 @@ class ChatbotAutomation extends React.Component {
                           Modify Existing Chatbot
                         <span />
                       </label>
+                      <div className='m--space-10' />
                       {
                         this.state.manualChatbot.selectedRadio === 'modify' &&
                         <div style={{ marginLeft: '50px' }} className='row'>
@@ -324,6 +325,7 @@ class ChatbotAutomation extends React.Component {
                                   name={chatbot.pageId.pageName}
                                   onItemClick={() => this.modifyChatbot(chatbot, 'manualChatbot', commerceChatbots.find((c) => c.pageId._id === chatbot.pageId._id))}
                                   onSettingsClick={() => this.onSettingsClick(chatbot)}
+                                  showSubtitle={chatbot.dialogFlowAgentId ? true : false}
                                 />
                               ))
                               : (!manualChatbots) ?
@@ -332,6 +334,7 @@ class ChatbotAutomation extends React.Component {
                           }
                         </div>
                       }
+                      <div className='m--space-10' />
                       <label className="m-radio m-radio--bold m-radio--state-brand">
                         <input
                           type="radio"
