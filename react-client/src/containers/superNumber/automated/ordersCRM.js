@@ -9,8 +9,10 @@ import OPTIN from './optin'
 import TABS from './tabs'
 import MESSAGELOGS from './messageLogs'
 import { fetchShopifyStore } from '../../../redux/actions/commerce.actions'
-import { fetchTemplates, fetchSuperNumberPreferences, updateSuperNumberPreferences, createSuperNumberPreferences } from '../../../redux/actions/superNumber.actions'
+import { fetchTemplates, fetchMessageLogs, fetchSuperNumberPreferences, updateSuperNumberPreferences, createSuperNumberPreferences } from '../../../redux/actions/superNumber.actions'
 import { validatePhoneNumber } from '../../../utility/utils'
+import TABS from './tabs'
+import MESSAGELOGS from './messageLogs'
 
 class OrdersCRM extends React.Component {
   constructor(props) {
@@ -44,6 +46,7 @@ class OrdersCRM extends React.Component {
     props.fetchShopifyStore(this.handleFetchStore)
     props.fetchSuperNumberPreferences(this.msg)
     props.fetchTemplates()
+    this.fetchMessageLogs = this.fetchMessageLogs.bind(this)
   }
 
   handleFetchStore () {
@@ -55,6 +58,18 @@ class OrdersCRM extends React.Component {
       pathname: '/settings',
       state: { tab: 'commerceIntegration' }
     })
+  }
+
+  fetchMessageLogs (payload, cb) {
+    this.props.fetchMessageLogs({
+      last_id: payload.last_id,
+      number_of_records: payload.number_of_records,
+      first_page: payload.first_page,
+      automatedMessage: true,
+      messageType: {"$or": [{"messageType": "ORDER_CONFIRMATION"}, {"messageType": "ORDER_SHIPMENT"}]},
+      current_page: payload.current_page,
+      requested_page: payload.requested_page
+    }, cb)
   }
 
   onSave () {
@@ -149,7 +164,7 @@ class OrdersCRM extends React.Component {
         <div className='m-subheader '>
           <div className='d-flex align-items-center'>
             <div className='mr-auto'>
-              <h3 className='m-subheader__title'>Abandoned Carts</h3>
+              <h3 className='m-subheader__title'>Orders CRM</h3>
             </div>
           </div>
         </div>
@@ -215,6 +230,7 @@ class OrdersCRM extends React.Component {
                       />
                   </div>
                   : <MESSAGELOGS
+                      type='orders'
                       messageLogs={this.props.messageLogs}
                       count={this.props.messageLogsCount}
                       fetchMessageLogs={this.fetchMessageLogs}
@@ -234,7 +250,9 @@ function mapStateToProps(state) {
   return {
     store: (state.commerceInfo.store),
     templates: (state.superNumberInfo.templates),
-    superNumberPreferences: (state.superNumberInfo.superNumberPreferences)
+    superNumberPreferences: (state.superNumberInfo.superNumberPreferences),
+    messageLogs: (state.superNumberInfo.messageLogs),
+    messageLogsCount: (state.superNumberInfo.messageLogsCount)
   }
 }
 
@@ -244,7 +262,8 @@ function mapDispatchToProps(dispatch) {
     fetchTemplates,
     fetchSuperNumberPreferences,
     updateSuperNumberPreferences,
-    createSuperNumberPreferences
+    createSuperNumberPreferences,
+    fetchMessageLogs
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(OrdersCRM)

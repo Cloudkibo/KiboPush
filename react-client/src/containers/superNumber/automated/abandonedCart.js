@@ -199,6 +199,7 @@ class AbandonedCart extends React.Component {
                       />
                   </div>
                   : <MESSAGELOGS
+                      type='abandonedCart'
                       messageLogs={this.props.messageLogs}
                       count={this.props.messageLogsCount}
                       fetchMessageLogs={this.fetchMessageLogs}
