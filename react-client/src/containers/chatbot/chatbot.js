@@ -124,6 +124,7 @@ class Chatbots extends React.Component {
                           Modify Existing Chatbot
                         <span />
                       </label>
+                      <div className='m--space-10' />
                       {
                         this.state.selectedRadio === 'modify' &&
                         <div style={{ marginLeft: '50px' }} className='row'>
@@ -134,6 +135,7 @@ class Chatbots extends React.Component {
                                   key={chatbot.chatbotId}
                                   name={chatbot.title}
                                   onItemClick={() => this.modifyChatbot(chatbot)}
+                                  showSubtitle={chatbot.dialogFlowAgentId ? true : false}
                                 />
                               ))
                               : (!this.props.chatbots)
@@ -142,6 +144,7 @@ class Chatbots extends React.Component {
                           }
                         </div>
                       }
+                      <div className='m--space-10' />
                       <label className="m-radio m-radio--bold m-radio--state-brand">
                         <input
                           type="radio"
