@@ -11,7 +11,6 @@ import MESSAGELOGS from './messageLogs'
 import { fetchShopifyStore } from '../../../redux/actions/commerce.actions'
 import { fetchTemplates, fetchMessageLogs, fetchSuperNumberPreferences, updateSuperNumberPreferences, createSuperNumberPreferences } from '../../../redux/actions/superNumber.actions'
 import { validatePhoneNumber } from '../../../utility/utils'
-import MESSAGELOGS from './messageLogs'
 
 class OrdersCRM extends React.Component {
   constructor(props) {
