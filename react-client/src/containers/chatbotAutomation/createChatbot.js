@@ -75,7 +75,6 @@ class CreateChatbot extends React.Component {
   }
 
   onCreate () {
-    console.log('onCreate called')
     this.setState({ createLoading: true })
     let data = {}
     let pageFbId = ''

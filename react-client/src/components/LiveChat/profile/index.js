@@ -40,7 +40,7 @@ class Profile extends React.Component {
                         />
                     }
                   {
-                      (this.props.user.currentPlan.unique_ID === 'plan_C' || this.props.user.currentPlan.unique_ID === 'plan_D') &&
+                      this.props.user.permissions['assign_session_agent'] && this.props.user.permissions['assign_session_team'] &&
                       <AssignChat
                       alertMsg={this.props.alertMsg}
                       activeSession={this.props.activeSession}
