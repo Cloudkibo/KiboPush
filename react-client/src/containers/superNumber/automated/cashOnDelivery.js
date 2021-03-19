@@ -6,8 +6,15 @@ import INFO from './info'
 import WHATSAPPCONFIGURAION from './whatsAppConfiguration'
 import CODTAGS from './codTags'
 import TEMPLATE from './template'
+import MESSAGELOGS from './messageLogs'
+import TABS from './tabs'
+import OPTIN from './optin'
 import { fetchShopifyStore } from '../../../redux/actions/commerce.actions'
-import { fetchTemplates, fetchSuperNumberPreferences, updateSuperNumberPreferences, createSuperNumberPreferences } from '../../../redux/actions/superNumber.actions'
+import { fetchTemplates,
+  fetchSuperNumberPreferences,
+  updateSuperNumberPreferences,
+  createSuperNumberPreferences,
+  fetchMessageLogs } from '../../../redux/actions/superNumber.actions'
 import { validatePhoneNumber } from '../../../utility/utils'
 
 class CashOnDelivery extends React.Component {
@@ -22,15 +29,46 @@ class CashOnDelivery extends React.Component {
         cancelled_tag: 'CODCancelled-KiboPush',
         confirmed_tag: 'CODConfirmed-KiboPush',
         no_response_tag: 'CODNoResponse-KiboPush'
+      },
+      loadingIntegration: true,
+      currentTab: 'settings',
+      optin_widget: {
+        language: 'english',
+        enabled: true,
+        settings: {
+          addToCartClicked: false,
+          buyNowClicked: true,
+          landingOnCartPage: false,
+          checkoutClicked: true,
+          thankYouPage: true
+        }
       }
     }
     this.updateState = this.updateState.bind(this)
     this.onSave = this.onSave.bind(this)
     this.goToCommerceSettings = this.goToCommerceSettings.bind(this)
+    this.handleFetchStore = this.handleFetchStore.bind(this)
+    this.fetchMessageLogs = this.fetchMessageLogs.bind(this)
 
-    props.fetchShopifyStore()
+    props.fetchShopifyStore(this.handleFetchStore)
     props.fetchSuperNumberPreferences(this.msg)
     props.fetchTemplates({type: 'COD_ORDER_CONFIRMATION'})
+  }
+
+  fetchMessageLogs (payload, cb) {
+    this.props.fetchMessageLogs({
+      last_id: payload.last_id,
+      number_of_records: payload.number_of_records,
+      first_page: payload.first_page,
+      automatedMessage: true,
+      messageType: 'COD_ORDER_CONFIRMATION',
+      current_page: payload.current_page,
+      requested_page: payload.requested_page
+    }, cb)
+  }
+
+  handleFetchStore () {
+    this.setState({loadingIntegration: false})
   }
 
   goToCommerceSettings() {
@@ -48,12 +86,15 @@ class CashOnDelivery extends React.Component {
     } else if (this.state.codTags.cancelTag === '' || this.state.codTags.confirmTag === '' || this.state.codTags.noResponseTag === '') {
         this.msg.error('Please provide all tags for COD orders')
     } else {
-      let payload =  { cashOnDelivery: {
-        language: this.state.language,
-        enabled: this.state.enabled,
-        supportNumber: this.state.supportNumber,
-        cod_tags: this.state.codTags
-      }}
+      let payload =  {
+        cashOnDelivery: {
+          language: this.state.language,
+          enabled: this.state.enabled,
+          supportNumber: this.state.supportNumber,
+          cod_tags: this.state.codTags
+        },
+        optin_widget: this.state.optin_widget
+      }
       if (!this.props.superNumberPreferences) {
         this.props.createSuperNumberPreferences(payload, this.msg)
       } else {
@@ -83,6 +124,9 @@ class CashOnDelivery extends React.Component {
         codTags: nextProps.superNumberPreferences.cashOnDelivery.cod_tags
       })
     }
+    if (nextProps.superNumberPreferences && nextProps.superNumberPreferences.optin_widget) {
+      this.setState({optin_widget: nextProps.superNumberPreferences.optin_widget})
+    }
     if (nextProps.templates && nextProps.templates[this.state.language]) {
       this.setState({text: nextProps.templates[this.state.language].text})
     }
@@ -106,72 +150,81 @@ class CashOnDelivery extends React.Component {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
+        <div className='m-subheader '>
+          <div className='d-flex align-items-center'>
+            <div className='mr-auto'>
+              <h3 className='m-subheader__title'>Cash On Delivery</h3>
+            </div>
+          </div>
+        </div>
         <div className='m-content'>
           <INFO />
           <div className='row'>
             <div className='col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12'>
-              <div className='m-portlet m-portlet--mobile'>
-                <div className='m-portlet__head'>
-                  <div className='m-portlet__head-caption'>
-                    <div className='m-portlet__head-title'>
-                      <h3 className='m-portlet__head-text'>
-                        Cash On Delivery
-                      </h3>
+            <div className='m-portlet m-portlet--full-height m-portlet--tabs  '>
+              <TABS
+                currentTab={this.state.currentTab}
+                updateState={this.updateState}
+                onSave={this.onSave}
+                showSave={this.state.currentTab === 'settings'}/>
+              <div className='m-portlet__body'>
+              { this.state.loadingIntegration
+                  ? <span>
+                      <p> Loading... </p>
+                    </span>
+                  : !this.props.store
+                  ? <div>
+                    <h6 style={{ textAlign: 'center' }}>
+                      You have not integrated an e-commerce provider with KiboPush. Please integrate an e-commerce provider to create a commerce chatbot.
+                    </h6>
+                    <div style={{ marginTop: '25px', textAlign: 'center' }}>
+                      <div onClick={this.goToCommerceSettings} className='btn btn-primary'>
+                        Integrate
+                    </div>
                     </div>
                   </div>
+                : this.state.currentTab === 'settings'
+                ? <div>
+                  <WHATSAPPCONFIGURAION
+                    updateState={this.updateState}
+                    language={this.state.language}
+                    supportNumber={this.state.supportNumber}
+                  />
+                  <br />
+                  <TEMPLATE
+                    updateState={this.updateState}
+                    enabled={this.state.enabled}
+                    text={this.state.text}
+                    heading='Cash On Delivery'
+                    id='cashOnDelivery'
+                    previewUrl='https://cdn.cloudkibo.com/public/img/cod-order-confirmation.png'
+                    language={this.state.language}
+                  />
+                  <br />
+                    <CODTAGS
+                      updateState={this.updateState}
+                      language={this.state.language}
+                      codTags={this.state.codTags}
+                  />
+                  <br />
+                  <OPTIN
+                    updateState={this.updateState}
+                    optinWidget={this.state.optin_widget}
+                    showThankyou
+                  />
                 </div>
-                  <div className='m-portlet__body'>
-                    {
-                      !this.props.store &&
-                      <div>
-                        <h6 style={{ textAlign: 'center' }}>
-                          You have not integrated an e-commerce provider with KiboPush. Please integrate an e-commerce provider to create a commerce chatbot.
-                        </h6>
-                        <div style={{ marginTop: '25px', textAlign: 'center' }}>
-                          <div onClick={this.goToCommerceSettings} className='btn btn-primary'>
-                            Integrate
-                        </div>
-                        </div>
-                      </div>
-                    }
-                    {this.props.store &&
-                    <div>
-                      <WHATSAPPCONFIGURAION
-                        updateState={this.updateState}
-                        language={this.state.language}
-                        supportNumber={this.state.supportNumber}
-                      />
-                      <br />
-                      <TEMPLATE
-                        updateState={this.updateState}
-                        enabled={this.state.enabled}
-                        text={this.state.text}
-                        heading='Cash On Delivery'
-                        id='cashOnDelivery'
-                        previewUrl='https://cdn.cloudkibo.com/public/img/cod-order-confirmation.png'
-                        language={this.state.language}
-                      />
-                      <br />
-                       <CODTAGS
-                         updateState={this.updateState}
-                         language={this.state.language}
-                         codTags={this.state.codTags}
-                      />
-                        <div className='row' style={{paddingTop: '30px'}}>
-                          <div className='col-lg-6 m--align-left'>
-                          </div>
-                          <div className='col-lg-6 m--align-right'>
-                            <button onClick={this.onSave} className="btn btn-primary">Save</button>
-                        </div>
-                      </div>
-                  </div>
-                  }
-                </div>
-              </div>
+                : <MESSAGELOGS
+                  messageLogs={this.props.messageLogs}
+                  count={this.props.messageLogsCount}
+                  fetchMessageLogs={this.fetchMessageLogs}
+                />
+              }
             </div>
           </div>
         </div>
       </div>
+      </div>
+    </div>
     )
   }
 }
@@ -181,7 +234,9 @@ function mapStateToProps(state) {
     store: (state.commerceInfo.store),
     user: (state.basicInfo.user),
     templates: (state.superNumberInfo.templates),
-    superNumberPreferences: (state.superNumberInfo.superNumberPreferences)
+    superNumberPreferences: (state.superNumberInfo.superNumberPreferences),
+    messageLogs: (state.superNumberInfo.messageLogs),
+    messageLogsCount: (state.superNumberInfo.messageLogsCount)
   }
 }
 
@@ -191,7 +246,8 @@ function mapDispatchToProps(dispatch) {
     fetchTemplates,
     updateSuperNumberPreferences,
     fetchSuperNumberPreferences,
-    createSuperNumberPreferences
+    createSuperNumberPreferences,
+    fetchMessageLogs
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(CashOnDelivery)

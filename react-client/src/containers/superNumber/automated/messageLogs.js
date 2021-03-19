@@ -3,7 +3,6 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import ReactPaginate from 'react-paginate'
 import { handleDate } from '../../../utility/utils'
-import { validatePhoneNumber } from '../../../utility/utils'
 
 class MessageLogs extends React.Component {
   constructor(props) {
@@ -71,8 +70,14 @@ class MessageLogs extends React.Component {
   getStatus (status) {
     if (status === 'not-recovered') {
       return {text: 'Not recovered', style: 'secondary'}
-    } else {
+    } else if (status === 'recovered') {
       return {text: 'Recovered', style: 'success'}
+    } else if (status === 'confirmed') {
+      return {text: 'Confirmed', style: 'success'}
+    } else if (status === 'no-response') {
+      return {text: 'No Response', style: 'secondary'}
+    } else if (status === 'cancelled') {
+      return {text: 'Cancelled', style: 'danger'}
     }
   }
 

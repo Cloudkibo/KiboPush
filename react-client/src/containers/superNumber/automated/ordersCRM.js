@@ -5,6 +5,9 @@ import AlertContainer from 'react-alert'
 import INFO from './info'
 import WHATSAPPCONFIGURAION from './whatsAppConfiguration'
 import TEMPLATE from './template'
+import OPTIN from './optin'
+import TABS from './tabs'
+import MESSAGELOGS from './messageLogs'
 import { fetchShopifyStore } from '../../../redux/actions/commerce.actions'
 import { fetchTemplates, fetchMessageLogs, fetchSuperNumberPreferences, updateSuperNumberPreferences, createSuperNumberPreferences } from '../../../redux/actions/superNumber.actions'
 import { validatePhoneNumber } from '../../../utility/utils'
@@ -21,16 +24,33 @@ class OrdersCRM extends React.Component {
       textConfirmation: '',
       enabledShipment: false,
       enabledConfirmation: false,
-      currentTab: 'settings'
+      loadingIntegration: true,
+      currentTab: 'settings',
+      optin_widget: {
+        language: 'english',
+        enabled: true,
+        settings: {
+          addToCartClicked: false,
+          buyNowClicked: true,
+          landingOnCartPage: false,
+          checkoutClicked: true,
+          thankYouPage: true
+        }
+      }
     }
     this.updateState = this.updateState.bind(this)
     this.onSave = this.onSave.bind(this)
     this.goToCommerceSettings = this.goToCommerceSettings.bind(this)
+    this.handleFetchStore = this.handleFetchStore.bind(this)
 
-    props.fetchShopifyStore()
+    props.fetchShopifyStore(this.handleFetchStore)
     props.fetchSuperNumberPreferences(this.msg)
     props.fetchTemplates()
     this.fetchMessageLogs = this.fetchMessageLogs.bind(this)
+  }
+
+  handleFetchStore () {
+    this.setState({loadingIntegration: false})
   }
 
   goToCommerceSettings() {
@@ -64,7 +84,8 @@ class OrdersCRM extends React.Component {
           shipmentEnabled: this.state.enabledShipment,
           supportNumber: this.state.supportNumber,
           confirmationEnabled: this.state.enabledConfirmation
-        }
+        },
+        optin_widget: this.state.optin_widget
       }
       if (!this.props.superNumberPreferences) {
         this.props.createSuperNumberPreferences(payload, this.msg)
@@ -95,6 +116,9 @@ class OrdersCRM extends React.Component {
         enabledConfirmation: nextProps.superNumberPreferences.orderCRM.confirmationEnabled,
         enabledShipment: nextProps.superNumberPreferences.orderCRM.shipmentEnabled
       })
+    }
+    if (nextProps.superNumberPreferences && nextProps.superNumberPreferences.optin_widget) {
+      this.setState({optin_widget: nextProps.superNumberPreferences.optin_widget})
     }
     if (nextProps.templates && nextProps.templates['ORDER_CONFIRMATION']) {
       let orderConfirmationTemplates = nextProps.templates['ORDER_CONFIRMATION']
@@ -148,15 +172,20 @@ class OrdersCRM extends React.Component {
           <INFO />
           <div className='row'>
             <div className='col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12'>
-            <div className='m-portlet m-portlet--full-height m-portlet--tabs'> 
-                <TABS currentTab={this.state.currentTab} updateState={this.updateState} />
-                <div className='m-portlet__body'>
-                  { this.state.loadingIntegration
-                    ? <span>
-                        <p> Loading... </p>
-                      </span>
-                    : !this.props.store
-                    ? <div>
+              <div className='m-portlet m-portlet--full-height m-portlet--tabs'>
+                <TABS
+                  currentTab={this.state.currentTab}
+                  updateState={this.updateState}
+                  onSave={this.onSave}
+                  showSave={this.state.currentTab === 'settings'}
+                />
+                  <div className='m-portlet__body'>
+                    { this.state.loadingIntegration
+                      ? <span>
+                          <p> Loading... </p>
+                        </span>
+                      : !this.props.store
+                      ? <div>
                         <h6 style={{ textAlign: 'center' }}>
                           You have not integrated an e-commerce provider with KiboPush. Please integrate an e-commerce provider to create a commerce chatbot.
                         </h6>
@@ -166,48 +195,47 @@ class OrdersCRM extends React.Component {
                         </div>
                         </div>
                       </div>
-                  : this.state.currentTab === 'settings'
-                  ? <div>
-                    <WHATSAPPCONFIGURAION
-                      updateState={this.updateState}
-                      language={this.state.language}
-                      supportNumber={this.state.supportNumber}
+                      : this.state.currentTab === 'settings'
+                      ? <div>
+                      <WHATSAPPCONFIGURAION
+                        updateState={this.updateState}
+                        language={this.state.language}
+                        supportNumber={this.state.supportNumber}
+                      />
+                      <br />
+                      <TEMPLATE
+                        updateState={this.updateState}
+                        enabled={this.state.enabledConfirmation}
+                        text={this.state.textConfirmation}
+                        heading='Order Confirmation Template'
+                        id='orderConfirmation'
+                        previewUrl='https://cdn.cloudkibo.com/public/img/order-confirmation.png'
+                        language={this.state.language}
+                      />
+                      <br />
+                      <TEMPLATE
+                        updateState={this.updateState}
+                        enabled={this.state.enabledShipment}
+                        text={this.state.textShipment}
+                        heading='Order Shipment Template'
+                        id='orderShipment'
+                        previewUrl='https://cdn.cloudkibo.com/public/img/shipment.png'
+                        language={this.state.language}
+                      />
+                      <br />
+                      <OPTIN
+                        updateState={this.updateState}
+                        optinWidget={this.state.optin_widget}
+                        showThankyou
+                      />
+                  </div>
+                  : <MESSAGELOGS
+                      type='orders'
+                      messageLogs={this.props.messageLogs}
+                      count={this.props.messageLogsCount}
+                      fetchMessageLogs={this.fetchMessageLogs}
                     />
-                    <br />
-                    <TEMPLATE
-                      updateState={this.updateState}
-                      enabled={this.state.enabledConfirmation}
-                      text={this.state.textConfirmation}
-                      heading='Order Confirmation Template'
-                      id='orderConfirmation'
-                      previewUrl='https://cdn.cloudkibo.com/public/img/order-confirmation.png'
-                      language={this.state.language}
-                    />
-                    <br />
-                    <TEMPLATE
-                      updateState={this.updateState}
-                      enabled={this.state.enabledShipment}
-                      text={this.state.textShipment}
-                      heading='Order Shipment Template'
-                      id='orderShipment'
-                      previewUrl='https://cdn.cloudkibo.com/public/img/shipment.png'
-                      language={this.state.language}
-                    />
-                      <div className='row' style={{paddingTop: '30px'}}>
-                        <div className='col-lg-6 m--align-left'>
-                        </div>
-                        <div className='col-lg-6 m--align-right'>
-                          <button onClick={this.onSave} className="btn btn-primary">Save</button>
-                      </div>
-                    </div>
-                </div>
-                : <MESSAGELOGS
-                    type='orders'
-                    messageLogs={this.props.messageLogs}
-                    count={this.props.messageLogsCount}
-                    fetchMessageLogs={this.fetchMessageLogs}
-                  />
-                }
+                  }
                 </div>
               </div>
             </div>
