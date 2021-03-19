@@ -1,11 +1,26 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { fetchChatbots, createChatbot, createCommerceChatbot } from '../../redux/actions/chatbotAutomation.actions'
+import {
+  fetchChatbots,
+  createChatbot,
+  createCommerceChatbot,
+  fetchDialogflowAgents
+} from '../../redux/actions/chatbotAutomation.actions'
 import AlertContainer from 'react-alert'
 import { Link } from 'react-router-dom'
+import {
+  fetchShopifyStore,
+  fetchBigCommerceStore,
+  checkShopPermissions,
+  fetchBusinessAccounts,
+  fetchCatalogs
+} from '../../redux/actions/commerce.actions'
+import { getIntegrations } from '../../redux/actions/settings.actions'
+
 import CHATBOT from '../../components/chatbotAutomation/chatbot'
-import { fetchShopifyStore, fetchBigCommerceStore, checkShopPermissions, fetchBusinessAccounts,  fetchCatalogs } from '../../redux/actions/commerce.actions'
+import MODAL from '../../components/extras/modal'
+import CREATECHATBOT from './createChatbot'
 
 class ChatbotAutomation extends React.Component {
   constructor(props, context) {
@@ -13,7 +28,6 @@ class ChatbotAutomation extends React.Component {
     this.state = {
       manualChatbot: {
         selectedRadio: 'modify',
-        selectedPage: '',
         loading: false
       },
       commerceChatbot: {
@@ -28,8 +42,8 @@ class ChatbotAutomation extends React.Component {
       },
       businessAccount: '',
       selectedCatalog: '',
-      catalogs: []
-
+      catalogs: [],
+      showCreateChatbotModal: false
     }
 
     this.onRadioClick = this.onRadioClick.bind(this)
@@ -44,6 +58,9 @@ class ChatbotAutomation extends React.Component {
     this.onBusinessAccountChange = this.onBusinessAccountChange.bind(this)
     this.handleCatalogs = this.handleCatalogs.bind(this)
     this.onCatalogChange = this.onCatalogChange.bind(this)
+    this.getCreateChatbotContent = this.getCreateChatbotContent.bind(this)
+    this.closeCreateChatbotModal = this.closeCreateChatbotModal.bind(this)
+    this.openCreateChatbotModal = this.openCreateChatbotModal.bind(this)
 
     props.fetchChatbots()
     props.fetchShopifyStore()
@@ -91,12 +108,7 @@ class ChatbotAutomation extends React.Component {
   onCreate(type) {
     const pageFbId = this.props.pages.find((item) => item._id === this.state[type].selectedPage).pageId
     let selectedCatalog = this.state.catalogs.find(c => c.id === this.state.selectedCatalog)
-    if (type === 'manualChatbot') {
-      let chatbotState = { ...this.state[type] }
-      chatbotState.loading = true;
-      this.setState({ [type]: chatbotState })
-      this.props.createChatbot({ pageId: this.state[type].selectedPage }, (res) => this.handleOnCreate(res, pageFbId, type))
-    } else if (type === 'commerceChatbot') {
+    if (type === 'commerceChatbot') {
       let chatbotState = { ...this.state[type] }
       chatbotState.loading = true;
       this.setState({ [type]: chatbotState })
@@ -201,6 +213,35 @@ class ChatbotAutomation extends React.Component {
     })
   }
 
+  openCreateChatbotModal () {
+    this.setState({showCreateChatbotModal: true}, () => {
+      this.refs._open_create_chatbot_modal.click()
+    })
+  }
+
+  closeCreateChatbotModal () {
+    this.setState({showCreateChatbotModal: false})
+  }
+
+  getCreateChatbotContent (pages) {
+    if (this.state.showCreateChatbotModal) {
+      return (
+        <CREATECHATBOT
+          pages={pages}
+          getIntegrations={this.props.getIntegrations}
+          fetchDialogflowAgents={this.props.fetchDialogflowAgents}
+          history={this.props.history}
+          alertMsg={this.msg}
+          chatbots={this.props.chatbots}
+          createChatbot={this.props.createChatbot}
+          channel={this.props.user.platform}
+        />
+      )
+    } else {
+      return (<div />)
+    }
+  }
+
   render() {
     var alertOptions = {
       offset: 75,
@@ -220,6 +261,23 @@ class ChatbotAutomation extends React.Component {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
+
+        <button
+          ref='_open_create_chatbot_modal'
+          style={{ display: 'none' }}
+          data-backdrop='static'
+          data-keyboard='false'
+          data-toggle='modal'
+          data-target='#__create_chatbot'
+        />
+        <MODAL
+          id='__create_chatbot'
+          title='Create Chatbot'
+          size='large'
+          content={this.getCreateChatbotContent(manualChatbotPages)}
+          onClose={this.closeCreateChatbotModal}
+        />
+
         <div className='m-subheader '>
           <div className='d-flex align-items-center'>
             <div className='mr-auto'>
@@ -292,33 +350,17 @@ class ChatbotAutomation extends React.Component {
                             this.props.pages && this.props.pages.length > 0
                               ? manualChatbotPages.length > 0
                                 ? <div style={{ width: '100%' }} className='row'>
-                                  <div className='col-md-6'>
-                                    <div className="form-group m-form__group">
-                                      <select
-                                        className="form-control m-input"
-                                        value={this.state.manualChatbot.selectedPage}
-                                        onChange={(e) => this.onPageChange(e, 'manualChatbot')}
-                                      >
-                                        <option value='' disabled>Select a page...</option>
-                                        {
-                                          manualChatbotPages.map((page) => (
-                                            <option key={page._id} value={page._id}>{page.pageName}</option>
-                                          ))
-                                        }
-                                      </select>
-                                    </div>
-                                  </div>
-                                  <div className='col-md-3'>
-                                    <button
-                                      type='button'
-                                      style={{ border: '1px solid' }}
-                                      className={`btn btn-primary ${this.state.manualChatbot.loading && 'm-loader m-loader--light m-loader--left'}`}
-                                      onClick={(e) => this.onCreate("manualChatbot")}
-                                      disabled={!this.state.manualChatbot.selectedPage}
-                                    >
-                                      Create
+                                  <button
+                                    style={{border: '1px dashed #5867dd'}}
+                                    type="button"
+                                    className="btn m-btn m-btn--air btn-outline-primary m-btn m-btn--custom m-btn--icon"
+                                    onClick={this.openCreateChatbotModal}
+                                  >
+                                    <span>
+                                      <i className='la la-plus' />
+                                      <span>Create</span>
+                                    </span>
                                   </button>
-                                  </div>
                                 </div>
                                 : <div>
                                   You have created the chatbot for all your connected pages.
@@ -663,7 +705,9 @@ function mapDispatchToProps(dispatch) {
     fetchShopifyStore,
     checkShopPermissions,
     fetchBusinessAccounts,
-    fetchCatalogs
+    fetchCatalogs,
+    getIntegrations,
+    fetchDialogflowAgents
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(ChatbotAutomation)
