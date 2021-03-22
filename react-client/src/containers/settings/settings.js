@@ -657,7 +657,7 @@ class Settings extends React.Component {
                         </a>
                       </li>
                     }
-                    {this.props.user && !(this.props.user.role === 'admin' || this.props.user.role === 'agent') && this.state.showOptionsBasedOnPlan &
+                    {this.props.user && !(this.props.user.role === 'admin' || this.props.user.role === 'agent') && this.state.showOptionsBasedOnPlan &&
                       <li className='m-nav__item'>
                         <a href='#/' className='m-nav__link' onClick={this.setNGP} style={{ cursor: 'pointer' }}>
                           <i className='m-nav__link-icon flaticon-share' />
