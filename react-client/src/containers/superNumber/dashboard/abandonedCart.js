@@ -3,9 +3,7 @@ import PropTypes from 'prop-types'
 import IconStack from '../../../components/Dashboard/IconStack'
 
 class AbandonedCart extends React.Component {
-  UNSAFE_componentWillMount () {
-  }
-
+  
   render () {
     return (
       <div className='col-xl-12 col-lg-12 col-md-12 col-xs-12 col-sm-12'>
