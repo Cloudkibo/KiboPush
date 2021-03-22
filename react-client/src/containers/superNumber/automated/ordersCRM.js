@@ -6,7 +6,7 @@ import INFO from './info'
 import WHATSAPPCONFIGURAION from './whatsAppConfiguration'
 import TEMPLATE from './template'
 import OPTIN from './optin'
-import TABS from './tabs'
+import TABS from '../tabs'
 import MESSAGELOGS from './messageLogs'
 import { fetchShopifyStore } from '../../../redux/actions/commerce.actions'
 import { fetchTemplates, fetchMessageLogs, fetchSuperNumberPreferences, updateSuperNumberPreferences, createSuperNumberPreferences } from '../../../redux/actions/superNumber.actions'
@@ -176,6 +176,7 @@ class OrdersCRM extends React.Component {
                   updateState={this.updateState}
                   onSave={this.onSave}
                   showSave={this.state.currentTab === 'settings'}
+                  showMessageLogs
                 />
                   <div className='m-portlet__body'>
                     { this.state.loadingIntegration

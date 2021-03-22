@@ -7,7 +7,7 @@ import WHATSAPPCONFIGURAION from './whatsAppConfiguration'
 import CODTAGS from './codTags'
 import TEMPLATE from './template'
 import MESSAGELOGS from './messageLogs'
-import TABS from './tabs'
+import TABS from '../tabs'
 import OPTIN from './optin'
 import { fetchShopifyStore } from '../../../redux/actions/commerce.actions'
 import { fetchTemplates,
@@ -166,7 +166,8 @@ class CashOnDelivery extends React.Component {
                 currentTab={this.state.currentTab}
                 updateState={this.updateState}
                 onSave={this.onSave}
-                showSave={this.state.currentTab === 'settings'}/>
+                showSave={this.state.currentTab === 'settings'}
+                showMessageLogs />
               <div className='m-portlet__body'>
               { this.state.loadingIntegration
                   ? <span>

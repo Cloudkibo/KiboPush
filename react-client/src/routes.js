@@ -180,6 +180,8 @@ import OrdersCRM from './containers/superNumber/automated/ordersCRM'
 import AbandonedCartManual from './containers/superNumber/manual/abandonedCart'
 import OrdersCRMManual from './containers/superNumber/manual/ordersCRM'
 import CashOnDelivery from './containers/superNumber/automated/cashOnDelivery'
+import WhatsAppShare from './containers/superNumber/basicApps/whatsAppShare'
+import WhatsAppChatButton from './containers/superNumber/basicApps/whatsAppChat'
 
 const Subscriber = asyncComponent(() => import("./containers/subscriber/subscriber"))
 const OperationalDashboard = asyncComponent(() => import("./containers/operationalDashboard/operationalDashboard"))
@@ -440,6 +442,8 @@ const Routes = () => (
     <Route path='/ordersCRM' component={OrdersCRM} onEnter={requireAuth} />
     <Route path='/abandonedCartManual' component={AbandonedCartManual} onEnter={requireAuth} />
     <Route path='/ordersCRMManual' component={OrdersCRMManual} onEnter={requireAuth} />
+    <Route path='/whatsAppShare' component={WhatsAppShare} onEnter={requireAuth} />
+    <Route path='/whatsAppChatButton' component={WhatsAppChatButton} onEnter={requireAuth} />
     <Route path='*' render={() => <Redirect to='/' />} />
   </Switch>
 
