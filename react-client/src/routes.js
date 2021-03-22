@@ -171,6 +171,7 @@ import messengerDashboard from './containers/dashboard/dashboard'
 import Chatbots from './containers/chatbot/chatbot'
 import ChatbotAutomation from './containers/chatbotAutomation/chatbotAutomation'
 import ChatbotSettings from './containers/chatbotAutomation/chatbotSettings'
+import SmsWhatsAppChatbotSettings from './containers/chatbot/chatbotSettings'
 import IntegrateZoom from './containers/zoomIntegration/integrateZoom'
 import WhatsAppCommerceChatbot from './containers/whatsAppCommerceChatbot/whatsAppCommerceChatbot'
 import WhatsAppAirlinesChatbot from './containers/whatsAppAirlinesChatbot/whatsAppAirlinesChatbot'
@@ -417,6 +418,7 @@ const Routes = () => (
     <Route path='/backdoorPageAdmins' component={BackdoorPageAdmins} onEnter={requireAuth} />
     <Route path='/customFields' component={CustomFields} onEnter={requireAuth} />
     <Route path='/chatbots/configure' component={ConfigureChatbot} onEnter={requireAuth} />
+    <Route path='/chatbots/settings' component={SmsWhatsAppChatbotSettings} onEnter={requireAuth} />
     <Route path='/chatbots' component={Chatbots} onEnter={requireAuth} />
     <Route path='/chatbotAutomation' component={ChatbotAutomation} onEnter={requireAuth} />
     <Route path='/configureChatbot' component={ConfigureChatbotAutomation} onEnter={requireAuth} />
