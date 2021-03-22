@@ -24,6 +24,7 @@ class Chatbots extends React.Component {
     this.getCreateChatbotContent = this.getCreateChatbotContent.bind(this)
     this.closeCreateChatbotModal = this.closeCreateChatbotModal.bind(this)
     this.openCreateChatbotModal = this.openCreateChatbotModal.bind(this)
+    this.onSettingsClick = this.onSettingsClick.bind(this)
 
     props.fetchChatbots()
   }
@@ -69,6 +70,14 @@ class Chatbots extends React.Component {
     } else {
       return (<div />)
     }
+  }
+
+  onSettingsClick(chatbot) {
+    chatbot.backUrl = '/chatbots'
+    this.props.history.push({
+      pathname: '/chatbots/settings',
+      state: chatbot
+    })
   }
 
   render() {
@@ -136,6 +145,7 @@ class Chatbots extends React.Component {
                                   name={chatbot.title}
                                   onItemClick={() => this.modifyChatbot(chatbot)}
                                   showSubtitle={chatbot.dialogFlowAgentId ? true : false}
+                                  onSettingsClick={() => this.onSettingsClick(chatbot)}
                                 />
                               ))
                               : (!this.props.chatbots)

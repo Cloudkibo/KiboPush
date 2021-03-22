@@ -16,9 +16,9 @@ class Chatbot extends React.Component {
           <div className="m-widget4">
             <div style={{ border: '1px solid #ccc', padding: '0px', margin: '0.5rem 0px' }} className="m-widget4__item">
               <div style={{ width: '50px', background: colors.lightColor, textAlign: 'center', fontSize: '25px', fontWeight: 600, verticalAlign: 'middle' }} className="m-widget4__img">
-                <span style={{ width: '50px', color: colors.darkColor }} className="m-widget7__img">
+                <div style={{ width: '50px', color: colors.darkColor }} className="m-widget7__img">
                   {this.props.name.charAt(0)}
-                </span>
+                </div>
               </div>
               <div className='m-widget4__info'>
                 <span className="m-widget4__title">
