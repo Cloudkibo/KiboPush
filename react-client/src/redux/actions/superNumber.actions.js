@@ -179,3 +179,33 @@ export function fetchMessageLogs(body, cb) {
       })
   }
 }
+
+export function fetchAbandonedCartAnalytics(body) {
+  return (dispatch) => {
+    callApi(`supernumber/fetchAbandonedCartAnalytics`, 'post', body)
+      .then(res => {
+        console.log('response from fetchAbandonedCartAnalytics', res)
+        if (res.status === 'success') {
+          dispatch({
+            type: ActionTypes.GET_ABANDONEDCART_ANALYTICS,
+            data: res.payload
+          })
+        }
+      })
+  }
+}
+
+export function fetchCODAnalytics(body) {
+  return (dispatch) => {
+    callApi(`supernumber/fetchCODAnalytics`, 'post', body)
+      .then(res => {
+        console.log('response from fetchCODAnalytics', res)
+        if (res.status === 'success') {
+          dispatch({
+            type: ActionTypes.GET_COD_ANALYTICS,
+            data: res.payload
+          })
+        }
+      })
+  }
+}
