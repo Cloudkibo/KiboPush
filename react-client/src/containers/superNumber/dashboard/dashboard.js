@@ -1,10 +1,12 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { fetchSummarisedAnalytics, fetchDetailedAnalytics } from '../../../redux/actions/superNumber.actions'
+import { fetchSummarisedAnalytics, fetchAbandonedCartAnalytics, fetchDetailedAnalytics, fetchCODAnalytics} from '../../../redux/actions/superNumber.actions'
 import { bindActionCreators } from 'redux'
 import { RingLoader } from 'halogenium'
 import CardBoxes from './cardBoxes'
-import PeriodicAnalytics from './periodicAnalytics'
+import PeriodicAnalytics from './periodicAnalytics.js'
+import AbandonedCart from './abandonedCart.js'
+import CashOnDelivery from './cashOnDelivery.js'
 import moment from 'moment'
 import { validDateRange } from '../../../utility/utils'
 
@@ -84,6 +86,8 @@ class Dashboard extends React.Component {
     this.setState({startDate: startDate, endDate: endDate})
     this.props.fetchSummarisedAnalytics({startDate: startDate, endDate: endDate})
     this.props.fetchDetailedAnalytics({startDate: startDate, endDate: endDate, automated: this.state.automated})
+    this.props.fetchCODAnalytics({startDate: startDate, endDate: endDate})
+    this.props.fetchAbandonedCartAnalytics({startDate: startDate, endDate: endDate})
   }
 
   getStartEndDates (value) {
@@ -125,6 +129,8 @@ class Dashboard extends React.Component {
       this.setState({startDate: startDate, endDate: endDate, selectedDate: e.target.value.toString(), loading: true})
       this.props.fetchSummarisedAnalytics({startDate: startDate, endDate: endDate})
       this.props.fetchDetailedAnalytics({startDate: startDate, endDate: endDate, automated: this.state.automated})
+      this.props.fetchCODAnalytics({startDate: startDate, endDate: endDate})
+      this.props.fetchAbandonedCartAnalytics({startDate: startDate, endDate: endDate})
     } else {
       this.refs.range.click()
     }
@@ -239,6 +245,22 @@ class Dashboard extends React.Component {
                   endDate={this.state.endDate}
                 />
               </div>
+              <div className='row'>
+                <AbandonedCart
+                   cartsRecovered={'8.0'}
+                   recoveryRate={'80%'}
+                   orderValueRecovered={'Rs. 12'}
+                />
+              </div>
+              <div className='row'>
+                <CashOnDelivery
+                   ordersPlaced={20}
+                   ordersConfirmed={11}
+                   ordersCancelled={8}
+                   noResponse={1}
+                   messagesSent={25}
+                />
+              </div>
             </div>
           }
         </div>
@@ -250,7 +272,9 @@ class Dashboard extends React.Component {
 function mapStateToProps(state) {
   return {
     summarisedAnalytics: (state.superNumberInfo.summarisedAnalytics),
-    detailedAnalytics: (state.superNumberInfo.detailedAnalytics)
+    detailedAnalytics: (state.superNumberInfo.detailedAnalytics),
+    codAnalytics: (state.superNumberInfo.codAnalytics),
+    abandonedCartAnalytics: (state.superNumberInfo.abandonedCartAnalytics)
   }
 }
 
@@ -258,7 +282,9 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
       fetchSummarisedAnalytics,
-      fetchDetailedAnalytics
+      fetchDetailedAnalytics,
+      fetchAbandonedCartAnalytics,
+      fetchCODAnalytics
     },
     dispatch)
 }

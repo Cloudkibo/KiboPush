@@ -42,6 +42,18 @@ export function superNumberInfo (state = {}, action) {
       return Object.assign({}, state, {
         detailedAnalytics: action.data
       })
+    case ActionTypes.GET_ABANDONEDCART_ANALYTICS:
+      return Object.assign({}, state, {
+        abandonedCartAnalytics: action.data
+      })
+    case ActionTypes.GET_COD_ANALYTICS:
+      return Object.assign({}, state, {
+        codAnalytics: action.data
+      })
+    case ActionTypes.GET_DETAILED_ANALYTICS:
+      return Object.assign({}, state, {
+        detailedAnalytics: action.data
+      })
     case ActionTypes.GET_MESSAGE_LOGS:
       return Object.assign({}, state, {
         messageLogs: action.messageLogs,
