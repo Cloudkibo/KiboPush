@@ -54,8 +54,8 @@ Chatbot.propTypes = {
   'profilePic': PropTypes.string.isRequired,
   'name': PropTypes.string.isRequired,
   'onItemClick': PropTypes.func.isRequired,
-  'onSettingsClick': PropTypes.func.isRequired,
-  'showSubtitle': PropTypes.bool.isRequired
+  'onSettingsClick': PropTypes.func,
+  'showSubtitle': PropTypes.bool
 }
 
 export default Chatbot
