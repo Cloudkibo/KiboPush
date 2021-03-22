@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import Select from 'react-select'
 
 class CreateChatbot extends React.Component {
   constructor (props, context) {
@@ -47,7 +48,13 @@ class CreateChatbot extends React.Component {
   handleAgents (res) {
     if (res.status === 'success') {
       const agents = res.payload
-      this.setState({dialogflowAgents: agents, agentsLoading: false})
+      const dialogflowAgents = agents.map((item) => {
+        return {
+          label: item.displayName,
+          value: item.parent
+        }
+      })
+      this.setState({dialogflowAgents, agentsLoading: false})
     } else {
       this.setState({dialogflowAgents: [], agentsLoading: false})
     }
@@ -63,8 +70,8 @@ class CreateChatbot extends React.Component {
     }
   }
 
-  onAgentChange (e) {
-    this.setState({dialogFlowAgent: e.target.value})
+  onAgentChange (value, other) {
+    this.setState({dialogFlowAgent: value})
   }
 
   gotoIntegerations () {
@@ -79,7 +86,7 @@ class CreateChatbot extends React.Component {
     let data = {}
     let pageFbId = ''
     if (this.state.dialogFlowAgent) {
-      data.dialogFlowAgentId = this.state.dialogFlowAgent
+      data.dialogFlowAgentId = this.state.dialogFlowAgent.value
     }
 
     switch (this.props.channel) {
@@ -207,18 +214,15 @@ class CreateChatbot extends React.Component {
               </center>
               : this.state.dialogflowAgents.length === 0
               ? <span className='m--font-danger'>You have not created any DialogFlow agents yet. Please visit <a href='https://dialogflow.cloud.google.com/' target='_blank' rel="noopener noreferrer">https://dialogflow.cloud.google.com/</a> and create an agent first.</span>
-              : <select
-                className="form-control m-input"
+              : <Select
+                className='basic-single'
+                classNamePrefix='select'
+                isClearable={true}
+                isSearchable={true}
+                options={this.state.dialogflowAgents}
                 value={this.state.dialogFlowAgent}
                 onChange={this.onAgentChange}
-              >
-                <option value='' disabled>Select an agent...</option>
-                {
-                  this.state.dialogflowAgents.map((agent) => (
-                    <option key={agent.parent} value={agent.parent}>{agent.displayName}</option>
-                  ))
-                }
-              </select>
+              />
             }
           </div>
         </div>

@@ -171,6 +171,7 @@ import messengerDashboard from './containers/dashboard/dashboard'
 import Chatbots from './containers/chatbot/chatbot'
 import ChatbotAutomation from './containers/chatbotAutomation/chatbotAutomation'
 import ChatbotSettings from './containers/chatbotAutomation/chatbotSettings'
+import SmsWhatsAppChatbotSettings from './containers/chatbot/chatbotSettings'
 import IntegrateZoom from './containers/zoomIntegration/integrateZoom'
 import WhatsAppCommerceChatbot from './containers/whatsAppCommerceChatbot/whatsAppCommerceChatbot'
 import WhatsAppAirlinesChatbot from './containers/whatsAppAirlinesChatbot/whatsAppAirlinesChatbot'
@@ -179,6 +180,8 @@ import OrdersCRM from './containers/superNumber/automated/ordersCRM'
 import AbandonedCartManual from './containers/superNumber/manual/abandonedCart'
 import OrdersCRMManual from './containers/superNumber/manual/ordersCRM'
 import CashOnDelivery from './containers/superNumber/automated/cashOnDelivery'
+import WhatsAppShare from './containers/superNumber/basicApps/whatsAppShare'
+import WhatsAppChatButton from './containers/superNumber/basicApps/whatsAppChat'
 
 const Subscriber = asyncComponent(() => import("./containers/subscriber/subscriber"))
 const OperationalDashboard = asyncComponent(() => import("./containers/operationalDashboard/operationalDashboard"))
@@ -417,6 +420,7 @@ const Routes = () => (
     <Route path='/backdoorPageAdmins' component={BackdoorPageAdmins} onEnter={requireAuth} />
     <Route path='/customFields' component={CustomFields} onEnter={requireAuth} />
     <Route path='/chatbots/configure' component={ConfigureChatbot} onEnter={requireAuth} />
+    <Route path='/chatbots/settings' component={SmsWhatsAppChatbotSettings} onEnter={requireAuth} />
     <Route path='/chatbots' component={Chatbots} onEnter={requireAuth} />
     <Route path='/chatbotAutomation' component={ChatbotAutomation} onEnter={requireAuth} />
     <Route path='/configureChatbot' component={ConfigureChatbotAutomation} onEnter={requireAuth} />
@@ -438,6 +442,8 @@ const Routes = () => (
     <Route path='/ordersCRM' component={OrdersCRM} onEnter={requireAuth} />
     <Route path='/abandonedCartManual' component={AbandonedCartManual} onEnter={requireAuth} />
     <Route path='/ordersCRMManual' component={OrdersCRMManual} onEnter={requireAuth} />
+    <Route path='/whatsAppShare' component={WhatsAppShare} onEnter={requireAuth} />
+    <Route path='/whatsAppChatButton' component={WhatsAppChatButton} onEnter={requireAuth} />
     <Route path='*' render={() => <Redirect to='/' />} />
   </Switch>
 
