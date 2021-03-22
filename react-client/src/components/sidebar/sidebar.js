@@ -487,6 +487,34 @@ class Sidebar extends Component {
                   {this.showCommerceSubMenuItems('manual')}
                 </div>
               </li>
+              <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
+                <span className='m-menu__link m-menu__toggle'>
+                  <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
+					           <span></span>
+									</i>
+                  <span className='m-menu__link-text'>Basic Apps</span>
+                  <i className='m-menu__ver-arrow la la-angle-right' />
+                </span>
+                <div className='m-menu__submenu'>
+                  <span className='m-menu__arrow' />
+                    <ul className='m-menu__subnav'>
+                      <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
+                        <Link to='/whatsAppShare' className='m-menu__link m-menu__toggle'>
+                          <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
+                             <span></span>
+                          </i>
+                          <span className='m-menu__link-text'>WhatsApp Share</span>
+                        </Link>
+                        <Link to='/whatsAppChatButton' className='m-menu__link m-menu__toggle'>
+                          <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
+                             <span></span>
+                          </i>
+                          <span className='m-menu__link-text'>WhatsApp Chat</span>
+                        </Link>
+                      </li>
+                    </ul>
+                </div>
+              </li>
             </ul>
           </div>
         </li>
