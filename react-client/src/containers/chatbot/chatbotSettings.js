@@ -4,6 +4,7 @@ import { bindActionCreators } from 'redux'
 import AlertContainer from 'react-alert'
 import { fetchDialogflowAgents } from '../../redux/actions/chatbotAutomation.actions'
 import { getIntegrations } from '../../redux/actions/settings.actions'
+import { updateChatbot } from '../../redux/actions/chatbot.actions'
 import Select from 'react-select'
 
 import BACKBUTTON from '../../components/extras/backButton'
@@ -86,7 +87,11 @@ class ChatbotSettings extends React.Component {
   }
 
   onSave () {
-    
+    const data = {
+      chatbotId: this.state.chatbot.chatbotId,
+      dialogFlowAgentId: this.state.dialogFlowAgent.value
+    }
+    this.props.updateChatbot(data, this.afterSave)
   }
 
   afterSave (res) {
@@ -106,7 +111,7 @@ class ChatbotSettings extends React.Component {
       transition: 'scale'
     }
     return (
-      <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+      <div className='m-grid__item m-grid__item--fluid m-wrapper' style={{overflow: 'visible'}}>
         <AlertContainer ref={(a) => { this.msg = a }} {...alertOptions} />
         <BACKBUTTON
           onBack={this.onBack}
@@ -195,7 +200,8 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     getIntegrations,
-    fetchDialogflowAgents
+    fetchDialogflowAgents,
+    updateChatbot
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(ChatbotSettings)

@@ -204,7 +204,8 @@ class ChatbotSettings extends React.Component {
         chatbotId: this.state.chatbot._id,
         fallbackReply: this.preparePayload(this.state),
         fallbackReplyEnabled: this.state.fallbackReplyEnabled,
-        isYoutubePlayable: this.state.isYoutubePlayable
+        isYoutubePlayable: this.state.isYoutubePlayable,
+        dialogFlowAgentId: this.state.dialogFlowAgent.value
       }
       this.props.updateChatbot(data, this.afterSave)
     }
@@ -227,7 +228,7 @@ class ChatbotSettings extends React.Component {
       transition: 'scale'
     }
     return (
-      <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+      <div className='m-grid__item m-grid__item--fluid m-wrapper' style={{overflow: 'visible'}}>
         <AlertContainer ref={(a) => { this.msg = a }} {...alertOptions} />
         <BACKBUTTON
           onBack={this.onBack}
