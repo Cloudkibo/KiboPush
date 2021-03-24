@@ -312,7 +312,7 @@ class MessageArea extends React.Component {
   }
 
   linkBlock (title) {
-    if (['Back', 'Home'].includes(title)) {
+    if (['Back', 'Home', 'talk_to_agent'].includes(title)) {
       let uniqueId = ''
       if (title === 'Back') {
         const parentId = this.props.sidebarItems.find((item) => item.id === this.props.block.uniqueId).parentId
@@ -321,11 +321,19 @@ class MessageArea extends React.Component {
         uniqueId = this.props.blocks.find((item) => item.uniqueId === this.props.chatbot.startingBlockId).uniqueId
       }
       let options = this.state.options
-      options.push({
-        title,
-        blockId: uniqueId,
-        code: ('0' + options.length).slice(-2)
-      })
+      if (title === 'talk_to_agent') {
+        options.push({
+          title: 'Talk to agent',
+          blockId: 'talk_to_agent',
+          code: ('0' + options.length).slice(-2)
+        })
+      } else {
+        options.push({
+          title,
+          blockId: uniqueId,
+          code: ('0' + options.length).slice(-2)
+        })
+      }
 
       const currentBlock = this.props.block
       currentBlock.options = options
@@ -337,9 +345,15 @@ class MessageArea extends React.Component {
   }
 
   removeLink (title) {
+    let options = this.state.options
+    let index = -1
     if (['Back', 'Home'].includes(title)) {
-      let options = this.state.options
-      const index = options.findIndex((item) => item.title === title)
+      index = options.findIndex((item) => item.title === title)
+    } else if (title === 'talk_to_agent') {
+      index = options.findIndex((item) => item.blockId === 'talk_to_agent')
+    }
+
+    if (index > -1) {
       options.splice(index, 1)
 
       const currentBlock = this.props.block
