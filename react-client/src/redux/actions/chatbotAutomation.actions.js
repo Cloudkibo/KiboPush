@@ -211,3 +211,15 @@ export function fetchDialogflowAgents (callback) {
       })
   }
 }
+
+export function removeDialogFlowAgent (data, callback) {
+  return (dispatch) => {
+    callApi('dialogflow/agents/remove', 'post', data)
+      .then(res => {
+        console.log('response from removeDialogFlowAgent', res)
+        if (callback) {
+          callback(res)
+        }
+      })
+  }
+}
