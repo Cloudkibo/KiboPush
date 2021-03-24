@@ -28,8 +28,8 @@ class WhatsAppShare extends React.Component {
         btnTextColor: '#ffffff'
       },
       textMessage: {
-        shareBtnText: 'Share',
-        shareMessage: "Check this out, it's so cool"
+        btnText: 'Share',
+        message: "Check this out, it's so cool"
       },
       displayPosition: {
         display: 'both',
@@ -103,11 +103,8 @@ class WhatsAppShare extends React.Component {
 
   UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.superNumberPreferences && nextProps.superNumberPreferences.share_button) {
-      console.log('nextProps.superNumberPreferences.share_button', nextProps.superNumberPreferences.share_button)
-
-      let state = {}
-      if (nextProps.superNumberPreferences.share_button.enabled) {
-        state.enabled = nextProps.superNumberPreferences.share_button.enabled
+      let state = {
+        enabled: nextProps.superNumberPreferences.share_button.enabled
       }
       if (nextProps.superNumberPreferences.share_button.btnDesign) {
         state.btnDesign = nextProps.superNumberPreferences.share_button.btnDesign

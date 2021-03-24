@@ -3,10 +3,6 @@ import PropTypes from 'prop-types'
 import IconStack from '../../../components/Dashboard/IconStack'
 
 class CashOnDelivery extends React.Component {
-  constructor (props, context) {
-    super(props, context)
-  }
-
   render () {
     return (
       <div className='col-xl-12 col-lg-12 col-md-12 col-xs-12 col-sm-12'>
@@ -15,7 +11,7 @@ class CashOnDelivery extends React.Component {
             <div className='m-portlet__head-caption'>
               <div className='m-portlet__head-title'>
                 <h3 className='m-portlet__head-text'>
-                  COD Confirmation Message Analytics 
+                  COD Confirmation Message Analytics
                 </h3>
               </div>
             </div>
