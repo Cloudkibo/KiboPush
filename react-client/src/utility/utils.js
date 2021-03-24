@@ -884,3 +884,20 @@ function HSVTORGB (h, s, v) {
   }
   return `rgb(${Math.floor(r * 256)}, ${Math.floor(g * 256)}, ${Math.floor(b * 256)})`
 }
+export function isTimeInInterval(startTime, endTime, date) {
+  console.log('startTime', startTime)
+  console.log('endTime', endTime)
+  console.log('date', date)
+
+  var s =  startTime.split(':');
+  var dt1 = new Date(date.getFullYear(), date.getMonth(), date.getDate(),
+                     parseInt(s[0]), parseInt(s[1]), parseInt(s[2]));
+
+  var e =  endTime.split(':');
+  var dt2 = new Date(date.getFullYear(), date.getMonth(),
+                     date.getDate(),parseInt(e[0]), parseInt(e[1]), parseInt(e[2]));
+  console.log('dt1', dt1)
+  console.log('dt2', dt2)
+  console.log('valid', date >= dt1 && date <= dt2)
+  return (date >= dt1 && date <= dt2)
+}

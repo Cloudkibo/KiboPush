@@ -21,10 +21,10 @@ class ButtonDesignAndText extends React.Component {
 
   handleInput (e, value) {
     let textMessage = this.props.textMessage
-    if (value === 'shareBtnText' && e.target.value.length <= 12 && e.target.value.length >= 1) {
-      textMessage.shareBtnText = e.target.value
-    } else if (value === 'shareMessage' && e.target.value.length <= 140){
-      textMessage.shareMessage = e.target.value
+    if (value === 'btnText' && e.target.value.length <= 12 && e.target.value.length >= 1) {
+      textMessage.btnText = e.target.value
+    } else if (value === 'message' && e.target.value.length <= 140){
+      textMessage.message = e.target.value
     }
     this.props.updateState({textMessage})
   }
@@ -226,8 +226,8 @@ class ButtonDesignAndText extends React.Component {
             <label style={{fontWeight: 'normal'}}>{this.props.btnLabel}</label>
               <input type="text" className="form-control m-input"
                 style={{marginLeft: '38px', width: '60%', marginTop: '-7px'}}
-                onChange={(e) => this.handleInput(e, 'shareBtnText')}
-                value={this.props.textMessage.shareBtnText} />
+                onChange={(e) => this.handleInput(e, 'btnText')}
+                value={this.props.textMessage.btnText} />
             </div>
           </div>
           <div className='form-group m-form__group'>
@@ -235,8 +235,8 @@ class ButtonDesignAndText extends React.Component {
               <label style={{fontWeight: 'normal'}}>{this.props.btnMessageLabel}</label>
                 <textarea type="text" className="form-control m-input"
                   style={{marginLeft: '52px', width: '60%', marginTop: '-7px'}}
-                  onChange={(e) => this.handleInput(e, 'shareMessage')}
-                  value={this.props.textMessage.shareMessage} />
+                  onChange={(e) => this.handleInput(e, 'message')}
+                  value={this.props.textMessage.message} />
               </div>
             </div>
         </div>
@@ -246,7 +246,7 @@ class ButtonDesignAndText extends React.Component {
             <span>
               <i className="la la-whatsapp" style={{fontSize: '30px', color: this.props.btnDesign.iconColor}}></i>
               <span style={{color: this.props.btnDesign.btnTextColor}}>
-                {this.props.textMessage.shareBtnText}
+                {this.props.textMessage.btnText}
               </span>
             </span>
           </button>
