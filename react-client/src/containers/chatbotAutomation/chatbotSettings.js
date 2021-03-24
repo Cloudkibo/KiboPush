@@ -5,14 +5,17 @@ import AlertContainer from 'react-alert'
 import {
   fetchChatbotDetails,
   updateChatbot,
-  fetchDialogflowAgents
+  fetchDialogflowAgents,
+  removeDialogFlowAgent
 } from '../../redux/actions/chatbotAutomation.actions'
 import { getIntegrations } from '../../redux/actions/settings.actions'
 import Select from 'react-select'
+import { cloneDeep } from 'lodash'
 
 import BACKBUTTON from '../../components/extras/backButton'
 import TEXTAREA from '../../components/chatbotAutomation/textArea'
 import MOREOPTIONS from '../../components/chatbotAutomation/moreOptions'
+import CONFIRMATIONMODAL from '../../components/extras/confirmationModal'
 
 class ChatbotSettings extends React.Component {
   constructor (props, context) {
@@ -46,6 +49,8 @@ class ChatbotSettings extends React.Component {
     this.handleAgents = this.handleAgents.bind(this)
     this.onAgentChange = this.onAgentChange.bind(this)
     this.gotoIntegerations = this.gotoIntegerations.bind(this)
+    this.removeDialogFlowAgent = this.removeDialogFlowAgent.bind(this)
+    this.afterRemove = this.afterRemove.bind(this)
   }
 
   componentDidMount () {
@@ -219,6 +224,26 @@ class ChatbotSettings extends React.Component {
     }
   }
 
+  removeDialogFlowAgent () {
+    const data = {
+      chatbotId: this.state.chatbot._id,
+      dialogFlowAgentId: this.state.dialogFlowAgent.value,
+      platform: this.props.user.platform
+    }
+    this.props.removeDialogFlowAgent(data, this.afterRemove)
+  }
+
+  afterRemove (res) {
+    if (res.status === 'success') {
+      let chatbot = cloneDeep(this.state.chatbot)
+      delete chatbot.dialogFlowAgentId
+      this.setState({dialogFlowAgent: '', chatbot})
+      this.msg.success('DialogFlow agent removed successfully!')
+    } else {
+      this.msg.error(res.description || 'Failed to remove DialogFlow agent!')
+    }
+  }
+
   render () {
     var alertOptions = {
       offset: 75,
@@ -232,6 +257,21 @@ class ChatbotSettings extends React.Component {
         <AlertContainer ref={(a) => { this.msg = a }} {...alertOptions} />
         <BACKBUTTON
           onBack={this.onBack}
+        />
+
+        <button
+          ref='_open_DFA_modal'
+          style={{ display: 'none' }}
+          data-backdrop='static'
+          data-keyboard='false'
+          data-toggle='modal'
+          data-target='#__remove_DFA'
+        />
+        <CONFIRMATIONMODAL
+          id='__remove_DFA'
+          title='Remove DialogFlow Agent'
+          description='If you remove this DialogFlow agent, chatbot NLP will not work. Are you sure you want to remove the DialogFlow agent?'
+          onConfirm={this.removeDialogFlowAgent}
         />
 
         <div className='m-subheader '>
@@ -348,6 +388,20 @@ class ChatbotSettings extends React.Component {
                           />
                         }
                       </div>
+                      {
+                        !(this.state.integrationsLoading || this.state.agentsLoading) &&
+                        this.state.dialogflowIntegrated && this.state.dialogflowAgents.length > 0 &&
+                        this.state.chatbot && this.state.chatbot.dialogFlowAgentId &&
+                        <div className='col-3'>
+                          <button
+                            type="button"
+                            className="btn btn-link"
+                            onClick={() => { this.refs._open_DFA_modal.click() }}
+                          >
+                            Remove
+                          </button>
+                        </div>
+                      }
                     </div>
                   </div>
                 </div>
@@ -360,7 +414,9 @@ class ChatbotSettings extends React.Component {
   }
 }
 function mapStateToProps (state) {
-  return {}
+  return {
+    user: (state.basicInfo.user)
+  }
 }
 
 function mapDispatchToProps (dispatch) {
@@ -368,7 +424,8 @@ function mapDispatchToProps (dispatch) {
     fetchChatbotDetails,
     updateChatbot,
     getIntegrations,
-    fetchDialogflowAgents
+    fetchDialogflowAgents,
+    removeDialogFlowAgent
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(ChatbotSettings)
