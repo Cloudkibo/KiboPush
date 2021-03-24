@@ -146,6 +146,7 @@ class Chatbots extends React.Component {
                                   onItemClick={() => this.modifyChatbot(chatbot)}
                                   showSubtitle={chatbot.dialogFlowAgentId ? true : false}
                                   onSettingsClick={() => this.onSettingsClick(chatbot)}
+                                  showSettings={chatbot.dialogFlowAgentId ? true : false}
                                 />
                               ))
                               : (!this.props.chatbots)
