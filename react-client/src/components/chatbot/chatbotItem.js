@@ -6,6 +6,12 @@ class Chatbot extends React.Component {
   constructor(props, context) {
     super(props, context)
     this.state = {}
+    this.onSettingsClick = this.onSettingsClick.bind(this)
+  }
+
+  onSettingsClick(e) {
+    this.props.onSettingsClick()
+    e.stopPropagation()
   }
 
   render() {
