@@ -175,13 +175,16 @@ class ChatbotSettings extends React.Component {
                       </h3>
                     </div>
                   </div>
-                  <div className='m-portlet__head-tools'>
-                    <button className='btn btn-primary m-btn m-btn--custom m-btn--air m-btn--pill' onClick={this.onSave}>
-                      <span>
-                        Save
-                      </span>
-                    </button>
-                  </div>
+                  {
+                    this.state.chatbot && !this.state.chatbot.dialogFlowAgentId &&
+                    <div className='m-portlet__head-tools'>
+                      <button className='btn btn-primary m-btn m-btn--custom m-btn--air m-btn--pill' onClick={this.onSave}>
+                        <span>
+                          Save
+                        </span>
+                      </button>
+                    </div>
+                  }
                 </div>
                 <div className='m-portlet__body'>
                   <div className="m-form">
