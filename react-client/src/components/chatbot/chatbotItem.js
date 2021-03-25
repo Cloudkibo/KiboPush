@@ -47,7 +47,7 @@ class Chatbot extends React.Component {
               }
               </div>
               {
-                this.props.showSettings &&
+                this.props.onSettingsClick &&
                 <div style={{padding: '10px'}} className='m-widget4__ext'>
                   <span className='m-widget4__number'>
                     <i onClick={this.onSettingsClick} style={{ marginLeft: '15px', fontSize: '1.5rem', cursor: 'pointer' }} className='fa fa-cog' />
@@ -65,8 +65,7 @@ class Chatbot extends React.Component {
 Chatbot.propTypes = {
   'name': PropTypes.string.isRequired,
   'onItemClick': PropTypes.func.isRequired,
-  'showSubtitle': PropTypes.bool.isRequired,
-  'showSettings': PropTypes.bool.isRequired
+  'showSubtitle': PropTypes.bool.isRequired
 }
 
 export default Chatbot
