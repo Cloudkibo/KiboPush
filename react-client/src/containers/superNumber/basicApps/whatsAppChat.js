@@ -13,6 +13,7 @@ import BUTTONDESIGNANDTEXT from './buttonDesignAndText'
 import BUTTONDISPLAYANDPOSITION from './buttonDisplayAndPosition'
 import PAGESTODISPLAY from './pagesToDisplay'
 import AGENTS from './agents'
+import CALLOUTCARD from './calloutCard'
 
 class WhatsAppChat extends React.Component {
   constructor(props) {
@@ -108,6 +109,7 @@ class WhatsAppChat extends React.Component {
     this.goToCommerceSettings = this.goToCommerceSettings.bind(this)
     this.handleFetchStore = this.handleFetchStore.bind(this)
     this.handleSwitch = this.handleSwitch.bind(this)
+    this.isValid = this.isValid.bind(this)
 
     props.fetchShopifyStore(this.handleFetchStore)
     props.fetchSuperNumberPreferences(this.msg)
@@ -128,20 +130,67 @@ class WhatsAppChat extends React.Component {
     })
   }
 
-  onSave () {
-    let payload = {
-      share_button: {
-        enabled: this.state.enabled,
-        btnDesign: this.state.btnDesign,
-        textMessage: this.state.textMessage,
-        displayPosition: this.state.displayPosition,
-        displayPages: this.state.displayPages
-      }
+  isValid () {
+    if (this.state.callOutCard.cardDelay < 5) {
+      this.msg.error('Minimum callout card delay is 5 seconds. Please enter a valid delay value')
+      return false
+    } else if (this.state.callOutCard.cardDelay > 60) {
+      this.msg.error('maximum callout card delay is 60 seconds. Please enter a valid delay value')
+      return false
     }
-    if (!this.props.superNumberPreferences) {
-      this.props.createSuperNumberPreferences(payload, this.msg)
+    if (this.state.displayPosition.display === 'mobile') {
+      if (this.state.displayPosition.mobileHeightOffset === '' || this.state.displayPosition.mobileEdgeOffset === '') {
+        this.msg.error('Please enter offset')
+        return false
+      }
+      else if (this.state.displayPosition.mobileHeightOffset < 8 || this.state.displayPosition.mobileEdgeOffset < 8) {
+        this.msg.error('Minimum offset value is 8. Please enter a valid offset')
+        return false
+      } else return true
+    } else if (this.state.displayPosition.display === 'desktop') {
+      if (this.state.displayPosition.desktopHeightOffset === '' || this.state.displayPosition.desktopEdgeOffset === '') {
+        this.msg.error('Please enter offset')
+        return false
+      }
+      else if (this.state.displayPosition.desktopHeightOffset < 8 || this.state.displayPosition.desktopEdgeOffset < 8) {
+        this.msg.error('Minimum offset value is 8. Please enter a valid offset')
+        return false
+      } else return true
     } else {
-      this.props.updateSuperNumberPreferences(payload, this.msg)
+      if (this.state.displayPosition.mobileHeightOffset === '' || this.state.displayPosition.mobileEdgeOffset === '' ||
+        this.state.displayPosition.mobileHeightOffset === '' || this.state.displayPosition.mobileEdgeOffset === '') {
+        this.msg.error('Please enter offset')
+        return false
+      } else if (
+        this.state.displayPosition.mobileHeightOffset < 8 || this.state.displayPosition.mobileEdgeOffset < 8 ||
+        this.state.displayPosition.mobileHeightOffset < 8 || this.state.displayPosition.mobileEdgeOffset < 8) {
+        this.msg.error('Minimum offset value is 8. Please enter a valid offset')
+        return false
+      } else return true
+    }
+  }
+
+  onSave () {
+    if (this.isValid()) {
+      let payload = {
+        chat_widget: {
+          enabled: this.state.enabled,
+          agentsLimit: this.state.agentsLimit,
+          agents: this.state.agents,
+          onOffHours: this.state.onOffHours,
+          btnDesign: this.state.btnDesign,
+          textMessage: this.state.textMessage,
+          callOutCard: this.state.callOutCard,
+          greetingsWidget: this.state.greetingsWidget,
+          displayPosition: this.state.displayPosition,
+          displayPages: this.state.displayPages
+        }
+      }
+      if (!this.props.superNumberPreferences) {
+        this.props.createSuperNumberPreferences(payload, this.msg)
+      } else {
+        this.props.updateSuperNumberPreferences(payload, this.msg)
+      }
     }
   }
 
@@ -154,7 +203,7 @@ class WhatsAppChat extends React.Component {
       title = 'KiboChat';
     }
 
-    document.title = `${title} | Abandoned Cart`;
+    document.title = `${title} | WhatsApp Chat`;
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
@@ -162,11 +211,26 @@ class WhatsAppChat extends React.Component {
       let state = {
         enabled: nextProps.superNumberPreferences.chat_widget.enabled
       }
+      if (nextProps.superNumberPreferences.chat_widget.agentsLimit) {
+        state.agentsLimit = nextProps.superNumberPreferences.chat_widget.agentsLimit
+      }
+      if (nextProps.superNumberPreferences.chat_widget.agents) {
+        state.agents = nextProps.superNumberPreferences.chat_widget.agents
+      }
+      if (nextProps.superNumberPreferences.chat_widget.onOffHours) {
+        state.onOffHours = nextProps.superNumberPreferences.chat_widget.onOffHours
+      }
       if (nextProps.superNumberPreferences.chat_widget.btnDesign) {
         state.btnDesign = nextProps.superNumberPreferences.chat_widget.btnDesign
       }
       if (nextProps.superNumberPreferences.chat_widget.textMessage) {
         state.textMessage = nextProps.superNumberPreferences.chat_widget.textMessage
+      }
+      if (nextProps.superNumberPreferences.chat_widget.callOutCard) {
+        state.callOutCard = nextProps.superNumberPreferences.chat_widget.callOutCard
+      }
+      if (nextProps.superNumberPreferences.chat_widget.greetingsWidget) {
+        state.greetingsWidget = nextProps.superNumberPreferences.chat_widget.greetingsWidget
       }
       if (nextProps.superNumberPreferences.chat_widget.displayPosition) {
         state.displayPosition = nextProps.superNumberPreferences.chat_widget.displayPosition
@@ -274,14 +338,24 @@ class WhatsAppChat extends React.Component {
                           textMessage={this.state.textMessage}
                           btnLabel='Chat Button Text:'
                           btnMessageLabel='WhatsApp Message:'
+                          rotateDegree='0'
+                          gradientDegree='90'
+                          showCheckbox
+                        />
+                        <CALLOUTCARD
+                          updateState={this.updateState}
+                          callOutCard={this.state.callOutCard}
                         />
                         <BUTTONDISPLAYANDPOSITION
                           updateState={this.updateState}
                           displayPosition={this.state.displayPosition}
+                          showOffsets
                         />
                         <PAGESTODISPLAY
                           updateState={this.updateState}
                           displayPages={this.state.displayPages}
+                          showCartMobile
+                          showCartDesktop
                         />
                       </div>
                     }

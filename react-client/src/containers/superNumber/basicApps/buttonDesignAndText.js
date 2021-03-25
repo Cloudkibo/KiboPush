@@ -17,6 +17,13 @@ class ButtonDesignAndText extends React.Component {
     this.handleBackgroundColorStyle = this.handleBackgroundColorStyle.bind(this)
     this.getButtonStyle = this.getButtonStyle.bind(this)
     this.handleInput = this.handleInput.bind(this)
+    this.handleCheckbox = this.handleCheckbox.bind(this)
+  }
+
+  handleCheckbox (e) {
+    let textMessage = JSON.parse(JSON.stringify(this.props.textMessage))
+    textMessage.includePageURL = e.target.checked
+    this.props.updateState({textMessage})
   }
 
   handleInput (e, value) {
@@ -96,15 +103,15 @@ class ButtonDesignAndText extends React.Component {
   getButtonStyle () {
     if (this.props.btnDesign.backgroundColorStyle === 'single') {
       return {
-        transform: 'rotate(270deg)',
+        transform: `rotate(${this.props.rotateDegree}deg)`,
         borderColor: this.props.btnDesign.backgroundColor1,
         backgroundColor: this.props.btnDesign.backgroundColor1
       }
     } else {
       return {
         borderColor: 'white',
-        transform: 'rotate(270deg)',
-        backgroundImage: `linear-gradient(180deg, ${this.props.btnDesign.backgroundColor1} 0%, ${this.props.btnDesign.backgroundColor2} 100%)`
+        transform: `rotate(${this.props.rotateDegree}deg)`,
+        backgroundImage: `linear-gradient(${this.props.gradientDegree}deg, ${this.props.btnDesign.backgroundColor1} 0%, ${this.props.btnDesign.backgroundColor2} 100%)`
       }
     }
   }
@@ -223,22 +230,34 @@ class ButtonDesignAndText extends React.Component {
         </div>
         <div className='form-group m-form__group'>
           <div className='form-group m-form__group row' style={{paddingLeft: '30px'}}>
-            <label style={{fontWeight: 'normal'}}>{this.props.btnLabel}</label>
+            <label style={{fontWeight: 'normal'}}>Button text:</label>
               <input type="text" className="form-control m-input"
-                style={{marginLeft: '38px', width: '60%', marginTop: '-7px'}}
+                style={{marginLeft: '82px', width: '60%', marginTop: '-7px'}}
                 onChange={(e) => this.handleInput(e, 'btnText')}
                 value={this.props.textMessage.btnText} />
             </div>
           </div>
           <div className='form-group m-form__group'>
             <div className='form-group m-form__group row' style={{paddingLeft: '30px'}}>
-              <label style={{fontWeight: 'normal'}}>{this.props.btnMessageLabel}</label>
+              <label style={{fontWeight: 'normal'}}>Message:</label>
                 <textarea type="text" className="form-control m-input"
-                  style={{marginLeft: '52px', width: '60%', marginTop: '-7px'}}
+                  style={{marginLeft: '94px', width: '60%', marginTop: '-7px'}}
                   onChange={(e) => this.handleInput(e, 'message')}
                   value={this.props.textMessage.message} />
               </div>
             </div>
+            {this.props.showCheckbox &&
+              <div className='form-group m-form__group' style={{paddingLeft: '15px'}}>
+              <label className="m-checkbox" style={{fontWeight: '300'}}>
+                <input
+                  type="checkbox"
+                  onChange={this.handleCheckbox}
+                  checked={this.props.textMessage.includePageURL} />
+                Include current page URL in the message
+                <span></span>
+              </label>
+            </div>
+          }
         </div>
         <div className='col-md-3' style={{marginTop: '150px'}}>
           <button className="btn btn-success m-btn m-btn--icon btn-lg"

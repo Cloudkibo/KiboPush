@@ -54,16 +54,42 @@ class PagesToDisplay extends React.Component {
                   <span></span>
                 </label>
               </div>
-              <div>
-                <label className="m-checkbox" style={{fontWeight: '300'}}>
-                  <input
-                    type="checkbox"
-                    onChange={(e) => this.handleCheckbox(e, 'cartPage')}
-                    checked={this.props.displayPages.cartPage} />
-                  Cart
-                  <span></span>
-                </label>
-              </div>
+              {this.props.showCart &&
+                <div>
+                  <label className="m-checkbox" style={{fontWeight: '300'}}>
+                    <input
+                      type="checkbox"
+                      onChange={(e) => this.handleCheckbox(e, 'cartPage')}
+                      checked={this.props.displayPages.cartPage} />
+                    Cart
+                    <span></span>
+                  </label>
+                </div>
+              }
+              {this.props.showCartDesktop &&
+                <div>
+                  <label className="m-checkbox" style={{fontWeight: '300'}}>
+                    <input
+                      type="checkbox"
+                      onChange={(e) => this.handleCheckbox(e, 'cartPageDesktop')}
+                      checked={this.props.displayPages.cartPageDesktop} />
+                    Cart (Desktop)
+                    <span></span>
+                  </label>
+                </div>
+              }
+              {this.props.showCartMobile &&
+                <div>
+                  <label className="m-checkbox" style={{fontWeight: '300'}}>
+                    <input
+                      type="checkbox"
+                      onChange={(e) => this.handleCheckbox(e, 'cartPageMobile')}
+                      checked={this.props.displayPages.cartPageMobile} />
+                    Cart (Mobile)
+                    <span></span>
+                  </label>
+                </div>
+              }
               <div>
                 <label className="m-checkbox" style={{fontWeight: '300'}}>
                   <input
