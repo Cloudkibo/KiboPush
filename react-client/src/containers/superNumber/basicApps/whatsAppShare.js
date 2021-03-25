@@ -98,7 +98,7 @@ class WhatsAppShare extends React.Component {
       title = 'KiboChat';
     }
 
-    document.title = `${title} | Abandoned Cart`;
+    document.title = `${title} | WhatsApp Share`;
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
@@ -208,6 +208,8 @@ class WhatsAppShare extends React.Component {
                           textMessage={this.state.textMessage}
                           btnLabel='Share Button Text:'
                           btnMessageLabel='Share Message:'
+                          rotateDegree='270'
+                          gradientDegree='180'
                         />
                         <BUTTONDISPLAYANDPOSITION
                           updateState={this.updateState}
@@ -216,6 +218,7 @@ class WhatsAppShare extends React.Component {
                         <PAGESTODISPLAY
                           updateState={this.updateState}
                           displayPages={this.state.displayPages}
+                          showCart
                         />
                       </div>
                     }

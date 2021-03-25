@@ -97,6 +97,34 @@ class ButtonDisplayAndPosition extends React.Component {
               </label>
             </div>
           </div>
+          {this.props.showOffsets &&
+            <div className='form-group m-form__group'>
+              <div className='form-group m-form__group' style={{paddingLeft: '30px'}}>
+                <div className='row'>
+                <label style={{fontWeight: 'normal'}}>Height Offset (Mobile):</label>
+                <input className="form-control m-input" required
+                  type='number' style={{width: '10%', marginTop: '-7px', marginLeft: '55px'}}
+                  min='8' step='1'
+                  onChange={(e) => this.handlePosition(e, 'mobileHeightOffset')}
+                  value={this.props.displayPosition.mobileHeightOffset} />
+                <span style={{marginLeft: '10px'}}>px</span>
+                </div>
+                <span style={{paddingLeft: '195px'}}>Change the height of chat button on mobile</span>
+              </div>
+              <div className='form-group m-form__group' style={{paddingLeft: '30px'}}>
+                <div className='row'>
+                <label style={{fontWeight: 'normal'}}>Edge Offset (Mobile):</label>
+                <input className="form-control m-input" required
+                  type='number' style={{width: '10%', marginTop: '-7px', marginLeft: '65px'}}
+                  min='8' step='1'
+                  onChange={(e) => this.handlePosition(e, 'mobileEdgeOffset')}
+                  value={this.props.displayPosition.mobileEdgeOffset} />
+                <span style={{marginLeft: '10px'}}>px</span>
+                </div>
+                <span style={{paddingLeft: '195px'}}>Change the distance of chat button from the edge of the screen on mobile</span>
+              </div>
+            </div>
+          }
         </div>
         }
         {this.props.displayPosition.display !== 'mobile' &&
@@ -128,6 +156,34 @@ class ButtonDisplayAndPosition extends React.Component {
               </label>
             </div>
           </div>
+          {this.props.showOffsets &&
+            <div className='form-group m-form__group'>
+              <div className='form-group m-form__group' style={{paddingLeft: '30px'}}>
+                <div className='row'>
+                <label style={{fontWeight: 'normal'}}>Height Offset (Desktop):</label>
+                <input className="form-control m-input" required
+                  type='number' style={{width: '10%', marginTop: '-7px', marginLeft: '45px'}}
+                  min='8' step='1'
+                  onChange={(e) => this.handlePosition(e, 'desktopHeightOffset')}
+                  value={this.props.displayPosition.desktopHeightOffset} />
+                <span style={{marginLeft: '10px'}}>px</span>
+                </div>
+                <span style={{paddingLeft: '195px'}}>Change the height of chat button on desktop</span>
+              </div>
+              <div className='form-group m-form__group' style={{paddingLeft: '30px'}}>
+                <div className='row'>
+                <label style={{fontWeight: 'normal'}}>Edge Offset (Desktop):</label>
+                <input className="form-control m-input" required
+                  type='number' style={{width: '10%', marginTop: '-7px', marginLeft: '55px'}}
+                  min='8' step='1'
+                  onChange={(e) => this.handlePosition(e, 'desktopEdgeOffset')}
+                  value={this.props.displayPosition.desktopEdgeOffset} />
+                <span style={{marginLeft: '10px'}}>px</span>
+                </div>
+                <span style={{paddingLeft: '195px'}}>Change the distance of chat button from the edge of the screen on desktop</span>
+              </div>
+            </div>
+          }
         </div>
       }
       </div>
