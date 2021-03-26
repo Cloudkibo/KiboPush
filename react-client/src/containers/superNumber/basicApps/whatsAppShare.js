@@ -211,10 +211,12 @@ class WhatsAppShare extends React.Component {
                           rotateDegree='270'
                           gradientDegree='180'
                         />
+                        <br />
                         <BUTTONDISPLAYANDPOSITION
                           updateState={this.updateState}
                           displayPosition={this.state.displayPosition}
                         />
+                        <br />
                         <PAGESTODISPLAY
                           updateState={this.updateState}
                           displayPages={this.state.displayPages}
