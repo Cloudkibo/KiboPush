@@ -245,22 +245,26 @@ class Dashboard extends React.Component {
                   endDate={this.state.endDate}
                 />
               </div>
-              <div className='row'>
-                <AbandonedCart
-                   cartsRecovered={'8.0'}
-                   recoveryRate={'80%'}
-                   orderValueRecovered={'Rs. 12'}
-                />
-              </div>
-              <div className='row'>
-                <CashOnDelivery
-                   ordersPlaced={20}
-                   ordersConfirmed={11}
-                   ordersCancelled={8}
-                   noResponse={1}
-                   messagesSent={25}
-                />
-              </div>
+              {this.props.abandonedCartAnalytics &&
+                <div className='row'>
+                  <AbandonedCart
+                    cartsRecovered={this.props.abandonedCartAnalytics.cartsRecovered}
+                    recoveryRate={`${this.props.abandonedCartAnalytics.recoveryRate}%`}
+                    orderValueRecovered={`${this.props.abandonedCartAnalytics.currency} ${this.props.abandonedCartAnalytics.orderValueRecovered}`}
+                  />
+                </div>
+              }
+              {this.props.codAnalytics &&
+                <div className='row'>
+                  <CashOnDelivery
+                    ordersPlaced={this.props.codAnalytics.ordersPlaced}
+                    ordersConfirmed={this.props.codAnalytics.confirmed}
+                    ordersCancelled={this.props.codAnalytics.cancelled}
+                    noResponse={this.props.codAnalytics.noResponse}
+                    messagesSent={this.props.codAnalytics.messagesSent}
+                  />
+                </div>
+              }
             </div>
           }
         </div>
