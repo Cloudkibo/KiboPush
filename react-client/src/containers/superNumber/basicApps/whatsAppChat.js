@@ -14,6 +14,7 @@ import BUTTONDISPLAYANDPOSITION from './buttonDisplayAndPosition'
 import PAGESTODISPLAY from './pagesToDisplay'
 import AGENTS from './agents'
 import CALLOUTCARD from './calloutCard'
+import GREETINGSWIDGET from './greetingsWidget'
 
 class WhatsAppChat extends React.Component {
   constructor(props) {
@@ -68,7 +69,7 @@ class WhatsAppChat extends React.Component {
       },
       callOutCard: {
         enabled: true,
-        cardText: '',
+        cardText: 'Hi there! How can we help you? Tap here to chat with us.',
         cardDelay: 5
       },
       greetingsWidget: {
@@ -332,6 +333,7 @@ class WhatsAppChat extends React.Component {
                           agentsLimit={this.state.agentsLimit}
                           alertMsg={this.msg}
                         />
+                        <br />
                         <BUTTONDESIGNANDTEXT
                           updateState={this.updateState}
                           btnDesign={this.state.btnDesign}
@@ -342,15 +344,24 @@ class WhatsAppChat extends React.Component {
                           gradientDegree='90'
                           showCheckbox
                         />
+                        <br />
                         <CALLOUTCARD
                           updateState={this.updateState}
                           callOutCard={this.state.callOutCard}
                         />
+                        <br />
+                        <GREETINGSWIDGET
+                          updateState={this.updateState}
+                          greetingsWidget={this.state.greetingsWidget}
+                          agents={this.state.agents}
+                        />
+                        <br />
                         <BUTTONDISPLAYANDPOSITION
                           updateState={this.updateState}
                           displayPosition={this.state.displayPosition}
                           showOffsets
                         />
+                        <br />
                         <PAGESTODISPLAY
                           updateState={this.updateState}
                           displayPages={this.state.displayPages}
