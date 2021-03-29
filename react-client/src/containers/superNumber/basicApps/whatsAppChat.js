@@ -7,6 +7,7 @@ import {
   fetchSuperNumberPreferences,
   updateSuperNumberPreferences,
   createSuperNumberPreferences,
+  fetchWidgetAnalytics
 } from '../../../redux/actions/superNumber.actions'
 import TABS from '../tabs'
 import BUTTONDESIGNANDTEXT from './buttonDesignAndText'
@@ -15,6 +16,7 @@ import PAGESTODISPLAY from './pagesToDisplay'
 import AGENTS from './agents'
 import CALLOUTCARD from './calloutCard'
 import GREETINGSWIDGET from './greetingsWidget'
+import ANALYTICS from './analytics'
 
 class WhatsAppChat extends React.Component {
   constructor(props) {
@@ -22,6 +24,10 @@ class WhatsAppChat extends React.Component {
     this.state = {
       currentTab: 'settings',
       loadingIntegration: true,
+      loadingAnalytics: true,
+      selectedDate: '30',
+      startDate: '',
+      endDate: '',
       enabled: true,
       agentsLimit: 6,
       agents: [],
@@ -111,6 +117,7 @@ class WhatsAppChat extends React.Component {
     this.handleFetchStore = this.handleFetchStore.bind(this)
     this.handleSwitch = this.handleSwitch.bind(this)
     this.isValid = this.isValid.bind(this)
+    this.fetchWidgetAnalytics = this.fetchWidgetAnalytics.bind(this)
 
     props.fetchShopifyStore(this.handleFetchStore)
     props.fetchSuperNumberPreferences(this.msg)
@@ -131,8 +138,21 @@ class WhatsAppChat extends React.Component {
     })
   }
 
+  fetchWidgetAnalytics (data) {
+    this.setState({startDate: data.startDate, endDate: data.endDate, selectedDate: data.selectedDate, loadingAnalytics: true})
+    this.props.fetchWidgetAnalytics(data, () => {
+      this.setState({loadingAnalytics: false})
+    })
+  }
+
   isValid () {
-    if (this.state.callOutCard.cardDelay < 5) {
+    if (this.state.agents.length === 0) {
+      this.msg.error('Please add an agent')
+      return false
+    } else if (this.state.agents.filter(a => a.enabled).length === 0) {
+      this.msg.error('Please enable atleast one agent')
+      return false
+    } else if (this.state.callOutCard.cardDelay < 5) {
       this.msg.error('Minimum callout card delay is 5 seconds. Please enter a valid delay value')
       return false
     } else if (this.state.callOutCard.cardDelay > 60) {
@@ -290,6 +310,12 @@ class WhatsAppChat extends React.Component {
                     showViewInStore={this.state.currentTab === 'settings'}
                     showAnalytics
                     storeUrl={this.props.store && `https://${this.props.store.domain}`}
+                    showDateFilter={this.state.currentTab === 'analytics'}
+                    selectedDate={this.state.selectedDate}
+                    fetchWidgetAnalytics={this.fetchWidgetAnalytics}
+                    startDate={this.state.startDate}
+                    endDate={this.state.endDate}
+                    widgetType='chat'
                   />
                   <div className='m-portlet__body'>
                     { this.state.loadingIntegration
@@ -307,8 +333,8 @@ class WhatsAppChat extends React.Component {
                           </div>
                           </div>
                         </div>
-                    : this.state.currentTab === 'settings' &&
-                      <div>
+                    : this.state.currentTab === 'settings'
+                      ? <div>
                         <div className='form-group m-form__group'>
                           <div className='row'>
                             <div className='col-md-2'>
@@ -369,6 +395,14 @@ class WhatsAppChat extends React.Component {
                           showCartDesktop
                         />
                       </div>
+                      : <ANALYTICS
+                          widgetType='chat'
+                          loading={this.state.loadingAnalytics}
+                          selectedDate={this.state.selectedDate}
+                          fetchWidgetAnalytics={this.fetchWidgetAnalytics}
+                          startDate={this.state.startDate}
+                          endDate={this.state.endDate}
+                      />
                     }
                 </div>
               </div>
@@ -389,6 +423,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators({
+    fetchWidgetAnalytics,
     fetchShopifyStore,
     fetchSuperNumberPreferences,
     updateSuperNumberPreferences,

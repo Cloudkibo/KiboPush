@@ -106,7 +106,7 @@ class GreetingsWidget extends React.Component {
   }
 
   getHeadStyle () {
-    let headStyle = {height: 'auto', padding: '15px'}
+    let headStyle = {height: 'auto', padding: '15px', borderTopRightRadius: '10px', borderTopLeftRadius: '10px'}
     if (this.props.greetingsWidget.backgroundColorStyle === 'single') {
       headStyle.backgroundColor = this.props.greetingsWidget.backgroundColor1
     } else {
@@ -116,7 +116,6 @@ class GreetingsWidget extends React.Component {
   }
 
   render () {
-    console.log('this.props.greetingsWidget', this.props.greetingsWidget)
     return (
       <div className='accordion'>
         <ColorPicker
@@ -132,7 +131,7 @@ class GreetingsWidget extends React.Component {
           target='headingColor'
           title='headingColor'
           toggle={this.toggleColorPicker}
-          color={this.props.greetingsWidget.textColo}
+          color={this.props.greetingsWidget.headingColor}
           onChangeComplete={this.handleColorChange}
         />
         <ColorPicker
@@ -291,7 +290,7 @@ class GreetingsWidget extends React.Component {
                   </div>
                 </div>
                 <div className='col-md-4' style={{display: 'flex', verticalAlign: 'middle', alignItems: 'center'}}>
-                  <div className='m-portlet m-portlet--mobile'>
+                  <div className='m-portlet m-portlet--mobile' style={{border: 'solid 1px white', borderRadius: '10px'}}>
                     <div className='m-portlet__head' style={this.getHeadStyle()}>
                       <div className='m-portlet__head-caption'>
                         <div className='m-portlet__head-title'>
