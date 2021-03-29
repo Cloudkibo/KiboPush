@@ -72,7 +72,7 @@ class SendMessageModal extends React.Component {
           <label style={{fontWeight: 'normal'}}>Template Message:</label>
           <textarea
             style={{resize: 'none'}}
-            readonly rows='6'
+            readOnly rows='6'
             value={this.props.templateMessage}
             className='form-control m-input m-input--solid' />
         </div>
@@ -80,7 +80,7 @@ class SendMessageModal extends React.Component {
           <div className='col-lg-6 m--align-left'>
           </div>
           <div className='col-lg-6 m--align-right'>
-            <button onClick={this.props.sendMessage} class="btn btn-primary">Send</button>
+            <button onClick={this.props.sendMessage} className="btn btn-primary">Send</button>
         </div>
       </div>
       </div>
@@ -96,7 +96,7 @@ SendMessageModal.propTypes = {
   'templates': PropTypes.object.isRequired,
   'updateState': PropTypes.func.isRequired,
   'sendMessage': PropTypes.func.isRequired,
-  'showShipment': PropTypes.string.isRequired,
+  'showShipment': PropTypes.string,
 }
 
 export default SendMessageModal

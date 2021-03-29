@@ -56,7 +56,7 @@ class onOffHoursModal extends React.Component {
                 Set your store's On/Off hours as per the availability of your agents and their Working hours. By default, hours are set from 12:00 AM to 11:59 PM which means your agents are active all the time.
               </span>
             {this.props.days.map(day => (
-              <div className='form-group m-form__group'>
+              <div key={day} className='form-group m-form__group'>
                 <label style={{fontWeight: 'normal'}}>{day.charAt(0).toUpperCase() + day.slice(1)}:</label>
                 <div className='form-group m-form__group row' style={{marginLeft: '0', marginTop: '-10px'}}>
                   <input className="form-control m-input" required
@@ -77,7 +77,7 @@ class onOffHoursModal extends React.Component {
           <div className='col-lg-6 m--align-left'>
           </div>
           <div className='col-lg-6 m--align-right'>
-            <button onClick={this.onSave} class="btn btn-primary">Save</button>
+            <button onClick={this.onSave} className="btn btn-primary">Save</button>
         </div>
       </div>
       </div>

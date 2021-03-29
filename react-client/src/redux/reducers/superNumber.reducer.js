@@ -55,6 +55,10 @@ export function superNumberInfo (state = {}, action) {
         messageLogs: action.messageLogs,
         messageLogsCount: action.count
       })
+    case ActionTypes.GET_WIDGET_ANALYTICS:
+      return Object.assign({}, state, {
+        widgetAnalytics: action.data
+    })
     default:
       return state
   }

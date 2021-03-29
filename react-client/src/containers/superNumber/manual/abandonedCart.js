@@ -78,9 +78,7 @@ class AbandonedCart extends React.Component {
         this.props.fetchCheckouts({nextPageParameters: this.props.nextPageParameters}, this.handleFetchCheckouts)
       }
     } else {
-      console.log('this.props.checkouts', this.props.checkouts)
       let prevCheckouts = this.props.checkouts.filter(o => new Date(o.created_at) < new Date(this.state.checkouts[0].created_at))
-      console.log('prevCheckouts', prevCheckouts)
       prevCheckouts = prevCheckouts.slice(Math.max(prevCheckouts.length - this.state.limit, 0))
       this.setState({checkouts: prevCheckouts})
     }

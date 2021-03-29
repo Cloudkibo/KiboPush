@@ -56,8 +56,8 @@ class AbandonedCart extends React.Component {
 
 AbandonedCart.propTypes = {
   'cartsRecovered': PropTypes.number.isRequired,
-  'recoveryRate': PropTypes.number.isRequired,
-  'orderValueRecovered': PropTypes.number.isRequired
+  'recoveryRate': PropTypes.string.isRequired,
+  'orderValueRecovered': PropTypes.string.isRequired
 }
 
 export default AbandonedCart
