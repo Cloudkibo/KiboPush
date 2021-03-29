@@ -23,7 +23,6 @@ class AgentModal extends React.Component {
   }
 
   UNSAFE_componentWillReceiveProps (nextProps) {
-    console.log('nextProps', nextProps)
     if (nextProps.selectedAgent) {
       this.setState({
         agentName: nextProps.selectedAgent.agentName,
@@ -52,7 +51,6 @@ class AgentModal extends React.Component {
           endTime: '23:59'
         }
     )
-    console.log('onlineHours', onlineHours)
     return onlineHours
   }
 
@@ -161,7 +159,7 @@ class AgentModal extends React.Component {
               </span>
             </div>
             {this.props.days.map(day => (
-              <div className='form-group m-form__group'>
+              <div key={day} className='form-group m-form__group'>
                 <label style={{fontWeight: 'normal'}}>{day.charAt(0).toUpperCase() + day.slice(1)}:</label>
                 <div className='form-group m-form__group row' style={{marginLeft: '0', marginTop: '-10px'}}>
                   <input className="form-control m-input" required
@@ -182,7 +180,7 @@ class AgentModal extends React.Component {
           <div className='col-lg-6 m--align-left'>
           </div>
           <div className='col-lg-6 m--align-right'>
-            <button onClick={this.onSave} class="btn btn-primary">Save</button>
+            <button onClick={this.onSave} className="btn btn-primary">Save</button>
         </div>
       </div>
       </div>
@@ -191,7 +189,7 @@ class AgentModal extends React.Component {
 }
 
 AgentModal.propTypes = {
-  'selectedAgent': PropTypes.object.isRequired,
+  'selectedAgent': PropTypes.object,
   'days': PropTypes.array.isRequired,
   'addAgent': PropTypes.func.isRequired,
   'editAgent': PropTypes.func.isRequired

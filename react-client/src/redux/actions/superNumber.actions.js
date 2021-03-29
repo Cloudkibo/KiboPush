@@ -209,3 +209,19 @@ export function fetchCODAnalytics(body) {
       })
   }
 }
+
+export function fetchWidgetAnalytics(body, cb) {
+  return (dispatch) => {
+    callApi(`supernumber/fetchWidgetAnalytics`, 'post', body)
+      .then(res => {
+        console.log('response from fetchWidgetAnalytics', res)
+        if (res.status === 'success') {
+          dispatch({
+            type: ActionTypes.GET_WIDGET_ANALYTICS,
+            data: res.payload
+          })
+        }
+        if (cb) cb(res)
+      })
+  }
+}
