@@ -116,7 +116,7 @@ class MessageLogs extends React.Component {
                   { this.props.type === 'orders' &&
                   <th data-field='status'
                     className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                    <span style={{ width: '150px' }}>Template</span>
+                    <span style={{ width: '160px' }}>Template</span>
                   </th>
                   }
                   { this.props.type === 'abandonedCart' &&
@@ -155,7 +155,7 @@ class MessageLogs extends React.Component {
                       }
                       { this.props.type === 'orders' &&
                       <td data-field='status' className='m-datatable__cell--center m-datatable__cell'>
-                      <span>
+                      <span style={{ width: '160px' }}>
                         {messageLog.messageType}
                       </span></td>
                       }
