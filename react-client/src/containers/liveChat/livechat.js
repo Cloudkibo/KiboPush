@@ -932,6 +932,7 @@ class LiveChat extends React.Component {
                     backToSessions={this.backToSessions}
                     showGetContactInfo={true}
                     updateDefaultZoom= {this.updateDefaultZoom}
+                    connectedPageChatbot = { this.props.chatbots.find((chatbot) => { return chatbot.published && chatbot.pageId._id === this.state.activeSession.pageId._id}) ? true : false}
                   />
                 )}
               {!this.props.isMobile &&

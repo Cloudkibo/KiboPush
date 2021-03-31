@@ -91,6 +91,7 @@ class Footer extends React.Component {
     this.checkSendingLogic = this.checkSendingLogic.bind(this)
   }
   checkSendingLogic (sendFunc) {
+    if (this.props.connectedPageChatbot) {
       if (this.props.activeSession.chatbotPaused !== null && !this.props.activeSession.chatbotPaused) {
         this.refs.pauseChatbotWarning.click()
         this.setState({
@@ -99,6 +100,9 @@ class Footer extends React.Component {
       } else {
         sendFunc()
       }
+    } else {
+      sendFunc()
+    }
   }
 
   componentDidMount() {
