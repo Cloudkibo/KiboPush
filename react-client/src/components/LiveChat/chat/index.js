@@ -323,6 +323,7 @@ class Chat extends React.Component {
               showGetContactInfo={this.props.showGetContactInfo}
               defaultZoom={this.props.defaultZoom}
               updateDefaultZoom= {this.props.updateDefaultZoom}
+              connectedPageChatbot={this.props.connectedPageChatbot}
             />
           )}
 
