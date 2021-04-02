@@ -34,7 +34,7 @@ class Chatbot extends React.Component {
                   this.props.showSubtitle &&
                   <>
                     <br />
-                    <span className='m-widget4__sub'>DialogFlow: <i className='fa fa-check-circle m--font-success' /></span>
+                    <span className='m-widget4__sub'>{this.props.showSubtitle}: <i className='fa fa-check-circle m--font-success' /></span>
                   </>
                 }
               </div>

@@ -5,6 +5,7 @@ import { fetchChatbots, createChatbot } from '../../redux/actions/chatbot.action
 import AlertContainer from 'react-alert'
 import { getIntegrations } from '../../redux/actions/settings.actions'
 import { fetchDialogflowAgents } from '../../redux/actions/chatbotAutomation.actions'
+import { fetchShopifyStore } from '../../redux/actions/commerce.actions'
 
 import CHATBOTITEM from '../../components/chatbot/chatbotItem'
 import MODAL from '../../components/extras/modal'
@@ -38,10 +39,18 @@ class Chatbots extends React.Component {
   }
 
   modifyChatbot(chatbot) {
-    this.props.history.push({
-      pathname: '/chatbots/configure',
-      state: { chatbot }
-    })
+    if (this.props.user.platform === 'sms' && chatbot.vertical && chatbot.vertical === 'ecommerce') {
+      chatbot.backUrl = '/chatbots'
+      this.props.history.push({
+        pathname: '/chatbots/settings',
+        state: chatbot
+      })
+    } else {
+      this.props.history.push({
+        pathname: '/chatbots/configure',
+        state: { chatbot }
+      })
+    }
   }
 
   openCreateChatbotModal () {
@@ -65,6 +74,7 @@ class Chatbots extends React.Component {
           chatbots={this.props.chatbots}
           createChatbot={this.props.createChatbot}
           channel={this.props.user.platform}
+          fetchShopifyStore={this.props.fetchShopifyStore}
         />
       )
     } else {
@@ -144,7 +154,7 @@ class Chatbots extends React.Component {
                                   key={chatbot.chatbotId}
                                   name={chatbot.title}
                                   onItemClick={() => this.modifyChatbot(chatbot)}
-                                  showSubtitle={chatbot.dialogFlowAgentId ? true : false}
+                                  showSubtitle={chatbot.dialogFlowAgentId ? 'DialogFlow' : chatbot.integration && chatbot.integration === 'shopify' ? 'Shopify' : null}
                                   onSettingsClick={() => this.onSettingsClick(chatbot)}
                                 />
                               ))
@@ -206,7 +216,8 @@ function mapDispatchToProps(dispatch) {
     fetchChatbots,
     createChatbot,
     getIntegrations,
-    fetchDialogflowAgents
+    fetchDialogflowAgents,
+    fetchShopifyStore
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Chatbots)
