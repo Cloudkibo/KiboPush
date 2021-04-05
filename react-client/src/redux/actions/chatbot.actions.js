@@ -65,6 +65,16 @@ export function updateChatbot(data, callback) {
   }
 }
 
+export function updateEcommerceChatbot(id, data, callback) {
+  return (dispatch) => {
+    callApi(`configure/chatbot/${id}`, 'put', data)
+      .then(res => {
+        console.log('response from updateEcommerceChatbot', res)
+        callback(res)
+      })
+  }
+}
+
 export function deleteMessageBlock(ids, callback) {
   return (dispatch) => {
     callApi('configure/chatbot/block', 'delete', { ids })
