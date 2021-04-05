@@ -261,7 +261,7 @@ class CommerceIntegration extends React.Component {
                         </div>
 
                           {
-                            this.props.user.currentPlan.unique_ID !== 'plan_E' &&
+                            this.props.user.currentPlan.unique_ID !== 'plan_E' && this.props.user.platform !== 'sms' &&
                               <div style={{ display: 'flex', justifyContent: 'center', marginTop: '25px' }}>
                                 <button
                                   onClick={() => {
