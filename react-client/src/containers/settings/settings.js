@@ -338,7 +338,6 @@ class Settings extends React.Component {
     var addScript = document.createElement('script')
     addScript.setAttribute('src', 'https://js.stripe.com/v3/')
     document.body.appendChild(addScript)
-    this.scrollToTop()
     this.setShowOptionsBasedOnPlan(this.props.user)
 
     // this.initializeSwitchNGP(this.state.ngpButtonState)
