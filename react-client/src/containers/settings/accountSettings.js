@@ -150,7 +150,7 @@ class AccountSettings extends React.Component {
     return (
       <div id='target' className='col-lg-8 col-md-8 col-sm-8 col-xs-12'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        <div style={{height: '82vh'}} className='m-portlet m-portlet--tabs  '>
+        <div style={{height: '82vh', overflow: 'hidden'}} className='m-portlet m-portlet--tabs  '>
           <div className='m-portlet__head'>
             <div className='m-portlet__head-tools'>
               <ul className='nav nav-tabs m-tabs m-tabs-line   m-tabs-line--left m-tabs-line--primary' role='tablist'>
@@ -165,17 +165,12 @@ class AccountSettings extends React.Component {
           </div>
           <div className='tab-content'>
             <div className='tab-pane active' id='m_user_profile_tab_1'>
-              <form className='m-form m-form--fit m-form--label-align-right'>
-                <div className='m-portlet__body'>
-                  <div className='form-group m-form__group m--margin-top-10 m--hide'>
-                    <div className='alert m-alert m-alert--default' role='alert'>
-                      The example form below demonstrates common HTML form elements that receive updated styles from Bootstrap with additional classNamees.
-                    </div>
-                  </div>
-                  <div className='form-group m-form__group row'>
+              <form style={{display: 'flex', flexDirection: 'column', height: '73vh'}} className='m-form m-form--fit m-form--label-align-right'>
+                <div style={{flex: '1 1 auto', overflowY: 'scroll'}} className='m-portlet__body'>
+                  <div style={{margin: '0px'}} className='form-group m-form__group row'>
                     <h4>Reset Password</h4>
                   </div>
-                  <div className='form-group m-form__group row'>
+                  <div style={{margin: '0px'}} className='form-group m-form__group row'>
                     <label className='col-4 col-form-label' style={{textAlign: 'left'}}>
                       Current Password
                     </label>
@@ -183,7 +178,7 @@ class AccountSettings extends React.Component {
                       <input className='form-control m-input' required type='password' ref='current' onChange={this.onCurrentPassChange} />
                     </div>
                   </div>
-                  <div className='form-group m-form__group row'>
+                  <div style={{margin: '0px'}} className='form-group m-form__group row'>
                     <label className='col-4 col-form-label' style={{textAlign: 'left'}}>
                       New Password
                     </label>
@@ -200,7 +195,7 @@ class AccountSettings extends React.Component {
                         }
                     </div>
                   </div>
-                  <div className='form-group m-form__group row'>
+                  <div style={{margin: '0px'}} className='form-group m-form__group row'>
                     <label className='col-4 col-form-label' style={{textAlign: 'left'}}>
                       Retype Password
                     </label>
@@ -218,10 +213,10 @@ class AccountSettings extends React.Component {
                       <button className='btn btn-primary pull-right' disabled={!this.refs.current || !this.refs.new || !this.refs.retype || this.refs.current.value === '' || this.refs.new.value === '' || this.refs.retype.value === '' || this.state.changePassword || !this.state.ismatch || !this.state.pwdlength} onClick={this.save}>Save</button>
                     </div>
                   </div>
-                  <div className='form-group m-form__group row'>
+                  <div style={{margin: '0px'}} className='form-group m-form__group row'>
                     <h4>Account Security</h4>
                   </div>
-                  <div className='m-form__group form-group row'>
+                  <div style={{margin: '0px'}} className='m-form__group form-group row'>
                     <span className='col-9 col-form-label'>
                       2-Factor Authentication (You need to have authenticator app like Google Authenticator for this)
                     </span>
@@ -238,7 +233,7 @@ class AccountSettings extends React.Component {
                   </div>
                   {this.props.user && this.props.user.tfa && this.props.user.tfa.secret === '' &&
                   <center>
-                    <div className='m-form__group form-group row'>
+                    <div style={{margin: '0px'}} className='m-form__group form-group row'>
                       <span className='col-12 col-form-label'>
                         <img alt='qr-code' src={this.props.user.tfa.dataURL} />
                       </span>
@@ -246,12 +241,12 @@ class AccountSettings extends React.Component {
                     <p>
                       Scan this QR code in your 2 Factor Authenticator app and put the code in following box.
                     </p>
-                    <div className='m-form__group form-group row'>
+                    <div style={{margin: '0px'}} className='m-form__group form-group row'>
                       <span className='col-12 col-form-label'>
                         <input className='form-control m-input' required type='text' ref='otp' />
                       </span>
                     </div>
-                    <div className='m-form__group form-group row'>
+                    <div style={{margin: '0px'}} className='m-form__group form-group row'>
                       <span className='col-6 col-form-label'></span>
                       <span className='col-3 col-form-label'>
                         <button className='btn btn-secondary' onClick={this.cancel2FA}>Cancel 2FA Setup</button>
