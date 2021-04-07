@@ -249,7 +249,7 @@ class MessageAlerts extends React.Component {
         if (index >= 0) {
           subscriptions.splice(index, 1)
         }
-        if (subscriptions.length === 0) {
+        if (subscriptions.filter((item) => item.alertChannel.toLowerCase() === this.state.selectedChannel.toLocaleLowerCase()).length === 0) {
           channels[this.state.selectedChannel].enabled = false
         }
         this.setState({subscriptions, channels})

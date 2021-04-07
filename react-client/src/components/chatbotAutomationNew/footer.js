@@ -7,12 +7,14 @@ class Footer extends React.Component {
     this.state = {
       loading: false,
       backButton: false,
-      homeButton: false
+      homeButton: false,
+      talkToAgentButton: false
     }
     this.onNext = this.onNext.bind(this)
     this.afterNext = this.afterNext.bind(this)
     this.handleBackCheckbox = this.handleBackCheckbox.bind(this)
     this.handleHomeCheckbox = this.handleHomeCheckbox.bind(this)
+    this.handleTalkToAgentCheckbox = this.handleTalkToAgentCheckbox.bind(this)
     this.setBackHomeButton = this.setBackHomeButton.bind(this)
   }
 
@@ -39,6 +41,16 @@ class Footer extends React.Component {
     })
   }
 
+  handleTalkToAgentCheckbox (e) {
+    this.setState({talkToAgentButton: e.target.checked}, () => {
+      if (this.state.talkToAgentButton) {
+        this.props.linkBlock('talk_to_agent')
+      } else {
+        this.props.removeLink('talk_to_agent')
+      }
+    })
+  }
+
   handleHomeCheckbox (e) {
     this.setState({homeButton: e.target.checked}, () => {
       if (this.state.homeButton) {
@@ -54,11 +66,13 @@ class Footer extends React.Component {
       const quickReplies = currentBlock.payload[currentBlock.payload.length - 1].quickReplies
       const back = quickReplies.find((item) => item.title === 'Back')
       const home = quickReplies.find((item) => item.title === 'Home')
+      const tta = quickReplies.find((item) => JSON.parse(item.payload)[0].payloadAction === 'talk_to_agent')
       const backButton = back ? true : false
       const homeButton = home ? true : false
-      this.setState({backButton, homeButton})
+      const talkToAgentButton = tta ? true : false
+      this.setState({backButton, homeButton, talkToAgentButton})
     } else {
-      this.setState({backButton: false, homeButton: false})
+      this.setState({backButton: false, homeButton: false, talkToAgentButton: false})
     }
   }
 
@@ -73,8 +87,8 @@ class Footer extends React.Component {
       <div id='_cb_ma_footer' style={{position: 'absolute', bottom: 0, marginBottom: '15px', width: '100%', right: '15px'}} className='row'>
         <div className='col-md-6'>
           {
-            this.props.showBackHomeButtons &&
-            <div className="m-checkbox-inline">
+            this.props.showBackHomeButtons
+            ? <div className="m-checkbox-inline">
               <label className="m-checkbox m--font-boldest">
                 <input
                   type="checkbox"
@@ -91,6 +105,17 @@ class Footer extends React.Component {
                   checked={this.state.homeButton}
                 />
                   Home button
+                <span></span>
+              </label>
+            </div>
+            : <div className="m-checkbox-inline">
+              <label className="m-checkbox m--font-boldest">
+                <input
+                  type="checkbox"
+                  onChange={this.handleTalkToAgentCheckbox}
+                  checked={this.state.talkToAgentButton}
+                />
+                  Talk to agent button
                 <span></span>
               </label>
             </div>
