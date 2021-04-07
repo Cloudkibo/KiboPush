@@ -22,6 +22,7 @@ import { removeZoomIntegration } from './../redux/actions/settings.actions'
 import {landingPageDelete} from './../redux/actions/landingPages.actions'
 const whatsAppActions = require('./../redux/actions/whatsAppChat.actions')
 const smsActions = require('./../redux/actions/smsChat.actions')
+const { setSocketData } = require('./../redux/actions/messageAlerts.actions')
 const smsBroadcasts = require('./../redux/actions/smsBroadcasts.actions')
 const { setSocketData } = require('./../redux/actions/messageAlerts.actions')
 

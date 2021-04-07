@@ -22,6 +22,7 @@ export function settingsInfo (state = initialState, action) {
       return Object.assign({}, state, {
         permissions: oldPermissions
       })
+
     case ActionTypes.GET_ADVANCED_SETTINGS:
       return Object.assign({}, state, {
         advanced_settings: action.data
