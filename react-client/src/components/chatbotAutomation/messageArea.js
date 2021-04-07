@@ -46,11 +46,75 @@ class MessageArea extends React.Component {
     this.getRemoveModalContent = this.getRemoveModalContent.bind(this)
     this.updateCarouselCards = this.updateCarouselCards.bind(this)
     this.canDeleteBlock = this.canDeleteBlock.bind(this)
+    this.showTalkToAgentButton = this.showTalkToAgentButton.bind(this)
+    this.linkBlock = this.linkBlock.bind(this)
+    this.removeLink = this.removeLink.bind(this)
   }
 
   componentDidMount () {
     if (this.props.block) {
       this.setStateData(this.props.block)
+    }
+  }
+
+  showTalkToAgentButton () {
+    const parentId = this.props.sidebarItems.find((item) => item.id.toString() === this.props.block.uniqueId.toString()).parentId
+    if (parentId) {
+      return false
+    } else {
+      return true
+    }
+  }
+
+  linkBlock (title) {
+    if (['talk_to_agent'].includes(title)) {
+      let quickReplies = this.state.quickReplies
+      if (title === 'talk_to_agent') {
+        quickReplies.push({
+          content_type: 'text',
+          title: 'Talk to agent',
+          payload: JSON.stringify([{
+            action: '_chatbot',
+            payloadAction: 'talk_to_agent',
+            chatbotId: this.props.chatbot._id,
+            parentBlockTitle: this.props.block.title
+          }])
+        })
+      }
+
+      const currentBlock = this.props.block
+
+      if (currentBlock.payload.length > 0) {
+        currentBlock.payload[currentBlock.payload.length - 1].quickReplies = quickReplies
+      } else {
+        currentBlock.payload.push({quickReplies})
+      }
+
+      this.setState({quickReplies}, () => {
+        this.props.updateParentState({currentBlock, unsavedChanges: true})
+      })
+    }
+  }
+
+  removeLink (title) {
+    if (['talk_to_agent'].includes(title)) {
+      let quickReplies = this.state.quickReplies
+      let index = quickReplies.findIndex((item) => item.title === title)
+      if (title === 'talk_to_agent') {
+        index = quickReplies.findIndex((item) => JSON.parse(item.payload)[0].payloadAction === 'talk_to_agent')
+      }
+      quickReplies.splice(index, 1)
+
+      const currentBlock = this.props.block
+      if (currentBlock.payload.length > 0) {
+        currentBlock.payload[currentBlock.payload.length - 1].quickReplies = quickReplies
+      } else {
+        currentBlock.payload.push({quickReplies})
+      }
+
+      this.setState({quickReplies}, () => {
+        this.props.updateParentState({currentBlock, unsavedChanges: true})
+      })
     }
   }
 
@@ -783,6 +847,10 @@ class MessageArea extends React.Component {
             disableNext={this.state.disableNext}
             onPrevious={() => {}}
             emptyBlocks={this.checkEmptyBlock()}
+            showTalkToAgentButton={this.showTalkToAgentButton()}
+            currentBlock={this.props.block}
+            linkBlock={this.linkBlock}
+            removeLink={this.removeLink}
           />
           <button style={{display: 'none'}} ref={(el) => this.removeComponentTrigger = el} data-toggle='modal' data-target='#_remove_component' />
           <CONFIRMATIONMODAL

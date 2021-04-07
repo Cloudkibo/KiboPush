@@ -28,7 +28,7 @@ function handleUnsubscribe (data, state, updateState) {
   if (index >= 0) {
     subscriptions.splice(index, 1)
   }
-  if (subscriptions.length === 0) {
+  if (subscriptions.filter((item) => item.alertChannel.toLowerCase() === state.selectedChannel.toLowerCase()).length === 0) {
     channels[subscription.alertChannel.toLowerCase()].enabled = false
   }
   updateState({subscriptions, channels})
