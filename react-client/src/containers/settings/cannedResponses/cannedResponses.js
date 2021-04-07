@@ -40,7 +40,7 @@ class cannedResponses extends React.Component {
       currentcannedResponse: null
     }, () => {
       this.refs.cannedReponseModal.click()
-    }) 
+    })
     } else {
      this.msg.error('you can not create more than 25 canned responses')
     }
@@ -100,7 +100,7 @@ UNSAFE_componentWillReceiveProps (nextProps) {
         <HELPWIDGET
           documentation={{visibility: true, link: 'https://kibopush.com/canned-responses'}}
           videoTutorial={{visibility: true, videoId: 'Xadh0-usfrE'}}
-        /> 
+        />
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
         <a href='#/' style={{ display: 'none' }} ref='DeleteModal' data-toggle='modal' data-target='#delete_confirmation_modal'>DeleteModal</a>
         <a href='#/' style={{ display: 'none' }} ref='cannedReponseModal' data-toggle='modal' data-target='#create_modal'>CustomFieldModal</a>
@@ -134,7 +134,7 @@ UNSAFE_componentWillReceiveProps (nextProps) {
             </div>
           </div>
         </div>
-        <div className='m-portlet m-portlet--full-height m-portlet--tabs  '>
+        <div style={{height: '82vh'}} className='m-portlet m-portlet--tabs  '>
           <div className='m-portlet__head'>
             <div className='m-portlet__head-tools'>
               <ul className='nav nav-tabs m-tabs m-tabs-line   m-tabs-line--left m-tabs-line--primary' role='tablist'>
@@ -158,7 +158,7 @@ UNSAFE_componentWillReceiveProps (nextProps) {
           <div className='tab-content'>
             <div className='m-content'>
               {
-                (this.state.isSearchFilter || (this.state.cannedResponses && this.state.cannedResponses.length > 0)) &&                
+                (this.state.isSearchFilter || (this.state.cannedResponses && this.state.cannedResponses.length > 0)) &&
                   <div className='m-input-icon m-input-icon--left col-md-7 col-lg-7 col-xl-7' style= {{marginBottom: '20px'}}>
                     <input className='form-control m-input m-input--solid' type='text' placeholder='Search here...' aria-label='Search' value={this.state.searchValue} onChange={this.search} />
                     <span className='m-input-icon__icon m-input-icon__icon--left'>
@@ -168,7 +168,7 @@ UNSAFE_componentWillReceiveProps (nextProps) {
               }
               <div style={{ maxHeight: '580px', overflow: 'auto' }}>
                 {
-                  this.state.cannedResponses && this.state.cannedResponses.length > 0 ? this.state.cannedResponses.map((cannedResponse, i) => 
+                  this.state.cannedResponses && this.state.cannedResponses.length > 0 ? this.state.cannedResponses.map((cannedResponse, i) =>
                     <div key={cannedResponse._id} className='accordion' id={`accordion${cannedResponse._id}`} style={{ marginTop: '15px' }}>
                       <div className='card'>
                         <div className='card-header' id={`heading${cannedResponse._id}`}>

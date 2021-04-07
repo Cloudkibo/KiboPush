@@ -7,6 +7,18 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { getNGP, enableNGP, disableNGP, saveNGP } from '../../redux/actions/settings.actions'
 import { loadMyPagesList } from '../../redux/actions/pages.actions'
+import {
+  fetchMessageAlerts,
+  saveAlert,
+  fetchAlertSubscriptions,
+  addSubscription,
+  removeSubscription,
+  setSocketData,
+  setBusinessHours
+} from '../../redux/actions/messageAlerts.actions'
+import { loadMembersList } from '../../redux/actions/members.actions'
+import { getFbAppId } from '../../redux/actions/basicinfo.actions'
+
 import AccountSettings from './accountSettings'
 import GreetingMessage from './greetingMessage'
 import WelcomeMessage from './welcomeMessage'
@@ -25,7 +37,8 @@ import Integrations from './integrations'
 import AdvancedSetting from './advancedSettings'
 import CannedResponses from './cannedResponses/cannedResponses'
 import ZoomIntegration from './zoomIntegration'
-import Notifications from './notifications'
+import MESSAGEALERTS from '../messageAlerts'
+import BUSINESSHOURS from '../businessHours'
 import CommerceIntegration from './commerceIntegration'
 import NotificationSettings from './notificationSettings'
 
@@ -87,7 +100,8 @@ class Settings extends React.Component {
     this.goToSettings = this.goToSettings.bind(this)
     this.setUploadCustomerFile = this.setUploadCustomerFile.bind(this)
     this.setCannedResponses = this.setCannedResponses.bind(this)
-    this.setNotification = this.setNotification.bind(this)
+    this.setMessageAlerts = this.setMessageAlerts.bind(this)
+    this.setBusinessHours = this.setBusinessHours.bind(this)
     this.setNotificationSettings = this.setNotificationSettings.bind(this)
     this.setShowOptionsBasedOnPlan = this.setShowOptionsBasedOnPlan.bind(this)
 
@@ -187,9 +201,15 @@ class Settings extends React.Component {
     })
   }
 
-  setNotification() {
+  setMessageAlerts() {
     this.setState({
-      openTab: 'notifications'
+      openTab: 'message_alerts'
+    })
+  }
+
+  setBusinessHours () {
+    this.setState({
+      openTab: 'business_hours'
     })
   }
 
@@ -304,10 +324,6 @@ class Settings extends React.Component {
     this.setState({
       openTab: 'notificationSettings'
     })
-  }
-
-  scrollToTop() {
-    this.top.scrollIntoView({ behavior: 'instant' })
   }
 
   componentDidMount() {
@@ -499,10 +515,8 @@ class Settings extends React.Component {
     console.log('buttonState in render function', this.state.buttonState)
     const url = window.location.hostname
     return (
-      <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+      <div style={{marginBottom: '0px'}} className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-        <div style={{ float: 'left', clear: 'both' }}
-          ref={(el) => { this.top = el }} />
         <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="upgrade" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
             <div className="modal-content">
@@ -529,18 +543,11 @@ class Settings extends React.Component {
             </div>
           </div>
         </div>
-        <div className='m-subheader '>
-          <div className='d-flex align-items-center'>
-            <div className='mr-auto'>
-              <h3 className='m-subheader__title'>Settings</h3>
-            </div>
-          </div>
-        </div>
-        <div className='m-content'>
+        <div style={{padding: '30px 30px 0px 30px'}} className='m-content'>
           <div className='row'>
             <div className='col-lg-4 col-md-4 col-sm-4 col-xs-12'>
-              <div className='m-portlet m-portlet--full-height'>
-                <div className='m-portlet__body'>
+              <div style={{height: '82vh', overflow: 'hidden', display: 'flex', flexDirection: 'column'}} className='m-portlet'>
+                <div style={{height: 'auto', flex: '0 0 auto'}} className='m-portlet__head'>
                   <div className='m-card-profile'>
                     <div className='m-card-profile__title m--hide'>
                       Your Profile
@@ -562,8 +569,9 @@ class Settings extends React.Component {
                       </span>
                     </div>
                   </div>
+                </div>
+                <div style={{overflowY: 'scroll', flex: '1 1 auto'}} className='m-portlet__body'>
                   <ul className='m-nav m-nav--hover-bg m-portlet-fit--sides'>
-                    <li className='m-nav__separator m-nav__separator--fit' />
                     <li className='m-nav__section m--hide'>
                       <span className='m-nav__section-text'>Section</span>
                     </li>
@@ -611,11 +619,26 @@ class Settings extends React.Component {
                         </a>
                       </li>
                     }
-                    {(url.includes('localhost') || url.includes('kibochat.cloudkibo.com')) && (this.props.user.role === 'buyer' || this.props.user.role === 'admin') && (this.props.user.currentPlan.unique_ID === 'plan_C' || this.props.user.currentPlan.unique_ID === 'plan_D') &&
+                    {
+                      (url.includes('localhost') || url.includes('kibochat.cloudkibo.com')) &&
+                      (this.props.user.role === 'buyer' || this.props.user.role === 'admin') &&
+                      (['messenger', 'whatsApp'].includes(this.props.user.platform)) &&
+                      (this.props.user.currentPlan.unique_ID === 'plan_C' || this.props.user.currentPlan.unique_ID === 'plan_B') &&
                       <li className='m-nav__item'>
-                        <a href='#/' className='m-nav__link' onClick={this.setNotification} style={{ cursor: 'pointer' }} >
+                        <a href='#/' className='m-nav__link' onClick={this.setMessageAlerts} style={{ cursor: 'pointer' }} >
                           <i className='m-nav__link-icon flaticon-bell' />
                           <span className='m-nav__link-text'>Message Alerts</span>
+                        </a>
+                      </li>
+                    }
+                    {
+                      (url.includes('localhost') || url.includes('kibochat.cloudkibo.com')) &&
+                      (this.props.user.role === 'buyer' || this.props.user.role === 'admin') &&
+                      (['messenger', 'whatsApp'].includes(this.props.user.platform)) &&
+                      <li className='m-nav__item'>
+                        <a href='#/' className='m-nav__link' onClick={this.setBusinessHours} style={{ cursor: 'pointer' }} >
+                          <i className='m-nav__link-icon flaticon-clock-1' />
+                          <span className='m-nav__link-text'>Business Hours</span>
                         </a>
                       </li>
                     }
@@ -731,9 +754,10 @@ class Settings extends React.Component {
                 </div>
               </div>
             </div>
-            {this.state.openTab === 'showNGP' &&
+            {
+              this.state.openTab === 'showNGP' &&
               <div id='target' className='col-lg-8 col-md-8 col-sm-8 col-xs-12'>
-                <div className='m-portlet m-portlet--full-height m-portlet--tabs  '>
+                <div style={{height: '85vh'}} className='m-portlet m-portlet--tabs  '>
                   <div className='m-portlet__head'>
                     <div className='m-portlet__head-tools'>
                       <ul className='nav nav-tabs m-tabs m-tabs-line   m-tabs-line--left m-tabs-line--primary' role='tablist'>
@@ -845,8 +869,32 @@ class Settings extends React.Component {
             {this.state.openTab === 'integrations' &&
               <Integrations history={this.props.history} />
             }
-            {this.state.openTab === 'notifications' &&
-              <Notifications history={this.props.history} />
+            {
+              this.state.openTab === 'message_alerts' &&
+              <MESSAGEALERTS
+                fetchMessageAlerts={this.props.fetchMessageAlerts}
+                fetchAlertSubscriptions={this.props.fetchAlertSubscriptions}
+                fetchMembers={this.props.loadMembersList}
+                addSubscription={this.props.addSubscription}
+                removeSubscription={this.props.removeSubscription}
+                setSocketData={this.props.setSocketData}
+                getFbAppId={this.props.getFbAppId}
+                user={this.props.user}
+                fbAppId={this.props.fbAppId}
+                automatedOptions={this.props.automatedOptions}
+                members={this.props.members}
+                socketData={this.props.socketData}
+                saveAlert={this.props.saveAlert}
+                alertMsg={this.msg}
+              />
+            }
+            {
+              this.state.openTab === 'business_hours' &&
+              <BUSINESSHOURS
+                setBusinessHours={this.props.setBusinessHours}
+                alertMsg={this.msg}
+                automatedOptions={this.props.automatedOptions}
+              />
             }
             {this.state.openTab === 'notificationSettings' &&
               <NotificationSettings history={this.props.history} />
@@ -874,21 +922,34 @@ class Settings extends React.Component {
 function mapStateToProps(state) {
   return {
     user: (state.basicInfo.user),
+    automatedOptions: (state.basicInfo.automated_options),
     apiEnableNGP: (state.settingsInfo.apiEnableNGP),
     apiDisableNGP: (state.settingsInfo.apiDisableNGP),
     resetDataNGP: (state.settingsInfo.resetDataNGP),
     apiSuccessNGP: (state.settingsInfo.apiSuccessNGP),
-    apiFailureNGP: (state.settingsInfo.apiFailureNGP)
+    apiFailureNGP: (state.settingsInfo.apiFailureNGP),
+    members: (state.membersInfo.members),
+    socketData: (state.messageAlertsInfo.socketData),
+    fbAppId: (state.basicInfo.fbAppId)
   }
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators({
-    getNGP: getNGP,
-    enableNGP: enableNGP,
-    disableNGP: disableNGP,
-    saveNGP: saveNGP,
-    loadMyPagesList: loadMyPagesList
+    getNGP,
+    enableNGP,
+    disableNGP,
+    saveNGP,
+    loadMyPagesList,
+    fetchMessageAlerts,
+    fetchAlertSubscriptions,
+    saveAlert,
+    loadMembersList,
+    addSubscription,
+    removeSubscription,
+    setSocketData,
+    getFbAppId,
+    setBusinessHours
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Settings)

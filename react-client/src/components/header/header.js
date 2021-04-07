@@ -183,7 +183,6 @@ class Header extends React.Component {
   }
 
   redirectToDashboard (value) {
-    debugger
     if (value === 'sms') {
       this.props.history.push({
         pathname: getLandingPage(value),
