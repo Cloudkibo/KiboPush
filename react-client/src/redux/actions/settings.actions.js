@@ -56,7 +56,6 @@ export function setCompanyPreferences(data) {
   }
 }
 
-
 export function showAdvancedSettings(data) {
   console.log(data)
   return {

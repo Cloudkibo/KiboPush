@@ -52,22 +52,24 @@ class Integrations extends React.Component {
         }
       ]
     } else if (isKiboEngage) {
-      integrations = [
-        {
+      if (this.props.user.plan['hubspot_integration']) {
+        integrations.push({
           name: 'Google Sheets',
           icon: 'fa fa-file-excel-o',
           enabled: false,
           description: 'This integration can help you save data from KiboPush to Google Sheets or vice versa',
           color: 'green'
-        },
-        {
+        })
+      }
+      if (this.props.user.plan['google_sheets_integration']) {
+        integrations.push({
           name: 'Hubspot',
           icon: 'fa fa-transgender-alt',
           enabled: false,
           description: 'This integration can help you save data from KiboPush to HubSpot or vice versa',
           color: 'orangered'
-        }
-      ]
+        })
+      }
     }
     this.setState({ integrations }, () => { this.props.getIntegrations() })
   }

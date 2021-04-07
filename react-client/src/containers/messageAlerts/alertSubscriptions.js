@@ -5,8 +5,6 @@ import { validateEmail } from '../../utility/utils'
 
 import SUBSCRIPTIONITEM from './subscriptionItem'
 
-const MessengerPlugin = require('react-messenger-plugin').default
-
 class AlertSubscriptions extends React.Component {
   constructor (props, context) {
     super(props, context)
@@ -167,22 +165,9 @@ class AlertSubscriptions extends React.Component {
                   <i className='la la-info-circle' />
                 </div>
                 <div className='m-alert__text'>
-                  To receive alerts via messenger, please subscribe by clicking the button below:
+                  To receive alerts via messenger, please send <span className='m--font-boldest'>notify-me</span> from your connected Facebook page.
                 </div>
               </div>
-            </div>
-            <div className='form-group m-form__group row'>
-              <div className='col-lg-4 col-md-4 col-sm-4' />
-              <div className='col-lg-4 col-md-4 col-sm-4'>
-                <MessengerPlugin
-                  appId={this.props.fbAppId}
-                  pageId='321030461961407' // 151990922046256
-                  size='large'
-                  version='v6.0'
-                  passthroughParams={`notify-me_${this.props.user.companyId}`}
-                />
-              </div>
-              <div className='col-lg-4 col-md-4 col-sm-4' />
             </div>
             <div className='m--space-30' />
           </>
