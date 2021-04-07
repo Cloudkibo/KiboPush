@@ -47,6 +47,16 @@ export function showWhiteListDomains (data) {
   }
 }
 
+
+export function setCompanyPreferences(data) {
+  /*use this function to update any company preference values*/
+  return {
+    type: ActionTypes.SET_COMPANY_PREFERENCES,
+    data: data
+  }
+}
+
+
 export function showAdvancedSettings(data) {
   console.log(data)
   return {
@@ -150,6 +160,41 @@ export function getUserPermissions() {
         if (res.status === 'success') {
           console.log('permissions', res.payload)
           dispatch(showUserPermissions(res.payload))
+        }
+      })
+  }
+}
+
+export function installShopify (data) {
+  return (dispatch) => {
+    callApi('shopify', 'post', data)
+      .then(res => {
+        console.log('FROM shopify')
+        console.log(res.body)
+      })
+  }
+}
+
+export function fetchNotifications () {
+  return (dispatch) => {
+    callApi('adminAlerts/')
+      .then(res => {
+        if (res.status === 'success') {
+          dispatch(showAdminAlerts(res.payload))
+        }
+      })
+  }
+}
+export function updateNotificationSettings (data, msg) {
+  return (dispatch) => {
+    callApi('adminAlerts/update', 'post', data)
+      .then(res => {
+        if (res.status === 'success') {
+          dispatch(fetchNotifications())
+          msg.success('Notification settings updated successfully')
+        } else {
+          msg.error(res.description || 'Unable to update notification settings')
+          console.log(res.description)
         }
       })
   }
@@ -669,11 +714,12 @@ export function createZoomMeeting(data, callback) {
   }
 }
 
-export function getIntegrations() {
+export function getIntegrations(cb) {
   return (dispatch) => {
     callApi('integrations')
       .then(res => {
         dispatch(showIntegrations(res.payload))
+        if (cb) cb(res)
       })
   }
 }
@@ -811,6 +857,33 @@ export function verify2FAToken(data, msg) {
           msg.success('2FA setup completed successfully.')
         } else {
           msg.error(res.payload.message)
+        }
+      })
+  }
+}
+
+export function fetchCompanyPreferences() {
+  return (dispatch) => {
+    callApi('companyPreferences').then(res => {
+      console.log('Fetch company preference', res)
+      if (res.status === 'success') {
+        dispatch(setCompanyPreferences(res.payload))
+      } else {
+        console.log('Failed to fetch companyPreferences', res)
+      }
+    })
+  }
+}
+export function setSuperNumber(msg) {
+  return (dispatch) => {
+    callApi('company/setWhatsappSuperNumberPlan')
+      .then(res => {
+        console.log('response from setSuperNumber', res)
+        if (res.status === 'success') {
+          fetchUserDetails(dispatch)
+          msg.success('Saved Successfully')
+        } else {
+          msg.error(res.description || res.payload)
         }
       })
   }

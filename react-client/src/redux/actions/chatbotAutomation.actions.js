@@ -199,3 +199,27 @@ export function downloadAnalytics(data, callback) {
       })
   }
 }
+
+export function fetchDialogflowAgents (callback) {
+  return (dispatch) => {
+    callApi('dialogflow/agents')
+      .then(res => {
+        console.log('response from fetchDialogflowAgents', res)
+        if (callback) {
+          callback(res)
+        }
+      })
+  }
+}
+
+export function removeDialogFlowAgent (data, callback) {
+  return (dispatch) => {
+    callApi('dialogflow/agents/remove', 'post', data)
+      .then(res => {
+        console.log('response from removeDialogFlowAgent', res)
+        if (callback) {
+          callback(res)
+        }
+      })
+  }
+}

@@ -21,7 +21,21 @@ class Media extends React.Component {
   }
 
   edit () {
-    if (this.props.youtubeLink || this.props.facebookUrl) {
+    if (this.props.media && this.props.media.templateName) {
+      this.props.editComponent('template', {
+        edit: true,
+        templateName: this.props.media.templateName,
+        templateArguments: this.props.media.templateArguments,
+        selectedIndex: this.props.selectedIndex,
+        templateMessage: this.props.media.caption,
+        id: this.props.id,
+        templateId: this.props.media.templateId,
+        templateCode: this.props.media.templateCode,
+        templateType: this.props.media.templateType,
+        fileurl: this.props.media.fileurl,
+        componentType: this.props.media.mediaType
+      })
+    } else if (this.props.youtubeLink || this.props.facebookUrl) {
       this.props.editComponent('video', {
         edit: true,
         videoType: this.props.videoType,
@@ -157,12 +171,16 @@ class Media extends React.Component {
               </div>
           }
           {
-            (this.state.media && !this.state.imgSrc && !this.props.facebookUrl) &&
+            (this.state.media && !this.state.imgSrc && !this.props.facebookUrl && this.props.mediaType && this.props.mediaType === 'video') &&
             <div style={{border: '1px solid rgba(0,0,0,.1)', borderRadius: '5px'}} className='broadcastContent'>
               <video controls style={{width: '100%', borderRadius: '10px', marginTop: '-10px', borderBottomLeftRadius: '0px', borderBottomRightRadius: '0px'}} name='media' id='youtube_player'>
                 <source src={this.state.media.fileurl.url} type='audio/mpeg' />
               </video>
             </div>
+          }
+          {
+            (this.props.media && this.props.media.caption) &&
+            <div style={{marginTop: '10px', textAlign: 'left'}}>{this.props.media.caption}</div>
           }
           {
               this.state.buttons.map((button, index) => {

@@ -187,6 +187,7 @@ class Chat extends React.Component {
                   alertMsg={this.props.alertMsg}
                   id='messageTemplate'
                   templates={this.props.whatsAppMessageTemplates}
+                  uploadFile={this.props.uploadFile}
                 />
               </div>
             </div>
@@ -320,6 +321,9 @@ class Chat extends React.Component {
               isMobile={this.props.isMobile}
               refreshPopover={this.refreshPopover}
               showGetContactInfo={this.props.showGetContactInfo}
+              defaultZoom={this.props.defaultZoom}
+              updateDefaultZoom= {this.props.updateDefaultZoom}
+              connectedPageChatbot={this.props.connectedPageChatbot}
             />
           )}
 

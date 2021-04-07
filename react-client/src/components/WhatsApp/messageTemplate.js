@@ -7,19 +7,26 @@ import React from 'react'
 import { UncontrolledTooltip } from 'reactstrap'
 import PropTypes from 'prop-types'
 import {validatePhoneNumber} from '../../utility/utils'
+import Files from 'react-files'
+import { RingLoader } from 'halogenium'
+import { cloneDeep } from 'lodash'
 
 class MessageTemplate extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      templateMessage: this.props.templateMessage,
+      templateMessage: this.props.edit ? this.props.templateMessage : this.props.templates && this.props.templates.length > 0 && this.props.templates[0].text,
       isTemplateValid: true,
-      templateArguments: this.props.templateArguments,
+      templateArguments: this.props.templateArguments ? this.props.templateArguments : this.props.templates && this.props.templates.length > 0 && this.props.templates[0].templateArguments,
       number: '',
       sendingTemplate: false,
       selectedIndex: this.props.selectedIndex ? this.props.selectedIndex : 0,
       isPhoneNumberValid: false,
-      edited: true
+      edited: true,
+      uploadingAttachment: false,
+      attachment: this.props.edit ? this.props.fileurl : {},
+      errorMsg: false,
+      componentType: this.props.edit ? this.props.componentType : this.props.templates && this.props.templates.length > 0 ? this.getComponentType(this.props.templates[0].type) : 'text'
     }
     this.resetTemplate = this.resetTemplate.bind(this)
     this.onTextChange = this.onTextChange.bind(this)
@@ -30,6 +37,16 @@ class MessageTemplate extends React.Component {
     this.updateChatData = this.updateChatData.bind(this)
     this.updateNumber = this.updateNumber.bind(this)
     this.addComponent = this.addComponent.bind(this)
+    this.getAttachmentContent = this.getAttachmentContent.bind(this)
+    this.onFilesChange = this.onFilesChange.bind(this)
+    this.getComponentType = this.getComponentType.bind(this)
+    this.handleFile = this.handleFile.bind(this)
+    this.getUploadedFileType = this.getUploadedFileType.bind(this)
+    this.setDataPayload = this.setDataPayload.bind(this)
+    this.onFilesError = this.onFilesError.bind(this)
+    this.getAcceptedFiles = this.getAcceptedFiles.bind(this)
+    this.getAttachmentPreview = this.getAttachmentPreview.bind(this)
+    this.setDataPayloadForBroadcast = this.setDataPayloadForBroadcast.bind(this)
   }
 
   UNSAFE_componentWillReceiveProps (nextProps) {
@@ -40,12 +57,16 @@ class MessageTemplate extends React.Component {
         selectedIndex: nextProps.selectedIndex,
         templateArguments: nextProps.templateArguments,
         edited: false,
-        isTemplateValid: true
+        isTemplateValid: true,
+        componentType: nextProps.componentType,
+        attachment: nextProps.fileurl
       })
     } else if (nextProps.templates.length > 0) {
       this.setState({
         templateMessage: nextProps.templates[0].text,
-        templateArguments: nextProps.templates[0].templateArguments
+        templateArguments: nextProps.templates[0].templateArguments,
+        componentType: this.getComponentType(nextProps.templates[0].type),
+        errorMsg: nextProps.templates[0].type !== 'TEXT' ? '*Required' : false
       })
     }
   }
@@ -57,6 +78,18 @@ class MessageTemplate extends React.Component {
     })
   }
 
+  getComponentType (type) {
+    if (type) {
+      if (type === 'DOCUMENT') {
+          return 'file'
+        } else {
+          return type.toLowerCase()
+        }
+    } else {
+      return 'text'
+    }
+  }
+
   resetTemplate () {
     this.setState({
       templateMessage: this.props.templates[0].text,
@@ -65,7 +98,11 @@ class MessageTemplate extends React.Component {
       sendingTemplate: false,
       number: '',
       selectedIndex: 0,
-      isPhoneNumberValid: false
+      isPhoneNumberValid: false,
+      componentType: this.getComponentType(this.props.templates[0].type),
+      errorMsg: this.props.templates[0].type !== 'TEXT' ? '*Required' : false,
+      attachment: {},
+      uploadingAttachment: false
     })
      /* eslint-disable */
      $('#templateText').removeClass('border border-danger')
@@ -115,6 +152,11 @@ class MessageTemplate extends React.Component {
       templateArguments: this.props.templates[index].templateArguments,
       templateMessage: this.props.templates[index].text
     })
+    if (this.props.templates[index].type !== 'TEXT') {
+      this.setState({errorMsg: '*Required', componentType: this.getComponentType(this.props.templates[index].type)})
+    } else {
+      this.setState({errorMsg: false, attachment: {}, uploadAttachment: false, componentType: 'text'})
+    }
     /* eslint-disable */
     $('#templateText').removeClass('border border-danger')
     /* eslint-enable */
@@ -140,14 +182,35 @@ class MessageTemplate extends React.Component {
     }
   }
 
-  _sendTemplate () {
+  setDataPayload(component) {
     let payload = {
-      componentType: 'text',
-      text: this.state.templateMessage,
       buttons: this.props.templates[this.state.selectedIndex].buttons,
       templateArguments: this.state.templateArguments,
-      templateName: this.props.templates[this.state.selectedIndex].name
+      templateName: this.props.templates[this.state.selectedIndex].name,
+      templateId: this.props.templates[this.state.selectedIndex].namespace || this.props.templates[this.state.selectedIndex].id,
+      templateCode: this.props.templates[this.state.selectedIndex].code,
+      templateType: this.props.templates[this.state.selectedIndex].type
     }
+    if (component === 'text') {
+      payload.componentType = 'text'
+      payload.text = this.state.templateMessage
+    } else {
+      payload.componentType = this.state.componentType
+      payload.fileName = this.state.attachment.name
+      payload.size = this.state.attachment.size
+      payload.type = this.state.attachment.type
+      payload.fileurl = {
+        id: this.state.attachment.id,
+        name: this.state.attachment.name,
+        url: this.state.attachment.url
+      }
+      payload.caption = this.state.templateMessage
+    }
+    return payload
+  }
+
+  _sendTemplate () {
+    let payload = this.setDataPayload(this.state.componentType)
     let data = this.props.setMessageData(this.props.activeSession, payload)
     this.props.sendChatMessage(data, (res) => {
       if (res.status === 'success') {
@@ -193,17 +256,54 @@ class MessageTemplate extends React.Component {
     })
   }
 
-  addComponent() {
-    this.props.addComponent({
-      id: this.props.id >= 0 ? this.props.id : null,
-      componentName: 'template',
-      componentType: 'text',
-      text: this.state.templateMessage,
+  setDataPayloadForBroadcast(component) {
+    let payload = {
       buttons: this.props.templates[this.state.selectedIndex].buttons,
-      templateName: this.props.templates[this.state.selectedIndex].name,
       templateArguments: this.state.templateArguments,
-      selectedIndex: this.state.selectedIndex
-    }, this.props.edit)
+      templateName: this.props.templates[this.state.selectedIndex].name,
+      templateId: this.props.templates[this.state.selectedIndex].namespace || this.props.templates[this.state.selectedIndex].id,
+      templateCode: this.props.templates[this.state.selectedIndex].code,
+      templateType: this.props.templates[this.state.selectedIndex].type,
+      selectedIndex: this.state.selectedIndex,
+      id: this.props.id >= 0 ? this.props.id : null,
+      componentName: 'template'
+    }
+    if (component === 'text') {
+      payload.componentType = 'text'
+      payload.text = this.state.templateMessage
+    } else if (component === 'image' || component === 'video') {
+      payload.componentType = 'media'
+      payload.mediaType = this.state.componentType
+      payload.fileName = this.state.attachment.name
+      payload.size = this.state.attachment.size
+      payload.type = this.state.attachment.type
+      payload.fileurl = {
+        id: this.state.attachment.id,
+        name: this.state.attachment.name,
+        url: this.state.attachment.url
+      }
+      if (component === 'image') payload.image_url = this.state.attachment.url
+      payload.caption = this.state.templateMessage
+    } else if (component === 'file') {
+      payload.componentType = 'file'
+      payload.file = {
+        fileName:  this.state.attachment.name,
+        size: this.state.attachment.size,
+        type: this.state.attachment.type,
+        fileurl: {
+          id: this.state.attachment.id,
+          name: this.state.attachment.name,
+          url: this.state.attachment.url
+        }
+      }
+      payload.caption = this.state.templateMessage
+    }
+    return payload
+  }
+
+  addComponent() {
+    let payload = this.setDataPayloadForBroadcast(this.state.componentType)
+    this.props.addComponent(payload, this.props.edit)
   }
 
   closeModal() {
@@ -212,6 +312,146 @@ class MessageTemplate extends React.Component {
     } else {
       this.props.showCloseModalAlertDialog()
     }
+  }
+
+  getUploadedFileType(type) {
+    if (type.match('image.*')) {
+      return 'image'
+    } else if (type.match('video.*')) {
+      return 'video'
+    } else if (type.match('application.*') || type.match('text.*')) {
+      return 'file'
+    }
+  }
+  onFilesChange (files) {
+    if (files.length > 0) {
+      var file = files[files.length - 1]
+      this.setState({file: file})
+      if (file.size > 25000000) {
+        this.setState({errorMsg: '*Attachment exceeds the limit of 25MB'})
+        this.props.alertMsg.error('Attachment exceeds the limit of 25MB')
+      } else if (
+        [
+          'application/zip',
+          'text/javascript',
+          'text/exe',
+          'application/x-ms-dos-executable',
+          'application/x-pem-file',
+          'application/x-x509-ca-cert'
+        ].includes(file.type)
+      ) {
+        this.props.alertMsg.error(
+          `${file.type} files are not supported. Please select another file`
+        )
+      } else {
+        var fileData = new FormData()
+        const type = this.getUploadedFileType(file.type)
+        fileData.append('file', file)
+        fileData.append('filename', file.name)
+        fileData.append('filetype', file.type)
+        fileData.append('filesize', file.size)
+        fileData.append('componentType', type)
+        var fileInfo = {
+          componentType: type,
+          componentName: 'file',
+          fileName: file.name,
+          type: file.type,
+          size: file.size
+        }
+        this.setState({uploadingAttachment: true})
+        this.props.uploadFile(fileData, fileInfo, this.handleFile)
+      }
+    }
+  }
+
+  handleFile (fileInfo) {
+    let attachment = cloneDeep(this.state.attachment)
+    attachment.id = fileInfo.fileurl.id
+    attachment.url = fileInfo.fileurl.url
+    attachment.name = fileInfo.fileurl.name
+    attachment.type = fileInfo.componentType
+    this.setState({
+      attachment: attachment,
+      uploadingAttachment: false,
+      errorMsg: false
+    })
+  }
+
+  onFilesError (error, file) {
+    this.props.alertMsg.error('Attachment exceeds the limit of 25MB')
+  }
+
+  getAcceptedFiles (type) {
+    let accepted = []
+    switch (type) {
+      case 'image':
+        accepted.push('image/*')
+        break
+      case 'video':
+        accepted.push('video/*')
+        break
+      case 'file':
+        accepted.push('application/*')
+        break
+      default:
+    }
+    return accepted
+  }
+
+  getAttachmentPreview (type) {
+    if (type === 'image') {
+      if (this.state.attachment.url) {
+        return (
+          <div className='align-center'>
+            <img style={{maxWidth: 300, margin: -25, padding: 25}} src={this.state.attachment.url} alt='' />
+          </div>
+        )
+      } else {
+        return (
+          <div className='align-center' style={{padding: '5px'}}>
+            <img src='https://cdn.cloudkibo.com/public/icons/picture.png' alt='Text' style={{pointerEvents: 'none', zIndex: -1, maxHeight: 40}} />
+            <h4 style={{pointerEvents: 'none', zIndex: -1, marginLeft: '10px', display: 'inline', wordBreak: 'break-all'}}>Upload Image</h4>
+          </div>
+        )
+      }
+    } else if (type === 'video') {
+      if (this.state.attachment.url) {
+        return (
+          <video ref="video" controls style={{ width: '100%', borderRadius: '10px', marginTop: '-10px', borderBottomLeftRadius: '0px', borderBottomRightRadius: '0px' }} name='media' id='youtube_player'>
+            <source src={this.state.attachment.url} type='audio/mpeg' />
+          </video>
+        )
+      } else {
+        return (
+          <div className='align-center' style={{padding: '5px'}}>
+             <img src='https://cdn.cloudkibo.com/public/icons/picture.png' alt='Text' style={{pointerEvents: 'none', zIndex: -1, maxHeight: 40}} />
+             <h4 style={{pointerEvents: 'none', zIndex: -1, marginLeft: '10px', display: 'inline', wordBreak: 'break-all'}}>Upload Video</h4>
+           </div>
+        )
+      }
+    } else if (type === 'file') {
+      return (
+        <div className='align-center' style={{padding: '5px'}}>
+          <img src='https://cdn.cloudkibo.com/public/icons/file.png' alt='Text' style={{pointerEvents: 'none', zIndex: -1, maxHeight: 40}} />
+          <h4 style={{pointerEvents: 'none', zIndex: -1, marginLeft: '10px', display: 'inline', wordBreak: 'break-all'}}>{this.state.attachment.name ? this.state.attachment.name : 'Upload File'}</h4>
+        </div>
+      )
+    }
+  }
+
+  getAttachmentContent (type) {
+    return (
+      <Files
+        className='files-dropzone'
+        onChange={this.onFilesChange}
+        onError={this.onFilesError}
+        accepts= {this.getAcceptedFiles(type)}
+        maxFileSize={25000000}
+        minFileSize={0}
+        clickable>
+        {this.getAttachmentPreview(type)}
+      </Files>
+    )
   }
 
   render () {
@@ -280,18 +520,6 @@ class MessageTemplate extends React.Component {
                   })
                 }
               </div>
-              <div style={{textAlign: 'center', display: 'flex'}}>
-                <textarea disabled={this.state.sendingTemplate} rows='5' id='templateText' onChange={this.onTextChange} value={this.state.templateMessage}  className='form-control m-messenger__form-input' style={{resize: 'none', width: '95%', marginTop: '10px', borderRadius: '5px'}} maxLength='200' />
-                { !this.state.isTemplateValid &&
-                <div style={{marginTop: '25px', marginLeft: '5px'}}>
-                  <UncontrolledTooltip style={{minWidth: '100px', opacity: '1.0'}} target='templateWarning'>
-                    <span>Message template format cannot be changed</span>
-                  </UncontrolledTooltip>
-                  <i id='templateWarning' className='flaticon-exclamation m--font-danger'/>
-                </div>
-                }
-              </div>
-              <p style={{fontSize: '12px', marginTop: '5px'}}>{'Each variable "{{x}}" can be replaced with text that contains letters, digits, special characters or spaces.'}</p>
             </div>
           </div>
           <div className='col-1'>
@@ -301,7 +529,25 @@ class MessageTemplate extends React.Component {
             <h4 style={{ marginLeft: '-50px' }}>Preview:</h4>
             <div className='ui-block' style={{ overflowY: 'auto', border: '1px solid rgba(0,0,0,.1)', borderRadius: '3px', minHeight: '68vh', maxHeight: '68vh', marginLeft: '-50px' }} >
               <div className='discussion' style={{ display: 'inline-block', marginTop: '50px', paddingLeft: '10px', paddingRight: '10px' }} >
-                <div style={{ maxWidth: '100%', fontSize: '15px', textAlign: 'justify', whiteSpace: 'pre-wrap', wordBreak: 'break-word' }} className='bubble recipient'>{this.state.templateMessage}</div>
+                {this.state.componentType !== 'text' &&
+                  <div className='ui-block hoverborder' style={{padding: 25, borderColor: this.state.errorMsg ? 'red' : ''}}>
+                    {this.state.uploadingAttachment
+                    ? <div className='align-center'><center><RingLoader color='#FF5E3A' /></center></div>
+                    : this.getAttachmentContent(this.state.componentType)
+                  }
+                </div>
+              }
+              <div style={{textAlign: 'center', display: 'flex'}}>
+                <textarea disabled={this.state.sendingTemplate} rows='5' id='templateText' onChange={this.onTextChange} value={this.state.templateMessage}  className='form-control m-messenger__form-input' style={{resize: 'none'}} maxLength='200' />
+                { !this.state.isTemplateValid &&
+                <div style={{marginTop: '25px', marginLeft: '5px'}}>
+                  <UncontrolledTooltip style={{minWidth: '100px', opacity: '1.0'}} target='templateWarning'>
+                    <span>Message template format cannot be changed</span>
+                  </UncontrolledTooltip>
+                  <i id='templateWarning' className='flaticon-exclamation m--font-danger'/>
+                </div>
+                }
+              </div>
                 {
                   this.props.templates[this.state.selectedIndex].buttons.map((button, index) => (
                     (
@@ -320,6 +566,7 @@ class MessageTemplate extends React.Component {
                     )
                   ))
                 }
+                <p style={{fontSize: '12px', marginTop: '5px'}}>{'Each variable "{{x}}" can be replaced with text that contains letters, digits, special characters or spaces.'}</p>
               </div>
             </div>
           </div>
@@ -340,7 +587,7 @@ class MessageTemplate extends React.Component {
               <div style={{ display: 'inline-block', padding: '5px' }}>
                 {
                   this.props.sendChatMessage &&
-                  <button disabled={(this.props.sendingToNewNumber && !this.state.isPhoneNumberValid) || !this.state.isTemplateValid || this.state.sendingTemplate} className='btn btn-primary' onClick={this.sendTemplate}>
+                  <button disabled={(this.props.sendingToNewNumber && !this.state.isPhoneNumberValid) || !this.state.isTemplateValid || this.state.sendingTemplate || this.state.errorMsg} className='btn btn-primary' onClick={this.sendTemplate}>
                     {
                       this.state.sendingTemplate ?
                       <div>
@@ -354,7 +601,7 @@ class MessageTemplate extends React.Component {
                 }
                 {
                   this.props.addComponent &&
-                  <button disabled={!this.state.isTemplateValid} className='btn btn-primary' onClick={this.addComponent}>
+                  <button disabled={!this.state.isTemplateValid || this.state.errorMsg} className='btn btn-primary' onClick={this.addComponent}>
                     {this.props.edit ? 'Edit' : 'Next'}
                   </button>
                 }

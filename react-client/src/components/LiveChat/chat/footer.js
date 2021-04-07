@@ -27,22 +27,24 @@ class Footer extends React.Component {
       loadingUrlMeta: false,
       currentUrl: '',
       showAudioRecording: false,
-      zoomTopic: '',
-      zoomAgenda: '',
-      zoomInvitationMessage: this.initialZoomInvitationMessage,
+      zoomTopic: props.defaultZoom ? props.defaultZoom.topic : '',
+      zoomAgenda: props.defaultZoom ? props.defaultZoom.agenda : '',
+      zoomInvitationMessage: props.defaultZoom ? props.defaultZoom.invitationMessage : this.initialZoomInvitationMessage,
       zoomMeetingCreated: false,
       zoomCountdown: this.initialZoomCountdown,
-      zoomUserId: '',
+      zoomUserId: props.defaultZoom ? props.defaultZoom.account : '',
       zoomMeetingUrl: '',
       zoomMeetingCreationError: false,
       cannedMessages: [],
       dataForSearch: [],
       showCannedMessages: this.props.showCannedMessage,
-      selectedCannMessage: false,
+      selectedCannMessage: null,
       selectedIndex: 0,
       caption: '',
       showingSuggestion: false,
-      suggestionShown: false
+      suggestionShown: false,
+      defaultCheck: false,
+      sendChatFunction: null
     }
     this.onInputChange = this.onInputChange.bind(this)
     this.onEnter = this.onEnter.bind(this)
@@ -56,6 +58,7 @@ class Footer extends React.Component {
     this.removeAttachment = this.removeAttachment.bind(this)
     this.handleMessageResponse = this.handleMessageResponse.bind(this)
     this.getRecordAudioContent = this.getRecordAudioContent.bind(this)
+    this.getPauseWarningContent = this.getPauseWarningContent.bind(this)
     this.onDoneRecording = this.onDoneRecording.bind(this)
     this.setEmoji = this.setEmoji.bind(this)
     this.sendSticker = this.sendSticker.bind(this)
@@ -83,6 +86,23 @@ class Footer extends React.Component {
     this.listDataDisplay = this.listDataDisplay.bind(this)
     this.onCaptionChange = this.onCaptionChange.bind(this)
     this.sendQuickReplyMessage = this.sendQuickReplyMessage.bind(this)
+    this.sendTextMessage = this.sendTextMessage.bind(this)
+    this.handleDefaultCheck = this.handleDefaultCheck.bind(this)
+    this.checkSendingLogic = this.checkSendingLogic.bind(this)
+  }
+  checkSendingLogic (sendFunc) {
+    if (this.props.connectedPageChatbot) {
+      if (this.props.activeSession.chatbotPaused !== null && !this.props.activeSession.chatbotPaused) {
+        this.refs.pauseChatbotWarning.click()
+        this.setState({
+          sendChatFunction: sendFunc
+        })
+      } else {
+        sendFunc()
+      }
+    } else {
+      sendFunc()
+    }
   }
 
   componentDidMount() {
@@ -108,7 +128,11 @@ class Footer extends React.Component {
     selectedCannMessage.responseMessage = event.target.value
     this.setState({ selectedCannMessage: selectedCannMessage })
   }
-
+  handleDefaultCheck (e) {
+    this.setState({
+      defaultCheck: e.target.checked
+    })
+  }
   toggleHover(id) {
     // console.log('Hovver called', id)
     // document.getElementById(id).style.backgroundColor = 'lightgrey'
@@ -184,16 +208,18 @@ class Footer extends React.Component {
   resetZoomValues() {
     clearInterval(this.zoomCountdownTimer)
     this.setState({
-      zoomTopic: '',
-      zoomAgenda: '',
-      zoomInvitationMessage: this.initialZoomInvitationMessage,
+      zoomTopic: this.props.defaultZoom ? this.props.defaultZoom.topic: '',
+      zoomAgenda: this.props.defaultZoom ? this.props.defaultZoom.agenda: '',
+      zoomUserId: this.props.defaultZoom ? this.props.defaultZoom.account: '',
+      zoomInvitationMessage: this.props.defaultZoom ? this.props.defaultZoom.invitationMessage: this.initialZoomInvitationMessage,
       zoomMeetingCreated: false,
       zoomCountdown: this.initialZoomCountdown,
       zoomMeetingUrl: '',
       zoomMeetingCreationError: false,
       text: this.state.text === this.state.zoomInvitationMessage ? '' : this.state.text,
       zoomMeetingLoading: false,
-      showAppendInvitationUrl: false
+      showAppendInvitationUrl: false,
+      defaultCheck: false
     })
   }
 
@@ -223,7 +249,7 @@ class Footer extends React.Component {
     }
   }
 
-  createZoomMeeting(event) {
+  createZoomMeeting(event) { 
     event.preventDefault()
     const data = this.props.performAction('create a zoom meeting', this.props.activeSession)
     if (data.isAllowed) {
@@ -235,9 +261,19 @@ class Footer extends React.Component {
             agenda: this.state.zoomAgenda,
             invitationMessage: this.state.zoomInvitationMessage,
             zoomUserId: this.state.zoomUserId,
-            platform: this.props.user.platform
+            platform: this.props.user.platform,
+            setDefaultValues: this.state.defaultCheck
           },
           (res) => {
+            if (this.state.defaultCheck) {
+              let defaultZoomConfiguration = {
+                account : this.state.zoomUserId,
+                topic : this.state.zoomTopic,
+                agenda : this.state.zoomAgenda,
+                invitationMessage : this.state.zoomInvitationMessage
+              }
+              this.props.updateDefaultZoom(defaultZoomConfiguration)
+            }
             if (res.status === 'success' && res.payload) {
               this.setState(
                 {
@@ -305,6 +341,9 @@ class Footer extends React.Component {
     session.lastRepliedBy = data.replied_by
     session.pendingResponse = false
     session.last_activity_time = new Date()
+    if (session.chatbotPaused !== null && !session.chatbotPaused) {
+      session.chatbotPaused = true
+    }
     this.props.updateNewMessage(true)
     this.props.updateState({
       reducer: true,
@@ -509,7 +548,25 @@ class Footer extends React.Component {
       return <div />
     }
   }
-
+  getPauseWarningContent () {
+    let content = <div><p>If you send a message to this subscriber, the active chatbot will be paused for them. Are you sure you want to continue ?</p>
+      <button style={{ float: 'right', marginLeft: '10px' }}
+        className='btn btn-primary btn-sm'
+        onClick={() => {
+          if (this.state.sendChatFunction) {
+            this.state.sendChatFunction()
+          }
+        }} data-dismiss='modal'>Yes
+      </button>
+      <button style={{ float: 'right' }}
+        className='btn btn-primary btn-sm'
+        onClick={() => {
+          
+        }} data-dismiss='modal'>Cancel
+      </button>
+    </div>
+    return content
+  }
   setZoomTopic(e) {
     if (e.target.value.length > 80) {
       e.target.setCustomValidity('Topic must be 80 characters or less.')
@@ -695,34 +752,50 @@ class Footer extends React.Component {
             >
               {'Note: [invite_url] will be replaced by the generated zoom meeting invitation link'}
             </div>
-
-            <div
-              style={{ paddingBottom: '0', paddingRight: '0', paddingLeft: '0', float: 'right' }}
-              className='m-form__actions'
-            >
-              <button
-                disabled={this.state.zoomMeetingLoading}
-                style={{ float: 'right', marginLeft: '30px' }}
-                type='submit'
-                className='btn btn-primary'
-              >
-                {this.state.zoomMeetingLoading ? (
-                  <div>
-                    <div
-                      className='m-loader'
-                      style={{ height: '10px', width: '30px', display: 'inline-block' }}
-                    ></div>
-                    <span>Loading...</span>
+              <div
+                style={{ paddingLeft: '0', paddingRight: '0', marginTop:'10px'}}
+                className='form-group m-form__group row'>
+                { this.props.user.role !== 'agent'
+                ? <div className='col-8'>
+                    <label style={{fontSize: '0.98rem', marginTop: '10px'}} className="m-checkbox m-checkbox--brand">
+                      <input
+                        type="checkbox"
+                        onChange={this.handleDefaultCheck}
+                        checked={this.state.defaultCheck}
+                      />
+                      Set above information as default
+                      <span />
+                    </label>
                   </div>
-                ) : (
-                  <span>Create and Invite</span>
-                )}
-              </button>
-              {this.state.zoomMeetingCreationError && (
-                <span style={{ color: 'red' }}>
-                  There was an error creating the meeting. Please try again.
-                </span>
-              )}
+                : <div className='col-8'/>
+                }
+                <div className='col-4'>
+                  <button
+                    disabled={this.state.zoomMeetingLoading}
+                    style={{ float: 'right', marginLeft: '30px' }}
+                    type='submit'
+                    className='btn btn-primary'
+                  >
+                    {this.state.zoomMeetingLoading ? (
+                      <div>
+                        <div
+                          className='m-loader'
+                          style={{ height: '10px', width: '30px', display: 'inline-block' }}
+                        ></div>
+                        <span>Loading...</span>
+                      </div>
+                    ) : (
+                      <span>Create and Invite</span>
+                    )}
+                  </button>
+                </div>
+              <div className='col-12' style={{marginTop: '10px'}}> 
+                {this.state.zoomMeetingCreationError && (
+                    <span style={{ color: 'red' }}>
+                      There was an error creating the meeting. Please try again.
+                    </span>
+                  )}
+              </div>
             </div>
           </div>
         </form>
@@ -899,46 +972,49 @@ class Footer extends React.Component {
     return payload
   }
 
+  sendTextMessage () {
+    if (this.state.selectedCannMessage) {
+      let selectCannMessage = {...this.state.selectedCannMessage}
+      if (selectCannMessage.responseMessage === '') {
+        this.props.alertMsg.error('Canned Message response cannot be empty')
+      } else {
+        let text = this.state.text
+        if (text.includes(selectCannMessage.responseCode)) {
+          text = text.replace(
+            `/${selectCannMessage.responseCode}`,
+            selectCannMessage.responseMessage
+          )
+        } else {
+          text = selectCannMessage.responseMessage
+        }
+        this.setState(
+          { showCannedMessages: false, text: text, selectedCannMessage: null },
+          () => {
+            this.sendMessage()
+          }
+        )
+      }
+    } else if (!this.state.selectedCannMessage && this.state.showCannedMessages) {
+      if (this.state.cannedMessages.length > 0) {
+        this.selectCannMessage(this.state.cannedMessages[this.state.selectedIndex])
+      } else {
+        this.setState({ showCannedMessages: false })
+        this.sendMessage()
+      }
+    } else {
+      if (!this.state.showCannedMessages) this.sendMessage()
+    }
+  }
+
   onEnter(e) {
     if (e.which === 13) {
       e.preventDefault()
-      console.log('this.state.selectedCannMessage', this.state.selectedCannMessage)
-      if (this.state.selectedCannMessage) {
-        let selectCannMessage = this.state.selectedCannMessage
-        if (selectCannMessage.responseMessage === '') {
-          this.props.alertMsg.error('Canned Message response cannot be empty')
-        } else {
-          let text = this.state.text
-          if (text.includes(selectCannMessage.responseCode)) {
-            text = text.replace(
-              `/${selectCannMessage.responseCode}`,
-              selectCannMessage.responseMessage
-            )
-          } else {
-            text = selectCannMessage.responseMessage
-          }
-          this.setState(
-            { showCannedMessages: false, text: text, selectedCannMessage: null },
-            () => {
-              this.sendMessage()
-            }
-          )
-        }
-      } else if (!this.state.selectedCannMessage && this.state.showCannedMessages) {
-        if (this.state.cannedMessages.length > 0) {
-          this.selectCannMessage(this.state.cannedMessages[this.state.selectedIndex])
-        } else {
-          this.setState({ showCannedMessages: false })
-          this.sendMessage()
-        }
-      } else {
-        if (!this.state.showCannedMessages) this.sendMessage()
-      }
+      this.checkSendingLogic(this.sendTextMessage)
     }
   }
 
   sendChatMessage() {
-    this.sendMessage()
+    this.checkSendingLogic(this.sendTextMessage)
   }
 
   sendMessage(quickReplies) {
@@ -1017,6 +1093,7 @@ class Footer extends React.Component {
     if (type === 'contact_info') {
       popoverOptions.content = (
         <GetContactInfo
+          checkSendingLogic={this.checkSendingLogic}
           sendQuickReplyMessage={this.sendQuickReplyMessage}
           refreshPopover={this.props.refreshPopover}
           togglePopover={this.props.togglePopover}
@@ -1025,8 +1102,8 @@ class Footer extends React.Component {
     }
     const otherOptions = {
       setEmoji: (emoji) => this.setEmoji(emoji),
-      sendSticker: (sticker) => this.sendSticker(sticker),
-      sendGif: (gif) => this.sendGif(gif)
+      sendSticker: (sticker) => { this.checkSendingLogic(() => {this.sendSticker(sticker)}) },
+      sendGif: (gif) => { this.checkSendingLogic(() => {this.sendGif(gif)}) },
     }
     if (type === 'caption_emoji') {
       type = 'emoji'
@@ -1126,6 +1203,16 @@ class Footer extends React.Component {
             this.toggleAudioRecording(false)
           }}
         />
+        <a href='#/' style={{ display: 'none' }} ref='pauseChatbotWarning' data-toggle='modal' data-target='#_PauseChatbotWarning'>_PauseChatbotWarning</a>
+        <MODAL 
+           id='_PauseChatbotWarning'
+           title='Warning'
+           content={this.getPauseWarningContent()}
+        />
+         <a href='#/' style={{ display: 'none' }} ref='zoomIntegrationDialog' data-target='#_zoom_integration'
+              data-backdrop='static'
+              data-keyboard='false'
+              data-toggle='modal'>zoomIntegrationDialog</a>
         <MODAL
           id='_zoom_integration'
           title={this.props.zoomIntegration ? 'Zoom Meeting' : 'Zoom Integration'}
@@ -1290,19 +1377,19 @@ class Footer extends React.Component {
               ) : this.state.uploaded ? (
                 <i
                   style={{ color: '#36a3f7' }}
-                  onClick={this.sendAttachment}
+                  onClick={() => { this.checkSendingLogic(this.sendAttachment)}}
                   className='flaticon-paper-plane'
                 />
               ) : this.props.showThumbsUp ? (
                 <i
                   style={{ color: '#36a3f7' }}
-                  onClick={this.sendThumbsUp}
+                  onClick={() => { this.checkSendingLogic(this.sendThumbsUp)}}
                   className='la la-thumbs-o-up'
                 />
               ) : (
                 <i
                   style={{ color: '#36a3f7' }}
-                  onClick={this.sendChatMessage}
+                  onClick={() => { this.checkSendingLogic(this.sendTextMessage)}}
                   className='flaticon-paper-plane'
                 />
               )}
@@ -1459,10 +1546,7 @@ class Footer extends React.Component {
               src='https://cdn.cloudkibo.com/public/img/zoom.png'
               id='_zoom_integration'
               className='fa fa-video-camera'
-              data-target='#_zoom_integration'
-              data-backdrop='static'
-              data-keyboard='false'
-              data-toggle='modal'
+              onClick={() => { this.checkSendingLogic(() => {this.refs.zoomIntegrationDialog.click()})}}
             />
           )}
         </div>

@@ -3,7 +3,13 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { fetchChatbots, createChatbot } from '../../redux/actions/chatbot.actions'
 import AlertContainer from 'react-alert'
+import { getIntegrations } from '../../redux/actions/settings.actions'
+import { fetchDialogflowAgents } from '../../redux/actions/chatbotAutomation.actions'
+import { fetchShopifyStore } from '../../redux/actions/commerce.actions'
+
 import CHATBOTITEM from '../../components/chatbot/chatbotItem'
+import MODAL from '../../components/extras/modal'
+import CREATECHATBOT from '../chatbotAutomation/createChatbot'
 
 class Chatbots extends React.Component {
   constructor(props, context) {
@@ -11,14 +17,15 @@ class Chatbots extends React.Component {
     this.state = {
       selectedRadio: 'modify',
       loading: false,
-      title: ''
+      showCreateChatbotModal: false
     }
 
     this.onRadioClick = this.onRadioClick.bind(this)
-    this.onCreate = this.onCreate.bind(this)
-    this.handleOnCreate = this.handleOnCreate.bind(this)
     this.modifyChatbot = this.modifyChatbot.bind(this)
-    this.onTitleChange = this.onTitleChange.bind(this)
+    this.getCreateChatbotContent = this.getCreateChatbotContent.bind(this)
+    this.closeCreateChatbotModal = this.closeCreateChatbotModal.bind(this)
+    this.openCreateChatbotModal = this.openCreateChatbotModal.bind(this)
+    this.onSettingsClick = this.onSettingsClick.bind(this)
 
     props.fetchChatbots()
   }
@@ -31,40 +38,56 @@ class Chatbots extends React.Component {
     this.setState({selectedRadio: e.target.value})
   }
 
-  onCreate () {
-    const titles = this.props.chatbots.map((item) => item.title)
-    if (titles.includes(this.state.title)) {
-      this.msg.error('A chatbot already exists with this title. Please enter a different title.')
-    } else {
-      this.setState({loading: true})
-      this.props.createChatbot({ title: this.state.title, startingBlockId: `${new Date().getTime()}` }, this.handleOnCreate)
-    }
-  }
-
   modifyChatbot(chatbot) {
-    this.props.history.push({
-      pathname: '/chatbots/configure',
-      state: { chatbot }
-    })
-  }
-
-  handleOnCreate(res) {
-    this.setState({loading: false})
-    if (res.status === 'success') {
-      const chatbot = res.payload
+    if (this.props.user.platform === 'sms' && chatbot.vertical && chatbot.vertical === 'ecommerce') {
+      chatbot.backUrl = '/chatbots'
+      this.props.history.push({
+        pathname: '/chatbots/settings',
+        state: chatbot
+      })
+    } else {
       this.props.history.push({
         pathname: '/chatbots/configure',
         state: { chatbot }
       })
-    } else {
-      this.msg.error(res.description || 'Failed to create chatbot.')
     }
   }
 
-  onTitleChange (e) {
-    if (e.target.value.length <= 30) {
-      this.setState({title: e.target.value})
+  openCreateChatbotModal () {
+    this.setState({showCreateChatbotModal: true}, () => {
+      this.refs._open_create_chatbot_modal.click()
+    })
+  }
+
+  closeCreateChatbotModal () {
+    this.setState({showCreateChatbotModal: false})
+  }
+
+  getCreateChatbotContent () {
+    if (this.state.showCreateChatbotModal) {
+      return (
+        <CREATECHATBOT
+          getIntegrations={this.props.getIntegrations}
+          fetchDialogflowAgents={this.props.fetchDialogflowAgents}
+          history={this.props.history}
+          alertMsg={this.msg}
+          chatbots={this.props.chatbots}
+          createChatbot={this.props.createChatbot}
+          channel={this.props.user.platform}
+          fetchShopifyStore={this.props.fetchShopifyStore}
+        />
+      )
+    } else {
+      return (<div />)
     }
+  }
+
+  onSettingsClick(chatbot) {
+    chatbot.backUrl = '/chatbots'
+    this.props.history.push({
+      pathname: '/chatbots/settings',
+      state: chatbot
+    })
   }
 
   render() {
@@ -78,6 +101,23 @@ class Chatbots extends React.Component {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
+
+        <button
+          ref='_open_create_chatbot_modal'
+          style={{ display: 'none' }}
+          data-backdrop='static'
+          data-keyboard='false'
+          data-toggle='modal'
+          data-target='#__create_chatbot'
+        />
+        <MODAL
+          id='__create_chatbot'
+          title='Create Chatbot'
+          size='large'
+          content={this.getCreateChatbotContent()}
+          onClose={this.closeCreateChatbotModal}
+        />
+
         <div className='m-subheader '>
           <div className='d-flex align-items-center'>
             <div className='mr-auto'>
@@ -103,6 +143,7 @@ class Chatbots extends React.Component {
                           Modify Existing Chatbot
                         <span />
                       </label>
+                      <div className='m--space-10' />
                       {
                         this.state.selectedRadio === 'modify' &&
                         <div style={{ marginLeft: '50px' }} className='row'>
@@ -113,6 +154,8 @@ class Chatbots extends React.Component {
                                   key={chatbot.chatbotId}
                                   name={chatbot.title}
                                   onItemClick={() => this.modifyChatbot(chatbot)}
+                                  showSubtitle={chatbot.dialogFlowAgentId ? 'DialogFlow' : chatbot.integration && chatbot.integration === 'shopify' ? 'Shopify' : null}
+                                  onSettingsClick={() => this.onSettingsClick(chatbot)}
                                 />
                               ))
                               : (!this.props.chatbots)
@@ -121,6 +164,7 @@ class Chatbots extends React.Component {
                           }
                         </div>
                       }
+                      <div className='m--space-10' />
                       <label className="m-radio m-radio--bold m-radio--state-brand">
                         <input
                           type="radio"
@@ -135,27 +179,17 @@ class Chatbots extends React.Component {
                       {
                         this.state.selectedRadio === 'create' &&
                         <div style={{ marginLeft: '50px' }} className='row'>
-                          <div className='col-md-6'>
-                            <div className="form-group m-form__group">
-                              <input
-                                className='form-control'
-                                value={this.state.title}
-                                placeholder='Enter chatbot title...'
-                                onChange={this.onTitleChange}
-                              />
-                            </div>
-                          </div>
-                          <div className='col-md-3'>
-                            <button
-                              type='button'
-                              style={{ border: '1px solid' }}
-                              className={`btn btn-primary ${this.state.loading && 'm-loader m-loader--light m-loader--left'}`}
-                              onClick={this.onCreate}
-                              disabled={!this.state.title}
-                            >
-                              Create
-                            </button>
-                          </div>
+                          <button
+                            style={{border: '1px dashed #5867dd'}}
+                            type="button"
+                            className="btn m-btn m-btn--air btn-outline-primary m-btn m-btn--custom m-btn--icon"
+                            onClick={this.openCreateChatbotModal}
+                          >
+                            <span>
+                              <i className='la la-plus' />
+                              <span>Create</span>
+                            </span>
+                          </button>
                         </div>
                       }
                     </div>
@@ -180,7 +214,10 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return bindActionCreators({
     fetchChatbots,
-    createChatbot
+    createChatbot,
+    getIntegrations,
+    fetchDialogflowAgents,
+    fetchShopifyStore
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Chatbots)

@@ -30,7 +30,7 @@ class Records extends React.Component {
   }
 
   handlePageClick (data) {
-    this.setState({currentPage: data.selected + 1}, () => {this.getCurrentPageData()})
+    this.setState({currentPage: data.selected + 1}, () => {this.getCurrentPageData(this.props)})
   }
 
   componentDidMount () {

@@ -12,6 +12,7 @@ import AlertContainer from 'react-alert'
 import Select from 'react-select'
 import CreatableSelect from 'react-select/creatable'
 import { cloneDeep } from 'lodash'
+import BACKBUTTON from '../../components/extras/backButton'
 
 const createOption = (label) => ({
   label,
@@ -33,7 +34,7 @@ class FollowUpBroadcast extends React.Component {
       broadcastOptions: [],
       selectedBroadcast: null,
       responseOptions: [],
-      selectedResponses: null,
+      selectedResponses: [],
       title: '',
       enableSend: false,
       selectLoading: false,
@@ -74,9 +75,11 @@ class FollowUpBroadcast extends React.Component {
     let masterBroadcastList = cloneDeep(this.state.broadcastResponses)
     masterBroadcastList[id] = responses
     let responseOptions = []
-    for (const [,value] of Object.entries(masterBroadcastList)) {
-      let mapResponses = value.map((v) => { return {label: v, value: v}})
-      responseOptions =[...responseOptions, ...mapResponses] 
+    for (const [key ,value] of Object.entries(masterBroadcastList)) {
+      if ((key === id) || (this.state.selectedBroadcast && this.state.selectedBroadcast.find(sb => sb.value === key))) {
+        let mapResponses = value.map((v) => { return {label: v, value: v}})
+        responseOptions = [...responseOptions, ...mapResponses] 
+      }
     }
     const uniqueResponses = [...new Set(responseOptions.map(item => item.value))].map((v) => { return {label: v, value: v}})
     this.setState({responseOptions: uniqueResponses , broadcastResponses: masterBroadcastList})
@@ -102,14 +105,24 @@ class FollowUpBroadcast extends React.Component {
   }
   removeResponses (broadcastId) {
     let responseOptions = []
+    let selectedBroadcast = this.state.selectedBroadcast.filter((br) => {return br.value !== broadcastId})
+    let selectedResponseArray = this.state.selectedResponses.map((sr) => { return sr.label})
+    let selectedBroadcastResponses = this.state.broadcastResponses[broadcastId]
+    let newSelectedResponses =[]
+
     for (const [key, value] of Object.entries(this.state.broadcastResponses)) {
-      if (key !== broadcastId) {
-        let mapResponses = value.map((v) => { return {label: v, value: v}})
-        responseOptions = [...responseOptions, ...mapResponses] 
+        if (selectedBroadcast.find(sb => sb.value === key)) {
+          let mapResponses = value.map((v) => { return {label: v, value: v}})
+          responseOptions = [...responseOptions, ...mapResponses]
+        }
+    }
+    for (let i = 0; i < selectedResponseArray.length; i++) {
+      if (!selectedBroadcastResponses.find(sb => sb === selectedResponseArray[i])) {
+        newSelectedResponses.push({label: selectedResponseArray[i], value: selectedResponseArray[i]})
       }
     }
     const uniqueResponses = [...new Set(responseOptions.map(item => item.value))].map((v) => { return {label: v, value: v}})
-    this.setState({responseOptions: uniqueResponses})
+    this.setState({responseOptions: uniqueResponses, selectedResponses: newSelectedResponses})
   }
   setToDefault () {
     this.setState({
@@ -181,6 +194,7 @@ class FollowUpBroadcast extends React.Component {
   
   handleSelectBroadcast (selectedBroadcast) {
     if (selectedBroadcast && selectedBroadcast.length > 0) {
+      console.log('selectedBroadcast', selectedBroadcast.length)
       if ( !this.state.selectedBroadcast || ( this.state.selectedBroadcast && this.state.selectedBroadcast.length < selectedBroadcast.length)) {
         let selectedItem
         if (this.state.selectedBroadcast) {
@@ -224,7 +238,7 @@ class FollowUpBroadcast extends React.Component {
         this.removeResponses(removedItem.value)
       }
     } else {
-      this.setState({selectedBroadcast: [], selectLoading: false, responseOptions: []})
+      this.setState({selectedBroadcast: [], selectLoading: false, responseOptions: [], selectedResponses: []})
       this.props.setSearchBroadcastResult(null)
     }
   }
@@ -529,7 +543,7 @@ class FollowUpBroadcast extends React.Component {
                           <div className='m-input-icon m-input-icon--right m-messenger__form-controls' style={{backgroundColor: '#f4f5f8', width: '100%'}}>
                             <textarea
                               className='form-control m-input'
-                              id='postTextArea' rows='3'
+                              id='postTextArea' rows='5'
                               placeholder='Enter your message here...'
                               value={this.state.message}
                               onChange={this.onMessageChange} />
@@ -560,13 +574,9 @@ class FollowUpBroadcast extends React.Component {
                       </div>
                       { this.props.smsBroadcast &&
                       <div className='row'>
-                          <div className='col-12'>
-                              <div className='pull-right'>
-                                  <button className='btn btn-primary' style={{marginTop: '10px'}} onClick={this.goBack}>
-                                      Back
-                                  </button>
-                              </div>
-                          </div>
+                          <BACKBUTTON
+                            onBack={this.goBack}
+                          />
                       </div>
                       }
                     </div>

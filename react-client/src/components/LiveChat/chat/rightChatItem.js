@@ -92,10 +92,20 @@ class RightChatItem extends React.Component {
       )
     } else if (type === 'file') {
       return (
-        <FILE
-          textColor='white'
-          file={message}
-        />
+        <div>
+          <FILE
+            textColor='white'
+            file={message}
+          />
+          {
+            message.caption &&
+            <div style={{ marginTop: '10px' }}>
+              <TEXT
+                text={{ text: message.caption }}
+              />
+            </div>
+          }
+        </div>
       )
     } else if (type === 'poll') {
       return (

@@ -8,6 +8,8 @@ import {
   createZoomMeeting,
   loadcannedResponses
 } from '../../redux/actions/settings.actions'
+import { setCompanyPreferences } from '../../redux/actions/settings.actions'
+import { cloneDeep } from 'lodash'
 
 // actions
 import {
@@ -37,8 +39,10 @@ import {
   setUserChat,
   saveNotificationSessionId,
   resetSocket,
-  fetchSingleSession
+  fetchSingleSession,
+  updatePauseChatbot
 } from '../../redux/actions/livechat.actions'
+import { fetchChatbots } from '../../redux/actions/chatbotAutomation.actions'
 import { updatePicture } from '../../redux/actions/subscribers.actions'
 import { loadTeamsList } from '../../redux/actions/teams.actions'
 import { loadMembersList } from '../../redux/actions/members.actions'
@@ -132,6 +136,7 @@ class LiveChat extends React.Component {
     this.updateMessageStatus = this.updateMessageStatus.bind(this)
     this.setActiveSession = this.setActiveSession.bind(this)
     this.checkParams = this.checkParams.bind(this)
+    this.updateDefaultZoom = this.updateDefaultZoom.bind(this)
 
     this.props.loadcannedResponses()
     this.fetchSessions(true, 'none', true)
@@ -140,6 +145,7 @@ class LiveChat extends React.Component {
     props.loadTags()
     props.loadCustomFields()
     props.getZoomIntegrations()
+    props.fetchChatbots()
     if (props.socketData) {
       props.clearSocketData()
     }
@@ -155,6 +161,12 @@ class LiveChat extends React.Component {
     }
 
     document.title = `${title} | Live Chat`
+  }
+
+  updateDefaultZoom (defaultZoom) {
+    let companyPreferences = cloneDeep(this.props.companyPreferences)
+    companyPreferences.defaultZoomConfiguration = defaultZoom
+    this.props.setCompanyPreferences(companyPreferences)
   }
 
   checkParams(props, sessions) {
@@ -912,11 +924,14 @@ class LiveChat extends React.Component {
                     showAgentName={this.props.showAgentName}
                     history={this.props.history}
                     zoomIntegrations={this.props.zoomIntegrations}
+                    defaultZoom={this.props.companyPreferences ? this.props.companyPreferences.defaultZoomConfiguration : null }
                     createZoomMeeting={this.props.createZoomMeeting}
                     showSubscriberNameOnMessage={true}
                     isMobile={this.props.isMobile}
                     backToSessions={this.backToSessions}
                     showGetContactInfo={true}
+                    updateDefaultZoom= {this.updateDefaultZoom}
+                    connectedPageChatbot = { this.props.chatbots.find((chatbot) => { return chatbot.published && chatbot.pageId._id === this.state.activeSession.pageId._id}) ? true : false}
                   />
                 )}
               {!this.props.isMobile &&
@@ -949,6 +964,10 @@ class LiveChat extends React.Component {
                     showTags={true}
                     showCustomFields={true}
                     showUnsubscribe={true}
+                    pauseChatbot = {this.props.updatePauseChatbot}
+                    chatbots = {this.props.chatbots}
+                    connectedPageChatbot = { this.props.chatbots.find((chatbot) => { return chatbot.published && chatbot.pageId._id === this.state.activeSession.pageId._id}) ? true : false}
+                    sessions = {this.state.sessions}
                   />
                 )}
               {!this.props.isMobile &&
@@ -1018,7 +1037,9 @@ function mapStateToProps(state) {
     cannedResponses: state.settingsInfo.cannedResponses,
     superUser: state.basicInfo.superUser,
     redirectToSession: state.liveChat.redirectToSession,
-    socketMessageStatus: state.liveChat.socketMessageStatus
+    socketMessageStatus: state.liveChat.socketMessageStatus,
+    companyPreferences: (state.settingsInfo.companyPreferences),
+    chatbots: (state.chatbotAutomationInfo.chatbots)
   }
 }
 
@@ -1067,7 +1088,10 @@ function mapDispatchToProps(dispatch) {
       loadcannedResponses,
       saveNotificationSessionId,
       resetSocket,
-      fetchSingleSession
+      fetchSingleSession,
+      setCompanyPreferences,
+      updatePauseChatbot,
+      fetchChatbots
     },
     dispatch
   )

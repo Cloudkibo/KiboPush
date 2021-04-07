@@ -34,7 +34,8 @@ export function localeCodeToEnglish(loc) {
 }
 
 export function validatePhoneNumber(number) {
-  const regex = /\+(9[976]\d|8[987530]\d|6[987]\d|5[90]\d|42\d|3[875]\d|2[98654321]\d|9[8543210]|8[6421]|6[6543210]|5[87654321]|4[987654310]|3[9643210]|2[70]|7|1)\W*\d\W*\d\W*\d\W*\d\W*\d\W*\d\W*\d\W*\d\W*(\d{1,2})$/g
+  // this regex if to match numbers in E.164 format
+  const regex = /^\+?[1-9]\d{1,14}$/g
   return number.match(regex)
 }
 
@@ -101,13 +102,15 @@ export function isWebURL(value) {
   return regexp.test(value)
 }
 
-export function getLandingPage (platform) {
+export function getLandingPage (platform, user) {
   var pathName = '/'
   if (getCurrentProduct() === 'KiboChat') {
     if (platform === 'sms') {
       pathName = 'smsChat'
     } else if (platform === 'whatsApp') {
-      pathName = 'whatsAppChat'
+      if (user && user.plan.whatsappSuperNumber) {
+        pathName = 'superNumberDashboard'
+      } else pathName = 'whatsAppChat'
     } else if (platform === 'messenger') {
       pathName = 'liveChat'
     }
@@ -880,4 +883,28 @@ function HSVTORGB (h, s, v) {
     default:
   }
   return `rgb(${Math.floor(r * 256)}, ${Math.floor(g * 256)}, ${Math.floor(b * 256)})`
+}
+export function isTimeInInterval(startTime, endTime, date) {
+  var s =  startTime.split(':');
+  var dt1 = new Date(date.getFullYear(), date.getMonth(), date.getDate(),
+                     parseInt(s[0]), parseInt(s[1]), parseInt(s[2]));
+
+  var e =  endTime.split(':');
+  var dt2 = new Date(date.getFullYear(), date.getMonth(),
+                     date.getDate(),parseInt(e[0]), parseInt(e[1]), parseInt(e[2]));
+  return (date >= dt1 && date <= dt2)
+}
+export function getStartEndDates (value) {
+  let endDate = new Date()
+  let startDate = new Date(
+    (endDate.getTime() - (value * 24 * 60 * 60 * 1000)))
+
+  let startMonth = ('0' + (startDate.getMonth() + 1)).slice(-2)
+  let startDay = ('0' + startDate.getDate()).slice(-2)
+  let finalStartDate = `${startDate.getFullYear()}-${startMonth}-${startDay}`
+
+  let endMonth = ('0' + (endDate.getMonth() + 1)).slice(-2)
+  let endDay = ('0' + endDate.getDate()).slice(-2)
+  let finalEndDate = `${endDate.getFullYear()}-${endMonth}-${endDay}`
+  return {startDate: finalStartDate, endDate: finalEndDate}
 }

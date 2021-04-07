@@ -2,7 +2,8 @@ import * as ActionTypes from '../constants/constants'
 
 let initState = {
   searchBroadcastResult: [],
-  broadcasts: []
+  broadcasts: [],
+  count: 0
 }
 export function smsBroadcastsInfo (state = initState, action) {
   switch (action.type) {
@@ -10,6 +11,24 @@ export function smsBroadcastsInfo (state = initState, action) {
       return Object.assign({}, state, {
         broadcasts:  action.append ? [...state.broadcasts, ...action.broadcasts] : action.broadcasts,
         count: action.count
+      })
+    case ActionTypes.NEW_SMS_BROADCAST_SOCKET:
+        return Object.assign({}, state, {
+          newSmsBroadcast:  action.newSmsBroadcast
+        })
+    case ActionTypes.UPDATE_SMS_BROADCAST:
+      return Object.assign({}, state, {
+        broadcasts: [action.broadcast, ...state.broadcasts],
+        count: state.count + 1,
+        newSmsBroadcast: null
+      })
+    case ActionTypes.SMS_DELIVERY_EVENT:
+      return Object.assign({}, state, {
+        smsDeliveryInfo: action.data
+      })
+    case ActionTypes.SMS_RESPONSE_EVENT:
+      return Object.assign({}, state, {
+        smsResponseInfo: action.data
       })
     case ActionTypes.LOAD_SEARCH_BROADCASTS_LIST:
       return Object.assign({}, state, {
@@ -38,6 +57,10 @@ export function smsBroadcastsInfo (state = initState, action) {
       updateSenderInfo[action.responseId] = action.sendersInfo    
       return Object.assign({}, state, {
         sendersInfo: {...updateSenderInfo}
+      })
+    case ActionTypes.UPDATE_SENDERS_INFO: 
+      return Object.assign({}, state, {
+        sendersInfo: action.data
       })
     case ActionTypes.CLEAR_SENDERS_INFO:
       return Object.assign({}, state, {

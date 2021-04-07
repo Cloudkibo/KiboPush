@@ -5,13 +5,14 @@ import { connect } from 'react-redux'
 import AlertContainer from 'react-alert'
 import YouTube from 'react-youtube'
 import CONFIRMATIONMODAL from '../../components/extras/confirmationModal'
-import { fetchBigCommerceStore, fetchShopifyStore } from '../../redux/actions/commerce.actions'
+import { fetchBigCommerceStore, fetchShopifyStore, installShopify } from '../../redux/actions/commerce.actions'
 
 class CommerceIntegration extends React.Component {
   constructor(props, context) {
     super(props, context)
     this.state = {
       openVideo: false,
+      shopifyDomain: '',
       commerceIntegration: {
         name: 'Commerce Integration',
         icon: 'fa fa-cart-plus',
@@ -23,6 +24,8 @@ class CommerceIntegration extends React.Component {
     props.fetchShopifyStore()
     this.openVideoTutorial = this.openVideoTutorial.bind(this)
     this.getStoreType = this.getStoreType.bind(this)
+    this.updateShopifyDomain = this.updateShopifyDomain.bind(this)
+    this.submit = this.submit.bind(this)
   }
 
   openVideoTutorial() {
@@ -40,6 +43,15 @@ class CommerceIntegration extends React.Component {
     } else {
       return "E-Commerce"
     }
+  }
+
+  updateShopifyDomain(e) {
+    this.setState({ shopifyDomain: e.target.value })
+  }
+
+  submit() {
+    this.props.installShopify({ shop: this.state.shopifyDomain })
+    // window.location.replace('/api/shopify?shop=' + this.state.shopifyDomain)
   }
 
   render() {
@@ -195,40 +207,78 @@ class CommerceIntegration extends React.Component {
 
                     {
                       !this.props.store &&
-                      <div>
+                        <div>
+                          <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="connect" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog" role="document">
+                              <div className="modal-content">
+                                <div style={{ display: 'block' }} className="modal-header">
+                                  <h5 className="modal-title" id="exampleModalLabel">
+                                    Connect Shopify
+                                  </h5>
+                                  <button style={{ marginTop: '-10px', opacity: '0.5', color: 'black' }} type="button" className="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">
+                                      &times;
+                                    </span>
+                                  </button>
+                                </div>
+                                <div style={{ color: 'black' }} className="modal-body">
+                                  <div className='m-form'>
+                                    <span>Enter your shopify domain name such as my-store.myshopify.com:</span>
+                                    <div className='form-group m-form__group'>
+                                      <div id='question' className='form-group m-form__group'>
+                                        <label className='control-label'>Shopify Domain</label>
+                                        <input className='form-control' value={this.state.shopifyDomain} onChange={(e) => this.updateShopifyDomain(e)} />
+                                      </div>
+                                    </div>
+                                    <div className='m-portlet__foot m-portlet__foot--fit' style={{ 'overflow': 'auto' }}>
+                                      <div className='m-form__actions' style={{ 'float': 'right' }}>
+                                        <button className='btn btn-primary' data-dismiss="modal" aria-label="Close"
+                                          onClick={this.submit}> Submit
+                                        </button>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
                         <div style={{ display: 'flex', justifyContent: 'center', marginTop: '50px' }}>
                           <button
                             onClick={() => {
                               if (this.props.superUser) {
                                 this.msg.error('You are not allowed to perform this action')
                               } else {
-                                window.location.replace('https://partners.shopify.com/1033294/apps/2954997/test')
+                                // window.location.replace('https://partners.shopify.com/1033294/apps/2954997/test')
                               }
                             }}
                             style={{ border: '1px dashed #36a3f7', cursor: 'pointer' }}
                             type="button"
                             className="btn m-btn--pill btn-outline-info m-btn m-btn--custom"
+                            data-toggle="modal" data-target="#connect"
                           >
                             {'+ Connect Shopify'}
                           </button>
                         </div>
 
-                        <div style={{ display: 'flex', justifyContent: 'center', marginTop: '25px' }}>
-                          <button
-                            onClick={() => {
-                              if (this.props.superUser) {
-                                this.msg.error('You are not allowed to perform this action')
-                              } else {
-                                window.location.replace('https://store-970gsssotw.mybigcommerce.com/manage/marketplace/apps/25642')
-                              }
-                            }}
-                            style={{ border: '1px dashed #36a3f7', cursor: 'pointer' }}
-                            type="button"
-                            className="btn m-btn--pill btn-outline-info m-btn m-btn--custom"
-                          >
-                            {'+ Connect BigCommerce'}
-                          </button>
-                        </div>
+                          {
+                            this.props.user.currentPlan.unique_ID !== 'plan_E' && this.props.user.platform !== 'sms' &&
+                              <div style={{ display: 'flex', justifyContent: 'center', marginTop: '25px' }}>
+                                <button
+                                  onClick={() => {
+                                    if (this.props.superUser) {
+                                      this.msg.error('You are not allowed to perform this action')
+                                    } else {
+                                      window.location.replace('https://store-970gsssotw.mybigcommerce.com/manage/marketplace/apps/25642')
+                                    }
+                                  }}
+                                  style={{ border: '1px dashed #36a3f7', cursor: 'pointer' }}
+                                  type="button"
+                                  className="btn m-btn--pill btn-outline-info m-btn m-btn--custom"
+                                >
+                                  {'+ Connect BigCommerce'}
+                                </button>
+                              </div>
+                          }
                       </div>
                     }
                   </div>
@@ -251,7 +301,8 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return bindActionCreators({
     fetchBigCommerceStore,
-    fetchShopifyStore
+    fetchShopifyStore,
+    installShopify
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(CommerceIntegration)

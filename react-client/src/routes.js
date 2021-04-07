@@ -166,13 +166,22 @@ import AlreadyConnected from './containers/integerationScreen/alreadyConnected'
 import ErrorMessage from './containers/integerationScreen/ErrorMessage'
 import SmsDashboard from './containers/smsWhatsAppDashboard/smsDashboard'
 import WhatsAppDashboard from './containers/smsWhatsAppDashboard/whatsAppDashboard'
+import SuperNumberDashboard from './containers/superNumber/dashboard/dashboard'
 import messengerDashboard from './containers/dashboard/dashboard'
 import Chatbots from './containers/chatbot/chatbot'
 import ChatbotAutomation from './containers/chatbotAutomation/chatbotAutomation'
 import ChatbotSettings from './containers/chatbotAutomation/chatbotSettings'
+import SmsWhatsAppChatbotSettings from './containers/chatbot/chatbotSettings'
 import IntegrateZoom from './containers/zoomIntegration/integrateZoom'
 import WhatsAppCommerceChatbot from './containers/whatsAppCommerceChatbot/whatsAppCommerceChatbot'
 import WhatsAppAirlinesChatbot from './containers/whatsAppAirlinesChatbot/whatsAppAirlinesChatbot'
+import AbandonedCart from './containers/superNumber/automated/abandonedCart'
+import OrdersCRM from './containers/superNumber/automated/ordersCRM'
+import AbandonedCartManual from './containers/superNumber/manual/abandonedCart'
+import OrdersCRMManual from './containers/superNumber/manual/ordersCRM'
+import CashOnDelivery from './containers/superNumber/automated/cashOnDelivery'
+import WhatsAppShare from './containers/superNumber/basicApps/whatsAppShare'
+import WhatsAppChatButton from './containers/superNumber/basicApps/whatsAppChat'
 
 const Subscriber = asyncComponent(() => import("./containers/subscriber/subscriber"))
 const OperationalDashboard = asyncComponent(() => import("./containers/operationalDashboard/operationalDashboard"))
@@ -230,6 +239,7 @@ const Routes = () => (
     <Route path='/dashboard' component={Home} onEnter={requireAuth} />
     <Route path='/SmsDashboard' component={SmsDashboard} onEnter={requireAuth} />
     <Route path='/WhatsAppDashboard' component={WhatsAppDashboard} onEnter={requireAuth} />
+    <Route path='/superNumberDashboard' component={SuperNumberDashboard} onEnter={requireAuth} />
     <Route path='/messengerDashboard' component={messengerDashboard} onEnter={requireAuth} />
     <Route path='/resendVerificationEmail' component={ResendVerificationEmail} />
     <Route path='/forgotPassword' component={ForgotPassword} />
@@ -410,6 +420,7 @@ const Routes = () => (
     <Route path='/backdoorPageAdmins' component={BackdoorPageAdmins} onEnter={requireAuth} />
     <Route path='/customFields' component={CustomFields} onEnter={requireAuth} />
     <Route path='/chatbots/configure' component={ConfigureChatbot} onEnter={requireAuth} />
+    <Route path='/chatbots/settings' component={SmsWhatsAppChatbotSettings} onEnter={requireAuth} />
     <Route path='/chatbots' component={Chatbots} onEnter={requireAuth} />
     <Route path='/chatbotAutomation' component={ChatbotAutomation} onEnter={requireAuth} />
     <Route path='/configureChatbot' component={ConfigureChatbotAutomation} onEnter={requireAuth} />
@@ -426,6 +437,13 @@ const Routes = () => (
     <Route path='/WhatsAppAirlinesChatbot' component={WhatsAppAirlinesChatbot} onEnter={requireAuth} />
     <Route path='/WhatsAppAirlinesChatbotAnalytics' component={WhatsAppAirlinesChatbotAnalytics} onEnter={requireAuth} />
     <Route path='/commerceChatbotAnalytics' component={CommerceChatbotAnalytics} onEnter={requireAuth} />
+    <Route path='/cashOnDelivery' component={CashOnDelivery} onEnter={requireAuth} />
+    <Route path='/abandonedCart' component={AbandonedCart} onEnter={requireAuth} />
+    <Route path='/ordersCRM' component={OrdersCRM} onEnter={requireAuth} />
+    <Route path='/abandonedCartManual' component={AbandonedCartManual} onEnter={requireAuth} />
+    <Route path='/ordersCRMManual' component={OrdersCRMManual} onEnter={requireAuth} />
+    <Route path='/whatsAppShare' component={WhatsAppShare} onEnter={requireAuth} />
+    <Route path='/whatsAppChatButton' component={WhatsAppChatButton} onEnter={requireAuth} />
     <Route path='*' render={() => <Redirect to='/' />} />
   </Switch>
 

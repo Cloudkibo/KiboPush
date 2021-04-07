@@ -16,10 +16,26 @@ class File extends React.Component {
   }
 
   edit () {
-    this.props.editComponent('file', {
-      file: this.state.file,
-      id: this.props.id
-    })
+    if (this.props.templateName) {
+      this.props.editComponent('template', {
+        edit: true,
+        templateName: this.props.templateName,
+        templateArguments: this.props.templateArguments,
+        selectedIndex: this.props.selectedIndex,
+        templateMessage: this.props.caption,
+        id: this.props.id,
+        templateId: this.props.templateId,
+        templateCode: this.props.templateCode,
+        templateType: this.props.templateType,
+        fileurl: this.props.file.fileurl,
+        componentType: 'file'
+      })
+    } else {
+      this.props.editComponent('file', {
+        file: this.state.file,
+        id: this.props.id
+      })
+    }
   }
 
   componentDidMount () {
@@ -57,6 +73,10 @@ class File extends React.Component {
             {/* eslint-disable */}
             📁 <a href={this.state.file ? this.state.file.fileurl.url : null} target='_blank' rel='noopener noreferrer' rel='noopener noreferrer' download>{this.state.file ? this.state.file.fileName : 'File'}</a>
             {/* eslint-enable */}
+            {
+              this.props.caption &&
+              <div style={{marginTop: '10px', textAlign: 'left'}}>{this.props.caption}</div>
+            }
           </div>
         </div>
       </div>

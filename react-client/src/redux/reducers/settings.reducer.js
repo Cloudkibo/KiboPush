@@ -38,6 +38,12 @@ case ActionTypes.GET_CANNED_RESPONSES:
     cannedResponses: action.data
   })
 
+case ActionTypes.SET_COMPANY_PREFERENCES:
+  return Object.assign({}, state, {
+    companyPreferences: action.data
+  })
+
+
 case ActionTypes.UPDATE_CANNED_RESPONSE: {
   let cannedResponses = state.cannedResponses
   let cannedResponsesIndex = cannedResponses.findIndex(cannedResponse => cannedResponse._id === action.data.responseId)

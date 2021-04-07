@@ -59,7 +59,16 @@ class Sidebar extends Component {
     }
     this.openUserGuide = this.openUserGuide.bind(this)
     this.closeUserGuide = this.closeUserGuide.bind(this)
+    this.hideItemsBasedOnPlan = this.hideItemsBasedOnPlan.bind(this)
   }
+
+  hideItemsBasedOnPlan(user) {
+    if (user.currentPlan.unique_ID === 'plan_E' && user.platform === 'whatsApp') {
+      return false
+    }
+    return true
+  }
+
   UNSAFE_componentWillMount() {
     let url = window.location.hostname
     console.log('url', url)
@@ -341,7 +350,7 @@ class Sidebar extends Component {
     if (this.props.user) {
       if (this.state.livechat && this.props.user.permissions.livechatPermission && this.props.user.plan.livechat && this.props.automated_options &&
         (this.props.automated_options.automated_options === 'MIX_CHAT' ||
-          this.props.automated_options.automated_options === 'HUMAN_CHAT')) {
+          this.props.automated_options.automated_options === 'HUMAN_CHAT') && this.hideItemsBasedOnPlan(this.props.user)) {
         return (
           <li onClick={() => { document.getElementById('m_aside_left_close_btn').click() }} className='m-menu__item  m-menu__item--submenu' aria-haspopup='true'>
             <Link to={this.props.user.platform === 'sms' ? 'smsChat' : this.props.user.platform === 'messenger' ? '/liveChat' : 'whatsAppChat'} className='m-menu__link m-menu__toggle'>
@@ -357,7 +366,7 @@ class Sidebar extends Component {
   }
 
   showAutomationItems() {
-    if (!this.props.isMobile && !this.state.isKiboLite && this.props.user) {
+    if (!this.props.isMobile && !this.state.isKiboLite && this.props.user && this.hideItemsBasedOnPlan(this.props.user)) {
       return (
         <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
           <span className='m-menu__link m-menu__toggle'>
@@ -400,6 +409,112 @@ class Sidebar extends Component {
                   {this.showChatbots()}
                 </>
               }
+            </ul>
+          </div>
+        </li>
+      )
+    } else {
+      return (
+        <div />
+      )
+    }
+  }
+
+  showCommerceSubMenuItems (type) {
+    return (
+      <ul className='m-menu__subnav'>
+        <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
+          <Link to={type === 'automated' ? '/abandonedCart' : 'abandonedCartManual'} className='m-menu__link m-menu__toggle'>
+            <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
+               <span></span>
+            </i>
+            <span className='m-menu__link-text'>Abandoned Cart</span>
+          </Link>
+          <Link to={type === 'automated' ? '/ordersCRM' : 'ordersCRMManual'} className='m-menu__link m-menu__toggle'>
+            <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
+               <span></span>
+            </i>
+            <span className='m-menu__link-text'>Orders CRM</span>
+          </Link>
+          {type === 'automated' &&
+            <Link to='/cashOnDelivery' className='m-menu__link m-menu__toggle'>
+              <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
+                 <span></span>
+              </i>
+              <span className='m-menu__link-text'>Cash on Delivery</span>
+            </Link>
+          }
+        </li>
+      </ul>
+    )
+  }
+
+  showCommerceItem() {
+    if (!this.state.isKiboLite && this.props.user && this.props.user.platform === 'whatsApp' && (this.state.isKiboChat || this.state.isLocalhost) && !this.hideItemsBasedOnPlan(this.props.user)) {
+      return (
+        <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
+          <span className='m-menu__link m-menu__toggle'>
+            <i className='m-menu__link-icon flaticon-cart' title='Subscriptions' />
+            <span className='m-menu__link-text'>Commerce</span>
+            <i className='m-menu__ver-arrow la la-angle-right' />
+          </span>
+          <div className='m-menu__submenu'>
+            <span className='m-menu__arrow' />
+            <ul className='m-menu__subnav'>
+              <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
+                <span className='m-menu__link m-menu__toggle'>
+                  <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
+					           <span></span>
+									</i>
+                  <span className='m-menu__link-text'>Automated Messages</span>
+                  <i className='m-menu__ver-arrow la la-angle-right' />
+                </span>
+                <div className='m-menu__submenu'>
+                  <span className='m-menu__arrow' />
+                  {this.showCommerceSubMenuItems('automated')}
+                </div>
+              </li>
+              <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
+                <span className='m-menu__link m-menu__toggle'>
+                  <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
+					           <span></span>
+									</i>
+                  <span className='m-menu__link-text'>Manual Messages</span>
+                  <i className='m-menu__ver-arrow la la-angle-right' />
+                </span>
+                <div className='m-menu__submenu'>
+                  <span className='m-menu__arrow' />
+                  {this.showCommerceSubMenuItems('manual')}
+                </div>
+              </li>
+              <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
+                <span className='m-menu__link m-menu__toggle'>
+                  <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
+					           <span></span>
+									</i>
+                  <span className='m-menu__link-text'>Basic Apps</span>
+                  <i className='m-menu__ver-arrow la la-angle-right' />
+                </span>
+                <div className='m-menu__submenu'>
+                  <span className='m-menu__arrow' />
+                    <ul className='m-menu__subnav'>
+                      <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
+                        <Link to='/whatsAppShare' className='m-menu__link m-menu__toggle'>
+                          <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
+                             <span></span>
+                          </i>
+                          <span className='m-menu__link-text'>WhatsApp Share</span>
+                        </Link>
+                        <Link to='/whatsAppChatButton' className='m-menu__link m-menu__toggle'>
+                          <i className='m-menu__link-bullet m-menu__link-bullet--dot'>
+                             <span></span>
+                          </i>
+                          <span className='m-menu__link-text'>WhatsApp Chat</span>
+                        </Link>
+                      </li>
+                    </ul>
+                </div>
+              </li>
             </ul>
           </div>
         </li>
@@ -515,7 +630,7 @@ class Sidebar extends Component {
   }
 
   showOrganizationItems() {
-    if (!this.props.isMobile && this.props.user && (this.props.user.currentPlan.unique_ID === 'plan_C' || this.props.user.currentPlan.unique_ID === 'plan_D')) {
+    if (!this.props.isMobile && this.props.user && (this.props.user.currentPlan.unique_ID === 'plan_C' || this.props.user.currentPlan.unique_ID === 'plan_D' || this.props.user.currentPlan.unique_ID === 'plan_E')) {
       return (
         <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
           <span className='m-menu__link m-menu__toggle'>
@@ -1328,7 +1443,7 @@ class Sidebar extends Component {
   }
 
   inviteSubscribers() {
-    if (this.props.user && this.props.user.platform === 'whatsApp') {
+    if (this.props.user && this.props.user.platform === 'whatsApp' && this.hideItemsBasedOnPlan(this.props.user)) {
       return (
         <li onClick={() => { document.getElementById('m_aside_left_close_btn').click() }} className='m-menu__item' aria-haspopup='true' >
           <Link to='/uploadContactsWhatsApp' className='m-menu__link'>
@@ -1375,6 +1490,7 @@ class Sidebar extends Component {
                     {this.inviteSubscribers()}
                     {this.showLiveChatItem()}
                     {this.showAutomationItems()}
+                    {this.showCommerceItem()}
                     {this.showGrowthToolsItems()}
                     {this.showManagePagesItems()}
                     {this.showOrganizationItems()}

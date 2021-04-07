@@ -4,11 +4,18 @@ import { bindActionCreators } from 'redux'
 import AlertContainer from 'react-alert'
 import {
   fetchChatbotDetails,
-  updateChatbot
+  updateChatbot,
+  fetchDialogflowAgents,
+  removeDialogFlowAgent
 } from '../../redux/actions/chatbotAutomation.actions'
+import { getIntegrations } from '../../redux/actions/settings.actions'
+import Select from 'react-select'
+import { cloneDeep } from 'lodash'
+
 import BACKBUTTON from '../../components/extras/backButton'
 import TEXTAREA from '../../components/chatbotAutomation/textArea'
 import MOREOPTIONS from '../../components/chatbotAutomation/moreOptions'
+import CONFIRMATIONMODAL from '../../components/extras/confirmationModal'
 
 class ChatbotSettings extends React.Component {
   constructor (props, context) {
@@ -19,7 +26,12 @@ class ChatbotSettings extends React.Component {
       text: '',
       options: [],
       fallbackReplyEnabled: false,
-      isYoutubePlayable: true
+      isYoutubePlayable: true,
+      dialogFlowAgent: '',
+      dialogflowAgents: [],
+      dialogflowIntegrated: false,
+      agentsLoading: true,
+      integrationsLoading: true
     }
     this.setStateData = this.setStateData.bind(this)
     this.onBack = this.onBack.bind(this)
@@ -33,11 +45,64 @@ class ChatbotSettings extends React.Component {
     this.preparePayload = this.preparePayload.bind(this)
     this.onSave = this.onSave.bind(this)
     this.afterSave = this.afterSave.bind(this)
+    this.handleIntegrations = this.handleIntegrations.bind(this)
+    this.handleAgents = this.handleAgents.bind(this)
+    this.onAgentChange = this.onAgentChange.bind(this)
+    this.gotoIntegerations = this.gotoIntegerations.bind(this)
+    this.removeDialogFlowAgent = this.removeDialogFlowAgent.bind(this)
+    this.afterRemove = this.afterRemove.bind(this)
   }
 
   componentDidMount () {
     this.props.fetchChatbotDetails(this.props.location.state._id, this.handleChatbotDetails)
     document.title = 'KiboChat | ChatBot Settings'
+    this.props.getIntegrations(this.handleIntegrations)
+    this.props.fetchDialogflowAgents(this.handleAgents)
+  }
+
+  handleIntegrations (res) {
+    if (res.status === 'success') {
+      const integrations = res.payload
+      const dialogflowIntegration = integrations.find((item) => item.integrationName === 'DIALOGFLOW')
+      if (dialogflowIntegration) {
+        this.setState({dialogflowIntegrated: true, integrationsLoading: false})
+      } else {
+        this.setState({dialogflowIntegrated: false, integrationsLoading: false})
+      }
+    } else {
+      this.setState({dialogflowIntegrated: false, integrationsLoading: false})
+    }
+  }
+
+  handleAgents (res) {
+    if (res.status === 'success') {
+      const agents = res.payload
+      const dialogflowAgents = agents.map((item) => {
+        return {
+          label: item.displayName,
+          value: item.parent
+        }
+      })
+      let dialogFlowAgent = this.state.dialogFlowAgent
+      if (this.state.chatbot && this.state.chatbot.dialogFlowAgentId) {
+        const agent = dialogflowAgents.find((item) => item.value === this.state.chatbot.dialogFlowAgentId)
+        if (agent) dialogFlowAgent = agent
+      }
+      this.setState({dialogflowAgents, agentsLoading: false, dialogFlowAgent})
+    } else {
+      this.setState({dialogflowAgents: [], agentsLoading: false})
+    }
+  }
+
+  onAgentChange (value, other) {
+    this.setState({dialogFlowAgent: value})
+  }
+
+  gotoIntegerations () {
+    this.props.history.push({
+      pathname: '/settings',
+      state: { tab: 'integrations' }
+    })
   }
 
   setStateData () {
@@ -144,7 +209,8 @@ class ChatbotSettings extends React.Component {
         chatbotId: this.state.chatbot._id,
         fallbackReply: this.preparePayload(this.state),
         fallbackReplyEnabled: this.state.fallbackReplyEnabled,
-        isYoutubePlayable: this.state.isYoutubePlayable
+        isYoutubePlayable: this.state.isYoutubePlayable,
+        dialogFlowAgentId: this.state.dialogFlowAgent.value
       }
       this.props.updateChatbot(data, this.afterSave)
     }
@@ -158,6 +224,26 @@ class ChatbotSettings extends React.Component {
     }
   }
 
+  removeDialogFlowAgent () {
+    const data = {
+      chatbotId: this.state.chatbot._id,
+      dialogFlowAgentId: this.state.dialogFlowAgent.value,
+      platform: this.props.user.platform
+    }
+    this.props.removeDialogFlowAgent(data, this.afterRemove)
+  }
+
+  afterRemove (res) {
+    if (res.status === 'success') {
+      let chatbot = cloneDeep(this.state.chatbot)
+      delete chatbot.dialogFlowAgentId
+      this.setState({dialogFlowAgent: '', chatbot})
+      this.msg.success('DialogFlow agent removed successfully!')
+    } else {
+      this.msg.error(res.description || 'Failed to remove DialogFlow agent!')
+    }
+  }
+
   render () {
     var alertOptions = {
       offset: 75,
@@ -167,10 +253,25 @@ class ChatbotSettings extends React.Component {
       transition: 'scale'
     }
     return (
-      <div className='m-grid__item m-grid__item--fluid m-wrapper'>
+      <div className='m-grid__item m-grid__item--fluid m-wrapper' style={{overflow: 'visible'}}>
         <AlertContainer ref={(a) => { this.msg = a }} {...alertOptions} />
         <BACKBUTTON
           onBack={this.onBack}
+        />
+
+        <button
+          ref='_open_DFA_modal'
+          style={{ display: 'none' }}
+          data-backdrop='static'
+          data-keyboard='false'
+          data-toggle='modal'
+          data-target='#__remove_DFA'
+        />
+        <CONFIRMATIONMODAL
+          id='__remove_DFA'
+          title='Remove DialogFlow Agent'
+          description='If you remove this DialogFlow agent, chatbot NLP will not work. Are you sure you want to remove the DialogFlow agent?'
+          onConfirm={this.removeDialogFlowAgent}
         />
 
         <div className='m-subheader '>
@@ -250,6 +351,58 @@ class ChatbotSettings extends React.Component {
                         isCreatable={false}
                       />
                     }
+                    <div className='m--space-10' />
+                    <div className="m-form__group form-group row">
+                      <label className="col-3 col-form-label">
+                        DialogFlow Agent (Optional):
+                      </label>
+                      <div className="col-6">
+                        {
+                          this.state.integrationsLoading || this.state.agentsLoading
+                          ? <center>
+                            <div className="m-loader m-loader--brand" style={{width: '30px', display: 'inline-block'}} />
+                          </center>
+                          : !this.state.dialogflowIntegrated
+                          ? <center>
+                            <button
+                              style={{border: '1px dashed #5867dd'}}
+                              type="button"
+                              className="btn m-btn m-btn--air btn-outline-primary m-btn m-btn--custom"
+                              onClick={this.gotoIntegerations}
+                            >
+                              Integrate DialogFlow
+                            </button>
+                          </center>
+                          : this.state.dialogflowAgents.length === 0
+                          ? <span className='m--font-danger'>You have not created any DialogFlow agents yet. Please visit <a href='https://dialogflow.cloud.google.com/' target='_blank' rel="noopener noreferrer">https://dialogflow.cloud.google.com/</a> and create an agent first.</span>
+                          : this.state.chatbot && this.state.chatbot.dialogFlowAgentId
+                          ? <input type='text' className='m-input form-control' placeholder={this.state.dialogFlowAgent.label} disabled />
+                          : <Select
+                            className='basic-single'
+                            classNamePrefix='select'
+                            isClearable={true}
+                            isSearchable={true}
+                            options={this.state.dialogflowAgents}
+                            value={this.state.dialogFlowAgent}
+                            onChange={this.onAgentChange}
+                          />
+                        }
+                      </div>
+                      {
+                        !(this.state.integrationsLoading || this.state.agentsLoading) &&
+                        this.state.dialogflowIntegrated && this.state.dialogflowAgents.length > 0 &&
+                        this.state.chatbot && this.state.chatbot.dialogFlowAgentId &&
+                        <div className='col-3'>
+                          <button
+                            type="button"
+                            className="btn btn-link"
+                            onClick={() => { this.refs._open_DFA_modal.click() }}
+                          >
+                            Remove
+                          </button>
+                        </div>
+                      }
+                    </div>
                   </div>
                 </div>
               </div>
@@ -261,13 +414,18 @@ class ChatbotSettings extends React.Component {
   }
 }
 function mapStateToProps (state) {
-  return {}
+  return {
+    user: (state.basicInfo.user)
+  }
 }
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     fetchChatbotDetails,
-    updateChatbot
+    updateChatbot,
+    getIntegrations,
+    fetchDialogflowAgents,
+    removeDialogFlowAgent
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(ChatbotSettings)

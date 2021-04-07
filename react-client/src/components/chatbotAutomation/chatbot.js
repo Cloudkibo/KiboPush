@@ -17,20 +17,31 @@ class Chatbot extends React.Component {
     return (
       <div onClick={this.props.onItemClick} style={{ paddingRight: '15px', cursor: 'pointer' }} className='tab-content'>
         <div className='tab-pane active'>
-          <div className="m-widget5">
-            <div style={{ border: '1px solid #ccc', padding: '0px' }} className="m-widget5__item">
-              <div style={{ width: '50px' }} className="m-widget5__pic">
-                <img style={{ width: '50px' }} className="m-widget7__img" src={this.props.profilePic} alt="" />
+          <div className="m-widget4">
+            <div style={{ border: '1px solid #ccc', padding: '0px', margin: '0.5rem 0px' }} className="m-widget4__item">
+              <div style={{ width: '50px' }} className="m-widget4__img">
+                <img src={this.props.profilePic} alt="" />
               </div>
-              <div style={{ padding: '10px', display: 'flex', verticalAlign: 'middle', textAlign: 'center' }}>
-                <span className="m--font-boldest">
+              <div className='m-widget4__info'>
+                <span className="m-widget4__title">
                   {this.props.name}
                 </span>
                 {
-                  this.props.onSettingsClick &&
-                  <i onClick={this.onSettingsClick} style={{ marginLeft: '15px', fontSize: '1.5rem', cursor: 'pointer' }} className='fa fa-cog' />
+                  this.props.showSubtitle &&
+                  <>
+                    <br />
+                    <span className='m-widget4__sub'>DialogFlow: <i className='fa fa-check-circle m--font-success' /></span>
+                  </>
                 }
               </div>
+              {
+                this.props.onSettingsClick &&
+                <div style={{padding: '10px'}} className='m-widget4__ext'>
+                  <span className='m-widget4__number'>
+                    <i onClick={this.onSettingsClick} style={{ marginLeft: '15px', fontSize: '1.5rem', cursor: 'pointer' }} className='fa fa-cog' />
+                  </span>
+                </div>
+              }
             </div>
           </div>
         </div>
@@ -43,7 +54,8 @@ Chatbot.propTypes = {
   'profilePic': PropTypes.string.isRequired,
   'name': PropTypes.string.isRequired,
   'onItemClick': PropTypes.func.isRequired,
-  'onSettingsClick': PropTypes.func.isRequired
+  'onSettingsClick': PropTypes.func,
+  'showSubtitle': PropTypes.bool
 }
 
 export default Chatbot

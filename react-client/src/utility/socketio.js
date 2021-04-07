@@ -19,9 +19,11 @@ import { fetchNotifications, setMessageAlert } from './../redux/actions/notifica
 import { handleSocketEvent, handleSocketEventSms, handleSocketEventWhatsapp } from '../redux/actions/socket.actions'
 import { addToSponsoredMessages, updateSponsoredMessagesListItemStatus } from './../redux/actions/sponsoredMessaging.actions'
 import { removeZoomIntegration } from './../redux/actions/settings.actions'
+import {landingPageDelete} from './../redux/actions/landingPages.actions'
 const whatsAppActions = require('./../redux/actions/whatsAppChat.actions')
 const smsActions = require('./../redux/actions/smsChat.actions')
 const { setSocketData } = require('./../redux/actions/messageAlerts.actions')
+const smsBroadcasts = require('./../redux/actions/smsBroadcasts.actions')
 
 const socket = io('')
 let store
@@ -114,6 +116,12 @@ socket.on('message', (data) => {
   } else if (data.action === 'new_broadcast') {
     // store.dispatch(loadBroadcastsList())
     store.dispatch(sentVsSeen())
+  } else if (data.action === 'new_sms_broadcast') {
+    store.dispatch(smsBroadcasts.handleNewSmsBroadcastEvent(data.payload))
+  } else if (data.action === 'sms_broadcast_delivery') {
+    store.dispatch(smsBroadcasts.smsDeliveryEvent(data.payload))
+  } else if (data.action === 'sms_broadcast_response') {
+    store.dispatch(smsBroadcasts.smsResponseEvent(data.payload))
   } else if (data.action === 'poll_created') {
     store.dispatch(loadPollsListNew({ last_id: 'none', number_of_records: 10, first_page: true, days: '0' }))
     store.dispatch(sentVsSeen())
@@ -187,6 +195,8 @@ socket.on('message', (data) => {
     store.dispatch(updateSponsoredMessagesListItemStatus(data.payload))
   } else if (data.action === 'zoom_uninstall') {
     store.dispatch(removeZoomIntegration(data.payload))
+  } else if (data.action === 'landingPage_delete') {
+    store.dispatch(landingPageDelete(data.payload))
   } else if (data.action === 'logout') {
     auth.logout()
   }

@@ -27,16 +27,20 @@ import {
   uploadAttachment,
   sendAttachment,
   deletefile,
-  createNewContact
+  createNewContact,
+  updatePauseChatbot
 } from '../../redux/actions/whatsAppChat.actions'
 import { saveNotificationSessionId } from '../../redux/actions/livechat.actions'
 import { updatePicture } from '../../redux/actions/subscribers.actions'
 import { loadTeamsList } from '../../redux/actions/teams.actions'
 import { loadMembersList } from '../../redux/actions/members.actions'
-import { urlMetaData } from '../../redux/actions/convos.actions'
+import { urlMetaData, uploadFile } from '../../redux/actions/convos.actions'
 import { handleSocketEventWhatsapp } from './socket'
 import { clearSocketDataWhatsapp } from '../../redux/actions/socket.actions'
 import { editSubscriberWhatsApp } from '../../redux/actions/uploadContacts.actions'
+import { setCompanyPreferences } from '../../redux/actions/settings.actions'
+
+import { cloneDeep } from 'lodash'
 
 // components
 import HELPWIDGET from '../../components/extras/helpWidget'
@@ -106,6 +110,8 @@ class WhatsAppChat extends React.Component {
     this.sendingToNewNumber = this.sendingToNewNumber.bind(this)
     this.backToSessions = this.backToSessions.bind(this)
     this.showMessageTemplateMobile = this.showMessageTemplateMobile.bind(this)
+    this.updateDefaultZoom = this.updateDefaultZoom.bind(this)
+
     this.props.loadcannedResponses()
     this.fetchSessions(true, 'none', true)
     props.loadMembersList()
@@ -114,6 +120,13 @@ class WhatsAppChat extends React.Component {
       props.clearSocketDataWhatsapp()
     }
     props.getWhatsAppMessageTemplates()
+  }
+
+
+  updateDefaultZoom (defaultZoom) {
+    let companyPreferences = cloneDeep(this.props.companyPreferences)
+    companyPreferences.defaultZoomConfiguration = defaultZoom
+    this.props.setCompanyPreferences(companyPreferences)
   }
 
   sendingToNewNumber(sendingToNewNumber) {
@@ -156,13 +169,16 @@ class WhatsAppChat extends React.Component {
   handleAgents(teamAgents) {
     let agentIds = []
     for (let i = 0; i < teamAgents.length; i++) {
-      if (teamAgents[i].agentId !== this.props.user._id) {
-        agentIds.push(teamAgents[i].agentId)
+      if (teamAgents[i].agentId && teamAgents[i].agentId._id !== this.props.user._id) {
+        agentIds.push(teamAgents[i].agentId._id)
       }
     }
     if (agentIds.length > 0) {
+      let {firstName, lastName} = this.state.activeSession
+      lastName = lastName ? ` ${lastName}` : ''
+      let name = `${firstName}${lastName}`
       let notificationsData = {
-        message: `Session of subscriber ${this.state.activeSession.firstName + ' ' + this.state.activeSession.lastName} has been assigned to your team.`,
+        message: `Session of subscriber ${name} has been assigned to your team.`,
         category: { type: 'chat_session', id: this.state.activeSession._id },
         agentIds: agentIds,
         companyId: this.state.activeSession.companyId
@@ -453,7 +469,7 @@ class WhatsAppChat extends React.Component {
         }
       }
     }
-    
+
     if (nextProps.customFields && nextProps.customFieldValues) {
       let fieldOptions = []
       for (let a = 0; a < nextProps.customFields.length; a++) {
@@ -601,12 +617,15 @@ class WhatsAppChat extends React.Component {
                     showZoom={this.props.user.isSuperUser ? (this.props.zoomIntegrations.length === 0 ? (this.props.user.role === 'admin' || this.props.user.role === 'buyer') ? true : false : true) : false}
                     history={this.props.history}
                     zoomIntegrations={this.props.zoomIntegrations}
+                    defaultZoom={this.props.companyPreferences ? this.props.companyPreferences.defaultZoomConfiguration : null }
                     createZoomMeeting={this.props.createZoomMeeting}
                     showCaption={true}
                     showSubscriberNameOnMessage={false}
                     whatsAppMessageTemplates={this.props.whatsAppMessageTemplates}
                     isMobile={this.props.isMobile}
                     backToSessions={this.backToSessions}
+                    updateDefaultZoom= {this.updateDefaultZoom}
+                    uploadFile={this.props.uploadFile}
                   />
                 }
                 {
@@ -631,6 +650,9 @@ class WhatsAppChat extends React.Component {
                     showCustomFields={false}
                     showUnsubscribe={false}
                     editSubscriberWhatsApp={this.props.editSubscriberWhatsApp}
+                    connectedPageChatbot = {this.props.automated_options.whatsApp && this.props.automated_options.whatsApp.activeWhatsappBot && this.props.automated_options.whatsApp.activeWhatsappBot !== ''}
+                    pauseChatbot = {this.props.updatePauseChatbot}
+                    sessions = {this.props.sessions}
                   />
                 }
                 {
@@ -700,6 +722,7 @@ class WhatsAppChat extends React.Component {
                 createNewContact={this.props.createNewContact}
                 changeActiveSession={this.changeActiveSession}
                 templates={this.props.whatsAppMessageTemplates}
+                uploadFile={this.props.uploadFile}
               />
             </div>
           </div>
@@ -742,12 +765,14 @@ function mapStateToProps(state) {
     zoomIntegrations: (state.settingsInfo.zoomIntegrations),
     cannedResponses: (state.settingsInfo.cannedResponses),
     whatsAppMessageTemplates: (state.settingsInfo.whatsAppMessageTemplates),
-    redirectToSession: state.liveChat.redirectToSession
+    redirectToSession: state.liveChat.redirectToSession,
+    companyPreferences: (state.settingsInfo.companyPreferences)
   }
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators({
+    
     fetchOpenSessions,
     fetchCloseSessions,
     updatePicture,
@@ -776,7 +801,10 @@ function mapDispatchToProps(dispatch) {
     editSubscriberWhatsApp,
     loadcannedResponses,
     getWhatsAppMessageTemplates,
-    saveNotificationSessionId
+    saveNotificationSessionId,
+    setCompanyPreferences,
+    uploadFile,
+    updatePauseChatbot
   }, dispatch)
 }
 

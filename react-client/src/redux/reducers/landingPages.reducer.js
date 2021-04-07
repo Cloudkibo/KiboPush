@@ -49,6 +49,13 @@ export function landingPagesInfo (state = initialState, action) {
       return Object.assign({}, state, {
         landingPages: action.data
       })
+
+    case ActionTypes.DELETE_LANDING_PAGE:
+    let landingPages = [...state.landingPages]
+    let landingData = landingPages.filter(landingPage => landingPage._id !== action.data.landingPageId)
+      return Object.assign({}, state, {
+        landingPages: landingData
+      })
     case ActionTypes.UPDATE_LANDING_PAGE:
       return Object.assign({}, state, {
         landingPage: action.data

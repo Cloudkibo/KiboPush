@@ -4,9 +4,12 @@
 
 import React from 'react'
 import { connect } from 'react-redux'
-import { fetchResponseDetails } from '../../redux/actions/smsBroadcasts.actions'
+import { fetchResponseDetails,  updateSmsAnalytics, smsResponseEvent } from '../../redux/actions/smsBroadcasts.actions'
 import { bindActionCreators } from 'redux'
 import ResponseDetails from './responseDetails'
+import BACKBUTTON from '../../components/extras/backButton'
+import { cloneDeep } from 'lodash'
+import { handleResponseEvent } from './logic.js'
 
 class ViewResponses extends React.Component {
     constructor (props) {
@@ -20,6 +23,7 @@ class ViewResponses extends React.Component {
         this.goToCreateFollowUp = this.goToCreateFollowUp.bind(this)
         this.removeLoader = this.removeLoader.bind(this)
     }
+
     goBack () {
         this.props.history.push({
             pathname: `/viewBroadcast`,
@@ -68,7 +72,6 @@ class ViewResponses extends React.Component {
 
     expandRowToggle (row) {
         let className = document.getElementById(`icon-${row}`).className
-        console.log('className', className)
         if (className === 'la la-angle-up collapsed') {
           document.getElementById(`icon-${row}`).className = 'la la-angle-down'
         } else {
@@ -92,8 +95,15 @@ class ViewResponses extends React.Component {
             this.props.fetchResponseDetails(this.props.smsBroadcast._id, this.props.smsAnalytics.responses[row]._id, payload, null, this.removeLoader)
         }
       }
-
+    
     UNSAFE_componentWillReceiveProps (nextProps) {
+        if (nextProps.smsResponseInfo && nextProps.smsResponseInfo.response) {
+            let smsAnalyticsCurrent = cloneDeep(nextProps.smsAnalytics)
+            if (nextProps.smsResponseInfo.response.broadcastId === nextProps.smsBroadcast._id) {
+                handleResponseEvent(smsAnalyticsCurrent, nextProps.smsResponseInfo, nextProps.senders, nextProps.smsResponseEvent, document)
+                smsAnalyticsCurrent = nextProps.updateSmsAnalytics(smsAnalyticsCurrent)
+            }
+        }
     }
 
     render () {
@@ -131,6 +141,7 @@ class ViewResponses extends React.Component {
                                                         data-target={`#collapse_${i}`}
                                                         aria-expanded='true'
                                                         aria-controls={`#collapse_${i}`}
+                                                        id={`div-${i}`}
                                                         >
                                                         {response._id}
                                                         <span style={{marginLeft: '10px'}} className="m-menu__link-badge">
@@ -156,7 +167,7 @@ class ViewResponses extends React.Component {
                                                         <div className='row'>
                                                         { this.state.loading && this.state.loading.response === response._id
                                                             ? <div className='align-center col-12'><h6> Loading Details... </h6></div>
-                                                            : <ResponseDetails senders={this.props.senders ? this.props.senders[response._id] : []} totalLength={response.count} response={response} handlePageClick={this.handlePageClick} /> 
+                                                            : <ResponseDetails senders={this.props.senders ? this.props.senders[response._id] : []} totalLength={response.count} response={response} handlePageClick={this.handlePageClick} allSenders= {this.props.senders} smsAnalytics={this.props.smsAnalytics} /> 
                                                         }
                                                         </div>
                                                     </div>
@@ -165,15 +176,9 @@ class ViewResponses extends React.Component {
                                         </div>
                                     )
                                 }
-                            </div>
-                        </div>
-                        <div className='row'>
-                            <div className='col-12'>
-                                <div className='pull-right'>
-                                    <button className='btn btn-primary' style={{marginTop: '10px'}} onClick={this.goBack}>
-                                        Back
-                                    </button>
-                                </div>
+                            <BACKBUTTON
+                                onBack={this.goBack}
+                            />
                             </div>
                         </div>
                     </div>
@@ -188,13 +193,16 @@ function mapStateToProps (state) {
   return {
     smsBroadcast: (state.smsBroadcastsInfo.smsBroadcast),
     smsAnalytics: (state.smsBroadcastsInfo.smsAnalytics),
-    senders: (state.smsBroadcastsInfo.sendersInfo)
+    senders: (state.smsBroadcastsInfo.sendersInfo),
+    smsResponseInfo: (state.smsBroadcastsInfo.smsResponseInfo)
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-    fetchResponseDetails
+    fetchResponseDetails,
+    smsResponseEvent,
+    updateSmsAnalytics
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(ViewResponses)

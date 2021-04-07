@@ -25,6 +25,7 @@ class Audio extends React.Component {
     this.setLoading = this.setLoading.bind(this)
     this.onTestURLAudio = this.onTestURLAudio.bind(this)
     this.handleFile = this.handleFile.bind(this)
+    this.handleAudio = this.handleAudio.bind(this)
   }
 
 
@@ -112,13 +113,16 @@ class Audio extends React.Component {
           size: file.size
         }
         this.setState({loading: true, showPreview: false})
-        this.props.uploadFile(fileData, fileInfo, this.handleFile, this.setLoading, this.props.alertMsg)
+        this.props.uploadFile(fileData, fileInfo, this.handleAudio, this.setLoading, this.props.alertMsg)
       }
     }
   }
 
-  handleFile (fileInfo) {
-    this.props.updateFile(fileInfo)
+  handleAudio(fileInfo) {
+    this.handleFile (fileInfo, true)
+  }
+  handleFile (fileInfo, isEditFile) {
+    this.props.updateFile(fileInfo,isEditFile)
     this.setState({file: fileInfo.fileurl, showPreview: true})
   }
 

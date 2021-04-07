@@ -4,8 +4,11 @@
 
 import React from 'react'
 import { connect } from 'react-redux'
-import { fetchSmsAnalytics, clearSendersInfo  } from '../../redux/actions/smsBroadcasts.actions'
+import { fetchSmsAnalytics, clearSendersInfo, smsDeliveryEvent, saveCurrentSmsBroadcast, smsResponseEvent, updateSmsAnalytics } from '../../redux/actions/smsBroadcasts.actions'
 import { bindActionCreators } from 'redux'
+import BACKBUTTON from '../../components/extras/backButton'
+import { cloneDeep } from 'lodash'
+import { handleResponseEvent } from './logic.js'
 
 class ViewBroadcast extends React.Component {
     constructor (props) {
@@ -28,12 +31,11 @@ class ViewBroadcast extends React.Component {
         })
     }
 
-
     UNSAFE_componentWillReceiveProps (nextProps) {
         if (nextProps.smsAnalytics) {
             var counts = []
             var values = []
-            var colors = ['#46b963','#53ac69', '#609f70', '#6c9376', '#738c79']
+            var colors = ['#ffb822','#aed7f7', '#cb4b4b', '#4da74d', '#9440ed']
             var backcolors = []
             if (nextProps.smsAnalytics.responses) {
                 for (var i =0; i < nextProps.smsAnalytics.responses.length; i++) {
@@ -64,6 +66,22 @@ class ViewBroadcast extends React.Component {
                 }
             }
         }
+        if (nextProps.smsDeliveryInfo && nextProps.smsDeliveryInfo.broadcast) {
+            if (nextProps.smsDeliveryInfo.broadcast._id === nextProps.smsBroadcast._id) {
+                let currentBroadcast = nextProps.smsDeliveryInfo.broadcast
+                nextProps.saveCurrentSmsBroadcast(currentBroadcast)
+            }
+            nextProps.smsDeliveryEvent(null)
+        }
+
+        if (nextProps.smsResponseInfo && nextProps.smsResponseInfo.response) {
+            let smsAnalyticsCurrent = cloneDeep(nextProps.smsAnalytics)
+            if (nextProps.smsResponseInfo.response.broadcastId === nextProps.smsBroadcast._id) {
+                smsAnalyticsCurrent = handleResponseEvent(smsAnalyticsCurrent, nextProps.smsResponseInfo)
+                nextProps.updateSmsAnalytics(smsAnalyticsCurrent)
+            }
+            nextProps.smsResponseEvent(null)
+        }
     }
 
     render () {
@@ -86,7 +104,7 @@ class ViewBroadcast extends React.Component {
                             </div>
                         </div>
                         <div className='m-portlet__body'>
-                            <div className='row'>
+                            <div className='row' style={{height: '300px'}}>
                                 <div className='col-md-6 col-lg-7 col-sm-4'>
                                     <div className='m-widget1' style={{paddingTop: '1.2rem'}}>
                                         <div className='m-widget1__item'>
@@ -105,7 +123,7 @@ class ViewBroadcast extends React.Component {
                                                     <h3 className='m-widget1__title'>Delivered</h3>
                                                 </div>
                                                 <div className='col m--align-left'>
-                                                    <span>{this.props.smsBroadcast.sent}</span>
+                                                    <span>{this.props.smsBroadcast.delivered}</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -121,14 +139,14 @@ class ViewBroadcast extends React.Component {
                                         </div>
                                     </div>
                                 </div>
-                                { this.props.smsAnalytics && this.props.smsAnalytics.responded < 1 
-                                ? <div style={{marginLeft: '110px', marginTop: '20px'}}> No data to display </div>
-                                : <div className='col-md-9 col-lg-5 col-sm-9'>
+                                { this.props.smsAnalytics && this.props.smsAnalytics.responded < 1 &&
+                                    <div style={{marginLeft: '110px', marginTop: '20px'}}> No data to display </div>
+                                }
+                                <div className='col-md-9 col-lg-5 col-sm-9'>
                                     <div style={{'width': '600px', 'height': '400px', 'margin': '0 auto'}} className='col m--align-left'>
                                         <canvas id='radar-chart' width={250} height={170}  />
                                     </div>
                                 </div>
-                                }
                             </div>
                             <div className='row'>
                                 <div className='col-3'>
@@ -140,15 +158,9 @@ class ViewBroadcast extends React.Component {
                                         id='txtAreaBroadcastMessage' rows='8'
                                         value={this.props.smsBroadcast.payload && this.props.smsBroadcast.payload.length > 0 ? this.props.smsBroadcast.payload[0].text : ''} />
                                 </div>
-                            </div>
-                            <div className='row'>
-                                <div className='col-12'>
-                                    <div className='pull-right'>
-                                        <button className='btn btn-primary' style={{marginTop: '10px'}} onClick={this.goBack}>
-                                            Back
-                                        </button>
-                                    </div>
-                                </div>
+                                <BACKBUTTON
+                                    onBack={this.goBack}
+                                />
                             </div>
                         </div>
                     </div>
@@ -161,14 +173,20 @@ class ViewBroadcast extends React.Component {
 function mapStateToProps (state) {
   return {
     smsBroadcast: (state.smsBroadcastsInfo.smsBroadcast),
-    smsAnalytics: (state.smsBroadcastsInfo.smsAnalytics)
+    smsAnalytics: (state.smsBroadcastsInfo.smsAnalytics),
+    smsDeliveryInfo: (state.smsBroadcastsInfo.smsDeliveryInfo),
+    smsResponseInfo: (state.smsBroadcastsInfo.smsResponseInfo)
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     fetchSmsAnalytics,
-    clearSendersInfo
+    clearSendersInfo,
+    smsDeliveryEvent,
+    saveCurrentSmsBroadcast,
+    smsResponseEvent,
+    updateSmsAnalytics
   }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(ViewBroadcast)

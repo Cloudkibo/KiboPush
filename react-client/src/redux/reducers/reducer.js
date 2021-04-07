@@ -56,6 +56,7 @@ import { whatsAppBroadcastsInfo } from './whatsAppBroadcasts.reducer'
 import { whatsAppChatInfo } from './whatsAppChat.reducer'
 import { whatsAppChatbot } from './whatsAppChatbot.reducer'
 import { commerceInfo } from './commerce.reducer'
+import { superNumberInfo } from './superNumber.reducer'
 
 const appReducer = combineReducers({
   abandonedInfo,
@@ -113,7 +114,8 @@ const appReducer = combineReducers({
   whatsAppBroadcastsInfo,
   whatsAppChatInfo,
   whatsAppChatbot,
-  commerceInfo
+  commerceInfo,
+  superNumberInfo
 })
 
 export default appReducer

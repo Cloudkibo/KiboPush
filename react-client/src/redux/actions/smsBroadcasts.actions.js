@@ -10,6 +10,38 @@ export function showBroadcasts (data, append) {
   }
 }
 
+export function handleNewSmsBroadcastEvent (data) {
+  let broadcast = data.broadcast
+  broadcast.sent = data.sent
+  return {
+    type: ActionTypes.NEW_SMS_BROADCAST_SOCKET,
+    newSmsBroadcast: {broadcast, user: data.user_id}
+  }
+}
+
+export function smsDeliveryEvent (data) {
+  return {
+    type: ActionTypes.SMS_DELIVERY_EVENT,
+    data: data
+  }
+}
+
+export function smsResponseEvent (data) {
+  return {
+    type: ActionTypes.SMS_RESPONSE_EVENT,
+    data: data
+  }
+}
+
+
+export function updateSmsBroadcasts (data) {
+  return {
+    type: ActionTypes.UPDATE_SMS_BROADCAST,
+    broadcast: data
+  }
+}
+
+
 export function setSearchBroadcastResult (data, append) {
   return {
     type: ActionTypes.LOAD_SEARCH_BROADCASTS_LIST,
@@ -42,6 +74,13 @@ export function showSenderInfo (id, data) {
     type: ActionTypes.SHOW_SENDERS_INFO,
     sendersInfo: data,
     responseId: id
+  }
+}
+
+export function updateSendersInfo(data) {
+  return  {
+    type: ActionTypes.UPDATE_SENDERS_INFO,
+    data
   }
 }
 
@@ -112,7 +151,7 @@ export function sendBroadcast (data, clearFields, msg) {
         } else {
           msg.error(res.description)
         }
-        dispatch(clearFields())
+        clearFields()
       })
   }
 }
@@ -180,5 +219,11 @@ export function sendFollowupBroadcast (payload, msg, setToDefault) {
           msg.error(`Unable to send broadcast. ${res.description}`)
         }
       })
+  }
+}
+
+export function updateSmsAnalytics (data) {
+  return (dispatch) => {
+    dispatch(showAnalytics(data))
   }
 }
