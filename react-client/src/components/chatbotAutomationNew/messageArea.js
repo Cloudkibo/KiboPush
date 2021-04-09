@@ -396,14 +396,16 @@ class MessageArea extends React.Component {
   }
 
   removeLink (title) {
-    if (['Back', 'Home', 'talk_to_agent'].includes(title)) {
-      let quickReplies = this.state.quickReplies
-      let index = quickReplies.findIndex((item) => item.title === title)
-      if (title === 'talk_to_agent') {
-        index = quickReplies.findIndex((item) => JSON.parse(item.payload)[0].payloadAction === 'talk_to_agent')
-      }
-      quickReplies.splice(index, 1)
+    let quickReplies = this.state.quickReplies
+    let index = -1
+    if (['Back', 'Home'].includes(title)) {
+      index = quickReplies.findIndex((item) => item.title === title)
+    } else if (title === 'talk_to_agent') {
+      index = quickReplies.findIndex((item) => JSON.parse(item.payload) && JSON.parse(item.payload)[0].payloadAction === 'talk_to_agent')
+    }
 
+    if (index > -1) {
+      quickReplies.splice(index, 1)
       const currentBlock = this.props.block
       if (currentBlock.payload.length > 0) {
         currentBlock.payload[currentBlock.payload.length - 1].quickReplies = quickReplies
