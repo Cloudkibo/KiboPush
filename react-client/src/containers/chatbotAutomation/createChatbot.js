@@ -247,7 +247,7 @@ class CreateChatbot extends React.Component {
                   onClick={this.handleUseCase}
                   checked={this.state.useCase === 'ecommerce'}
                 />
-                ECommerce
+                E-Commerce
                 <span></span>
               </label>
               <label className="m-radio" style={{fontWeight: 'lighter'}}>
@@ -276,8 +276,7 @@ class CreateChatbot extends React.Component {
                       <div className="m-loader m-loader--brand" style={{width: '30px', display: 'inline-block'}} />
                     </center>
                   : !this.state.shopifyIntegrated
-                  ? <center>
-                    <button
+                  ? <button
                       style={{border: '1px dashed #5867dd'}}
                       type="button"
                       className="btn m-btn m-btn--air btn-outline-primary m-btn m-btn--custom"
@@ -285,7 +284,6 @@ class CreateChatbot extends React.Component {
                     >
                       Integrate Shopify
                     </button>
-                  </center>
                   : <Select
                     className='basic-single'
                     classNamePrefix='select'
@@ -317,8 +315,7 @@ class CreateChatbot extends React.Component {
                   <div className="m-loader m-loader--brand" style={{width: '30px', display: 'inline-block'}} />
                 </center>
                 : !this.state.dialogflowIntegrated
-                ? <center>
-                  <button
+                ? <button
                     style={{border: '1px dashed #5867dd'}}
                     type="button"
                     className="btn m-btn m-btn--air btn-outline-primary m-btn m-btn--custom"
@@ -326,7 +323,6 @@ class CreateChatbot extends React.Component {
                   >
                     Integrate DialogFlow
                   </button>
-                </center>
                 : this.state.dialogflowAgents.length === 0
                 ? <span className='m--font-danger'>You have not created any DialogFlow agents yet. Please visit <a href='https://dialogflow.cloud.google.com/' target='_blank' rel="noopener noreferrer">https://dialogflow.cloud.google.com/</a> and create an agent first.</span>
                 : <Select
