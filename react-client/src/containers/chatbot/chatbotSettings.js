@@ -340,7 +340,7 @@ class ChatbotSettings extends React.Component {
           <div className='d-flex align-items-center'>
             <div className='mr-auto'>
               <h3 className='m-subheader__title'>
-              {this.state.chatbot.integration ? 'Configure ECommerce Chatbot' : 'Settings'}
+              {this.state.chatbot.integration ? 'Configure E-Commerce Chatbot' : 'Settings'}
               </h3>
             </div>
           </div>
@@ -413,7 +413,7 @@ class ChatbotSettings extends React.Component {
                                 </span>
                               </div>
                             }
-                          <div className='ui-block hoverborder' style={{padding: 25, marginLeft: '0'}}>
+                          <div className='ui-block hoverborder' style={{padding: 25, marginLeft: '0', width: '97%'}}>
                             <Files
                               className='files-dropzone'
                               onChange={this.onFilesChange}
@@ -437,7 +437,7 @@ class ChatbotSettings extends React.Component {
                           <input
                             type='number' min='2' step='1' max='9'
                             value={this.state.numberOfProducts}
-                            style={{marginBottom: '10px'}}
+                            style={{marginBottom: '10px', width: '97%'}}
                             onChange={(e) => { this.setNumberOfProducts(parseInt(e.target.value))}}
                             onKeyDown={e => /[+\-.,\s]$/.test(e.key) && e.preventDefault()}
                             className="form-control m-input" id="_faqs_url" />

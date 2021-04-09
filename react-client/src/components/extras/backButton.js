@@ -19,13 +19,15 @@ class BackButton extends React.Component {
         return {
           position: 'fixed',
           bottom: '40px',
-          right: '60px'
+          right: '60px',
+          zIndex: '999'
         }
       case 'bottom-left':
         return {
           position: 'fixed',
           bottom: '70px',
-          left: '30px'
+          left: '30px',
+          zIndex: '999'
         }
       default:
         return {}
