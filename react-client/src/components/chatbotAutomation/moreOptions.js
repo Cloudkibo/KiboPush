@@ -18,7 +18,6 @@ class MoreOptions extends React.Component {
     this.showPopover = this.showPopover.bind(this)
     this.togglePopover = this.togglePopover.bind(this)
     this.setOptions = this.setOptions.bind(this)
-    this.checkTalkToAgent = this.checkTalkToAgent.bind(this)
   }
 
   componentDidMount () {
@@ -83,14 +82,6 @@ class MoreOptions extends React.Component {
       }
     })
     this.setState({options})
-  }
-
-  checkTalkToAgent (option) {
-    if (JSON.parse(option.payload)[0].payloadAction === 'talk_to_agent') {
-      return true
-    } else {
-      return false
-    }
   }
 
   UNSAFE_componentWillReceiveProps (nextProps) {

@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import ReactTooltip from 'react-tooltip'
 
 class SubscriptionItem extends React.Component {
   constructor (props, context) {
@@ -10,6 +11,14 @@ class SubscriptionItem extends React.Component {
   render () {
     return (
       <div className='col-lg-6 col-md-6 col-sm-6'>
+
+        <ReactTooltip
+          id='alert_subscription'
+          place='bottom'
+          type='dark'
+          effect='solid'
+        />
+
         <div
           style={{
             margin: '10px',
@@ -52,7 +61,12 @@ class SubscriptionItem extends React.Component {
                 <br />
                 {
                   this.props.description &&
-                  <span style={{fontSize: '10px'}} className="m-widget4__sub">
+                  <span
+                    style={{fontSize: '10px'}}
+                    className="m-widget4__sub"
+                    data-tip={this.props.description}
+                    data-for='alert_subscription'
+                  >
                     {this.props.description}
                   </span>
                 }
