@@ -105,7 +105,7 @@ class AlertSubscriptions extends React.Component {
     if (['email', 'whatsapp'].includes(subscription.alertChannel.toLowerCase())) {
       return subscription.channelId
     } else if (subscription.alertChannel.toLowerCase() === 'messenger') {
-      const page = this.props.pages.find((item) => item.pageId === subscription.channelId)
+      const page = this.props.pages.find((item) => item._id === subscription.pageId)
       if (page) {
         return page.pageName
       } else {
