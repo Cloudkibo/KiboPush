@@ -13,7 +13,8 @@ class AlertSubscriptions extends React.Component {
       selectedAgent: '',
       name: '',
       email: '',
-      emailError: false
+      emailError: false,
+      subscriptionsLimit: 5
     }
 
     this.setAgents = this.setAgents.bind(this)
@@ -23,6 +24,7 @@ class AlertSubscriptions extends React.Component {
     this.onAddAgent = this.onAddAgent.bind(this)
     this.onRemoveAgent = this.onRemoveAgent.bind(this)
     this.onAddEmail = this.onAddEmail.bind(this)
+    this.getDescription = this.getDescription.bind(this)
   }
 
   componentDidMount () {
@@ -99,6 +101,21 @@ class AlertSubscriptions extends React.Component {
     this.props.removeSubscription(id)
   }
 
+  getDescription (subscription) {
+    if (['email', 'whatsapp'].includes(subscription.alertChannel.toLowerCase())) {
+      return subscription.channelId
+    } else if (subscription.alertChannel.toLowerCase() === 'messenger') {
+      const page = this.props.pages.find((item) => item._id === subscription.pageId)
+      if (page) {
+        return page.pageName
+      } else {
+        return ''
+      }
+    } else {
+      return ''
+    }
+  }
+
   UNSAFE_componentWillReceiveProps (nextProps) {
     if (nextProps.channel === 'notification' &&
         nextProps.members && nextProps.members.length > 0) {
@@ -110,7 +127,7 @@ class AlertSubscriptions extends React.Component {
     return (
       <div>
         {
-          this.props.channel === 'notification' &&
+          this.props.channel === 'notification' && this.state.subscriptionsLimit > this.props.subscriptions.length &&
           <>
             <div className='form-group m-form__group row'>
               <div className='col-lg-2 col-md-2 col-sm-12' />
@@ -173,7 +190,7 @@ class AlertSubscriptions extends React.Component {
           </>
         }
         {
-          this.props.channel === 'email' &&
+          this.props.channel === 'email' && this.state.subscriptionsLimit > this.props.subscriptions.length &&
           <>
             <div className='form-group m-form__group row'>
               <div className='col-lg-5 col-md-5 col-sm-12'>
@@ -228,7 +245,7 @@ class AlertSubscriptions extends React.Component {
                   <SUBSCRIPTIONITEM
                     key={i}
                     name={item.userName}
-                    description={ ['email', 'whatsapp'].includes(item.alertChannel.toLowerCase()) ? item.channelId : ''}
+                    description={this.getDescription(item)}
                     profilePic={item.profilePic}
                     onRemove={() => {this.onRemoveAgent(item._id)}}
                   />
@@ -252,7 +269,7 @@ AlertSubscriptions.propTypes = {
   'updateMainState': PropTypes.func.isRequired,
   'whatsAppInfo': PropTypes.object,
   'facebookInfo': PropTypes.object,
-  'fbAppId': PropTypes.string
+  'pages': PropTypes.array.isRequired
 }
 
 export default AlertSubscriptions

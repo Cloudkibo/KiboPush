@@ -37,7 +37,6 @@ class MessageAlerts extends React.Component {
     props.fetchMessageAlerts(props.user.platform, this.setAlertsDetails)
     props.fetchAlertSubscriptions(props.user.platform, this.setAlertSubscriptions)
     props.fetchMembers()
-    props.getFbAppId()
   }
 
   componentDidMount () {
@@ -117,15 +116,25 @@ class MessageAlerts extends React.Component {
   }
 
   updateAlertConfiguration (type, field, value) {
-    if (field === 'interval' && !value) {
-      value = 1
-    }
+    let flag = true
     let alerts = JSON.parse(JSON.stringify(this.state.alerts))
     let alert = alerts.find((item) => item.type === type)
-    const index = alerts.findIndex((item) => item.type === type)
-    alert[field] = value
-    alerts[index] = alert
-    this.setState({alerts})
+    if (field === 'interval') {
+      if (alert.intervalUnit === 'mins' && value > (60 * 24)) {
+        flag = false
+      } else if (alert.intervalUnit === 'hours' && value > 24) {
+        flag = false
+      }
+    }
+    if (flag) {
+      if (field === 'interval' && !value) {
+        value = 1
+      }
+      const index = alerts.findIndex((item) => item.type === type)
+      alert[field] = value
+      alerts[index] = alert
+      this.setState({alerts})
+    }
   }
 
   saveAlert (type) {
@@ -196,8 +205,8 @@ class MessageAlerts extends React.Component {
             removeSubscription={this.removeSubscription}
             updateMainState={this.updateState}
             facebookInfo={this.props.automatedOptions.facebook}
-            fbAppId={this.props.fbAppId}
             user={this.props.user}
+            pages={this.props.pages}
           />
         )
       case 'email':
@@ -448,9 +457,9 @@ MessageAlerts.propTypes = {
   'setSocketData': PropTypes.func.isRequired,
   'members': PropTypes.array,
   'user': PropTypes.object.isRequired,
-  'fbAppId': PropTypes.string,
   'automatedOptions': PropTypes.object.isRequired,
-  'saveAlert': PropTypes.func.isRequired
+  'saveAlert': PropTypes.func.isRequired,
+  'pages': PropTypes.array.isRequired
 }
 
 export default MessageAlerts
