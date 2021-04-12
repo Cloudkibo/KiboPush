@@ -877,9 +877,8 @@ class Settings extends React.Component {
                 addSubscription={this.props.addSubscription}
                 removeSubscription={this.props.removeSubscription}
                 setSocketData={this.props.setSocketData}
-                getFbAppId={this.props.getFbAppId}
                 user={this.props.user}
-                fbAppId={this.props.fbAppId}
+                pages={this.props.pages}
                 automatedOptions={this.props.automatedOptions}
                 members={this.props.members}
                 socketData={this.props.socketData}
@@ -928,6 +927,7 @@ function mapStateToProps(state) {
     apiSuccessNGP: (state.settingsInfo.apiSuccessNGP),
     apiFailureNGP: (state.settingsInfo.apiFailureNGP),
     members: (state.membersInfo.members),
+    pages: (state.pagesInfo.pages),
     socketData: (state.messageAlertsInfo.socketData),
     fbAppId: (state.basicInfo.fbAppId)
   }
