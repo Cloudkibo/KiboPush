@@ -161,6 +161,14 @@ class ConfigureChatbot extends React.Component {
         isParent: false
       }]
     }
+    console.log({
+      blocks,
+      sidebarItems,
+      currentBlock: blocks[0],
+      loading: false,
+      progress,
+      allTriggers
+    })
     this.setState({
       blocks,
       sidebarItems,
