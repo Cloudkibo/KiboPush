@@ -75,6 +75,7 @@
     "react-slick": "^0.15.4",
     "react-stickydiv": "^3.4.20",
     "react-stripe-elements": "^2.0.0",
+    "react-timezone-select": "^0.10.7",
     "react-tooltip": "^3.11.6",
     "react-web-notification": "^0.2.4",
     "react-youtube": "^7.5.0",
