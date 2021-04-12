@@ -75,7 +75,6 @@ class BusinessHours extends React.Component {
   }
 
   setTimezone (e) {
-    console.log('setTimeZone', e)
     this.setState({timezone: e.value})
   }
 
