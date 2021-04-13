@@ -2,19 +2,22 @@ import React from 'react'
 import PropTypes from 'prop-types'
 
 import TIMEPICKER from '../../components/extras/timePicker'
+import TimezoneSelect from 'react-timezone-select'
 
 class BusinessHours extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
       opening: '',
-      closing: ''
+      closing: '',
+      timezone: ''
     }
 
     this.putBusinessHours = this.putBusinessHours.bind(this)
     this.setOpeningTime = this.setOpeningTime.bind(this)
     this.setClosingTime = this.setClosingTime.bind(this)
     this.saveBusinessHours = this.saveBusinessHours.bind(this)
+    this.setTimezone = this.setTimezone.bind(this)
   }
 
   componentDidMount () {
@@ -35,7 +38,8 @@ class BusinessHours extends React.Component {
   putBusinessHours (data) {
     this.setState({
       opening: data.opening,
-      closing: data.closing
+      closing: data.closing,
+      timezone: data.timezone
     })
   }
 
@@ -50,7 +54,8 @@ class BusinessHours extends React.Component {
   saveBusinessHours () {
     const data = {
       opening: this.state.opening,
-      closing: this.state.closing
+      closing: this.state.closing,
+      timezone: this.state.timezone
     }
     let automatedOptions = JSON.parse(JSON.stringify(this.props.automatedOptions))
     automatedOptions.businessHours = data
@@ -67,6 +72,10 @@ class BusinessHours extends React.Component {
     if (nextProps.automatedOptions.businessHours) {
       this.putBusinessHours(nextProps.automatedOptions.businessHours)
     }
+  }
+
+  setTimezone (e) {
+    this.setState({timezone: e.value})
   }
 
   render () {
@@ -89,6 +98,18 @@ class BusinessHours extends React.Component {
             <div className='form-group m-form__group row'>
               <div className='col-lg-1 col-md-1 col-sm-12' />
               <div className='col-lg-10 col-md-10 col-sm-12'>
+                <div className='form-group m-form__group'>
+                  <label>Select Time Zone:</label>
+                  <div>
+                    <TimezoneSelect
+                      value={this.state.timezone}
+                      onChange={this.setTimezone}
+                      style={{width: '500px'}}
+                      width='500'
+                    />
+                  </div>
+                </div>
+                <br />
                 <div className='form-group m-form__group row'>
                   <div className='col-lg-5 col-md-5 col-sm-12'>
                     <TIMEPICKER
@@ -118,7 +139,7 @@ class BusinessHours extends React.Component {
                   type="button"
                   className="btn btn-primary pull-right"
                   onClick={this.saveBusinessHours}
-                  disabled={!(this.state.opening && this.state.closing)}
+                  disabled={!(this.state.opening && this.state.closing && this.state.timezone)}
                 >
                   Save
                 </button>

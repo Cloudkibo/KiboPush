@@ -407,7 +407,7 @@ class ChatbotSettings extends React.Component {
                         <div className="form-group m-form__group col-lg-8">
                           <span className="m--font-boldest">Catalog:</span>
                             {this.state.catalog && this.state.catalog.name &&
-                              <div style={{float: 'right', marginRight: '-10px', marginTop: '16px'}} onClick={this.removeCatalog}>
+                              <div style={{float: 'right', marginTop: '16px'}} onClick={this.removeCatalog}>
                               <span className="fa-stack" style={{cursor: 'pointer'}}>
                                 <i className="fa fa-times fa-stack-2x" />
                                 </span>
