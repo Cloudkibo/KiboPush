@@ -23,6 +23,7 @@ import CreatePoll from './containers/polls/CreatePoll'
 import Poll from './containers/polls/poll'
 import FacebookIntegration from './containers/integrations/facebookIntegration'
 import Integrations from './containers/integrations/integrations'
+import SmsPlansScreen from './containers/integrations/SmsPlansScreen'
 import PollResult from './containers/polls/PollResult'
 import ViewPoll from './containers/polls/ViewPoll'
 import UserDetails from './containers/operationalDashboard/userDetails'
@@ -444,6 +445,7 @@ const Routes = () => (
     <Route path='/ordersCRMManual' component={OrdersCRMManual} onEnter={requireAuth} />
     <Route path='/whatsAppShare' component={WhatsAppShare} onEnter={requireAuth} />
     <Route path='/whatsAppChatButton' component={WhatsAppChatButton} onEnter={requireAuth} />
+    <Route path='/smsPlansScreen' component={SmsPlansScreen} onEnter={requireAuth} />
     <Route path='*' render={() => <Redirect to='/' />} />
   </Switch>
 
