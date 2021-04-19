@@ -119,7 +119,7 @@ class FacebookIntegration extends React.Component {
 
   showSmsPlans() {
     this.props.history.push({
-      pathname: '/smsPlansScreen'
+      pathname: '/smsBillingScreen'
     })
   }
 
@@ -138,6 +138,7 @@ class FacebookIntegration extends React.Component {
   closeDialog() {
     this.setState({ isShowingModal: false })
   }
+
   showDialogWhatsApp() {
     this.setState({ isShowingModalWhatsApp: true })
   }

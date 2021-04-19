@@ -6,7 +6,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 
-class SmsPlansScreen extends React.Component {
+class SmsProviderScreen extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
@@ -159,4 +159,4 @@ function mapDispatchToProps (dispatch) {
   return bindActionCreators({}, dispatch)
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(SmsPlansScreen)
+export default connect(mapStateToProps, mapDispatchToProps)(SmsProviderScreen)
