@@ -459,8 +459,16 @@ class Sidebar extends Component {
         icon: 'flaticon-cogwheel'
       })
     }
+    if (!isMobile && ['sms'].includes(platform)) {
+      menuItems.push({
+        priority: 'n',
+        name: 'Add Ons',
+        route: '/addOns',
+        icon: 'flaticon-app'
+      })
+    } 
     menuItems.push({
-      priority: 'n',
+      priority: 'o',
       name: 'User Guide',
       link: 'http://kibopush.com/user-guide/',
       icon: 'flaticon-info'
