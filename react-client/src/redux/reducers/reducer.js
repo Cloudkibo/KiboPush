@@ -1,6 +1,7 @@
 import { combineReducers } from 'redux'
 
 import { abandonedInfo } from './abandonedCarts.reducer'
+import {addOnsInfo} from './addOns.reducer'
 import { autopostingInfo } from './autoposting.reducer.js'
 import { backdoorInfo } from './backdoor.reducer'
 import { basicInfo } from './basicinfo.reducer'
@@ -61,6 +62,7 @@ import { plansInfo } from './plans.reducer'
 
 const appReducer = combineReducers({
   abandonedInfo,
+  addOnsInfo,
   autopostingInfo,
   backdoorInfo,
   basicInfo,

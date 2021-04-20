@@ -349,7 +349,7 @@ class CustomerMatching extends React.Component {
       return
     }
     this.setState({ phoneNumbers: this.inputPhoneNumbers.value.split(';') })
-    this.setState({ disabled: false })
+    this.setState({ disabled: false, numbersError: [] })
     if (this.state.textAreaValue !== '' && ((this.state.file && this.state.file !== '') || e.target.value !== '')) {
       this.setState({ disabled: false })
     }
@@ -761,7 +761,9 @@ class CustomerMatching extends React.Component {
                               this.state.manually
                                 ? <div>
                                   <label>{'Enter phone number separated by semi colon {;}'}</label>
-                                  <input autoFocus ref={(input) => { this.inputPhoneNumbers = input }} type='text' className='form-control m-input m-input--square' onChange={this.onPhoneNumbersChange} placeholder='Numbers must start with + sign' />
+                                  <input autoFocus ref={(input) => { this.inputPhoneNumbers = input }} type='text' className='form-control m-input m-input--square' onChange={this.onPhoneNumbersChange} 
+                                    placeholder='+923322735478;+14258909414' 
+                                  />
                                   {
                                     this.state.numbersError.length > 0 &&
                                     <span className='m-form__help'>

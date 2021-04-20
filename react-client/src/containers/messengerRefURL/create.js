@@ -13,6 +13,7 @@ import Tabs from './tabs'
 import Preview from './preview'
 import { fetchAllSequence } from '../../redux/actions/sequence.action'
 import {getFileIdsOfBroadcast, deleteInitialFiles, deleteFile} from '../../utility/utils'
+import BACKBUTTON from '../../components/extras/backButton'
 
 class CreateURL extends React.Component {
   constructor (props, context) {
@@ -40,6 +41,7 @@ class CreateURL extends React.Component {
     }
     this.onSave = this.onSave.bind(this)
     this.onEditMessage = this.onEditMessage.bind(this)
+    this.onBack = this.onBack.bind(this)
   }
 
   onEditMessage () {  
@@ -126,6 +128,12 @@ class CreateURL extends React.Component {
     }
   }
 
+  onBack() {
+    this.props.history.push({
+      pathname: '/messengerRefURL'
+    })
+  }
+
   render () {
     console.log('this.props.messengerRefURL in render create function', this.props.messengerRefURL)
     var alertOptions = {
@@ -138,6 +146,9 @@ class CreateURL extends React.Component {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
+        <BACKBUTTON
+          onBack={this.onBack}
+        />
         <div className='m-content'>
           <div className='row'>
             <div className='col-xl-12'>

@@ -671,6 +671,19 @@ class Sidebar extends Component {
     }
   }
 
+  showAddOns() {
+    if (!this.props.isMobile && ['sms'].includes(this.props.user.platform)) {
+      return (
+        <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
+          <Link to='/addOns' className='m-menu__link m-menu__toggle'>
+            <i className='m-menu__link-icon flaticon-app' title='Settings' />
+            <span className='m-menu__link-text'>Add Ons</span>
+          </Link>
+        </li>
+      )
+    }
+  }
+
   showUserGuide() {
     if (this.state.settings) {
       return (
@@ -1496,6 +1509,7 @@ class Sidebar extends Component {
                     {this.showOrganizationItems()}
                     {false && this.props.user && this.props.user.platform === 'messenger' && this.showAbandonedCarts()}
                     {this.showSettings()}
+                    {this.showAddOns()}
                     {this.showUserGuide()}
                   </ul>
                 }

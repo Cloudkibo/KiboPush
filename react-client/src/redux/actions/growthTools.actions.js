@@ -78,6 +78,8 @@ export function sendPhoneNumbers (data, msg) {
       .then(res => {
         if (res.status !== 'success') {
           msg.error(res.description || res.payload || 'Failed')
+        } else {
+          msg.success(res.description || res.payload || 'Invitation send sucessfully')
         }
         console.log('Response', res)
         dispatch(sendresp(res))
