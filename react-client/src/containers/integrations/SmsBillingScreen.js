@@ -5,6 +5,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
+import Header from './../wizard/header'
 
 class SmsBillingScreen extends React.Component {
   constructor (props, context) {
@@ -29,79 +30,83 @@ class SmsBillingScreen extends React.Component {
     document.title = `${title} | Integrations`
     /* eslint-disable */
     $('#sidebarDiv').addClass('hideSideBar')
+    $('#headerDiv').addClass('hideSideBar')
     /* eslint-enable */
     document.getElementsByTagName('body')[0].className = 'm-page--fluid m--skin- m-content--skin-light2 m-footer--push m-aside--offcanvas-default'
   }
 
   render () {
     return (
-      <div className="m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-grid--tablet-and-mobile m-grid--hor-tablet-and-mobile m-login m-login--1 m-login--singin">
-        <div className="m-grid__item m-grid__item--fluid m-grid m-grid--center m-grid--hor m-grid__item--order-tablet-and-mobile-1	m-login__content" style={{backgroundImage: 'url(https://cdn.cloudkibo.com/public/assets/app/media/img//bg/bg-4.jpg)'}}>
-          <div className="m-grid__item m-grid__item--middle">
-            <h3 className="m-login__welcome">
-              Configure SMS Channel
-            </h3>
-            <p className="m-login__msg">
-              Get connected with your contacts with a 98%
-              <br />
-              open rate of sms
-            </p>
+      <div>
+        <Header />
+      <div className="m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-grid--tablet-and-mobile m-grid--hor-tablet-and-mobile m-login m-login--1 m-login--singin" style={{ height: '100vh' }}>
+          <div className="m-grid__item m-grid__item--fluid m-grid m-grid--center m-grid--hor m-grid__item--order-tablet-and-mobile-1	m-login__content" style={{backgroundImage: 'url(https://cdn.cloudkibo.com/public/assets/app/media/img//bg/bg-4.jpg)'}}>
+            <div className="m-grid__item m-grid__item--middle">
+              <h3 className="m-login__welcome">
+                Configure SMS Channel
+              </h3>
+              <p className="m-login__msg">
+                Get connected with your contacts with a 98%
+                <br />
+                open rate of sms
+              </p>
+            </div>
           </div>
-        </div>
-        <div className="m-grid__item m-grid__item--order-tablet-and-mobile-2 m-login__aside" style={{padding: '2rem'}}>
-          <div className="sequence-box" style={{height: '10em'}}>
-            <span>
-              <span className="sequence-name">
-                Free Plan
-              </span>
-              <br />
+          <div className="m-grid__item m-grid__item--order-tablet-and-mobile-2 m-login__aside" style={{padding: '2rem'}}>
+            <div className="sequence-box" style={{height: '10em'}}>
               <span>
+                <span className="sequence-name">
+                  Free Plan
+                </span>
+                <br />
                 <span>
-                  Connect your Twilio trial account <br /> and use our features for free
+                  <span>
+                    Connect your Twilio trial account <br /> and use our features for free
+                  </span>
                 </span>
               </span>
-            </span>
-            <span className="sequence-text sequence-centered-text" style={{position: 'absolute', left: '77%', top: '25%'}}>
-              <span className="sequence-number">
-                FREE
-              </span>
-            </span>
-          </div>
-          <div className="sequence-box" style={{height: '10em'}}>
-            <span>
-              <span className="sequence-name">
-                Basic Plan
-              </span>
-              <br />
-              <span>
-                <span>
-                  Connect your Bandwidth account <br /> to send messages upto 5000
+              <span className="sequence-text sequence-centered-text" style={{position: 'absolute', left: '77%', top: '25%'}}>
+                <span className="sequence-number">
+                  FREE
                 </span>
               </span>
-            </span>
-            <span className="sequence-text sequence-centered-text" style={{position: 'absolute', left: '77%', top: '25%'}}>
-              <span className="sequence-number">
-                $35
-              </span>
-            </span>
-          </div>
-          <div className="sequence-box" style={{height: '10em'}}>
-            <span>
-              <span className="sequence-name">
-                Standard Plan
-              </span>
-              <br />
+            </div>
+            <div className="sequence-box" style={{height: '10em'}}>
               <span>
+                <span className="sequence-name">
+                  Basic Plan
+                </span>
+                <br />
                 <span>
-                  Connect your Bandwidth account <br /> to send messages upto 7500
+                  <span>
+                    Connect your Bandwidth account <br /> to send messages upto 5000
+                  </span>
                 </span>
               </span>
-            </span>
-            <span className="sequence-text sequence-centered-text" style={{position: 'absolute', left: '77%', top: '25%'}}>
-              <span className="sequence-number">
-                $50
+              <span className="sequence-text sequence-centered-text" style={{position: 'absolute', left: '77%', top: '25%'}}>
+                <span className="sequence-number">
+                  $35
+                </span>
               </span>
-            </span>
+            </div>
+            <div className="sequence-box" style={{height: '10em'}}>
+              <span>
+                <span className="sequence-name">
+                  Standard Plan
+                </span>
+                <br />
+                <span>
+                  <span>
+                    Connect your Bandwidth account <br /> to send messages upto 7500
+                  </span>
+                </span>
+              </span>
+              <span className="sequence-text sequence-centered-text" style={{position: 'absolute', left: '77%', top: '25%'}}>
+                <span className="sequence-number">
+                  $50
+                </span>
+              </span>
+            </div>
           </div>
         </div>
       </div>
