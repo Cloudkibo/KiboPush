@@ -129,6 +129,8 @@ class Builders extends React.Component {
     this.getModalContent= this.getModalContent.bind(this)
     this.toggleModalContent = this.toggleModalContent.bind(this)
     this.handleMediaValidationMessage = this.handleMediaValidationMessage.bind(this)
+    this.getLevel = this.getLevel.bind(this)
+    this.canCreateNewLevel = this.canCreateNewLevel.bind(this)
     this.GSModalContent = null
 
     if (props.setReset) {
@@ -152,6 +154,28 @@ class Builders extends React.Component {
     this.props.fetchAllSequence()
     this.props.loadCustomFields()
     console.log('builders props in constructor', this.props)
+  }
+
+  getLevel (id) {
+    const currentBlock = this.state.linkedMessages.find((item) => item.id === id)
+    let level = 1
+    if (currentBlock.parentId) {
+      level = level + this.getLevel(currentBlock.parentId)
+    }
+    return level
+  }
+
+  canCreateNewLevel () {
+    if (this.getLevel(this.state.currentId) >= this.props.user.plan.broadcast_levels) {
+      return {
+        canCreate: false,
+        errorMessage: `Broadcast levels limit has reached. Your current plan does not allow you to create more than ${this.props.user.plan.broadcast_levels} levels.`
+      }
+    } else {
+      return {
+        canCreate: true
+      }
+    }
   }
 
   showValidationModal (errorMessage) {
@@ -1468,6 +1492,8 @@ class Builders extends React.Component {
       'text': (<TextModal
         buttons={[]}
         module = {this.props.module}
+        canCreateNewLevel={this.canCreateNewLevel}
+        alertMsg={this.msg}
         edit={this.state.editData ? true : false}
         {...this.state.editData}
         noButtons={this.props.noButtons}
@@ -1486,6 +1512,8 @@ class Builders extends React.Component {
         setTempFiles={this.setTempFiles}
         initialFiles={this.state.initialFiles}
         module = {this.props.module}
+        canCreateNewLevel={this.canCreateNewLevel}
+        alertMsg={this.msg}
         edit={this.state.editData ? true : false}
         {...this.state.editData}
         pages={this.props.pages}
@@ -1544,6 +1572,8 @@ class Builders extends React.Component {
         setTempFiles={this.setTempFiles}
         initialFiles={this.state.initialFiles}
         module = {this.props.module}
+        canCreateNewLevel={this.canCreateNewLevel}
+        alertMsg={this.msg}
         edit={this.state.editData ? true : false}
         {...this.state.editData}
         buttonActions={this.props.buttonActions}
@@ -1922,6 +1952,8 @@ class Builders extends React.Component {
           tags={this.props.tags}
           quickReplies={quickReplies}
           updateQuickReplies={this.updateQuickReplies}
+          canCreateNewLevel={this.canCreateNewLevel}
+          alertMsg={this.msg}
         />
     }
   }
@@ -1951,6 +1983,8 @@ class Builders extends React.Component {
                 quickReplies={this.state.quickReplies[id]}
                 updateQuickReplies={this.updateQuickReplies}
                 currentId={this.state.currentId}
+                canCreateNewLevel={this.canCreateNewLevel}
+                alertMsg={this.msg}
               />
           }
           this.setState({quickRepliesComponents})
@@ -2249,6 +2283,7 @@ class Builders extends React.Component {
           titleEditable={this.props.titleEditable}
           showTabs={this.props.showTabs}
           removeMessage={this.removeMessage}
+          user={this.props.user}
         />
         : this.props.builderValue === 'flow' &&
         <FLOWBUILDER
@@ -2319,6 +2354,7 @@ function mapStateToProps (state) {
   return {
     sequences: state.sequenceInfo.sequences,
     tags: state.tagsInfo.tags,
+    user: state.basicInfo.user,
     customFields: (state.customFieldInfo.customFields)
   }
 }
