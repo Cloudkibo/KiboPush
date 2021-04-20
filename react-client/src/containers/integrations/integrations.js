@@ -66,6 +66,7 @@ class FacebookIntegration extends React.Component {
     this.updateSID = this.updateSID.bind(this)
     this.goToNext = this.goToNext.bind(this)
     this.cancel = this.cancel.bind(this)
+    this.showSmsPlans = this.showSmsPlans.bind(this)
     this.changeWhatsAppProvider = this.changeWhatsAppProvider.bind(this)
     this.updateWhatsAppData = this.updateWhatsAppData.bind(this)
     this.clearFieldsWapp = this.clearFieldsWapp.bind(this)
@@ -116,6 +117,12 @@ class FacebookIntegration extends React.Component {
     })
   }
 
+  showSmsPlans() {
+    this.props.history.push({
+      pathname: '/smsBillingScreen'
+    })
+  }
+
   updateSID(e) {
     this.setState({ SID: e.target.value })
   }
@@ -131,6 +138,7 @@ class FacebookIntegration extends React.Component {
   closeDialog() {
     this.setState({ isShowingModal: false })
   }
+
   showDialogWhatsApp() {
     this.setState({ isShowingModalWhatsApp: true })
   }
@@ -292,7 +300,7 @@ class FacebookIntegration extends React.Component {
                 <span className='m-widget4__title'>
                   <i className='fa fa-comment' />&nbsp;&nbsp;&nbsp;
                   <span>
-                    Twilio
+                    SMS
                   </span>
                 </span>
                 <br />
@@ -302,7 +310,7 @@ class FacebookIntegration extends React.Component {
                   ? <button className='m-btn m-btn--pill m-btn--hover-secondary btn btn-secondary' disabled>
                     Connected
                   </button>
-                  : <button className='m-btn m-btn--pill m-btn--hover-success btn btn-success' style={{ borderColor: '#34bfa3', color: '#34bfa3' }} data-toggle="modal" data-target="#connect" onClick={this.showDialog}>
+                  : <button className='m-btn m-btn--pill m-btn--hover-success btn btn-success' style={{ borderColor: '#34bfa3', color: '#34bfa3' }} onClick={this.showSmsPlans}>
                     Connect
                   </button>
                 }

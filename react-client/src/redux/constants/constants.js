@@ -340,6 +340,7 @@ export const RESET_SEARCH_RESULTS = 'RESET_SEARCH_RESULTS'
 
 //  constants for Plans
 export const FETCH_ALL_PLANS = 'FETCH_ALL_PLANS'
+export const LOAD_PLANS_LIST = 'LOAD_PLANS_LIST'
 
 //  constants for Permissions
 export const FETCH_ALL_PERMISSIONS = 'FETCH_ALL_PERMISSIONS'
