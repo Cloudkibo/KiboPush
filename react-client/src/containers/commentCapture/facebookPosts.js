@@ -427,16 +427,19 @@ class FacebookPosts extends React.Component {
                       </h3>
                     </div>
                   </div>
-                  <div className='m-portlet__head-tools'>
-                    <Link to='/createPost' className='addLink btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
-                      <span>
-                        <i className='la la-plus' />
+                  {
+                    this.props.user.permissions['create_comment_capture_rules'] &&
+                    <div className='m-portlet__head-tools'>
+                      <Link to='/createPost' className='addLink btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill'>
                         <span>
-                          Create New
+                          <i className='la la-plus' />
+                          <span>
+                            Create New
+                          </span>
                         </span>
-                      </span>
-                    </Link>
-                  </div>
+                      </Link>
+                    </div>
+                  }
                 </div>
                 <div className='m-portlet__body'>
                 { (this.state.postsData && this.state.postsData.length > 0) || this.state.filter
@@ -540,12 +543,18 @@ class FacebookPosts extends React.Component {
                                 <button className='btn btn-primary btn-sm' style={{ float: 'left', margin: 2, marginLeft: '40px' }}  onClick={() => this.onView(post)}>
                                     View
                                 </button>
-                                <Link to='/editPost' state={{post: post}} className='btn btn-primary btn-sm' style={{float: 'left', margin: 2, marginLeft: '40px'}} onClick={() => this.onEdit(post)}>
-                                    Edit
-                                </Link>
-                                      <button className='btn btn-primary btn-sm' style={{ float: 'left', margin: 2, marginLeft: '40px' }} data-toggle="modal" data-target="#delete" onClick={() => this.showDialogDelete(post._id)}>
-                                        Delete
-                                </button>
+                                {
+                                  this.props.user.permissions['update_comment_capture_rules'] &&
+                                  <Link to='/editPost' state={{post: post}} className='btn btn-primary btn-sm' style={{float: 'left', margin: 2, marginLeft: '40px'}} onClick={() => this.onEdit(post)}>
+                                      Edit
+                                  </Link>
+                                }
+                                {
+                                  this.props.user.permissions['delete_comment_capture_rules'] &&
+                                  <button className='btn btn-primary btn-sm' style={{ float: 'left', margin: 2, marginLeft: '40px' }} data-toggle="modal" data-target="#delete" onClick={() => this.showDialogDelete(post._id)}>
+                                    Delete
+                                  </button>
+                                }
                                     </span>
                                   </td>
                                 </tr>
@@ -592,7 +601,8 @@ function mapStateToProps(state) {
     posts: (state.postsInfo.posts),
     postsCount: (state.postsInfo.postsCount),
     allPostsAnalytics: (state.postsInfo.allPostsAnalytics),
-    pages: (state.pagesInfo.pages)
+    pages: (state.pagesInfo.pages),
+    user: (state.basicInfo.user)
   }
 }
 
