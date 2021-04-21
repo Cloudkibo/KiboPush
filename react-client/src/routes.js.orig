@@ -448,10 +448,13 @@ const Routes = () => (
     <Route path='/ordersCRMManual' component={OrdersCRMManual} onEnter={requireAuth} />
     <Route path='/whatsAppShare' component={WhatsAppShare} onEnter={requireAuth} />
     <Route path='/whatsAppChatButton' component={WhatsAppChatButton} onEnter={requireAuth} />
+<<<<<<< HEAD
     <Route path='/smsPlansScreen' component={SmsPlansScreen} onEnter={requireAuth} />
     <Route path='/smsProviderScreen' component={SmsProviderScreen} onEnter={requireAuth} />
     <Route path='/smsBillingScreen' component={SmsBillingScreen} onEnter={requireAuth} />
+=======
     <Route path='/addOns' component={AddOns} onEnter={requireAuth} />
+>>>>>>> smsPricing
     <Route path='*' render={() => <Redirect to='/' />} />
   </Switch>
 

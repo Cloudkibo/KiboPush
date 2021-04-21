@@ -302,3 +302,12 @@ export function logout(cb) {
     })
   }
 }
+
+export function fetchUsageInfo(cb) {
+  return (dispatch) => {
+    callApi('featureUsage').then(res => {
+      console.log('fetchUsageInfo response', res)
+      cb(res)
+    })
+  }
+}
