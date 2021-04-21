@@ -1,5 +1,6 @@
 // constants for add ons
 export const SHOW_ADD_ONS = 'SHOW_ADD_ONS'
+export const SHOW_COMPANY_ADD_ONS = 'SHOW_COMPANY_ADD_ONS'
 
 // constants for autoposting
 export const FETCH_AUTOPOSTING_LIST = 'FETCH_AUTOPOSTING_LIST'
@@ -54,6 +55,7 @@ export const LOAD_USER_SUMMARY = 'LOAD_USER_SUMMARY'
 // constants for basicinfo
 export const LOAD_BROWSER_NAME = 'LOAD_BROWSER_NAME'
 export const LOAD_USER_DETAILS = 'LOAD_USER_DETAILS'
+export const SET_USER_DETAILS = 'SET_USER_DETAILS'
 export const CURRENT_ENVIRONMENT = 'CURRENT_ENVIRONMENT'
 export const LOAD_KEYS = 'LOAD_KEYS'
 export const FETCH_PLAN = 'FETCH_PLAN'

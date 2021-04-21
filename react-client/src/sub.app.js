@@ -18,8 +18,9 @@ import AlertContainer from 'react-alert'
 import HEADER from './components/header/header'
 import { getLandingPage } from './utility/utils'
 import { getHiddenHeaderRoutes, getWhiteHeaderRoutes } from './utility/utils'
-import { validateUserAccessToken, isFacebookConnected, fetchUsageInfo } from './redux/actions/basicinfo.actions'
+import { validateUserAccessToken, isFacebookConnected, fetchUsageInfo, modifyUserDetails } from './redux/actions/basicinfo.actions'
 import { fetchCompanyPreferences } from './redux/actions/settings.actions'
+import { fetchCompanyAddOns } from './redux/actions/addOns.actions'
 
 class SubApp extends Component {
   constructor (props) {
@@ -38,6 +39,7 @@ class SubApp extends Component {
     this.checkFacebookConnected = this.checkFacebookConnected.bind(this)
     this.callbackUserDetails = this.callbackUserDetails.bind(this)
     this.checkResourceConsumption = this.checkResourceConsumption.bind(this)
+    this.handleCompanyAddOns = this.handleCompanyAddOns.bind(this)
 
     props.getuserdetails(joinRoom, this.callbackUserDetails)
   }
@@ -54,6 +56,7 @@ class SubApp extends Component {
     this.props.isFacebookConnected(this.checkFacebookConnected)
     this.props.fetchCompanyPreferences()
     this.props.fetchUsageInfo(this.checkResourceConsumption)
+    this.props.fetchCompanyAddOns(this.handleCompanyAddOns)
 
     if (this.props.history.location.pathname.toLowerCase() === '/demossa') {
       this.handleDemoSSAPage()
@@ -124,6 +127,25 @@ class SubApp extends Component {
     }
   }
 
+  handleCompanyAddOns (res) {
+    if (res.status === 'success') {
+      const companyAddOns = res.payload
+      const permissions  []
+      for (let i = 0; i < companyAddOns.length; i++) {
+        if (companyAddOns[i].permissions && companyAddOns[i].permissions.length > 0) {
+          permissions = [...permissions, ...companyAddOns[i].permissions]
+        }
+      }
+      let user = this.props.user
+      for (let j = 0; j < permissions.length; j++) {
+        if (user.plan[permissions[i]] === false) {
+          user.plan[permissions[i]] = true
+        }
+      }
+      this.props.modifyUserDetails(user)
+    }
+  }
+
   UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.message_alert) {
       nextProps.setMessageAlert(null)
@@ -146,7 +168,7 @@ class SubApp extends Component {
           this.props.history.push({
             pathname: '/integrations'
           })
-      } else if (nextProps.user.platform === 'sms' && nextProps.automated_options && !nextProps.automated_options.twilio && nextProps.user.role === 'buyer') {
+      } else if (nextProps.user.platform === 'sms' && nextProps.automated_options && !nextProps.automated_options.smsm && nextProps.user.role === 'buyer') {
         this.props.history.push({
           pathname: '/integrations',
           state: 'sms'
@@ -325,7 +347,9 @@ function mapDispatchToProps (dispatch) {
       validateUserAccessToken,
       isFacebookConnected,
       fetchCompanyPreferences,
-      fetchUsageInfo
+      fetchUsageInfo,
+      fetchCompanyAddOns,
+      modifyUserDetails
     }, dispatch)
 }
 

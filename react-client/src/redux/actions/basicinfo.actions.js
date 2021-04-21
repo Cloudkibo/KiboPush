@@ -40,6 +40,13 @@ export function showuserdetails(data) {
   }
 }
 
+export function setUserDetails(user) {
+  return {
+    type: ActionTypes.SET_USER_DETAILS,
+    data: user
+  }
+}
+
 export function showDetailUser(data) {
   return {
     type: ActionTypes.SHOW_USER_DETAIL_AUTOMATE_OPTION,
@@ -303,5 +310,11 @@ export function fetchUsageInfo(cb) {
       console.log('fetchUsageInfo response', res)
       cb(res)
     })
+  }
+}
+
+export function modifyUserDetails (user) {
+  return (dispatch) => {
+    dispatch(setUserDetails(user))
   }
 }
