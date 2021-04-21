@@ -117,7 +117,7 @@ class Header extends React.Component {
         }
         else return true
       case 'sms':
-        if (!this.props.automated_options.twilio) return false
+        if (!this.props.automated_options.sms) return false
         else return true
       default:
         return false

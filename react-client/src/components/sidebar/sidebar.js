@@ -1539,7 +1539,8 @@ function mapStateToProps(state) {
     socketSession: (state.liveChat.socketSession),
     userChat: (state.liveChat.userChat),
     socketData: (state.liveChat.socketData),
-    automated_options: (state.basicInfo.automated_options)
+    automated_options: (state.basicInfo.automated_options),
+    companyAddOns: (state.addOnsInfo.companyAddOns)
   }
 }
 
