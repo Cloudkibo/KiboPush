@@ -18,7 +18,7 @@ import AlertContainer from 'react-alert'
 import HEADER from './components/header/header'
 import { getLandingPage } from './utility/utils'
 import { getHiddenHeaderRoutes, getWhiteHeaderRoutes } from './utility/utils'
-import { validateUserAccessToken, isFacebookConnected } from './redux/actions/basicinfo.actions'
+import { validateUserAccessToken, isFacebookConnected, fetchUsageInfo } from './redux/actions/basicinfo.actions'
 import { fetchCompanyPreferences } from './redux/actions/settings.actions'
 
 class SubApp extends Component {
@@ -27,7 +27,8 @@ class SubApp extends Component {
     this.state = {
       message_alert: null,
       path: '/',
-      headerProps: {}
+      headerProps: {},
+      resourceAlert: false
     }
     this.handleDemoSSAPage = this.handleDemoSSAPage.bind(this)
     this.onNotificationClick = this.onNotificationClick.bind(this)
@@ -36,6 +37,7 @@ class SubApp extends Component {
     this.checkUserAccessToken = this.checkUserAccessToken.bind(this)
     this.checkFacebookConnected = this.checkFacebookConnected.bind(this)
     this.callbackUserDetails = this.callbackUserDetails.bind(this)
+    this.checkResourceConsumption = this.checkResourceConsumption.bind(this)
 
     props.getuserdetails(joinRoom, this.callbackUserDetails)
   }
@@ -51,6 +53,7 @@ class SubApp extends Component {
     this.props.validateUserAccessToken(this.checkUserAccessToken)
     this.props.isFacebookConnected(this.checkFacebookConnected)
     this.props.fetchCompanyPreferences()
+    this.props.fetchUsageInfo(this.checkResourceConsumption)
 
     if (this.props.history.location.pathname.toLowerCase() === '/demossa') {
       this.handleDemoSSAPage()
@@ -110,6 +113,15 @@ class SubApp extends Component {
     const sidebar = document.getElementById('sidebarDiv')
     sidebar.parentNode.removeChild(sidebar)
     document.getElementsByTagName('body')[0].className = 'm-page--fluid m--skin- m-content--skin-light2 m-header--fixed m-header--fixed-mobile m-footer--push'
+  }
+
+  checkResourceConsumption (res) {
+    if (res.status === 'success') {
+      const { planUsage, companyUsage } = res.payload
+      if (planUsage && companyUsage && planUsage.messages <= companyUsage.messages) {
+        this.setState({resourceAlert: true})
+      }
+    }
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
@@ -274,6 +286,15 @@ class SubApp extends Component {
           }
           { this.props.children }
         </div>
+        {
+          this.state.resourceAlert &&
+          <div style={{position: 'fixed', bottom: '0px', paddingLeft: '255px', width: '100%'}}>
+            <div style={{margin: '10px'}} className="alert alert-danger alert-dismissible fade show" role="alert">
+              <button type="button" className="close" data-dismiss="alert" aria-label="Close"></button>
+              You have consumed the resources for current billing cycle (month) and you won't be able to send any more messages. Your resources will be reset starting next billing cycle (month)
+            </div>
+          </div>
+        }
       </div>
     )
   }
@@ -303,7 +324,8 @@ function mapDispatchToProps (dispatch) {
       loadMyPagesListNew,
       validateUserAccessToken,
       isFacebookConnected,
-      fetchCompanyPreferences
+      fetchCompanyPreferences,
+      fetchUsageInfo
     }, dispatch)
 }
 
