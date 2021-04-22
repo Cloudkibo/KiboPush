@@ -130,7 +130,7 @@ class SubApp extends Component {
   handleCompanyAddOns (res) {
     if (res.status === 'success') {
       const companyAddOns = res.payload
-      const permissions  []
+      const permissions = []
       for (let i = 0; i < companyAddOns.length; i++) {
         if (companyAddOns[i].permissions && companyAddOns[i].permissions.length > 0) {
           permissions = [...permissions, ...companyAddOns[i].permissions]
