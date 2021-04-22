@@ -59,6 +59,7 @@ import { whatsAppChatbot } from './whatsAppChatbot.reducer'
 import { commerceInfo } from './commerce.reducer'
 import { superNumberInfo } from './superNumber.reducer'
 import { plansInfo } from './plans.reducer'
+import { channelOnboarding } from './channelOnboarding.reducer'
 
 const appReducer = combineReducers({
   abandonedInfo,
@@ -119,7 +120,8 @@ const appReducer = combineReducers({
   whatsAppChatbot,
   commerceInfo,
   superNumberInfo,
-  plansInfo
+  plansInfo,
+  channelOnboarding
 })
 
 export default appReducer

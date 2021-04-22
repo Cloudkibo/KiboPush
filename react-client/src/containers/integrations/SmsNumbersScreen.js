@@ -6,17 +6,15 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import Header from '../wizard/header'
+import { loadPlans } from '../../redux/actions/plans.actions'
 
-class SmsProviderScreen extends React.Component {
+class SmsNumbersScreen extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      fblink: '',
-      copied: false,
-      selectPage: {},
-      selectedTab: 'becomeSubscriber',
-      sendTestMessage: false,
+      selectedPlan: null
     }
+    props.loadPlans()
   }
 
   componentDidMount () {
@@ -27,7 +25,7 @@ class SmsProviderScreen extends React.Component {
     } else if (hostname.includes('kibochat.cloudkibo.com')) {
       title = 'KiboChat'
     }
-    document.title = `${title} | Select SMS Provider`
+    document.title = `${title} | Select SMS Number`
     /* eslint-disable */
     $('#sidebarDiv').addClass('hideSideBar')
     $('#headerDiv').addClass('hideSideBar')
@@ -53,43 +51,59 @@ class SmsProviderScreen extends React.Component {
             </div>
           </div>
           <div className="m-grid__item m-grid__item--order-tablet-and-mobile-2 m-login__aside" style={{padding: '2rem'}}>
-            {
-              this.props.plansInfo && this.props.plansInfo.map((planInfo, i) => (
-                <div 
-                  className="sequence-box" 
-                  style={{height: '8em', backgroundColor: `${planInfo._id === this.state.selectedPlan ? 'cyan' : 'white'}`}}
-                  key={i}
-                  onClick={() => this.setState({ selectedPlan: planInfo._id })}>
+            <div className="sequence-box" style={{height: '10em'}}>
+              <span>
+                <span className="sequence-name">
+                  Free Plan
+                </span>
+                <br />
+                <span>
                   <span>
-                    <span className="sequence-name">
-                      {planInfo.name}
-                    </span>
-                    <br />
-                    <span>
-                      <span>
-                        Connect your SMS provider and use {planInfo.trial_period} days trial period <br /> with {planInfo.name}
-                      </span>
-                    </span>
+                    Connect your Twilio trial account <br /> and use our features for free
                   </span>
-                  <span className="sequence-text sequence-centered-text" style={{position: 'absolute', left: '77%', top: '25%'}}>
-                    <span className="sequence-number">
-                      {planInfo.amount ? `$${planInfo.amount}` : ''}
-                    </span>
-                  </span>
-                </div>
-              ))
-            }
-            <br />
-            <div className='row'>
-              <div className='col-lg-6 m--align-left' />
-              <div className='col-lg-6 m--align-right'>
-                <button className='btn btn-success m-btn m-btn--custom m-btn--icon' onClick={this.nextBtnAction}>
+                </span>
+              </span>
+              <span className="sequence-text sequence-centered-text" style={{position: 'absolute', left: '77%', top: '25%'}}>
+                <span className="sequence-number">
+                  FREE
+                </span>
+              </span>
+            </div>
+            <div className="sequence-box" style={{height: '10em'}}>
+              <span>
+                <span className="sequence-name">
+                  Basic Plan
+                </span>
+                <br />
+                <span>
                   <span>
-                    <span>Next</span>&nbsp;&nbsp;
-                    <i className='la la-arrow-right' />
+                    Connect your Bandwidth account <br /> to send messages upto 5000
                   </span>
-                </button>
-              </div>
+                </span>
+              </span>
+              <span className="sequence-text sequence-centered-text" style={{position: 'absolute', left: '77%', top: '25%'}}>
+                <span className="sequence-number">
+                  $35
+                </span>
+              </span>
+            </div>
+            <div className="sequence-box" style={{height: '10em'}}>
+              <span>
+                <span className="sequence-name">
+                  Standard Plan
+                </span>
+                <br />
+                <span>
+                  <span>
+                    Connect your Bandwidth account <br /> to send messages upto 7500
+                  </span>
+                </span>
+              </span>
+              <span className="sequence-text sequence-centered-text" style={{position: 'absolute', left: '77%', top: '25%'}}>
+                <span className="sequence-number">
+                  $50
+                </span>
+              </span>
             </div>
           </div>
         </div>
@@ -106,7 +120,9 @@ function mapStateToProps (state) {
 }
 
 function mapDispatchToProps (dispatch) {
-  return bindActionCreators({}, dispatch)
+  return bindActionCreators({
+    loadPlans
+  }, dispatch)
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(SmsProviderScreen)
+export default connect(mapStateToProps, mapDispatchToProps)(SmsNumbersScreen)
