@@ -135,7 +135,7 @@ class SubApp extends Component {
   handleCompanyAddOns (res) {
     if (res.status === 'success') {
       const companyAddOns = res.payload
-      const permissions  []
+      const permissions = []
       for (let i = 0; i < companyAddOns.length; i++) {
         if (companyAddOns[i].permissions && companyAddOns[i].permissions.length > 0) {
           permissions = [...permissions, ...companyAddOns[i].permissions]
@@ -143,8 +143,8 @@ class SubApp extends Component {
       }
       let user = this.props.user
       for (let j = 0; j < permissions.length; j++) {
-        if (user.plan[permissions[i]] === false) {
-          user.plan[permissions[i]] = true
+        if (user.plan[permissions[j]] === false) {
+          user.plan[permissions[j]] = true
         }
       }
       this.props.modifyUserDetails(user)
