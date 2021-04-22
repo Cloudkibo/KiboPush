@@ -76,6 +76,17 @@ class Configuration extends React.Component {
     this.getWhatsAppConnected = this.getWhatsAppConnected.bind(this)
     props.getAutomatedOptions()
   }
+  handleCheckbox (e) {
+    console.log('e.target.value', e.target.checked)
+    this.setState({retainData : e.target.checked})
+  }
+  logout() {
+    this.props.history.push({
+      pathname: '/facebookIntegration'
+    })
+    this.props.updateShowIntegrations({ showIntegrations: true })
+    // auth.logout()
+  }
 
   handleUsage (e) {
     this.setState({usage: e.target.value})
@@ -334,7 +345,7 @@ class Configuration extends React.Component {
         <ConfirmationModal
           id = 'create_confirmation_modal'
           title = 'Are You Sure?'
-          description = {`you had previously connected different account from this number ${this.props.automated_options.whatsApp ? this.props.automated_options.whatsApp.businessNumber: 0}. If you choose to connect the new Number then all the old data will be deleted...` }
+          description = {`You had previously connected different account from this number ${(this.props.automated_options && this.props.automated_options.whatsApp) ? this.props.automated_options.whatsApp.businessNumber: 0}. If you choose to connect the new Number then all the old data will be deleted...` }
           onConfirm = {this.updateData}
           zIndex= {99991}
         />
@@ -428,6 +439,7 @@ class Configuration extends React.Component {
                       }
                     })
                     // this.logout()
+                    this.props.disconnectFacebook()
                   }} data-dismiss='modal'>Yes
                   </button>
               </div>
@@ -653,8 +665,7 @@ class Configuration extends React.Component {
                                           </div>
                                           <div className='m-widget4__ext'>
                                             {this.props.user.facebookInfo && this.props.user.connectFacebook
-                                              ? <a href='#/' data-toggle="modal" data-target="#disconnectFacebookConfiguration" className='m-btn m-btn--pill m-btn--hover-danger btn btn-danger' style={{ borderColor: '#d9534f', color: '#d9534f', marginRight: '10px' }}>
-                                                Disconnect
+                                              ? <a href='#/' data-toggle="modal" data-target="#disconnectFacebookConfiguration" className='m-btn m-btn--pill m-btn--hover-danger btn btn-danger' style={{ borderColor: '#d9534f', color: '#d9534f', marginRight: '10px' }}>                                                Disconnect
                                             </a>
                                               : <a href='/auth/facebook' className='m-btn m-btn--pill m-btn--hover-success btn btn-success' style={{ borderColor: '#34bfa3', color: '#34bfa3', marginRight: '10px' }}>
                                                 Connect
