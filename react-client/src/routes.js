@@ -26,6 +26,7 @@ import Integrations from './containers/integrations/integrations'
 import SmsPlansScreen from './containers/integrations/SmsPlansScreen'
 import SmsProviderScreen from './containers/integrations/SmsProviderScreen'
 import SmsBillingScreen from './containers/integrations/SmsBillingScreen'
+import SmsFinishScreen from './containers/integrations/SmsFinishScreen'
 import PollResult from './containers/polls/PollResult'
 import ViewPoll from './containers/polls/ViewPoll'
 import UserDetails from './containers/operationalDashboard/userDetails'
@@ -451,6 +452,7 @@ const Routes = () => (
     <Route path='/smsPlansScreen' component={SmsPlansScreen} onEnter={requireAuth} />
     <Route path='/smsProviderScreen' component={SmsProviderScreen} onEnter={requireAuth} />
     <Route path='/smsBillingScreen' component={SmsBillingScreen} onEnter={requireAuth} />
+    <Route path='/smsFinishScreen' component={SmsFinishScreen} onEnter={requireAuth} />
     <Route path='/addOns' component={AddOns} onEnter={requireAuth} />
     <Route path='*' render={() => <Redirect to='/' />} />
   </Switch>
