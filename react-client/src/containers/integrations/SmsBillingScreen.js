@@ -10,18 +10,22 @@ import {StripeProvider, Elements} from 'react-stripe-elements'
 import InjectedCheckoutForm from './../wizard/checkout'
 import { updateCard, getKeys } from '../../redux/actions/basicinfo.actions'
 import Header from './../wizard/header'
+import { Link } from 'react-router-dom'
+import { setOnboardingStripeToken } from '../../redux/actions/channelOnboarding.actions'
 
 class SmsBillingScreen extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      showCardModal: false
+      showCardModal: false,
+      stripeToken: null
     }
     props.getKeys()
     this.setCard = this.setCard.bind(this)
     this.showCardModal = this.showCardModal.bind(this)
     this.closeCardModal = this.closeCardModal.bind(this)
     this.onSuccessCallback = this.onSuccessCallback.bind(this)
+    this.nextBtnAction = this.nextBtnAction.bind(this)
   }
 
   onSuccessCallback () {
@@ -37,6 +41,7 @@ class SmsBillingScreen extends React.Component {
   }
 
   setCard (payload, value) {
+    this.setState({ stripeToken: payload })
     this.props.updateCard({companyId: this.props.user.companyId, stripeToken: payload}, this.msg, this.onSuccessCallback)
   }
 
@@ -48,12 +53,26 @@ class SmsBillingScreen extends React.Component {
     } else if (hostname.includes('kibochat.cloudkibo.com')) {
       title = 'KiboChat'
     }
-    document.title = `${title} | Integrations`
+    document.title = `${title} | Select Billing Method`
     /* eslint-disable */
     $('#sidebarDiv').addClass('hideSideBar')
     $('#headerDiv').addClass('hideSideBar')
     /* eslint-enable */
     document.getElementsByTagName('body')[0].className = 'm-page--fluid m--skin- m-content--skin-light2 m-footer--push m-aside--offcanvas-default'
+  }
+
+  nextBtnAction () {
+    this.props.setOnboardingStripeToken(this.state.stripeToken)
+
+    if (this.props.planName.includes('Enterprise')) {
+      this.props.history.push({
+        pathname: '/smsProviderScreen'
+      })
+    } else {
+      this.props.history.push({
+        pathname: '/smsNumbersScreen'
+      })
+    }
   }
 
   render () {
@@ -67,7 +86,7 @@ class SmsBillingScreen extends React.Component {
     return (
       <div>
         <Header />
-        <div className="m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-grid--tablet-and-mobile m-grid--hor-tablet-and-mobile m-login m-login--1 m-login--singin" style={{ height: '100vh' }}>
+        <div className="m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-grid--tablet-and-mobile m-grid--hor-tablet-and-mobile m-login m-login--1 m-login--singin" style={{ height: '110vh' }}>
           <div className="m-grid__item m-grid__item--fluid m-grid m-grid--center m-grid--hor m-grid__item--order-tablet-and-mobile-1	m-login__content" style={{backgroundImage: 'url(https://cdn.cloudkibo.com/public/assets/app/media/img//bg/bg-4.jpg)'}}>
             <div className="m-grid__item m-grid__item--middle">
               <h3 className="m-login__welcome">
@@ -169,6 +188,17 @@ class SmsBillingScreen extends React.Component {
                       </div>
                     </div>
                   </div>
+                  <div className='row'>
+                    <div className='col-lg-6 m--align-left' />
+                    <div className='col-lg-6 m--align-right'>
+                      <button className='btn btn-success m-btn m-btn--custom m-btn--icon' onClick={this.nextBtnAction}>
+                        <span>
+                          <span>Next</span>&nbsp;&nbsp;
+                          <i className='la la-arrow-right' />
+                        </span>
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -182,14 +212,18 @@ class SmsBillingScreen extends React.Component {
 function mapStateToProps (state) {
   return {
     user: (state.basicInfo.user),
-    superUser: (state.basicInfo.superUser)
+    captchaKey: (state.basicInfo.captchaKey),
+    stripeKey: (state.basicInfo.stripeKey),
+    superUser: (state.basicInfo.superUser),
+    planName: (state.channelOnboarding.planName)
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
     updateCard: updateCard,
-    getKeys: getKeys
+    getKeys: getKeys,
+    setOnboardingStripeToken: setOnboardingStripeToken
   }, dispatch)
 }
 

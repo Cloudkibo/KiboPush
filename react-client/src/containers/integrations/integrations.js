@@ -119,7 +119,7 @@ class FacebookIntegration extends React.Component {
 
   showSmsPlans() {
     this.props.history.push({
-      pathname: '/smsBillingScreen'
+      pathname: '/smsPlansScreen'
     })
   }
 
