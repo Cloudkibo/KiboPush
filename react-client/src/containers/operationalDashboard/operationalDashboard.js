@@ -141,7 +141,7 @@ class OperationalDashboard extends React.Component {
     if (user.companyId.whatsApp && user.companyId.whatsApp.connected === true) {
       connectedPlatforms.push('WhatsApp')
     }
-    if (user.companyId.twilio) {
+    if (user.companyId.sms) {
       connectedPlatforms.push('SMS')
     }
     return connectedPlatforms

@@ -14,7 +14,6 @@ export function updatePlans(data) {
 export function loadPlans(platform) {
   return (dispatch) => {
     callApi(`plans/${platform}`).then(res => {
-      console.log('res.payload from load plans', res)
       dispatch(updatePlans(res.payload))
     })
   }

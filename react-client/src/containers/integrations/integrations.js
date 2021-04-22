@@ -119,7 +119,7 @@ class FacebookIntegration extends React.Component {
 
   showSmsPlans() {
     this.props.history.push({
-      pathname: '/smsBillingScreen'
+      pathname: '/smsPlansScreen'
     })
   }
 
@@ -236,8 +236,8 @@ class FacebookIntegration extends React.Component {
   isDisabled () {
     if (this.props.user && this.props.automated_options) {
       if (
-        (!this.props.user.connectFacebook && !this.props.automated_options.twilio && !this.props.automated_options.whatsApp && !this.props.user.plan.whatsappSuperNumber) ||
-        (this.props.location.state === 'sms' && !this.props.automated_options.twilio) ||
+        (!this.props.user.connectFacebook && !this.props.automated_options.sms && !this.props.automated_options.whatsApp && !this.props.user.plan.whatsappSuperNumber) ||
+        (this.props.location.state === 'sms' && !this.props.automated_options.sms) ||
         (this.props.location.state === 'messenger' && !this.props.user.facebookInfo) ||
         (this.props.location.state === 'whatsApp' && !this.props.automated_options.whatsApp && !this.props.user.plan.whatsappSuperNumber)
       ) {
@@ -306,7 +306,7 @@ class FacebookIntegration extends React.Component {
                 <br />
               </div>
               <div className='m-widget4__ext'>
-                {this.props.automated_options && this.props.automated_options.twilio
+                {this.props.automated_options && this.props.automated_options.sms
                   ? <button className='m-btn m-btn--pill m-btn--hover-secondary btn btn-secondary' disabled>
                     Connected
                   </button>

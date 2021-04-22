@@ -527,7 +527,12 @@ function mapStateToProps(state) {
   return {
     user: (state.basicInfo.user),
     isMobile: (state.basicInfo.isMobile),
-    automated_options: (state.basicInfo.automated_options)
+    updatedUser: (state.basicInfo.updatedUser),
+    socketSession: (state.liveChat.socketSession),
+    userChat: (state.liveChat.userChat),
+    socketData: (state.liveChat.socketData),
+    automated_options: (state.basicInfo.automated_options),
+    companyAddOns: (state.addOnsInfo.companyAddOns)
   }
 }
 

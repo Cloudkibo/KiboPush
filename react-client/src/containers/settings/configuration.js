@@ -173,8 +173,8 @@ class Configuration extends React.Component {
 
   UNSAFE_componentWillReceiveProps(nextProps) {
     console.log('UNSAFE_componentWillReceiveProps', nextProps)
-    if (nextProps.automated_options && nextProps.automated_options.twilio) {
-      this.setState({ SID: nextProps.automated_options.twilio.accountSID, token: nextProps.automated_options.twilio.authToken })
+    if (nextProps.automated_options && nextProps.automated_options.sms) {
+      this.setState({ SID: nextProps.automated_options.sms.accountSID, token: nextProps.automated_options.sms.authToken })
     }
     // console.log('nextProps.automated_options', nextProps.automated_options.whatsApp.connected)
     if (nextProps.automated_options && nextProps.automated_options.whatsApp && (nextProps.automated_options.whatsApp.connected !== false)) {
@@ -189,7 +189,7 @@ class Configuration extends React.Component {
         whatsappData
       })
     }
-    // if (nextProps.user && nextProps.user.platform === 'sms' && nextProps.automated_options && !nextProps.automated_options.twilio) {
+    // if (nextProps.user && nextProps.user.platform === 'sms' && nextProps.automated_options && !nextProps.automated_options.sms) {
     //   this.props.history.push({
     //     pathname: '/integrations',
     //     state: 'sms'
@@ -260,8 +260,8 @@ class Configuration extends React.Component {
   }
 
   clearFields() {
-    if (this.props.automated_options && this.props.automated_options.twilio) {
-      this.setState({ SID: this.props.automated_options.twilio.accountSID, token: this.props.automated_options.twilio.authToken })
+    if (this.props.automated_options && this.props.automated_options.sms) {
+      this.setState({ SID: this.props.automated_options.sms.accountSID, token: this.props.automated_options.sms.authToken })
     } else {
       this.setState({ SID: '', token: '' })
     }
@@ -687,10 +687,10 @@ class Configuration extends React.Component {
                                           </div>
                                           <div className='m-widget4__ext'>
                                             <button className='m-btn m-btn--pill m-btn--hover-success btn btn-success' style={{ borderColor: '#34bfa3', color: '#34bfa3', marginRight: '10px' }} data-toggle="modal" data-target="#connect">
-                                              {this.props.automated_options && this.props.automated_options.twilio ? 'Edit' : 'Connect'}
+                                              {this.props.automated_options && this.props.automated_options.sms ? 'Edit' : 'Connect'}
                                             </button>
                                           </div>
-                                          {this.props.automated_options && this.props.automated_options.twilio &&
+                                          {this.props.automated_options && this.props.automated_options.sms &&
                                             <div className='m-widget4__ext'>
                                               <button className='m-btn m-btn--pill m-btn--hover-danger btn btn-danger' style={{ borderColor: '#d9534f', color: '#d9534f', marginRight: '10px' }} data-toggle="modal" data-target="#disconnect" onClick={() => { this.showDialogDisconnect('sms') }}>
                                                 Disconnect

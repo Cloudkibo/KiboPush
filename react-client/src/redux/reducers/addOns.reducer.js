@@ -7,6 +7,11 @@ export function addOnsInfo (state = {}, action) {
         addOns: action.data
       })
 
+    case ActionTypes.SHOW_COMPANY_ADD_ONS:
+      return Object.assign({}, state, {
+        companyAddOns: action.data
+      })
+
     default:
       return state
   }
