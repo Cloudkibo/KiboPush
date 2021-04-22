@@ -164,7 +164,7 @@ class CardModal extends React.Component {
               break
             }
           }
-        } 
+        }
       }
       deletePayload = this.getDeletePayload(this.finalCards[0] ? this.finalCards[0].buttons : card.buttons)
       console.log('deletePayload for card', deletePayload)
@@ -204,7 +204,7 @@ class CardModal extends React.Component {
                 break
               }
             }
-          } 
+          }
         }
         let finalCard = this.finalCards.find(x => card.id === x.id)
         buttons = buttons.concat(finalCard ? finalCard.buttons : card.component.buttons)
@@ -386,7 +386,7 @@ class CardModal extends React.Component {
             break
           }
         }
-      } 
+      }
     }
     if (this.state.numOfElements <= 1) {
       console.log('At least one card is required')
@@ -519,6 +519,8 @@ class CardModal extends React.Component {
                                 initialFiles={this.props.initialFiles}
                                 initialModalFiles={this.state.initialModalFiles}
                                 edit={this.props.edit}
+                                canCreateNewLevel={this.props.canCreateNewLevel}
+                                alertMsg={this.props.alertMsg}
                                 pageId={this.props.pageId}
                                 setTempFiles={this.props.setTempFiles}
                                 buttonActions={this.state.buttonActions}
