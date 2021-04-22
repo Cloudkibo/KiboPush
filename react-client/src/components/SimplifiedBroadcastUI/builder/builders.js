@@ -1586,7 +1586,6 @@ class Builders extends React.Component {
         onFilesError={this.onFilesError}
         handleMedia={this.handleMedia}
         showValidationModal= {this.showValidationModal}
-        alertMsg={this.msg}
         addComponent={this.addComponent} />),
       'video': (<VideoLinkModal
           buttons={[]}

@@ -100,17 +100,6 @@ class Configuration extends React.Component {
     }
   }
 
-  logout() {
-    this.props.history.push({
-      pathname: '/facebookIntegration'
-    })
-    this.props.updateShowIntegrations({ showIntegrations: true })
-  }
-
-  handleCheckbox (e) {
-    console.log('e.target.value', e.target.checked)
-    this.setState({retainData : e.target.checked})
-  }
   updateWhatsAppData(e, data) {
     console.log('updateWhatsAppData', e)
     if (data.businessNumber) {

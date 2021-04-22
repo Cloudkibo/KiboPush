@@ -184,7 +184,7 @@ class FacebookIntegration extends React.Component {
     if (this.state.usage === 'superNumber') {
       this.props.setSuperNumber(this.msg)
       this.refs.connectWapp.click()
-    } else if(this.props.automated_options.whatsApp && this.props.automated_options.whatsApp.connected === false) {
+    } else if (this.props.automated_options.whatsApp && this.props.automated_options.whatsApp.connected === false) {
       let whatsappData = this.state.whatsappData[this.state.whatsappProvider]
       let businessNmber = whatsappData.businessNumber.replace(/[- )(]/g, '')
       if(businessNmber !== this.props.automated_options.whatsApp.businessNumber) {

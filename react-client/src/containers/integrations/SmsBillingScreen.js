@@ -10,8 +10,8 @@ import {StripeProvider, Elements} from 'react-stripe-elements'
 import InjectedCheckoutForm from './../wizard/checkout'
 import { updateCard, getKeys } from '../../redux/actions/basicinfo.actions'
 import Header from './../wizard/header'
-import { Link } from 'react-router-dom'
 import { setOnboardingStripeToken } from '../../redux/actions/channelOnboarding.actions'
+import { Link } from 'react-router-dom'
 
 class SmsBillingScreen extends React.Component {
   constructor (props, context) {
@@ -100,6 +100,7 @@ class SmsBillingScreen extends React.Component {
             </div>
           </div>
           <div className="m-grid__item m-grid__item--order-tablet-and-mobile-2 m-login__aside" style={{padding: '2rem'}}>
+            <h2> Step 2: Choose a billing method</h2>
             <div id='target' className='col-lg-8 col-md-8 col-sm-8 col-xs-12' style={{maxWidth: '100%' }}>
               <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
               <div style={{height: '82vh'}} className='m-portlet m-portlet--tabs  '>
@@ -189,7 +190,14 @@ class SmsBillingScreen extends React.Component {
                     </div>
                   </div>
                   <div className='row'>
-                    <div className='col-lg-6 m--align-left' />
+                      <div className='col-lg-6 m--align-left' >
+                        <Link to='/smsPlansScreen' className='btn btn-secondary m-btn m-btn--custom m-btn--icon' data-wizard-action='next'>
+                          <span>
+                            <i className='la la-arrow-left' />
+                            <span>Back</span>&nbsp;&nbsp;
+                          </span>
+                        </Link>
+                      </div>
                     <div className='col-lg-6 m--align-right'>
                       <button className='btn btn-success m-btn m-btn--custom m-btn--icon' onClick={this.nextBtnAction}>
                         <span>

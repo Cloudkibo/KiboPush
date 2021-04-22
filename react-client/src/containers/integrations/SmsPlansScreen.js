@@ -7,7 +7,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import Header from './../wizard/header'
 import { loadPlans } from '../../redux/actions/plans.actions'
-import { setPlanId, setPlanName, setOnboardingPlatform } from '../../redux/actions/channelOnboarding.actions'
+import { setPlanId, setPlanName, setPlanUniqueId, setOnboardingPlatform } from '../../redux/actions/channelOnboarding.actions'
 
 class SmsPlansScreen extends React.Component {
   constructor (props, context) {
@@ -46,6 +46,7 @@ class SmsPlansScreen extends React.Component {
   nextBtnAction () {
     this.props.setPlanId(this.state.selectedPlan)
     this.props.setPlanName(this.props.plansInfo.filter(item => item._id === this.state.selectedPlan)[0].name)
+    this.props.setPlanUniqueId(this.props.plansInfo.filter(item => item._id === this.state.selectedPlan)[0].unique_ID)
     this.props.setOnboardingPlatform('sms')
     this.props.history.push({
       pathname: '/smsBillingScreen'
@@ -70,6 +71,7 @@ class SmsPlansScreen extends React.Component {
             </div>
           </div>
           <div className="m-grid__item m-grid__item--order-tablet-and-mobile-2 m-login__aside" style={{padding: '2rem'}}>
+            <h2> Step 1: Choose a plan </h2>
             {
               this.props.plansInfo && this.props.plansInfo.map((planInfo, i) => (
                 <div 
@@ -128,6 +130,7 @@ function mapDispatchToProps (dispatch) {
     loadPlans,
     setPlanId,
     setPlanName,
+    setPlanUniqueId,
     setOnboardingPlatform
   }, dispatch)
 }
