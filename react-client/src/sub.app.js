@@ -143,8 +143,8 @@ class SubApp extends Component {
       }
       let user = this.props.user
       for (let j = 0; j < permissions.length; j++) {
-        if (user.plan[permissions[i]] === false) {
-          user.plan[permissions[i]] = true
+        if (user.plan[permissions[j]] === false) {
+          user.plan[permissions[j]] = true
         }
       }
       this.props.modifyUserDetails(user)
