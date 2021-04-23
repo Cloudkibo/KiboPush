@@ -82,34 +82,20 @@ export function setOnboardingNumberDetails(payload) {
   }
 }
 
-export function configureSMS(payload, msg) {
+export function configureSMS(payload, cb) {
   return (dispatch) => {
     callApi('company/configureSMS', 'post', payload)
       .then(res => {
-        if (res.status === 'success') {
-          console.log('RESPONSE FROM CONFIGURE SMS', res)
-        } else {
-          if (msg) {
-            msg.error(res.description || 'Failed to Configure')
-          }
-          console.log('ERROR FROM CONFIGURE SMS', res)
-        }
+        cb(res)
       })
   }
 }
 
-export function connectSMS(payload, msg) {
+export function connectSMS(payload, cb) {
   return (dispatch) => {
     callApi('company/connectSMS', 'post', payload)
       .then(res => {
-        if (res.status === 'success') {
-          console.log('RESPONSE FROM CONNECT SMS', res)
-        } else {
-          if (msg) {
-            msg.error(res.payload || 'Failed to remove page')
-          }
-          console.log('ERROR FROM CONNECT SMS', res)
-        }
+        cb(res)
       })
   }
 }

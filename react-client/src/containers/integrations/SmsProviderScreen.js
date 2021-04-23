@@ -5,7 +5,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { validatePhoneNumber } from '../../utility/utils'
+import { validatePhoneNumber, validateSmsProviderInput } from '../../utility/utils'
 import AlertContainer from 'react-alert'
 import Header from '../wizard/header'
 import { configureSMS, connectSMS } from '../../redux/actions/channelOnboarding.actions'
@@ -20,7 +20,8 @@ class SmsProviderScreen extends React.Component {
         accessToken: '',
         businessNumber: '',
         accountSID: '',
-        sandBoxCode: ''
+        sandBoxCode: '',
+        messages: ''
       },
       bandwidth: {
         provider: 'bandwidth',
@@ -30,7 +31,8 @@ class SmsProviderScreen extends React.Component {
         username: '',
         password: '',
         businessNumber: '',
-        appId: ''
+        appId: '',
+        messages: ''
       }
     }
     this.state = {
@@ -64,18 +66,32 @@ class SmsProviderScreen extends React.Component {
   }
 
   nextBtnAction () {
-    console.log('THIS STATE IN SMS PROVIDER', this.state)
-    this.props.configureSMS({
-      planId: this.props.channelOnboarding.planId,
-      planUniqueId: this.props.channelOnboarding.planUniqueId,
-      stripeToken: this.props.channelOnboarding.stripeToken,
-      platform: this.props.channelOnboarding.platform
-    }, this.msg)
-    let smsData = this.state.smsData[this.state.smsProvider]
-    this.props.connectSMS(smsData, this.msg)
-    this.props.history.push({
-      pathname: '/smsFinishScreen'
-    })
+    if (validateSmsProviderInput(this.state)) {
+      let smsData = this.state.smsData[this.state.smsProvider]
+
+      this.props.connectSMS(smsData, (res) => {
+        if (res.status === 'success') {
+          this.props.configureSMS({
+            planId: this.props.channelOnboarding.planId,
+            planUniqueId: this.props.channelOnboarding.planUniqueId,
+            stripeToken: this.props.channelOnboarding.stripeToken,
+            platform: this.props.channelOnboarding.platform
+          }, (res) => {
+            if (res.status === 'success') {
+              this.props.history.push({
+                pathname: '/smsFinishScreen'
+              })
+            } else {
+              this.msg.error(res.payload || 'Failed to configure sms integrations')
+            }
+          })
+        } else {
+          this.msg.error(res.description || res.payload || 'Failed to connect Sms')
+        }
+      })
+    } else {
+      this.msg.error('Please fill all the required fields')
+    }
   }
 
   componentDidMount () {
@@ -114,7 +130,7 @@ class SmsProviderScreen extends React.Component {
     }
     return (
       <div>
-        <Header />
+        <Header showTitle hideMessages hideSettings />
         <div className="m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-grid--tablet-and-mobile m-grid--hor-tablet-and-mobile m-login m-login--1 m-login--singin" style={{ height: 'calc(100vh - 70px)' }}>
           <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
           <div className="m-grid__item m-grid__item--fluid m-grid m-grid--center m-grid--hor m-grid__item--order-tablet-and-mobile-1	m-login__content" style={{backgroundImage: 'url(https://cdn.cloudkibo.com/public/assets/app/media/img//bg/bg-4.jpg)'}}>
@@ -131,8 +147,9 @@ class SmsProviderScreen extends React.Component {
           </div>
           <div className="m-grid__item m-grid__item--order-tablet-and-mobile-2 m-login__aside" style={{padding: '2rem'}}>
             <h2>Step 3: Choose Sms Provider</h2>
+            <br />
             <div style={{ marginBottom: '15px' }} id='_whatsapp_provider' className='form-group m-form__group'>
-              <label className='control-label'>Select SMS Provider:</label>
+              <label className='control-label' style={{ fontWeight: 'normal' }}>Select SMS Provider:</label>
               <select onChange={this.changeSmsProvider} className="form-control m-input" value={this.state.smsProvider} id="_zoom_users" required>
                 <option value='' selected disabled>Select a SMS Provider...</option>
                 <option value='bandwidth'>BandWidth</option>
@@ -143,40 +160,48 @@ class SmsProviderScreen extends React.Component {
             }
             <div style={{ display: this.state.smsProvider === 'twilio' ? 'initial' : 'none' }}>
               <div id='question' className='form-group m-form__group'>
-                <label className='control-label'>Twilio Account SID</label>
+                <label className='control-label' style={{ fontWeight: 'normal' }}>Twilio Account SID</label>
                 <input required={this.state.smsProvider === 'twilio'} className='form-control' value={this.state.smsData.twilio.accountSID} onChange={(e) => this.updateSmsData(e, { accountSID: e.target.value })} />
               </div>
               <div id='question' className='form-group m-form__group'>
-                <label className='control-label'>Twilio Auth Token:</label>
+                <label className='control-label' style={{ fontWeight: 'normal' }}>Twilio Auth Token:</label>
                 <input required={this.state.smsProvider === 'twilio'} className='form-control' value={this.state.smsData.twilio.accessToken} onChange={(e) => this.updateSmsData(e, { accessToken: e.target.value })} />
               </div>
               <div id='question' className='form-group m-form__group'>
-                <label className='control-label'>SMS Number:</label>
+                <label className='control-label' style={{ fontWeight: 'normal' }}>SMS Number:</label>
                 <input className='form-control' value={this.state.smsData.twilio.businessNumber} onChange={(e) => this.updateSmsData(e, { businessNumber: e.target.value })} />
+              </div>
+              <div id='question' className='form-group m-form__group'>
+                <label className='control-label' style={{ fontWeight: 'normal' }}>Expected Messages Count:</label>
+                <input className='form-control' value={this.state.smsData.twilio.messages} onChange={(e) => this.updateSmsData(e, { messages: e.target.value })} />
               </div>
             </div>
             {
             }
             <div style={{ display: this.state.smsProvider === 'bandwidth' ? 'initial' : 'none' }}>
               <div id='question' className='form-group m-form__group'>
-                <label className='control-label'>BandWidth Account ID</label>
+                <label className='control-label' style={{ fontWeight: 'normal' }}>BandWidth Account ID</label>
                 <input required={this.state.smsProvider === 'bandwidth'} className='form-control' value={this.state.smsData.bandwidth.accountId} onChange={(e) => this.updateSmsData(e, { accountId: e.target.value })} />
               </div>
               <div id='question' className='form-group m-form__group'>
-                <label className='control-label'>BandWidth App ID</label>
+                <label className='control-label' style={{ fontWeight: 'normal' }}>BandWidth App ID</label>
                 <input required={this.state.smsProvider === 'bandwidth'} className='form-control' value={this.state.smsData.bandwidth.appId} onChange={(e) => this.updateSmsData(e, { appId: e.target.value })} />
               </div>
               <div id='question' className='form-group m-form__group'>
-                <label className='control-label'>BandWidth Username:</label>
+                <label className='control-label' style={{ fontWeight: 'normal' }}>BandWidth Username:</label>
                 <input required={this.state.smsProvider === 'bandwidth'} className='form-control' value={this.state.smsData.bandwidth.username} onChange={(e) => this.updateSmsData(e, { username: e.target.value })} />
               </div>
               <div id='question' className='form-group m-form__group'>
-                <label className='control-label'>BandWidth Password:</label>
+                <label className='control-label' style={{ fontWeight: 'normal' }}>BandWidth Password:</label>
                 <input className='form-control' value={this.state.smsData.bandwidth.password} onChange={(e) => this.updateSmsData(e, { password: e.target.value })} />
               </div>
               <div id='question' className='form-group m-form__group'>
-                <label className='control-label'>SMS Number:</label>
+                <label className='control-label' style={{ fontWeight: 'normal' }}>SMS Number:</label>
                 <input className='form-control' value={this.state.smsData.bandwidth.businessNumber} onChange={(e) => this.updateSmsData(e, { businessNumber: e.target.value })} />
+              </div>
+              <div id='question' className='form-group m-form__group'>
+                <label className='control-label' style={{ fontWeight: 'normal' }}>Expected Messages Count:</label>
+                <input className='form-control' value={this.state.smsData.bandwidth.messages} onChange={(e) => this.updateSmsData(e, { messages: e.target.value })} />
               </div>
             </div>
             {
