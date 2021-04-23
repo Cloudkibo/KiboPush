@@ -44,13 +44,15 @@ class SmsPlansScreen extends React.Component {
   }
 
   nextBtnAction () {
-    this.props.setPlanId(this.state.selectedPlan)
-    this.props.setPlanName(this.props.plansInfo.filter(item => item._id === this.state.selectedPlan)[0].name)
-    this.props.setPlanUniqueId(this.props.plansInfo.filter(item => item._id === this.state.selectedPlan)[0].unique_ID)
-    this.props.setOnboardingPlatform('sms')
-    this.props.history.push({
-      pathname: '/smsBillingScreen'
-    })
+    if (this.state.selectedPlan) {
+      this.props.setPlanId(this.state.selectedPlan)
+      this.props.setPlanName(this.props.plansInfo.filter(item => item._id === this.state.selectedPlan)[0].name)
+      this.props.setPlanUniqueId(this.props.plansInfo.filter(item => item._id === this.state.selectedPlan)[0].unique_ID)
+      this.props.setOnboardingPlatform('sms')
+      this.props.history.push({
+        pathname: '/smsBillingScreen'
+      })
+    }
   }
 
   render () {
