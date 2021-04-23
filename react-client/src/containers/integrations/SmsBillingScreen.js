@@ -86,7 +86,7 @@ class SmsBillingScreen extends React.Component {
     return (
       <div>
         <Header />
-        <div className="m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-grid--tablet-and-mobile m-grid--hor-tablet-and-mobile m-login m-login--1 m-login--singin" style={{ height: '110vh' }}>
+        <div className="m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-grid--tablet-and-mobile m-grid--hor-tablet-and-mobile m-login m-login--1 m-login--singin" style={{ height: 'calc(100vh - 70px)' }}>
           <div className="m-grid__item m-grid__item--fluid m-grid m-grid--center m-grid--hor m-grid__item--order-tablet-and-mobile-1	m-login__content" style={{backgroundImage: 'url(https://cdn.cloudkibo.com/public/assets/app/media/img//bg/bg-4.jpg)'}}>
             <div className="m-grid__item m-grid__item--middle">
               <h3 className="m-login__welcome">
@@ -103,7 +103,7 @@ class SmsBillingScreen extends React.Component {
             <h2> Step 2: Choose a billing method</h2>
             <div id='target' className='col-lg-8 col-md-8 col-sm-8 col-xs-12' style={{maxWidth: '100%' }}>
               <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
-              <div style={{height: '82vh'}} className='m-portlet m-portlet--tabs  '>
+              <div style={{height: '62vh'}} className='m-portlet m-portlet--tabs  '>
                 <div className='m-portlet__head'>
                   <div className='m-portlet__head-tools'>
                     <ul className='nav nav-tabs m-tabs m-tabs-line   m-tabs-line--left m-tabs-line--primary' role='tablist'>
