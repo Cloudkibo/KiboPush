@@ -135,7 +135,7 @@ class SubApp extends Component {
   handleCompanyAddOns (res) {
     if (res.status === 'success') {
       const companyAddOns = res.payload
-      const permissions = []
+      let permissions = []
       for (let i = 0; i < companyAddOns.length; i++) {
         if (companyAddOns[i].permissions && companyAddOns[i].permissions.length > 0) {
           permissions = [...permissions, ...companyAddOns[i].permissions]
@@ -197,28 +197,6 @@ class SubApp extends Component {
         nextProps.user,
         nextProps.clearSocketData
       )
-    }
-  }
-
-  setPathAndHeaderProps(path) {
-    if (auth.loggedIn() && getHiddenHeaderRoutes().indexOf(path) === -1) {
-      this.setState({ headerProps: {}, path })
-    } else if (getWhiteHeaderRoutes().indexOf(path) > -1) {
-      this.setState({
-        headerProps: {
-          skin: this.props.isMobile ? 'dark' : 'white',
-          showToggleSidebar: false,
-          showHeaderMenu: false,
-          showHeaderTopbar: true,
-          showSelectPlatform: false,
-          showPlanPermissions: false,
-          showNotifcations: false,
-          showQuickActions: false,
-          showAppChooser: true,
-          showDocumentation: true
-        },
-        path
-      })
     }
   }
 

@@ -10,6 +10,10 @@ export function channelOnboarding (state = [], action) {
       return Object.assign({}, state, {
         planName: action.data
       })
+    case ActionTypes.SET_ONBOARDING_PLAN_UNIQUE_ID:
+      return Object.assign({}, state, {
+        planUniqueId: action.data
+      })
     case ActionTypes.SET_ONBOARDING_PLATFORM:
       return Object.assign({}, state, {
         platform: action.data

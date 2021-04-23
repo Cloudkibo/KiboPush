@@ -7,7 +7,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import Header from './../wizard/header'
 import { loadPlans } from '../../redux/actions/plans.actions'
-import { setPlanId, setPlanName, setOnboardingPlatform } from '../../redux/actions/channelOnboarding.actions'
+import { setPlanId, setPlanName, setPlanUniqueId, setOnboardingPlatform } from '../../redux/actions/channelOnboarding.actions'
 
 class SmsPlansScreen extends React.Component {
   constructor (props, context) {
@@ -37,26 +37,29 @@ class SmsPlansScreen extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     if (nextProps && nextProps.plansInfo) {
-      this.setState({
-        selectedPlan: nextProps.plansInfo[0]._id
-      })
+      // this.setState({
+      //   selectedPlan: nextProps.plansInfo[0]._id
+      // })
     }
   }
 
   nextBtnAction () {
-    this.props.setPlanId(this.state.selectedPlan)
-    this.props.setPlanName(this.props.plansInfo.filter(item => item._id === this.state.selectedPlan)[0].name)
-    this.props.setOnboardingPlatform('sms')
-    this.props.history.push({
-      pathname: '/smsBillingScreen'
-    })
+    if (this.state.selectedPlan) {
+      this.props.setPlanId(this.state.selectedPlan)
+      this.props.setPlanName(this.props.plansInfo.filter(item => item._id === this.state.selectedPlan)[0].name)
+      this.props.setPlanUniqueId(this.props.plansInfo.filter(item => item._id === this.state.selectedPlan)[0].unique_ID)
+      this.props.setOnboardingPlatform('sms')
+      this.props.history.push({
+        pathname: '/smsBillingScreen'
+      })
+    }
   }
 
   render () {
     return (
       <div>
         <Header />
-        <div className="m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-grid--tablet-and-mobile m-grid--hor-tablet-and-mobile m-login m-login--1 m-login--singin" style={{ height: '110vh' }}>
+        <div className="m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-grid--tablet-and-mobile m-grid--hor-tablet-and-mobile m-login m-login--1 m-login--singin" style={{ height: 'calc(100vh - 70px)', overflowY: 'scroll' }}>
           <div className="m-grid__item m-grid__item--fluid m-grid m-grid--center m-grid--hor m-grid__item--order-tablet-and-mobile-1	m-login__content" style={{backgroundImage: 'url(https://cdn.cloudkibo.com/public/assets/app/media/img//bg/bg-4.jpg)'}}>
             <div className="m-grid__item m-grid__item--middle">
               <h3 className="m-login__welcome">
@@ -69,12 +72,13 @@ class SmsPlansScreen extends React.Component {
               </p>
             </div>
           </div>
-          <div className="m-grid__item m-grid__item--order-tablet-and-mobile-2 m-login__aside" style={{padding: '2rem'}}>
+          <div className="m-grid__item m-grid__item--order-tablet-and-mobile-2 m-login__aside" style={{padding: '2rem', overflowY: 'scroll'}}>
+            <h2> Step 1: Choose a plan </h2>
             {
               this.props.plansInfo && this.props.plansInfo.map((planInfo, i) => (
                 <div 
                   className="sequence-box" 
-                  style={{height: '8em', backgroundColor: `${planInfo._id === this.state.selectedPlan ? 'cyan' : 'white'}`}}
+                  style={{height: '8em', backgroundColor: `${planInfo._id === this.state.selectedPlan ? '#34bfa3' : 'white'}`, cursor: 'pointer'}}
                   key={i}
                   onClick={() => this.setState({ selectedPlan: planInfo._id })}>
                   <span>
@@ -128,6 +132,7 @@ function mapDispatchToProps (dispatch) {
     loadPlans,
     setPlanId,
     setPlanName,
+    setPlanUniqueId,
     setOnboardingPlatform
   }, dispatch)
 }

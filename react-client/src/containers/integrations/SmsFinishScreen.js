@@ -8,6 +8,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import Header from './../wizard/header'
 import { loadPlans } from '../../redux/actions/plans.actions'
+import { Link } from 'react-router-dom'
 
 class SmsFinishScreen extends React.Component {
   constructor (props, context) {
@@ -38,7 +39,7 @@ class SmsFinishScreen extends React.Component {
     return (
       <div>
         <Header />
-        <div className="m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-grid--tablet-and-mobile m-grid--hor-tablet-and-mobile m-login m-login--1 m-login--singin" style={{ height: '110vh' }}>
+        <div className="m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-grid--tablet-and-mobile m-grid--hor-tablet-and-mobile m-login m-login--1 m-login--singin" style={{ height: 'calc(100vh - 70px)' }}>
           <div className="m-grid__item m-grid__item--fluid m-grid m-grid--center m-grid--hor m-grid__item--order-tablet-and-mobile-1	m-login__content" style={{backgroundImage: 'url(https://cdn.cloudkibo.com/public/assets/app/media/img//bg/bg-4.jpg)'}}>
             <div className="m-grid__item m-grid__item--middle">
               <h3 className="m-login__welcome">
@@ -52,60 +53,69 @@ class SmsFinishScreen extends React.Component {
             </div>
           </div>
           <div className="m-grid__item m-grid__item--order-tablet-and-mobile-2 m-login__aside" style={{padding: '2rem'}}>
-            <div className="sequence-box" style={{height: '10em'}}>
-              <span>
-                <span className="sequence-name">
-                  Free Plan
-                </span>
-                <br />
-                <span>
-                  <span>
-                    Connect your Twilio trial account <br /> and use our features for free
-                  </span>
-                </span>
-              </span>
-              <span className="sequence-text sequence-centered-text" style={{position: 'absolute', left: '77%', top: '25%'}}>
-                <span className="sequence-number">
-                  FREE
-                </span>
-              </span>
-            </div>
-            <div className="sequence-box" style={{height: '10em'}}>
-              <span>
-                <span className="sequence-name">
-                  Basic Plan
-                </span>
-                <br />
-                <span>
-                  <span>
-                    Connect your Bandwidth account <br /> to send messages upto 5000
-                  </span>
-                </span>
-              </span>
-              <span className="sequence-text sequence-centered-text" style={{position: 'absolute', left: '77%', top: '25%'}}>
-                <span className="sequence-number">
-                  $35
-                </span>
-              </span>
-            </div>
-            <div className="sequence-box" style={{height: '10em'}}>
-              <span>
-                <span className="sequence-name">
-                  Standard Plan
-                </span>
-                <br />
-                <span>
-                  <span>
-                    Connect your Bandwidth account <br /> to send messages upto 7500
-                  </span>
-                </span>
-              </span>
-              <span className="sequence-text sequence-centered-text" style={{position: 'absolute', left: '77%', top: '25%'}}>
-                <span className="sequence-number">
-                  $50
-                </span>
-              </span>
-            </div>
+            {
+              this.props.planName && this.props.planName.includes('Enterprise') ?
+                <div>
+                  <br />
+                  <br />
+                  <br />
+                  <br />
+                  <br />
+                  <br />
+                  <center>
+                    <img alt='completed' src='https://cdn.cloudkibo.com/public/icons/PE-Success-Icon.png' width='150' height='150'></img>
+                    <br />
+                    <br />
+                    Congratulations! you have successfully applied for Enterprise Plan for Sms. Someone from our team will contact you soon.
+                    <br />
+                    <br />
+                    <br />
+                    <div className='row'>
+                      <div className='col-lg-6 m--align-left' >
+                        <Link to='/smsProviderScreen' className='btn btn-secondary m-btn m-btn--custom m-btn--icon' data-wizard-action='next'>
+                          <span>
+                            <i className='la la-arrow-left' />
+                            <span>Back</span>&nbsp;&nbsp;
+                          </span>
+                        </Link>
+                      </div>
+                    </div>
+                  </center>
+                </div>
+                :
+                <div>
+                  <br />
+                  <br />
+                  <br />
+                  <br />
+                  <br />
+                  <br />
+                  <center>
+                    <img alt='completed' src='https://cdn.cloudkibo.com/public/icons/PE-Success-Icon.png' width='150' height='150'></img>
+                    <br />
+                    <br />
+                    Congratulations! you have successfully configured sms channel.
+                    <br />
+                    <br />
+                    <br />
+                    <div className='row'>
+                      <div className='col-lg-6 m--align-left' >
+                        <Link to='/smsNumbersScreen' className='btn btn-secondary m-btn m-btn--custom m-btn--icon' data-wizard-action='next'>
+                          <span>
+                            <i className='la la-arrow-left' />
+                            <span>Back</span>&nbsp;&nbsp;
+                          </span>
+                        </Link>
+                      </div>
+                      <div className='col-lg-6 m--align-right' >
+                        <Link to='/dashboard' className='btn btn-success m-btn m-btn--custom m-btn--icon'>
+                          Finish
+                        </Link>
+                      </div>
+                    </div>
+                  </center>
+                </div>
+            }
           </div>
         </div>
       </div>
@@ -116,7 +126,8 @@ class SmsFinishScreen extends React.Component {
 function mapStateToProps (state) {
   return {
     user: (state.basicInfo.user),
-    superUser: (state.basicInfo.superUser)
+    superUser: (state.basicInfo.superUser),
+    planName: (state.channelOnboarding.planName)
   }
 }
 
