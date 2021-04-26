@@ -217,31 +217,37 @@ class Header extends React.Component {
                                 <li className='m-nav__section m--hide'>
                                   <span className='m-nav__section-text'>My Pages</span>
                                 </li>
-                                <li className='m-nav__item'>
-                                { window.location.hostname.toLowerCase().includes('kiboengage') ?
-                                    <a href={liveChatLink} target='_blank' rel='noopener noreferrer' className='m-nav__link'>
-                                      <i className='m-nav__link-icon flaticon-chat-1' />
-                                      <span className='m-nav__link-text'>Messages</span>
-                                    </a>
-                                    : <Link to='/liveChat' className='m-nav__link'>
-                                    <i className='m-nav__link-icon flaticon-chat-1' />
-                                    <span className='m-nav__link-text'>Messages</span>
-                                  </Link>
-                                  }
-                                </li>
-                                <li className='m-nav__separator m-nav__separator--fit' />
+                                {!this.props.hideMessages &&
+                                  <li className='m-nav__item'>
+                                    { window.location.hostname.toLowerCase().includes('kiboengage') ?
+                                      <a href={liveChatLink} target='_blank' rel='noopener noreferrer' className='m-nav__link'>
+                                        <i className='m-nav__link-icon flaticon-chat-1' />
+                                        <span className='m-nav__link-text'>Messages</span>
+                                      </a>
+                                      : <Link to='/liveChat' className='m-nav__link'>
+                                        <i className='m-nav__link-icon flaticon-chat-1' />
+                                        <span className='m-nav__link-text'>Messages</span>
+                                      </Link>
+                                    }
+                                  </li>
+                                }
+                                {!this.props.hideMessages &&
+                                  <li className='m-nav__separator m-nav__separator--fit' />
+                                }
                                 <li className='m-nav__item'>
                                   <a href='http://kibopush.com/faq/' taregt='_blank' className='m-nav__link'>
                                     <i className='m-nav__link-icon flaticon-info' />
                                     <span className='m-nav__link-text'>FAQ</span>
                                   </a>
                                 </li>
+                                {!this.props.hideSettings &&
                                 <li className='m-nav__item'>
                                   <Link to='/settings'>
                                     <i className='m-nav__link-icon flaticon-settings' />
                                     <span className='m-nav__link-text'>&nbsp;&nbsp;&nbsp;Settings</span>
                                   </Link>
                                 </li>
+                                }
                                 <li className='m-nav__separator m-nav__separator--fit' />
                                 <li className='m-nav__item'>
                                   <a href='#/' onClick={() => { this.props.logout(auth.logout)}} className='btn m-btn--pill    btn-secondary m-btn m-btn--custom m-btn--label-brand m-btn--bolder'>
