@@ -913,7 +913,7 @@ export function validateSmsProviderInput(state) {
   let smsData = state.smsData[state.smsProvider]
   if (state.smsProvider === 'twilio') {
     return (
-      smsData.accessToken &&
+      smsData.authToken &&
       smsData.businessNumber &&
       smsData.accountSID &&
       smsData.messages

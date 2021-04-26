@@ -17,7 +17,7 @@ class SmsProviderScreen extends React.Component {
     this.initialSmsData = {
       twilio: {
         provider: 'twilio',
-        accessToken: '',
+        authToken: '',
         businessNumber: '',
         accountSID: '',
         sandBoxCode: '',
@@ -68,6 +68,10 @@ class SmsProviderScreen extends React.Component {
   nextBtnAction () {
     if (validateSmsProviderInput(this.state)) {
       let smsData = this.state.smsData[this.state.smsProvider]
+
+      if (parseInt(smsData.messages) === NaN) {
+        return this.msg.error('Number of messages should be number only. Please enter valid number.')
+      }
 
       this.props.connectSMS(smsData, (res) => {
         if (res.status === 'success') {
@@ -165,7 +169,7 @@ class SmsProviderScreen extends React.Component {
               </div>
               <div id='question' className='form-group m-form__group'>
                 <label className='control-label' style={{ fontWeight: 'normal' }}>Twilio Auth Token:</label>
-                <input required={this.state.smsProvider === 'twilio'} className='form-control' value={this.state.smsData.twilio.accessToken} onChange={(e) => this.updateSmsData(e, { accessToken: e.target.value })} />
+                <input required={this.state.smsProvider === 'twilio'} className='form-control' value={this.state.smsData.twilio.authToken} onChange={(e) => this.updateSmsData(e, { authToken: e.target.value })} />
               </div>
               <div id='question' className='form-group m-form__group'>
                 <label className='control-label' style={{ fontWeight: 'normal' }}>SMS Number:</label>

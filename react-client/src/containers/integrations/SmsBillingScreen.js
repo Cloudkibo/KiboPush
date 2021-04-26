@@ -101,6 +101,7 @@ class SmsBillingScreen extends React.Component {
           </div>
           <div className="m-grid__item m-grid__item--order-tablet-and-mobile-2 m-login__aside" style={{padding: '2rem'}}>
             <h2> Step 2: Choose a billing method</h2>
+            <br />
             <div id='target' className='col-lg-8 col-md-8 col-sm-8 col-xs-12' style={{maxWidth: '100%' }}>
               <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
               <div style={{height: '62vh'}} className='m-portlet m-portlet--tabs  '>
