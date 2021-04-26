@@ -11,10 +11,11 @@ export function updatePlans(data) {
   }
 }
 
-export function loadPlans(platform) {
+export function loadPlans(platform, cb) {
   return (dispatch) => {
     callApi(`plans/${platform}`).then(res => {
       dispatch(updatePlans(res.payload))
+      if (cb) cb(res)
     })
   }
 }

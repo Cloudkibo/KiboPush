@@ -17,7 +17,8 @@ class SmsPlansScreen extends React.Component {
       selectedPlan: null
     }
     this.nextBtnAction = this.nextBtnAction.bind(this)
-    props.loadPlans('sms')
+    this.isPlanSelected = this.isPlanSelected.bind(this)
+    props.loadPlans('sms', this.isPlanSelected)
   }
 
   componentDidMount () {
@@ -36,11 +37,18 @@ class SmsPlansScreen extends React.Component {
     document.getElementsByTagName('body')[0].className = 'm-page--fluid m--skin- m-content--skin-light2 m-footer--push m-aside--offcanvas-default'
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps && nextProps.plansInfo) {
-      // this.setState({
-      //   selectedPlan: nextProps.plansInfo[0]._id
-      // })
+  isPlanSelected (res) {
+    if (
+      res.status === 'success' && this.props.history.location.state &&
+      this.props.history.location.state.plan
+    ) {
+      const plans = res.payload
+      const selectedPlan = plans.find((item) => item.unique_ID === this.props.history.location.state.plan)
+      if (selectedPlan) {
+        this.setState({selectedPlan: selectedPlan._id}, () => {
+          this.nextBtnAction()
+        })
+      }
     }
   }
 
