@@ -22,6 +22,7 @@ import { getHiddenHeaderRoutes, getWhiteHeaderRoutes } from './utility/utils'
 import { validateUserAccessToken, isFacebookConnected, fetchUsageInfo, modifyUserDetails } from './redux/actions/basicinfo.actions'
 import { fetchCompanyPreferences } from './redux/actions/settings.actions'
 import { fetchCompanyAddOns } from './redux/actions/addOns.actions'
+import queryString from 'query-string'
 
 class SubApp extends Component {
   constructor (props) {
@@ -62,9 +63,18 @@ class SubApp extends Component {
     this.props.fetchUsageInfo(this.checkResourceConsumption)
     this.props.fetchCompanyAddOns(this.handleCompanyAddOns)
 
+    const queryParams = queryString.parse(this.props.history.location.search)
+    let configurePlatform = false
+    if (queryParams && queryParams.plan) {
+      configurePlatform = true
+    }
+
+    console.log('configurePlatform', configurePlatform)
+    console.log(queryParams)
+
     if (this.props.history.location.pathname.toLowerCase() === '/demossa') {
       this.handleDemoSSAPage()
-    } else if (this.props.history.location.pathname.toLowerCase() !== '/integrations/zoom') {
+    } else if (!configurePlatform && this.props.history.location.pathname.toLowerCase() !== '/integrations/zoom') {
       if (
         !this.props.history.location.pathname.startsWith('/liveChat') &&
         getCurrentProduct() === 'KiboChat'
