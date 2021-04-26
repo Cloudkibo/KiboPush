@@ -68,7 +68,7 @@ class CommerceIntegration extends React.Component {
         <button ref='toggleDisconnect' data-toggle='modal' data-target='#_confirm_disconnect' style={{ display: 'none' }} />
         {
           this.props.store && this.props.store.storeType === 'shopify' &&
-          <a target='_blank' rel='noopener noreferrer' href="https://partners.shopify.com/1033294/apps/2954997/test" ref='disconnect' style={{ display: 'none' }}> </a>
+          <a target='_blank' rel='noopener noreferrer' href={`https://${this.props.store.name}.myshopify.com/admin/apps`} ref='disconnect' style={{ display: 'none' }}> </a>
         }
         {
           this.props.store && this.props.store.storeType === 'bigcommerce' &&
