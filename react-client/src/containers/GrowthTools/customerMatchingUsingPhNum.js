@@ -263,7 +263,6 @@ class CustomerMatching extends React.Component {
   parseCSV(self, file) {
     Papa.parse(file, {
       complete: function (results) {
-        console.log('Finished:', results.data)
         var faulty = false
         if (results.data && results.data.length > 0) {
           var columnsArray = []
@@ -348,7 +347,9 @@ class CustomerMatching extends React.Component {
       this.setState({ disabled: true })
       return
     }
-    this.setState({ phoneNumbers: this.inputPhoneNumbers.value.split(';') })
+    let splitNumbers = this.inputPhoneNumbers.value.split(';')
+    splitNumbers = splitNumbers.filter(s => s !== '')
+    this.setState({ phoneNumbers: splitNumbers })
     this.setState({ disabled: false, numbersError: [] })
     if (this.state.textAreaValue !== '' && ((this.state.file && this.state.file !== '') || e.target.value !== '')) {
       this.setState({ disabled: false })
@@ -474,7 +475,6 @@ class CustomerMatching extends React.Component {
   }
 
   render() {
-    console.log('customerMatchingUsingPhNum state', this.state)
     var alertOptions = {
       offset: 14,
       position: 'top right',
@@ -861,7 +861,6 @@ class CustomerMatching extends React.Component {
 }
 
 function mapStateToProps(state) {
-  console.log('in mapStateToProps', state)
   return {
     uploadResponse: state.growthToolsInfo,
     pages: state.pagesInfo.pages,
