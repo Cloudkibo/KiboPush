@@ -69,8 +69,8 @@ class SmsProviderScreen extends React.Component {
     if (validateSmsProviderInput(this.state)) {
       let smsData = this.state.smsData[this.state.smsProvider]
 
-      if (parseInt(smsData.messages) === NaN) {
-        return this.msg.error('Number of messages should be number only. Please enter valid number.')
+      if (isNaN(parseInt(smsData.messages))) {
+        return this.msg.error('Expected messages count should be number only. Please enter valid number.')
       }
 
       this.props.connectSMS(smsData, (res) => {
