@@ -308,7 +308,7 @@ class FacebookIntegration extends React.Component {
               <div className='m-widget4__ext'>
                 {this.props.automated_options && this.props.automated_options.sms
                   ? <button className='m-btn m-btn--pill m-btn--hover-secondary btn btn-secondary' disabled>
-                    Connected
+                    {this.props.automated_options.sms && this.props.automated_options.sms.accountStatus === 'pending' ? 'Pending' : 'Connected'}
                   </button>
                   : <button className='m-btn m-btn--pill m-btn--hover-success btn btn-success' style={{ borderColor: '#34bfa3', color: '#34bfa3' }} onClick={this.showSmsPlans}>
                     Connect

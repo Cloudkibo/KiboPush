@@ -74,6 +74,7 @@ class Configuration extends React.Component {
     this.getBusinessNumber = this.getBusinessNumber.bind(this)
     this.handleUsage = this.handleUsage.bind(this)
     this.getWhatsAppConnected = this.getWhatsAppConnected.bind(this)
+    this.showSmsPlans = this.showSmsPlans.bind(this)
     props.getAutomatedOptions()
   }
   handleCheckbox (e) {
@@ -90,6 +91,12 @@ class Configuration extends React.Component {
 
   handleUsage (e) {
     this.setState({usage: e.target.value})
+  }
+
+  showSmsPlans() {
+    this.props.history.push({
+      pathname: '/smsPlansScreen'
+    })
   }
 
   getBusinessNumber () {
@@ -675,16 +682,18 @@ class Configuration extends React.Component {
                                             <br />
                                           </div>
                                           <div className='m-widget4__ext'>
-                                            <button className='m-btn m-btn--pill m-btn--hover-success btn btn-success' style={{ borderColor: '#34bfa3', color: '#34bfa3', marginRight: '10px' }} data-toggle="modal" data-target="#connect">
+                                            <button className='m-btn m-btn--pill m-btn--hover-success btn btn-success' style={{ borderColor: '#34bfa3', color: '#34bfa3', marginRight: '10px' }} onClick={this.showSmsPlans}> {/* data-toggle="modal" data-target="#connect"> */}
                                               {this.props.automated_options && this.props.automated_options.sms ? 'Edit' : 'Connect'}
                                             </button>
                                           </div>
-                                          {this.props.automated_options && this.props.automated_options.sms &&
+                                          { /* NOTE: Commenting it for now until we are sure how we will allow disconnecting on paid SMS account */
+                                            /*this.props.automated_options && this.props.automated_options.sms &&
                                             <div className='m-widget4__ext'>
                                               <button className='m-btn m-btn--pill m-btn--hover-danger btn btn-danger' style={{ borderColor: '#d9534f', color: '#d9534f', marginRight: '10px' }} data-toggle="modal" data-target="#disconnect" onClick={() => { this.showDialogDisconnect('sms') }}>
                                                 Disconnect
                                         </button>
                                             </div>
+                                            */
                                           }
                                         </div>
                                       }

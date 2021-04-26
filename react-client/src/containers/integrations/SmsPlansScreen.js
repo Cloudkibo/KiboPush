@@ -6,6 +6,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import Header from './../wizard/header'
+import AlertContainer from 'react-alert'
 import { loadPlans } from '../../redux/actions/plans.actions'
 import { setPlanId, setPlanName, setPlanUniqueId, setOnboardingPlatform } from '../../redux/actions/channelOnboarding.actions'
 
@@ -52,14 +53,24 @@ class SmsPlansScreen extends React.Component {
       this.props.history.push({
         pathname: '/smsBillingScreen'
       })
+    } else {
+      this.msg.error('Please select a plan first.')
     }
   }
 
   render () {
+    var alertOptions = {
+      offset: 75,
+      position: 'bottom right',
+      theme: 'dark',
+      time: 5000,
+      transition: 'scale'
+    }
     return (
       <div>
-        <Header />
+        <Header showTitle hideMessages hideSettings />
         <div className="m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-grid--tablet-and-mobile m-grid--hor-tablet-and-mobile m-login m-login--1 m-login--singin" style={{ height: 'calc(100vh - 70px)', overflowY: 'scroll' }}>
+          <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
           <div className="m-grid__item m-grid__item--fluid m-grid m-grid--center m-grid--hor m-grid__item--order-tablet-and-mobile-1	m-login__content" style={{backgroundImage: 'url(https://cdn.cloudkibo.com/public/assets/app/media/img//bg/bg-4.jpg)'}}>
             <div className="m-grid__item m-grid__item--middle">
               <h3 className="m-login__welcome">
