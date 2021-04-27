@@ -62,16 +62,20 @@ class SmsBillingScreen extends React.Component {
   }
 
   nextBtnAction () {
-    this.props.setOnboardingStripeToken(this.state.stripeToken)
+    if (this.state.stripeToken) {
+      this.props.setOnboardingStripeToken(this.state.stripeToken)
 
-    if (this.props.planName.includes('Enterprise')) {
-      this.props.history.push({
-        pathname: '/smsProviderScreen'
-      })
+      if (this.props.planName.includes('Enterprise')) {
+        this.props.history.push({
+          pathname: '/smsProviderScreen'
+        })
+      } else {
+        this.props.history.push({
+          pathname: '/smsNumbersScreen'
+        })
+      }
     } else {
-      this.props.history.push({
-        pathname: '/smsNumbersScreen'
-      })
+      this.msg.error('Please provide a debit or credit card and click on Save button.')
     }
   }
 
@@ -87,6 +91,7 @@ class SmsBillingScreen extends React.Component {
       <div>
         <Header showTitle hideMessages hideSettings />
         <div className="m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-grid--tablet-and-mobile m-grid--hor-tablet-and-mobile m-login m-login--1 m-login--singin" style={{ height: 'calc(100vh - 110px)', overflowY: 'scroll', margin: '20px' }}>
+          <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
           <div className="m-grid__item m-grid__item--fluid m-grid m-grid--center m-grid--hor m-grid__item--order-tablet-and-mobile-1	m-login__content" style={{backgroundImage: 'url(https://cdn.cloudkibo.com/public/assets/app/media/img//bg/bg-4.jpg)'}}>
             <div className="m-grid__item m-grid__item--middle">
               <h3 className="m-login__welcome">
