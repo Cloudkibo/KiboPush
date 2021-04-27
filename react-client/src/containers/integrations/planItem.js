@@ -22,7 +22,7 @@ class PlanItem extends React.Component {
 				onClick={() => this.props.updateState({ selectedPlan: this.props.planInfo._id })}>
 				<span>
 					<span className="sequence-name"
-					style={this.getContentColor()}>
+						style={this.getContentColor()}>
 						{this.props.planInfo.name}
 					</span>
 					<br />
