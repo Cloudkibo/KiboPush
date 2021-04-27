@@ -20,6 +20,7 @@ import { handleSocketEvent, handleSocketEventSms, handleSocketEventWhatsapp } fr
 import { addToSponsoredMessages, updateSponsoredMessagesListItemStatus } from './../redux/actions/sponsoredMessaging.actions'
 import { removeZoomIntegration } from './../redux/actions/settings.actions'
 import {landingPageDelete} from './../redux/actions/landingPages.actions'
+import { uninstallShopify } from '../redux/actions/commerce.actions'
 const whatsAppActions = require('./../redux/actions/whatsAppChat.actions')
 const smsActions = require('./../redux/actions/smsChat.actions')
 const { setSocketData } = require('./../redux/actions/messageAlerts.actions')
@@ -104,7 +105,9 @@ socket.on('message', (data) => {
     }
     store.dispatch(fetchNotifications())
   }
-  if (data.action === 'whatsapp_message_seen') {
+  if (['shopify-uninstall'].includes(data.action)) {
+    store.dispatch(uninstallShopify(data))
+  } else if (data.action === 'whatsapp_message_seen') {
     store.dispatch(whatsAppActions.socketUpdateWhatsAppSeen(data.payload))
   } else if (data.action === 'message_seen'|| data.action === 'message_delivered') {
     store.dispatch(socketUpdateMessageStatus(data.payload))

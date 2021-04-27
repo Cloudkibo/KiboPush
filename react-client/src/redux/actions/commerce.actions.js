@@ -131,3 +131,12 @@ export function fetchSuperNumberPreferences(msg) {
       })
   }
 }
+
+export function uninstallShopify(payload) {
+  return (dispatch) => {
+    dispatch({
+      type: ActionTypes.UNINSTALL_SHOPIFY,
+      data: payload
+    })
+  }
+}
