@@ -77,7 +77,7 @@ class SmsPlansScreen extends React.Component {
     return (
       <div>
         <Header showTitle hideMessages hideSettings />
-        <div className="m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-grid--tablet-and-mobile m-grid--hor-tablet-and-mobile m-login m-login--1 m-login--singin" style={{ height: 'calc(100vh - 70px)', overflowY: 'scroll' }}>
+        <div className="m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-grid--tablet-and-mobile m-grid--hor-tablet-and-mobile m-login m-login--1 m-login--singin" style={{ height: 'calc(100vh - 110px)', overflowY: 'scroll', margin: '20px' }}>
           <AlertContainer ref={a => { this.msg = a }} {...alertOptions} />
           <div className="m-grid__item m-grid__item--fluid m-grid m-grid--center m-grid--hor m-grid__item--order-tablet-and-mobile-1	m-login__content" style={{backgroundImage: 'url(https://cdn.cloudkibo.com/public/assets/app/media/img//bg/bg-4.jpg)'}}>
             <div className="m-grid__item m-grid__item--middle">
@@ -93,32 +93,34 @@ class SmsPlansScreen extends React.Component {
           </div>
           <div className="m-grid__item m-grid__item--order-tablet-and-mobile-2 m-login__aside" style={{padding: '2rem', overflowY: 'scroll'}}>
             <h2> Step 1: Choose a plan </h2>
-            {
-              this.props.plansInfo && this.props.plansInfo.map((planInfo, i) => (
-                <div 
-                  className="sequence-box" 
-                  style={{height: '8em', backgroundColor: `${planInfo._id === this.state.selectedPlan ? '#34bfa3' : 'white'}`, cursor: 'pointer'}}
-                  key={i}
-                  onClick={() => this.setState({ selectedPlan: planInfo._id })}>
-                  <span>
-                    <span className="sequence-name">
-                      {planInfo.name}
-                    </span>
-                    <br />
+            <div style={{overflowY: 'scroll', height: '460px'}}>
+              {
+                this.props.plansInfo && this.props.plansInfo.map((planInfo, i) => (
+                  <div 
+                    className="sequence-box" 
+                    style={{height: '8em', backgroundColor: `${planInfo._id === this.state.selectedPlan ? '#34bfa3' : 'white'}`, cursor: 'pointer'}}
+                    key={i}
+                    onClick={() => this.setState({ selectedPlan: planInfo._id })}>
                     <span>
+                      <span className="sequence-name">
+                        {planInfo.name}
+                      </span>
+                      <br />
                       <span>
-                        Connect your SMS provider and use {planInfo.trial_period} days trial period <br /> with {planInfo.name}
+                        <span>
+                          Connect your SMS provider and use {planInfo.trial_period} days trial period <br /> with {planInfo.name}
+                        </span>
                       </span>
                     </span>
-                  </span>
-                  <span className="sequence-text sequence-centered-text" style={{position: 'absolute', left: '77%', top: '25%'}}>
-                    <span className="sequence-number">
-                      {planInfo.amount ? `$${planInfo.amount}` : ''}
+                    <span className="sequence-text sequence-centered-text" style={{position: 'absolute', left: '77%', top: '25%'}}>
+                      <span className="sequence-number">
+                        {planInfo.amount ? `$${planInfo.amount}` : ''}
+                      </span>
                     </span>
-                  </span>
-                </div>
-              ))
-            }
+                  </div>
+                ))
+              }
+            </div>
             <br />
             <div className='row'>
               <div className='col-lg-6 m--align-left' />
