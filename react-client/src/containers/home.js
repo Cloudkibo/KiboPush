@@ -37,6 +37,15 @@ class Home extends Component {
         state: {plan: queryParams.plan}
       })
     }
+    if (
+      queryParams && queryParams.platform === 'whatsApp' && queryParams.plan &&
+      props.user.platform !== 'whatsApp' && !props.automated_options.whatsApp
+    ) {
+      this.props.history.push({
+        pathname: '/whatsAppPlansScreen',
+        state: {plan: queryParams.plan}
+      })
+    }
   }
  
   UNSAFE_componentWillReceiveProps (nextProps) {

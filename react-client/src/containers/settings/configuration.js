@@ -714,7 +714,9 @@ class Configuration extends React.Component {
                                             <div className='m-widget4__ext'>
                                               <button className='m-btn m-btn--pill m-btn--hover-success btn btn-success'
                                                 style={{ borderColor: '#34bfa3', color: '#34bfa3', marginRight: '10px' }}
-                                                onClick={() => this.setType('Change')}>
+                                                onClick={() => {this.props.history.push({
+                                                  pathname: '/whatsAppPlansScreen'
+                                                })}}>
                                                 Connect
                                               </button>
                                             </div>

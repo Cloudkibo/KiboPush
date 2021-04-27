@@ -23,11 +23,13 @@ import CreatePoll from './containers/polls/CreatePoll'
 import Poll from './containers/polls/poll'
 import FacebookIntegration from './containers/integrations/facebookIntegration'
 import Integrations from './containers/integrations/integrations'
-import SmsPlansScreen from './containers/integrations/SmsPlansScreen'
-import SmsProviderScreen from './containers/integrations/SmsProviderScreen'
-import SmsNumbersScreen from './containers/integrations/SmsNumbersScreen'
-import SmsBillingScreen from './containers/integrations/SmsBillingScreen'
-import SmsFinishScreen from './containers/integrations/SmsFinishScreen'
+import SmsPlansScreen from './containers/integrations/sms/SmsPlansScreen'
+import SmsProviderScreen from './containers/integrations/sms/SmsProviderScreen'
+import SmsNumbersScreen from './containers/integrations/sms/SmsNumbersScreen'
+import SmsBillingScreen from './containers/integrations/sms/SmsBillingScreen'
+import SmsFinishScreen from './containers/integrations/sms/SmsFinishScreen'
+import WhatsAppPlansScreen from './containers/integrations/whatsApp/plans'
+import WhatsAppProvidersScreen from './containers/integrations/whatsApp/providers'
 import PollResult from './containers/polls/PollResult'
 import ViewPoll from './containers/polls/ViewPoll'
 import UserDetails from './containers/operationalDashboard/userDetails'
@@ -455,6 +457,8 @@ const Routes = () => (
     <Route path='/smsNumbersScreen' component={SmsNumbersScreen} onEnter={requireAuth} />
     <Route path='/smsBillingScreen' component={SmsBillingScreen} onEnter={requireAuth} />
     <Route path='/smsFinishScreen' component={SmsFinishScreen} onEnter={requireAuth} />
+    <Route path='/whatsAppPlansScreen' component={WhatsAppPlansScreen} onEnter={requireAuth} />
+    <Route path='/whatsAppProvidersScreen' component={WhatsAppProvidersScreen} onEnter={requireAuth} />
     <Route path='/addOns' component={AddOns} onEnter={requireAuth} />
     <Route path='*' render={() => <Redirect to='/' />} />
   </Switch>
