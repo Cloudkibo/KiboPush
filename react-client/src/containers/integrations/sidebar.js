@@ -28,4 +28,4 @@ Sidebar.propTypes = {
   'description': PropTypes.string.isRequired
 }
 
-  export default Sidebar
+export default Sidebar
