@@ -45,7 +45,7 @@ class SmsNumbersScreen extends React.Component {
 
   nextBtnAction () {
     this.props.history.push({
-      pathname: '/smsBillingScreen'
+      pathname: '/smsFinishScreen'
     })
   }
 
@@ -53,7 +53,7 @@ class SmsNumbersScreen extends React.Component {
     return (
       <div>
         <Header showTitle hideMessages hideSettings />
-        <div className="m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-grid--tablet-and-mobile m-grid--hor-tablet-and-mobile m-login m-login--1 m-login--singin" style={{ height: 'calc(100vh - 70px)', overflowY: 'scroll' }}>
+        <div className="m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-grid--tablet-and-mobile m-grid--hor-tablet-and-mobile m-login m-login--1 m-login--singin" style={{ height: 'calc(100vh - 110px)', overflowY: 'scroll', margin: '20px' }}>
           <div className="m-grid__item m-grid__item--fluid m-grid m-grid--center m-grid--hor m-grid__item--order-tablet-and-mobile-1	m-login__content" style={{backgroundImage: 'url(https://cdn.cloudkibo.com/public/assets/app/media/img//bg/bg-4.jpg)'}}>
             <div className="m-grid__item m-grid__item--middle">
               <h3 className="m-login__welcome">
@@ -67,7 +67,7 @@ class SmsNumbersScreen extends React.Component {
             </div>
           </div>
           <div className="m-grid__item m-grid__item--order-tablet-and-mobile-2 m-login__aside" style={{padding: '2rem', overflowY: 'scroll'}}>
-            <h2> Step 1: Select a number for SMS </h2>
+            <h2> Step 3: Select a number for SMS </h2>
             <div style={{ marginBottom: '15px' }} id='_whatsapp_provider' className='form-group m-form__group'>
               <label className='control-label'>Use</label>
               <select onChange={this.changeNumberOption} className="form-control m-input" value={this.state.numberOption} id="_zoom_users" required>
