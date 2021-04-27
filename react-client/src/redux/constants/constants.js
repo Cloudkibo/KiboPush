@@ -552,6 +552,7 @@ export const DELETE_CANNED_RESPONSE = 'DELETE_CANNED_RESPONSE'
 
 //constants for shopify
 export const FETCH_STORE = 'FETCH_STORE'
+export const UNINSTALL_SHOPIFY = 'UNINSTALL_SHOPIFY'
 
 //constants for superNumber
 export const SHOW_COMMERCE_TEMPLATES = 'SHOW_COMMERCE_TEMPLATES'
