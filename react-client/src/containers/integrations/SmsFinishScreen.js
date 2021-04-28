@@ -63,68 +63,61 @@ class SmsFinishScreen extends React.Component {
               </p>
             </div>
           </div>
-          <div className="m-grid__item m-grid__item--order-tablet-and-mobile-2 m-login__aside" style={{padding: '2rem'}}>
+          <div className="m-grid__item m-grid__item--order-tablet-and-mobile-2 m-login__aside" style={{padding: '2rem', overflowY: 'scroll'}}>
             {
               this.props.planName && this.props.planName.includes('Enterprise') ?
                 <div>
-                  <br />
-                  <br />
-                  <br />
-                  <br />
-                  <br />
-                  <br />
-                  <center>
-                    <img alt='completed' src='https://cdn.cloudkibo.com/public/icons/PE-Success-Icon.png' width='150' height='150'></img>
-                    <br />
-                    <br />
-                    Congratulations! you have successfully applied for Enterprise Plan for Sms. Someone from our team will contact you soon.
+                  <div>
                     <br />
                     <br />
                     <br />
-                    <div className='row'>
-                      <div className='col-lg-6 m--align-left' >
-                        <Link to='/smsProviderScreen' className='btn btn-secondary m-btn m-btn--custom m-btn--icon' data-wizard-action='next'>
-                          <span>
-                            <i className='la la-arrow-left' />
-                            <span>Back</span>&nbsp;&nbsp;
-                          </span>
-                        </Link>
-                      </div>
-                    </div>
-                  </center>
+                    <br />
+                    <br />
+                    <br />
+                    <center>
+                      <img alt='completed' src='https://cdn.cloudkibo.com/public/icons/PE-Success-Icon.png' width='150' height='150'></img>
+                      <br />
+                      <br />
+                      Congratulations! you have successfully applied for Enterprise Plan for Sms. Someone from our team will contact you soon.
+                      <br />
+                      <br />
+                      <br />
+                    </center>
+                  </div>
+                  <div>
+                    <center>
+                      <button className='btn btn-success m-btn m-btn--custom m-btn--icon' onClick={this.nextBtnAction}>
+                        Finish
+                      </button>
+                    </center>
+                  </div>
                 </div>
                 :
                 <div>
-                  <br />
-                  <br />
-                  <br />
-                  <br />
-                  <br />
-                  <br />
-                  <center>
-                    <img alt='completed' src='https://cdn.cloudkibo.com/public/icons/PE-Success-Icon.png' width='150' height='150'></img>
-                    <br />
-                    <br />
-                    Congratulations! you have successfully configured sms channel.
+                  <div>
                     <br />
                     <br />
                     <br />
-                    <div className='row'>
-                      <div className='col-lg-6 m--align-left' >
-                        <Link to='/smsNumbersScreen' className='btn btn-secondary m-btn m-btn--custom m-btn--icon' data-wizard-action='next'>
-                          <span>
-                            <i className='la la-arrow-left' />
-                            <span>Back</span>&nbsp;&nbsp;
-                          </span>
-                        </Link>
-                      </div>
-                      <div className='col-lg-6 m--align-right' >
-                        <button className='btn btn-success m-btn m-btn--custom m-btn--icon' onClick={this.nextBtnAction}>
-                          Finish
-                        </button>
-                      </div>
-                    </div>
-                  </center>
+                    <br />
+                    <br />
+                    <br />
+                    <center>
+                      <img alt='completed' src='https://cdn.cloudkibo.com/public/icons/PE-Success-Icon.png' width='150' height='150'></img>
+                      <br />
+                      <br />
+                      Congratulations! you have successfully configured sms channel.
+                      <br />
+                      <br />
+                      <br />
+                    </center>
+                  </div>
+                  <div>
+                    <center>
+                      <button className='btn btn-success m-btn m-btn--custom m-btn--icon' onClick={this.nextBtnAction}>
+                        Finish
+                      </button>
+                    </center>
+                  </div>
                 </div>
             }
           </div>
