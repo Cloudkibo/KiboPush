@@ -24,6 +24,11 @@ class WhatsAppPlansScreen extends React.Component {
     this.setState(state)
   }
 
+  componentWillMount (nextprops) {
+    console.log('nextprops', nextprops)
+    console.log('this.props.', this.props)
+  }
+
   componentDidMount () {
     const hostname = window.location.hostname
     let title = ''
@@ -60,7 +65,7 @@ class WhatsAppPlansScreen extends React.Component {
       this.props.setPlanId(this.state.selectedPlan)
       this.props.setPlanName(this.props.plansInfo.filter(item => item._id === this.state.selectedPlan)[0].name)
       this.props.setPlanUniqueId(this.props.plansInfo.filter(item => item._id === this.state.selectedPlan)[0].unique_ID)
-      this.props.setOnboardingPlatform('sms')
+      this.props.setOnboardingPlatform('whatsApp')
       this.props.history.push({
         pathname: '/whatsAppProvidersScreen'
       })
@@ -89,7 +94,6 @@ class WhatsAppPlansScreen extends React.Component {
           />
           <div className="m-grid__item m-grid__item--order-tablet-and-mobile-2 m-login__aside" style={{padding: '2rem'}}>
             <h2> Step 1: Choose a plan </h2>
-            <div>
             {
               this.props.plansInfo && this.props.plansInfo.map((planInfo, i) => (
                 <PLANITEM 
@@ -100,7 +104,6 @@ class WhatsAppPlansScreen extends React.Component {
                 />
               ))
             }
-            </div>
             <br />
             <div className='row'>
               <div className='col-lg-6 m--align-left' />
@@ -124,7 +127,8 @@ function mapStateToProps (state) {
   return {
     user: (state.basicInfo.user),
     plansInfo: (state.plansInfo.plansInfo),
-    superUser: (state.basicInfo.superUser)
+    superUser: (state.basicInfo.superUser),
+    channelOnboarding: (state.channelOnboarding)
   }
 }
 
