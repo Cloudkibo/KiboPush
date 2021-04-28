@@ -7,8 +7,9 @@ import { loadPlans } from '../../../redux/actions/plans.actions'
 import { setPlanId, setPlanName, setPlanUniqueId, setOnboardingPlatform } from '../../../redux/actions/channelOnboarding.actions'
 import SIDEBAR from '../sidebar'
 import PLANITEM from '../planItem'
+import { Link } from 'react-router-dom'
 
-class WhatsAppPlansScreen extends React.Component {
+class WhatsAppBillingScreen extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
@@ -25,9 +26,8 @@ class WhatsAppPlansScreen extends React.Component {
   }
 
   componentWillMount (nextprops) {
-    if (this.props.channelOnboarding && this.props.channelOnboarding.planId) {
-      this.setState({selectedPlan: this.props.channelOnboarding.planId})
-    }
+    console.log('nextprops', nextprops)
+    console.log('this.props.', this.props)
   }
 
   componentDidMount () {
@@ -38,7 +38,7 @@ class WhatsAppPlansScreen extends React.Component {
     } else if (hostname.includes('kibochat.cloudkibo.com')) {
       title = 'KiboChat'
     }
-    document.title = `${title} | Select WhatsApp Plans`
+    document.title = `${title} | Select Billing Method`
     /* eslint-disable */
     $('#sidebarDiv').addClass('hideSideBar')
     $('#headerDiv').addClass('hideSideBar')
@@ -68,7 +68,7 @@ class WhatsAppPlansScreen extends React.Component {
       this.props.setPlanUniqueId(this.props.plansInfo.filter(item => item._id === this.state.selectedPlan)[0].unique_ID)
       this.props.setOnboardingPlatform('whatsApp')
       this.props.history.push({
-        pathname: '/whatsAppBillingScreen'
+        pathname: '/whatsAppProvidersScreen'
       })
     } else {
       this.msg.error('Please select a plan first.')
@@ -107,7 +107,14 @@ class WhatsAppPlansScreen extends React.Component {
             }
             <br />
             <div className='row'>
-              <div className='col-lg-6 m--align-left' />
+              <div className='col-lg-6 m--align-left' >
+                <Link to='/whatsAppPlansScreen' className='btn btn-secondary m-btn m-btn--custom m-btn--icon' data-wizard-action='next'>
+                  <span>
+                    <i className='la la-arrow-left' />
+                    <span>Back</span>&nbsp;&nbsp;
+                  </span>
+                </Link>
+              </div>
               <div className='col-lg-6 m--align-right'>
                 <button className='btn btn-success m-btn m-btn--custom m-btn--icon' onClick={this.nextBtnAction}>
                   <span>
@@ -143,4 +150,4 @@ function mapDispatchToProps (dispatch) {
   }, dispatch)
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(WhatsAppPlansScreen)
+export default connect(mapStateToProps, mapDispatchToProps)(WhatsAppBillingScreen)

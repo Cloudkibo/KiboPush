@@ -49,7 +49,6 @@ class WhatsAppProvidersScreen extends React.Component {
       usage: 'superNumber',
       whatsappProvider: ''
     }
-    this.nextBtnAction = this.nextBtnAction.bind(this)
     this.handleUsage = this.handleUsage.bind(this)
     this.changeWhatsAppProvider = this.changeWhatsAppProvider.bind(this)
     this.getBusinessNumber = this.getBusinessNumber.bind(this)
@@ -58,12 +57,19 @@ class WhatsAppProvidersScreen extends React.Component {
     this.updateWhatsAppData = this.updateWhatsAppData.bind(this)
     this.getNote = this.getNote.bind(this)
     this.submitWapp = this.submitWapp.bind(this)
+    this.handleResponse = this.handleResponse.bind(this)
+  }
+
+  handleResponse () {
+    this.props.history.push({
+      pathname: '/whatsAppFinishScreen'
+    })
   }
 
   submitWapp(event) {
     event.preventDefault()
     if (this.state.usage === 'superNumber') {
-      this.props.setSuperNumber(this.msg)
+      this.props.setSuperNumber(this.msg, this.handleResponse)
     } else {
       let whatsappData = this.state.whatsappData[this.state.whatsappProvider]
       whatsappData.connected = true
@@ -71,6 +77,7 @@ class WhatsAppProvidersScreen extends React.Component {
       this.props.updatePlatformWhatsApp(whatsappData, this.msg, null, this.handleResponse)
     }
   }
+  
 
   updateWhatsAppData(e, data) {
     if (data.businessNumber) {
@@ -153,20 +160,6 @@ class WhatsAppProvidersScreen extends React.Component {
       return ({provider: 'cequens', label: 'API Token'})
     } else if (this.state.whatsappProvider === 'gupshup') {
       return ({provider: 'gupshup', label: 'API Key'})
-    }
-  }
-
-  nextBtnAction () {
-    if (this.state.selectedPlan) {
-      this.props.setPlanId(this.state.selectedPlan)
-      this.props.setPlanName(this.props.plansInfo.filter(item => item._id === this.state.selectedPlan)[0].name)
-      this.props.setPlanUniqueId(this.props.plansInfo.filter(item => item._id === this.state.selectedPlan)[0].unique_ID)
-      this.props.setOnboardingPlatform('sms')
-      this.props.history.push({
-        pathname: '/smsBillingScreen'
-      })
-    } else {
-      this.msg.error('Please select a plan first.')
     }
   }
 
@@ -295,7 +288,7 @@ class WhatsAppProvidersScreen extends React.Component {
                 <br />
                 <div className='row'>
                   <div className='col-lg-6 m--align-left'>
-                    <Link to='/whatsAppPlansScreen' className='btn btn-secondary m-btn m-btn--custom m-btn--icon' data-wizard-action='next'>
+                    <Link to='/whatsAppBillingScreen' className='btn btn-secondary m-btn m-btn--custom m-btn--icon' data-wizard-action='next'>
                       <span>
                         <i className='la la-arrow-left' />
                         <span>Back</span>&nbsp;&nbsp;

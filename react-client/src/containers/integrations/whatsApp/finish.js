@@ -7,8 +7,9 @@ import { loadPlans } from '../../../redux/actions/plans.actions'
 import { setPlanId, setPlanName, setPlanUniqueId, setOnboardingPlatform } from '../../../redux/actions/channelOnboarding.actions'
 import SIDEBAR from '../sidebar'
 import PLANITEM from '../planItem'
+import { Link } from 'react-router-dom'
 
-class WhatsAppPlansScreen extends React.Component {
+class WhatsAppFinishScreen extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
@@ -38,7 +39,7 @@ class WhatsAppPlansScreen extends React.Component {
     } else if (hostname.includes('kibochat.cloudkibo.com')) {
       title = 'KiboChat'
     }
-    document.title = `${title} | Select WhatsApp Plans`
+    document.title = `${title} | Configure WhatsApp`
     /* eslint-disable */
     $('#sidebarDiv').addClass('hideSideBar')
     $('#headerDiv').addClass('hideSideBar')
@@ -76,6 +77,7 @@ class WhatsAppPlansScreen extends React.Component {
   }
 
   render () {
+    console.log('this.props.plan', this.props.channelOnboarding)
     var alertOptions = {
       offset: 75,
       position: 'bottom right',
@@ -94,28 +96,25 @@ class WhatsAppPlansScreen extends React.Component {
             description='Reach out to 2 billion WhatsApp users to grow your business!'
           />
           <div className="m-grid__item m-grid__item--order-tablet-and-mobile-2 m-login__aside" style={{padding: '2rem'}}>
-            <h2> Step 1: Choose a plan </h2>
-            {
-              this.props.plansInfo && this.props.plansInfo.map((planInfo, i) => (
-                <PLANITEM 
-                  planInfo={planInfo}
-                  selectedPlan={this.state.selectedPlan}
-                  updateState={this.updateState}
-                  description='Contact Sales for pricing and more'
-                />
-              ))
-            }
-            <br />
-            <div className='row'>
-              <div className='col-lg-6 m--align-left' />
-              <div className='col-lg-6 m--align-right'>
-                <button className='btn btn-success m-btn m-btn--custom m-btn--icon' onClick={this.nextBtnAction}>
-                  <span>
-                    <span>Next</span>&nbsp;&nbsp;
-                    <i className='la la-arrow-right' />
-                  </span>
-                </button>
-              </div>
+            <div>
+              <center>
+                <img alt='completed' src='https://cdn.cloudkibo.com/public/icons/PE-Success-Icon.png' width='150' height='150'></img>
+                <br />
+                <br />
+                {this.props.channelOnboarding && this.props.channelOnboarding.planName && this.props.channelOnboarding.planName.includes('Enterprise')
+                  ? <span>
+                      Congratulations! you have successfully applied for Enterprise Plan for WhatsApp. Someone from our team will contact you soon.
+                    </span>
+                  : <span>
+                      Congratulations! you have successfully configured WhatsApp channel.
+                    </span>
+                }
+                {this.props.channelOnboarding && this.props.channelOnboarding.planName && !this.props.channelOnboarding.planName.includes('Enterprise') &&
+                  <Link to='/dashboard' className='btn btn-success m-btn m-btn--custom m-btn--icon'>
+                    Finish
+                  </Link>
+                }
+              </center>
             </div>
           </div>
         </div>
@@ -143,4 +142,4 @@ function mapDispatchToProps (dispatch) {
   }, dispatch)
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(WhatsAppPlansScreen)
+export default connect(mapStateToProps, mapDispatchToProps)(WhatsAppFinishScreen)
