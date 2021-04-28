@@ -509,11 +509,7 @@ class Configuration extends React.Component {
                           </div>
                         </div>
 
-                        <div style={{ display: this.state.whatsappProvider === 'cequens' ? 'initial' : 'none' }} >
-                          <div id='_cequens_client_name' className='form-group m-form__group'>
-                            <label className='control-label'>Client Name:</label>
-                            <input required={this.state.whatsappProvider === 'cequens'} className='form-control' value={this.state.whatsappData.cequens.clientName} onChange={(e) => this.updateWhatsAppData(e, { clientName: e.target.value })} />
-                          </div>
+                        <div style={{ display: this.state.whatsappProvider === 'cequens' ? 'initial' : 'none' }}>
                           <div id='_cequens_access_token' className='form-group m-form__group'>
                             <label className='control-label'>API Token:</label>
                             <input required={this.state.whatsappProvider === 'cequens'} className='form-control' value={this.state.whatsappData.cequens.accessToken} onChange={(e) => this.updateWhatsAppData(e, { accessToken: e.target.value })} />
