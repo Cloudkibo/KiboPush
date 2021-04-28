@@ -67,8 +67,10 @@ class SmsNumbersScreen extends React.Component {
             </div>
           </div>
           <div className="m-grid__item m-grid__item--order-tablet-and-mobile-2 m-login__aside" style={{padding: '2rem', overflowY: 'scroll'}}>
-            <h2> Step 3: Select a number for SMS </h2>
-            <div style={{ marginBottom: '15px' }} id='_whatsapp_provider' className='form-group m-form__group'>
+            <div style={{ height: '72px' }}>
+              <h2> Step 3: Select a number for SMS </h2>
+            </div>
+            <div style={{overflowY: 'scroll', height: 'calc(100% - 153px)' }}>
               <label className='control-label'>Use</label>
               <select onChange={this.changeNumberOption} className="form-control m-input" value={this.state.numberOption} id="_zoom_users" required>
                 <option value='' selected disabled>Select an SMS Number Preference...</option>

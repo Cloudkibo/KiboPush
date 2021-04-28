@@ -37,6 +37,12 @@ class SmsPlansScreen extends React.Component {
     document.getElementsByTagName('body')[0].className = 'm-page--fluid m--skin- m-content--skin-light2 m-footer--push m-aside--offcanvas-default'
   }
 
+  componentWillMount () {
+    if (this.props.channelOnboarding && this.props.channelOnboarding.planId) {
+      this.setState({selectedPlan: this.props.channelOnboarding.planId})
+    }
+  }
+
   isPlanSelected (res) {
     if (
       res.status === 'success' && this.props.history.location.state &&
@@ -92,8 +98,10 @@ class SmsPlansScreen extends React.Component {
             </div>
           </div>
           <div className="m-grid__item m-grid__item--order-tablet-and-mobile-2 m-login__aside" style={{padding: '2rem', overflowY: 'scroll'}}>
-            <h2> Step 1: Choose a plan </h2>
-            <div style={{overflowY: 'scroll', height: '460px'}}>
+            <div style={{ height: '52px' }}>
+              <h2> Step 1: Choose a plan </h2>
+            </div>
+            <div style={{overflowY: 'scroll', height: 'calc(100% - 108px)' }}>
               {
                 this.props.plansInfo && this.props.plansInfo.map((planInfo, i) => (
                   <div 
@@ -108,7 +116,7 @@ class SmsPlansScreen extends React.Component {
                       <br />
                       <span>
                         <span>
-                          Connect your SMS provider and use {planInfo.trial_period} days trial period <br /> with {planInfo.name}
+                          Use {planInfo.trial_period} days trial period with {planInfo.name} <br /> and get {planInfo.messages} messages
                         </span>
                       </span>
                     </span>
@@ -144,6 +152,7 @@ function mapStateToProps (state) {
   return {
     user: (state.basicInfo.user),
     plansInfo: (state.plansInfo.plansInfo),
+    channelOnboarding: (state.channelOnboarding),
     superUser: (state.basicInfo.superUser)
   }
 }

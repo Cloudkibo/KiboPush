@@ -150,20 +150,22 @@ class SmsProviderScreen extends React.Component {
             </div>
           </div>
           <div className="m-grid__item m-grid__item--order-tablet-and-mobile-2 m-login__aside" style={{padding: '2rem'}}>
-            <h2>Step 3: Choose Sms Provider</h2>
-            <br />
-            <div style={{ marginBottom: '15px' }} id='_whatsapp_provider' className='form-group m-form__group'>
-              <label className='control-label' style={{ fontWeight: 'normal' }}>Select SMS Provider:</label>
-              <select onChange={this.changeSmsProvider} className="form-control m-input" value={this.state.smsProvider} id="_zoom_users" required>
-                <option value='' selected disabled>Select a SMS Provider...</option>
-                <option value='bandwidth'>BandWidth</option>
-                <option value='twilio'>Twilio</option>
-              </select>
+            <div style={{ height: '152px' }}>
+              <h2>Step 3: Choose Sms Provider</h2>
+              <br />
+              <div style={{ marginBottom: '15px' }} id='_whatsapp_provider' className='form-group m-form__group'>
+                <label className='control-label' style={{ fontWeight: 'normal' }}>Select SMS Provider:</label>
+                <select onChange={this.changeSmsProvider} className="form-control m-input" value={this.state.smsProvider} id="_zoom_users" required>
+                  <option value='' selected disabled>Select SMS Provider...</option>
+                  <option value='bandwidth'>BandWidth</option>
+                  <option value='twilio'>Twilio</option>
+                </select>
+              </div>
             </div>
             <hr />
             {
             }
-            <div style={{overflowY: 'scroll', height: '300px'}}>
+            <div style={{overflowY: 'scroll', height: 'calc(100% - 234px)'}}>
               <div style={{ display: this.state.smsProvider === 'twilio' ? 'initial' : 'none' }}>
                 <div id='question' className='form-group m-form__group'>
                   <label className='control-label' style={{ fontWeight: 'normal' }}>Twilio Account SID</label>

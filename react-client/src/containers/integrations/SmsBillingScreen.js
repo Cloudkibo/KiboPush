@@ -62,7 +62,7 @@ class SmsBillingScreen extends React.Component {
   }
 
   nextBtnAction () {
-    if (this.state.stripeToken) {
+    //if (this.state.stripeToken) {
       this.props.setOnboardingStripeToken(this.state.stripeToken)
 
       if (this.props.planName.includes('Enterprise')) {
@@ -74,9 +74,9 @@ class SmsBillingScreen extends React.Component {
           pathname: '/smsNumbersScreen'
         })
       }
-    } else {
-      this.msg.error('Please provide a debit or credit card and click on Save button.')
-    }
+    //} else {
+      //this.msg.error('Please provide a debit or credit card and click on Save button.')
+    //}
   }
 
   render () {
@@ -105,8 +105,10 @@ class SmsBillingScreen extends React.Component {
             </div>
           </div>
           <div className="m-grid__item m-grid__item--order-tablet-and-mobile-2 m-login__aside" style={{padding: '2rem'}}>
-            <h2> Step 2: Choose a billing method</h2>
-            <div style={{overflowY: 'scroll', height: '460px'}}>
+            <div style={{ height: '52px' }}>
+              <h2> Step 2: Choose a billing method</h2>
+            </div>
+            <div style={{overflowY: 'scroll', height: 'calc(100% - 108px)' }}>
               <div style={{ color: 'black' }} className="modal-body">
                 {
                   <div className='col-12'>
