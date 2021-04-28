@@ -155,7 +155,7 @@ class SmsProviderScreen extends React.Component {
             <div style={{ marginBottom: '15px' }} id='_whatsapp_provider' className='form-group m-form__group'>
               <label className='control-label' style={{ fontWeight: 'normal' }}>Select SMS Provider:</label>
               <select onChange={this.changeSmsProvider} className="form-control m-input" value={this.state.smsProvider} id="_zoom_users" required>
-                <option value='' selected disabled>Select a SMS Provider...</option>
+                <option value='' selected disabled>Select SMS Provider...</option>
                 <option value='bandwidth'>BandWidth</option>
                 <option value='twilio'>Twilio</option>
               </select>

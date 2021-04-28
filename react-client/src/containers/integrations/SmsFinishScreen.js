@@ -17,6 +17,7 @@ class SmsFinishScreen extends React.Component {
       selectedPlan: null
     }
     props.loadPlans()
+    this.nextBtnAction = this.nextBtnAction.bind(this)
   }
 
   componentDidMount () {
@@ -33,6 +34,16 @@ class SmsFinishScreen extends React.Component {
     $('#headerDiv').addClass('hideSideBar')
     /* eslint-enable */
     document.getElementsByTagName('body')[0].className = 'm-page--fluid m--skin- m-content--skin-light2 m-footer--push m-aside--offcanvas-default'
+  }
+
+  nextBtnAction () {
+    /* eslint-disable */
+    $('#sidebarDiv').removeClass('hideSideBar')
+    $('#headerDiv').removeClass('hideSideBar')
+    /* eslint-enable */
+    this.props.history.push({
+      pathname: '/dashboard'
+    })
   }
 
   render () {
@@ -108,9 +119,9 @@ class SmsFinishScreen extends React.Component {
                         </Link>
                       </div>
                       <div className='col-lg-6 m--align-right' >
-                        <Link to='/dashboard' className='btn btn-success m-btn m-btn--custom m-btn--icon'>
+                        <button className='btn btn-success m-btn m-btn--custom m-btn--icon' onClick={this.nextBtnAction}>
                           Finish
-                        </Link>
+                        </button>
                       </div>
                     </div>
                   </center>
