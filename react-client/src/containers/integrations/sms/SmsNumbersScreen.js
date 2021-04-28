@@ -5,9 +5,9 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import Header from './../wizard/header'
-import { loadPlans } from '../../redux/actions/plans.actions'
-import { setPlanId, setPlanName, setPlanUniqueId, setOnboardingPlatform } from '../../redux/actions/channelOnboarding.actions'
+import Header from './../../wizard/header'
+import { loadPlans } from '../../../redux/actions/plans.actions'
+import { setPlanId, setPlanName, setPlanUniqueId, setOnboardingPlatform } from '../../../redux/actions/channelOnboarding.actions'
 import { Link } from 'react-router-dom'
 
 class SmsNumbersScreen extends React.Component {

@@ -5,10 +5,10 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { validatePhoneNumber, validateSmsProviderInput } from '../../utility/utils'
+import { validatePhoneNumber, validateSmsProviderInput } from '../../../utility/utils'
 import AlertContainer from 'react-alert'
-import Header from '../wizard/header'
-import { configureSMS, connectSMS } from '../../redux/actions/channelOnboarding.actions'
+import Header from '../../wizard/header'
+import { configureSMS, connectSMS } from '../../../redux/actions/channelOnboarding.actions'
 import { Link } from 'react-router-dom'
 
 class SmsProviderScreen extends React.Component {
