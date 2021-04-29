@@ -32,6 +32,7 @@ import WhatsAppPlansScreen from './containers/integrations/whatsApp/plans'
 import WhatsAppProvidersScreen from './containers/integrations/whatsApp/providers'
 import WhatsAppBillingScreen from './containers/integrations/whatsApp/billing'
 import WhatsAppFinishScreen from './containers/integrations/whatsApp/finish'
+import ConnectFbScreen from './containers/integrations/facebook/connectFbScreen'
 import PollResult from './containers/polls/PollResult'
 import ViewPoll from './containers/polls/ViewPoll'
 import UserDetails from './containers/operationalDashboard/userDetails'
@@ -463,6 +464,7 @@ const Routes = () => (
     <Route path='/whatsAppProvidersScreen' component={WhatsAppProvidersScreen} onEnter={requireAuth} />
     <Route path='/whatsAppBillingScreen' component={WhatsAppBillingScreen} onEnter={requireAuth} />
     <Route path='/whatsAppFinishScreen' component={WhatsAppFinishScreen} onEnter={requireAuth} />
+    <Route path='/connectFbScreen' component={ConnectFbScreen} onEnter={requireAuth} />
     <Route path='/addOns' component={AddOns} onEnter={requireAuth} />
     <Route path='*' render={() => <Redirect to='/' />} />
   </Switch>
