@@ -62,7 +62,7 @@ class SmsBillingScreen extends React.Component {
   }
 
   nextBtnAction () {
-    // if (this.state.stripeToken) {
+    if (this.state.stripeToken) {
       this.props.setOnboardingStripeToken(this.state.stripeToken)
 
       if (this.props.planName.includes('Enterprise')) {
@@ -74,9 +74,9 @@ class SmsBillingScreen extends React.Component {
           pathname: '/smsNumbersScreen'
         })
       }
-    // } else {
-      // this.msg.error('Please provide a debit or credit card and click on Save button.')
-    // }
+    } else {
+      this.msg.error('Please provide a debit or credit card and click on Save button.')
+    }
   }
 
   render () {
