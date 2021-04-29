@@ -289,9 +289,15 @@ class FacebookIntegration extends React.Component {
                   ? <button className='m-btn m-btn--pill m-btn--hover-secondary btn btn-secondary' disabled>
                     Connected
                   </button>
-                  : <a href='/auth/facebook' style={{ borderColor: '#34bfa3', color: '#34bfa3' }} className='m-btn m-btn--pill m-btn--hover-success btn btn-success'>
+                  : <button style={{ borderColor: '#34bfa3', color: '#34bfa3' }}
+                      className='m-btn m-btn--pill m-btn--hover-success btn btn-success'
+                      onClick={() => {
+                        this.props.history.push({
+                          pathname: '/facebookPlansScreen'
+                        })
+                      }}>
                     <span>Connect</span>
-                  </a>
+                  </button>
                 }
               </div>
             </div>
