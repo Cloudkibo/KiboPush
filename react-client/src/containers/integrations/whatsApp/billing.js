@@ -3,31 +3,35 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import Header from './../../wizard/header'
 import AlertContainer from 'react-alert'
-import { loadPlans } from '../../../redux/actions/plans.actions'
-import { setPlanId, setPlanName, setPlanUniqueId, setOnboardingPlatform } from '../../../redux/actions/channelOnboarding.actions'
 import SIDEBAR from '../sidebar'
-import PLANITEM from '../planItem'
 import { Link } from 'react-router-dom'
+import {StripeProvider, Elements} from 'react-stripe-elements'
+import InjectedCheckoutForm from '../../wizard/checkout'
+import { updateCard, getKeys } from '../../../redux/actions/basicinfo.actions'
+import { setOnboardingStripeToken } from '../../../redux/actions/channelOnboarding.actions'
+import { RingLoader } from 'halogenium'
 
 class WhatsAppBillingScreen extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      selectedPlan: null
+      stripeToken: null,
+      loadingStripe: true
     }
     this.nextBtnAction = this.nextBtnAction.bind(this)
-    this.updateState = this.updateState.bind(this)
-    this.isPlanSelected = this.isPlanSelected.bind(this)
-    props.loadPlans('sms', this.isPlanSelected)
+    this.handleGetKeysResponse = this.handleGetKeysResponse.bind(this)
+    this.setCard = this.setCard.bind(this)
+
+    props.getKeys(this.handleGetKeysResponse)
   }
 
-  updateState (state) {
-    this.setState(state)
+  handleGetKeysResponse () {
+    this.setState({loadingStripe: false})
   }
 
-  componentWillMount (nextprops) {
-    console.log('nextprops', nextprops)
-    console.log('this.props.', this.props)
+  setCard (payload, value) {
+    this.setState({ stripeToken: payload })
+    this.props.updateCard({companyId: this.props.user.companyId, stripeToken: payload}, this.msg)
   }
 
   componentDidMount () {
@@ -46,33 +50,11 @@ class WhatsAppBillingScreen extends React.Component {
     document.getElementsByTagName('body')[0].className = 'm-page--fluid m--skin- m-content--skin-light2 m-footer--push m-aside--offcanvas-default'
   }
 
-  isPlanSelected (res) {
-    if (
-      res.status === 'success' && this.props.history.location.state &&
-      this.props.history.location.state.plan
-    ) {
-      const plans = res.payload
-      const selectedPlan = plans.find((item) => item.unique_ID === this.props.history.location.state.plan)
-      if (selectedPlan) {
-        this.setState({selectedPlan: selectedPlan._id}, () => {
-          this.nextBtnAction()
-        })
-      }
-    }
-  }
-
   nextBtnAction () {
-    if (this.state.selectedPlan) {
-      this.props.setPlanId(this.state.selectedPlan)
-      this.props.setPlanName(this.props.plansInfo.filter(item => item._id === this.state.selectedPlan)[0].name)
-      this.props.setPlanUniqueId(this.props.plansInfo.filter(item => item._id === this.state.selectedPlan)[0].unique_ID)
-      this.props.setOnboardingPlatform('whatsApp')
-      this.props.history.push({
-        pathname: '/whatsAppProvidersScreen'
-      })
-    } else {
-      this.msg.error('Please select a plan first.')
-    }
+    this.props.setOnboardingStripeToken(this.state.stripeToken)
+    this.props.history.push({
+      pathname: '/whatsAppProvidersScreen'
+    })
   }
 
   render () {
@@ -94,18 +76,32 @@ class WhatsAppBillingScreen extends React.Component {
             description='Reach out to 2 billion WhatsApp users to grow your business!'
           />
           <div className="m-grid__item m-grid__item--order-tablet-and-mobile-2 m-login__aside" style={{padding: '2rem'}}>
-            <h2> Step 1: Choose a plan </h2>
-            {
-              this.props.plansInfo && this.props.plansInfo.map((planInfo, i) => (
-                <PLANITEM 
-                  planInfo={planInfo}
-                  selectedPlan={this.state.selectedPlan}
-                  updateState={this.updateState}
-                  description='Contact Sales for pricing and more'
-                />
-              ))
-            }
-            <br />
+            <div style={{height: '30px'}}>
+              <h2> Step 2: Choose a Billing method </h2>
+            </div>
+            <div style={{overflowY: 'scroll', height: 'calc(100% - 70px)'}}>
+              <div className='form-group m-form__group m--margin-top-30'>
+                { this.props.user && this.props.user.last4 
+                  ? <div className='form-group m-form__group'>
+                      <label style={{fontWeight: 'normal'}} className='control-label'>Card Details:</label>
+                      <div className=' form-group m-form__group m--margin-top-15'>
+                        <i className='fa fa-credit-card-alt' />&nbsp;&nbsp;
+                        <label style={{fontWeight: 'normal'}} className='control-label'>
+                          xxxx xxxx xxxx {this.props.user.last4}
+                        </label>
+                      </div>
+                    </div>
+                  : this.state.loadingStripe
+                  ? <center><RingLoader color='#FF5E3A' /></center>
+                  : this.props.stripeKey && this.props.captchaKey &&
+                    <StripeProvider apiKey={this.props.stripeKey}>
+                      <Elements>
+                        <InjectedCheckoutForm setCard={this.setCard} captchaKey={this.props.captchaKey} />
+                      </Elements>
+                    </StripeProvider>
+                }
+              </div>
+            </div>
             <div className='row'>
               <div className='col-lg-6 m--align-left' >
                 <Link to='/whatsAppPlansScreen' className='btn btn-secondary m-btn m-btn--custom m-btn--icon' data-wizard-action='next'>
@@ -134,19 +130,17 @@ class WhatsAppBillingScreen extends React.Component {
 function mapStateToProps (state) {
   return {
     user: (state.basicInfo.user),
-    plansInfo: (state.plansInfo.plansInfo),
-    superUser: (state.basicInfo.superUser),
-    channelOnboarding: (state.channelOnboarding)
+    captchaKey: (state.basicInfo.captchaKey),
+    stripeKey: (state.basicInfo.stripeKey),
+    planName: (state.channelOnboarding.planName)
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators({
-    loadPlans,
-    setPlanId,
-    setPlanName,
-    setPlanUniqueId,
-    setOnboardingPlatform
+    updateCard,
+    getKeys,
+    setOnboardingStripeToken
   }, dispatch)
 }
 

@@ -94,18 +94,21 @@ class WhatsAppPlansScreen extends React.Component {
             description='Reach out to 2 billion WhatsApp users to grow your business!'
           />
           <div className="m-grid__item m-grid__item--order-tablet-and-mobile-2 m-login__aside" style={{padding: '2rem'}}>
-            <h2> Step 1: Choose a plan </h2>
-            {
-              this.props.plansInfo && this.props.plansInfo.map((planInfo, i) => (
-                <PLANITEM 
-                  planInfo={planInfo}
-                  selectedPlan={this.state.selectedPlan}
-                  updateState={this.updateState}
-                  description='Contact Sales for pricing and more'
-                />
-              ))
-            }
-            <br />
+            <div style={{height: '30px'}}>
+              <h2> Step 1: Choose a plan </h2>
+            </div>
+            <div style={{overflowY: 'scroll', height: 'calc(100% - 70px)'}}>
+              {
+                this.props.plansInfo && this.props.plansInfo.map((planInfo, i) => (
+                  <PLANITEM 
+                    planInfo={planInfo}
+                    selectedPlan={this.state.selectedPlan}
+                    updateState={this.updateState}
+                    description='Contact Sales for pricing and more'
+                  />
+                ))
+              }
+            </div>
             <div className='row'>
               <div className='col-lg-6 m--align-left' />
               <div className='col-lg-6 m--align-right'>
