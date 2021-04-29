@@ -97,7 +97,7 @@ class SmsPlansScreen extends React.Component {
               </p>
             </div>
           </div>
-          <div className="m-grid__item m-grid__item--order-tablet-and-mobile-2 m-login__aside" style={{padding: '2rem', overflowY: 'scroll'}}>
+          <div className="m-grid__item m-grid__item--order-tablet-and-mobile-2 m-login__aside" style={{padding: '2rem'}}>
             <div style={{ height: '52px' }}>
               <h2> Step 1: Choose a plan </h2>
             </div>
