@@ -162,7 +162,7 @@ class SmsProviderScreen extends React.Component {
             </div>
           </div>
           <div className="m-grid__item m-grid__item--order-tablet-and-mobile-2 m-login__aside" style={{padding: '2rem'}}>
-            <div style={{ height: '152px' }}>
+            <div style={{ height: '144px' }}>
               <h2>Step 3: Choose Sms Provider</h2>
               <br />
               <div style={{ marginBottom: '15px' }} id='_whatsapp_provider' className='form-group m-form__group'>
@@ -176,7 +176,7 @@ class SmsProviderScreen extends React.Component {
             </div>
             {
             }
-            <div style={{overflowY: 'scroll', height: 'calc(100% - 234px)'}}>
+            <div style={{overflowY: 'scroll', height: 'calc(100% - 226px)'}}>
               <div style={{ display: this.state.smsProvider === 'twilio' ? 'initial' : 'none' }}>
                 <div id='question' className='form-group m-form__group'>
                   <label className='control-label' style={{ fontWeight: 'normal' }}>Twilio Account SID</label>
