@@ -24,6 +24,12 @@ class WhatsAppPlansScreen extends React.Component {
     this.setState(state)
   }
 
+  componentWillMount (nextprops) {
+    if (this.props.channelOnboarding && this.props.channelOnboarding.planId) {
+      this.setState({selectedPlan: this.props.channelOnboarding.planId})
+    }
+  }
+
   componentDidMount () {
     const hostname = window.location.hostname
     let title = ''
@@ -60,9 +66,9 @@ class WhatsAppPlansScreen extends React.Component {
       this.props.setPlanId(this.state.selectedPlan)
       this.props.setPlanName(this.props.plansInfo.filter(item => item._id === this.state.selectedPlan)[0].name)
       this.props.setPlanUniqueId(this.props.plansInfo.filter(item => item._id === this.state.selectedPlan)[0].unique_ID)
-      this.props.setOnboardingPlatform('sms')
+      this.props.setOnboardingPlatform('whatsApp')
       this.props.history.push({
-        pathname: '/whatsAppProvidersScreen'
+        pathname: '/whatsAppBillingScreen'
       })
     } else {
       this.msg.error('Please select a plan first.')
@@ -88,20 +94,21 @@ class WhatsAppPlansScreen extends React.Component {
             description='Reach out to 2 billion WhatsApp users to grow your business!'
           />
           <div className="m-grid__item m-grid__item--order-tablet-and-mobile-2 m-login__aside" style={{padding: '2rem'}}>
-            <h2> Step 1: Choose a plan </h2>
-            <div>
-            {
-              this.props.plansInfo && this.props.plansInfo.map((planInfo, i) => (
-                <PLANITEM 
-                  planInfo={planInfo}
-                  selectedPlan={this.state.selectedPlan}
-                  updateState={this.updateState}
-                  description='Contact Sales for pricing and more'
-                />
-              ))
-            }
+            <div style={{height: '30px'}}>
+              <h2> Step 1: Choose a plan </h2>
             </div>
-            <br />
+            <div style={{overflowY: 'scroll', height: 'calc(100% - 70px)'}}>
+              {
+                this.props.plansInfo && this.props.plansInfo.map((planInfo, i) => (
+                  <PLANITEM 
+                    planInfo={planInfo}
+                    selectedPlan={this.state.selectedPlan}
+                    updateState={this.updateState}
+                    description='Contact Sales for pricing and more'
+                  />
+                ))
+              }
+            </div>
             <div className='row'>
               <div className='col-lg-6 m--align-left' />
               <div className='col-lg-6 m--align-right'>
@@ -124,7 +131,8 @@ function mapStateToProps (state) {
   return {
     user: (state.basicInfo.user),
     plansInfo: (state.plansInfo.plansInfo),
-    superUser: (state.basicInfo.superUser)
+    superUser: (state.basicInfo.superUser),
+    channelOnboarding: (state.channelOnboarding)
   }
 }
 
