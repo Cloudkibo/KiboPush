@@ -13,7 +13,6 @@ class ConnectFbScreen extends React.Component {
     this.state = {
       selectedPlan: null
     }
-    props.loadPlans()
   }
 
   componentDidMount () {
@@ -36,7 +35,7 @@ class ConnectFbScreen extends React.Component {
     return (
       <div>
         <Header showTitle hideMessages hideSettings />
-        <div className="m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-grid--tablet-and-mobile m-grid--hor-tablet-and-mobile m-login m-login--1 m-login--singin" style={{ height: 'calc(100vh - 70px)' }}>
+        <div className="m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-grid--tablet-and-mobile m-grid--hor-tablet-and-mobile m-login m-login--1 m-login--singin" style={{ height: 'calc(100vh - 110px)', overflowY: 'scroll', margin: '20px' }}>
           <div className="m-grid__item m-grid__item--fluid m-grid m-grid--center m-grid--hor m-grid__item--order-tablet-and-mobile-1	m-login__content" style={{backgroundImage: 'url(https://cdn.cloudkibo.com/public/assets/app/media/img//bg/bg-4.jpg)'}}>
             <div className="m-grid__item m-grid__item--middle">
               <h3 className="m-login__welcome">
@@ -56,6 +55,8 @@ class ConnectFbScreen extends React.Component {
                   <div className='m-login__head'>
                     <h3 className='m-login__title'>Facebook Integration</h3>
                   </div>
+                  <br />
+                  <br />
                   <br />
                   <br />
                   <center>
@@ -79,6 +80,10 @@ class ConnectFbScreen extends React.Component {
                   <div className='m-login__head'>
                     <h3 className='m-login__title'>Facebook Integration</h3>
                   </div>
+                  <br />
+                  <br />
+                  <br />
+                  <br />
                   <center>
                   <a href='/auth/facebook' style={{borderColor: '#716aca'}} className='btn btn-outline-brand m-btn m-btn--custom m-btn--icon m-btn--pill m-btn--air'>
                     <span>
