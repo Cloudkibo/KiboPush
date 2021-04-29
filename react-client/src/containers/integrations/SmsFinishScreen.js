@@ -8,7 +8,6 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import Header from './../wizard/header'
 import { loadPlans } from '../../redux/actions/plans.actions'
-import { Link } from 'react-router-dom'
 
 class SmsFinishScreen extends React.Component {
   constructor (props, context) {

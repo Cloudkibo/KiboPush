@@ -66,11 +66,23 @@ class SmsProviderScreen extends React.Component {
   }
 
   nextBtnAction () {
+    if (this.state.smsProvider === '') {
+      return this.msg.error('Please select the SMS Provider and fill the required information')
+    }
+
     if (validateSmsProviderInput(this.state)) {
       let smsData = this.state.smsData[this.state.smsProvider]
 
+      if(!validatePhoneNumber(smsData.businessNumber)) {
+        return this.msg.error('Please enter a valid SMS Number')
+      }
+
       if (isNaN(parseInt(smsData.messages))) {
         return this.msg.error('Expected messages count should be number only. Please enter valid number.')
+      }
+
+      if (parseInt(smsData.messages) < 1) {
+        return this.msg.error('Expected messages number should not be negative or zero')
       }
 
       this.props.connectSMS(smsData, (res) => {
@@ -162,7 +174,6 @@ class SmsProviderScreen extends React.Component {
                 </select>
               </div>
             </div>
-            <hr />
             {
             }
             <div style={{overflowY: 'scroll', height: 'calc(100% - 234px)'}}>
@@ -181,7 +192,12 @@ class SmsProviderScreen extends React.Component {
                 </div>
                 <div id='question' className='form-group m-form__group'>
                   <label className='control-label' style={{ fontWeight: 'normal' }}>Expected Messages Count:</label>
-                  <input className='form-control' value={this.state.smsData.twilio.messages} onChange={(e) => this.updateSmsData(e, { messages: e.target.value })} />
+                  <input
+                    type='number' min='1' step='1'
+                    value={this.state.smsData.twilio.messages}
+                    onChange={(e) => { this.updateSmsData(e, { messages: e.target.value })}}
+                    onKeyDown={e => /[+\-.,\s]$/.test(e.key) && e.preventDefault()}
+                    className="form-control" />
                 </div>
               </div>
               {
@@ -209,7 +225,12 @@ class SmsProviderScreen extends React.Component {
               </div>
                 <div id='question' className='form-group m-form__group'>
                   <label className='control-label' style={{ fontWeight: 'normal' }}>Expected Messages Count:</label>
-                  <input className='form-control' value={this.state.smsData.bandwidth.messages} onChange={(e) => this.updateSmsData(e, { messages: e.target.value })} />
+                  <input
+                    type='number' min='1' step='1'
+                    value={this.state.smsData.bandwidth.messages}
+                    onChange={(e) => { this.updateSmsData(e, { messages: e.target.value })}}
+                    onKeyDown={e => /[+\-.,\s]$/.test(e.key) && e.preventDefault()}
+                    className="form-control" />
                 </div>
               </div>
             </div>
