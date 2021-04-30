@@ -6,7 +6,7 @@ import AlertContainer from 'react-alert'
 import SIDEBAR from '../sidebar'
 import { Link } from 'react-router-dom'
 import {StripeProvider, Elements} from 'react-stripe-elements'
-import InjectedCheckoutForm from '../../wizard/checkout'
+import InjectedCheckoutForm from '../addCard'
 import { updateCard, getKeys } from '../../../redux/actions/basicinfo.actions'
 import { setOnboardingStripeToken } from '../../../redux/actions/channelOnboarding.actions'
 import { RingLoader } from 'halogenium'
@@ -20,7 +20,7 @@ class WhatsAppBillingScreen extends React.Component {
     }
     this.nextBtnAction = this.nextBtnAction.bind(this)
     this.handleGetKeysResponse = this.handleGetKeysResponse.bind(this)
-    this.setCard = this.setCard.bind(this)
+    this.handleCard = this.handleCard.bind(this)
 
     props.getKeys(this.handleGetKeysResponse)
   }
@@ -57,6 +57,13 @@ class WhatsAppBillingScreen extends React.Component {
     })
   }
 
+  handleCard (token) {
+    this.props.setOnboardingStripeToken(token)
+    this.props.history.push({
+      pathname: '/whatsAppProvidersScreen'
+    })
+  }
+
   render () {
     var alertOptions = {
       offset: 75,
@@ -81,7 +88,7 @@ class WhatsAppBillingScreen extends React.Component {
             </div>
             <div style={{overflowY: 'scroll', height: 'calc(100% - 70px)'}}>
               <div className='form-group m-form__group m--margin-top-30'>
-                { this.props.user && this.props.user.last4 
+                { this.props.user && !this.props.user.last4 
                   ? <div className='form-group m-form__group'>
                       <label style={{fontWeight: 'normal'}} className='control-label'>Card Details:</label>
                       <div className=' form-group m-form__group m--margin-top-15'>
@@ -96,7 +103,11 @@ class WhatsAppBillingScreen extends React.Component {
                   : this.props.stripeKey && this.props.captchaKey &&
                     <StripeProvider apiKey={this.props.stripeKey}>
                       <Elements>
-                        <InjectedCheckoutForm setCard={this.setCard} captchaKey={this.props.captchaKey} />
+                        <InjectedCheckoutForm 
+                            setClick={click => this.clickChild = click}
+                            ref={instance => { this.child = instance; }}
+                            handleCard={this.handleCard}
+                            captchaKey={this.props.captchaKey} />
                       </Elements>
                     </StripeProvider>
                 }
@@ -112,7 +123,7 @@ class WhatsAppBillingScreen extends React.Component {
                 </Link>
               </div>
               <div className='col-lg-6 m--align-right'>
-                <button className='btn btn-success m-btn m-btn--custom m-btn--icon' onClick={this.nextBtnAction}>
+                <button className='btn btn-success m-btn m-btn--custom m-btn--icon' onClick={() => { this.clickChild() }}>
                   <span>
                     <span>Next</span>&nbsp;&nbsp;
                     <i className='la la-arrow-right' />

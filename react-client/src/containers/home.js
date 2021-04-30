@@ -46,6 +46,15 @@ class Home extends Component {
         state: {plan: queryParams.plan}
       })
     }
+    if (
+      queryParams && queryParams.platform === 'messenger' && queryParams.plan &&
+      props.user.platform !== 'messenger' && !props.user.facebookInfo
+    ) {
+      this.props.history.push({
+        pathname: '/facebookPlansScreen',
+        state: {plan: queryParams.plan}
+      })
+    }
   }
  
   UNSAFE_componentWillReceiveProps (nextProps) {

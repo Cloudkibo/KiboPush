@@ -10,7 +10,7 @@ class PlanItem extends React.Component {
   }
 
   getContentColor () {
-    return ({color: this.props.planInfo._id === this.props.selectedPlan ? 'white' : 'black'})
+    return this.props.planInfo._id === this.props.selectedPlan ? 'white' : 'black'
   }
 
   render () {
@@ -22,19 +22,19 @@ class PlanItem extends React.Component {
         onClick={() => this.props.updateState({ selectedPlan: this.props.planInfo._id })}>
         <span>
           <span className="sequence-name"
-            style={this.getContentColor()}>
+            style={{color: this.getContentColor(), fontWeight: '600'}}>
             {this.props.planInfo.name}
           </span>
           <br />
           <span>
-            <span style={this.getContentColor()}>
+            <span style={{color: this.getContentColor()}}>
               {this.props.description}
             </span>
           </span>
         </span>
         <span className="sequence-text sequence-centered-text" style={{position: 'absolute', left: '77%', top: '25%'}}>
           <span className="sequence-number"
-            style={this.getContentColor()}>
+            style={{color: this.getContentColor()}}>
             {this.props.planInfo.amount ? `$${this.props.planInfo.amount}` : ''}
           </span>
         </span>

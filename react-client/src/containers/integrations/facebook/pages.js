@@ -52,7 +52,7 @@ class ConnectPages extends React.Component {
       this.msg.error('Please connect a page first')
     } else {
       this.props.history.push({
-        pathname: '/whatsAppProvidersScreen'
+        pathname: '/facebookFinishScreen'
       })
     }
   }
