@@ -55,12 +55,13 @@ export function updateCurrentPage(data) {
   }
 }
 
-export function loadMyPagesList() {
+export function loadMyPagesList(cb) {
   console.log('load my page List')
   // var userid = ''// this will be the _id of user object
   return (dispatch) => {
     callApi(`pages/allpages`).then(res => {
       console.log('res.payload', res)
+      if (cb) cb()
       dispatch(updatePagesList(res.payload))
     })
   }
@@ -84,11 +85,12 @@ export function loadMyPagesListNew (data, cb) {
   }
 }
 
-export function enablePage (page, showErrorDialog, alertMsg) {
+export function enablePage (page, showErrorDialog, alertMsg, cb) {
   return (dispatch) => {
     callApi(`pages/enable/`, 'post', page)
       .then(res => {
         console.log('response from connect page', res)
+        if (cb) cb(res)
         if (res.type === 'invalid_permissions' && showErrorDialog) {
           showErrorDialog()
         } else if (res.status === 'failed') {
@@ -141,10 +143,11 @@ export function removePage(page, msg) {
   }
 }
 
-export function removePageInAddPage(page, msg) {
+export function removePageInAddPage(page, msg, cb) {
   return (dispatch) => {
     callApi('pages/disable', 'post', page)
       .then(res => {
+        if (cb) cb(res)
         if (res.status !== 'success') {
           msg.error(res.description || 'Failed to remove page')
         }

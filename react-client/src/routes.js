@@ -33,6 +33,10 @@ import WhatsAppProvidersScreen from './containers/integrations/whatsApp/provider
 import WhatsAppBillingScreen from './containers/integrations/whatsApp/billing'
 import WhatsAppFinishScreen from './containers/integrations/whatsApp/finish'
 import ConnectFbScreen from './containers/integrations/facebook/connectFbScreen'
+import FacebookPagesScreen from './containers/integrations/facebook/pages'
+import FacebookPlansScreen from './containers/integrations/facebook/plans'
+import FacebookBillingScreen from './containers/integrations/facebook/billing'
+import FacebookFinishScreen from './containers/integrations/facebook/finish'
 import PollResult from './containers/polls/PollResult'
 import ViewPoll from './containers/polls/ViewPoll'
 import UserDetails from './containers/operationalDashboard/userDetails'
@@ -465,6 +469,10 @@ const Routes = () => (
     <Route path='/whatsAppBillingScreen' component={WhatsAppBillingScreen} onEnter={requireAuth} />
     <Route path='/whatsAppFinishScreen' component={WhatsAppFinishScreen} onEnter={requireAuth} />
     <Route path='/connectFbScreen' component={ConnectFbScreen} onEnter={requireAuth} />
+    <Route path='/facebookPagesScreen' component={FacebookPagesScreen} onEnter={requireAuth} />
+    <Route path='/facebookPlansScreen' component={FacebookPlansScreen} onEnter={requireAuth} />
+    <Route path='/facebookBillingScreen' component={FacebookBillingScreen} onEnter={requireAuth} />
+    <Route path='/facebookFinishScreen' component={FacebookFinishScreen} onEnter={requireAuth} />
     <Route path='/addOns' component={AddOns} onEnter={requireAuth} />
     <Route path='*' render={() => <Redirect to='/' />} />
   </Switch>
