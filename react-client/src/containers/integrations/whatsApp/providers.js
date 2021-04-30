@@ -117,6 +117,8 @@ class WhatsAppProvidersScreen extends React.Component {
   }
 
   componentDidMount () {
+    console.log('didmount')
+
     const hostname = window.location.hostname
     let title = ''
     if (hostname.includes('kiboengage.cloudkibo.com')) {

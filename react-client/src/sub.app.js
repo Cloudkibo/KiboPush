@@ -122,7 +122,7 @@ class SubApp extends Component {
   redirectToConnectPage(payload) {
     if (payload.count !== 'undefined' && payload.count < 1 && this.props.user.platform === 'messenger') {
       this.props.history.push({
-        pathname: '/addfbpages'
+        pathname: '/facebookPagesScreen'
       })
     }
   }

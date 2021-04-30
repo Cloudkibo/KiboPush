@@ -23,7 +23,7 @@ const createOptions = (fontSize, padding) => {
   }
 }
 
-class CheckoutForm extends React.Component {
+class AddCard extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
@@ -37,6 +37,7 @@ class CheckoutForm extends React.Component {
   }
 
   componentDidMount () {
+    this.props.setClick(this.handleSubmit)
     var addScript = document.createElement('script')
     addScript.setAttribute('src', 'https://js.stripe.com/v3/')
     document.body.appendChild(addScript)
@@ -49,15 +50,11 @@ class CheckoutForm extends React.Component {
     })
   }
 
-  handleSubmit (ev) {
-    ev.preventDefault()
-    console.log('this.props.stripe', this.props.stripe)
+  handleSubmit (e) {
     if (this.props.stripe) {
-      console.log('this.props.stripe', this.props.stripe)
       this.props.stripe
         .createToken({})
         .then((payload) => {
-          console.log('[token]', payload)
           if (payload.error) {
             this.setState({
               cardError: true,
@@ -77,7 +74,7 @@ class CheckoutForm extends React.Component {
               cardError: false,
               cardErrorMessage: ''
             })
-            this.props.setCard(payload.token.id, false)
+            this.props.handleCard(payload.token.id)
           }
         })
     } else {
@@ -85,15 +82,15 @@ class CheckoutForm extends React.Component {
     }
   }
   onChange (response) {
-    this.setState({responseReturned: true})
-    console.log('response', response)
+    this.setState({responseReturned: true, error: false})
   }
   render () {
     return (
       <form onSubmit={this.handleSubmit}>
-        <label>
-          Card details:
+        <label style={{fontWeight: 'normal'}} className='control-label'>
+          Add Card details:
         </label>
+        <br /><br />
         <CardElement
           {...createOptions(this.props.fontSize)}
           onChange={this.onCardChange}
@@ -107,12 +104,8 @@ class CheckoutForm extends React.Component {
         {this.state.error &&
           <div id='email-error' style={{color: 'red', fontWeight: 'inherit'}}><bold>Please verify</bold></div>
         }
-        <br /><br />
-        <center>
-          <button className='btn btn-primary'>Save</button>
-        </center>
       </form>
     )
   }
 }
-export default injectStripe(CheckoutForm)
+export default injectStripe(AddCard)

@@ -82,6 +82,15 @@ export function setOnboardingNumberDetails(payload) {
   }
 }
 
+export function configureFacebook(payload, cb) {
+  return (dispatch) => {
+    callApi('company/configureFacebook', 'post', payload)
+      .then(res => {
+        cb(res)
+      })
+  }
+}
+
 export function configureSMS(payload, cb) {
   return (dispatch) => {
     callApi('company/configureSMS', 'post', payload)
