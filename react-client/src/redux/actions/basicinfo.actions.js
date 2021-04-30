@@ -227,9 +227,12 @@ export function updateCard (data, msg, callback) {
   }
 }
 
-export function getKeys() {
+export function getKeys(cb) {
   return (dispatch) => {
-    callApi('company/getKeys').then(res => dispatch(updateKeys(res)))
+    callApi('company/getKeys').then(res => {
+      if (cb) cb()
+      dispatch(updateKeys(res))
+    })
   }
 }
 

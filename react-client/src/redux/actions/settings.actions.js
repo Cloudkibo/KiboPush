@@ -848,13 +848,14 @@ export function fetchCompanyPreferences() {
     })
   }
 }
-export function setSuperNumber(msg) {
+export function setSuperNumber(msg, cb) {
   return (dispatch) => {
     callApi('company/setWhatsappSuperNumberPlan')
       .then(res => {
         console.log('response from setSuperNumber', res)
         if (res.status === 'success') {
           fetchUserDetails(dispatch)
+          if (cb) cb()
           msg.success('Saved Successfully')
         } else {
           msg.error(res.description || res.payload)

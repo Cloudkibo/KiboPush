@@ -659,9 +659,13 @@ class Configuration extends React.Component {
                                             {this.props.user.facebookInfo && this.props.user.connectFacebook
                                               ? <a href='#/' data-toggle="modal" data-target="#disconnectFacebookConfiguration" className='m-btn m-btn--pill m-btn--hover-danger btn btn-danger' style={{ borderColor: '#d9534f', color: '#d9534f', marginRight: '10px' }}>                                                Disconnect
                                             </a>
-                                              : <a href='/auth/facebook' className='m-btn m-btn--pill m-btn--hover-success btn btn-success' style={{ borderColor: '#34bfa3', color: '#34bfa3', marginRight: '10px' }}>
+                                              : <button className='m-btn m-btn--pill m-btn--hover-success btn btn-success'
+                                                  style={{ borderColor: '#34bfa3', color: '#34bfa3', marginRight: '10px' }}
+                                                  onClick={() => {this.props.history.push({
+                                                    pathname: '/facebookPlansScreen'
+                                                  })}}>
                                                 Connect
-                                            </a>
+                                            </button>
                                             }
                                           </div>
                                         </div>
@@ -710,7 +714,9 @@ class Configuration extends React.Component {
                                             <div className='m-widget4__ext'>
                                               <button className='m-btn m-btn--pill m-btn--hover-success btn btn-success'
                                                 style={{ borderColor: '#34bfa3', color: '#34bfa3', marginRight: '10px' }}
-                                                onClick={() => this.setType('Change')}>
+                                                onClick={() => {this.props.history.push({
+                                                  pathname: '/whatsAppPlansScreen'
+                                                })}}>
                                                 Connect
                                               </button>
                                             </div>
