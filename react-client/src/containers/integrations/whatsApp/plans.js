@@ -108,6 +108,10 @@ class WhatsAppPlansScreen extends React.Component {
                   />
                 ))
               }
+              <br />
+              <label style={{fontWeight: 'normal'}} className='control-label'>
+                View our <a href='https://kibopush.com/pricing-test/#1619455158123-68d955da-5890' target='_blank' rel='noopener noreferrer'> pricing page</a> to learn more about our pricing plans
+              </label>
             </div>
             <div className='row'>
               <div className='col-lg-6 m--align-left' />

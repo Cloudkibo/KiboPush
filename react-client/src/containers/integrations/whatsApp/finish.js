@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import Header from './../../wizard/header'
 import SIDEBAR from '../sidebar'
-import { Link } from 'react-router-dom'
+import FINISH from '../finish'
 
 class WhatsAppFinishScreen extends React.Component {
   constructor (props, context) {
@@ -39,30 +39,14 @@ class WhatsAppFinishScreen extends React.Component {
             heading='Configure WhatsApp Channel'
             description='Reach out to 2 billion WhatsApp users to grow your business!'
           />
-          <div className="m-grid__item m-grid__item--order-tablet-and-mobile-2 m-login__aside" style={{padding: '2rem'}}>
-            <div style={{position: 'relative'}}>
-              <div style={{position: 'absolute', marginTop: '25%', left: '15%'}}>
-                <center>
-                  <img alt='completed' src='https://cdn.cloudkibo.com/public/icons/PE-Success-Icon.png' width='150' height='150'></img>
-                  <br /><br />
-                  {this.props.channelOnboarding && this.props.channelOnboarding.planName && this.props.channelOnboarding.planName.includes('Enterprise')
-                    ? <span>
-                        Congratulations! you have successfully applied for Enterprise Plan for WhatsApp. Someone from our team will contact you soon.
-                      </span>
-                    : <span>
-                        Congratulations! you have successfully configured WhatsApp channel.
-                      </span>
-                  }
-                  <br /><br /><br /><br></br>
-                  {this.props.channelOnboarding && this.props.channelOnboarding.planName && !this.props.channelOnboarding.planName.includes('Enterprise') &&
-                    <Link to='/dashboard' className='btn btn-success m-btn m-btn--custom m-btn--icon'>
-                      Finish
-                    </Link>
-                  }
-                </center>
-              </div>
-            </div>
-          </div>
+          <FINISH
+            showFinishButton={this.props.channelOnboarding && this.props.channelOnboarding.planName && !this.props.channelOnboarding.planName.includes('Enterprise')}
+            description={
+              this.props.channelOnboarding && this.props.channelOnboarding.planName && this.props.channelOnboarding.planName.includes('Enterprise')
+              ? 'Congratulations! you have successfully applied for Enterprise Plan for WhatsApp. Someone from our team will contact you soon.'
+              : 'Congratulations! you have successfully configured WhatsApp channel.'
+            }
+          />
         </div>
       </div>
     )

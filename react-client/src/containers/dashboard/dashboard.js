@@ -216,7 +216,7 @@ class Dashboard extends React.Component {
     if (nextprops.user && nextprops.pages) {
       if (nextprops.pages.length === 0) {
         this.props.history.push({
-          pathname: '/addfbpages'
+          pathname: '/facebookPagesScreen'
         })
       } else if ((nextprops.user.role === 'admin' || nextprops.user.role === 'buyer') && !nextprops.user.wizardSeen) {
         console.log('going to push add page wizard')
