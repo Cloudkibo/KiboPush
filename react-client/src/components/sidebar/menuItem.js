@@ -8,13 +8,30 @@ class MenuItem extends React.Component {
     this.state = {}
     this.getMenuItem = this.getMenuItem.bind(this)
     this.getParentItem = this.getParentItem.bind(this)
+    this.onItemClick = this.onItemClick.bind(this)
+    this.isItemActive = this.isItemActive.bind(this)
+  }
+
+  onItemClick (name) {
+    document.getElementById('m_aside_left_close_btn').click()
+    this.props.onItemClick(name)
+  }
+
+  isItemActive (name) {
+    const value = name.replace(/\s+/g, '')
+    if (value.toLowerCase() === this.props.activeItem) {
+      return true
+    } else {
+      return false
+    }
   }
 
   getParentItem (name, icon, submenu) {
     return (
       <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
         <span className='m-menu__link m-menu__toggle'>
-          {icon
+          {
+            icon
             ? <i className={`m-menu__link-icon ${icon}`} title={name} />
             : <i className='m-menu__link-bullet m-menu__link-bullet--dot'><span /></i>
           }
@@ -31,31 +48,32 @@ class MenuItem extends React.Component {
                 </span>
               </span>
             </li>
-            {submenu && submenu.map((item) => (
-              item.nestedmenu ? this.getParentItem(item.name, undefined, item.nestedmenu)
-            : this.getMenuItem(
-              item.name,
-              {
-                route: item.route,
-                state: item.routeState,
-                link: item.link
-              },
-              item.icon
-              )
-            ))
-          }
-        </ul>
-      </div>
-    </li>
-  )
-}
+            {
+              submenu && submenu.map((item) => (
+                item.nestedmenu ? this.getParentItem(item.name, undefined, item.nestedmenu)
+                : this.getMenuItem(
+                  item.name,
+                  {
+                    route: item.route,
+                    state: item.routeState,
+                    link: item.link
+                  },
+                  item.icon
+                )
+              ))
+            }
+          </ul>
+        </div>
+      </li>
+    )
+  }
 
   getMenuItem (name, route, icon) {
     return (
-      <li className='m-menu__item  m-menu__item--submenu' aria-haspopup='true' data-menu-submenu-toggle='hover'>
+      <li className={`m-menu__item  m-menu__item--submenu ${this.isItemActive(name) ? 'm-menu__item--active' : ''}`} aria-haspopup='true' data-menu-submenu-toggle='hover'>
         {
           route.route
-          ? <Link onClick={() => {document.getElementById('m_aside_left_close_btn').click()}} to={route.route} state={route.state} className='m-menu__link m-menu__toggle'>
+          ? <Link onClick={() => { this.onItemClick(name) }} to={route.route} state={route.state} className='m-menu__link m-menu__toggle'>
             {
               icon
               ? <i className={`m-menu__link-icon ${icon}`} title={name} />
@@ -97,7 +115,9 @@ MenuItem.propTypes = {
   'icon': PropTypes.string.isRequired,
   'routeState': PropTypes.object,
   'submenu': PropTypes.array,
-  'link': PropTypes.string
+  'link': PropTypes.string,
+  'activeItem': PropTypes.string.isRequired,
+  'onItemClick': PropTypes.func.isRequired
 }
 
 export default MenuItem
