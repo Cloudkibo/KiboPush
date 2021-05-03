@@ -66,6 +66,7 @@ class FacebookIntegration extends React.Component {
     this.updateSID = this.updateSID.bind(this)
     this.goToNext = this.goToNext.bind(this)
     this.cancel = this.cancel.bind(this)
+    this.showSmsPlans = this.showSmsPlans.bind(this)
     this.changeWhatsAppProvider = this.changeWhatsAppProvider.bind(this)
     this.updateWhatsAppData = this.updateWhatsAppData.bind(this)
     this.clearFieldsWapp = this.clearFieldsWapp.bind(this)
@@ -116,6 +117,12 @@ class FacebookIntegration extends React.Component {
     })
   }
 
+  showSmsPlans() {
+    this.props.history.push({
+      pathname: '/smsPlansScreen'
+    })
+  }
+
   updateSID(e) {
     this.setState({ SID: e.target.value })
   }
@@ -131,6 +138,7 @@ class FacebookIntegration extends React.Component {
   closeDialog() {
     this.setState({ isShowingModal: false })
   }
+
   showDialogWhatsApp() {
     this.setState({ isShowingModalWhatsApp: true })
   }
@@ -176,7 +184,7 @@ class FacebookIntegration extends React.Component {
     if (this.state.usage === 'superNumber') {
       this.props.setSuperNumber(this.msg)
       this.refs.connectWapp.click()
-    } else if(this.props.automated_options.whatsApp && this.props.automated_options.whatsApp.connected === false) {
+    } else if (this.props.automated_options.whatsApp && this.props.automated_options.whatsApp.connected === false) {
       let whatsappData = this.state.whatsappData[this.state.whatsappProvider]
       let businessNmber = whatsappData.businessNumber.replace(/[- )(]/g, '')
       if(businessNmber !== this.props.automated_options.whatsApp.businessNumber) {
@@ -228,8 +236,8 @@ class FacebookIntegration extends React.Component {
   isDisabled () {
     if (this.props.user && this.props.automated_options) {
       if (
-        (!this.props.user.connectFacebook && !this.props.automated_options.twilio && !this.props.automated_options.whatsApp && !this.props.user.plan.whatsappSuperNumber) ||
-        (this.props.location.state === 'sms' && !this.props.automated_options.twilio) ||
+        (!this.props.user.connectFacebook && !this.props.automated_options.sms && !this.props.automated_options.whatsApp && !this.props.user.plan.whatsappSuperNumber) ||
+        (this.props.location.state === 'sms' && !this.props.automated_options.sms) ||
         (this.props.location.state === 'messenger' && !this.props.user.facebookInfo) ||
         (this.props.location.state === 'whatsApp' && !this.props.automated_options.whatsApp && !this.props.user.plan.whatsappSuperNumber)
       ) {
@@ -281,9 +289,15 @@ class FacebookIntegration extends React.Component {
                   ? <button className='m-btn m-btn--pill m-btn--hover-secondary btn btn-secondary' disabled>
                     Connected
                   </button>
-                  : <a href='/auth/facebook' style={{ borderColor: '#34bfa3', color: '#34bfa3' }} className='m-btn m-btn--pill m-btn--hover-success btn btn-success'>
+                  : <button style={{ borderColor: '#34bfa3', color: '#34bfa3' }}
+                      className='m-btn m-btn--pill m-btn--hover-success btn btn-success'
+                      onClick={() => {
+                        this.props.history.push({
+                          pathname: '/facebookPlansScreen'
+                        })
+                      }}>
                     <span>Connect</span>
-                  </a>
+                  </button>
                 }
               </div>
             </div>
@@ -292,17 +306,17 @@ class FacebookIntegration extends React.Component {
                 <span className='m-widget4__title'>
                   <i className='fa fa-comment' />&nbsp;&nbsp;&nbsp;
                   <span>
-                    Twilio
+                    SMS
                   </span>
                 </span>
                 <br />
               </div>
               <div className='m-widget4__ext'>
-                {this.props.automated_options && this.props.automated_options.twilio
+                {this.props.automated_options && this.props.automated_options.sms
                   ? <button className='m-btn m-btn--pill m-btn--hover-secondary btn btn-secondary' disabled>
-                    Connected
+                    {this.props.automated_options.sms && this.props.automated_options.sms.accountStatus === 'pending' ? 'Pending' : 'Connected'}
                   </button>
-                  : <button className='m-btn m-btn--pill m-btn--hover-success btn btn-success' style={{ borderColor: '#34bfa3', color: '#34bfa3' }} data-toggle="modal" data-target="#connect" onClick={this.showDialog}>
+                  : <button className='m-btn m-btn--pill m-btn--hover-success btn btn-success' style={{ borderColor: '#34bfa3', color: '#34bfa3' }} onClick={this.showSmsPlans}>
                     Connect
                   </button>
                 }
@@ -321,7 +335,13 @@ class FacebookIntegration extends React.Component {
               <div className='m-widget4__ext'>
               {this.props.automated_options && this.props.user &&
                 ((!this.props.automated_options.whatsApp || this.props.automated_options.whatsApp.connected === false) && !this.props.user.plan.whatsappSuperNumber)
-                ? <button className='m-btn m-btn--pill m-btn--hover-success btn btn-success' style={{ borderColor: '#34bfa3', color: '#34bfa3' }} data-toggle="modal" data-target="#whatsapp" onClick={this.showDialogWhatsApp}>
+                ? <button className='m-btn m-btn--pill m-btn--hover-success btn btn-success'
+                    style={{ borderColor: '#34bfa3', color: '#34bfa3' }}
+                    onClick={() => {
+                      this.props.history.push({
+                        pathname: '/whatsAppPlansScreen'
+                      })
+                    }}>
                   Connect
                 </button>
                 : <button className='m-btn m-btn--pill m-btn--hover-secondary btn btn-secondary' disabled>

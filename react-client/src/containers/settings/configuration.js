@@ -74,11 +74,29 @@ class Configuration extends React.Component {
     this.getBusinessNumber = this.getBusinessNumber.bind(this)
     this.handleUsage = this.handleUsage.bind(this)
     this.getWhatsAppConnected = this.getWhatsAppConnected.bind(this)
+    this.showSmsPlans = this.showSmsPlans.bind(this)
     props.getAutomatedOptions()
+  }
+  handleCheckbox (e) {
+    console.log('e.target.value', e.target.checked)
+    this.setState({retainData : e.target.checked})
+  }
+  logout() {
+    this.props.history.push({
+      pathname: '/facebookIntegration'
+    })
+    this.props.updateShowIntegrations({ showIntegrations: true })
+    // auth.logout()
   }
 
   handleUsage (e) {
     this.setState({usage: e.target.value})
+  }
+
+  showSmsPlans() {
+    this.props.history.push({
+      pathname: '/smsPlansScreen'
+    })
   }
 
   getBusinessNumber () {
@@ -89,17 +107,6 @@ class Configuration extends React.Component {
     }
   }
 
-  logout() {
-    this.props.history.push({
-      pathname: '/facebookIntegration'
-    })
-    this.props.updateShowIntegrations({ showIntegrations: true })
-  }
-
-  handleCheckbox (e) {
-    console.log('e.target.value', e.target.checked)
-    this.setState({retainData : e.target.checked})
-  }
   updateWhatsAppData(e, data) {
     console.log('updateWhatsAppData', e)
     if (data.businessNumber) {
@@ -162,8 +169,8 @@ class Configuration extends React.Component {
 
   UNSAFE_componentWillReceiveProps(nextProps) {
     console.log('UNSAFE_componentWillReceiveProps', nextProps)
-    if (nextProps.automated_options && nextProps.automated_options.twilio) {
-      this.setState({ SID: nextProps.automated_options.twilio.accountSID, token: nextProps.automated_options.twilio.authToken })
+    if (nextProps.automated_options && nextProps.automated_options.sms) {
+      this.setState({ SID: nextProps.automated_options.sms.accountSID, token: nextProps.automated_options.sms.authToken })
     }
     // console.log('nextProps.automated_options', nextProps.automated_options.whatsApp.connected)
     if (nextProps.automated_options && nextProps.automated_options.whatsApp && (nextProps.automated_options.whatsApp.connected !== false)) {
@@ -178,7 +185,7 @@ class Configuration extends React.Component {
         whatsappData
       })
     }
-    // if (nextProps.user && nextProps.user.platform === 'sms' && nextProps.automated_options && !nextProps.automated_options.twilio) {
+    // if (nextProps.user && nextProps.user.platform === 'sms' && nextProps.automated_options && !nextProps.automated_options.sms) {
     //   this.props.history.push({
     //     pathname: '/integrations',
     //     state: 'sms'
@@ -249,8 +256,8 @@ class Configuration extends React.Component {
   }
 
   clearFields() {
-    if (this.props.automated_options && this.props.automated_options.twilio) {
-      this.setState({ SID: this.props.automated_options.twilio.accountSID, token: this.props.automated_options.twilio.authToken })
+    if (this.props.automated_options && this.props.automated_options.sms) {
+      this.setState({ SID: this.props.automated_options.sms.accountSID, token: this.props.automated_options.sms.authToken })
     } else {
       this.setState({ SID: '', token: '' })
     }
@@ -334,7 +341,7 @@ class Configuration extends React.Component {
         <ConfirmationModal
           id = 'create_confirmation_modal'
           title = 'Are You Sure?'
-          description = {`you had previously connected different account from this number ${this.props.automated_options.whatsApp ? this.props.automated_options.whatsApp.businessNumber: 0}. If you choose to connect the new Number then all the old data will be deleted...` }
+          description = {`You had previously connected different account from this number ${(this.props.automated_options && this.props.automated_options.whatsApp) ? this.props.automated_options.whatsApp.businessNumber: 0}. If you choose to connect the new Number then all the old data will be deleted...` }
           onConfirm = {this.updateData}
           zIndex= {99991}
         />
@@ -428,6 +435,7 @@ class Configuration extends React.Component {
                       }
                     })
                     // this.logout()
+                    this.props.disconnectFacebook()
                   }} data-dismiss='modal'>Yes
                   </button>
               </div>
@@ -649,12 +657,15 @@ class Configuration extends React.Component {
                                           </div>
                                           <div className='m-widget4__ext'>
                                             {this.props.user.facebookInfo && this.props.user.connectFacebook
-                                              ? <a href='#/' data-toggle="modal" data-target="#disconnectFacebookConfiguration" className='m-btn m-btn--pill m-btn--hover-danger btn btn-danger' style={{ borderColor: '#d9534f', color: '#d9534f', marginRight: '10px' }}>
-                                                Disconnect
+                                              ? <a href='#/' data-toggle="modal" data-target="#disconnectFacebookConfiguration" className='m-btn m-btn--pill m-btn--hover-danger btn btn-danger' style={{ borderColor: '#d9534f', color: '#d9534f', marginRight: '10px' }}>                                                Disconnect
                                             </a>
-                                              : <a href='/auth/facebook' className='m-btn m-btn--pill m-btn--hover-success btn btn-success' style={{ borderColor: '#34bfa3', color: '#34bfa3', marginRight: '10px' }}>
+                                              : <button className='m-btn m-btn--pill m-btn--hover-success btn btn-success'
+                                                  style={{ borderColor: '#34bfa3', color: '#34bfa3', marginRight: '10px' }}
+                                                  onClick={() => {this.props.history.push({
+                                                    pathname: '/facebookPlansScreen'
+                                                  })}}>
                                                 Connect
-                                            </a>
+                                            </button>
                                             }
                                           </div>
                                         </div>
@@ -671,16 +682,18 @@ class Configuration extends React.Component {
                                             <br />
                                           </div>
                                           <div className='m-widget4__ext'>
-                                            <button className='m-btn m-btn--pill m-btn--hover-success btn btn-success' style={{ borderColor: '#34bfa3', color: '#34bfa3', marginRight: '10px' }} data-toggle="modal" data-target="#connect">
-                                              {this.props.automated_options && this.props.automated_options.twilio ? 'Edit' : 'Connect'}
+                                            <button className='m-btn m-btn--pill m-btn--hover-success btn btn-success' style={{ borderColor: '#34bfa3', color: '#34bfa3', marginRight: '10px' }} onClick={this.showSmsPlans}> {/* data-toggle="modal" data-target="#connect"> */}
+                                              {this.props.automated_options && this.props.automated_options.sms ? 'Edit' : 'Connect'}
                                             </button>
                                           </div>
-                                          {this.props.automated_options && this.props.automated_options.twilio &&
+                                          { /* NOTE: Commenting it for now until we are sure how we will allow disconnecting on paid SMS account */
+                                            /*this.props.automated_options && this.props.automated_options.sms &&
                                             <div className='m-widget4__ext'>
                                               <button className='m-btn m-btn--pill m-btn--hover-danger btn btn-danger' style={{ borderColor: '#d9534f', color: '#d9534f', marginRight: '10px' }} data-toggle="modal" data-target="#disconnect" onClick={() => { this.showDialogDisconnect('sms') }}>
                                                 Disconnect
                                         </button>
                                             </div>
+                                            */
                                           }
                                         </div>
                                       }
@@ -701,7 +714,9 @@ class Configuration extends React.Component {
                                             <div className='m-widget4__ext'>
                                               <button className='m-btn m-btn--pill m-btn--hover-success btn btn-success'
                                                 style={{ borderColor: '#34bfa3', color: '#34bfa3', marginRight: '10px' }}
-                                                onClick={() => this.setType('Change')}>
+                                                onClick={() => {this.props.history.push({
+                                                  pathname: '/whatsAppPlansScreen'
+                                                })}}>
                                                 Connect
                                               </button>
                                             </div>

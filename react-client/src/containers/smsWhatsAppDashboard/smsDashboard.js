@@ -1,117 +1,73 @@
-
-/* eslint-disable no-return-assign */
-/**
- * Created by sojharo on 20/07/2017.
- */
-
 import React from 'react'
 import { connect } from 'react-redux'
-import CardBoxesContainer from '../../components/smsWhatsAppDashboard/cardboxes'
-import SubscriberSummary from '../../components/smsWhatsAppDashboard/subscriberSummary'
-import SentSeen from '../../components/smsWhatsAppDashboard/sentSeen'
-import { getAutomatedOptions } from '../../redux/actions/basicinfo.actions'
-import { loadCardBoxesDataSms, loadSubscriberSummarySms, loadSentSeenSms } from '../../redux/actions/smsDashboard.actions'
-import { joinRoom } from '../../utility/socketio'
 import { bindActionCreators } from 'redux'
-import AlertContainer from 'react-alert'
-import { RingLoader } from 'halogenium'
+import { loadSmsDashboardData } from '../../redux/actions/smsDashboard.actions'
+import { XAxis, YAxis, CartesianGrid, Tooltip, Legend, Line, LineChart } from 'recharts'
+
+import CARDBOX from '../../components/Dashboard/CardBox'
 
 class Dashboard extends React.Component {
   constructor (props, context) {
     super(props, context)
     this.state = {
-      subscriberGraph: [],
-      sentSeenGraph: [],
-      loading: true
+      loading: true,
+      showDropDown: false,
+      selectedDays: '30',
+      cardData: {},
+      graphdata: []
     }
-    this.includeZeroCounts = this.includeZeroCounts.bind(this)
-    this.prepareChartData = this.prepareChartData.bind(this)
+    this.toggleDropDown = this.toggleDropDown.bind(this)
+    this.applyDateFilter = this.applyDateFilter.bind(this)
+    this.setStats = this.setStats.bind(this)
+    this.calculateSum = this.calculateSum.bind(this)
   }
 
-  UNSAFE_componentWillMount () {
-    this.props.loadCardBoxesDataSms()
-    this.props.loadSentSeenSms({days: 30})
-    this.props.loadSubscriberSummarySms({days: 'all'})
-    this.props.getAutomatedOptions()
-  }
-  UNSAFE_componentWillReceiveProps (nextprops) {
-    if (nextprops.user) {
-      joinRoom(nextprops.user.companyId)
-    }
-    if (nextprops.cardBoxesData && nextprops.subscriberSummary && nextprops.sentSeenData) {
-      this.setState({loading: false})
-    }
-    if (nextprops.subscriberSummary && nextprops.subscriberSummary.graphdata.length > 0) {
-      var data = this.includeZeroCounts(nextprops.subscriberSummary.graphdata)
-      let dataChart = this.prepareChartData(data)
-      this.setState({subscriberGraph: dataChart})
-    } else {
-      this.setState({subscriberGraph: []})
-    }
-    if (nextprops.sentSeenData && nextprops.sentSeenData.graphdata.length > 0) {
-      var data1 = this.includeZeroCounts(nextprops.sentSeenData.graphdata)
-      let dataChart1 = this.prepareChartData(data1)
-      this.setState({sentSeenGraph: dataChart1})
-    } else {
-      this.setState({sentSeenGraph: []})
-    }
-  }
-  includeZeroCounts (data) {
-    var dataArray = []
-    for (var j = 0; j < data.length; j++) {
-      var recordId = data[j]._id
-      var date = `${recordId.year}-${recordId.month}-${recordId.day}`
-      let val = this.exists(dataArray, date)
-      if (val === false) {
-        dataArray.push({date: date, count: data[j].count})
-      } else {
-        dataArray[val].count = dataArray[val].count + data[j].count
-      }
-    }
-    return dataArray.reverse()
-  }
-  exists (array, value) {
-    for (var i = 0; i < array.length; i++) {
-      if (array.date === value) {
-        return i
-      }
-    }
-    return false
-  }
-  prepareChartData (data) {
-    var dataChart = []
-    if (data && data.length > 0) {
-      for (var i = 0; i < data.length; i++) {
-        var record = {}
-        record.date = data[i].date
-        record.count = data[i].count
-        dataChart.push(record)
-      }
-    }
-    return dataChart
-  }
   componentDidMount () {
-    if (this.props.location && this.props.location.state && this.props.location.state.loadScript) {
-      // TODO We need to correct this in future.
-      window.location.reload()
-    }
     const hostname = window.location.hostname
-    let title = ''
+    let title = 'KiboPush'
     if (hostname.includes('kiboengage.cloudkibo.com')) {
       title = 'KiboEngage'
     } else if (hostname.includes('kibochat.cloudkibo.com')) {
       title = 'KiboChat'
     }
     document.title = `${title} | Dashboard`
+
+    this.props.loadSmsDashboardData(this.state.selectedDays, this.setStats)
   }
-  render () {
-    var alertOptions = {
-      offset: 14,
-      position: 'bottom right',
-      theme: 'dark',
-      time: 5000,
-      transition: 'scale'
+
+  setStats (res) {
+    if (res.status === 'success') {
+      const data = res.payload
+      if (data.length > 0) {
+        const cardData = {
+          contacts: this.calculateSum('contacts', data),
+          messagesSent: this.calculateSum('messagesSent', data),
+          messagesReceived: this.calculateSum('messagesReceived', data)
+        }
+        this.setState({loading: false, cardData, graphdata: data})
+      } else {
+        this.setState({loading: false, cardData: {}, graphdata: []})
+      }
+    } else {
+      this.setState({loading: false, cardData: {}, graphdata: []})
     }
+  }
+
+  calculateSum (key, array) {
+    return array.reduce((a, b) => a + (b[key] || 0), 0)
+  }
+
+  toggleDropDown () {
+    this.setState({showDropDown: !this.state.showDropDown})
+  }
+
+  applyDateFilter (e) {
+    const days = `${e.target.value}`
+    this.setState({loading: true, selectedDays: days, showDropDown: false})
+    this.props.loadSmsDashboardData(days, this.setStats)
+  }
+
+  render() {
     return (
       <div className='m-grid__item m-grid__item--fluid m-wrapper'>
         <div className='m-subheader '>
@@ -119,72 +75,111 @@ class Dashboard extends React.Component {
             <div className='mr-auto'>
               <h3 className='m-subheader__title'>Dashboard</h3>
             </div>
+            <div>
+              <span className="m-subheader__daterange" id="m_dashboard_daterangepicker" onClick={this.toggleDropDown}>
+                <span className="m-subheader__daterange-label">
+                  <span className="m-subheader__daterange-title"></span>
+                  <span className="m-subheader__daterange-date m--font-brand">Last {this.state.selectedDays} days</span>
+                </span>
+                <a href='#/' className="btn btn-sm btn-brand m-btn m-btn--icon m-btn--icon-only m-btn--custom m-btn--pill">
+                  <i className="la la-angle-down"></i>
+                </a>
+              </span>
+              {
+                this.state.showDropDown &&
+                <div className="daterangepicker dropdown-menu ltr opensleft" style={{display: 'block', top: '142px', right: '29.9999px', left: 'auto', marginTop: '8px', border: 'none'}}>
+                  <div className="ranges">
+                    <ul onClick={this.applyDateFilter}>
+                      <li data-range-key="7"  value='7' className={this.state.selectedDays === '7' ? 'active' : ''}>Last 7 days</li>
+                      <li data-range-key="30" value='30' className={this.state.selectedDays === '30' ? 'active' : ''}>Last 30 days</li>
+                      <li data-range-key="90" value='90' className={this.state.selectedDays === '90' ? 'active' : ''}>Last 90 days</li>
+                    </ul>
+                  </div>
+                </div>
+              }
+            </div>
           </div>
         </div>
         <div className='m-content'>
-          <AlertContainer ref={a => this.msg = a} {...alertOptions} />
-          <div className='m-alert m-alert--icon m-alert--air m-alert--square alert alert-dismissible m--margin-bottom-30' role='alert'>
-            <div className='m-alert__icon'>
-              <i className='flaticon-technology m--font-accent' />
+          {
+            /* eslint-disable */
+            this.state.loading
+            ? <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              height: '60vh'
+            }}>
+              <div className="m-spinner m-spinner--brand m-spinner--lg" />
             </div>
-            <div className='m-alert__text'>
-              Need help in understanding dashboard? Here is the <a href='https://kibopush.com/twilio/' target='_blank' rel='noopener noreferrer'>documentation</a>.
-            </div>
-          </div>
-          {this.state.loading
-          ? <div className='align-center'><center><RingLoader color='#FF5E3A' /></center></div>
-          : <div>
-            <div className='row'>
-              <CardBoxesContainer cardBoxesData={this.props.cardBoxesData} platform='sms' />
-            </div>
-            {
-              !this.props.isMobile &&
+            : <div>
               <div className='row'>
-                <SubscriberSummary
-                  loadSubscriberSummary={this.props.loadSubscriberSummarySms}
-                  platform='sms'
-                  subscriberSummary={this.props.subscriberSummary}
-                  subscriberGraph={this.state.subscriberGraph}
-                   />
+                <div className='col-md-4'>
+                  <CARDBOX
+                    style='success'
+                    value={this.state.cardData.contacts || 0}
+                    label='Total Contacts'
+                    id='__sms_contacts'
+                  />
+                </div>
+                <div className='col-md-4'>
+                  <CARDBOX
+                    style='accent'
+                    value={this.state.cardData.messagesSent || 0}
+                    label='Messages Sent'
+                    id='__sms_messages_sent'
+                  />
+                </div>
+                <div className='col-md-4'>
+                  <CARDBOX
+                    style='warning'
+                    value={this.state.cardData.messagesReceived || 0}
+                    label='Messages Received'
+                    id='__sms_messages_received'
+                  />
+                </div>
               </div>
-            }
-            {
-              !this.props.isMobile &&
               <div className='row'>
-                <SentSeen
-                  loadSentSeen={this.props.loadSentSeenSms}
-                  platform='sms'
-                  sentSeenData={this.props.sentSeenData}
-                  sentSeenGraph={this.state.sentSeenGraph}
-                   />
+                <div className='col-xl-12 col-lg-12 col-md-12 col-xs-12 col-sm-12'>
+                  <div className='m-portlet m-portlet--full-height '>
+                    <div className='m-portlet__body'>
+                      {
+                        this.state.graphdata.length > 0
+                        ? <LineChart width={1000} height={300} data={this.state.graphdata}>
+                          <XAxis dataKey='date' />
+                          <YAxis />
+                          <CartesianGrid strokeDasharray='3 3' />
+                          <Tooltip />
+                          <Legend />
+                          <Line type='monotone' dataKey='messagesSent' name='Messages Sent' stroke='#8884d8' activeDot={{r: 8}} />
+                          <Line type='monotone' dataKey='messagesReceived' name='Messages Received' stroke='#82ca9d' activeDot={{r: 8}} />
+                        </LineChart>
+                        : <div>No data to display</div>
+                      }
+                    </div>
+                  </div>
+                </div>
               </div>
-            }
-          </div>
-        }
+            </div>
+            /* eslint-enable */
+          }
         </div>
       </div>
     )
   }
-  }
+}
 
 function mapStateToProps (state) {
   return {
-    cardBoxesData: (state.smsWhatsAppDashboardInfo.cardBoxesData),
     user: (state.basicInfo.user),
-    isMobile: (state.basicInfo.isMobile),
-    subscriberSummary: (state.smsWhatsAppDashboardInfo.subscriberSummary),
-    sentSeenData: (state.smsWhatsAppDashboardInfo.sentSeenData),
-    automated_options: (state.basicInfo.automated_options)
+    isMobile: (state.basicInfo.isMobile)
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return bindActionCreators(
     {
-      loadCardBoxesDataSms,
-      loadSubscriberSummarySms,
-      loadSentSeenSms,
-      getAutomatedOptions
+      loadSmsDashboardData
     },
     dispatch)
 }

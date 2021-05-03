@@ -1,8 +1,3 @@
-/* eslint-disable camelcase */
-/**
- * Created by sojharo on 20/07/2017.
- */
-
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { getAutomatedOptions } from '../../redux/actions/basicinfo.actions'
@@ -29,7 +24,7 @@ class Sidebar extends Component {
     this.setState({activeItem: value.toLowerCase()})
   }
 
-  setMenuItems (user, automated_options) {
+  setMenuItems(user, automated_options) {
     let menuItems = []
     const currentProduct = getCurrentProduct()
     const isLocalhost = (currentProduct === 'localhost')
@@ -63,7 +58,7 @@ class Sidebar extends Component {
     }
     if (!isKiboLite && platform === 'messenger') {
       let submenu = []
-      if (user.plan['manage_subscribers'] && user.permissions['subscriberPermission']) {
+      if (user.plan['manage_subscribers'] && user.permissions['view_subscribers']) {
         submenu.push({
           priority: 'a',
           name: 'Subscribers',
@@ -71,7 +66,7 @@ class Sidebar extends Component {
           icon: 'flaticon-user-ok'
         })
       }
-      if (!isMobile && user.plan['manage_subscribers'] && user.permissions['subscriberPermission']) {
+      if (!isMobile && user.plan['custom_fields'] && user.permissions['view_custom_fields']) {
         submenu.push({
           priority: 'b',
           name: 'Custom Fields',
@@ -79,7 +74,7 @@ class Sidebar extends Component {
           icon: 'flaticon-profile'
         })
       }
-      if (!isMobile && user.plan['manage_subscribers'] && user.permissions['subscriberPermission']) {
+      if (!isMobile && user.plan['tags'] && user.permissions['view_tags']) {
         submenu.push({
           priority: 'c',
           name: 'Tags',
@@ -96,43 +91,43 @@ class Sidebar extends Component {
     }
     if ((isKiboChat || isLocalhost) && platform === 'whatsApp' && user.currentPlan.unique_ID === 'plan_E') {
       let submenu = []
-      submenu.push({
-        priority: 'a',
-        name: 'Automated Messages',
-        nestedmenu: [
-          {
-            priority: 'b',
-            name: 'Abandoned Cart',
-            route: '/abandonedCart',
-          },
-          {
-            priority: 'b',
-            name: 'Orders CRM',
-            route: '/ordersCRM',
-          },
-          {
-            priority: 'b',
-            name: 'Cash on Delivery',
-            route: '/cashOnDelivery',
-          }
-        ]
-      })
-      submenu.push({
-        priority: 'b',
-        name: 'Manual Messages',
-        nestedmenu: [
-          {
-            priority: 'b',
-            name: 'Abandoned Cart',
-            route: '/abandonedCartManual',
-          },
-          {
-            priority: 'b',
-            name: 'Orders CRM',
-            route: '/ordersCRMManual',
-          }
-        ]
-      })
+        submenu.push({
+          priority: 'a',
+          name: 'Automated Messages',
+          nestedmenu: [
+            {
+              priority: 'b',
+              name: 'Abandoned Cart',
+              route: '/abandonedCart',
+            },
+            {
+              priority: 'b',
+              name: 'Orders CRM',
+              route: '/ordersCRM',
+            },
+            {
+              priority: 'b',
+              name: 'Cash on Delivery',
+              route: '/cashOnDelivery',
+            }
+          ]
+        })
+        submenu.push({
+          priority: 'b',
+          name: 'Manual Messages',
+          nestedmenu: [
+            {
+              priority: 'b',
+              name: 'Abandoned Cart',
+              route: '/abandonedCartManual',
+            },
+            {
+              priority: 'b',
+              name: 'Orders CRM',
+              route: '/ordersCRMManual',
+            }
+          ]
+        })
       menuItems.push({
         priority: 'c',
         name: 'Commerce',
@@ -140,7 +135,7 @@ class Sidebar extends Component {
         icon: 'flaticon-cart'
       })
     }
-    if (['sms', 'whatsApp'].includes(platform) && user.permissions['manage_subscribers']) {
+    if (['sms', 'whatsApp'].includes(platform) && user.permissions['view_subscribers']) {
       menuItems.push({
         priority: 'c',
         name: 'Subscribers',
@@ -158,42 +153,43 @@ class Sidebar extends Component {
     }
     if (!isMobile && (isKiboEngage || isLocalhost)) {
       let submenu = []
-      if (user.plan['broadcasts'] && user.permissions['broadcastPermission']) {
+      if (user.plan['broadcasts'] && user.permissions['view_broadcasts']) {
         submenu.push({
           priority: 'a',
           name: 'Broadcasts',
           route: platform === 'messenger' ? '/broadcasts' : platform === 'sms' ? '/smsBroadcasts' : '/whatsAppBroadcasts'
         })
       }
-      if (platform === 'messenger' && user.plan['surveys'] && user.permissions['surveyPermission']) {
+
+      if (platform === 'messenger' && user.plan['surveys'] && user.permissions['view_surveys']) {
         submenu.push({
           priority: 'b',
           name: 'Surveys',
           route: '/surveys'
         })
       }
-      if (platform === 'messenger' && user.plan['polls'] && user.permissions['pollsPermission']) {
+      if (platform === 'messenger' && user.plan['polls'] && user.permissions['view_polls']) {
         submenu.push({
           priority: 'c',
           name: 'Polls',
           route: '/poll'
         })
       }
-      if (platform === 'messenger') {
+      if (platform === 'messenger' && user.plan['segmentation_lists'] && user.permissions['view_segmentation_lists']) {
         submenu.push({
           priority: 'd',
           name: 'Segment Subscribers',
           route: '/segmentedLists'
         })
       }
-      if (platform === 'messenger') {
+      if (platform === 'messenger' && (user.plan['broadcasts_templates'] || user.plan['poll_templates'] || user.plan['survey_templates'])) {
         submenu.push({
           priority: 'e',
           name: 'Templates',
           route: '/templates'
         })
       }
-      if (platform === 'messenger') {
+      if (platform === 'messenger' && user.plan['sponsored_broadcast'] && user.permissions['view_sponsored_broadcast']) {
         submenu.push({
           priority: 'f',
           name: 'Sponsored Broadcast (Beta)',
@@ -223,7 +219,7 @@ class Sidebar extends Component {
         icon: 'flaticon-user-add'
       })
     }
-    if ((isKiboChat || isLocalhost) && user.plan['livechat'] && user.permissions['livechatPermission'] && ['MIX_CHAT', 'HUMAN_CHAT'].includes(automated_options.automated_options) && user.currentPlan.unique_ID !== 'plan_E') {
+    if ((isKiboChat || isLocalhost) && user.plan['livechat'] && user.permissions['manage_livechat'] && ['MIX_CHAT', 'HUMAN_CHAT'].includes(automated_options.automated_options) && ['messenger', 'sms'].includes(platform)) {
       menuItems.push({
         priority: 'g',
         name: 'Live Chat',
@@ -231,65 +227,73 @@ class Sidebar extends Component {
         icon: 'flaticon-chat-1'
       })
     }
-    if (!isMobile && (isKiboEngage || isKiboChat || isLocalhost) && user.currentPlan.unique_ID !== 'plan_E') {
+    if ((isKiboChat || isLocalhost) && user.plan['livechat'] && user.permissions['manage_livechat'] && ['MIX_CHAT', 'HUMAN_CHAT'].includes(automated_options.automated_options) && ['whatsApp'].includes(platform) && user.currentPlan.unique_ID !== 'plan_E') {
+      menuItems.push({
+        priority: 'g',
+        name: 'Live Chat',
+        route: platform === 'messenger' ? '/liveChat' : platform === 'sms' ? '/smsChat' : '/whatsAppChat',
+        icon: 'flaticon-chat-1'
+      })
+    }
+    if (!isMobile && (isKiboEngage || isKiboChat || isLocalhost)) {
       let submenu = []
-      if ((isKiboChat || isLocalhost) && ['MIX_CHAT', 'AUTOMATED_CHAT'].includes(automated_options.automated_options)) {
+      if ((isKiboChat || isLocalhost) && user.plan['smart_replies'] && user.permissions['view_bots'] && ['MIX_CHAT', 'AUTOMATED_CHAT'].includes(automated_options.automated_options)) {
         submenu.push({
           priority: 'a',
           name: 'Smart Replies',
           route: '/bots'
         })
       }
-      if (platform !== 'messenger' && (isKiboChat || isLocalhost) && user.isSuperUser) {
+      if (platform !== 'messenger' && (isKiboChat || isLocalhost) && user.isSuperUser && user.plan['chatbot_automation'] && user.permissions['configure_chatbot_automation']) {
         submenu.push({
           priority: 'b',
           name: 'Chatbots',
           route: '/chatbots'
         })
       }
-      if (platform === 'messenger' && (isKiboChat || isLocalhost)) {
+      if (platform === 'messenger' && (isKiboChat || isLocalhost) && user.plan['chatbot_automation'] && user.permissions['configure_chatbot_automation']) {
         submenu.push({
           priority: 'b',
           name: 'Chatbot Automation',
           route: '/chatbotAutomation'
         })
       }
-      if ((isKiboEngage || isLocalhost) && user.plan['autoposting'] && user.permissions['autopostingPermission']) {
+      if ((isKiboEngage || isLocalhost) && user.plan['autoposting'] && user.permissions['view_autoposting_feeds']) {
         submenu.push({
           priority: 'c',
           name: 'Autoposting',
           route: '/autoposting'
         })
       }
-      if ((isKiboEngage || isLocalhost)) {
+      if ((isKiboEngage || isLocalhost) && user.plan['rss_integration'] && user.permissions['view_rss_fedds']) {
         submenu.push({
           priority: 'd',
           name: 'RSS Integration',
           route: '/rssIntegration'
         })
       }
-      if ((isKiboEngage || isLocalhost)) {
+      if ((isKiboEngage || isLocalhost) && user.plan['news_integration'] && user.permissions['view_news_fedds']) {
         submenu.push({
           priority: 'e',
           name: 'News Integration',
           route: '/newsIntegration'
         })
       }
-      if ((isKiboEngage || isLocalhost)) {
+      if ((isKiboEngage || isLocalhost) && user.plan['sequence_messaging'] && user.permissions['view_sequences']) {
         submenu.push({
           priority: 'f',
           name: 'Sequence Messaging',
           route: '/sequenceMessaging'
         })
       }
-      if (platform === 'whatsApp' && (isKiboChat || isLocalhost)) {
+      if (platform === 'whatsApp' && (isKiboChat || isLocalhost) && platform === 'whatsApp') {
         submenu.push({
           priority: 'g',
           name: 'Commerce Chatbot',
           route: '/whatsAppCommerceChatbot'
         })
       }
-      if (platform === 'whatsApp' && (isKiboChat || isLocalhost)) {
+      if (platform === 'whatsApp' && (isKiboChat || isLocalhost) && platform === 'whatsApp') {
         submenu.push({
           priority: 'g',
           name: 'Airlines Chatbot',
@@ -303,16 +307,16 @@ class Sidebar extends Component {
         icon: 'flaticon-share'
       })
     }
-    if (!isMobile && (isKiboEngage || isLocalhost) && platform === 'messenger') {
+    if (!isMobile && (isKiboEngage || isLocalhost)) {
       let submenu = []
-      if (user) {
+      if (user.plan['comment_capture'] && user.permissions['view_comment_capture_rules']) {
         submenu.push({
           priority: 'a',
           name: 'Comment Capture',
           route: '/commentCapture'
         })
       }
-      if (user) {
+      if (user.plan['customer_matching'] && user.permissions['invite_subscribers_using_phone_number']) {
         submenu.push({
           priority: 'b',
           name: 'Invite Using Phone Numbers',
@@ -324,56 +328,56 @@ class Sidebar extends Component {
         name: 'Invite Subscribers',
         route: '/inviteSubscribers'
       })
-      if (user) {
+      if (user.plan['messenger_code'] && user.permissions['view_messenger_codes']) {
         submenu.push({
           priority: 'd',
           name: 'Messenger Code',
           route: '/messengerCode'
         })
       }
-      if (user.isSuperUser) {
+      if (user.plan['landing_pages']) {
         submenu.push({
           priority: 'e',
           name: 'Landing Pages',
           route: '/landingPages'
         })
       }
-      if (user.isSuperUser) {
+      if (user.plan['json_ads']) {
         submenu.push({
           priority: 'f',
           name: 'JSON Ads',
           route: '/jsonAds'
         })
       }
-      if (user) {
+      if (user.plan['messenger_links'] && user.permissions['view_messenger_ref_urls']) {
         submenu.push({
           priority: 'g',
           name: 'Messenger Ref Url',
           route: '/messengerRefURL'
         })
       }
-      if (user) {
+      if (user.plan['subscribe_to_messenger']) {
         submenu.push({
           priority: 'h',
           name: 'Message Us Button',
           route: '/messageUs'
         })
       }
-      if (user) {
+      if (user.plan['customer_chat_plugin']) {
         submenu.push({
           priority: 'i',
           name: 'Customer Chat Plugin',
           route: '/chatWidget'
         })
       }
-      if (user) {
+      if (user.plan['checkbox_plugin']) {
         submenu.push({
           priority: 'j',
           name: 'Checkbox Plugin',
           route: '/checkbox'
         })
       }
-      if (user.isSuperUser) {
+      if (user.plan['overlay_widgets'] && user.isSuperUser) {
         submenu.push({
           priority: 'k',
           name: 'Overlay Widgets',
@@ -389,28 +393,28 @@ class Sidebar extends Component {
     }
     if (platform === 'messenger') {
       let submenu = []
-      if (user.plan['manage_pages'] && user.permissions['pagesPermission']) {
+      if (user.plan['manage_pages'] && user.permissions['manage_facebook_pages']) {
         submenu.push({
           priority: 'a',
           name: 'Pages',
           route: '/pages'
         })
       }
-      if (!isMobile && user.plan['menu'] && user.permissions['menuPermission']) {
+      if (!isMobile && user.plan['menu'] && user.permissions['set_persistent_menu']) {
         submenu.push({
           priority: 'b',
           name: 'Persistent Menu',
           route: '/menu'
         })
       }
-      if (!isMobile && user.plan['manage_pages'] && user.permissions['pagesPermission']) {
+      if (!isMobile && user.plan['welcome_message'] && user.permissions['manage_welcome_message']) {
         submenu.push({
           priority: 'c',
           name: 'Welcome Message',
           route: '/welcomeMessage'
         })
       }
-      if (!isMobile && user.plan['manage_pages'] && user.permissions['pagesPermission']) {
+      if (!isMobile && user.plan['greeting_text'] && user.permissions['manage_greeting_text']) {
         submenu.push({
           priority: 'd',
           name: 'Greeting Text',
@@ -426,21 +430,21 @@ class Sidebar extends Component {
     }
     if (!isMobile) {
       let submenu = []
-      if (user.plan['invite_team'] && (user.permissions['inviteAdminPermission'] || user.permissions['inviteAgentPermission'])) {
+      if (user.plan['invite_members'] && user.permissions['invite_members']) {
         submenu.push({
           priority: 'a',
           name: 'Invite Members',
           route: '/inviteMembers'
         })
       }
-      if (user.permissions['membersPermission'] && user.plan['team_members_management']) {
+      if (user.permissions['view_members']) {
         submenu.push({
           priority: 'b',
           name: 'Members',
           route: '/members'
         })
       }
-      if (user.plan['team_members_management']) {
+      if (user.plan['team_members_management'] && user.permissions['view_teams']) {
         submenu.push({
           priority: 'c',
           name: 'Teams',
@@ -470,6 +474,14 @@ class Sidebar extends Component {
         icon: 'flaticon-cogwheel'
       })
     }
+    if (!isMobile && ['sms'].includes(platform)) {
+      menuItems.push({
+        priority: 'n',
+        name: 'Add Ons',
+        route: '/addOns',
+        icon: 'flaticon-app'
+      })
+    } 
     menuItems.push({
       priority: 'o',
       name: 'User Guide',
@@ -489,7 +501,7 @@ class Sidebar extends Component {
   render() {
     return (
       <div id='sidebarDiv'>
-        <button className='m-aside-left-close  m-aside-left-close--skin-dark ' id='m_aside_left_close_btn'>
+        <button className='m-aside-left-close m-aside-left-close--skin-dark' id='m_aside_left_close_btn'>
           <i className='la la-close' />
         </button>
         <div id='m_aside_left' className='m-grid__item m-aside-left  m-aside-left--skin-dark'>
@@ -528,7 +540,9 @@ class Sidebar extends Component {
     )
   }
 }
+
 function mapStateToProps(state) {
+  console.log('mapStateToProps in sidebar', state)
   return {
     user: (state.basicInfo.user),
     isMobile: (state.basicInfo.isMobile),
@@ -536,7 +550,8 @@ function mapStateToProps(state) {
     socketSession: (state.liveChat.socketSession),
     userChat: (state.liveChat.userChat),
     socketData: (state.liveChat.socketData),
-    automated_options: (state.basicInfo.automated_options)
+    automated_options: (state.basicInfo.automated_options),
+    companyAddOns: (state.addOnsInfo.companyAddOns)
   }
 }
 

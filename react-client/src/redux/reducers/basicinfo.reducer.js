@@ -23,15 +23,24 @@ export function basicInfo (state = initialState, action) {
       return Object.assign({}, state, {
         browserVersion: action.data
       })
-
+    case ActionTypes.CURRENT_ENVIRONMENT:
+      return Object.assign({}, state, {
+        currentEnvironment: action.data
+    })
     case ActionTypes.SET_IS_MOBILE:
       return Object.assign({}, state, {
         isMobile: action.data
       })
-
     case ActionTypes.GET_AUTOMATED_OPTIONS:
       return Object.assign({}, state, {
         automated_options: action.data
+      })
+
+    case ActionTypes.UPDATE_TRIAL_PERIOD:
+      let user = state.user
+      user.trial.status = false
+      return Object.assign({}, state, {
+        user
       })
 
     case ActionTypes.LOAD_USER_DETAILS:
@@ -42,6 +51,11 @@ export function basicInfo (state = initialState, action) {
         error: ''
       })
 
+    case ActionTypes.SET_USER_DETAILS:
+      return Object.assign({}, state, {
+        user: action.data
+      })
+
     case ActionTypes.LOAD_UPDATED_USER_DETAILS:
       let temp = state.user
       temp.uiMode = action.data
@@ -49,11 +63,6 @@ export function basicInfo (state = initialState, action) {
         user: temp,
         updatedUser: action.data,
         error: ''
-      })
-
-    case ActionTypes.CURRENT_ENVIRONMENT:
-      return Object.assign({}, state, {
-        currentEnvironment: action.data
       })
 
     case ActionTypes.SET_SOCKET_STATUS:
@@ -87,7 +96,6 @@ export function basicInfo (state = initialState, action) {
         user: action.data.user.user,
         automated_options: action.data.AutomatedOption
       })
-
     default:
       return state
   }
