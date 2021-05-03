@@ -7,8 +7,8 @@ class Footer extends React.Component {
     this.state = {
       loading: false,
       backButton: false,
-      homeButton: false,
-      talkToAgentButton: false
+      talkToAgentButton: false,
+      homeButton: false
     }
     this.onNext = this.onNext.bind(this)
     this.afterNext = this.afterNext.bind(this)

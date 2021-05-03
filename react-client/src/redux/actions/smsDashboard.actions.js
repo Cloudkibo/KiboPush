@@ -56,3 +56,12 @@ export function loadCardBoxesDataSms () {
       })
   }
 }
+
+export function loadSmsDashboardData (days, callback) {
+  return (dispatch) => {
+    callApi(`smsDashboard/stats/${days}`).then(res => {
+      console.log('response from loadSmsDashboardData', res)
+      callback(res)
+    })
+  }
+}

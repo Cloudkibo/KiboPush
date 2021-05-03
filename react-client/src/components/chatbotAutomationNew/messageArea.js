@@ -406,7 +406,6 @@ class MessageArea extends React.Component {
 
     if (index > -1) {
       quickReplies.splice(index, 1)
-
       const currentBlock = this.props.block
       if (currentBlock.payload.length > 0) {
         currentBlock.payload[currentBlock.payload.length - 1].quickReplies = quickReplies

@@ -5,6 +5,7 @@ import Dashboard from './dashboard/dashboard'
 import WhatsAppDashboard from './smsWhatsAppDashboard/whatsAppDashboard'
 import SmsDashboard from './smsWhatsAppDashboard/smsDashboard'
 import SuperNumberDashboard from './superNumber/dashboard/dashboard'
+import queryString from 'query-string'
 
 class Home extends Component {
   constructor (props, context) {
@@ -13,8 +14,49 @@ class Home extends Component {
       kiboLiteUrl: window.location.hostname.includes('kibolite'),
       kiboEngageUrl: window.location.hostname.includes('kiboengage')
     }
+    this.redirectToSmsConfiguration = this.redirectToSmsConfiguration.bind(this)
   }
 
+  redirectToSmsConfiguration (props) {
+    console.log('redirectToSmsConfiguration')
+    let queryParams = queryString.parse(props.history.location.search)
+    if (queryParams.plan) {
+      let temp = queryParams.plan.split(':platform:')
+      if (temp.length === 2) {
+        queryParams.plan = temp[0]
+        queryParams.platform = temp[1]
+      }
+    }
+    console.log(queryParams)
+    if (
+      queryParams && queryParams.platform === 'sms' && queryParams.plan &&
+      props.user.platform !== 'sms' && !props.automated_options.sms
+    ) {
+      this.props.history.push({
+        pathname: '/smsPlansScreen',
+        state: {plan: queryParams.plan}
+      })
+    }
+    if (
+      queryParams && queryParams.platform === 'whatsApp' && queryParams.plan &&
+      props.user.platform !== 'whatsApp' && !props.automated_options.whatsApp
+    ) {
+      this.props.history.push({
+        pathname: '/whatsAppPlansScreen',
+        state: {plan: queryParams.plan}
+      })
+    }
+    if (
+      queryParams && queryParams.platform === 'messenger' && queryParams.plan &&
+      props.user.platform !== 'messenger' && !props.user.facebookInfo
+    ) {
+      this.props.history.push({
+        pathname: '/facebookPlansScreen',
+        state: {plan: queryParams.plan}
+      })
+    }
+  }
+ 
   UNSAFE_componentWillReceiveProps (nextProps) {
     if (nextProps.user && nextProps.user.platform === 'messenger' && nextProps.user.role === 'buyer' && nextProps.user.showIntegrations) {
       this.props.history.push({
@@ -28,6 +70,9 @@ class Home extends Component {
       } else {
         window.location.replace('https://skibochat.cloudkibo.com/')
       }
+    }
+    if (nextProps.user && nextProps.automated_options) {
+      this.redirectToSmsConfiguration(nextProps)
     }
   }
 
@@ -65,7 +110,8 @@ class Home extends Component {
 function mapStateToProps (state) {
   return {
     connectInfo: (state.basicInfo),
-    user: (state.basicInfo.user)
+    user: (state.basicInfo.user),
+    automated_options: (state.basicInfo.automated_options)
   }
 }
 

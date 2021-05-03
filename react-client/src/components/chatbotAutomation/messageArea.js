@@ -459,8 +459,8 @@ class MessageArea extends React.Component {
     for (let i = 0; i < cards.length; i++) {
       if (!cards[i].buttonOption) {
         carouselCards[i].buttons = []
-        continue  
-      } 
+        continue
+      }
       const buttonTitle = cards[i].buttonOption.buttonTitle
       const blockTitle = cards[i].buttonOption.blockTitle
       const action = cards[i].buttonOption.action
@@ -470,7 +470,7 @@ class MessageArea extends React.Component {
       if (this.state.carouselCards) {
         for (let j = 0; j < this.state.carouselCards.length; j++) {
           if (this.state.carouselCards[j].buttons[0]) {
-            const buttonPayload = JSON.parse(this.state.carouselCards[j].buttons[0].payload) 
+            const buttonPayload = JSON.parse(this.state.carouselCards[j].buttons[0].payload)
             if ('' + buttonPayload[0].blockUniqueId === ''+uniqueId) {
               addingNew = false
               break
@@ -485,7 +485,7 @@ class MessageArea extends React.Component {
       if (addingNew) {
         if (action === 'link') {
           button.payload = JSON.stringify([{action: '_chatbot', blockUniqueId: uniqueId, parentBlockTitle: this.props.block.title}])
-          carouselCards[i].buttons = [button]  
+          carouselCards[i].buttons = [button]
         } else if (action === 'create') {
           const id = new Date().getTime() + i
           const newBlock = {title: blockTitle, payload: [], uniqueId: id, triggers: [blockTitle.toLowerCase()]}
@@ -496,10 +496,10 @@ class MessageArea extends React.Component {
           blocks.push(newBlock)
           button.payload = JSON.stringify([{action: '_chatbot', blockUniqueId: id, payloadAction: 'create', parentBlockTitle: this.props.block.title}])
           carouselCards[i].buttons = [button]
-        } 
+        }
       } else {
         button.payload = JSON.stringify([{action: '_chatbot', blockUniqueId: uniqueId, parentBlockTitle: this.props.block.title}])
-        carouselCards[i].buttons = [button]           
+        carouselCards[i].buttons = [button]
       }
     }
     const completed = blocks.filter((item) => item.payload.length > 0).length
@@ -809,7 +809,7 @@ class MessageArea extends React.Component {
           <CAROUSELMODAL
             id = '_carousel_modal'
             title = 'Edit Carousel'
-            chatbot={this.props.chatbot} 
+            chatbot={this.props.chatbot}
             uploadAttachment={this.props.uploadAttachment}
             updateParentState={this.updateState}
             cards={this.state.carouselCards}
@@ -822,7 +822,7 @@ class MessageArea extends React.Component {
           <LinkCarouselModal
             id = '_link_carousel_modal'
             title = 'Edit Link Carousel'
-            chatbot={this.props.chatbot} 
+            chatbot={this.props.chatbot}
             uploadAttachment={this.props.uploadAttachment}
             updateParentState={this.updateState}
             cards={this.state.carouselCards}

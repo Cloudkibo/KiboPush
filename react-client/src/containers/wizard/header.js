@@ -58,7 +58,7 @@ class Header extends React.Component {
               <div id='m_header_topbar' className='m-topbar  m-stack m-stack--ver m-stack--general'>
                 <div className='m-stack__item m-topbar__nav-wrapper'>
                   <ul className='m-topbar__nav m-nav m-nav--inline'>
-                  {this.props.user.isSuperUser && this.props.superUser &&
+                  {this.props.superUser && this.props.superUser.actingAsUser &&
                         <li style={{marginRight: '20px', padding: '0'}} className='m-nav__item m-topbar__user-profile m-topbar__user-profile--img  m-dropdown m-dropdown--medium m-dropdown--arrow m-dropdown--header-bg-fill m-dropdown--align-right m-dropdown--mobile-full-width m-dropdown--skin-light' data-dropdown-toggle='click'>
                           <div style={{marginTop: '15px'}}>
                             <span className='m-topbar__userpic'>
@@ -79,7 +79,7 @@ class Header extends React.Component {
                                             <ul className='m-nav'>
                                               <li style={{textAlign: 'center'}} className='m-nav__item'>
                                                 <span>
-                                                  Currently viewing as: <strong>{this.props.superUser.name}</strong>
+                                                  Currently viewing as: <strong>{this.props.superUser.actingAsUser.name}</strong>
                                                 </span>
                                               </li>
                                               <li style={{textAlign: 'center'}} className='m-nav__item'>
@@ -217,31 +217,37 @@ class Header extends React.Component {
                                 <li className='m-nav__section m--hide'>
                                   <span className='m-nav__section-text'>My Pages</span>
                                 </li>
-                                <li className='m-nav__item'>
-                                { window.location.hostname.toLowerCase().includes('kiboengage') ?
-                                    <a href={liveChatLink} target='_blank' rel='noopener noreferrer' className='m-nav__link'>
-                                      <i className='m-nav__link-icon flaticon-chat-1' />
-                                      <span className='m-nav__link-text'>Messages</span>
-                                    </a>
-                                    : <Link to='/liveChat' className='m-nav__link'>
-                                    <i className='m-nav__link-icon flaticon-chat-1' />
-                                    <span className='m-nav__link-text'>Messages</span>
-                                  </Link>
-                                  }
-                                </li>
-                                <li className='m-nav__separator m-nav__separator--fit' />
+                                {!this.props.hideMessages &&
+                                  <li className='m-nav__item'>
+                                    { window.location.hostname.toLowerCase().includes('kiboengage') ?
+                                      <a href={liveChatLink} target='_blank' rel='noopener noreferrer' className='m-nav__link'>
+                                        <i className='m-nav__link-icon flaticon-chat-1' />
+                                        <span className='m-nav__link-text'>Messages</span>
+                                      </a>
+                                      : <Link to='/liveChat' className='m-nav__link'>
+                                        <i className='m-nav__link-icon flaticon-chat-1' />
+                                        <span className='m-nav__link-text'>Messages</span>
+                                      </Link>
+                                    }
+                                  </li>
+                                }
+                                {!this.props.hideMessages &&
+                                  <li className='m-nav__separator m-nav__separator--fit' />
+                                }
                                 <li className='m-nav__item'>
                                   <a href='http://kibopush.com/faq/' taregt='_blank' className='m-nav__link'>
                                     <i className='m-nav__link-icon flaticon-info' />
                                     <span className='m-nav__link-text'>FAQ</span>
                                   </a>
                                 </li>
+                                {!this.props.hideSettings &&
                                 <li className='m-nav__item'>
                                   <Link to='/settings'>
                                     <i className='m-nav__link-icon flaticon-settings' />
                                     <span className='m-nav__link-text'>&nbsp;&nbsp;&nbsp;Settings</span>
                                   </Link>
                                 </li>
+                                }
                                 <li className='m-nav__separator m-nav__separator--fit' />
                                 <li className='m-nav__item'>
                                   <a href='#/' onClick={() => { this.props.logout(auth.logout)}} className='btn m-btn--pill    btn-secondary m-btn m-btn--custom m-btn--label-brand m-btn--bolder'>

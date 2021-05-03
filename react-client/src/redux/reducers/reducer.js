@@ -1,6 +1,7 @@
 import { combineReducers } from 'redux'
 
 import { abandonedInfo } from './abandonedCarts.reducer'
+import {addOnsInfo} from './addOns.reducer'
 import { autopostingInfo } from './autoposting.reducer.js'
 import { backdoorInfo } from './backdoor.reducer'
 import { basicInfo } from './basicinfo.reducer'
@@ -57,9 +58,12 @@ import { whatsAppChatInfo } from './whatsAppChat.reducer'
 import { whatsAppChatbot } from './whatsAppChatbot.reducer'
 import { commerceInfo } from './commerce.reducer'
 import { superNumberInfo } from './superNumber.reducer'
+import { plansInfo } from './plans.reducer'
+import { channelOnboarding } from './channelOnboarding.reducer'
 
 const appReducer = combineReducers({
   abandonedInfo,
+  addOnsInfo,
   autopostingInfo,
   backdoorInfo,
   basicInfo,
@@ -115,7 +119,9 @@ const appReducer = combineReducers({
   whatsAppChatInfo,
   whatsAppChatbot,
   commerceInfo,
-  superNumberInfo
+  superNumberInfo,
+  plansInfo,
+  channelOnboarding
 })
 
 export default appReducer

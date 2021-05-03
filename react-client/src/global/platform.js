@@ -1,6 +1,6 @@
 export function getProvider (automatedOptions, platform) {
-  if (automatedOptions.twilio) {
-    automatedOptions.sms = {...automatedOptions.twilio, provider: 'twilio'}
+  if (automatedOptions.sms) {
+    automatedOptions.sms = {...automatedOptions.sms, provider: 'twilio'}
   }
   let provider = 'facebook'
   switch (platform) {
