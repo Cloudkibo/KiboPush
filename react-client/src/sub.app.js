@@ -308,7 +308,8 @@ class SubApp extends Component {
       '/configureChatbot',
       '/configureChatbotNew',
       '/chatbotAnalytics',
-      '/integrations'
+      '/integrations',
+      '/connectFbScreen'
     ].includes(path)) {
       return true
     }

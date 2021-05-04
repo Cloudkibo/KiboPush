@@ -17,12 +17,23 @@ class WhatsAppBillingScreen extends React.Component {
     this.child = React.createRef()
     this.state = {
       stripeToken: null,
-      loadingStripe: true
+      loadingStripe: true,
+      loading: false
     }
     this.handleGetKeysResponse = this.handleGetKeysResponse.bind(this)
     this.handleCard = this.handleCard.bind(this)
+    this.onNext = this.onNext.bind(this)
 
     props.getKeys(this.handleGetKeysResponse)
+  }
+
+  onNext () {
+    this.setState({loading: true})
+    if (this.props.user && this.props.user.last4) {
+      this.handleCard()
+    } else {
+      this.clickChild()
+    }
   }
 
   handleGetKeysResponse () {
@@ -40,28 +51,30 @@ class WhatsAppBillingScreen extends React.Component {
     document.title = `${title} | Select Billing Method`
     /* eslint-disable */
     $('#sidebarDiv').addClass('hideSideBar')
-    $('#headerDiv').addClass('hideSideBar')
     /* eslint-enable */
     document.getElementsByTagName('body')[0].className = 'm-page--fluid m--skin- m-content--skin-light2 m-footer--push m-aside--offcanvas-default'
   }
 
   handleCard (token) {
-    this.props.setOnboardingStripeToken(token)
-    this.props.configureFacebook({
+    let data = {
       planId: this.props.channelOnboarding.planId,
       planUniqueId: this.props.channelOnboarding.planUniqueId,
-      stripeToken: token,
       platform: 'messenger'
-    }, (res) => {
-        if (res.status === 'success') {
-          this.props.history.push({
-            pathname: '/connectFbScreen'
-          })
-        } else {
-          this.msg.error(res.description || res.payload || 'Failed to add card details')
-        }
+    }
+    if (token) {
+      this.props.setOnboardingStripeToken(token)
+      data.stripeToken = token
+    }
+    this.props.configureFacebook(data, (res) => {
+      this.setState({loading: false})
+      if (res.status === 'success') {
+        this.props.history.push({
+          pathname: '/connectFbScreen'
+        })
+      } else {
+        this.msg.error(res.description || res.payload || 'Failed to add card details')
       }
-    )
+    })
   }
 
   render () {
@@ -88,7 +101,7 @@ class WhatsAppBillingScreen extends React.Component {
             </div>
             <div style={{overflowY: 'scroll', height: 'calc(100% - 70px)'}}>
               <div className='form-group m-form__group m--margin-top-30'>
-                { this.props.user && !this.props.user.last4 
+                { this.props.user && this.props.user.last4 
                   ? <div className='form-group m-form__group'>
                       <label style={{fontWeight: 'normal'}} className='control-label'>Card Details:</label>
                       <div className=' form-group m-form__group m--margin-top-15'>
@@ -123,7 +136,7 @@ class WhatsAppBillingScreen extends React.Component {
                 </Link>
               </div>
               <div className='col-lg-6 m--align-right'>
-                <button className='btn btn-success m-btn m-btn--custom m-btn--icon' onClick={() => { this.clickChild() }}>
+                <button className={`btn btn-success m-btn m-btn--custom m-btn--icon ${this.state.loading ? 'm-loader m-loader--light m-loader--right' : ''}`} onClick={this.onNext}>
                   <span>
                     <span>Next</span>&nbsp;&nbsp;
                     <i className='la la-arrow-right' />
