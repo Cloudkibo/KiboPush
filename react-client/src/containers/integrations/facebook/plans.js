@@ -17,11 +17,36 @@ class FacebookPlansScreen extends React.Component {
     this.nextBtnAction = this.nextBtnAction.bind(this)
     this.updateState = this.updateState.bind(this)
     this.isPlanSelected = this.isPlanSelected.bind(this)
+    this.getDescription = this.getDescription.bind(this)
+
     props.loadPlans('messenger', this.isPlanSelected)
   }
 
   updateState (state) {
     this.setState(state)
+  }
+
+  getDescription (plan) {
+    let description = ''
+    switch (plan.unique_ID) {
+      case 'plan_F':
+        description = '500 subscribers, 1 seat, 1 Facebook page'
+        break
+      case 'plan_A':
+        description = '2500 subscribers, 3 seats, 3 Facebook pages'
+        break
+      case 'plan_B':
+        description = '5000 subscribers, 10 seats, 5 Facebook pages'
+        break
+      case 'plan_C':
+        description = '10000 subscribers, unlimited seats, 10 Facebook pages'
+        break
+      case 'plan_D':
+        description = 'Unlimited subscribers, unlimited seats, unlimited Facebook pages'
+        break
+      default:
+    }
+    return description
   }
 
   componentWillMount (nextprops) {
@@ -104,7 +129,7 @@ class FacebookPlansScreen extends React.Component {
                     planInfo={planInfo}
                     selectedPlan={this.state.selectedPlan}
                     updateState={this.updateState}
-                    description='Contact Sales for pricing and more'
+                    description={this.getDescription(planInfo)}
                   />
                 ))
               }

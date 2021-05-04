@@ -26,7 +26,6 @@ class ConnectFbScreen extends React.Component {
     document.title = `${title} | Connect Facebook Account`
     /* eslint-disable */
     $('#sidebarDiv').addClass('hideSideBar')
-    $('#headerDiv').addClass('hideSideBar')
     /* eslint-enable */
     document.getElementsByTagName('body')[0].className = 'm-page--fluid m--skin- m-content--skin-light2 m-footer--push m-aside--offcanvas-default'
   }
