@@ -17,7 +17,7 @@ class PlanItem extends React.Component {
     return (
       <div
         className="sequence-box"
-        style={{height: 'auto', backgroundColor: `${this.props.planInfo._id === this.props.selectedPlan ? '#34bfa3' : 'white'}`, cursor: 'pointer'}}
+        style={{height: 'auto', backgroundColor: `${this.props.planInfo._id === this.props.selectedPlan ? '#34bfa3' : 'white'}`, cursor: 'pointer', padding: '10px 20px'}}
         key={this.props.planInfo._id}
         onClick={() => this.props.updateState({ selectedPlan: this.props.planInfo._id })}>
         <span>
@@ -35,7 +35,7 @@ class PlanItem extends React.Component {
         <span className="sequence-text sequence-centered-text" style={{position: 'absolute', left: '77%', top: '25%'}}>
           <span className="sequence-number"
             style={{color: this.getContentColor()}}>
-            {this.props.planInfo.amount ? `$${this.props.planInfo.amount}` : ''}
+            {this.props.planInfo.amount === 0 ? 'FREE' : this.props.planInfo.amount ? `$${this.props.planInfo.amount}` : ''}
           </span>
         </span>
       </div>
