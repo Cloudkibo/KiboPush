@@ -4,7 +4,7 @@
 import * as ActionTypes from '../constants/constants'
 import callApi from '../../utility/api.caller.service'
 
-export function updatePlans(data) {
+export function updateMessengerPlans(data) {
   const enterprisePlan = data.find((item) => item.unique_ID === 'plan_D')
   const index = data.findIndex((item) => item.unique_ID === 'plan_D')
   data.splice(index, 1)
@@ -23,10 +23,30 @@ export function updatePlans(data) {
   }
 }
 
+export function updateSmsPlans(data) {
+  return {
+    type: ActionTypes.LOAD_PLANS_LIST,
+    data
+  }
+}
+
+export function updateWhatsAppPlans(data) {
+  return {
+    type: ActionTypes.LOAD_PLANS_LIST,
+    data
+  }
+}
+
 export function loadPlans(platform, cb) {
   return (dispatch) => {
     callApi(`plans/${platform}`).then(res => {
-      dispatch(updatePlans(res.payload))
+      if (platform === 'messenger') {
+        dispatch(updateMessengerPlans(res.payload))
+      } else if (platform === 'sms') {
+        dispatch(updateSmsPlans(res.payload))
+      } else if (platform === 'whatsApp') {
+        dispatch(updateWhatsAppPlans(res.payload))
+      }
       if (cb) cb(res)
     })
   }
