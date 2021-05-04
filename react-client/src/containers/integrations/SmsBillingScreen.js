@@ -61,7 +61,7 @@ class SmsBillingScreen extends React.Component {
   }
 
   nextBtnAction () {
-    if (this.state.stripeToken) {
+    if (this.state.stripeToken || (this.props.user && this.props.user.last4)) {
       this.props.setOnboardingStripeToken(this.state.stripeToken)
 
       if (this.props.planName.includes('Enterprise')) {
@@ -112,12 +112,22 @@ class SmsBillingScreen extends React.Component {
                 {
                   <div className='col-12'>
                     {
-                      this.props.stripeKey && this.props.captchaKey &&
+                      this.props.user && this.props.user.last4 
+                      ? <div className='form-group m-form__group'>
+                        <label style={{fontWeight: 'normal'}} className='control-label'>Card Details:</label>
+                        <div className=' form-group m-form__group m--margin-top-15'>
+                          <i className='fa fa-credit-card-alt' />&nbsp;&nbsp;
+                          <label style={{fontWeight: 'normal'}} className='control-label'>
+                            xxxx xxxx xxxx {this.props.user.last4}
+                          </label>
+                        </div>
+                      </div>
+                      : this.props.stripeKey && this.props.captchaKey &&
                         <StripeProvider apiKey={this.props.stripeKey}>
-                          <Elements>
-                            <InjectedCheckoutForm setCard={this.setCard} captchaKey={this.props.captchaKey} />
-                          </Elements>
-                        </StripeProvider>
+                        <Elements>
+                          <InjectedCheckoutForm setCard={this.setCard} captchaKey={this.props.captchaKey} showSaveBtn={false} />
+                        </Elements>
+                      </StripeProvider>
                     }
                   </div>
                 }
