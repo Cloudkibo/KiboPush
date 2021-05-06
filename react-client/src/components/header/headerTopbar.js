@@ -23,7 +23,7 @@ class HeaderTopbar extends React.Component {
   }
 
   shouldShowBasedOnPlan(user) {
-    if (user.currentPlan.unique_ID === 'plan_E' && user.platform === 'whatsApp') {
+    if (!user.currentPlan || (user.currentPlan.unique_ID === 'plan_E' && user.platform === 'whatsApp')) {
       return false
     }
     return true
