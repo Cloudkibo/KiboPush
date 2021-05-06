@@ -234,7 +234,7 @@ class FacebookIntegration extends React.Component {
   }
 
   isDisabled () {
-    if (this.props.user && this.props.automated_options) {
+    if (this.props.user && this.props.automated_options && this.props.user.platform) {
       if (
         (!this.props.user.connectFacebook && !this.props.automated_options.sms && !this.props.automated_options.whatsApp && !this.props.user.plan.whatsappSuperNumber) ||
         (this.props.location.state === 'sms' && !this.props.automated_options.sms) ||
@@ -334,7 +334,7 @@ class FacebookIntegration extends React.Component {
               </div>
               <div className='m-widget4__ext'>
               {this.props.automated_options && this.props.user &&
-                ((!this.props.automated_options.whatsApp || this.props.automated_options.whatsApp.connected === false) && !this.props.user.plan.whatsappSuperNumber)
+                ((!this.props.automated_options.whatsApp || this.props.automated_options.whatsApp.connected === false) && !(this.props.user.plan && this.props.user.plan.whatsappSuperNumber))
                 ? <button className='m-btn m-btn--pill m-btn--hover-success btn btn-success'
                     style={{ borderColor: '#34bfa3', color: '#34bfa3' }}
                     onClick={() => {
