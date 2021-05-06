@@ -94,7 +94,7 @@ class Agents extends React.Component {
 
   render () {
     return (
-      <div>
+      <div className='accordion'>
         <a href='#/' style={{ display: 'none' }} ref='agent' data-toggle='modal' data-backdrop='static' data-keyboard='false' data-target="#agent">Send Message</a>
         <div style={{ background: 'rgba(33, 37, 41, 0.6)' }} className="modal fade" id="agent" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div style={{ transform: 'translate(0, 0)' }} className="modal-dialog modal-lg" role="document">
@@ -140,81 +140,95 @@ class Agents extends React.Component {
             </div>
           </div>
         </div>
-        <div className='form-group m-form__group'>
-          <span style={{fontWeight: 'bold'}}>Agent Settings:</span>
-        </div>
-        {this.props.agents.length > 0 &&
-        <div className='form-group m-form__group row'>
-            <div className='m_datatable m-datatable m-datatable--default m-datatable--loaded col-8' id='ajax_data'>
-              <table className='m-datatable__table' style={{ display: 'block', height: 'auto', overflowX: 'auto' }}>
-            <thead className='m-datatable__head'>
-              <tr className='m-datatable__row'
-                style={{ height: '53px' }}>
-                <th data-field='number'
-                  className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                  <span style={{ width: '150px' }}>Phone Number</span>
-                </th>
-                <th data-field='name'
-                  className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                  <span style={{ width: '150px' }}>Agent Name</span>
-                </th>
-                <th data-field='status'
-                  className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                  <span style={{ width: '150px' }}>Status</span>
-                </th>
-                <th data-field='actions'
-                  className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
-                  <span style={{ width: '100px' }}>Actions</span>
-                </th>
-              </tr>
-            </thead>
-            <tbody className='m-datatable__body'>
-              {
-                this.props.agents.map((agent, i) => (
-                  <tr data-row={i}
-                    className='m-datatable__row m-datatable__row--even'
-                    style={{ height: '55px' }} key={i}>
-                    <td data-field='number' className='m-datatable__cell--center m-datatable__cell'><span style={{ width: '150px' }}>{agent.whatsappNumber}</span>
-                    </td>
-                    <td data-field='name' className='m-datatable__cell--center m-datatable__cell'><span style={{ width: '150px' }}>{agent.agentName}</span></td>
-                    <td data-field='status' className='m-datatable__cell--center m-datatable__cell'><span style={{ width: '150px' }}>
-                      {this.getStatus(agent.enabled, agent.onlineHours)}</span></td>
-                    <td data-field='actions' className='m-datatable__cell--center m-datatable__cell'>
-                      <span style={{ width: '100px' }}>
-                      <button className='btn btn-primary btn-sm'
-                        onClick={() => this.toggleAgentModal(agent, i)}>
-                        Edit
-                      </button>
-                    </span></td>
-                  </tr>
-                ))
+        <div className='card'>
+          <div className='card-header'>
+            <h4 className='mb-0'>
+              <div
+                style={{fontSize: 'medium', fontWeight: '500'}}
+                className='btn'
+                aria-expanded='true'
+              >
+                Agent Settings
+              </div>
+            </h4>
+          </div>
+          <div data-parent="#accordion">
+            <div className='card-body'>
+              {this.props.agents.length > 0 &&
+              <div className='form-group m-form__group row'>
+                  <div className='m_datatable m-datatable m-datatable--default m-datatable--loaded col-12' id='ajax_data'>
+                    <table className='m-datatable__table' style={{ display: 'block', height: 'auto', overflowX: 'auto' }}>
+                      <thead className='m-datatable__head'>
+                        <tr className='m-datatable__row'
+                          style={{ height: '53px' }}>
+                          <th data-field='number'
+                            className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                            <span style={{ width: '150px' }}>Phone Number</span>
+                          </th>
+                          <th data-field='name'
+                            className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                            <span style={{ width: '150px' }}>Agent Name</span>
+                          </th>
+                          <th data-field='status'
+                            className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                            <span style={{ width: '150px' }}>Status</span>
+                          </th>
+                          <th data-field='actions'
+                            className='m-datatable__cell--center m-datatable__cell m-datatable__cell--sort'>
+                            <span style={{ width: '100px' }}>Actions</span>
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody className='m-datatable__body'>
+                        {
+                          this.props.agents.map((agent, i) => (
+                            <tr data-row={i}
+                              className='m-datatable__row m-datatable__row--even'
+                              style={{ height: '55px' }} key={i}>
+                              <td data-field='number' className='m-datatable__cell--center m-datatable__cell'><span style={{ width: '150px' }}>{agent.whatsappNumber}</span>
+                              </td>
+                              <td data-field='name' className='m-datatable__cell--center m-datatable__cell'><span style={{ width: '150px' }}>{agent.agentName}</span></td>
+                              <td data-field='status' className='m-datatable__cell--center m-datatable__cell'><span style={{ width: '150px' }}>
+                                {this.getStatus(agent.enabled, agent.onlineHours)}</span></td>
+                              <td data-field='actions' className='m-datatable__cell--center m-datatable__cell'>
+                                <span style={{ width: '100px' }}>
+                                <button className='btn btn-primary btn-sm'
+                                  onClick={() => this.toggleAgentModal(agent, i)}>
+                                  Edit
+                                </button>
+                              </span></td>
+                            </tr>
+                          ))
+                        }
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
               }
-            </tbody>
-          </table>
+              <div className='form-group m-form__group row'>
+                <ReactTooltip
+                id='addAgent'
+                place='top'
+                type='info'
+                multiline={true}
+                disable={this.props.agents.length < this.props.agentsLimit}
+              />
+                <div id='addAgent' data-for='addAgent' style={{marginLeft: '15px'}}
+                  data-tip={`You can only add upto ${this.props.agentsLimit} agents!`}>
+                  <button
+                    className='btn btn-primary btn-sm'
+                    disabled={this.props.agents.length === this.props.agentsLimit} onClick={() => this.toggleAgentModal()}>
+                    Add Agent
+                  </button>
+                </div>
+                <button className='btn btn-primary btn-sm' style={{marginLeft: '5px'}}
+                  onClick={() => this.toggleOnOffHoursModal()}>
+                  Edit On/Off hours
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
-        </div>
-        }
-        <div className='form-group m-form__group row'>
-          <ReactTooltip
-          id='addAgent'
-          place='top'
-          type='info'
-          multiline={true}
-          disable={this.props.agents.length < this.props.agentsLimit}
-        />
-      <div id='addAgent' data-for='addAgent' style={{marginLeft: '15px'}}
-        data-tip={`You can only add upto ${this.props.agentsLimit} agents!`}>
-        <button
-          className='btn btn-primary btn-sm'
-          disabled={this.props.agents.length === this.props.agentsLimit} onClick={() => this.toggleAgentModal()}>
-          Add Agent
-        </button>
-      </div>
-        <button className='btn btn-primary btn-sm' style={{marginLeft: '5px'}}
-          onClick={() => this.toggleOnOffHoursModal()}>
-          Edit On/Off hours
-        </button>
-      </div>
       </div>
     )
   }

@@ -263,7 +263,6 @@ class CustomerMatching extends React.Component {
   parseCSV(self, file) {
     Papa.parse(file, {
       complete: function (results) {
-        console.log('Finished:', results.data)
         var faulty = false
         if (results.data && results.data.length > 0) {
           var columnsArray = []
@@ -348,8 +347,10 @@ class CustomerMatching extends React.Component {
       this.setState({ disabled: true })
       return
     }
-    this.setState({ phoneNumbers: this.inputPhoneNumbers.value.split(';') })
-    this.setState({ disabled: false })
+    let splitNumbers = this.inputPhoneNumbers.value.split(';')
+    splitNumbers = splitNumbers.filter(s => s !== '')
+    this.setState({ phoneNumbers: splitNumbers })
+    this.setState({ disabled: false, numbersError: [] })
     if (this.state.textAreaValue !== '' && ((this.state.file && this.state.file !== '') || e.target.value !== '')) {
       this.setState({ disabled: false })
     }
@@ -389,12 +390,17 @@ class CustomerMatching extends React.Component {
         errors = true
       }
     } else if (type === 'numbers') {
-      const regex = /\+(9[976]\d|8[987530]\d|6[987]\d|5[90]\d|42\d|3[875]\d|2[98654321]\d|9[8543210]|8[6421]|6[6543210]|5[87654321]|4[987654310]|3[9643210]|2[70]|7|1)\W*\d\W*\d\W*\d\W*\d\W*\d\W*\d\W*\d\W*\d\W*(\d{1,14})$/g
       let err = []
-      for (var i = 0; i < this.state.phoneNumbers.length; i++) {
-        if (!this.state.phoneNumbers[i].match(regex)) {
-          err.push(this.state.phoneNumbers[i])
-          errors = true
+      if (this.state.phoneNumbers.length === 0) {
+        errors = true
+        err = ['empty']
+      } else {
+        const regex = /\+(9[976]\d|8[987530]\d|6[987]\d|5[90]\d|42\d|3[875]\d|2[98654321]\d|9[8543210]|8[6421]|6[6543210]|5[87654321]|4[987654310]|3[9643210]|2[70]|7|1)\W*\d\W*\d\W*\d\W*\d\W*\d\W*\d\W*\d\W*\d\W*(\d{1,14})$/g
+        for (var i = 0; i < this.state.phoneNumbers.length; i++) {
+          if (!this.state.phoneNumbers[i].match(regex)) {
+            err.push(this.state.phoneNumbers[i])
+            errors = true
+          }
         }
       }
       this.setState({ numbersError: err })
@@ -474,7 +480,6 @@ class CustomerMatching extends React.Component {
   }
 
   render() {
-    console.log('customerMatchingUsingPhNum state', this.state)
     var alertOptions = {
       offset: 14,
       position: 'top right',
@@ -761,7 +766,9 @@ class CustomerMatching extends React.Component {
                               this.state.manually
                                 ? <div>
                                   <label>{'Enter phone number separated by semi colon {;}'}</label>
-                                  <input autoFocus ref={(input) => { this.inputPhoneNumbers = input }} type='text' className='form-control m-input m-input--square' onChange={this.onPhoneNumbersChange} placeholder='Numbers must start with + sign' />
+                                  <input autoFocus ref={(input) => { this.inputPhoneNumbers = input }} type='text' className='form-control m-input m-input--square' onChange={this.onPhoneNumbersChange} 
+                                    placeholder='+923322735478;+14258909414' 
+                                  />
                                   {
                                     this.state.numbersError.length > 0 &&
                                     <span className='m-form__help'>
@@ -859,7 +866,6 @@ class CustomerMatching extends React.Component {
 }
 
 function mapStateToProps(state) {
-  console.log('in mapStateToProps', state)
   return {
     uploadResponse: state.growthToolsInfo,
     pages: state.pagesInfo.pages,

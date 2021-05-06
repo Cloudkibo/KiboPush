@@ -216,7 +216,7 @@ class Dashboard extends React.Component {
     if (nextprops.user && nextprops.pages) {
       if (nextprops.pages.length === 0) {
         this.props.history.push({
-          pathname: '/addfbpages'
+          pathname: '/facebookPagesScreen'
         })
       } else if ((nextprops.user.role === 'admin' || nextprops.user.role === 'buyer') && !nextprops.user.wizardSeen) {
         console.log('going to push add page wizard')
@@ -735,39 +735,17 @@ class Dashboard extends React.Component {
               <div className='row'>
                 {!this.props.isMobile && (
                   <div className='m-form m-form--label-align-right m--margin-bottom-30 col-12'>
-                    {this.props.user.currentPlan.unique_ID === 'plan_A' ||
-                    this.props.user.currentPlan.unique_ID === 'plan_C' ? (
-                      <button
-                        className='btn btn-success m-btn m-btn--icon pull-right'
-                        onClick={this.exportDashboardInformation}
-                      >
+                    {
+                    this.props.user.plan['csv_exports'] &&
+                    <button className='btn btn-success m-btn m-btn--icon pull-right' onClick={this.exportDashboardInformation}>
+                      <span>
+                        <i className='fa fa-download' />
                         <span>
-                          <i className='fa fa-download' />
-                          <span>Export Records in CSV File</span>
-                        </span>
-                      </button>
-                    ) : (
-                      <button
-                        className='btn btn-success m-btn m-btn--icon pull-right'
-                        data-toggle='modal'
-                        data-target='#upgrade'
-                      >
-                        <span>
-                          <i className='fa fa-download' />
-                          <span>Export Records in CSV File</span>&nbsp;&nbsp;
-                          <span
-                            style={{
-                              border: '1px solid #f4516c',
-                              padding: '0px 5px',
-                              borderRadius: '10px',
-                              fontSize: '12px'
-                            }}
-                          >
-                            <span style={{ color: '#f4516c' }}>PRO</span>
-                          </span>
-                        </span>
-                      </button>
-                    )}
+                          Export Records in CSV File
+                      </span>
+                      </span>
+                    </button>
+                  }
                   </div>
                 )}
               </div>

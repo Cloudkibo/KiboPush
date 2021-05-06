@@ -20,8 +20,10 @@ import { handleSocketEvent, handleSocketEventSms, handleSocketEventWhatsapp } fr
 import { addToSponsoredMessages, updateSponsoredMessagesListItemStatus } from './../redux/actions/sponsoredMessaging.actions'
 import { removeZoomIntegration } from './../redux/actions/settings.actions'
 import {landingPageDelete} from './../redux/actions/landingPages.actions'
+import { uninstallShopify } from '../redux/actions/commerce.actions'
 const whatsAppActions = require('./../redux/actions/whatsAppChat.actions')
 const smsActions = require('./../redux/actions/smsChat.actions')
+const { setSocketData } = require('./../redux/actions/messageAlerts.actions')
 const smsBroadcasts = require('./../redux/actions/smsBroadcasts.actions')
 
 const socket = io('')
@@ -79,6 +81,9 @@ socket.on('new_chat', (data) => {
 
 socket.on('message', (data) => {
   console.log('socket called', data)
+  if (['whatsApp_messageAlert_subscription', 'messenger_messageAlert_subscription'].includes(data.action)) {
+    store.dispatch(setSocketData(data))
+  }
   if (['new_chat', 'agent_replied', 'session_pending_response', 'unsubscribe'].includes(data.action)) {
     if (data.action === 'new_chat' && data.payload && data.payload.message && data.payload.message.format === 'facebook') data.showNotification = true
     store.dispatch(handleSocketEvent(data))
@@ -100,7 +105,9 @@ socket.on('message', (data) => {
     }
     store.dispatch(fetchNotifications())
   }
-  if (data.action === 'whatsapp_message_seen') {
+  if (['shopify-uninstall'].includes(data.action)) {
+    store.dispatch(uninstallShopify(data))
+  } else if (data.action === 'whatsapp_message_seen') {
     store.dispatch(whatsAppActions.socketUpdateWhatsAppSeen(data.payload))
   } else if (data.action === 'message_seen'|| data.action === 'message_delivered') {
     store.dispatch(socketUpdateMessageStatus(data.payload))
@@ -191,12 +198,9 @@ socket.on('message', (data) => {
     store.dispatch(updateSponsoredMessagesListItemStatus(data.payload))
   } else if (data.action === 'zoom_uninstall') {
     store.dispatch(removeZoomIntegration(data.payload))
-  }
-
-  else if (data.action === 'landingPage_delete') {
+  } else if (data.action === 'landingPage_delete') {
     store.dispatch(landingPageDelete(data.payload))
-  }
-  else if (data.action === 'logout') {
+  } else if (data.action === 'logout') {
     auth.logout()
   }
   if (callbacks[data.action]) {

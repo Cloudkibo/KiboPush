@@ -79,6 +79,7 @@ class LiveChat extends React.Component {
     super(props, context)
     this.state = {
       loading: true,
+      redirected: this.props.location.state && this.props.location.state.module === 'notifications',
       fetchingChat: false,
       loadingChat: true,
       sessionsLoading: false,
@@ -931,6 +932,7 @@ class LiveChat extends React.Component {
                     backToSessions={this.backToSessions}
                     showGetContactInfo={true}
                     updateDefaultZoom= {this.updateDefaultZoom}
+                    connectedPageChatbot = { this.props.chatbots.find((chatbot) => { return chatbot.published && chatbot.pageId._id === this.state.activeSession.pageId._id}) ? true : false}
                   />
                 )}
               {!this.props.isMobile &&
@@ -962,11 +964,15 @@ class LiveChat extends React.Component {
                     setCustomFieldValue={this.saveCustomField}
                     showTags={true}
                     showCustomFields={true}
-                    showUnsubscribe={true}
                     pauseChatbot = {this.props.updatePauseChatbot}
                     chatbots = {this.props.chatbots}
                     connectedPageChatbot = { this.props.chatbots.find((chatbot) => { return chatbot.published && chatbot.pageId._id === this.state.activeSession.pageId._id}) ? true : false}
                     sessions = {this.state.sessions}
+                    showUnsubscribe = {
+                      this.props.user &&
+                      this.props.user.plan['unsubscribe_subscribers'] &&
+                      this.props.user.permissions['unsubsubscribe_subscribers']
+                    }
                   />
                 )}
               {!this.props.isMobile &&

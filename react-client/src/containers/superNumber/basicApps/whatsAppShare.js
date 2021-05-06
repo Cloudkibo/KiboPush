@@ -7,11 +7,13 @@ import {
   fetchSuperNumberPreferences,
   updateSuperNumberPreferences,
   createSuperNumberPreferences,
+  fetchWidgetAnalytics
 } from '../../../redux/actions/superNumber.actions'
 import TABS from '../tabs'
 import BUTTONDESIGNANDTEXT from './buttonDesignAndText'
 import BUTTONDISPLAYANDPOSITION from './buttonDisplayAndPosition'
 import PAGESTODISPLAY from './pagesToDisplay'
+import ANALYTICS from './analytics'
 
 class WhatsAppShare extends React.Component {
   constructor(props) {
@@ -19,6 +21,10 @@ class WhatsAppShare extends React.Component {
     this.state = {
       currentTab: 'settings',
       loadingIntegration: true,
+      loadingAnalytics: true,
+      selectedDate: '30',
+      startDate: '',
+      endDate: '',
       enabled: false,
       btnDesign: {
         backgroundColorStyle: 'single',
@@ -52,6 +58,7 @@ class WhatsAppShare extends React.Component {
     this.goToCommerceSettings = this.goToCommerceSettings.bind(this)
     this.handleFetchStore = this.handleFetchStore.bind(this)
     this.handleSwitch = this.handleSwitch.bind(this)
+    this.fetchWidgetAnalytics = this.fetchWidgetAnalytics.bind(this)
 
     props.fetchShopifyStore(this.handleFetchStore)
     props.fetchSuperNumberPreferences(this.msg)
@@ -98,7 +105,7 @@ class WhatsAppShare extends React.Component {
       title = 'KiboChat';
     }
 
-    document.title = `${title} | Abandoned Cart`;
+    document.title = `${title} | WhatsApp Share`;
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
@@ -126,8 +133,14 @@ class WhatsAppShare extends React.Component {
     this.setState(state)
   }
 
+  fetchWidgetAnalytics (data) {
+    this.setState({startDate: data.startDate, endDate: data.endDate, selectedDate: data.selectedDate, loadingAnalytics: true})
+    this.props.fetchWidgetAnalytics(data, () => {
+      this.setState({loadingAnalytics: false})
+    })
+  }
+
   render() {
-    console.log('this.props.store', this.props.store)
     var alertOptions = {
       offset: 14,
       position: 'bottom right',
@@ -166,6 +179,12 @@ class WhatsAppShare extends React.Component {
                     showViewInStore={this.state.currentTab === 'settings'}
                     showAnalytics
                     storeUrl={this.props.store && `https://${this.props.store.domain}`}
+                    showDateFilter={this.state.currentTab === 'analytics'}
+                    selectedDate={this.state.selectedDate}
+                    fetchWidgetAnalytics={this.fetchWidgetAnalytics}
+                    startDate={this.state.startDate}
+                    endDate={this.state.endDate}
+                    widgetType='share'
                   />
                   <div className='m-portlet__body'>
                     { this.state.loadingIntegration
@@ -183,8 +202,8 @@ class WhatsAppShare extends React.Component {
                           </div>
                           </div>
                         </div>
-                    : this.state.currentTab === 'settings' &&
-                      <div>
+                    : this.state.currentTab === 'settings'
+                      ? <div>
                         <div className='form-group m-form__group'>
                           <div className='row'>
                             <div className='col-md-2'>
@@ -208,16 +227,29 @@ class WhatsAppShare extends React.Component {
                           textMessage={this.state.textMessage}
                           btnLabel='Share Button Text:'
                           btnMessageLabel='Share Message:'
+                          rotateDegree='270'
+                          gradientDegree='180'
                         />
+                        <br />
                         <BUTTONDISPLAYANDPOSITION
                           updateState={this.updateState}
                           displayPosition={this.state.displayPosition}
                         />
+                        <br />
                         <PAGESTODISPLAY
                           updateState={this.updateState}
                           displayPages={this.state.displayPages}
+                          showCart
                         />
                       </div>
+                    : <ANALYTICS
+                        widgetType='share'
+                        loading={this.state.loadingAnalytics}
+                        selectedDate={this.state.selectedDate}
+                        fetchWidgetAnalytics={this.fetchWidgetAnalytics}
+                        startDate={this.state.startDate}
+                        endDate={this.state.endDate}
+                      />
                     }
                 </div>
               </div>
@@ -238,6 +270,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators({
+    fetchWidgetAnalytics,
     fetchShopifyStore,
     fetchSuperNumberPreferences,
     updateSuperNumberPreferences,

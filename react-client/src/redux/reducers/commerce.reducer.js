@@ -14,6 +14,10 @@ export function commerceInfo(state = initialState, action) {
       return Object.assign({}, state, {
         store: action.data
       })
+    case ActionTypes.UNINSTALL_SHOPIFY:
+      return Object.assign({}, state, {
+        store: null
+      })
     case ActionTypes.CHECK_SHOP_PERMISSIONS:
       return Object.assign({}, state, {
         shopPermissions: action.data

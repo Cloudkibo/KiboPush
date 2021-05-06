@@ -13,7 +13,11 @@ class CreateChatbot extends React.Component {
       dialogflowIntegrated: false,
       agentsLoading: true,
       integrationsLoading: true,
-      createLoading: false
+      createLoading: false,
+      useCase: 'ecommerce',
+      shopifyStoreLoading: true,
+      shopifyIntegrated: false,
+      integration: ''
     }
 
     this.onPageChange = this.onPageChange.bind(this)
@@ -24,11 +28,33 @@ class CreateChatbot extends React.Component {
     this.gotoIntegerations = this.gotoIntegerations.bind(this)
     this.onCreate = this.onCreate.bind(this)
     this.disableCreate = this.disableCreate.bind(this)
+    this.handleUseCase = this.handleUseCase.bind(this)
+    this.onIntegrationChange = this.onIntegrationChange.bind(this)
+    this.goToCommerceSettings = this.goToCommerceSettings.bind(this)
+  }
+
+  goToCommerceSettings() {
+    this.props.history.push({
+      pathname: '/settings',
+      state: { tab: 'commerceIntegration' }
+    })
+  }
+
+  handleUseCase (e) {
+    this.setState({useCase: e.target.value})
   }
 
   componentDidMount () {
     this.props.getIntegrations(this.handleIntegrations)
     this.props.fetchDialogflowAgents(this.handleAgents)
+    if (this.props.fetchShopifyStore) {
+      this.props.fetchShopifyStore( (res) => {
+        if (res.status === 'success') {
+          this.setState({shopifyIntegrated: true})
+        }
+        this.setState({shopifyStoreLoading: false})
+      })
+    }
   }
 
   handleIntegrations (res) {
@@ -74,6 +100,10 @@ class CreateChatbot extends React.Component {
     this.setState({dialogFlowAgent: value})
   }
 
+  onIntegrationChange (value) {
+    this.setState({integration: value})
+  }
+
   gotoIntegerations () {
     this.props.history.push({
       pathname: '/settings',
@@ -82,7 +112,6 @@ class CreateChatbot extends React.Component {
   }
 
   onCreate () {
-    console.log('onCreate called')
     this.setState({ createLoading: true })
     let data = {}
     let pageFbId = ''
@@ -98,6 +127,8 @@ class CreateChatbot extends React.Component {
       default:
         data.title = this.state.title
         data.startingBlockId = `${new Date().getTime()}`
+        data.vertical = this.state.useCase
+        data.integration = this.state.integration.value
     }
 
     if (['whatsApp', 'sms'].includes(this.props.channel)) {
@@ -127,6 +158,12 @@ class CreateChatbot extends React.Component {
           pathname: '/configureChatbot',
           state: { chatbot, page, existingChatbot }
         })
+      } else if (this.props.channel === 'sms' && chatbot.vertical === 'ecommerce') {
+        chatbot.backUrl = '/chatbots'
+        this.props.history.push({
+          pathname: '/chatbots/settings',
+          state: chatbot
+        })
       } else {
         this.props.history.push({
           pathname: '/chatbots/configure',
@@ -143,6 +180,9 @@ class CreateChatbot extends React.Component {
     switch (this.props.channel) {
       case 'messenger':
         flag = this.state.page ? false : true
+        break
+      case 'sms':
+        flag = this.state.title ? this.state.useCase === 'ecommerce' ? this.state.integration ? false : true : false : true
         break
       default:
         flag = this.state.title ? false : true
@@ -191,42 +231,114 @@ class CreateChatbot extends React.Component {
             </div>
           </div>
         }
-        <div className='m--space-30' />
-        <div className='form-group m-form__group row'>
-          <label style={{fontWeight: 'normal'}} className='col-md-4 col-form-label'>
-            DialogFlow Agent (Optional):
-          </label>
-          <div className='col-md-8'>
-            {
-              this.state.integrationsLoading || this.state.agentsLoading
-              ? <center>
-                <div className="m-loader m-loader--brand" style={{width: '30px', display: 'inline-block'}} />
-              </center>
-              : !this.state.dialogflowIntegrated
-              ? <center>
-                <button
-                  style={{border: '1px dashed #5867dd'}}
-                  type="button"
-                  className="btn m-btn m-btn--air btn-outline-primary m-btn m-btn--custom"
-                  onClick={this.gotoIntegerations}
-                >
-                  Integrate DialogFlow
-                </button>
-              </center>
-              : this.state.dialogflowAgents.length === 0
-              ? <span className='m--font-danger'>You have not created any DialogFlow agents yet. Please visit <a href='https://dialogflow.cloud.google.com/' target='_blank' rel="noopener noreferrer">https://dialogflow.cloud.google.com/</a> and create an agent first.</span>
-              : <Select
-                className='basic-single'
-                classNamePrefix='select'
-                isClearable={true}
-                isSearchable={true}
-                options={this.state.dialogflowAgents}
-                value={this.state.dialogFlowAgent}
-                onChange={this.onAgentChange}
-              />
-            }
+        {this.props.channel === 'sms' &&
+        <>
+          <div className='m--space-30' />
+          <div className='form-group m-form__group row'>
+            <label style={{fontWeight: 'normal'}} className='col-md-4 col-form-label'>
+              Select use case:
+            </label>
+            <div className="m-radio-inline" style={{marginLeft: '12px'}}>
+              <label className="m-radio" style={{fontWeight: 'lighter'}}>
+                <input
+                  type='radio'
+                  value='ecommerce'
+                  onChange={this.handleUseCase}
+                  onClick={this.handleUseCase}
+                  checked={this.state.useCase === 'ecommerce'}
+                />
+                E-Commerce
+                <span></span>
+              </label>
+              <label className="m-radio" style={{fontWeight: 'lighter'}}>
+                <input
+                  type='radio'
+                  value='other'
+                  onChange={this.handleUseCase}
+                  onClick={this.handleUseCase}
+                  checked={this.state.useCase === 'other'}
+                  />
+                  Other
+                <span></span>
+              </label>
+            </div>
           </div>
-        </div>
+          {this.state.useCase === 'ecommerce' &&
+          <>
+            <div className='m--space-30' />
+            <div className='form-group m-form__group row'>
+              <label style={{fontWeight: 'normal'}} className='col-md-4 col-form-label'>
+                Select Integration:
+              </label>
+              <div className='col-md-8'>
+                {this.state.shopifyStoreLoading
+                  ? <center>
+                      <div className="m-loader m-loader--brand" style={{width: '30px', display: 'inline-block'}} />
+                    </center>
+                  : !this.state.shopifyIntegrated
+                  ? <button
+                      style={{border: '1px dashed #5867dd'}}
+                      type="button"
+                      className="btn m-btn m-btn--air btn-outline-primary m-btn m-btn--custom"
+                      onClick={this.goToCommerceSettings}
+                    >
+                      Integrate Shopify
+                    </button>
+                  : <Select
+                    className='basic-single'
+                    classNamePrefix='select'
+                    isSearchable={true}
+                    options={[{
+                      label: 'Shopify',
+                      value: 'shopify'
+                    }]}
+                    value={this.state.integration}
+                    onChange={this.onIntegrationChange}
+                  />
+                }
+              </div>
+            </div>
+          </>
+          }
+        </>
+        }
+        {((this.props.channel === 'sms' && this.state.useCase === 'other') || this.props.channel !== 'sms') &&
+        <>
+          <div className='m--space-30' />
+          <div className='form-group m-form__group row'>
+            <label style={{fontWeight: 'normal'}} className='col-md-4 col-form-label'>
+              DialogFlow Agent (Optional):
+            </label>
+            <div className='col-md-8'>
+              {this.state.integrationsLoading || this.state.agentsLoading
+                ? <center>
+                  <div className="m-loader m-loader--brand" style={{width: '30px', display: 'inline-block'}} />
+                </center>
+                : !this.state.dialogflowIntegrated
+                ? <button
+                    style={{border: '1px dashed #5867dd'}}
+                    type="button"
+                    className="btn m-btn m-btn--air btn-outline-primary m-btn m-btn--custom"
+                    onClick={this.gotoIntegerations}
+                  >
+                    Integrate DialogFlow
+                  </button>
+                : this.state.dialogflowAgents.length === 0
+                ? <span className='m--font-danger'>You have not created any DialogFlow agents yet. Please visit <a href='https://dialogflow.cloud.google.com/' target='_blank' rel="noopener noreferrer">https://dialogflow.cloud.google.com/</a> and create an agent first.</span>
+                : <Select
+                  className='basic-single'
+                  classNamePrefix='select'
+                  isClearable={true}
+                  isSearchable={true}
+                  options={this.state.dialogflowAgents}
+                  value={this.state.dialogFlowAgent}
+                  onChange={this.onAgentChange}
+                />
+              }
+            </div>
+          </div>
+          </>
+        }
         <div className='m--space-30' />
         <div className='form-group m-form__group row'>
           <div className='col-md-12'>

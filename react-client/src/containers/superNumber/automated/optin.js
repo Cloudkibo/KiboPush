@@ -24,8 +24,6 @@ class Optin extends React.Component {
   }
 
   handleCheckbox (e, type) {
-    console.log('e', e)
-    console.log('type', type)
     let optinWidget = JSON.parse(JSON.stringify(this.props.optinWidget))
     optinWidget.settings[type] = e.target.checked
     this.props.updateState({optin_widget: optinWidget})
@@ -204,7 +202,7 @@ class Optin extends React.Component {
 Optin.propTypes = {
   'optinWidget': PropTypes.object.isRequired,
   'updateState': PropTypes.func.isRequired,
-  'showThankyou': PropTypes.bool.isRequired
+  'showThankyou': PropTypes.bool
 }
 
 export default Optin

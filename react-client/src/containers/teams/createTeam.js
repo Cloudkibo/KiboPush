@@ -124,6 +124,7 @@ class CreateTeam extends React.Component {
       this.msg.error(res.description || res.payload || 'Failed to create team')
     }
   }
+
   updateDescription (e) {
     const str = e.target.value
     if (str.length <= 150) {

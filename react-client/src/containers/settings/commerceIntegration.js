@@ -68,7 +68,7 @@ class CommerceIntegration extends React.Component {
         <button ref='toggleDisconnect' data-toggle='modal' data-target='#_confirm_disconnect' style={{ display: 'none' }} />
         {
           this.props.store && this.props.store.storeType === 'shopify' &&
-          <a target='_blank' rel='noopener noreferrer' href="https://partners.shopify.com/1033294/apps/2954997/test" ref='disconnect' style={{ display: 'none' }}> </a>
+          <a target='_blank' rel='noopener noreferrer' href={`https://${this.props.store.name}.myshopify.com/admin/apps`} ref='disconnect' style={{ display: 'none' }}> </a>
         }
         {
           this.props.store && this.props.store.storeType === 'bigcommerce' &&
@@ -126,7 +126,7 @@ class CommerceIntegration extends React.Component {
             </div>
           </div>
         </div>
-        <div className='m-portlet m-portlet--full-height m-portlet--tabs  '>
+        <div style={{height: '82vh'}} className='m-portlet m-portlet--tabs  '>
           <div className='m-portlet__head'>
             <div className='m-portlet__head-tools'>
               <ul className='nav nav-tabs m-tabs m-tabs-line   m-tabs-line--left m-tabs-line--primary' role='tablist'>
@@ -142,7 +142,7 @@ class CommerceIntegration extends React.Component {
           <div className='tab-content'>
             <div className='m-content'>
               <div style={{ textAlign: 'center' }} className='alert m-alert m-alert--default' role='alert'>
-                Need help in understanding Commerce Integration? Here is the <a href={this.props.user.platform === 'whatsApp' ? 'https://kibopush.com/whatsapp-commerce-chatbot/' : 'https://kibopush.com/messenger-commerce-chatbot/'} target='_blank' rel='noopener noreferrer'>documentation</a>.
+                Need help in understanding Commerce Integration? Here is the <a href={this.props.user.platform === 'whatsApp' ? 'https://kibopush.com/whatsapp-commerce-chatbot/' : this.props.user.platform === 'sms' ? 'https://kibopush.com/sms-commerce-chatbot/' : 'https://kibopush.com/messenger-commerce-chatbot/'} target='_blank' rel='noopener noreferrer'>documentation</a>.
                 {/* Or check out this  <a href='#/' onClick={this.openVideoTutorial}>video tutorial</a> to understand this feature. */}
               </div>
               <div className='row'>
@@ -261,7 +261,7 @@ class CommerceIntegration extends React.Component {
                         </div>
 
                           {
-                            this.props.user.currentPlan.unique_ID !== 'plan_E' &&
+                            this.props.user.currentPlan.unique_ID !== 'plan_E' && this.props.user.platform !== 'sms' &&
                               <div style={{ display: 'flex', justifyContent: 'center', marginTop: '25px' }}>
                                 <button
                                   onClick={() => {

@@ -894,3 +894,38 @@ export function isTimeInInterval(startTime, endTime, date) {
                      date.getDate(),parseInt(e[0]), parseInt(e[1]), parseInt(e[2]));
   return (date >= dt1 && date <= dt2)
 }
+export function getStartEndDates (value) {
+  let endDate = new Date()
+  let startDate = new Date(
+    (endDate.getTime() - (value * 24 * 60 * 60 * 1000)))
+
+  let startMonth = ('0' + (startDate.getMonth() + 1)).slice(-2)
+  let startDay = ('0' + startDate.getDate()).slice(-2)
+  let finalStartDate = `${startDate.getFullYear()}-${startMonth}-${startDay}`
+
+  let endMonth = ('0' + (endDate.getMonth() + 1)).slice(-2)
+  let endDay = ('0' + endDate.getDate()).slice(-2)
+  let finalEndDate = `${endDate.getFullYear()}-${endMonth}-${endDay}`
+  return {startDate: finalStartDate, endDate: finalEndDate}
+}
+
+export function validateSmsProviderInput(state) {
+  let smsData = state.smsData[state.smsProvider]
+  if (state.smsProvider === 'twilio') {
+    return (
+      smsData.authToken &&
+      smsData.businessNumber &&
+      smsData.accountSID &&
+      smsData.messages
+    )
+  } else {
+    return (
+      smsData.accountId &&
+      smsData.username &&
+      smsData.password &&
+      smsData.businessNumber &&
+      smsData.appId &&
+      smsData.messages
+    )
+  }
+}

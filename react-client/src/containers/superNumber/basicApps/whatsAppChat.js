@@ -7,12 +7,16 @@ import {
   fetchSuperNumberPreferences,
   updateSuperNumberPreferences,
   createSuperNumberPreferences,
+  fetchWidgetAnalytics
 } from '../../../redux/actions/superNumber.actions'
 import TABS from '../tabs'
 import BUTTONDESIGNANDTEXT from './buttonDesignAndText'
 import BUTTONDISPLAYANDPOSITION from './buttonDisplayAndPosition'
 import PAGESTODISPLAY from './pagesToDisplay'
 import AGENTS from './agents'
+import CALLOUTCARD from './calloutCard'
+import GREETINGSWIDGET from './greetingsWidget'
+import ANALYTICS from './analytics'
 
 class WhatsAppChat extends React.Component {
   constructor(props) {
@@ -20,6 +24,10 @@ class WhatsAppChat extends React.Component {
     this.state = {
       currentTab: 'settings',
       loadingIntegration: true,
+      loadingAnalytics: true,
+      selectedDate: '30',
+      startDate: '',
+      endDate: '',
       enabled: true,
       agentsLimit: 6,
       agents: [],
@@ -67,7 +75,7 @@ class WhatsAppChat extends React.Component {
       },
       callOutCard: {
         enabled: true,
-        cardText: '',
+        cardText: 'Hi there! How can we help you? Tap here to chat with us.',
         cardDelay: 5
       },
       greetingsWidget: {
@@ -108,6 +116,8 @@ class WhatsAppChat extends React.Component {
     this.goToCommerceSettings = this.goToCommerceSettings.bind(this)
     this.handleFetchStore = this.handleFetchStore.bind(this)
     this.handleSwitch = this.handleSwitch.bind(this)
+    this.isValid = this.isValid.bind(this)
+    this.fetchWidgetAnalytics = this.fetchWidgetAnalytics.bind(this)
 
     props.fetchShopifyStore(this.handleFetchStore)
     props.fetchSuperNumberPreferences(this.msg)
@@ -128,20 +138,80 @@ class WhatsAppChat extends React.Component {
     })
   }
 
-  onSave () {
-    let payload = {
-      share_button: {
-        enabled: this.state.enabled,
-        btnDesign: this.state.btnDesign,
-        textMessage: this.state.textMessage,
-        displayPosition: this.state.displayPosition,
-        displayPages: this.state.displayPages
-      }
+  fetchWidgetAnalytics (data) {
+    this.setState({startDate: data.startDate, endDate: data.endDate, selectedDate: data.selectedDate, loadingAnalytics: true})
+    this.props.fetchWidgetAnalytics(data, () => {
+      this.setState({loadingAnalytics: false})
+    })
+  }
+
+  isValid () {
+    if (this.state.agents.length === 0) {
+      this.msg.error('Please add an agent')
+      return false
+    } else if (this.state.agents.filter(a => a.enabled).length === 0) {
+      this.msg.error('Please enable atleast one agent')
+      return false
+    } else if (this.state.callOutCard.cardDelay < 5) {
+      this.msg.error('Minimum callout card delay is 5 seconds. Please enter a valid delay value')
+      return false
+    } else if (this.state.callOutCard.cardDelay > 60) {
+      this.msg.error('maximum callout card delay is 60 seconds. Please enter a valid delay value')
+      return false
     }
-    if (!this.props.superNumberPreferences) {
-      this.props.createSuperNumberPreferences(payload, this.msg)
+    if (this.state.displayPosition.display === 'mobile') {
+      if (this.state.displayPosition.mobileHeightOffset === '' || this.state.displayPosition.mobileEdgeOffset === '') {
+        this.msg.error('Please enter offset')
+        return false
+      }
+      else if (this.state.displayPosition.mobileHeightOffset < 8 || this.state.displayPosition.mobileEdgeOffset < 8) {
+        this.msg.error('Minimum offset value is 8. Please enter a valid offset')
+        return false
+      } else return true
+    } else if (this.state.displayPosition.display === 'desktop') {
+      if (this.state.displayPosition.desktopHeightOffset === '' || this.state.displayPosition.desktopEdgeOffset === '') {
+        this.msg.error('Please enter offset')
+        return false
+      }
+      else if (this.state.displayPosition.desktopHeightOffset < 8 || this.state.displayPosition.desktopEdgeOffset < 8) {
+        this.msg.error('Minimum offset value is 8. Please enter a valid offset')
+        return false
+      } else return true
     } else {
-      this.props.updateSuperNumberPreferences(payload, this.msg)
+      if (this.state.displayPosition.mobileHeightOffset === '' || this.state.displayPosition.mobileEdgeOffset === '' ||
+        this.state.displayPosition.mobileHeightOffset === '' || this.state.displayPosition.mobileEdgeOffset === '') {
+        this.msg.error('Please enter offset')
+        return false
+      } else if (
+        this.state.displayPosition.mobileHeightOffset < 8 || this.state.displayPosition.mobileEdgeOffset < 8 ||
+        this.state.displayPosition.mobileHeightOffset < 8 || this.state.displayPosition.mobileEdgeOffset < 8) {
+        this.msg.error('Minimum offset value is 8. Please enter a valid offset')
+        return false
+      } else return true
+    }
+  }
+
+  onSave () {
+    if (this.isValid()) {
+      let payload = {
+        chat_widget: {
+          enabled: this.state.enabled,
+          agentsLimit: this.state.agentsLimit,
+          agents: this.state.agents,
+          onOffHours: this.state.onOffHours,
+          btnDesign: this.state.btnDesign,
+          textMessage: this.state.textMessage,
+          callOutCard: this.state.callOutCard,
+          greetingsWidget: this.state.greetingsWidget,
+          displayPosition: this.state.displayPosition,
+          displayPages: this.state.displayPages
+        }
+      }
+      if (!this.props.superNumberPreferences) {
+        this.props.createSuperNumberPreferences(payload, this.msg)
+      } else {
+        this.props.updateSuperNumberPreferences(payload, this.msg)
+      }
     }
   }
 
@@ -154,7 +224,7 @@ class WhatsAppChat extends React.Component {
       title = 'KiboChat';
     }
 
-    document.title = `${title} | Abandoned Cart`;
+    document.title = `${title} | WhatsApp Chat`;
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
@@ -162,11 +232,26 @@ class WhatsAppChat extends React.Component {
       let state = {
         enabled: nextProps.superNumberPreferences.chat_widget.enabled
       }
+      if (nextProps.superNumberPreferences.chat_widget.agentsLimit) {
+        state.agentsLimit = nextProps.superNumberPreferences.chat_widget.agentsLimit
+      }
+      if (nextProps.superNumberPreferences.chat_widget.agents) {
+        state.agents = nextProps.superNumberPreferences.chat_widget.agents
+      }
+      if (nextProps.superNumberPreferences.chat_widget.onOffHours) {
+        state.onOffHours = nextProps.superNumberPreferences.chat_widget.onOffHours
+      }
       if (nextProps.superNumberPreferences.chat_widget.btnDesign) {
         state.btnDesign = nextProps.superNumberPreferences.chat_widget.btnDesign
       }
       if (nextProps.superNumberPreferences.chat_widget.textMessage) {
         state.textMessage = nextProps.superNumberPreferences.chat_widget.textMessage
+      }
+      if (nextProps.superNumberPreferences.chat_widget.callOutCard) {
+        state.callOutCard = nextProps.superNumberPreferences.chat_widget.callOutCard
+      }
+      if (nextProps.superNumberPreferences.chat_widget.greetingsWidget) {
+        state.greetingsWidget = nextProps.superNumberPreferences.chat_widget.greetingsWidget
       }
       if (nextProps.superNumberPreferences.chat_widget.displayPosition) {
         state.displayPosition = nextProps.superNumberPreferences.chat_widget.displayPosition
@@ -225,6 +310,12 @@ class WhatsAppChat extends React.Component {
                     showViewInStore={this.state.currentTab === 'settings'}
                     showAnalytics
                     storeUrl={this.props.store && `https://${this.props.store.domain}`}
+                    showDateFilter={this.state.currentTab === 'analytics'}
+                    selectedDate={this.state.selectedDate}
+                    fetchWidgetAnalytics={this.fetchWidgetAnalytics}
+                    startDate={this.state.startDate}
+                    endDate={this.state.endDate}
+                    widgetType='chat'
                   />
                   <div className='m-portlet__body'>
                     { this.state.loadingIntegration
@@ -242,8 +333,8 @@ class WhatsAppChat extends React.Component {
                           </div>
                           </div>
                         </div>
-                    : this.state.currentTab === 'settings' &&
-                      <div>
+                    : this.state.currentTab === 'settings'
+                      ? <div>
                         <div className='form-group m-form__group'>
                           <div className='row'>
                             <div className='col-md-2'>
@@ -268,22 +359,50 @@ class WhatsAppChat extends React.Component {
                           agentsLimit={this.state.agentsLimit}
                           alertMsg={this.msg}
                         />
+                        <br />
                         <BUTTONDESIGNANDTEXT
                           updateState={this.updateState}
                           btnDesign={this.state.btnDesign}
                           textMessage={this.state.textMessage}
                           btnLabel='Chat Button Text:'
                           btnMessageLabel='WhatsApp Message:'
+                          rotateDegree='0'
+                          gradientDegree='90'
+                          showCheckbox
                         />
+                        <br />
+                        <CALLOUTCARD
+                          updateState={this.updateState}
+                          callOutCard={this.state.callOutCard}
+                        />
+                        <br />
+                        <GREETINGSWIDGET
+                          updateState={this.updateState}
+                          greetingsWidget={this.state.greetingsWidget}
+                          agents={this.state.agents}
+                        />
+                        <br />
                         <BUTTONDISPLAYANDPOSITION
                           updateState={this.updateState}
                           displayPosition={this.state.displayPosition}
+                          showOffsets
                         />
+                        <br />
                         <PAGESTODISPLAY
                           updateState={this.updateState}
                           displayPages={this.state.displayPages}
+                          showCartMobile
+                          showCartDesktop
                         />
                       </div>
+                      : <ANALYTICS
+                          widgetType='chat'
+                          loading={this.state.loadingAnalytics}
+                          selectedDate={this.state.selectedDate}
+                          fetchWidgetAnalytics={this.fetchWidgetAnalytics}
+                          startDate={this.state.startDate}
+                          endDate={this.state.endDate}
+                      />
                     }
                 </div>
               </div>
@@ -304,6 +423,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators({
+    fetchWidgetAnalytics,
     fetchShopifyStore,
     fetchSuperNumberPreferences,
     updateSuperNumberPreferences,
