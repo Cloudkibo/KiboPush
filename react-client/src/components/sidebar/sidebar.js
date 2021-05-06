@@ -2,28 +2,43 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { getAutomatedOptions } from '../../redux/actions/basicinfo.actions'
 import { bindActionCreators } from 'redux'
+import { getCurrentProduct } from '../../utility/utils'
+
 import MENUITEM from './menuItem'
 
 class Sidebar extends Component {
   constructor(props, context) {
     super(props, context)
     this.state = {
-      menuItems: []
+      menuItems: [],
+      activeItem: ''
     }
     this.setMenuItems = this.setMenuItems.bind(this)
+    this.setActiveItem = this.setActiveItem.bind(this)
 
     this.props.getAutomatedOptions()
   }
 
+  setActiveItem (name) {
+    const value = name.replace(/\s+/g, '')
+    this.setState({activeItem: value.toLowerCase()})
+  }
+
   setMenuItems(user, automated_options) {
-    const url = window.location.hostname
     let menuItems = []
-    const isLocalhost = url.includes('localhost')
-    const isKiboChat = url.includes('kibochat.cloudkibo.com')
-    const isKiboEngage = url.includes('kiboengage.cloudkibo.com')
-    const isKiboLite = url.includes('kibolite.cloudkibo.com')
+    const currentProduct = getCurrentProduct()
+    const isLocalhost = (currentProduct === 'localhost')
+    const isKiboChat = (currentProduct === 'KiboChat')
+    const isKiboEngage = (currentProduct === 'KiboEngage')
+    const isKiboLite = (currentProduct === 'KiboLite')
     const platform = user.platform
     const isMobile = this.props.isMobile
+    let activeItem = this.state.activeItem
+
+    if (!activeItem) {
+      activeItem = isKiboChat ? 'livechat' : 'dashboard'
+    }
+
     if (!isMobile && user.isSuperUser && (isKiboEngage || isLocalhost)) {
       menuItems.push({
         priority: 'a',
@@ -473,12 +488,13 @@ class Sidebar extends Component {
       link: 'http://kibopush.com/user-guide/',
       icon: 'flaticon-info'
     })
-    return menuItems.sort((a, b) => (a.priority > b.priority) ? 1 : -1)
+    return {menuItems: menuItems.sort((a, b) => (a.priority > b.priority) ? 1 : -1), activeItem}
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.user && nextProps.automated_options && nextProps.user.plan) {
-      this.setState({ menuItems: this.setMenuItems(nextProps.user, nextProps.automated_options) })
+      const { menuItems, activeItem } = this.setMenuItems(nextProps.user, nextProps.automated_options)
+      this.setState({ menuItems, activeItem })
     }
   }
 
@@ -500,7 +516,11 @@ class Sidebar extends Component {
                 <ul className='m-menu__nav  m-menu__nav--dropdown-submenu-arrow '>
                   {
                     this.state.menuItems.map((item, index) => (
-                      <MENUITEM {...item} />
+                      <MENUITEM
+                        {...item}
+                        activeItem={this.state.activeItem}
+                        onItemClick={this.setActiveItem}
+                      />
                     ))
                   }
                 </ul>
@@ -515,7 +535,6 @@ class Sidebar extends Component {
               </div>
             </div>
           </div>
-
         </div>
       </div>
     )

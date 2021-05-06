@@ -108,11 +108,19 @@ class CheckoutForm extends React.Component {
           <div id='email-error' style={{color: 'red', fontWeight: 'inherit'}}><bold>Please verify</bold></div>
         }
         <br /><br />
-        <center>
-          <button className='btn btn-primary'>Save</button>
-        </center>
+        {
+          this.props.showSaveBtn &&
+          <center>
+            <button className='btn btn-primary'>Save</button>
+          </center>
+        }
       </form>
     )
   }
 }
+
+CheckoutForm.defaultProps = {
+  showSaveBtn: true
+}
+
 export default injectStripe(CheckoutForm)

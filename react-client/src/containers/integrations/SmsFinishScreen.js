@@ -7,7 +7,6 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import Header from './../wizard/header'
 import { loadPlans } from '../../redux/actions/plans.actions'
-import { Link } from 'react-router-dom'
 
 class SmsFinishScreen extends React.Component {
   constructor (props, context) {
@@ -16,6 +15,7 @@ class SmsFinishScreen extends React.Component {
       selectedPlan: null
     }
     props.loadPlans()
+    this.nextBtnAction = this.nextBtnAction.bind(this)
   }
 
   componentDidMount () {
@@ -34,11 +34,21 @@ class SmsFinishScreen extends React.Component {
     document.getElementsByTagName('body')[0].className = 'm-page--fluid m--skin- m-content--skin-light2 m-footer--push m-aside--offcanvas-default'
   }
 
+  nextBtnAction () {
+    /* eslint-disable */
+    $('#sidebarDiv').removeClass('hideSideBar')
+    $('#headerDiv').removeClass('hideSideBar')
+    /* eslint-enable */
+    this.props.history.push({
+      pathname: '/dashboard'
+    })
+  }
+
   render () {
     return (
       <div>
         <Header showTitle hideMessages hideSettings />
-        <div className="m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-grid--tablet-and-mobile m-grid--hor-tablet-and-mobile m-login m-login--1 m-login--singin" style={{ height: 'calc(100vh - 70px)' }}>
+        <div className="m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-grid--tablet-and-mobile m-grid--hor-tablet-and-mobile m-login m-login--1 m-login--singin" style={{ height: 'calc(100vh - 110px)', overflowY: 'scroll', margin: '20px' }}>
           <div className="m-grid__item m-grid__item--fluid m-grid m-grid--center m-grid--hor m-grid__item--order-tablet-and-mobile-1	m-login__content" style={{backgroundImage: 'url(https://cdn.cloudkibo.com/public/assets/app/media/img//bg/bg-4.jpg)'}}>
             <div className="m-grid__item m-grid__item--middle">
               <h3 className="m-login__welcome">
@@ -51,68 +61,61 @@ class SmsFinishScreen extends React.Component {
               </p>
             </div>
           </div>
-          <div className="m-grid__item m-grid__item--order-tablet-and-mobile-2 m-login__aside" style={{padding: '2rem'}}>
+          <div className="m-grid__item m-grid__item--order-tablet-and-mobile-2 m-login__aside" style={{padding: '2rem', overflowY: 'scroll'}}>
             {
               this.props.planName && this.props.planName.includes('Enterprise') ?
                 <div>
-                  <br />
-                  <br />
-                  <br />
-                  <br />
-                  <br />
-                  <br />
-                  <center>
-                    <img alt='completed' src='https://cdn.cloudkibo.com/public/icons/PE-Success-Icon.png' width='150' height='150'></img>
-                    <br />
-                    <br />
-                    Congratulations! you have successfully applied for Enterprise Plan for Sms. Someone from our team will contact you soon.
+                  <div>
                     <br />
                     <br />
                     <br />
-                    <div className='row'>
-                      <div className='col-lg-6 m--align-left' >
-                        <Link to='/smsProviderScreen' className='btn btn-secondary m-btn m-btn--custom m-btn--icon' data-wizard-action='next'>
-                          <span>
-                            <i className='la la-arrow-left' />
-                            <span>Back</span>&nbsp;&nbsp;
-                          </span>
-                        </Link>
-                      </div>
-                    </div>
-                  </center>
+                    <br />
+                    <br />
+                    <br />
+                    <center>
+                      <img alt='completed' src='https://cdn.cloudkibo.com/public/icons/PE-Success-Icon.png' width='150' height='150'></img>
+                      <br />
+                      <br />
+                      Congratulations! you have successfully applied for Enterprise Plan for Sms. Someone from our team will contact you soon.
+                      <br />
+                      <br />
+                      <br />
+                    </center>
+                  </div>
+                  <div>
+                    <center>
+                      <button className='btn btn-success m-btn m-btn--custom m-btn--icon' onClick={this.nextBtnAction}>
+                        Finish
+                      </button>
+                    </center>
+                  </div>
                 </div>
                 :
                 <div>
-                  <br />
-                  <br />
-                  <br />
-                  <br />
-                  <br />
-                  <br />
-                  <center>
-                    <img alt='completed' src='https://cdn.cloudkibo.com/public/icons/PE-Success-Icon.png' width='150' height='150'></img>
-                    <br />
-                    <br />
-                    Congratulations! you have successfully configured sms channel.
+                  <div>
                     <br />
                     <br />
                     <br />
-                    <div className='row'>
-                      <div className='col-lg-6 m--align-left' >
-                        <Link to='/smsNumbersScreen' className='btn btn-secondary m-btn m-btn--custom m-btn--icon' data-wizard-action='next'>
-                          <span>
-                            <i className='la la-arrow-left' />
-                            <span>Back</span>&nbsp;&nbsp;
-                          </span>
-                        </Link>
-                      </div>
-                      <div className='col-lg-6 m--align-right' >
-                        <Link to='/dashboard' className='btn btn-success m-btn m-btn--custom m-btn--icon'>
-                          Finish
-                        </Link>
-                      </div>
-                    </div>
-                  </center>
+                    <br />
+                    <br />
+                    <br />
+                    <center>
+                      <img alt='completed' src='https://cdn.cloudkibo.com/public/icons/PE-Success-Icon.png' width='150' height='150'></img>
+                      <br />
+                      <br />
+                      Congratulations! you have successfully configured sms channel.
+                      <br />
+                      <br />
+                      <br />
+                    </center>
+                  </div>
+                  <div>
+                    <center>
+                      <button className='btn btn-success m-btn m-btn--custom m-btn--icon' onClick={this.nextBtnAction}>
+                        Finish
+                      </button>
+                    </center>
+                  </div>
                 </div>
             }
           </div>
