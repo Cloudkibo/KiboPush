@@ -295,7 +295,7 @@ class Header extends React.Component {
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
-    if (nextProps.user) {
+    if (nextProps.user && nextProps.user.currentPlan) {
       this.setPlatform(nextProps.user)
       let plan = nextProps.user.currentPlan.unique_ID
       this.getPlanInfo(plan)

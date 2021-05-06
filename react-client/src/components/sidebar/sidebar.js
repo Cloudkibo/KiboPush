@@ -477,7 +477,7 @@ class Sidebar extends Component {
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
-    if (nextProps.user && nextProps.automated_options) {
+    if (nextProps.user && nextProps.automated_options && nextProps.user.plan) {
       this.setState({ menuItems: this.setMenuItems(nextProps.user, nextProps.automated_options) })
     }
   }

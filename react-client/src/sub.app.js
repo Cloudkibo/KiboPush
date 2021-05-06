@@ -50,27 +50,28 @@ class SubApp extends Component {
   }
 
   callbackUserDetails (payload) {
-    this.props.loadMyPagesListNew({
-      last_id: 'none',
-      number_of_records: 10,
-      first_page: 'first',
-      filter: false,
-      filter_criteria: { search_value: '' }
-    }, this.redirectToConnectPage)
-    this.props.validateUserAccessToken(this.checkUserAccessToken)
-    this.props.isFacebookConnected(this.checkFacebookConnected)
-    this.props.fetchCompanyPreferences()
-    this.props.fetchUsageInfo(this.checkResourceConsumption)
-    this.props.fetchCompanyAddOns(this.handleCompanyAddOns)
+    if (payload.user.platform) {
+      if (payload.user.platform === 'messenger') {
+        this.props.loadMyPagesListNew({
+          last_id: 'none',
+          number_of_records: 10,
+          first_page: 'first',
+          filter: false,
+          filter_criteria: { search_value: '' }
+        }, this.redirectToConnectPage)
+        this.props.validateUserAccessToken(this.checkUserAccessToken)
+        this.props.isFacebookConnected(this.checkFacebookConnected)
+      }
+      this.props.fetchCompanyPreferences()
+      this.props.fetchUsageInfo(this.checkResourceConsumption)
+      this.props.fetchCompanyAddOns(this.handleCompanyAddOns)
+    }
 
     const queryParams = queryString.parse(this.props.history.location.search)
     let configurePlatform = false
     if (queryParams && queryParams.plan) {
       configurePlatform = true
     }
-
-    console.log('configurePlatform', configurePlatform)
-    console.log(queryParams)
 
     if (this.props.history.location.pathname.toLowerCase() === '/demossa') {
       this.handleDemoSSAPage()
