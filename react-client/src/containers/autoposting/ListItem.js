@@ -1,5 +1,4 @@
 import React from 'react'
-import ReactTooltip from 'react-tooltip';
 class ListItem extends React.Component {
   render () {
     let icon, color, image
