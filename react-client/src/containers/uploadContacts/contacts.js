@@ -155,8 +155,8 @@ class Contact extends React.Component {
 
   syncContacts () {
     this.props.syncContacts({twilio: {
-      accountSID: this.props.automated_options.twilio.accountSID,
-      authToken: this.props.automated_options.twilio.authToken
+      accountSID: this.props.automated_options.sms.accountSID,
+      authToken: this.props.automated_options.sms.authToken
     }}, this.msg)
   }
 
