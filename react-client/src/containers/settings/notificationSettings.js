@@ -103,7 +103,7 @@ class NotificationSettings extends React.Component {
                 </div>
             </div>
             <div className='col-12 input-group pull-right' style={{marginTop: '20px'}}>
-              <button className='btn btn-primary pull-right'onClick={this.saveNotificationSettings}>Save</button>
+              <button disabled={this.state.selectedPages.length<1} className='btn btn-primary pull-right'onClick={this.saveNotificationSettings}>Save</button>
             </div>
           </div>
         </div>
