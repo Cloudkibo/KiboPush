@@ -42,13 +42,13 @@ class UserProfile extends React.Component {
             {(this.props.user) ? this.props.user.name : ''} <i className='fa fa-chevron-down' />
           </span>
         </span>
-        <div className='m-dropdown__wrapper'>
+        <div className='m-dropdown__wrapper'  style={{cursor: 'pointer'}}>
           <span className='m-dropdown__arrow m-dropdown__arrow--right m-dropdown__arrow--adjust' />
           <div className='m-dropdown__inner'>
             <div className='m-dropdown__header m--align-center'>
               <div className='m-card-user m-card-user--skin-dark'>
                 <div className='m-card-user__pic'>
-                  <img src={(this.props.user && this.props.user.facebookInfo && this.props.user.facebookInfo.profilePic) ? this.props.user.facebookInfo.profilePic : 'https://cdn.cloudkibo.com/public/icons/users.jpg'} className='m--img-rounded m--marginless' alt='' />
+                  <img src={(this.props.user && this.props.user.facebookInfo && this.props.user.facebookInfo.profilePic) ? this.props.user.facebookInfo.profilePic : 'https://cdn.cloudkibo.com/public/icons/users.jpg'} className='m--img-rounded m--marginless' alt=''/>
                 </div>
                 <div className='m-card-user__details'>
                   <span className='m-card-user__name m--font-weight-500'>
@@ -88,7 +88,7 @@ class UserProfile extends React.Component {
                               <span className='m-nav__link-text'>Messages</span>
                             </Link>
                             : <a href={this.getLiveChatLink} target='_blank' rel='noopener noreferrer' className='m-nav__link'>
-                              <i className='m-nav__link-icon flaticon-chat-1' />
+                              <i className='m-nav__link-icon flaticon-chat-1'/>
                               <span className='m-nav__link-text'>Messages</span>
                             </a>
                         }
@@ -98,7 +98,7 @@ class UserProfile extends React.Component {
                     this.props.showDisconnectFacebook &&
                     <li className='m-nav__item'>
                       <span data-toggle="modal" data-target="#disconnectFacebook" className='m-nav__link'>
-                        <i className='m-nav__link-icon la la-unlink' />
+                        <i className='m-nav__link-icon la la-unlink'/>
                         <span className='m-nav__link-text'>Disconnect Facebook</span>
                       </span>
                     </li>
@@ -121,7 +121,7 @@ class UserProfile extends React.Component {
                   </li>
                   <li className='m-nav__separator m-nav__separator--fit' />
                   <li className='m-nav__item'>
-                    <span onClick={this.props.logout} className='btn m-btn--pill    btn-secondary m-btn m-btn--custom m-btn--label-brand m-btn--bolder'>
+                    <span onClick={this.props.logout}  className='btn m-btn--pill    btn-secondary m-btn m-btn--custom m-btn--label-brand m-btn--bolder'>
                       Logout
                     </span>
                   </li>
