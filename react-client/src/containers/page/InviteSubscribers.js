@@ -100,6 +100,10 @@ class InviteSubscribers extends React.Component {
     }
   }
 
+  redirectPage() {
+    this.props.history.goBack()
+  }
+
   render() {
     var alertOptions = {
       offset: 14,
@@ -281,11 +285,21 @@ class InviteSubscribers extends React.Component {
                     </form>
                   </div>
                 </div>
+                <button
+                            style={{ marginLeft: "25px" }}
+                            className="btn btn-primary"
+                            onClick={() => this.redirectPage()}>
+                            
+                      
+                          
+                            Back
+                          </button>
               </div>
             </div>
           </div>
         </div>
       </div>
+      
     )
   }
 }
