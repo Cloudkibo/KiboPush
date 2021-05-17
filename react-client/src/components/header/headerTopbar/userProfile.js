@@ -42,7 +42,7 @@ class UserProfile extends React.Component {
             {(this.props.user) ? this.props.user.name : ''} <i className='fa fa-chevron-down' />
           </span>
         </span>
-        <div className='m-dropdown__wrapper' style={{cursor: 'pointer'}}>
+        <div className='m-dropdown__wrapper'  style={{cursor: 'pointer'}}>
           <span className='m-dropdown__arrow m-dropdown__arrow--right m-dropdown__arrow--adjust' />
           <div className='m-dropdown__inner'>
             <div className='m-dropdown__header m--align-center'>
